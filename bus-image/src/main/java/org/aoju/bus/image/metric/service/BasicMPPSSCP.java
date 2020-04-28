@@ -30,8 +30,7 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.ImageException;
-import org.aoju.bus.image.metric.internal.pdu.Presentation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -46,14 +45,14 @@ public class BasicMPPSSCP extends AbstractService {
         super(UID.ModalityPerformedProcedureStepSOPClass);
     }
 
-    public static void mayNoLongerBeUpdated() throws ImageException {
-        throw new ImageException(Status.ProcessingFailure,
+    public static void mayNoLongerBeUpdated() throws ServiceException {
+        throw new ServiceException(Status.ProcessingFailure,
                 "Performed Procedure Step Object may no longer be updated")
                 .setErrorID(0xA710);
     }
 
     @Override
-    public void onDimse(Association as, Presentation pc, Dimse dimse,
+    public void onDimse(Association as, PresentationContext pc, Dimse dimse,
                         Attributes rq, Attributes rqAttrs) throws IOException {
         switch (dimse) {
             case N_CREATE_RQ:
@@ -63,11 +62,11 @@ public class BasicMPPSSCP extends AbstractService {
                 onNSetRQ(as, pc, rq, rqAttrs);
                 break;
             default:
-                throw new ImageException(Status.UnrecognizedOperation);
+                throw new ServiceException(Status.UnrecognizedOperation);
         }
     }
 
-    protected void onNCreateRQ(Association as, Presentation pc,
+    protected void onNCreateRQ(Association as, PresentationContext pc,
                                Attributes rq, Attributes rqAttrs) throws IOException {
         Attributes rsp = Commands.mkNCreateRSP(rq, Status.Success);
         Attributes rspAttrs = create(as, rq, rqAttrs, rsp);
@@ -75,11 +74,11 @@ public class BasicMPPSSCP extends AbstractService {
     }
 
     protected Attributes create(Association as, Attributes rq,
-                                Attributes rqAttrs, Attributes rsp) throws ImageException {
+                                Attributes rqAttrs, Attributes rsp) throws ServiceException {
         return null;
     }
 
-    protected void onNSetRQ(Association as, Presentation pc,
+    protected void onNSetRQ(Association as, PresentationContext pc,
                             Attributes rq, Attributes rqAttrs) throws IOException {
         Attributes rsp = Commands.mkNSetRSP(rq, Status.Success);
         Attributes rspAttrs = set(as, rq, rqAttrs, rsp);
@@ -87,7 +86,7 @@ public class BasicMPPSSCP extends AbstractService {
     }
 
     protected Attributes set(Association as, Attributes rq, Attributes rqAttrs,
-                             Attributes rsp) throws ImageException {
+                             Attributes rsp) throws ServiceException {
         return null;
     }
 

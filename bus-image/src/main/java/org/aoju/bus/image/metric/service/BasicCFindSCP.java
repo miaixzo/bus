@@ -28,8 +28,7 @@ import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.Status;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.ImageException;
-import org.aoju.bus.image.metric.internal.pdu.Presentation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -46,19 +45,19 @@ public class BasicCFindSCP extends AbstractService {
 
     @Override
     public void onDimse(Association as,
-                        Presentation pc,
+                        PresentationContext pc,
                         Dimse dimse,
                         Attributes rq,
                         Attributes keys) throws IOException {
         if (dimse != Dimse.C_FIND_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
         Query query = calculateMatches(as, pc, rq, keys);
         as.getApplicationEntity().getDevice().execute(query);
     }
 
     protected Query calculateMatches(Association as,
-                                     Presentation pc,
+                                     PresentationContext pc,
                                      Attributes rq,
                                      Attributes keys) {
         return new BasicQuery(as, pc, rq, keys);

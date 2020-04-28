@@ -69,7 +69,7 @@ public interface ValueType {
                 Date defVal, DatePrecision precision);
 
     Date[] toDate(Object val, TimeZone tz, boolean ceil,
-                  DatePrecision precisions);
+                  DatePrecisions precisions);
 
     Object toValue(byte[] b);
 

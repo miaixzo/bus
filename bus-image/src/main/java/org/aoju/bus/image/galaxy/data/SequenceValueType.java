@@ -123,7 +123,7 @@ public enum SequenceValueType implements ValueType {
 
     @Override
     public Date[] toDate(Object val, TimeZone tz, boolean ceil,
-                         DatePrecision precisions) {
+                         DatePrecisions precisions) {
         throw new UnsupportedOperationException();
     }
 

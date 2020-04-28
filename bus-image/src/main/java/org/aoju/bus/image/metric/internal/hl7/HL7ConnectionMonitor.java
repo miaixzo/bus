@@ -34,7 +34,6 @@ import java.net.Socket;
  * @since JDK 1.8+
  */
 public interface HL7ConnectionMonitor {
-
     void onMessageReceived(Connection conn, Socket s, UnparsedHL7Message msg);
 
     void onMessageProcessed(Connection conn, Socket s, UnparsedHL7Message msg,
@@ -44,5 +43,4 @@ public interface HL7ConnectionMonitor {
 
     void onMessageResponse(HL7Application hl7App, Socket s, UnparsedHL7Message msg,
                            UnparsedHL7Message rsp, Exception ex);
-
 }

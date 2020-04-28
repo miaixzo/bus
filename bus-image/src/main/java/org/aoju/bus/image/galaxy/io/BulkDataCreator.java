@@ -35,6 +35,6 @@ import java.io.IOException;
  */
 public interface BulkDataCreator {
 
-    BulkData createBulkData(ImageInputStream dis) throws IOException;
+    BulkData createBulkData(DicomInputStream dis) throws IOException;
 
 }

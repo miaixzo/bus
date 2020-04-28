@@ -25,13 +25,12 @@
 package org.aoju.bus.image.galaxy;
 
 import org.aoju.bus.core.utils.ByteUtils;
-import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
-import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
+import org.aoju.bus.image.galaxy.io.DicomOutputStream;
 import org.aoju.bus.image.galaxy.io.RAFOutputStreamAdapter;
 import org.aoju.bus.logger.Logger;
 
@@ -50,6 +49,10 @@ import java.util.IdentityHashMap;
  */
 public class DirWriter extends DirReader {
 
+    private final static int KNOWN_INCONSISTENCIES = 0xFFFF;
+    private final static int NO_KNOWN_INCONSISTENCIES = 0;
+    private final static int IN_USE = 0xFFFF;
+    private final static int INACTIVE = 0;
     private static final Comparator<Attributes> offsetComparator =
             (item1, item2) -> {
                 long d = item1.getItemPosition() - item2.getItemPosition();
@@ -64,23 +67,23 @@ public class DirWriter extends DirReader {
             0x04, 0x00, 0x00, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0,
             0x04, 0x00, 0x10, 0x14, 'U', 'S', 2, 0, 0, 0,
             0x04, 0x00, 0x20, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0};
-    private final ImageOutputStream out;
+    private final DicomOutputStream out;
     private final int firstRecordPos;
     private final ArrayList<Attributes> dirtyRecords =
             new ArrayList<Attributes>();
-    private final IdentityHashMap<Attributes, Attributes> lastChildRecords =
-            new IdentityHashMap<Attributes, Attributes>();
     private int nextRecordPos;
     private int rollbackLen = -1;
+    private IdentityHashMap<Attributes, Attributes> lastChildRecords =
+            new IdentityHashMap<Attributes, Attributes>();
 
     private DirWriter(File file) throws IOException {
         super(file, "rw");
-        out = new ImageOutputStream(new RAFOutputStreamAdapter(raf),
+        out = new DicomOutputStream(new RAFOutputStreamAdapter(raf),
                 super.getTransferSyntaxUID());
         int seqLen = in.length();
         boolean undefSeqLen = seqLen <= 0;
         setEncodingOptions(
-                new ImageEncodingOptions(false,
+                new DicomEncodingOptions(false,
                         undefSeqLen,
                         false,
                         undefSeqLen,
@@ -113,7 +116,7 @@ public class DirWriter extends DirReader {
                                             String id, File descFile, String charset) throws IOException {
         Attributes fsInfo =
                 createFileSetInformation(file, id, descFile, charset);
-        ImageOutputStream out = new ImageOutputStream(file);
+        DicomOutputStream out = new DicomOutputStream(file);
         try {
             out.writeDataset(fmi, fsInfo);
         } finally {
@@ -155,11 +158,11 @@ public class DirWriter extends DirReader {
         return Property.split(fpath.substring(dend), File.separatorChar);
     }
 
-    public ImageEncodingOptions getEncodingOptions() {
+    public DicomEncodingOptions getEncodingOptions() {
         return out.getEncodingOptions();
     }
 
-    public void setEncodingOptions(ImageEncodingOptions encOpts) {
+    public void setEncodingOptions(DicomEncodingOptions encOpts) {
         out.setEncodingOptions(encOpts);
     }
 
@@ -211,7 +214,7 @@ public class DirWriter extends DirReader {
 
     public synchronized boolean deleteRecord(Attributes rec)
             throws IOException {
-        if (rec.getInt(Tag.RecordInUseFlag, 0) == Builder.IN_ACTIVE)
+        if (rec.getInt(Tag.RecordInUseFlag, 0) == INACTIVE)
             return false;
 
         for (Attributes lowerRec = readLowerDirectoryRecord(rec);
@@ -219,7 +222,7 @@ public class DirWriter extends DirReader {
              lowerRec = readNextDirectoryRecord(lowerRec))
             deleteRecord(lowerRec);
 
-        rec.setInt(Tag.RecordInUseFlag, VR.US, Builder.IN_ACTIVE);
+        rec.setInt(Tag.RecordInUseFlag, VR.US, INACTIVE);
         markAsDirty(rec);
         return true;
     }
@@ -239,7 +242,7 @@ public class DirWriter extends DirReader {
             } else {
                 raf.setLength(rollbackLen);
             }
-            writeFileSetConsistencyFlag(Builder.NO_KNOWN_INCONSISTENCIES);
+            writeFileSetConsistencyFlag(NO_KNOWN_INCONSISTENCIES);
             rollbackLen = -1;
         }
     }
@@ -254,7 +257,7 @@ public class DirWriter extends DirReader {
             return;
 
         if (rollbackLen == -1)
-            writeFileSetConsistencyFlag(Builder.KNOWN_INCONSISTENCIES);
+            writeFileSetConsistencyFlag(KNOWN_INCONSISTENCIES);
 
         for (Attributes rec : dirtyRecords)
             writeDirRecordHeader(rec);
@@ -336,11 +339,11 @@ public class DirWriter extends DirReader {
         rec.setItemPosition(offset);
         if (rollbackLen == -1) {
             rollbackLen = offset;
-            writeFileSetConsistencyFlag(Builder.KNOWN_INCONSISTENCIES);
+            writeFileSetConsistencyFlag(KNOWN_INCONSISTENCIES);
         }
         raf.seek(offset);
         rec.setInt(Tag.OffsetOfTheNextDirectoryRecord, VR.UL, 0);
-        rec.setInt(Tag.RecordInUseFlag, VR.US, Builder.IN_USE);
+        rec.setInt(Tag.RecordInUseFlag, VR.US, IN_USE);
         rec.setInt(Tag.OffsetOfReferencedLowerLevelDirectoryEntity, VR.UL, 0);
         rec.writeItemTo(out);
         nextRecordPos = (int) raf.getFilePointer();

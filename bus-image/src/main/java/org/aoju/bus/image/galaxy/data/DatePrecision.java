@@ -35,7 +35,6 @@ public class DatePrecision {
 
     public int lastField;
     public boolean includeTimezone;
-    public DatePrecision[] precisions;
 
     public DatePrecision() {
         this(Calendar.MILLISECOND, false);

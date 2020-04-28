@@ -29,8 +29,8 @@ import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.*;
 import org.aoju.bus.image.galaxy.io.BulkDataDescriptor;
-import org.aoju.bus.image.galaxy.io.ImageInputStream;
-import org.aoju.bus.image.galaxy.io.ImageInputStream.IncludeBulkData;
+import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.DicomInputStream.IncludeBulkData;
 import org.aoju.bus.image.nimble.LookupTable;
 import org.aoju.bus.image.nimble.*;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
@@ -49,6 +49,7 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
 import java.io.*;
@@ -66,9 +67,9 @@ public class DicomImageReader extends ImageReader implements Closeable {
 
     public static final String POST_PIXEL_DATA = "postPixelData";
 
-    private javax.imageio.stream.ImageInputStream iis;
+    private ImageInputStream iis;
 
-    private ImageInputStream dis;
+    private DicomInputStream dis;
 
     private ImagePixelInputStream epdiis;
 
@@ -159,9 +160,9 @@ public class DicomImageReader extends ImageReader implements Closeable {
         resetInternalState();
         if (input instanceof InputStream) {
             try {
-                dis = (input instanceof ImageInputStream)
-                        ? (ImageInputStream) input
-                        : new ImageInputStream((InputStream) input);
+                dis = (input instanceof DicomInputStream)
+                        ? (DicomInputStream) input
+                        : new DicomInputStream((InputStream) input);
             } catch (IOException e) {
                 throw new IllegalArgumentException(e.getMessage());
             }
@@ -171,7 +172,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
             initPixelDataFile();
             setMetadata(metadata);
         } else {
-            iis = (javax.imageio.stream.ImageInputStream) input;
+            iis = (ImageInputStream) input;
         }
     }
 
@@ -435,7 +436,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
         if (decompressor != null) {
             openiis();
             try {
-                javax.imageio.stream.ImageInputStream iisOfFrame = iisOfFrame(frameIndex);
+                ImageInputStream iisOfFrame = iisOfFrame(frameIndex);
                 // Reading this up front sets the required values so that opencv succeeds - it is less than optimal performance wise
                 iisOfFrame.length();
                 decompressor.setInput(iisOfFrame);
@@ -495,8 +496,8 @@ public class DicomImageReader extends ImageReader implements Closeable {
         return ovlyData;
     }
 
-    public javax.imageio.stream.ImageInputStream iisOfFrame(int frameIndex) throws IOException {
-        javax.imageio.stream.ImageInputStream iisOfFrame;
+    public ImageInputStream iisOfFrame(int frameIndex) throws IOException {
+        ImageInputStream iisOfFrame;
         if (epdiis != null) {
             seekFrame(frameIndex);
             iisOfFrame = epdiis;
@@ -668,7 +669,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
         if (iis == null)
             throw new IllegalStateException("Input not set");
 
-        ImageInputStream dis = new ImageInputStream(new ImageInputStreamAdapter(iis));
+        DicomInputStream dis = new DicomInputStream(new ImageInputStreamAdapter(iis));
         dis.setIncludeBulkData(IncludeBulkData.URI);
         dis.setBulkDataDescriptor(BulkDataDescriptor.PIXELDATA);
         dis.setURI("java:iis"); // avoid copy of pixeldata to temporary file
@@ -688,7 +689,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
         initPixelDataIIS(dis);
     }
 
-    private void initPixelDataIIS(ImageInputStream dis) throws IOException {
+    private void initPixelDataIIS(DicomInputStream dis) throws IOException {
         if (pixelDataLength == 0) return;
         if (pixelDataLength > 0) {
             pixelData = new BulkData("pixeldata://", dis.getPosition(), dis.length(), dis.bigEndian());
@@ -812,11 +813,11 @@ public class DicomImageReader extends ImageReader implements Closeable {
         }
         iis.seek(offset);
 
-        ImageInputStream dis = new ImageInputStream(new ImageInputStreamAdapter(iis), getTransferSyntaxUID());
+        DicomInputStream dis = new DicomInputStream(new ImageInputStreamAdapter(iis), getTransferSyntaxUID());
         return readPostAttr(dis);
     }
 
-    private Attributes readPostAttr(ImageInputStream dis) throws IOException {
+    private Attributes readPostAttr(DicomInputStream dis) throws IOException {
         Attributes postAttr = dis.readDataset(-1, -1);
         postAttr.addAll(metadata.getAttributes());
         metadata = new DicomMetaData(metadata.getFileMetaInformation(), postAttr);

@@ -31,6 +31,7 @@ import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.ColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.SampleModel;
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -45,7 +46,7 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
     }
 
     public NativeJPEGImageWriterSpi(Class<? extends NativeJPEGImageWriter> writer) {
-        super("Bus Team", "1.5", NativeJPEGImageReaderSpi.NAMES, NativeJPEGImageReaderSpi.SUFFIXES,
+        super("Weasis Team", "1.0", NativeJPEGImageReaderSpi.NAMES, NativeJPEGImageReaderSpi.SUFFIXES,
                 NativeJPEGImageReaderSpi.MIMES, writer.getName(), new Class[]{ImageOutputStream.class},
                 new String[]{NativeJPEGImageReaderSpi.class.getName()}, false, null, null, null, null, false, null, null,
                 null, null);
@@ -102,8 +103,7 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
     }
 
     @Override
-    public ImageWriter createWriterInstance(Object extension) {
+    public ImageWriter createWriterInstance(Object extension) throws IOException {
         return new NativeJPEGImageWriter(this);
     }
-
 }

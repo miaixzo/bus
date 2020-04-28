@@ -27,7 +27,6 @@ package org.aoju.bus.office;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.XServiceInfo;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
@@ -343,7 +342,7 @@ public final class Builder {
      */
     public static String toUrl(final File file) {
         final String path = file.toURI().getRawPath();
-        final String url = path.startsWith(Symbol.FORWARDSLASH) ? Normal.FILE_URL_PREFIX + path : "file://" + path;
+        final String url = path.startsWith(Symbol.FORWARDSLASH) ? "file:" + path : "file://" + path;
         return url.endsWith(Symbol.SLASH) ? url.substring(0, url.length() - 1) : url;
     }
 
@@ -381,7 +380,7 @@ public final class Builder {
         }
 
         throw new IllegalStateException(
-                "templateProfileDir doesn't appear to contain a user profile : " + templateProfileDir);
+                "templateProfileDir doesn't appear to contain a user profile: " + templateProfileDir);
     }
 
     /**

@@ -35,14 +35,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class SAXWriter implements ImageInputHandler {
+public class SAXWriter implements DicomInputHandler {
 
     private static final String NAMESPACE = "http://dicom.nema.org/PS3.19/models/NativeDICOM";
     private static final int BASE64_CHUNK_LENGTH = 256 * 3;
@@ -58,7 +57,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     public static byte[] getBytes(char[] chars) {
-        Charset cs = StandardCharsets.UTF_8;
+        Charset cs = Charset.forName("UTF-8");
         CharBuffer cb = CharBuffer.allocate(chars.length);
         cb.put(chars);
         cb.flip();
@@ -109,7 +108,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     @Override
-    public void startDataset(ImageInputStream dis) throws IOException {
+    public void startDataset(DicomInputStream dis) throws IOException {
         try {
             startDocument();
         } catch (SAXException e) {
@@ -118,7 +117,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     @Override
-    public void endDataset(ImageInputStream dis) throws IOException {
+    public void endDataset(DicomInputStream dis) throws IOException {
         try {
             endDocument();
         } catch (SAXException e) {
@@ -220,7 +219,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Attributes attrs)
+    public void readValue(DicomInputStream dis, Attributes attrs)
             throws IOException {
         int tag = dis.tag();
         VR vr = dis.vr();
@@ -276,7 +275,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Sequence seq)
+    public void readValue(DicomInputStream dis, Sequence seq)
             throws IOException {
         try {
             startElement("Item", "number", seq.size() + 1);
@@ -309,7 +308,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Fragments frags)
+    public void readValue(DicomInputStream dis, Fragments frags)
             throws IOException {
         int len = dis.length();
         if (dis.isExcludeBulkData()) {

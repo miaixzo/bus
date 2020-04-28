@@ -25,12 +25,9 @@
 package org.aoju.bus.image.metric.internal.hl7;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Compatible;
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.acquire.HL7ApplicationExtension;
-import org.aoju.bus.image.metric.acquire.HL7DeviceExtension;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -70,7 +67,7 @@ public class HL7Application implements Serializable {
         return device;
     }
 
-    public void setDevice(Device device) {
+    void setDevice(Device device) {
         if (device != null) {
             if (this.device != null)
                 throw new IllegalStateException("already owned by " +
@@ -218,20 +215,20 @@ public class HL7Application implements Serializable {
         return conns;
     }
 
-    public UnparsedHL7Message onMessage(Connection conn, Socket s, UnparsedHL7Message msg) throws HL7Exception {
+    UnparsedHL7Message onMessage(Connection conn, Socket s, UnparsedHL7Message msg) throws HL7Exception {
         HL7Segment msh = msg.msh();
         if (!(isInstalled() && conns.contains(conn)))
             throw new HL7Exception(
                     new ERRSegment(msh)
-                            .setHL7ErrorCode(Builder.TableValueNotFound)
-                            .setErrorLocation(Builder.UnknownReceivingApplication)
+                            .setHL7ErrorCode(ERRSegment.TableValueNotFound)
+                            .setErrorLocation(ERRSegment.UnknownReceivingApplication)
                             .setUserMessage("Receiving Application not recognized"));
         if (!(acceptedSendingApplications.isEmpty()
                 || acceptedSendingApplications.contains(msh.getSendingApplicationWithFacility())))
             throw new HL7Exception(
                     new ERRSegment(msh)
-                            .setHL7ErrorCode(Builder.TableValueNotFound)
-                            .setErrorLocation(Builder.UnknownSendingApplication)
+                            .setHL7ErrorCode(ERRSegment.TableValueNotFound)
+                            .setErrorLocation(ERRSegment.UnknownSendingApplication)
                             .setUserMessage("Sending Application not recognized"));
         String messageType = msh.getMessageType();
         if (!(acceptedMessageTypes.contains("*")
@@ -244,7 +241,7 @@ public class HL7Application implements Serializable {
         HL7MessageListener listener = getHL7MessageListener();
         if (listener == null)
             throw new HL7Exception(new ERRSegment(msh)
-                    .setHL7ErrorCode(Builder.ApplicationInternalError)
+                    .setHL7ErrorCode(ERRSegment.ApplicationInternalError)
                     .setUserMessage("No HL7 Message Listener configured"));
 
         return listener.onMessage(this, conn, s, msg);
@@ -253,9 +250,9 @@ public class HL7Application implements Serializable {
     private String unsupportedMessageTypeOrEventCode(String messageType) {
         for (String acceptedMessageType : acceptedMessageTypes) {
             if (acceptedMessageType.startsWith(messageType))
-                return Builder.UnsupportedEventCode;
+                return ERRSegment.UnsupportedEventCode;
         }
-        return Builder.UnsupportedMessageType;
+        return ERRSegment.UnsupportedMessageType;
     }
 
     public MLLPConnection connect(Connection remote)
@@ -323,7 +320,7 @@ public class HL7Application implements Serializable {
             throw new IllegalStateException("Not attached to Device");
     }
 
-    public void reconfigure(HL7Application src) {
+    void reconfigure(HL7Application src) {
         setHL7ApplicationAttributes(src);
         device.reconfigureConnections(conns, src.conns);
         reconfigureHL7ApplicationExtensions(src);

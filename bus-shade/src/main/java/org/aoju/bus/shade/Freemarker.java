@@ -69,7 +69,7 @@ public class Freemarker {
             out = new FileWriter(file);
             //模板输出静态文件
             template.process(dataModel, out);
-            return "create a file :" + filePath;
+            return "create a file:" + filePath;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -81,7 +81,7 @@ public class Freemarker {
                 }
             }
         }
-        return "failed to create file :" + filePath;
+        return "failed to create file:" + filePath;
     }
 
 }

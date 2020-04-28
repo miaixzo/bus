@@ -24,8 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
-import org.aoju.bus.image.metric.acquire.HL7DeviceExtension;
-
 import java.io.Closeable;
 import java.io.IOException;
 

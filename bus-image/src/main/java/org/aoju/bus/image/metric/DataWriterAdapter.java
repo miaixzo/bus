@@ -25,7 +25,8 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.metric.internal.pdv.PDVOutputStream;
 
 import java.io.IOException;
 
@@ -50,7 +51,7 @@ public class DataWriterAdapter implements DataWriter {
 
     @Override
     public void writeTo(PDVOutputStream out, String tsuid) throws IOException {
-        ImageOutputStream dos = new ImageOutputStream(out, tsuid);
+        DicomOutputStream dos = new DicomOutputStream(out, tsuid);
         dos.writeDataset(null, data);
         dos.finish();
     }

@@ -39,7 +39,7 @@ import javax.xml.transform.sax.TransformerHandler;
  */
 public abstract class SAXTransformer {
 
-    private static final SAXTransformerFactory factory =
+    private static SAXTransformerFactory factory =
             (SAXTransformerFactory) TransformerFactory.newInstance();
 
     public static SAXWriter getSAXWriter(Templates templates, Attributes result)

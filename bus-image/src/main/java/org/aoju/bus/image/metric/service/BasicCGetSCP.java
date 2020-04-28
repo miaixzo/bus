@@ -29,8 +29,7 @@ import org.aoju.bus.image.Status;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.ImageException;
-import org.aoju.bus.image.metric.internal.pdu.Presentation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -47,12 +46,12 @@ public class BasicCGetSCP extends AbstractService {
 
     @Override
     public void onDimse(Association as,
-                        Presentation pc,
+                        PresentationContext pc,
                         Dimse dimse,
                         Attributes cmd,
                         Attributes keys) throws IOException {
         if (dimse != Dimse.C_GET_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
         Retrieve retrieve = calculateMatches(as, pc, cmd, keys);
         if (retrieve != null)
@@ -62,7 +61,7 @@ public class BasicCGetSCP extends AbstractService {
     }
 
     protected Retrieve calculateMatches(Association as,
-                                        Presentation pc,
+                                        PresentationContext pc,
                                         Attributes rq,
                                         Attributes keys) {
         return null;

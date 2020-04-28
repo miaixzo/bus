@@ -27,8 +27,8 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.*;
-import org.aoju.bus.image.galaxy.io.ImageInputHandler;
-import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.DicomInputHandler;
+import org.aoju.bus.image.galaxy.io.DicomInputStream;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class DcmDump implements ImageInputHandler {
+public class DcmDump implements DicomInputHandler {
 
     /**
      * default number of characters per line
@@ -66,22 +66,22 @@ public class DcmDump implements ImageInputHandler {
         this.width = width;
     }
 
-    public void parse(ImageInputStream dis) throws IOException {
+    public void parse(DicomInputStream dis) throws IOException {
         dis.setDicomInputHandler(this);
         dis.readDataset(-1, -1);
     }
 
     @Override
-    public void startDataset(ImageInputStream dis) {
+    public void startDataset(DicomInputStream dis) {
         promptPreamble(dis.getPreamble());
     }
 
     @Override
-    public void endDataset(ImageInputStream dis) {
+    public void endDataset(DicomInputStream dis) {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Attributes attrs)
+    public void readValue(DicomInputStream dis, Attributes attrs)
             throws IOException {
         StringBuilder line = new StringBuilder(width + 30);
         appendPrefix(dis, line);
@@ -118,7 +118,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Sequence seq)
+    public void readValue(DicomInputStream dis, Sequence seq)
             throws IOException {
         StringBuilder line = new StringBuilder(width);
         appendPrefix(dis, line);
@@ -136,7 +136,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Fragments frags)
+    public void readValue(DicomInputStream dis, Fragments frags)
             throws IOException {
         StringBuilder line = new StringBuilder(width + 20);
         appendPrefix(dis, line);
@@ -144,14 +144,14 @@ public class DcmDump implements ImageInputHandler {
         appendFragment(line, dis, frags.vr());
     }
 
-    private void appendPrefix(ImageInputStream dis, StringBuilder line) {
+    private void appendPrefix(DicomInputStream dis, StringBuilder line) {
         line.append(dis.getTagPosition()).append(": ");
         int level = dis.level();
         while (level-- > 0)
             line.append('>');
     }
 
-    private void appendHeader(ImageInputStream dis, StringBuilder line) {
+    private void appendHeader(DicomInputStream dis, StringBuilder line) {
         line.append(Tag.toString(dis.tag())).append(' ');
         VR vr = dis.vr();
         if (vr != null)
@@ -159,7 +159,7 @@ public class DcmDump implements ImageInputHandler {
         line.append('#').append(dis.length());
     }
 
-    private void appendKeyword(ImageInputStream dis, StringBuilder line) {
+    private void appendKeyword(DicomInputStream dis, StringBuilder line) {
         if (line.length() < width) {
             line.append(" ");
             line.append(ElementDictionary.keywordOf(dis.tag(), null));
@@ -177,7 +177,7 @@ public class DcmDump implements ImageInputHandler {
         }
     }
 
-    private void appendFragment(StringBuilder line, ImageInputStream dis,
+    private void appendFragment(StringBuilder line, DicomInputStream dis,
                                 VR vr) throws IOException {
         byte[] b = dis.readValue();
         line.append(" [");

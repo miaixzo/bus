@@ -29,9 +29,8 @@ import org.aoju.bus.image.Status;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.ImageException;
-import org.aoju.bus.image.metric.PDVInputStream;
-import org.aoju.bus.image.metric.internal.pdu.Presentation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 
 import java.io.IOException;
 
@@ -52,25 +51,25 @@ public class BasicCStoreSCP extends AbstractService {
 
     @Override
     public void onDimse(Association as,
-                        Presentation pc,
+                        PresentationContext pc,
                         Dimse dimse,
                         Attributes rq,
                         PDVInputStream data) throws IOException {
         if (dimse != Dimse.C_STORE_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
         Attributes rsp = Commands.mkCStoreRSP(rq, Status.Success);
         store(as, pc, rq, data, rsp);
         as.tryWriteDimseRSP(pc, rsp);
     }
 
-    protected void store(Association as, Presentation pc, Attributes rq,
+    protected void store(Association as, PresentationContext pc, Attributes rq,
                          PDVInputStream data, Attributes rsp) throws IOException {
     }
 
     @Override
     protected void onDimse(Association as,
-                           Presentation pc,
+                           PresentationContext pc,
                            Dimse dimse,
                            Attributes cmd,
                            Attributes data) {

@@ -33,14 +33,11 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.galaxy.io.DicomOutputStream;
 import org.aoju.bus.image.metric.*;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.internal.pdu.Presentation;
-import org.aoju.bus.image.metric.service.AbstractService;
-import org.aoju.bus.image.metric.service.BasicCEchoSCP;
-import org.aoju.bus.image.metric.service.DicomService;
-import org.aoju.bus.image.metric.service.ServiceHandler;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.service.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -62,7 +59,6 @@ public class StgCmtSCU {
     private final Connection remote;
     private final AAssociateRQ rq = new AAssociateRQ();
     private final HashSet<String> outstandingResults = new HashSet<String>(2);
-    private final HashMap<String, List<String>> map = new HashMap<>();
     private Attributes attrs;
     private String uidSuffix;
     private File storageDir;
@@ -73,15 +69,15 @@ public class StgCmtSCU {
             new AbstractService(UID.StorageCommitmentPushModelSOPClass) {
 
                 @Override
-                public void onDimse(Association as, Presentation pc,
+                public void onDimse(Association as, PresentationContext pc,
                                     Dimse dimse, Attributes cmd, Attributes data)
                         throws IOException {
                     if (dimse != Dimse.N_EVENT_REPORT_RQ)
-                        throw new ImageException(Status.UnrecognizedOperation);
+                        throw new ServiceException(Status.UnrecognizedOperation);
 
                     int eventTypeID = cmd.getInt(Tag.EventTypeID, 0);
                     if (eventTypeID != 1 && eventTypeID != 2)
-                        throw new ImageException(Status.NoSuchEventType)
+                        throw new ServiceException(Status.NoSuchEventType)
                                 .setEventTypeID(eventTypeID);
                     String tuid = data.getString(Tag.TransactionUID);
                     try {
@@ -95,15 +91,16 @@ public class StgCmtSCU {
                     }
                 }
             };
+    private HashMap<String, List<String>> map = new HashMap<>();
     private Association as;
 
     public StgCmtSCU(ApplicationEntity ae) {
         this.remote = new Connection();
         this.ae = ae;
-        ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addDicomService(new BasicCEchoSCP());
-        serviceHandler.addDicomService(stgcmtResultHandler);
-        ae.setDimseRQHandler(serviceHandler);
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
+        serviceRegistry.addDicomService(new BasicCEchoSCP());
+        serviceRegistry.addDicomService(stgcmtResultHandler);
+        ae.setDimseRQHandler(serviceRegistry);
     }
 
     public Connection getRemoteConnection() {
@@ -146,10 +143,10 @@ public class StgCmtSCU {
 
     public void setTransferSyntaxes(String[] tss) {
         rq.addPresentationContext(
-                new Presentation(1, UID.VerificationSOPClass,
+                new PresentationContext(1, UID.VerificationSOPClass,
                         UID.ImplicitVRLittleEndian));
         rq.addPresentationContext(
-                new Presentation(2,
+                new PresentationContext(2,
                         UID.StorageCommitmentPushModelSOPClass,
                         tss));
         ae.addTransferCapability(
@@ -263,7 +260,7 @@ public class StgCmtSCU {
     }
 
     private Attributes eventRecord(Association as, Attributes cmd, Attributes eventInfo)
-            throws ImageException {
+            throws ServiceException {
         if (storageDir == null)
             return null;
 
@@ -271,17 +268,17 @@ public class StgCmtSCU {
         String iuid = cmd.getString(Tag.AffectedSOPInstanceUID);
         String tuid = eventInfo.getString(Tag.TransactionUID);
         File file = new File(storageDir, tuid);
-        ImageOutputStream out = null;
+        DicomOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
         try {
-            out = new ImageOutputStream(file);
+            out = new DicomOutputStream(file);
             out.writeDataset(
                     Attributes.createFileMetaInformation(iuid, cuid,
                             UID.ExplicitVRLittleEndian),
                     eventInfo);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Storage Commitment Result:", e);
-            throw new ImageException(Status.ProcessingFailure, e);
+            throw new ServiceException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }

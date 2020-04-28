@@ -29,8 +29,7 @@ import org.aoju.bus.image.Status;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.ImageException;
-import org.aoju.bus.image.metric.internal.pdu.Presentation;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
 
 import java.io.IOException;
 
@@ -46,10 +45,10 @@ public class BasicCMoveSCP extends AbstractService {
     }
 
     @Override
-    public void onDimse(Association as, Presentation pc, Dimse dimse,
+    public void onDimse(Association as, PresentationContext pc, Dimse dimse,
                         Attributes cmd, Attributes keys) throws IOException {
         if (dimse != Dimse.C_MOVE_RQ)
-            throw new ImageException(Status.UnrecognizedOperation);
+            throw new ServiceException(Status.UnrecognizedOperation);
 
         Retrieve retrieve = calculateMatches(as, pc, cmd, keys);
         if (retrieve != null)
@@ -58,7 +57,7 @@ public class BasicCMoveSCP extends AbstractService {
             as.tryWriteDimseRSP(pc, Commands.mkCMoveRSP(cmd, Status.Success));
     }
 
-    protected Retrieve calculateMatches(Association as, Presentation pc,
+    protected Retrieve calculateMatches(Association as, PresentationContext pc,
                                         Attributes rq, Attributes keys) {
         return null;
     }

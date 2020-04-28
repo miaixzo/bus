@@ -90,7 +90,7 @@ public class AssociationHandler {
                 conn.getMaxOpsInvoked()));
         ac.setIdentityAC(userIdentity);
         ApplicationEntity ae = as.getApplicationEntity();
-        for (Presentation rqpc : rq.getPresentationContexts())
+        for (PresentationContext rqpc : rq.getPresentationContexts())
             ac.addPresentationContext(ae.negotiate(rq, ac, rqpc));
         return ac;
     }

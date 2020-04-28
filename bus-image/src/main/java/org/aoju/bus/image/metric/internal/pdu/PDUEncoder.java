@@ -26,11 +26,12 @@ package org.aoju.bus.image.metric.internal.pdu;
 
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.galaxy.io.DicomOutputStream;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.DataWriter;
-import org.aoju.bus.image.metric.PDVOutputStream;
+import org.aoju.bus.image.metric.internal.pdv.PDVOutputStream;
+import org.aoju.bus.image.metric.internal.pdv.PDVType;
 import org.aoju.bus.logger.Logger;
 
 import java.io.EOFException;
@@ -45,9 +46,8 @@ import java.io.OutputStream;
  */
 public class PDUEncoder extends PDVOutputStream {
 
-    private final Association as;
-    private final OutputStream out;
-    private final Object dimseLock = new Object();
+    private Association as;
+    private OutputStream out;
     private byte[] buf = new byte[Connection.DEF_MAX_PDU_LENGTH + 6];
     private int pos;
     private int pdvpcid;
@@ -55,6 +55,7 @@ public class PDUEncoder extends PDVOutputStream {
     private int pdvpos;
     private int maxpdulen;
     private Thread th;
+    private Object dimseLock = new Object();
 
     public PDUEncoder(Association as, OutputStream out) {
         this.as = as;
@@ -62,38 +63,38 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     public void write(AAssociateRQ rq) throws IOException {
-        encode(rq, Builder.A_ASSOCIATE_RQ, Builder.RQ_PRES_CONTEXT);
+        encode(rq, PDUType.A_ASSOCIATE_RQ, Builder.RQ_PRES_CONTEXT);
         writePDU(pos - 6);
     }
 
     public void write(AAssociateAC ac) throws IOException {
-        encode(ac, Builder.A_ASSOCIATE_AC, Builder.AC_PRES_CONTEXT);
+        encode(ac, PDUType.A_ASSOCIATE_AC, Builder.AC_PRES_CONTEXT);
         writePDU(pos - 6);
     }
 
     public void write(AAssociateRJ rj) throws IOException {
-        write(Builder.A_ASSOCIATE_RJ, rj.getResult(), rj.getSource(),
+        write(PDUType.A_ASSOCIATE_RJ, rj.getResult(), rj.getSource(),
                 rj.getReason());
     }
 
     public void writeAReleaseRQ() throws IOException {
-        write(Builder.A_RELEASE_RQ, 0, 0, 0);
+        write(PDUType.A_RELEASE_RQ, 0, 0, 0);
     }
 
     public void writeAReleaseRP() throws IOException {
-        write(Builder.A_RELEASE_RP, 0, 0, 0);
+        write(PDUType.A_RELEASE_RP, 0, 0, 0);
     }
 
     public void write(AAbort aa) throws IOException {
-        write(Builder.A_ABORT, 0, aa.getSource(), aa.getReason());
+        write(PDUType.A_ABORT, 0, aa.getSource(), aa.getReason());
     }
 
-    private synchronized void write(int Builder, int result, int source,
+    private synchronized void write(int pdutype, int result, int source,
                                     int reason) throws IOException {
         byte[] b = {
-                (byte) Builder,
+                (byte) pdutype,
                 0,
-                0, 0, 0, 4,
+                0, 0, 0, 4, // pdulen
                 0,
                 (byte) result,
                 (byte) source,
@@ -115,7 +116,7 @@ public class PDUEncoder extends PDVOutputStream {
         pos = 12;
     }
 
-    private void encode(AAssociateRQAC rqac, int builder, int pcBuilder) {
+    private void encode(AAssociateRQAC rqac, int pduType, int pcBuilder) {
         rqac.checkCallingAET();
         rqac.checkCalledAET();
 
@@ -123,7 +124,7 @@ public class PDUEncoder extends PDVOutputStream {
         if (buf.length < 6 + pdulen)
             buf = new byte[6 + pdulen];
         pos = 0;
-        put(builder);
+        put(pduType);
         put(0);
         putInt(pdulen);
         putShort(rqac.getProtocolVersion());
@@ -133,7 +134,7 @@ public class PDUEncoder extends PDVOutputStream {
         encodeAET(rqac.getCallingAET());
         put(rqac.getReservedBytes(), 0, 32);
         encodeStringItem(Builder.APP_CONTEXT, rqac.getApplicationContext());
-        for (Presentation pc : rqac.getPresentationContexts())
+        for (PresentationContext pc : rqac.getPresentationContexts())
             encode(pc, pcBuilder);
         encodeUserInfo(rqac);
     }
@@ -200,7 +201,7 @@ public class PDUEncoder extends PDVOutputStream {
         putString(s);
     }
 
-    private void encode(Presentation pc, int pcBuilder) {
+    private void encode(PresentationContext pc, int pcBuilder) {
         encodeItemHeader(pcBuilder, pc.length());
         put(pc.getPCID());
         put(0);
@@ -305,7 +306,7 @@ public class PDUEncoder extends PDVOutputStream {
     @Override
     public void close() {
         checkThread();
-        encodePDVHeader(Builder.LAST);
+        encodePDVHeader(PDVType.LAST);
     }
 
     @Override
@@ -346,7 +347,7 @@ public class PDUEncoder extends PDVOutputStream {
     private void flushPDataTF() throws IOException {
         if (free() > 0)
             return;
-        encodePDVHeader(Builder.PENDING);
+        encodePDVHeader(PDVType.PENDING);
         as.writePDataTF();
     }
 
@@ -365,14 +366,14 @@ public class PDUEncoder extends PDVOutputStream {
     public void writePDataTF() throws IOException {
         int pdulen = pos - 6;
         pos = 0;
-        put(Builder.P_DATA_TF);
+        put(PDUType.P_DATA_TF);
         put(0);
         putInt(pdulen);
         Logger.trace("{} << P-DATA-TF[len={}]", as, pdulen);
         writePDU(pdulen);
     }
 
-    public void writeDIMSE(Presentation pc, Attributes cmd,
+    public void writeDIMSE(PresentationContext pc, Attributes cmd,
                            DataWriter dataWriter) throws IOException {
         synchronized (dimseLock) {
             int pcid = pc.getPCID();
@@ -389,9 +390,9 @@ public class PDUEncoder extends PDVOutputStream {
                 buf = new byte[maxpdulen + 6];
 
             pdvpcid = pcid;
-            pdvcmd = Builder.COMMAND;
-            ImageOutputStream cmdout =
-                    new ImageOutputStream(this, UID.ImplicitVRLittleEndian);
+            pdvcmd = PDVType.COMMAND;
+            DicomOutputStream cmdout =
+                    new DicomOutputStream(this, UID.ImplicitVRLittleEndian);
             cmdout.writeCommand(cmd);
             cmdout.close();
             if (dataWriter != null) {
@@ -401,7 +402,7 @@ public class PDUEncoder extends PDVOutputStream {
                     pdvpos = pos;
                     pos += 6;
                 }
-                pdvcmd = Builder.DATA;
+                pdvcmd = PDVType.DATA;
 
                 Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));
 

@@ -24,9 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.net;
 
-import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.SocketListener;
+import org.aoju.bus.image.metric.Listener;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -37,7 +36,9 @@ import java.net.*;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class UDPListener implements SocketListener {
+public class UDPListener implements Listener {
+
+    private static final int MAX_PACKAGE_LEN = 0x10000;
 
     private final Connection conn;
     private final UDPHandler handler;
@@ -60,11 +61,11 @@ public class UDPListener implements SocketListener {
     private void listen() {
         SocketAddress sockAddr = ds.getLocalSocketAddress();
         Logger.info("Start UDP listener on {}", sockAddr);
-        byte[] data = new byte[Builder.MAX_PACKAGE_LEN];
+        byte[] data = new byte[MAX_PACKAGE_LEN];
         try {
             while (!ds.isClosed()) {
                 Logger.debug("Wait for UDP datagram package on {}", sockAddr);
-                DatagramPacket dp = new DatagramPacket(data, Builder.MAX_PACKAGE_LEN);
+                DatagramPacket dp = new DatagramPacket(data, MAX_PACKAGE_LEN);
                 ds.receive(dp);
                 InetAddress senderAddr = dp.getAddress();
                 if (conn.isBlackListed(dp.getAddress())) {

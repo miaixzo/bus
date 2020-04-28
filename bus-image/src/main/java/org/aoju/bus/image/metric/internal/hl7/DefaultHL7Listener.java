@@ -41,5 +41,4 @@ public class DefaultHL7Listener implements HL7MessageListener {
         return new UnparsedHL7Message(
                 HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null));
     }
-
 }

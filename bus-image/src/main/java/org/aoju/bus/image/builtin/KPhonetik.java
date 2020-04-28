@@ -24,8 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.image.builtin;
 
-import org.aoju.bus.core.lang.Normal;
-
 /**
  * @author Kimi Liu
  * @version 5.8.8
@@ -36,7 +34,7 @@ public class KPhonetik implements FuzzyStr {
     @Override
     public String toFuzzy(String s) {
         if (s == null || s.length() == 0)
-            return Normal.EMPTY;
+            return "";
 
         char[] in = s.toUpperCase().toCharArray();
         int countX = 0;

@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.image.metric.params.Progress;
+
 public interface ProgressListener {
 
     void handleProgression(Progress progress);

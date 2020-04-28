@@ -28,6 +28,7 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -42,7 +43,7 @@ public class NativeJ2kImageWriterSpi extends ImageWriterSpi {
     }
 
     public NativeJ2kImageWriterSpi(Class<? extends NativeJLSImageWriter> writer) {
-        super("Bus Team", "1.5", NativeJ2kImageReaderSpi.NAMES, NativeJ2kImageReaderSpi.SUFFIXES,
+        super("Weasis Team", "1.0", NativeJ2kImageReaderSpi.NAMES, NativeJ2kImageReaderSpi.SUFFIXES,
                 NativeJ2kImageReaderSpi.MIMES, writer.getName(), new Class[]{ImageOutputStream.class},
                 new String[]{NativeJ2kImageReaderSpi.class.getName()}, false, null, null, null, null, false, null, null,
                 null, null);
@@ -59,7 +60,7 @@ public class NativeJ2kImageWriterSpi extends ImageWriterSpi {
     }
 
     @Override
-    public ImageWriter createWriterInstance(Object extension) {
+    public ImageWriter createWriterInstance(Object extension) throws IOException {
         return new NativeJ2kImageWriter(this);
     }
 

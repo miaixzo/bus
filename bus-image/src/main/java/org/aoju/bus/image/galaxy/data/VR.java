@@ -102,7 +102,8 @@ public enum VR {
                 return vr;
         } catch (IndexOutOfBoundsException e) {
         }
-        Logger.warn("Unrecognized VR internal: {}H - treat as UN", Tag.shortToHexString(code));
+        Logger.warn("Unrecognized VR internal: {}H - treat as UN",
+                Tag.shortToHexString(code));
         return UN;
     }
 
@@ -190,7 +191,7 @@ public enum VR {
     }
 
     public Date[] toDates(Object val, TimeZone tz, boolean ceil,
-                          DatePrecision precisions) {
+                          DatePrecisions precisions) {
         return valueType.toDate(val, tz, ceil, precisions);
     }
 

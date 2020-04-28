@@ -34,7 +34,7 @@ import java.util.Objects;
 public class NullifyAttributesCoercion implements AttributesCoercion {
 
     private final int[] nullifyTags;
-    private final AttributesCoercion next;
+    private AttributesCoercion next;
 
     public NullifyAttributesCoercion(int[] nullifyTags, AttributesCoercion next) {
         this.nullifyTags = Objects.requireNonNull(nullifyTags);

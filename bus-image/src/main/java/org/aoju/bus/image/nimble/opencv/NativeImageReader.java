@@ -275,17 +275,17 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public int getNumImages(boolean allowSearch) {
+    public int getNumImages(boolean allowSearch) throws IOException {
         return 1;
     }
 
     @Override
-    public int getWidth(int frameIndex) {
+    public int getWidth(int frameIndex) throws IOException {
         return params.getWidth();
     }
 
     @Override
-    public int getHeight(int frameIndex) {
+    public int getHeight(int frameIndex) throws IOException {
         return params.getHeight();
     }
 
@@ -298,12 +298,12 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public IIOMetadata getStreamMetadata() {
+    public IIOMetadata getStreamMetadata() throws IOException {
         return null;
     }
 
     @Override
-    public IIOMetadata getImageMetadata(int imageIndex) {
+    public IIOMetadata getImageMetadata(int imageIndex) throws IOException {
         return null;
     }
 

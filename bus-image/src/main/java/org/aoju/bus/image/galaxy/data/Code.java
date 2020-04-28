@@ -35,6 +35,7 @@ import java.io.Serializable;
  */
 public class Code implements Serializable {
 
+    private static final String NO_CODE_MEANING = "<none>";
     private transient final Key key = new Key();
     private String codeValue;
     private String codingSchemeDesignator;
@@ -42,8 +43,18 @@ public class Code implements Serializable {
     private String codeMeaning;
     private transient int hashCode;
 
-    public Code() {
-
+    public Code(String codeValue, String codingSchemeDesignator,
+                String codingSchemeVersion, String codeMeaning) {
+        if (codeValue == null)
+            throw new NullPointerException("Missing Code Value");
+        if (codingSchemeDesignator == null)
+            throw new NullPointerException("Missing Coding Scheme Designator");
+        if (codeMeaning == null)
+            throw new NullPointerException("Missing Code Meaning");
+        this.codeValue = codeValue;
+        this.codingSchemeDesignator = codingSchemeDesignator;
+        this.codingSchemeVersion = nullifyDCM01(codingSchemeVersion);
+        this.codeMeaning = codeMeaning;
     }
 
     public Code(String s) {
@@ -72,22 +83,11 @@ public class Code implements Serializable {
         this(item.getString(Tag.CodeValue, null),
                 item.getString(Tag.CodingSchemeDesignator, null),
                 item.getString(Tag.CodingSchemeVersion, null),
-                item.getString(Tag.CodeMeaning, "<none>"));
+                item.getString(Tag.CodeMeaning, NO_CODE_MEANING));
     }
 
-    public Code(String codeValue, String codingSchemeDesignator,
-                String codingSchemeVersion, String codeMeaning) {
-        if (codeValue == null)
-            throw new NullPointerException("Missing Code Value");
-        if (codingSchemeDesignator == null)
-            throw new NullPointerException("Missing Coding Scheme Designator");
-        if (codeMeaning == null)
-            throw new NullPointerException("Missing Code Meaning");
-        this.codeValue = codeValue;
-        this.codingSchemeDesignator = codingSchemeDesignator;
-        this.codingSchemeVersion = nullifyDCM01(codingSchemeVersion);
-        this.codeMeaning = codeMeaning;
-    }
+    protected Code() {
+    } // needed for JPA
 
     private String nullifyDCM01(String codingSchemeVersion) {
         return "01".equals(codingSchemeVersion) && "DCM".equals(codingSchemeDesignator) ? null : codingSchemeVersion;

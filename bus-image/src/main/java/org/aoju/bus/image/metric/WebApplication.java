@@ -39,7 +39,6 @@ import java.util.List;
 public class WebApplication {
 
     private final List<Connection> conns = new ArrayList<>(1);
-    private final EnumSet<ServiceClass> serviceClasses = EnumSet.noneOf(ServiceClass.class);
     private Device device;
     private String applicationName;
     private String description;
@@ -48,6 +47,7 @@ public class WebApplication {
     private String[] applicationClusters = {};
     private String keycloakClientID;
     private Boolean installed;
+    private EnumSet<ServiceClass> serviceClasses = EnumSet.noneOf(ServiceClass.class);
 
     public WebApplication() {
 

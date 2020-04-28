@@ -29,8 +29,8 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
-import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
+import org.aoju.bus.image.galaxy.io.DicomOutputStream;
 
 import java.io.BufferedOutputStream;
 import java.io.FileDescriptor;
@@ -65,7 +65,7 @@ public class MkKOS {
     private String uidSuffix;
     private String fname;
     private boolean nofmi;
-    private ImageEncodingOptions encOpts;
+    private DicomEncodingOptions encOpts;
     private String tsuid;
     private String seriesNumber;
     private String instanceNumber;
@@ -97,7 +97,7 @@ public class MkKOS {
         this.nofmi = nofmi;
     }
 
-    public final void setEncodingOptions(ImageEncodingOptions encOpts) {
+    public final void setEncodingOptions(DicomEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
@@ -178,7 +178,7 @@ public class MkKOS {
     }
 
     public void writeKOS() throws IOException {
-        ImageOutputStream dos = new ImageOutputStream(
+        DicomOutputStream dos = new DicomOutputStream(
                 new BufferedOutputStream(fname != null
                         ? new FileOutputStream(fname)
                         : new FileOutputStream(FileDescriptor.out)),

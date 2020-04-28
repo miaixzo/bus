@@ -27,13 +27,13 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.ImageOutputStream;
-import org.aoju.bus.image.metric.*;
-import org.aoju.bus.image.metric.internal.pdu.Presentation;
-import org.aoju.bus.image.metric.service.AbstractService;
-import org.aoju.bus.image.metric.service.BasicCEchoSCP;
-import org.aoju.bus.image.metric.service.DicomService;
-import org.aoju.bus.image.metric.service.ServiceHandler;
+import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.metric.ApplicationEntity;
+import org.aoju.bus.image.metric.Association;
+import org.aoju.bus.image.metric.Commands;
+import org.aoju.bus.image.metric.Connection;
+import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.service.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -55,11 +55,11 @@ public class IanSCP extends Device {
             new AbstractService(UID.InstanceAvailabilityNotificationSOPClass) {
 
                 @Override
-                public void onDimse(Association as, Presentation pc,
+                public void onDimse(Association as, PresentationContext pc,
                                     Dimse dimse, Attributes cmd, Attributes data)
                         throws IOException {
                     if (dimse != Dimse.N_CREATE_RQ)
-                        throw new ImageException(Status.UnrecognizedOperation);
+                        throw new ServiceException(Status.UnrecognizedOperation);
                     Attributes rsp = Commands.mkNCreateRSP(cmd, status);
                     Attributes rspAttrs = IanSCP.this.create(as, cmd, data);
                     as.tryWriteDimseRSP(pc, rsp, rspAttrs);
@@ -72,10 +72,10 @@ public class IanSCP extends Device {
         addApplicationEntity(ae);
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
-        ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addDicomService(new BasicCEchoSCP());
-        serviceHandler.addDicomService(ianSCP);
-        ae.setDimseRQHandler(serviceHandler);
+        ServiceRegistry serviceRegistry = new ServiceRegistry();
+        serviceRegistry.addDicomService(new BasicCEchoSCP());
+        serviceRegistry.addDicomService(ianSCP);
+        ae.setDimseRQHandler(serviceRegistry);
     }
 
     public File getStorageDirectory() {
@@ -93,26 +93,26 @@ public class IanSCP extends Device {
     }
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
-            throws ImageException {
+            throws ServiceException {
         if (storageDir == null)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (file.exists())
-            throw new ImageException(Status.DuplicateSOPinstance).
+            throw new ServiceException(Status.DuplicateSOPinstance).
                     setUID(Tag.AffectedSOPInstanceUID, iuid);
-        ImageOutputStream out = null;
+        DicomOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
         try {
-            out = new ImageOutputStream(file);
+            out = new DicomOutputStream(file);
             out.writeDataset(
                     Attributes.createFileMetaInformation(iuid, cuid,
                             UID.ExplicitVRLittleEndian),
                     rqAttrs);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Instance Available Notification:", e);
-            throw new ImageException(Status.ProcessingFailure, e);
+            throw new ServiceException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }

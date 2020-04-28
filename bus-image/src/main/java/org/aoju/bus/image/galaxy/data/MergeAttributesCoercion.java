@@ -32,7 +32,7 @@ package org.aoju.bus.image.galaxy.data;
 public class MergeAttributesCoercion implements AttributesCoercion {
 
     private final Attributes newAttrs;
-    private final AttributesCoercion next;
+    private AttributesCoercion next;
 
     public MergeAttributesCoercion(Attributes mergedAttrs, AttributesCoercion next) {
         this.newAttrs = mergedAttrs;
