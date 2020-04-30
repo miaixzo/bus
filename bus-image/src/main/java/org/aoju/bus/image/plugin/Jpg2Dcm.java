@@ -43,11 +43,8 @@ import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
- * @since JDK 1.8+
- * @since Jul 2017
  */
 public class Jpg2Dcm {
 

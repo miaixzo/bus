@@ -215,7 +215,7 @@
                                             <type>so</type>
                                             <classifier>linux-x86</classifier>
                                             <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.outputDirectory}/lib/linux-i686
+                                            <outputDirectory>${project.build.outputDirectory}/lib/linux-i386
                                             </outputDirectory>
                                             <destFileName>opencv_java.so</destFileName>
                                         </artifactItem>
@@ -237,7 +237,7 @@
                                             <type>dll</type>
                                             <classifier>windows-x86</classifier>
                                             <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.outputDirectory}/lib/win-i686
+                                            <outputDirectory>${project.build.outputDirectory}/lib/win-i386
                                             </outputDirectory>
                                             <destFileName>opencv_java.dll</destFileName>
                                         </artifactItem>

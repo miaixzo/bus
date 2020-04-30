@@ -40,7 +40,6 @@ import java.util.Date;
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
- * @since June 2018
  */
 
 public class Pdf2Dcm {

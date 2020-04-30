@@ -29,14 +29,10 @@ import org.aoju.bus.health.hardware.AbstractNetworks;
 import org.aoju.bus.health.hardware.NetworkIF;
 
 /**
- * <p>
  * LinuxNetworks class.
- * </p>
  *
  * @author Kimi Liu
- * @author Kimi Liu
  * @version 5.8.8
- * @since JDK 1.8+
  * @since JDK 1.8+
  */
 public class LinuxNetworks extends AbstractNetworks {

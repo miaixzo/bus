@@ -38,11 +38,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * @author Kimi Liu
- * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
- * @since JDK 1.8+
- * @since Jan 2019
  */
 public class Dcm2Str extends SimpleFileVisitor<Path> {
 

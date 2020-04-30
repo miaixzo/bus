@@ -38,7 +38,6 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 
 /**
- * @author Michael Backhaus
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
