@@ -32,15 +32,15 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.IOD;
 import org.aoju.bus.image.galaxy.data.ValidationResult;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
+import org.aoju.bus.image.metric.ImageException;
 import org.aoju.bus.image.metric.service.BasicCEchoSCP;
 import org.aoju.bus.image.metric.service.BasicMPPSSCP;
-import org.aoju.bus.image.metric.service.ServiceException;
-import org.aoju.bus.image.metric.service.ServiceRegistry;
+import org.aoju.bus.image.metric.service.ServiceHandler;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -64,13 +64,13 @@ public class MppsSCP {
 
         @Override
         protected Attributes create(Association as, Attributes rq,
-                                    Attributes rqAttrs, Attributes rsp) throws ServiceException {
+                                    Attributes rqAttrs, Attributes rsp) throws ImageException {
             return MppsSCP.this.create(as, rq, rqAttrs);
         }
 
         @Override
         protected Attributes set(Association as, Attributes rq, Attributes rqAttrs,
-                                 Attributes rsp) throws ServiceException {
+                                 Attributes rsp) throws ImageException {
             return MppsSCP.this.set(as, rq, rqAttrs);
         }
     };
@@ -80,10 +80,10 @@ public class MppsSCP {
         device.addApplicationEntity(ae);
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
-        ServiceRegistry serviceRegistry = new ServiceRegistry();
-        serviceRegistry.addDicomService(new BasicCEchoSCP());
-        serviceRegistry.addDicomService(mppsSCP);
-        ae.setDimseRQHandler(serviceRegistry);
+        ServiceHandler serviceHandler = new ServiceHandler();
+        serviceHandler.addDicomService(new BasicCEchoSCP());
+        serviceHandler.addDicomService(mppsSCP);
+        ae.setDimseRQHandler(serviceHandler);
     }
 
     public File getStorageDirectory() {
@@ -105,11 +105,11 @@ public class MppsSCP {
     }
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
-            throws ServiceException {
+            throws ImageException {
         if (mppsNCreateIOD != null) {
             ValidationResult result = rqAttrs.validate(mppsNCreateIOD);
             if (!result.isValid())
-                throw ServiceException.valueOf(result, rqAttrs);
+                throw ImageException.valueOf(result, rqAttrs);
         }
         if (storageDir == null)
             return null;
@@ -117,19 +117,19 @@ public class MppsSCP {
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (file.exists())
-            throw new ServiceException(Status.DuplicateSOPinstance).
+            throw new ImageException(Status.DuplicateSOPinstance).
                     setUID(Tag.AffectedSOPInstanceUID, iuid);
-        DicomOutputStream out = null;
+        ImageOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
         try {
-            out = new DicomOutputStream(file);
+            out = new ImageOutputStream(file);
             out.writeDataset(
                     Attributes.createFileMetaInformation(iuid, cuid,
                             UID.ExplicitVRLittleEndian),
                     rqAttrs);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store MPPS:", e);
-            throw new ServiceException(Status.ProcessingFailure, e);
+            throw new ImageException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }
@@ -137,11 +137,11 @@ public class MppsSCP {
     }
 
     private Attributes set(Association as, Attributes rq, Attributes rqAttrs)
-            throws ServiceException {
+            throws ImageException {
         if (mppsNSetIOD != null) {
             ValidationResult result = rqAttrs.validate(mppsNSetIOD);
             if (!result.isValid())
-                throw ServiceException.valueOf(result, rqAttrs);
+                throw ImageException.valueOf(result, rqAttrs);
         }
         if (storageDir == null)
             return null;
@@ -149,17 +149,17 @@ public class MppsSCP {
         String iuid = rq.getString(Tag.RequestedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (!file.exists())
-            throw new ServiceException(Status.NoSuchObjectInstance).
+            throw new ImageException(Status.NoSuchObjectInstance).
                     setUID(Tag.AffectedSOPInstanceUID, iuid);
         Logger.info("{}: M-UPDATE {}", as, file);
         Attributes data;
-        DicomInputStream in = null;
+        ImageInputStream in = null;
         try {
-            in = new DicomInputStream(file);
+            in = new ImageInputStream(file);
             data = in.readDataset(-1, -1);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to read MPPS:", e);
-            throw new ServiceException(Status.ProcessingFailure, e);
+            throw new ImageException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(in);
         }
@@ -167,15 +167,15 @@ public class MppsSCP {
             BasicMPPSSCP.mayNoLongerBeUpdated();
 
         data.addAll(rqAttrs);
-        DicomOutputStream out = null;
+        ImageOutputStream out = null;
         try {
-            out = new DicomOutputStream(file);
+            out = new ImageOutputStream(file);
             out.writeDataset(
                     Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian),
                     data);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to update MPPS:", e);
-            throw new ServiceException(Status.ProcessingFailure, e);
+            throw new ImageException(Status.ProcessingFailure, e);
         } finally {
             IoUtils.close(out);
         }

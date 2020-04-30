@@ -54,6 +54,7 @@ public abstract class PatternLoader extends DelegateLoader implements Loader {
      * @return 所有匹配模式表达式的资源
      * @throws IOException I/O 异常
      */
+    @Override
     public Enumeration<Resource> load(String pattern, boolean recursively, Filter filter) throws IOException {
         Filter matcher = filter(pattern);
         AllFilter allFilter = new AllFilter();

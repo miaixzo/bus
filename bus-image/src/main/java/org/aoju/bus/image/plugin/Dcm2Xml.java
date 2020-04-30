@@ -26,7 +26,7 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.galaxy.io.BasicBulkDataDescriptor;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.io.SAXWriter;
 
 import javax.xml.transform.OutputKeys;
@@ -52,17 +52,16 @@ public class Dcm2Xml {
 
     private static final String XML_1_0 = "1.0";
     private static final String XML_1_1 = "1.1";
-
+    private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
     private String xsltURL;
     private boolean indent = false;
     private boolean includeKeyword = true;
     private boolean includeNamespaceDeclaration = false;
-    private DicomInputStream.IncludeBulkData includeBulkData = DicomInputStream.IncludeBulkData.URI;
+    private ImageInputStream.IncludeBulkData includeBulkData = ImageInputStream.IncludeBulkData.URI;
     private boolean catBlkFiles = false;
     private String blkFilePrefix = "blk";
     private String blkFileSuffix;
     private File blkDirectory;
-    private BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
     private String xmlVersion = XML_1_0;
 
     private static String toURL(String fileOrURL) {
@@ -100,7 +99,7 @@ public class Dcm2Xml {
         this.includeNamespaceDeclaration = includeNamespaceDeclaration;
     }
 
-    public final void setIncludeBulkData(DicomInputStream.IncludeBulkData includeBulkData) {
+    public final void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
         this.includeBulkData = includeBulkData;
     }
 
@@ -132,7 +131,7 @@ public class Dcm2Xml {
         this.xmlVersion = xmlVersion;
     }
 
-    public void parse(DicomInputStream dis) throws IOException,
+    public void parse(ImageInputStream dis) throws IOException,
             TransformerConfigurationException {
         dis.setIncludeBulkData(includeBulkData);
         dis.setBulkDataDescriptor(bulkDataDescriptor);

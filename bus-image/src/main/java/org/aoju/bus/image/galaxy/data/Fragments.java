@@ -25,8 +25,8 @@
 package org.aoju.bus.image.galaxy.data;
 
 import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,14 +90,14 @@ public class Fragments extends ArrayList<Object> implements Value {
     }
 
     @Override
-    public void writeTo(DicomOutputStream out, VR vr)
+    public void writeTo(ImageOutputStream out, VR vr)
             throws IOException {
         for (Object frag : this)
             out.writeAttribute(Tag.Item, vr, frag, null);
     }
 
     @Override
-    public int calcLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+    public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         int len = 0;
         for (Object frag : this) {
             len += 8;
@@ -110,7 +110,7 @@ public class Fragments extends ArrayList<Object> implements Value {
     }
 
     @Override
-    public int getEncodedLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+    public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         return -1;
     }
 

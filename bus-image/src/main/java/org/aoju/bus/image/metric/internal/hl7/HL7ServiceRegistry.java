@@ -38,8 +38,7 @@ import java.util.HashMap;
 public class HL7ServiceRegistry extends DefaultHL7Listener {
 
     private final ArrayList<HL7Service> services = new ArrayList<>();
-    private final HashMap<String, HL7MessageListener> listeners =
-            new HashMap<>();
+    private final HashMap<String, HL7MessageListener> listeners = new HashMap<>();
 
     public synchronized void addHL7Service(HL7Service service) {
         services.add(service);

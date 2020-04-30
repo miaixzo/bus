@@ -363,7 +363,7 @@ public class LinuxOS extends AbstractOS {
                         proc.setBitness(buffer[4] == 1 ? 32 : 64);
                     }
                 } catch (IOException e) {
-                    Logger.warn("Failed to read process file: {}", path);
+                    Logger.warn("Failed to read process file : {}", path);
                 }
             }
         }

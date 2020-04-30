@@ -39,8 +39,8 @@ import java.util.*;
  */
 public abstract class AAssociateRQAC {
 
-    protected final ArrayList<PresentationContext> pcs = new ArrayList<>();
-    protected final Capacity<PresentationContext> pcidMap = new Capacity<>();
+    protected final ArrayList<Presentation> pcs = new ArrayList<>();
+    protected final Capacity<Presentation> pcidMap = new Capacity<>();
     protected final LinkedHashMap<String, RoleSelection> roleSelMap = new LinkedHashMap<>();
     protected final LinkedHashMap<String, ExtendedNegotiate> extNegMap = new LinkedHashMap<>();
     protected final LinkedHashMap<String, CommonExtended> commonExtNegMap = new LinkedHashMap<>();
@@ -180,7 +180,7 @@ public abstract class AAssociateRQAC {
         this.identityAC = identityAC;
     }
 
-    public List<PresentationContext> getPresentationContexts() {
+    public List<Presentation> getPresentationContexts() {
         return Collections.unmodifiableList(pcs);
     }
 
@@ -188,11 +188,11 @@ public abstract class AAssociateRQAC {
         return pcs.size();
     }
 
-    public PresentationContext getPresentationContext(int pcid) {
+    public Presentation getPresentationContext(int pcid) {
         return pcidMap.get(pcid);
     }
 
-    public void addPresentationContext(PresentationContext pc) {
+    public void addPresentationContext(Presentation pc) {
         int pcid = pc.getPCID();
         if (pcidMap.containsKey(pcid))
             throw new IllegalStateException(
@@ -202,7 +202,7 @@ public abstract class AAssociateRQAC {
         pcs.add(pc);
     }
 
-    public boolean removePresentationContext(PresentationContext pc) {
+    public boolean removePresentationContext(Presentation pc) {
         if (!pcs.remove(pc))
             return false;
 
@@ -234,7 +234,7 @@ public abstract class AAssociateRQAC {
         return extNegMap.get(cuid);
     }
 
-    public ExtendedNegotiate addExtendedNegotiation(ExtendedNegotiate extNeg) {
+    public ExtendedNegotiate addExtendedNegotiate(ExtendedNegotiate extNeg) {
         return extNegMap.put(extNeg.getSOPClassUID(), extNeg);
     }
 
@@ -263,7 +263,7 @@ public abstract class AAssociateRQAC {
     public int length() {
         int len = 68; // Fix AA-RQ/AC PDU fields
         len += 4 + applicationContext.length();
-        for (PresentationContext pc : pcs) {
+        for (Presentation pc : pcs) {
             len += 4 + pc.length();
         }
         len += 4 + userInfoLength();
@@ -316,7 +316,7 @@ public abstract class AAssociateRQAC {
             identityRQ.promptTo(sb).append(Property.LINE_SEPARATOR);
         if (identityAC != null)
             identityAC.promptTo(sb).append(Property.LINE_SEPARATOR);
-        for (PresentationContext pc : pcs)
+        for (Presentation pc : pcs)
             pc.promptTo(sb).append(Property.LINE_SEPARATOR);
         for (RoleSelection rs : roleSelMap.values())
             rs.promptTo(sb).append(Property.LINE_SEPARATOR);

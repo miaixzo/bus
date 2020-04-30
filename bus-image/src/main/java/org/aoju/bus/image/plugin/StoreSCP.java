@@ -31,17 +31,13 @@ import org.aoju.bus.image.Status;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
-import org.aoju.bus.image.metric.ApplicationEntity;
-import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
-import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.metric.*;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.image.metric.service.BasicCEchoSCP;
 import org.aoju.bus.image.metric.service.BasicCStoreSCP;
-import org.aoju.bus.image.metric.service.ServiceException;
-import org.aoju.bus.image.metric.service.ServiceRegistry;
+import org.aoju.bus.image.metric.service.ServiceHandler;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -65,7 +61,7 @@ public class StoreSCP {
     private final BasicCStoreSCP cstoreSCP = new BasicCStoreSCP("*") {
 
         @Override
-        protected void store(Association as, PresentationContext pc,
+        protected void store(Association as, Presentation pc,
                              Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
             try {
@@ -86,7 +82,7 @@ public class StoreSCP {
                                     : filePathFormat.format(parse(file))));
                 } catch (Exception e) {
                     deleteFile(as, file);
-                    throw new ServiceException(Status.ProcessingFailure, e);
+                    throw new ImageException(Status.ProcessingFailure, e);
                 }
             } finally {
                 if (responseDelay > 0)
@@ -117,9 +113,9 @@ public class StoreSCP {
     }
 
     private static Attributes parse(File file) throws IOException {
-        DicomInputStream in = new DicomInputStream(file);
+        ImageInputStream in = new ImageInputStream(file);
         try {
-            in.setIncludeBulkData(DicomInputStream.IncludeBulkData.NO);
+            in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             return in.readDataset(-1, Tag.PixelData);
         } finally {
             IoUtils.close(in);
@@ -137,7 +133,7 @@ public class StoreSCP {
                          PDVInputStream data, File file) throws IOException {
         Logger.info("{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
-        DicomOutputStream out = new DicomOutputStream(file);
+        ImageOutputStream out = new ImageOutputStream(file);
         try {
             out.writeFileMetaInformation(fmi);
             data.copyTo(out);
@@ -146,11 +142,11 @@ public class StoreSCP {
         }
     }
 
-    private ServiceRegistry createServiceRegistry() {
-        ServiceRegistry serviceRegistry = new ServiceRegistry();
-        serviceRegistry.addDicomService(new BasicCEchoSCP());
-        serviceRegistry.addDicomService(cstoreSCP);
-        return serviceRegistry;
+    private ServiceHandler createServiceRegistry() {
+        ServiceHandler serviceHandler = new ServiceHandler();
+        serviceHandler.addDicomService(new BasicCEchoSCP());
+        serviceHandler.addDicomService(cstoreSCP);
+        return serviceHandler;
     }
 
     public void setStorageDirectory(File storageDir) {

@@ -45,7 +45,7 @@ public class MPEGHeader {
             ASPECT_RATIO_16_9,
             ASPECT_RATIO_221_100
     };
-    private static int[] FPS = {
+    private static final int[] FPS = {
             24, 1001,
             24, 1000,
             25, 1000,

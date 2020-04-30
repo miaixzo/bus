@@ -25,7 +25,7 @@
 package org.aoju.bus.image.nimble.codec.jpeg;
 
 
-import org.aoju.bus.image.nimble.codec.BytesWithImageImageDescriptor;
+import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.aoju.bus.image.nimble.stream.ImagePixelInputStream;
 import org.aoju.bus.image.nimble.stream.SegmentedImageStream;
@@ -43,7 +43,7 @@ import java.util.Arrays;
  * @since JDK 1.8+
  */
 public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
-        implements BytesWithImageImageDescriptor {
+        implements BytesWithImageDescriptor {
 
     private final ImageInputStream iis;
     private long patchPos;

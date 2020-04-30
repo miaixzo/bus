@@ -27,6 +27,7 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.galaxy.io.SAXTransformer;
 import org.aoju.bus.image.metric.Connection;
+import org.aoju.bus.image.metric.acquire.HL7DeviceExtension;
 import org.aoju.bus.image.metric.internal.hl7.*;
 import org.aoju.bus.logger.Logger;
 
@@ -49,7 +50,7 @@ import java.util.Date;
  */
 public class HL7Rcv {
 
-    private static SAXTransformerFactory factory =
+    private static final SAXTransformerFactory factory =
             (SAXTransformerFactory) TransformerFactory.newInstance();
 
     private final Device device = new Device("hl7rcv");

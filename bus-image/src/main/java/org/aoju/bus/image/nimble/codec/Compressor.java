@@ -24,12 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.*;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.image.nimble.Overlays;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLSImageOutputStream;
@@ -52,8 +53,8 @@ import java.util.Arrays;
  */
 public class Compressor extends Decompressor implements Closeable {
 
+    private final VR.Holder pixeldataVR = new VR.Holder();
     private BulkData pixeldata;
-    private VR.Holder pixeldataVR = new VR.Holder();
     private ImageWriter compressor;
     private ImageReader verifier;
     private PatchJPEGLS patchJPEGLS;
@@ -245,7 +246,8 @@ public class Compressor extends Decompressor implements Closeable {
         Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}",
                 index + 1, end - start, maxDiff);
         if (maxDiff > maxPixelValueError)
-            throw new CompressionVerificationException(maxDiff);
+            throw new InstrumentException("Decompressed pixel data differs up to " + maxDiff
+                    + " from original pixel data" + maxDiff);
 
     }
 
@@ -399,7 +401,7 @@ public class Compressor extends Decompressor implements Closeable {
     }
 
     private static class FlushlessMemoryCacheImageOutputStream extends MemoryCacheImageOutputStream
-            implements BytesWithImageImageDescriptor {
+            implements BytesWithImageDescriptor {
 
         private final ImageDescriptor imageDescriptor;
 
@@ -434,9 +436,9 @@ public class Compressor extends Decompressor implements Closeable {
 
     private class CompressedFrame implements Value {
 
-        private int frameIndex;
+        private final int frameIndex;
+        private final CacheOutputStream cacheout = new CacheOutputStream();
         private int streamLength;
-        private CacheOutputStream cacheout = new CacheOutputStream();
         private MemoryCacheImageOutputStream cache;
 
         public CompressedFrame(int frameIndex) throws IOException {
@@ -456,17 +458,17 @@ public class Compressor extends Decompressor implements Closeable {
         }
 
         @Override
-        public void writeTo(DicomOutputStream out, VR vr) throws IOException {
+        public void writeTo(ImageOutputStream out, VR vr) throws IOException {
             writeTo(out);
         }
 
         @Override
-        public int calcLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+        public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
             return getEncodedLength(encOpts, explicitVR, vr);
         }
 
         @Override
-        public int getEncodedLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+        public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
             try {
                 compress();
             } catch (IOException e) {

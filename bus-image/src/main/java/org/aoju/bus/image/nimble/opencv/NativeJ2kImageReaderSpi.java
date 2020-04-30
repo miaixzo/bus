@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
-import javax.imageio.IIOException;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
@@ -43,7 +42,7 @@ public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
     public static final String[] MIMES = {"image/jp2", "image/jp2k", "image/j2k", "image/j2c"};
 
     public NativeJ2kImageReaderSpi() {
-        super("Weasis Team", "1.0", NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
+        super("Bus Team", "1.5", NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[]{ImageInputStream.class}, new String[]{}, false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName
@@ -96,7 +95,7 @@ public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
     }
 
     @Override
-    public ImageReader createReaderInstance(Object extension) throws IIOException {
+    public ImageReader createReaderInstance(Object extension) {
         return new NativeImageReader(this, true);
     }
 

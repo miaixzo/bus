@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * @author Kimi Liu
  * @version 5.8.8
@@ -69,14 +71,14 @@ public enum RecordType {
 
     public static RecordType forCode(String code) {
         try {
-            return RecordType.valueOf(code.replace(' ', '_'));
+            return RecordType.valueOf(code.replace(Symbol.C_SPACE, Symbol.C_UNDERLINE));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(code);
         }
     }
 
     public String code() {
-        return name().replace('_', ' ');
+        return name().replace(Symbol.C_UNDERLINE, Symbol.C_SPACE);
     }
 
 }

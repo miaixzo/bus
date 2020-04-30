@@ -27,13 +27,12 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.nimble.BufferedImages;
 import org.aoju.bus.image.nimble.reader.DicomImageReadParam;
 import org.aoju.bus.logger.Logger;
 
 import javax.imageio.*;
-import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -77,7 +76,7 @@ public class Dcm2Jpg {
     private static Attributes loadDicomObject(File f) throws IOException {
         if (f == null)
             return null;
-        DicomInputStream dis = new DicomInputStream(f);
+        ImageInputStream dis = new ImageInputStream(f);
         try {
             return dis.readDataset(-1, -1);
         } finally {
@@ -206,7 +205,7 @@ public class Dcm2Jpg {
     }
 
     public void convert(File src, File dest) throws IOException {
-        ImageInputStream iis = ImageIO.createImageInputStream(src);
+        javax.imageio.stream.ImageInputStream iis = ImageIO.createImageInputStream(src);
         try {
             BufferedImage bi = readImage(iis);
             bi = convert(bi);
@@ -234,7 +233,7 @@ public class Dcm2Jpg {
         return cm.getNumComponents() == 3 ? BufferedImages.convertToIntRGB(bi) : bi;
     }
 
-    private BufferedImage readImage(ImageInputStream iis) throws IOException {
+    private BufferedImage readImage(javax.imageio.stream.ImageInputStream iis) throws IOException {
         imageReader.setInput(iis);
         return imageReader.read(frame - 1, readParam());
     }

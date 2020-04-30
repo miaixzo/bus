@@ -32,12 +32,11 @@ import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
-import org.aoju.bus.image.metric.internal.pdv.PDVType;
+import org.aoju.bus.image.metric.PDVInputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.EOFException;
@@ -148,32 +147,32 @@ public class PDUDecoder extends PDVInputStream {
         Logger.trace("{} >> PDU[type={}, len={}]",
                 as, pdutype, pdulen & 0xFFFFFFFFL);
         switch (pdutype) {
-            case PDUType.A_ASSOCIATE_RQ:
+            case Builder.A_ASSOCIATE_RQ:
                 readPDU();
                 as.onAAssociateRQ((AAssociateRQ) decode(new AAssociateRQ()));
                 return;
-            case PDUType.A_ASSOCIATE_AC:
+            case Builder.A_ASSOCIATE_AC:
                 readPDU();
                 as.onAAssociateAC((AAssociateAC) decode(new AAssociateAC()));
                 return;
-            case PDUType.P_DATA_TF:
+            case Builder.P_DATA_TF:
                 readPDU();
                 as.onPDataTF();
                 return;
-            case PDUType.A_ASSOCIATE_RJ:
+            case Builder.A_ASSOCIATE_RJ:
                 checkPDULength(4);
                 get();
                 as.onAAssociateRJ(new AAssociateRJ(get(), get(), get()));
                 break;
-            case PDUType.A_RELEASE_RQ:
+            case Builder.A_RELEASE_RQ:
                 checkPDULength(4);
                 as.onAReleaseRQ();
                 break;
-            case PDUType.A_RELEASE_RP:
+            case Builder.A_RELEASE_RP:
                 checkPDULength(4);
                 as.onAReleaseRP();
                 break;
-            case PDUType.A_ABORT:
+            case Builder.A_ABORT:
                 checkPDULength(4);
                 get();
                 get();
@@ -274,7 +273,7 @@ public class PDUDecoder extends PDVInputStream {
         }
     }
 
-    private PresentationContext decodePC(int itemLen) {
+    private Presentation decodePC(int itemLen) {
         int pcid = get();
         get(); // skip reserved byte
         int result = get();
@@ -297,7 +296,7 @@ public class PDUDecoder extends PDVInputStream {
                     skip(subItemLen);
             }
         }
-        return new PresentationContext(pcid, result, as,
+        return new Presentation(pcid, result, as,
                 tss.toArray(new String[tss.size()]));
     }
 
@@ -329,7 +328,7 @@ public class PDUDecoder extends PDVInputStream {
                 rqac.setImplVersionName(getString(itemLen));
                 break;
             case Builder.EXT_NEG:
-                rqac.addExtendedNegotiation(decodeExtNeg(itemLen));
+                rqac.addExtendedNegotiate(decodeExtNeg(itemLen));
                 break;
             case Builder.COMMON_EXT_NEG:
                 rqac.addCommonExtendedNegotiation(decodeCommonExtNeg(itemLen));
@@ -401,9 +400,9 @@ public class PDUDecoder extends PDVInputStream {
         if (pcid != -1)
             return; // already inside decodeDIMSE
 
-        nextPDV(PDVType.COMMAND, -1);
+        nextPDV(Builder.COMMAND, -1);
 
-        PresentationContext pc = as.getPresentationContext(pcid);
+        Presentation pc = as.getPresentationContext(pcid);
         if (pc == null) {
             Logger.warn(
                     "{}: No Presentation Context with given ID - {}",
@@ -427,7 +426,7 @@ public class PDUDecoder extends PDVInputStream {
         if (dimse == Dimse.C_CANCEL_RQ) {
             as.onCancelRQ(cmd);
         } else if (Commands.hasDataset(cmd)) {
-            nextPDV(PDVType.DATA, pcid);
+            nextPDV(Builder.DATA, pcid);
             if (dimse.isRSP()) {
                 Attributes data = readDataset(tsuid);
 
@@ -464,8 +463,8 @@ public class PDUDecoder extends PDVInputStream {
     }
 
     private Attributes readCommand() throws IOException {
-        DicomInputStream in =
-                new DicomInputStream(this, UID.ImplicitVRLittleEndian);
+        ImageInputStream in =
+                new ImageInputStream(this, UID.ImplicitVRLittleEndian);
         try {
             return in.readCommand();
         } finally {
@@ -475,7 +474,7 @@ public class PDUDecoder extends PDVInputStream {
 
     @Override
     public Attributes readDataset(String tsuid) throws IOException {
-        DicomInputStream in = new DicomInputStream(this, tsuid);
+        ImageInputStream in = new ImageInputStream(this, tsuid);
         try {
             return in.readDataset(-1, -1);
         } finally {
@@ -487,7 +486,7 @@ public class PDUDecoder extends PDVInputStream {
             throws IOException {
         if (!hasRemaining()) {
             nextPDU();
-            if (pdutype != PDUType.P_DATA_TF) {
+            if (pdutype != Builder.P_DATA_TF) {
                 Logger.info(
                         "{}: Expected P-DATA-TF PDU but received PDU[type={}]",
                         as, pdutype);
@@ -504,7 +503,7 @@ public class PDUDecoder extends PDVInputStream {
         this.pdvmch = get();
         Logger.trace("{} >> PDV[len={}, pcid={}, mch={}]",
                 as, pdvlen, pcid, pdvmch);
-        if ((pdvmch & PDVType.COMMAND) != expectedPDVType)
+        if ((pdvmch & Builder.COMMAND) != expectedPDVType)
             abort(AAbort.UNEXPECTED_PDU_PARAMETER, UNEXPECTED_PDV_TYPE);
         if (expectedPCID != -1 && pcid != expectedPCID)
             abort(AAbort.UNEXPECTED_PDU_PARAMETER, UNEXPECTED_PDV_PCID);
@@ -512,15 +511,15 @@ public class PDUDecoder extends PDVInputStream {
 
     private boolean isLastPDV() throws IOException {
         while (pos == pdvend) {
-            if ((pdvmch & PDVType.LAST) != 0)
+            if ((pdvmch & Builder.LAST) != 0)
                 return true;
-            nextPDV(pdvmch & PDVType.COMMAND, pcid);
+            nextPDV(pdvmch & Builder.COMMAND, pcid);
         }
         return false;
     }
 
     public boolean isPendingPDV() {
-        return pcid != -1 && (pdvmch & PDVType.LAST) == 0;
+        return pcid != -1 && (pdvmch & Builder.LAST) == 0;
     }
 
     @Override

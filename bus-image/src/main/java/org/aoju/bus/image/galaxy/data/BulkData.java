@@ -26,8 +26,8 @@ package org.aoju.bus.image.galaxy.data;
 
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.image.galaxy.Property;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 
 import java.io.*;
 import java.net.URI;
@@ -40,8 +40,6 @@ import java.net.URL;
  * @since JDK 1.8+
  */
 public class BulkData implements Value {
-
-    public static final int MAGIC_LEN = 0xfbfb;
 
     private final String uuid;
     private final boolean bigEndian;
@@ -161,7 +159,7 @@ public class BulkData implements Value {
     }
 
     @Override
-    public int calcLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+    public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         if (length == -1)
             throw new UnsupportedOperationException();
 
@@ -169,7 +167,7 @@ public class BulkData implements Value {
     }
 
     @Override
-    public int getEncodedLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+    public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         return (length == -1) ? -1 : ((length + 1) & ~1);
     }
 
@@ -196,7 +194,7 @@ public class BulkData implements Value {
     }
 
     @Override
-    public void writeTo(DicomOutputStream out, VR vr) throws IOException {
+    public void writeTo(ImageOutputStream out, VR vr) throws IOException {
         InputStream in = openStream();
         try {
             if (this.bigEndian != out.isBigEndian())

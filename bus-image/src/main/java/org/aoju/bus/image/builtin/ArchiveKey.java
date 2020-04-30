@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.builtin;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * @author Kimi Liu
  * @version 5.8.8
@@ -142,7 +144,7 @@ public class ArchiveKey {
             case ArchiveTag.XRoadDataStatus:
                 return "XRoadDataStatus";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

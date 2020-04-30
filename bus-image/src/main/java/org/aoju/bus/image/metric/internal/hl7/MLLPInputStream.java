@@ -36,9 +36,8 @@ public class MLLPInputStream extends BufferedInputStream {
     private static final int SOM = 0x0b; // Start of Message
     private static final int EOM1 = 0x1c; // End of Message Byte 1
     private static final int EOM2 = 0x0d; // End of Message Byte 2
-
+    private final ByteArrayOutputStream readBuffer = new ByteArrayOutputStream();
     private boolean eom = true;
-    private ByteArrayOutputStream readBuffer = new ByteArrayOutputStream();
 
     public MLLPInputStream(InputStream in) {
         super(in);

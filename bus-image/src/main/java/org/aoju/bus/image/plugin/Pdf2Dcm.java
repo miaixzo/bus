@@ -29,7 +29,7 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class Pdf2Dcm {
         if (fileLength > MAX_FILE_SIZE)
             throw new IllegalArgumentException(infile.getName());
 
-        try (DicomOutputStream dos = new DicomOutputStream(outfile)) {
+        try (ImageOutputStream dos = new ImageOutputStream(outfile)) {
             dos.writeDataset(metadata.createFileMetaInformation(UID.ExplicitVRLittleEndian), metadata);
             dos.writeAttribute(Tag.EncapsulatedDocument, VR.OB, Files.readAllBytes(infile.toPath()));
         }

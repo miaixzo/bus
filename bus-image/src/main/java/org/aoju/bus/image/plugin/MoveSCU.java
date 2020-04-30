@@ -32,14 +32,14 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.DimseRSPHandler;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,10 +61,10 @@ public class MoveSCU extends Device {
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
     private final AAssociateRQ rq = new AAssociateRQ();
+    private final Attributes keys = new Attributes();
     private int priority;
     private String destination;
     private InformationModel model;
-    private Attributes keys = new Attributes();
     private int[] inFilter = DEF_IN_FILTER;
     private Association as;
 
@@ -79,12 +79,13 @@ public class MoveSCU extends Device {
         this.priority = priority;
     }
 
-    public final void setInformationModel(InformationModel model, String[] tss,
+    public final void setInformationModel(InformationModel model,
+                                          String[] tss,
                                           boolean relational) {
         this.model = model;
-        rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
+        rq.addPresentationContext(new Presentation(1, model.cuid, tss));
         if (relational)
-            rq.addExtendedNegotiation(new ExtendedNegotiate(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         if (model.level != null)
             addLevel(model.level);
     }
@@ -120,9 +121,9 @@ public class MoveSCU extends Device {
 
     public void retrieve(File f) throws IOException, InterruptedException {
         Attributes attrs = new Attributes();
-        DicomInputStream dis = null;
+        ImageInputStream dis = null;
         try {
-            attrs.addSelected(new DicomInputStream(f).readDataset(-1, -1), inFilter);
+            attrs.addSelected(new ImageInputStream(f).readDataset(-1, -1), inFilter);
         } finally {
             IoUtils.close(dis);
         }

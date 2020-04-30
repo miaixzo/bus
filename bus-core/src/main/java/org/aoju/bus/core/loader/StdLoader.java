@@ -119,18 +119,18 @@ public class StdLoader extends ResourceLoader implements Loader {
                     try {
                         String uri = UriUtils.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = new URL(url, "file:" + UriUtils.encodePath(root, Charset.UTF_8));
+                        URL context = new URL(url, Normal.FILE_URL_PREFIX + UriUtils.encodePath(root, Charset.UTF_8));
                         File file = new File(root);
                         resources = new FileLoader(context, file).load(path, recursively, filter);
                         return hasMoreElements();
                     } catch (IOException e) {
                         throw new IllegalStateException(e);
                     }
-                } else if ("jar".equalsIgnoreCase(protocol)) {
+                } else if (Normal.URL_PROTOCOL_JAR.equalsIgnoreCase(protocol)) {
                     try {
                         String uri = UriUtils.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = new URL(url, "jar:" + UriUtils.encodePath(root, Charset.UTF_8));
+                        URL context = new URL(url, Normal.JAR_URL_PREFIX + UriUtils.encodePath(root, Charset.UTF_8));
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                         JarFile jarFile = jarURLConnection.getJarFile();
                         resources = new JarLoader(context, jarFile).load(path, recursively, filter);

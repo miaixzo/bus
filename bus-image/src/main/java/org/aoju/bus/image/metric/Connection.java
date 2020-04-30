@@ -72,7 +72,7 @@ public class Connection implements Serializable {
             new EnumMap<Protocol, UDPHandler>(Protocol.class);
 
     static {
-        registerTCPProtocolHandler(Protocol.DICOM, DicomHandler.INSTANCE);
+        registerTCPProtocolHandler(Protocol.DICOM, AdvancedHandler.INSTANCE);
     }
 
     private Device device;
@@ -110,7 +110,7 @@ public class Connection implements Serializable {
     private transient InetAddress hostAddr;
     private transient InetAddress bindAddr;
     private transient InetAddress clientBindAddr;
-    private transient volatile Listener listener;
+    private transient volatile SocketListener listener;
     private transient boolean rebindNeeded;
 
     public Connection() {
@@ -956,7 +956,7 @@ public class Connection implements Serializable {
         return ds;
     }
 
-    public Listener getListener() {
+    public SocketListener getListener() {
         return listener;
     }
 
@@ -968,7 +968,7 @@ public class Connection implements Serializable {
                 .append(" HTTP/1.1\r\nHost: ")
                 .append(hostname).append(':').append(port);
         if (userauth != null) {
-            byte[] b = userauth.getBytes("UTF-8");
+            byte[] b = userauth.getBytes(StandardCharsets.UTF_8);
             char[] base64 = new char[(b.length + 2) / 3 * 4];
             Base64.encode(b, 0, b.length, base64, 0);
             request.append("\r\nProxy-Authorization: basic ")
@@ -976,7 +976,7 @@ public class Connection implements Serializable {
         }
         request.append("\r\n\r\n");
         OutputStream out = s.getOutputStream();
-        out.write(request.toString().getBytes("US-ASCII"));
+        out.write(request.toString().getBytes(StandardCharsets.US_ASCII));
         out.flush();
 
         s.setSoTimeout(connectTimeout);

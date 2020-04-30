@@ -41,8 +41,8 @@ public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
     private static final String version = Implementation.getVersionName();
     private static final String[] formatNames = {"rle", "RLE"};
     private static final Class<?>[] inputTypes = {ImageInputStream.class};
-    private static String[] entensions = {""};
-    private static String[] mimeType = {""};
+    private static final String[] entensions = {""};
+    private static final String[] mimeType = {""};
 
     public ImageReaderSpi() {
         super(vendorName, version, formatNames,

@@ -30,7 +30,8 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Commands;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.ImageException;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 
 import java.io.IOException;
 
@@ -51,12 +52,12 @@ public class BasicCEchoSCP extends AbstractService {
 
     @Override
     public void onDimse(Association as,
-                        PresentationContext pc,
+                        Presentation pc,
                         Dimse dimse,
                         Attributes cmd,
                         Attributes data) throws IOException {
         if (dimse != Dimse.C_ECHO_RQ)
-            throw new ServiceException(Status.UnrecognizedOperation);
+            throw new ImageException(Status.UnrecognizedOperation);
 
         as.tryWriteDimseRSP(pc, Commands.mkEchoRSP(cmd, Status.Success));
     }

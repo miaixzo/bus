@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>bus-logger</artifactId>
+            <artifactId>bus-health</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

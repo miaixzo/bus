@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StreamUtils;
@@ -42,7 +43,6 @@ import org.aoju.bus.image.nimble.stream.ImagePixelInputStream;
 import org.aoju.bus.logger.Logger;
 
 import javax.imageio.*;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.*;
 import java.io.*;
 import java.util.List;
@@ -69,13 +69,13 @@ public class Transcoder implements Closeable {
             Tag.SegmentedBluePaletteColorLookupTableData,
             Tag.ICCProfile
     };
-    private final DicomInputStream dis;
+    private final ImageInputStream dis;
     private final String srcTransferSyntax;
     private final TransferSyntaxType srcTransferSyntaxType;
     private final Attributes dataset;
     private boolean retainFileMetaInformation;
     private boolean includeFileMetaInformation;
-    private DicomEncodingOptions encOpts = DicomEncodingOptions.DEFAULT;
+    private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
     private boolean closeInputStream = true;
     private boolean closeOutputStream = true;
     private boolean deleteBulkDataFiles = true;
@@ -84,7 +84,7 @@ public class Transcoder implements Closeable {
     private boolean lossyCompression;
     private int maxPixelValueError = -1;
     private int avgPixelValueBlockSize = 1;
-    private DicomOutputStream dos;
+    private ImageOutputStream dos;
     private Attributes postPixelData;
     private Handler handler;
     private ImageDescriptor imageDescriptor;
@@ -105,9 +105,9 @@ public class Transcoder implements Closeable {
     private BufferedImage bi2;
     private String pixelDataBulkDataURI;
     private byte[] buffer;
-    private final DicomInputHandler dicomInputHandler = new DicomInputHandler() {
+    private final ImageInputHandler imageInputHandler = new ImageInputHandler() {
         @Override
-        public void readValue(DicomInputStream dis, Attributes attrs) throws IOException {
+        public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
             int tag = dis.tag();
             if (dis.level() == 0 && tag == Tag.PixelData) {
                 imageDescriptor = new ImageDescriptor(attrs);
@@ -122,12 +122,12 @@ public class Transcoder implements Closeable {
         }
 
         @Override
-        public void readValue(DicomInputStream dis, Sequence seq) throws IOException {
+        public void readValue(ImageInputStream dis, Sequence seq) throws IOException {
             dis.readValue(dis, seq);
         }
 
         @Override
-        public void readValue(DicomInputStream dis, Fragments frags) throws IOException {
+        public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
             if (dos == null) {
                 dis.readValue(dis, frags);
             } else {
@@ -138,32 +138,32 @@ public class Transcoder implements Closeable {
         }
 
         @Override
-        public void startDataset(DicomInputStream dis) throws IOException {
+        public void startDataset(ImageInputStream dis) throws IOException {
 
         }
 
         @Override
-        public void endDataset(DicomInputStream dis) throws IOException {
+        public void endDataset(ImageInputStream dis) throws IOException {
 
         }
     };
 
     public Transcoder(File f) throws IOException {
-        this(new DicomInputStream(f));
+        this(new ImageInputStream(f));
     }
 
     public Transcoder(InputStream in) throws IOException {
-        this(new DicomInputStream(in));
+        this(new ImageInputStream(in));
     }
 
     public Transcoder(InputStream in, String tsuid) throws IOException {
-        this(new DicomInputStream(in, tsuid));
+        this(new ImageInputStream(in, tsuid));
     }
 
-    public Transcoder(DicomInputStream dis) throws IOException {
+    public Transcoder(ImageInputStream dis) throws IOException {
         this.dis = dis;
         dis.readFileMetaInformation();
-        dis.setDicomInputHandler(dicomInputHandler);
+        dis.setDicomInputHandler(imageInputHandler);
         dataset = new Attributes(dis.bigEndian(), 64);
         srcTransferSyntax = dis.getTransferSyntax();
         srcTransferSyntaxType = TransferSyntaxType.forUID(srcTransferSyntax);
@@ -179,7 +179,7 @@ public class Transcoder implements Closeable {
         }
     }
 
-    public void setEncodingOptions(DicomEncodingOptions encOpts) {
+    public void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = Objects.requireNonNull(encOpts);
     }
 
@@ -187,7 +187,7 @@ public class Transcoder implements Closeable {
         dis.setConcatenateBulkDataFiles(catBlkFiles);
     }
 
-    public void setIncludeBulkData(DicomInputStream.IncludeBulkData includeBulkData) {
+    public void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
         dis.setIncludeBulkData(includeBulkData);
     }
 
@@ -560,7 +560,7 @@ public class Transcoder implements Closeable {
     }
 
     private void compressFrame(int frameIndex) throws IOException {
-        ExtMemoryCacheImageOutputStream ios = new ExtMemoryCacheImageOutputStream(compressorImageDescriptor);
+        ExtMemoryOutputStream ios = new ExtMemoryOutputStream(compressorImageDescriptor);
         compressor.setOutput(compressorParam.patchJPEGLS != null
                 ? new PatchJPEGLSImageOutputStream(ios, compressorParam.patchJPEGLS)
                 : ios);
@@ -711,7 +711,7 @@ public class Transcoder implements Closeable {
     }
 
     private void initDicomOutputStream() throws IOException {
-        dos = new DicomOutputStream(handler.newOutputStream(this, dataset),
+        dos = new ImageOutputStream(handler.newOutputStream(this, dataset),
                 includeFileMetaInformation ? UID.ExplicitVRLittleEndian : destTransferSyntax);
         dos.setEncodingOptions(encOpts);
     }
@@ -761,7 +761,7 @@ public class Transcoder implements Closeable {
         originalBi = new BufferedImage(cm, raster, false, null);
     }
 
-    private void verify(ImageOutputStream cache, int index)
+    private void verify(javax.imageio.stream.ImageOutputStream cache, int index)
             throws IOException {
         if (verifier == null)
             return;
@@ -779,7 +779,8 @@ public class Transcoder implements Closeable {
         Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}",
                 index + 1, end - start, maxDiff);
         if (maxDiff > maxPixelValueError)
-            throw new CompressionVerificationException(maxDiff);
+            throw new InstrumentException("Decompressed pixel data differs up to " + maxDiff
+                    + " from original pixel data" + maxDiff);
         cache.seek(prevStreamPosition);
         cache.setBitOffset(prevBitOffset);
     }

@@ -28,9 +28,9 @@ import org.aoju.bus.image.Format;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Property;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -47,8 +47,6 @@ import java.util.regex.Pattern;
  */
 public class Attributes implements Serializable {
 
-    public static final String COERCE = "COERCE";
-    public static final String CORRECT = "CORRECT";
     private static final int INIT_CAPACITY = 16;
     private static final int TO_STRING_LIMIT = 50;
     private static final int TO_STRING_WIDTH = 78;
@@ -1316,28 +1314,30 @@ public class Attributes implements Serializable {
     }
 
     public Date[] getDates(int tag) {
-        return getDates(null, tag, null, new DatePrecisions());
+        return getDates(null, tag, null, new DatePrecision());
     }
 
-    public Date[] getDates(int tag, DatePrecisions precisions) {
+    public Date[] getDates(int tag, DatePrecision precisions) {
         return getDates(null, tag, null, precisions);
     }
 
     public Date[] getDates(String privateCreator, int tag) {
-        return getDates(privateCreator, tag, null, new DatePrecisions());
+        return getDates(privateCreator, tag, null, new DatePrecision());
     }
 
     public Date[] getDates(String privateCreator, int tag,
-                           DatePrecisions precisions) {
+                           DatePrecision precisions) {
         return getDates(privateCreator, tag, null, precisions);
     }
 
     public Date[] getDates(String privateCreator, int tag, VR vr) {
-        return getDates(privateCreator, tag, vr, new DatePrecisions());
+        return getDates(privateCreator, tag, vr, new DatePrecision());
     }
 
-    public Date[] getDates(String privateCreator, int tag, VR vr,
-                           DatePrecisions precisions) {
+    public Date[] getDates(String privateCreator,
+                           int tag,
+                           VR vr,
+                           DatePrecision precisions) {
         int index = indexOf(privateCreator, tag);
         if (index < 0)
             return null;
@@ -1367,19 +1367,20 @@ public class Attributes implements Serializable {
     }
 
     public Date[] getDates(long tag) {
-        return getDates(null, tag, new DatePrecisions());
+        return getDates(null, tag, new DatePrecision());
     }
 
-    public Date[] getDates(long tag, DatePrecisions precisions) {
+    public Date[] getDates(long tag, DatePrecision precisions) {
         return getDates(null, tag, precisions);
     }
 
     public Date[] getDates(String privateCreator, long tag) {
-        return getDates(privateCreator, tag, new DatePrecisions());
+        return getDates(privateCreator, tag, new DatePrecision());
     }
 
-    public Date[] getDates(String privateCreator, long tag,
-                           DatePrecisions precisions) {
+    public Date[] getDates(String privateCreator,
+                           long tag,
+                           DatePrecision precisions) {
         int daTag = (int) (tag >>> 32);
         int tmTag = (int) tag;
 
@@ -2543,7 +2544,7 @@ public class Attributes implements Serializable {
         return sb;
     }
 
-    public int calcLength(DicomEncodingOptions encOpts, boolean explicitVR) {
+    public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR) {
         if (isEmpty())
             return 0;
 
@@ -2555,7 +2556,7 @@ public class Attributes implements Serializable {
         return this.length;
     }
 
-    private int calcLength(DicomEncodingOptions encOpts, boolean explicitVR,
+    private int calcLength(ImageEncodingOptions encOpts, boolean explicitVR,
                            SpecificCharacterSet cs, int[] groupLengths) {
         int len, totlen = 0;
         int groupLengthTag = -1;
@@ -2602,7 +2603,7 @@ public class Attributes implements Serializable {
         return count;
     }
 
-    public void writeTo(DicomOutputStream out)
+    public void writeTo(ImageOutputStream out)
             throws IOException {
         if (isEmpty())
             return;
@@ -2621,8 +2622,8 @@ public class Attributes implements Serializable {
         }
     }
 
-    public void writeItemTo(DicomOutputStream out) throws IOException {
-        DicomEncodingOptions encOpts = out.getEncodingOptions();
+    public void writeItemTo(ImageOutputStream out) throws IOException {
+        ImageEncodingOptions encOpts = out.getEncodingOptions();
         int len = getEncodedItemLength(encOpts, out.isExplicitVR());
         out.writeHeader(Tag.Item, null, len);
         writeTo(out);
@@ -2630,7 +2631,7 @@ public class Attributes implements Serializable {
             out.writeHeader(Tag.ItemDelimitationItem, null, 0);
     }
 
-    private int getEncodedItemLength(DicomEncodingOptions encOpts,
+    private int getEncodedItemLength(ImageEncodingOptions encOpts,
                                      boolean explicitVR) {
         if (isEmpty())
             return encOpts.undefEmptyItemLength ? -1 : 0;
@@ -2644,7 +2645,7 @@ public class Attributes implements Serializable {
         return length;
     }
 
-    private void writeTo(DicomOutputStream out, SpecificCharacterSet cs,
+    private void writeTo(ImageOutputStream out, SpecificCharacterSet cs,
                          int start, int end, int groupLengthIndex) throws IOException {
         boolean groupLength = groupLengths != null;
         int groupLengthTag = -1;
@@ -2707,7 +2708,7 @@ public class Attributes implements Serializable {
         return true;
     }
 
-    public void writeGroupTo(DicomOutputStream out, int groupLengthTag)
+    public void writeGroupTo(ImageOutputStream out, int groupLengthTag)
             throws IOException {
         if (isEmpty())
             throw new IllegalStateException("No attributes");
@@ -2867,7 +2868,7 @@ public class Attributes implements Serializable {
         out.defaultWriteObject();
         out.writeInt(size);
 
-        DicomOutputStream dout = new DicomOutputStream(out,
+        ImageOutputStream dout = new ImageOutputStream(out,
                 bigEndian ? UID.ExplicitVRBigEndianRetired
                         : UID.ExplicitVRLittleEndian);
         dout.writeDataset(null, this);
@@ -2879,7 +2880,7 @@ public class Attributes implements Serializable {
         in.defaultReadObject();
         init(in.readInt());
 
-        DicomInputStream din = new DicomInputStream(in,
+        ImageInputStream din = new ImageInputStream(in,
                 bigEndian ? UID.ExplicitVRBigEndianRetired
                         : UID.ExplicitVRLittleEndian);
         din.readAttributes(this, -1, Tag.ItemDelimitationItem);

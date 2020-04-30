@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.loader;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * 正则表达式资源加载器
  *
@@ -46,7 +48,7 @@ public class RegexLoader extends PatternLoader implements Loader {
     }
 
     protected String path(String pattern) {
-        return "";
+        return Normal.EMPTY;
     }
 
     protected boolean recursively(String pattern) {
@@ -56,4 +58,5 @@ public class RegexLoader extends PatternLoader implements Loader {
     protected Filter filter(String pattern) {
         return new RegexFilter(pattern);
     }
+
 }

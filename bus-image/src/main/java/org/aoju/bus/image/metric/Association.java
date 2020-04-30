@@ -31,7 +31,6 @@ import org.aoju.bus.image.galaxy.Capacity;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.metric.internal.pdu.*;
-import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -65,7 +64,7 @@ public class Association {
     private final PDUEncoder encoder;
     private final Capacity<DimseRSPHandler> rspHandlerForMsgId = new Capacity<>();
     private final Capacity<CancelRQHandler> cancelHandlerForMsgId = new Capacity<>();
-    private final HashMap<String, HashMap<String, PresentationContext>> pcMap = new HashMap<>();
+    private final HashMap<String, HashMap<String, Presentation>> pcMap = new HashMap<>();
     private final LinkedList<AssociationListener> listeners = new LinkedList<>();
     private String name;
     private ApplicationEntity ae;
@@ -682,7 +681,7 @@ public class Association {
         encoder.writePDataTF();
     }
 
-    public void onDimseRQ(PresentationContext pc, Dimse dimse, Attributes cmd,
+    public void onDimseRQ(Presentation pc, Dimse dimse, Attributes cmd,
                           PDVInputStream data) throws IOException {
         stopTimeout();
         incPerforming();
@@ -752,16 +751,16 @@ public class Association {
         }
     }
 
-    void cancel(PresentationContext pc, int msgId) throws IOException {
+    void cancel(Presentation pc, int msgId) throws IOException {
         Attributes cmd = Commands.mkCCancelRQ(msgId);
         encoder.writeDIMSE(pc, cmd, null);
     }
 
-    public boolean tryWriteDimseRSP(PresentationContext pc, Attributes cmd) {
+    public boolean tryWriteDimseRSP(Presentation pc, Attributes cmd) {
         return tryWriteDimseRSP(pc, cmd, null);
     }
 
-    public boolean tryWriteDimseRSP(PresentationContext pc, Attributes cmd,
+    public boolean tryWriteDimseRSP(Presentation pc, Attributes cmd,
                                     Attributes data) {
         try {
             writeDimseRSP(pc, cmd, data);
@@ -774,12 +773,12 @@ public class Association {
         }
     }
 
-    public void writeDimseRSP(PresentationContext pc, Attributes cmd)
+    public void writeDimseRSP(Presentation pc, Attributes cmd)
             throws IOException {
         writeDimseRSP(pc, cmd, null);
     }
 
-    public void writeDimseRSP(PresentationContext pc, Attributes cmd,
+    public void writeDimseRSP(Presentation pc, Attributes cmd,
                               Attributes data) throws IOException {
         DataWriter writer = null;
         int datasetType = Commands.NO_DATASET;
@@ -816,9 +815,9 @@ public class Association {
     }
 
     private void initPCMap() {
-        for (PresentationContext pc : ac.getPresentationContexts())
+        for (Presentation pc : ac.getPresentationContexts())
             if (pc.isAccepted()) {
-                PresentationContext rqpc = rq.getPresentationContext(pc.getPCID());
+                Presentation rqpc = rq.getPresentationContext(pc.getPCID());
                 if (rqpc != null)
                     initTSMap(rqpc.getAbstractSyntax()).put(pc.getTransferSyntax(), pc);
                 else
@@ -826,34 +825,34 @@ public class Association {
             }
     }
 
-    private HashMap<String, PresentationContext> initTSMap(String as) {
-        HashMap<String, PresentationContext> tsMap = pcMap.get(as);
+    private HashMap<String, Presentation> initTSMap(String as) {
+        HashMap<String, Presentation> tsMap = pcMap.get(as);
         if (tsMap == null)
             pcMap.put(as, tsMap = new HashMap<>());
         return tsMap;
     }
 
-    public PresentationContext pcFor(String cuid, String tsuid)
+    public Presentation pcFor(String cuid, String tsuid)
             throws InstrumentException {
-        HashMap<String, PresentationContext> tsMap = pcMap.get(cuid);
+        HashMap<String, Presentation> tsMap = pcMap.get(cuid);
         if (tsMap == null)
             throw new InstrumentException(cuid);
         if (tsuid == null)
             return tsMap.values().iterator().next();
-        PresentationContext pc = tsMap.get(tsuid);
+        Presentation pc = tsMap.get(tsuid);
         if (pc == null)
             throw new InstrumentException(cuid, tsuid);
         return pc;
     }
 
     public Set<String> getTransferSyntaxesFor(String cuid) {
-        HashMap<String, PresentationContext> tsMap = pcMap.get(cuid);
+        HashMap<String, Presentation> tsMap = pcMap.get(cuid);
         if (tsMap == null)
             return Collections.emptySet();
         return Collections.unmodifiableSet(tsMap.keySet());
     }
 
-    public PresentationContext getPresentationContext(int pcid) {
+    public Presentation getPresentationContext(int pcid) {
         return ac.getPresentationContext(pcid);
     }
 
@@ -865,7 +864,7 @@ public class Association {
     public void cstore(String cuid, String iuid, int priority, DataWriter data,
                        String tsuid, DimseRSPHandler rspHandler) throws IOException,
             InterruptedException {
-        PresentationContext pc = pcFor(cuid, tsuid);
+        Presentation pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
         Attributes cstorerq = Commands.mkCStoreRQ(rspHandler.getMessageID(),
                 cuid, iuid, priority);
@@ -884,7 +883,7 @@ public class Association {
                        String moveOriginatorAET, int moveOriginatorMsgId,
                        DataWriter data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(cuid, tsuid);
+        Presentation pc = pcFor(cuid, tsuid);
         Attributes cstorerq = Commands.mkCStoreRQ(rspHandler.getMessageID(),
                 cuid, iuid, priority, moveOriginatorAET, moveOriginatorMsgId);
         invoke(pc, cstorerq, data, rspHandler, conn.getResponseTimeout());
@@ -903,7 +902,7 @@ public class Association {
     public void cfind(String cuid, int priority, Attributes data,
                       String tsuid, DimseRSPHandler rspHandler) throws IOException,
             InterruptedException {
-        PresentationContext pc = pcFor(cuid, tsuid);
+        Presentation pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
         Attributes cfindrq =
                 Commands.mkCFindRQ(rspHandler.getMessageID(), cuid, priority);
@@ -949,7 +948,7 @@ public class Association {
     public void cget(String cuid, int priority, Attributes data,
                      String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(cuid, tsuid);
+        Presentation pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
         Attributes cgetrq = Commands.mkCGetRQ(rspHandler.getMessageID(),
                 cuid, priority);
@@ -968,7 +967,7 @@ public class Association {
     public void cmove(String cuid, int priority, Attributes data,
                       String tsuid, String destination, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(cuid, tsuid);
+        Presentation pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
         Attributes cmoverq = Commands.mkCMoveRQ(rspHandler.getMessageID(),
                 cuid, priority, destination);
@@ -990,7 +989,7 @@ public class Association {
 
     public DimseRSP cecho(String cuid) throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
-        PresentationContext pc = pcFor(cuid, null);
+        Presentation pc = pcFor(cuid, null);
         checkIsSCU(cuid);
         Attributes cechorq = Commands.mkCEchoRQ(rsp.getMessageID(), cuid);
         invoke(pc, cechorq, null, rsp, conn.getResponseTimeout());
@@ -1006,7 +1005,7 @@ public class Association {
     public void neventReport(String asuid, String cuid, String iuid, int eventTypeId,
                              Attributes data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(asuid, tsuid);
+        Presentation pc = pcFor(asuid, tsuid);
         checkIsSCP(cuid);
         Attributes neventrq =
                 Commands.mkNEventReportRQ(rspHandler.getMessageID(), cuid, iuid,
@@ -1038,7 +1037,7 @@ public class Association {
     public void nget(String asuid, String cuid, String iuid, int[] tags,
                      DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(asuid, null);
+        Presentation pc = pcFor(asuid, null);
         checkIsSCU(cuid);
         Attributes ngetrq =
                 Commands.mkNGetRQ(rspHandler.getMessageID(), cuid, iuid, tags);
@@ -1090,7 +1089,7 @@ public class Association {
     public void nset(String asuid, String cuid, String iuid,
                      DataWriter data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(asuid, tsuid);
+        Presentation pc = pcFor(asuid, tsuid);
         checkIsSCU(cuid);
         Attributes nsetrq =
                 Commands.mkNSetRQ(rspHandler.getMessageID(), cuid, iuid);
@@ -1120,7 +1119,7 @@ public class Association {
     public void naction(String asuid, String cuid, String iuid, int actionTypeId,
                         Attributes data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(asuid, tsuid);
+        Presentation pc = pcFor(asuid, tsuid);
         checkIsSCU(cuid);
         Attributes nactionrq =
                 Commands.mkNActionRQ(rspHandler.getMessageID(), cuid, iuid,
@@ -1152,7 +1151,7 @@ public class Association {
     public void ncreate(String asuid, String cuid, String iuid,
                         Attributes data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(asuid, tsuid);
+        Presentation pc = pcFor(asuid, tsuid);
         checkIsSCU(cuid);
         Attributes ncreaterq =
                 Commands.mkNCreateRQ(rspHandler.getMessageID(), cuid, iuid);
@@ -1182,7 +1181,7 @@ public class Association {
     public void ndelete(String asuid, String cuid, String iuid,
                         DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
-        PresentationContext pc = pcFor(asuid, null);
+        Presentation pc = pcFor(asuid, null);
         checkIsSCU(cuid);
         Attributes ndeleterq =
                 Commands.mkNDeleteRQ(rspHandler.getMessageID(), cuid, iuid);
@@ -1201,13 +1200,13 @@ public class Association {
         return rsp;
     }
 
-    public void invoke(PresentationContext pc, Attributes cmd,
+    public void invoke(Presentation pc, Attributes cmd,
                        DataWriter data, DimseRSPHandler rspHandler, int rspTimeout)
             throws IOException, InterruptedException {
         invoke(pc, cmd, data, rspHandler, rspTimeout, true);
     }
 
-    public void invoke(PresentationContext pc, Attributes cmd,
+    public void invoke(Presentation pc, Attributes cmd,
                        DataWriter data, DimseRSPHandler rspHandler, int rspTimeout, boolean stopOnPending)
             throws IOException, InterruptedException {
         stopTimeout();
@@ -1235,8 +1234,8 @@ public class Association {
         return fmi;
     }
 
-    public EnumSet<QueryOption> getQueryOptionsFor(String cuid) {
-        return QueryOption.toOptions(ac.getExtNegotiationFor(cuid));
+    public EnumSet<Option.Type> getQueryOptionsFor(String cuid) {
+        return Option.Type.toOptions(ac.getExtNegotiationFor(cuid));
     }
 
     public enum State {
@@ -1362,7 +1361,7 @@ public class Association {
             }
         };
 
-        private String name;
+        private final String name;
 
         State(String name) {
             this.name = name;

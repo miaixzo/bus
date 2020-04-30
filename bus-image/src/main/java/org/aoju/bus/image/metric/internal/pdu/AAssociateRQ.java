@@ -37,14 +37,14 @@ public class AAssociateRQ extends AAssociateRQAC {
     }
 
     public boolean containsPresentationContextFor(String as) {
-        for (PresentationContext pc : pcs)
+        for (Presentation pc : pcs)
             if (as.equals(pc.getAbstractSyntax()))
                 return true;
         return false;
     }
 
     public boolean containsPresentationContextFor(String as, String ts) {
-        for (PresentationContext pc : pcs)
+        for (Presentation pc : pcs)
             if (as.equals(pc.getAbstractSyntax()) && pc.containsTransferSyntax(ts))
                 return true;
         return false;
@@ -55,7 +55,7 @@ public class AAssociateRQ extends AAssociateRQAC {
             return false;
 
         int pcid = getNumberOfPresentationContexts() * 2 + 1;
-        addPresentationContext(new PresentationContext(pcid, as, ts));
+        addPresentationContext(new Presentation(pcid, as, ts));
         return true;
     }
 

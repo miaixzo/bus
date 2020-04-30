@@ -28,7 +28,7 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.io.RAFInputStreamAdapter;
 import org.aoju.bus.image.galaxy.media.RecordFactory;
 import org.aoju.bus.image.galaxy.media.RecordType;
@@ -47,10 +47,10 @@ public class DirReader implements Closeable {
 
     protected final File file;
     protected final RandomAccessFile raf;
-    protected final DicomInputStream in;
+    protected final ImageInputStream in;
     protected final Attributes fmi;
     protected final Attributes fsInfo;
-    protected final Capacity<Attributes> cache = new Capacity<Attributes>();
+    protected final Capacity<Attributes> cache = new Capacity<>();
 
     public DirReader(File file) throws IOException {
         this(file, "r");
@@ -60,7 +60,7 @@ public class DirReader implements Closeable {
         this.file = file;
         this.raf = new RandomAccessFile(file, mode);
         try {
-            this.in = new DicomInputStream(new RAFInputStreamAdapter(raf));
+            this.in = new ImageInputStream(new RAFInputStreamAdapter(raf));
             this.fmi = in.readFileMetaInformation();
             this.fsInfo = in.readDataset(-1, Tag.DirectoryRecordSequence);
             if (in.tag() != Tag.DirectoryRecordSequence)

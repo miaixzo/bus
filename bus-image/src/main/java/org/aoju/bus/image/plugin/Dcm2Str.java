@@ -27,7 +27,7 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Format;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class Dcm2Str extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-        try (DicomInputStream dis = new DicomInputStream(path.toFile())) {
+        try (ImageInputStream dis = new ImageInputStream(path.toFile())) {
             Attributes dataset = dis.readDataset(-1, -1);
             dataset.addAll(cliAttrs);
             Logger.error(format.format(dataset));

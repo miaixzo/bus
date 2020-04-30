@@ -27,8 +27,8 @@ package org.aoju.bus.image.metric.service;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
-import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
+import org.aoju.bus.image.metric.PDVInputStream;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -58,14 +58,14 @@ public abstract class AbstractService implements DicomService {
 
     @Override
     public void onDimse(Association as,
-                        PresentationContext pc,
+                        Presentation pc,
                         Dimse dimse,
                         Attributes cmd,
                         PDVInputStream data) throws IOException {
         onDimse(as, pc, dimse, cmd, readDataset(pc, data));
     }
 
-    private Attributes readDataset(PresentationContext pc, PDVInputStream data)
+    private Attributes readDataset(Presentation pc, PDVInputStream data)
             throws IOException {
         if (data == null)
             return null;
@@ -76,7 +76,7 @@ public abstract class AbstractService implements DicomService {
     }
 
     protected abstract void onDimse(Association as,
-                                    PresentationContext pc,
+                                    Presentation pc,
                                     Dimse dimse,
                                     Attributes cmd,
                                     Attributes data) throws IOException;

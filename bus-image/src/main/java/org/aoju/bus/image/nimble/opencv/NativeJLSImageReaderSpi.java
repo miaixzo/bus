@@ -42,7 +42,7 @@ public class NativeJLSImageReaderSpi extends ImageReaderSpi {
     public static final String[] MIMES = {"image/jpeg-ls"};
 
     public NativeJLSImageReaderSpi() {
-        super("Weasis Team", "1.0", NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
+        super("Bus Team", "1.5", NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
                 new Class[]{ImageInputStream.class}, new String[]{NativeJLSImageWriterSpi.class.getName()}, false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName

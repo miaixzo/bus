@@ -64,12 +64,25 @@ public interface Loader {
     /**
      * 加载指定路径的所有满足过滤条件的资源,等效于Loader.load(path, true, boot)的调用
      *
-     * @param path   资源路径
-     * @param filter 过滤器
+     * @param path  资源路径
+     * @param clazz 对象信息
      * @return 资源枚举器
      * @throws IOException I/O 异常
      */
-    Enumeration<Resource> load(String path, Filter filter) throws IOException;
+    Enumeration<Resource> load(String path, Filter clazz) throws IOException;
+
+    /**
+     * 加载动态库信息
+     * 例如: .dll/.so等
+     *
+     * @param path  资源路径
+     * @param clazz 对象信息
+     * @return 资源枚举器
+     * @throws IOException I/O 异常
+     */
+    default Enumeration<Resource> load(String path, Class<?> clazz) throws IOException {
+        return load(path);
+    }
 
     /**
      * 加载指定路径的所有满足过滤条件的资源

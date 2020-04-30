@@ -1,22 +1,19 @@
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.BulkData;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
-import org.aoju.bus.image.metric.params.DicomState;
-import org.aoju.bus.image.metric.params.Progress;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.metric.Progress;
 import org.aoju.bus.image.nimble.codec.jpeg.JPEG;
 import org.aoju.bus.image.nimble.codec.jpeg.JPEGHeader;
 import org.aoju.bus.image.nimble.codec.mpeg.MPEGHeader;
 import org.aoju.bus.logger.Logger;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -41,19 +38,57 @@ public class Builder {
     public static final int COMMON_EXT_NEG = 0x57;
     public static final int RQ_USER_IDENTITY = 0x58;
     public static final int AC_USER_IDENTITY = 0x59;
+    public static final int MAGIC_LEN = 0xfbfb;
+
+    public final static int KNOWN_INCONSISTENCIES = 0xFFFF;
+    public final static int NO_KNOWN_INCONSISTENCIES = 0;
+    public final static int IN_USE = 0xFFFF;
+    public final static int IN_ACTIVE = 0;
 
     public static final String FAILED = "FAILED";
     public static final String WARNING = "WARNING";
     public static final String COMPLETED = "COMPLETED";
 
-
     public static final int FILE_BUFFER = 4096;
+    public static final String SegmentSequenceError = "100";
+    public static final String RequiredFieldMissing = "101";
+    public static final String DataTypeError = "102";
+    public static final String TableValueNotFound = "103";
+    public static final String UnsupportedMessageType = "200";
+    public static final String UnsupportedEventCode = "201";
+    public static final String UnsupportedProcessingID = "202";
+    public static final String UnsupportedVersionID = "203";
+    public static final String UnknownKeyIdentifier = "204";
+    public static final String DuplicateKeyIdentifier = "205";
+    public static final String ApplicationRecordLocked = "206";
+    public static final String ApplicationInternalError = "207";
+    public static final String UnknownSendingApplication = "MSH^1^3";
+    public static final String UnknownSendingFacility = "MSH^1^4";
+    public static final String UnknownReceivingApplication = "MSH^1^5";
+    public static final String UnknownReceivingFacility = "MSH^1^6";
+    public static final int MAX_PACKAGE_LEN = 0x10000;
+    public static final int A_ASSOCIATE_RQ = 0x01;
+    public static final int A_ASSOCIATE_AC = 0x02;
+    public static final int A_ASSOCIATE_RJ = 0x03;
+    public static final int P_DATA_TF = 0x04;
+    public static final int A_RELEASE_RQ = 0x05;
+    public static final int A_RELEASE_RP = 0x06;
+    public static final int A_ABORT = 0x07;
+    public static final int DATA = 0;
+    public static final int COMMAND = 1;
+    public static final int PENDING = 0;
+    public static final int LAST = 2;
     private static final int INIT_BUFFER_SIZE = 8192;
     private static final int MAX_BUFFER_SIZE = 10485768;
 
+    public static String toUID(String uid) {
+        uid = uid.trim();
+        return Symbol.STAR.equals(uid) || Character.isDigit(uid.charAt(0)) ? uid : UID.forName(uid);
+    }
+
     public static String[] toUIDs(String s) {
-        if (s.equals("*")) {
-            return new String[]{"*"};
+        if (Symbol.STAR.equals(s)) {
+            return new String[]{Symbol.STAR};
         }
 
         String[] uids = (String[]) StringUtils.split(s, ',').toArray();
@@ -63,19 +98,7 @@ public class Builder {
         return uids;
     }
 
-    public static String toUID(String uid) {
-        uid = uid.trim();
-        return (uid.equals("*") || Character.isDigit(uid.charAt(0))) ? uid : UID.forName(uid);
-    }
-
-    public static void forceGettingAttributes(DicomState dcmState, AutoCloseable closeable) {
-        Progress p = dcmState.getProgress();
-        if (p != null) {
-            Builder.close(closeable);
-        }
-    }
-
-    public static void close(DicomInputStream in) {
+    public static void close(ImageInputStream in) {
         if (in != null) {
             for (File file : in.getBulkDataFiles()) {
                 Builder.delete(file);
@@ -90,6 +113,13 @@ public class Builder {
             } catch (Exception e) {
                 Logger.error("Cannot close AutoCloseable", e);
             }
+        }
+    }
+
+    public static void forceGettingAttributes(Status dcmState, AutoCloseable closeable) {
+        Progress p = dcmState.getProgress();
+        if (p != null) {
+            Builder.close(closeable);
         }
     }
 
@@ -130,27 +160,6 @@ public class Builder {
         return deleteFile(fileOrDirectory);
     }
 
-
-    public static void safeClose(XMLStreamWriter writer) {
-        if (writer != null) {
-            try {
-                writer.close();
-            } catch (XMLStreamException e) {
-                Logger.error("Cannot close XMLStreamWriter", e);
-            }
-        }
-    }
-
-    public static void safeClose(XMLStreamReader xmler) {
-        if (xmler != null) {
-            try {
-                xmler.close();
-            } catch (XMLStreamException e) {
-                Logger.error("Cannot close XMLStreamException", e);
-            }
-        }
-    }
-
     public static void prepareToWriteFile(File file) throws IOException {
         if (!file.exists()) {
             // Check the file that doesn't exist yet.
@@ -163,7 +172,6 @@ public class Builder {
         }
     }
 
-
     public static String humanReadableByte(long bytes, boolean si) {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";
@@ -172,7 +180,7 @@ public class Builder {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
-    public static void notify(DicomState state,
+    public static void notify(Status state,
                               String iuid,
                               String cuid,
                               int intStatus,
@@ -241,7 +249,7 @@ public class Builder {
         attrs.setValue(Tag.EncapsulatedDocument, VR.OB, bulk);
         attrs.setString(Tag.MIMETypeOfEncapsulatedDocument, VR.LO, "application/pdf");
         Attributes fmi = attrs.createFileMetaInformation(UID.ExplicitVRLittleEndian);
-        try (DicomOutputStream dos = new DicomOutputStream(dcmFile)) {
+        try (ImageOutputStream dos = new ImageOutputStream(dcmFile)) {
             dos.writeDataset(fmi, attrs);
         }
     }
@@ -264,7 +272,7 @@ public class Builder {
             }
 
             int itemLen = p.fileLength;
-            try (DicomOutputStream dos = new DicomOutputStream(dcmFile)) {
+            try (ImageOutputStream dos = new ImageOutputStream(dcmFile)) {
                 ensureString(attrs, Tag.SpecificCharacterSet, VR.CS, "ISO_IR 192");// UTF-8
                 ensureUID(attrs, Tag.StudyInstanceUID);
                 ensureUID(attrs, Tag.SeriesInstanceUID);
@@ -293,7 +301,6 @@ public class Builder {
                 }
                 dos.writeHeader(Tag.SequenceDelimitationItem, null, 0);
             }
-
         } catch (Exception e) {
             Logger.error("Building {}", mpeg ? "mpeg" : "jpg", e);
         }

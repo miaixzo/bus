@@ -37,10 +37,10 @@ import javax.xml.transform.Templates;
 public class XSLTAttributesCoercion implements AttributesCoercion {
 
     private final Templates templates;
+    private final AttributesCoercion next;
     private boolean includeNameSpaceDeclaration;
     private boolean includeKeyword;
     private SAXTransformer.SetupTransformer setupTransformer;
-    private AttributesCoercion next;
 
     public XSLTAttributesCoercion(Templates templates, AttributesCoercion next) {
         this.templates = templates;

@@ -30,9 +30,9 @@ import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.metric.*;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class BasicRetrieve<T extends Instance> implements Retrieve {
     protected final Dimse rq;
     protected final Association rqas;
     protected final Association storeas;
-    protected final PresentationContext pc;
+    protected final Presentation pc;
     protected final Attributes rqCmd;
     protected final int msgId;
     protected final int priority;
@@ -72,7 +72,7 @@ public class BasicRetrieve<T extends Instance> implements Retrieve {
 
     public BasicRetrieve(Dimse rq,
                          Association rqas,
-                         PresentationContext pc,
+                         Presentation pc,
                          Attributes rqCmd,
                          List<T> insts,
                          Association storeas) {
@@ -242,7 +242,7 @@ public class BasicRetrieve<T extends Instance> implements Retrieve {
     }
 
     protected DataWriter createDataWriter(T inst, String tsuid) throws Exception {
-        DicomInputStream in = new DicomInputStream(inst.getFile());
+        ImageInputStream in = new ImageInputStream(inst.getFile());
         in.readFileMetaInformation();
         return new InputStreamWriter(in);
     }

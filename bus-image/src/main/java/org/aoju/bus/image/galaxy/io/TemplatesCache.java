@@ -39,7 +39,7 @@ public class TemplatesCache {
 
     private static TemplatesCache defaultCache;
 
-    private final HashMap<String, Templates> map = new HashMap<String, Templates>();
+    private final HashMap<String, Templates> map = new HashMap<>();
 
     public static synchronized TemplatesCache getDefault() {
         if (defaultCache == null) {

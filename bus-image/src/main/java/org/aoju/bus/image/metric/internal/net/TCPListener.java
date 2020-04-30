@@ -25,8 +25,8 @@
 package org.aoju.bus.image.metric.internal.net;
 
 import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.Listener;
 import org.aoju.bus.image.metric.Monitoring;
+import org.aoju.bus.image.metric.SocketListener;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.SSLContext;
@@ -44,7 +44,7 @@ import java.security.GeneralSecurityException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class TCPListener implements Listener {
+public class TCPListener implements SocketListener {
 
     private final Connection conn;
     private final TCPHandler handler;

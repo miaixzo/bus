@@ -24,11 +24,20 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import lombok.Data;
+import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.image.galaxy.data.Attributes;
+import org.aoju.bus.image.metric.Progress;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
+@Data
 public class Status {
 
     public static final int Success = 0x0000;
@@ -265,8 +274,108 @@ public class Status {
     public static final int UnableToProcess = 0xC000;
     public static final int CannotUnderstand = 0xC000;
 
+    private final Progress progress;
+    private final List<Attributes> list;
+    private volatile int status;
+    private String message;
+
+    public Status() {
+        this(Pending, null, null);
+    }
+
+    public Status(Progress progress) {
+        this(Pending, null, progress);
+    }
+
+    public Status(int status, String message, Progress progress) {
+        this.status = status;
+        this.message = message;
+        this.progress = progress;
+        this.list = new ArrayList<>();
+    }
+
+    public static Status build(Status dcmState, String timeMessage, Exception e) {
+        Status state = dcmState;
+        if (state == null) {
+            state = new Status(Status.UnableToProcess, null, null);
+        }
+
+        Progress p = state.getProgress();
+        int s = state.getStatus();
+
+        StringBuilder msg = new StringBuilder();
+
+        boolean hasFailed = false;
+        if (p != null) {
+            int failed = p.getNumberOfFailedSuboperations();
+            int warning = p.getNumberOfWarningSuboperations();
+            int remaining = p.getNumberOfRemainingSuboperations();
+            if (failed > 0) {
+                hasFailed = true;
+                msg.append(String.format("%d/%d operations has failed.", failed,
+                        failed + p.getNumberOfCompletedSuboperations()));
+            } else if (remaining > 0) {
+                msg.append(String.format("%d operations remains. ", remaining));
+            } else if (warning > 0) {
+                msg.append(String.format("%d operations has a warning status. ", warning));
+            }
+        }
+        if (e != null) {
+            hasFailed = true;
+            if (msg.length() > 0) {
+                msg.append(" ");
+            }
+            msg.append(e.getLocalizedMessage());
+        }
+
+        if (p != null && p.getAttributes() != null) {
+            String error = p.getErrorComment();
+            if (StringUtils.hasText(error)) {
+                hasFailed = true;
+                if (msg.length() > 0) {
+                    msg.append("\n");
+                }
+                msg.append("DICOM error : ");
+                msg.append(error);
+            }
+
+            if (!Status.isPending(s) && s != -1 && s != Status.Success && s != Status.Cancel) {
+                if (msg.length() > 0) {
+                    msg.append("\n");
+                }
+                msg.append("DICOM status : ");
+                msg.append(s);
+            }
+        }
+
+        if (!hasFailed) {
+            if (timeMessage != null) {
+                msg.append(timeMessage);
+            }
+        } else {
+            if (Status.isPending(s) || s == -1) {
+                state.setStatus(Status.UnableToProcess);
+            }
+        }
+        state.setMessage(msg.toString());
+        return state;
+    }
+
     public static boolean isPending(int status) {
         return (status & Pending) == Pending;
+    }
+
+    public int getStatus() {
+        if (progress != null && progress.getAttributes() != null) {
+            return progress.getStatus();
+        }
+        return status;
+    }
+
+    public void setList(Attributes attributes) {
+        if (attributes != null) {
+            this.list.add(attributes);
+        }
     }
 
 }

@@ -31,12 +31,12 @@ import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.io.SAXReader;
 import org.aoju.bus.image.metric.*;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.CommonExtended;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.image.nimble.codec.Decompressor;
 import org.aoju.bus.logger.Logger;
 import org.xml.sax.SAXException;
@@ -92,7 +92,7 @@ public class StoreSCU {
     public StoreSCU(ApplicationEntity ae) {
         this.remote = new Connection();
         this.ae = ae;
-        rq.addPresentationContext(new PresentationContext(1,
+        rq.addPresentationContext(new Presentation(1,
                 UID.VerificationSOPClass, UID.ImplicitVRLittleEndian));
     }
 
@@ -219,15 +219,15 @@ public class StoreSCU {
                 rq.addCommonExtendedNegotiation(relSOPClasses
                         .getCommonExtendedNegotiation(cuid));
             if (!ts.equals(UID.ExplicitVRLittleEndian))
-                rq.addPresentationContext(new PresentationContext(rq
+                rq.addPresentationContext(new Presentation(rq
                         .getNumberOfPresentationContexts() * 2 + 1, cuid,
                         UID.ExplicitVRLittleEndian));
             if (!ts.equals(UID.ImplicitVRLittleEndian))
-                rq.addPresentationContext(new PresentationContext(rq
+                rq.addPresentationContext(new Presentation(rq
                         .getNumberOfPresentationContexts() * 2 + 1, cuid,
                         UID.ImplicitVRLittleEndian));
         }
-        rq.addPresentationContext(new PresentationContext(rq
+        rq.addPresentationContext(new Presentation(rq
                 .getNumberOfPresentationContexts() * 2 + 1, cuid, ts));
         return true;
     }
@@ -263,9 +263,9 @@ public class StoreSCU {
                     IoUtils.close(in);
                 }
             } else {
-                DicomInputStream in = new DicomInputStream(f);
+                ImageInputStream in = new ImageInputStream(f);
                 try {
-                    in.setIncludeBulkData(DicomInputStream.IncludeBulkData.URI);
+                    in.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
                     Attributes data = in.readDataset(-1, -1);
                     if (Common.updateAttributes(data, attrs, uidSuffix))
                         iuid = data.getString(Tag.SOPInstanceUID);

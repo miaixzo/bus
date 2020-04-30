@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.stream.Stream;
@@ -35,8 +37,8 @@ import java.util.stream.Stream;
  */
 public class ScheduleExpression {
 
-    private String dayOfWeek = "*";
-    private String hour = "*";
+    private String dayOfWeek = Symbol.STAR;
+    private String hour = Symbol.STAR;
     private int dayOfWeeks = -1;
     private int hours = -1;
 

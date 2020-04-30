@@ -30,6 +30,7 @@ package org.aoju.bus.image.nimble.opencv;
  * @since JDK 1.8+
  */
 public class SOFSegment {
+
     private final int marker;
     private final int samplePrecision;
     private final int lines; // height
@@ -69,4 +70,5 @@ public class SOFSegment {
         return String.format("SOF%d[%04x, precision: %d, lines: %d, samples/line: %d]", marker & 0xff - 0xc0, marker,
                 samplePrecision, lines, samplesPerLine);
     }
+
 }

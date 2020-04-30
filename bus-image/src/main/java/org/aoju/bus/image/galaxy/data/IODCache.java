@@ -35,7 +35,7 @@ import java.util.HashMap;
  */
 public class IODCache {
 
-    private final HashMap<String, IOD> map = new HashMap<String, IOD>();
+    private final HashMap<String, IOD> map = new HashMap<>();
 
     public void clear() {
         map.clear();

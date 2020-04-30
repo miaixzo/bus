@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.image.Option;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Property;
 
@@ -45,7 +46,7 @@ public class TransferCapability implements Serializable {
     private Role role;
     private String[] transferSyntaxes;
     private String[] prefTransferSyntaxes = {};
-    private EnumSet<QueryOption> queryOptions;
+    private EnumSet<Option.Type> types;
     private StorageOptions storageOptions;
 
     public TransferCapability() {
@@ -190,12 +191,12 @@ public class TransferCapability implements Serializable {
         return acceptable;
     }
 
-    public EnumSet<QueryOption> getQueryOptions() {
-        return queryOptions;
+    public EnumSet<Option.Type> getTypes() {
+        return types;
     }
 
-    public void setQueryOptions(EnumSet<QueryOption> queryOptions) {
-        this.queryOptions = queryOptions;
+    public void setTypes(EnumSet<Option.Type> types) {
+        this.types = types;
     }
 
     public StorageOptions getStorageOptions() {
@@ -221,8 +222,8 @@ public class TransferCapability implements Serializable {
             sb.append(indent2).append("ts: ");
             UID.promptTo(ts, sb).append(Property.LINE_SEPARATOR);
         }
-        if (queryOptions != null)
-            sb.append(indent2).append("QueryOptions").append(queryOptions)
+        if (types != null)
+            sb.append(indent2).append("QueryOptions").append(types)
                     .append(Property.LINE_SEPARATOR);
         if (storageOptions != null)
             sb.append(indent2).append(storageOptions)

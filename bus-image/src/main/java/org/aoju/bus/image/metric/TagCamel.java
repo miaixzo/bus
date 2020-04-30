@@ -422,13 +422,8 @@ public class TagCamel implements Serializable {
             return false;
         }
         if (keyword == null) {
-            if (other.keyword != null) {
-                return false;
-            }
-        } else if (!keyword.equals(other.keyword)) {
-            return false;
-        }
-        return true;
+            return other.keyword == null;
+        } else return keyword.equals(other.keyword);
     }
 
     @Override
@@ -500,7 +495,7 @@ public class TagCamel implements Serializable {
 
         private final Class<?> clazz;
 
-        private TagType(Class<?> clazz) {
+        TagType(Class<?> clazz) {
             this.clazz = clazz;
         }
 

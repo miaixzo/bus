@@ -26,8 +26,8 @@ package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.*;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.image.nimble.Photometric;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLSImageInputStream;
@@ -252,17 +252,17 @@ public class Decompressor {
             }
 
             @Override
-            public void writeTo(DicomOutputStream out, VR vr) throws IOException {
+            public void writeTo(ImageOutputStream out, VR vr) throws IOException {
                 Decompressor.this.writeTo(out);
             }
 
             @Override
-            public int calcLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+            public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
                 return getEncodedLength(encOpts, explicitVR, vr);
             }
 
             @Override
-            public int getEncodedLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+            public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
                 return (length + 1) & ~1;
             }
         });
