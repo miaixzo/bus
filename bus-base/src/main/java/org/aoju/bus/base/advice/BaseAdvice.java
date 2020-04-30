@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.exception.ValidateException;
 import org.aoju.bus.core.utils.RuntimeUtils;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -112,6 +113,9 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = BusinessException.class)
     public Object businessException(BusinessException e) {
         Logger.error(RuntimeUtils.getStackTrace(e));
+        if(StringUtils.isBlank(e.getErrcode())) {
+            return write(ErrorCode.EM_100513,e.getMessage());
+        }
         return write(e.getErrcode());
     }
 

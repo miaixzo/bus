@@ -53,11 +53,11 @@ public class StorageProviderService {
     public StorageProperties properties;
     public ExtendCache extendCache;
 
-    StorageProviderService(StorageProperties properties) {
+    public StorageProviderService(StorageProperties properties) {
         this(properties, StorageCache.INSTANCE);
     }
 
-    StorageProviderService(StorageProperties properties, ExtendCache extendCache) {
+    public StorageProviderService(StorageProperties properties, ExtendCache extendCache) {
         this.properties = properties;
         this.extendCache = extendCache;
     }

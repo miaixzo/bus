@@ -26,6 +26,7 @@ package org.aoju.bus.core.beans.copier.provider;
 
 import org.aoju.bus.core.beans.BeanDesc;
 import org.aoju.bus.core.beans.copier.ValueProvider;
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -68,19 +69,22 @@ public class BeanValueProvider implements ValueProvider<String> {
             sourcePd = sourcePdMap.get(StringUtils.upperFirstAndAddPre(key, "is"));
         }
 
+        Object result = null;
         if (null != sourcePd) {
             final Method getter = sourcePd.getGetter();
             if (null != getter) {
                 try {
-                    return getter.invoke(source);
+                    result = getter.invoke(source);
                 } catch (Exception e) {
                     if (false == ignoreError) {
                         throw new InstrumentException("Inject [{}] error!", key);
                     }
                 }
+
+                result = Convert.convertWithCheck(valueType, result, null, ignoreError);
             }
         }
-        return null;
+        return result;
     }
 
     @Override

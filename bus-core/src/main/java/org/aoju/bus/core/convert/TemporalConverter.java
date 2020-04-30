@@ -27,6 +27,7 @@ package org.aoju.bus.core.convert;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.utils.StringUtils;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -123,6 +124,9 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
      * @return 日期对象
      */
     private TemporalAccessor parseFromCharSequence(CharSequence value) {
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
         final Instant instant;
         ZoneId zoneId;
         if (null != this.format) {

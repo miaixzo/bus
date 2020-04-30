@@ -25,7 +25,6 @@ public class ServicesApi extends AbstractApi {
      * @param token           for authentication
      * @param projectCIUrl    URL of the GitLab-CI project
      * @throws GitLabApiException if any exception occurs
-     * @deprecated No longer supported
      */
     public void setGitLabCI(Object projectIdOrPath, String token, String projectCIUrl) throws GitLabApiException {
         final Form formData = new Form();
@@ -41,7 +40,6 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @throws GitLabApiException if any exception occurs
-     * @deprecated No longer supported
      */
     public void deleteGitLabCI(Object projectIdOrPath) throws GitLabApiException {
         Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
@@ -106,7 +104,6 @@ public class ServicesApi extends AbstractApi {
      * @param room            HipChatService Room
      * @param server          HipChatService Server URL
      * @throws GitLabApiException if any exception occurs
-     * @deprecated replaced with {@link #updateHipChatService(Object, HipChatService) updateHipChat} method
      */
     public void setHipChat(Object projectIdOrPath, String token, String room, String server) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm()
@@ -123,7 +120,6 @@ public class ServicesApi extends AbstractApi {
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @throws GitLabApiException if any exception occurs
-     * @deprecated replaced with {@link #deleteHipChatService(Object) updateHipChat} method
      */
     public void deleteHipChat(Object projectIdOrPath) throws GitLabApiException {
         deleteHipChatService(projectIdOrPath);

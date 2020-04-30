@@ -599,8 +599,6 @@ public class GroupApi extends AbstractApi {
      * @param sharedRunnersMinutesLimit (optional) - (admin-only) Pipeline minutes quota for this group
      * @return the created Group instance
      * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #addGroup(String, String, String, Visibility,
-     * Boolean, Boolean, Integer)}
      */
     public Group addGroup(String name, String path, String description, Boolean membershipLock,
                           Boolean shareWithGroupLock, Visibility visibility, Boolean lfsEnabled, Boolean requestAccessEnabled,
@@ -639,8 +637,6 @@ public class GroupApi extends AbstractApi {
      * @param sharedRunnersMinutesLimit (optional) - (admin-only) Pipeline minutes quota for this group
      * @return the updated Group instance
      * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #updateGroup(Object, String, String, String,
-     * Visibility, Boolean, Boolean, Integer)}
      */
     public Group updateGroup(Object groupIdOrPath, String name, String path, String description, Boolean membershipLock,
                              Boolean shareWithGroupLock, Visibility visibility, Boolean lfsEnabled, Boolean requestAccessEnabled,

@@ -36,7 +36,6 @@ public class HealthCheckApi extends AbstractApi {
      * @param token Health Status token
      * @return HealthCheckInfo instance
      * @throws GitLabApiException if any exception occurs
-     * @deprecated
      */
     public HealthCheckInfo getLiveness(String token) throws GitLabApiException {
         try {
@@ -72,7 +71,6 @@ public class HealthCheckApi extends AbstractApi {
      * @param token Health Status token
      * @return HealthCheckInfo instance
      * @throws GitLabApiException if any exception occurs
-     * @deprecated
      */
     public HealthCheckInfo getReadiness(String token) throws GitLabApiException {
         try {
@@ -84,4 +82,5 @@ public class HealthCheckApi extends AbstractApi {
             throw (new GitLabApiException(ioe));
         }
     }
+
 }

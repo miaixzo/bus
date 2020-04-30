@@ -52,7 +52,7 @@ public class JarLoader extends ResourceLoader implements Loader {
     private final JarFile jarFile;
 
     public JarLoader(File file) throws IOException {
-        this(new URL("jar:" + file.toURI().toURL() + Normal.JAR_URL_SEPARATOR), new JarFile(file));
+        this(new URL(Normal.JAR_URL_PREFIX + file.toURI().toURL() + Normal.JAR_URL_SEPARATOR), new JarFile(file));
     }
 
     public JarLoader(URL jarURL) throws IOException {

@@ -142,18 +142,8 @@ public abstract class AbstractPowerSource implements PowerSource {
     }
 
     @Override
-    public double getRemainingCapacity() {
-        return getRemainingCapacityPercent();
-    }
-
-    @Override
     public double getRemainingCapacityPercent() {
         return this.remainingCapacityPercent;
-    }
-
-    @Override
-    public double getTimeRemaining() {
-        return getTimeRemainingEstimated();
     }
 
     @Override
@@ -311,4 +301,5 @@ public abstract class AbstractPowerSource implements PowerSource {
         }
         return sb.toString();
     }
+
 }

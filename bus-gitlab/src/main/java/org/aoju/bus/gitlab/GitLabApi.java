@@ -418,110 +418,6 @@ public class GitLabApi {
     }
 
     /**
-     * <p>Logs into GitLab using provided {@code username} and {@code password}, and creates a new {@code GitLabApi} instance
-     * using returned private token and the specified GitLab API version.</p>
-     *
-     * <strong>NOTE</strong>: For GitLab servers 10.2 and above this will utilize OAUTH2 for login.  For GitLab servers prior to
-     * 10.2, the Session API login is utilized.
-     *
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param url        GitLab URL
-     * @param username   user name for which private token should be obtained
-     * @param password   password for a given {@code username}
-     * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @deprecated As of release 4.8.7, will be removed in 4.9.0
-     */
-    @Deprecated
-    public static GitLabApi login(ApiVersion apiVersion, String url, String username, String password) throws GitLabApiException {
-        return (GitLabApi.login(apiVersion, url, username, password, false));
-    }
-
-    /**
-     * <p>Logs into GitLab using provided {@code username} and {@code password}, and creates a new {@code GitLabApi} instance
-     * using returned private token using GitLab API version 4.</p>
-     *
-     * <strong>NOTE</strong>: For GitLab servers 10.2 and above this will utilize OAUTH2 for login.  For GitLab servers prior to
-     * 10.2, the Session API login is utilized.
-     *
-     * @param url      GitLab URL
-     * @param username user name for which private token should be obtained
-     * @param password password for a given {@code username}
-     * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @deprecated As of release 4.8.7, will be removed in 4.9.0
-     */
-    @Deprecated
-    public static GitLabApi login(String url, String username, String password) throws GitLabApiException {
-        return (GitLabApi.login(ApiVersion.V4, url, username, password, false));
-    }
-
-    /**
-     * <p>Logs into GitLab using provided {@code username} and {@code password}, and creates a new {@code GitLabApi} instance
-     * using returned private token and the specified GitLab API version.</p>
-     *
-     * <strong>NOTE</strong>: For GitLab servers 10.2 and above this will utilize OAUTH2 for login.  For GitLab servers prior to
-     * 10.2, the Session API login is utilized.
-     *
-     * @param apiVersion              the ApiVersion specifying which version of the API to use
-     * @param url                     GitLab URL
-     * @param username                user name for which private token should be obtained
-     * @param password                password for a given {@code username}
-     * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
-     * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @deprecated As of release 4.8.7, will be removed in 4.9.0
-     */
-    @Deprecated
-    public static GitLabApi login(ApiVersion apiVersion, String url, String username, String password, boolean ignoreCertificateErrors) throws GitLabApiException {
-
-        GitLabApi gitLabApi = new GitLabApi(apiVersion, url, (String) null);
-        if (ignoreCertificateErrors) {
-            gitLabApi.setIgnoreCertificateErrors(true);
-        }
-
-        try {
-
-            SessionApi sessionApi = gitLabApi.getSessionApi();
-            Session session = sessionApi.login(username, null, password);
-            gitLabApi = new GitLabApi(apiVersion, url, session);
-
-            if (ignoreCertificateErrors) {
-                gitLabApi.setIgnoreCertificateErrors(true);
-            }
-
-        } catch (GitLabApiException gle) {
-            if (gle.getHttpStatus() != Response.Status.NOT_FOUND.getStatusCode()) {
-                throw (gle);
-            } else {
-                gitLabApi = GitLabApi.oauth2Login(apiVersion, url, username, password, null, null, ignoreCertificateErrors);
-            }
-        }
-
-        return (gitLabApi);
-    }
-
-    /**
-     * <p>Logs into GitLab using provided {@code username} and {@code password}, and creates a new {@code GitLabApi} instance
-     * using returned private token using GitLab API version 4.</p>
-     *
-     * <strong>NOTE</strong>: For GitLab servers 10.2 and above this will utilize OAUTH2 for login.  For GitLab servers prior to
-     * 10.2, the Session API login is utilized.
-     *
-     * @param url                     GitLab URL
-     * @param username                user name for which private token should be obtained
-     * @param password                password for a given {@code username}
-     * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
-     * @return new {@code GitLabApi} instance configured for a user-specific token
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @deprecated As of release 4.8.7, will be removed in 4.9.0
-     */
-    @Deprecated
-    public static GitLabApi login(String url, String username, String password, boolean ignoreCertificateErrors) throws GitLabApiException {
-        return (GitLabApi.login(ApiVersion.V4, url, username, password, ignoreCertificateErrors));
-    }
-
-    /**
      * Create and return an Optional instance associated with a GitLabApiException.
      *
      * @param <T>  the type of the Optional instance
@@ -585,20 +481,6 @@ public class GitLabApi {
 
         gitLabApi.defaultPerPage = this.defaultPerPage;
         return (gitLabApi);
-    }
-
-    /**
-     * <p>If this instance was created with {@link #login(String, String, String)} this method will
-     * return the Session instance returned by the GitLab API on login, otherwise returns null.</p>
-     *
-     * <strong>NOTE</strong>: For GitLab servers 10.2 and above this method will always return null.
-     *
-     * @return the Session instance
-     * @deprecated This method will be removed in Release 4.9.0
-     */
-    @Deprecated
-    public Session getSession() {
-        return session;
     }
 
     /**

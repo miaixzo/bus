@@ -292,10 +292,10 @@ public class FileReader extends FileWrapper {
      */
     private void checkFile() throws InstrumentException {
         if (false == file.exists()) {
-            throw new InstrumentException("File not exist: " + file);
+            throw new InstrumentException("File not exist : " + file);
         }
         if (false == file.isFile()) {
-            throw new InstrumentException("Not a file:" + file);
+            throw new InstrumentException("Not a file :" + file);
         }
     }
 

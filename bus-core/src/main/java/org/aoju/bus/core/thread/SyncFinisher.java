@@ -25,7 +25,6 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.lang.exception.NotInitedException;
 import org.aoju.bus.core.utils.ThreadUtils;
 
 import java.util.LinkedHashSet;
@@ -153,21 +152,6 @@ public class SyncFinisher {
                 throw new InstrumentException(e);
             }
         }
-    }
-
-    /**
-     * 等待所有Worker工作结束，否则阻塞
-     *
-     * @throws InterruptedException 用户中断
-     * @deprecated 使用start方法指定是否阻塞等待
-     */
-    @Deprecated
-    public void await() throws InterruptedException {
-        if (endLatch == null) {
-            throw new NotInitedException("Please call start() method first!");
-        }
-
-        endLatch.await();
     }
 
     /**

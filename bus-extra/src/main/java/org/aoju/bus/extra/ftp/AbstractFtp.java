@@ -45,13 +45,16 @@ public abstract class AbstractFtp implements Closeable {
 
     public static final Charset DEFAULT_CHARSET = org.aoju.bus.core.lang.Charset.UTF_8;
 
-    protected String host;
-    protected int port;
+    protected FtpConfig ftpConfig;
 
-    protected String user;
-    protected String password;
-
-    protected Charset charset;
+    /**
+     * 构造
+     *
+     * @param config FTP配置
+     */
+    protected AbstractFtp(FtpConfig config) {
+        this.ftpConfig = config;
+    }
 
     /**
      * 是否包含指定字符串,忽略大小写
@@ -164,12 +167,12 @@ public abstract class AbstractFtp implements Closeable {
             //首位为空,表示以/开头
             this.cd(Symbol.SLASH);
         }
-        for (int i = 0; i < dirs.length; i++) {
-            if (StringUtils.isNotEmpty(dirs[i])) {
-                if (false == cd(dirs[i])) {
+        for (String s : dirs) {
+            if (StringUtils.isNotEmpty(s)) {
+                if (false == cd(s)) {
                     //目录不存在时创建
-                    mkdir(dirs[i]);
-                    cd(dirs[i]);
+                    mkdir(s);
+                    cd(s);
                 }
             }
         }

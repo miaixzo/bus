@@ -33,6 +33,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Key;
 
 /**
  * 默认的HMAC算法实现引擎，使用{@link Mac} 实现摘要
@@ -62,7 +63,7 @@ public class DefaultHMacEngine implements MacEngine {
      * @param algorithm 算法
      * @param key       密钥
      */
-    public DefaultHMacEngine(String algorithm, SecretKey key) {
+    public DefaultHMacEngine(String algorithm, Key key) {
         init(algorithm, key);
     }
 
@@ -85,7 +86,7 @@ public class DefaultHMacEngine implements MacEngine {
      * @return this
      * @throws InstrumentException Cause by IOException
      */
-    public DefaultHMacEngine init(String algorithm, SecretKey key) {
+    public DefaultHMacEngine init(String algorithm, Key key) {
         try {
             mac = Builder.createMac(algorithm);
             if (null == key) {
@@ -129,6 +130,16 @@ public class DefaultHMacEngine implements MacEngine {
      */
     public Mac getMac() {
         return mac;
+    }
+
+    @Override
+    public int getMacLength() {
+        return mac.getMacLength();
+    }
+
+    @Override
+    public String getAlgorithm() {
+        return this.mac.getAlgorithm();
     }
 
 }

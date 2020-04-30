@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,10 @@ public class FtpUtils extends AbstractFtp {
 
     private FTPClient client;
     private FtpMode mode;
+    /**
+     * 执行完操作是否返回当前目录
+     */
+    private boolean backToPwd;
 
     /**
      * 构造,匿名登录
@@ -116,11 +121,17 @@ public class FtpUtils extends AbstractFtp {
      * @param mode     模式
      */
     public FtpUtils(String host, int port, String user, String password, Charset charset, FtpMode mode) {
-        this.host = host;
-        this.port = port;
-        this.user = user;
-        this.password = password;
-        this.charset = charset;
+        this(new FtpConfig(host, port, user, password, charset), mode);
+    }
+
+    /**
+     * 构造
+     *
+     * @param config FTP配置
+     * @param mode   模式
+     */
+    public FtpUtils(FtpConfig config, FtpMode mode) {
+        super(config);
         this.mode = mode;
         this.init();
     }
@@ -131,7 +142,7 @@ public class FtpUtils extends AbstractFtp {
      * @return this
      */
     public FtpUtils init() {
-        return this.init(this.host, this.port, this.user, this.password, this.mode);
+        return this.init(this.ftpConfig, this.mode);
     }
 
     /**
@@ -158,13 +169,30 @@ public class FtpUtils extends AbstractFtp {
      * @return this
      */
     public FtpUtils init(String host, int port, String user, String password, FtpMode mode) {
+        return init(new FtpConfig(host, port, user, password, this.ftpConfig.getCharset()), mode);
+    }
+
+    /**
+     * 初始化连接
+     *
+     * @param config FTP配置
+     * @param mode   模式
+     * @return this
+     */
+    public FtpUtils init(FtpConfig config, FtpMode mode) {
         final FTPClient client = new FTPClient();
-        client.setControlEncoding(this.charset.toString());
+        client.setControlEncoding(config.getCharset().toString());
+        client.setConnectTimeout((int) config.getConnectionTimeout());
+        try {
+            client.setSoTimeout((int) config.getSoTimeout());
+        } catch (SocketException e) {
+            //ignore
+        }
         try {
             // 连接ftp服务器
-            client.connect(host, port);
+            client.connect(config.getHost(), config.getPort());
             // 登录ftp服务器
-            client.login(user, password);
+            client.login(config.getUser(), config.getPassword());
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -175,7 +203,7 @@ public class FtpUtils extends AbstractFtp {
             } catch (IOException e) {
                 // ignore
             }
-            throw new InstrumentException("Login failed for user [{" + user + "}], reply code is: [{" + replyCode + "}]");
+            throw new InstrumentException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
         }
         this.client = client;
         if (mode != null) {
@@ -185,7 +213,7 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 设置FTP连接模式,可选主动和被动模式
+     * 设置FTP连接模式，可选主动和被动模式
      *
      * @param mode 模式枚举
      * @return this
@@ -204,9 +232,18 @@ public class FtpUtils extends AbstractFtp {
     }
 
     /**
-     * 如果连接超时的话,重新进行连接
-     * 经测试,当连接超时时,client.isConnected()仍然返回ture,无法判断是否连接超时
-     * 因此,通过发送pwd命令的方式,检查连接是否超时
+     * 设置执行完操作是否返回当前目录
+     *
+     * @param backToPwd 执行完操作是否返回当前目录
+     * @return this
+     */
+    public FtpUtils setBackToPwd(boolean backToPwd) {
+        this.backToPwd = backToPwd;
+        return this;
+    }
+
+    /**
+     * 如果连接超时的话，重新进行连接 经测试，当连接超时时，client.isConnected()仍然返回ture，无法判断是否连接超时 因此，通过发送pwd命令的方式，检查连接是否超时
      *
      * @return this
      */
@@ -216,7 +253,7 @@ public class FtpUtils extends AbstractFtp {
         try {
             pwd = pwd();
         } catch (InstrumentException fex) {
-            //ignore
+            // ignore
         }
 
         if (pwd == null) {
@@ -233,13 +270,15 @@ public class FtpUtils extends AbstractFtp {
      */
     @Override
     public boolean cd(String directory) {
-        boolean flag;
+        if (StringUtils.isBlank(directory)) {
+            return false;
+        }
+
         try {
-            flag = client.changeWorkingDirectory(directory);
+            return client.changeWorkingDirectory(directory);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        return flag;
     }
 
     /**
@@ -285,10 +324,7 @@ public class FtpUtils extends AbstractFtp {
             ftpFiles = this.client.listFiles();
         } catch (IOException e) {
             throw new InstrumentException(e);
-        }
-
-        if (StringUtils.isNotBlank(pwd)) {
-            // 回到原目录
+        } finally {
             cd(pwd);
         }
 
@@ -297,13 +333,11 @@ public class FtpUtils extends AbstractFtp {
 
     @Override
     public boolean mkdir(String dir) {
-        boolean flag;
         try {
-            flag = this.client.makeDirectory(dir);
+            return this.client.makeDirectory(dir);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        return flag;
     }
 
     /**
@@ -319,10 +353,7 @@ public class FtpUtils extends AbstractFtp {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        if (ArrayUtils.isNotEmpty(ftpFileArr)) {
-            return true;
-        }
-        return false;
+        return ArrayUtils.isNotEmpty(ftpFileArr);
     }
 
     @Override
@@ -336,8 +367,9 @@ public class FtpUtils extends AbstractFtp {
             isSuccess = client.deleteFile(fileName);
         } catch (IOException e) {
             throw new InstrumentException(e);
+        } finally {
+            cd(pwd);
         }
-        cd(pwd);
         return isSuccess;
     }
 
@@ -382,18 +414,18 @@ public class FtpUtils extends AbstractFtp {
      * 3. path为绝对路径则上传到此路径
      * </pre>
      *
-     * @param path 服务端路径,可以为{@code null} 或者相对路径或绝对路径
-     * @param file 文件
+     * @param destPath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
+     * @param file     文件
      * @return 是否上传成功
      */
     @Override
-    public boolean upload(String path, File file) {
+    public boolean upload(String destPath, File file) {
         Assert.notNull(file, "file to upload is null !");
-        return upload(path, file.getName(), file);
+        return upload(destPath, file.getName(), file);
     }
 
     /**
-     * 上传文件到指定目录,可选：
+     * 上传文件到指定目录，可选：
      *
      * <pre>
      * 1. path为null或""上传到当前路径
@@ -435,6 +467,11 @@ public class FtpUtils extends AbstractFtp {
             throw new InstrumentException(e);
         }
 
+        String pwd = null;
+        if (this.backToPwd) {
+            pwd = pwd();
+        }
+
         if (StringUtils.isNotBlank(path)) {
             mkDirs(path);
             boolean isOk = cd(path);
@@ -447,6 +484,10 @@ public class FtpUtils extends AbstractFtp {
             return client.storeFile(fileName, fileStream);
         } catch (IOException e) {
             throw new InstrumentException(e);
+        } finally {
+            if (this.backToPwd) {
+                cd(pwd);
+            }
         }
     }
 
@@ -492,12 +533,21 @@ public class FtpUtils extends AbstractFtp {
      * @param out      输出位置
      */
     public void download(String path, String fileName, OutputStream out) {
+        String pwd = null;
+        if (this.backToPwd) {
+            pwd = pwd();
+        }
+
         cd(path);
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
             client.retrieveFile(fileName, out);
         } catch (IOException e) {
             throw new InstrumentException(e);
+        } finally {
+            if (backToPwd) {
+                cd(pwd);
+            }
         }
     }
 

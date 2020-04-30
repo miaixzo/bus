@@ -54,7 +54,7 @@ public class NotifyProviderService {
     private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
     public NotifyProperties properties;
 
-    NotifyProviderService(NotifyProperties properties) {
+    public NotifyProviderService(NotifyProperties properties) {
         this.properties = properties;
     }
 

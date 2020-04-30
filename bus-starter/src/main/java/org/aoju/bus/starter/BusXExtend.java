@@ -58,6 +58,10 @@ public class BusXExtend {
      */
     public static final String I18N = "extend.i18n";
     /**
+     * 图像解析
+     */
+    public static final String IMAGE = "extend.image";
+    /**
      * 限流支持
      */
     public static final String LIMITER = "extend.limiter";
@@ -65,10 +69,6 @@ public class BusXExtend {
      * Mybatis/Mapper
      */
     public static final String MYBATIS = "extend.mybatis";
-    /**
-     * API网关
-     */
-    public static final String METRIC = "extend.metric";
     /**
      * 消息通知
      */
@@ -78,7 +78,7 @@ public class BusXExtend {
      */
     public static final String OAUTH = "extend.oauth";
     /**
-     * 文件在线预览
+     * 文件预览
      */
     public static final String PREVIEW = "extend.preview";
     /**

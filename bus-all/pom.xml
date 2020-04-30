@@ -82,6 +82,12 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>bus-image</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>bus-limiter</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
@@ -137,6 +143,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-setting</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-shade</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>
@@ -245,7 +257,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.2.0</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>

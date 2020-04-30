@@ -53,11 +53,11 @@ public class AuthProviderService {
     public AuthProperties properties;
     public ExtendCache extendCache;
 
-    AuthProviderService(AuthProperties properties) {
+    public AuthProviderService(AuthProperties properties) {
         this(properties, OauthCache.INSTANCE);
     }
 
-    AuthProviderService(AuthProperties properties, ExtendCache extendCache) {
+    public AuthProviderService(AuthProperties properties, ExtendCache extendCache) {
         this.properties = properties;
         this.extendCache = extendCache;
     }
