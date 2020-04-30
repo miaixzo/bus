@@ -509,7 +509,6 @@ public class UserApi extends AbstractApi {
      * @param projectsLimit the maximum number of project
      * @return created User instance
      * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #createUser(User, CharSequence, boolean)}
      */
     public User createUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
         Form formData = userToForm(user, projectsLimit, password, null, true);
@@ -587,45 +586,6 @@ public class UserApi extends AbstractApi {
      */
     public User updateUser(User user, CharSequence password) throws GitLabApiException {
         Form form = userToForm(user, null, password, false, false);
-        Response response = put(Response.Status.OK, form.asMap(), "users", user.getId());
-        return (response.readEntity(User.class));
-    }
-
-    /**
-     * Modifies an existing user. Only administrators can change attributes of a user.
-     *
-     * <pre><code>GitLab Endpoint: PUT /users/:id</code></pre>
-     *
-     * <p>The following properties of the provided User instance can be set during update:<pre><code> email (required) - Email
-     * username (required) - Username
-     * name (required) - Name
-     * skype (optional) - Skype ID
-     * linkedin (optional) - LinkedIn
-     * twitter (optional) - Twitter account
-     * websiteUrl (optional) - Website URL
-     * organization (optional) - Organization name
-     * projectsLimit (optional) - Number of projects user can create
-     * externUid (optional) - External UID
-     * provider (optional) - External provider name
-     * bio (optional) - User's biography
-     * location (optional) - User's location
-     * admin (optional) - User is admin - true or false (default)
-     * canCreateGroup (optional) - User can create groups - true or false
-     * skipConfirmation (optional) - Skip confirmation - true or false (default)
-     * external (optional) - Flags the user as external - true or false(default)
-     * sharedRunnersMinutesLimit (optional) - Pipeline minutes quota for this user
-     * </code></pre>
-     *
-     * @param user          the User instance with the user info to modify
-     * @param password      the new password for the user
-     * @param projectsLimit the maximum number of project
-     * @return the modified User instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link #updateUser(User, CharSequence)}
-     */
-    @Deprecated
-    public User modifyUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
-        Form form = userToForm(user, projectsLimit, password, false, false);
         Response response = put(Response.Status.OK, form.asMap(), "users", user.getId());
         return (response.readEntity(User.class));
     }

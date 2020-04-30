@@ -39,23 +39,6 @@ public class CommitsApi extends AbstractApi {
     }
 
     /**
-     * Get a list of repository commits in a project.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param page            the page to get
-     * @param perPage         the number of commits per page
-     * @return a list containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @deprecated
-     */
-    @Deprecated
-    public List<Commit> getCommits(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        return (getCommits(projectIdOrPath, null, null, null, page, perPage));
-    }
-
-    /**
      * Get a Pager of all repository commits in a project.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
@@ -131,26 +114,6 @@ public class CommitsApi extends AbstractApi {
     }
 
     /**
-     * Get a list of repository commits in a project.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param ref             the name of a repository branch or tag or if not given the default branch
-     * @param since           only commits after or on this date will be returned
-     * @param until           only commits before or on this date will be returned
-     * @param page            the page to get
-     * @param perPage         the number of commits per page
-     * @return a list containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @deprecated
-     */
-    @Deprecated
-    public List<Commit> getCommits(Object projectIdOrPath, String ref, Date since, Date until, int page, int perPage) throws GitLabApiException {
-        return (getCommits(projectIdOrPath, ref, since, until, null, page, perPage));
-    }
-
-    /**
      * Get a Stream of repository commits in a project.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
@@ -181,36 +144,6 @@ public class CommitsApi extends AbstractApi {
      */
     public Stream<Commit> getCommitsStream(Object projectIdOrPath, String ref, Date since, Date until, String path) throws GitLabApiException {
         return (getCommits(projectIdOrPath, ref, since, until, path, null, null, null, getDefaultPerPage()).stream());
-    }
-
-    /**
-     * Get a list of repository commits in a project.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
-     * @param ref             the name of a repository branch or tag or if not given the default branch
-     * @param since           only commits after or on this date will be returned
-     * @param until           only commits before or on this date will be returned
-     * @param path            the path to file of a project
-     * @param page            the page to get
-     * @param perPage         the number of commits per page
-     * @return a list containing the commits for the specified project ID
-     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @deprecated
-     */
-    @Deprecated
-    public List<Commit> getCommits(Object projectIdOrPath, String ref, Date since, Date until, String path, int page, int perPage) throws GitLabApiException {
-        Form formData = new GitLabApiForm()
-                .withParam("ref_name", ref)
-                .withParam("since", ISO8601.toString(since, false))
-                .withParam("until", ISO8601.toString(until, false))
-                .withParam("path", (path == null ? null : urlEncode(path)))
-                .withParam(PAGE_PARAM, page)
-                .withParam(PER_PAGE_PARAM, perPage);
-        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits");
-        return (response.readEntity(new GenericType<List<Commit>>() {
-        }));
     }
 
     /**

@@ -207,7 +207,6 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private String querySerialFromLshal() {
-        // if lshal command available (HAL deprecated in newer linuxes)
         String marker = "system.hardware.serial =";
         for (String checkLine : Command.runNative("lshal")) {
             if (checkLine.contains(marker)) {

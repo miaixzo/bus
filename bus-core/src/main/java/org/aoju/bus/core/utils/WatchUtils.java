@@ -305,7 +305,6 @@ public class WatchUtils {
      * @param uri     URI
      * @param watcher {@link Watcher}
      * @return {@link WatchMonitor}
-     * @since 4.5.2
      */
     public static WatchMonitor createModify(URI uri, Watcher watcher) {
         return createModify(uri, 0, watcher);

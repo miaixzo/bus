@@ -1028,7 +1028,6 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @deprecated As of release 4.2.0, replaced by {@link #createProject(String, Integer, String, Boolean, Boolean,
      * Boolean, Boolean, Visibility, Integer, String)}
      */
-    @Deprecated
     public Project createProject(String name, Integer namespaceId, String description, Boolean issuesEnabled, Boolean mergeRequestsEnabled,
                                  Boolean wikiEnabled, Boolean snippetsEnabled, Boolean isPublic, Integer visibilityLevel, String importUrl) throws GitLabApiException {
 
@@ -1897,104 +1896,6 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         Response response = put(Response.Status.OK, formData.asMap(), "projects", hook.getProjectId(), "hooks", hook.getId());
         return (response.readEntity(ProjectHook.class));
-    }
-
-    /**
-     * Get a list of the project's issues.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @return a list of project's issues
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object)}
-     */
-    @Deprecated
-    public List<Issue> getIssues(Object projectIdOrPath) throws GitLabApiException {
-        return (getIssues(projectIdOrPath, getDefaultPerPage()).all());
-    }
-
-    /**
-     * Get a list of project's issues using the specified page and per page settings.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param page            the page to get
-     * @param perPage         the number of issues per page
-     * @return the list of issues in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object, int, int)}
-     */
-    @Deprecated
-    public List<Issue> getIssues(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects", getProjectIdOrPath(projectIdOrPath), "issues");
-        return (response.readEntity(new GenericType<List<Issue>>() {
-        }));
-    }
-
-    /**
-     * Get a Pager of project's issues.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param itemsPerPage    the number of issues per page
-     * @return the list of issues in the specified range
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object, int)}
-     */
-    @Deprecated
-    public Pager<Issue> getIssues(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Issue>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
-    }
-
-    /**
-     * Get a Stream of the project's issues.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @return a Stream of the project's issues
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssues(Object)}
-     */
-    @Deprecated
-    public Stream<Issue> getIssuesStream(Object projectIdOrPath) throws GitLabApiException {
-        return (getIssues(projectIdOrPath, getDefaultPerPage()).stream());
-    }
-
-    /**
-     * Get a single project issue.
-     *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/issues/:issue_iid</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param issueId         the internal ID of a project's issue
-     * @return the specified Issue instance
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#getIssue(Object, Integer)}
-     */
-    @Deprecated
-    public Issue getIssue(Object projectIdOrPath, Integer issueId) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getDefaultPerPageParam(), "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueId);
-        return (response.readEntity(Issue.class));
-    }
-
-    /**
-     * Delete a project issue.
-     *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid</code></pre>
-     *
-     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param issueId         the internal ID of a project's issue
-     * @throws GitLabApiException if any exception occurs
-     * @deprecated Will be removed in version 5.0, replaced by {@link IssuesApi#deleteIssue(Object, Integer)}
-     */
-    @Deprecated
-    public void deleteIssue(Object projectIdOrPath, Integer issueId) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
-        delete(expectedStatus, getDefaultPerPageParam(), "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueId);
     }
 
     /**

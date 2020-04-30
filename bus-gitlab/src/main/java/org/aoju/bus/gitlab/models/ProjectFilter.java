@@ -212,7 +212,6 @@ public class ProjectFilter {
      *
      * @param minAccessLevel limit by current user minimal access level
      * @return the reference to this ProjectFilter instance
-     * @deprecated Replaced by {@link #withMinAccessLevel(org.aoju.bus.gitlab.models.AccessLevel) getComponentAt}
      */
     public ProjectFilter minAccessLevel(org.aoju.bus.gitlab.models.AccessLevel minAccessLevel) {
         this.minAccessLevel = minAccessLevel;
