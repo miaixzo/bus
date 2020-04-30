@@ -27,7 +27,7 @@ package org.aoju.bus.crypto.digest.mac;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.crypto.Builder;
 
-import javax.crypto.SecretKey;
+import java.security.Key;
 
 /**
  * {@link MacEngine} 实现工厂类
@@ -45,7 +45,7 @@ public class MacEngineFactory {
      * @param key       密钥
      * @return {@link MacEngine}
      */
-    public static MacEngine createEngine(String algorithm, SecretKey key) {
+    public static MacEngine createEngine(String algorithm, Key key) {
         if (Algorithm.HmacSM3.equalsIgnoreCase(algorithm)) {
             // HmacSM3算法是BC库实现的
             return Builder.createHmacSm3Engine(key.getEncoded());

@@ -932,6 +932,17 @@ public class IoUtils {
      *
      * @param out        输出流
      * @param isCloseOut 写入完毕是否关闭输出流
+     * @param obj        写入的对象内容
+     */
+    public static void write(OutputStream out, boolean isCloseOut, Serializable obj) throws InstrumentException {
+        writeObjects(out, isCloseOut, obj);
+    }
+
+    /**
+     * 将多部分内容写到流中
+     *
+     * @param out        输出流
+     * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容
      * @throws InstrumentException 异常
      */

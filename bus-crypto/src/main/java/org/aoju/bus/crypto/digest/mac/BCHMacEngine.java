@@ -114,4 +114,14 @@ public class BCHMacEngine implements MacEngine {
         return mac;
     }
 
+    @Override
+    public int getMacLength() {
+        return mac.getMacSize();
+    }
+
+    @Override
+    public String getAlgorithm() {
+        return this.mac.getAlgorithmName();
+    }
+
 }

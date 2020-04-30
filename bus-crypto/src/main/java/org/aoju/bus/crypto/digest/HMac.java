@@ -33,12 +33,12 @@ import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngineFactory;
 
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.security.Key;
 
 /**
  * HMAC摘要算法
@@ -64,7 +64,7 @@ public class HMac implements Serializable {
      * @param algorithm 算法 {@link Algorithm}
      */
     public HMac(String algorithm) {
-        this(algorithm, (SecretKey) null);
+        this(algorithm, (Key) null);
     }
 
     /**
@@ -83,7 +83,7 @@ public class HMac implements Serializable {
      * @param algorithm 算法
      * @param key       密钥
      */
-    public HMac(String algorithm, SecretKey key) {
+    public HMac(String algorithm, Key key) {
         this(MacEngineFactory.createEngine(algorithm, key));
     }
 
@@ -229,6 +229,24 @@ public class HMac implements Serializable {
      */
     public String digestHex(InputStream data, int bufferLength) {
         return HexUtils.encodeHexStr(digest(data, bufferLength));
+    }
+
+    /**
+     * 获取MAC算法块长度
+     *
+     * @return MAC算法块长度
+     */
+    public int getMacLength() {
+        return this.engine.getMacLength();
+    }
+
+    /**
+     * 获取算法
+     *
+     * @return 算法
+     */
+    public String getAlgorithm() {
+        return this.engine.getAlgorithm();
     }
 
 }

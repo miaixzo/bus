@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -39,7 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class SimpleCache<K, V> {
+public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {
 
     /**
      * 池
@@ -110,6 +112,11 @@ public class SimpleCache<K, V> {
         } finally {
             writeLock.unlock();
         }
+    }
+
+    @Override
+    public Iterator<Map.Entry<K, V>> iterator() {
+        return this.cache.entrySet().iterator();
     }
 
 }
