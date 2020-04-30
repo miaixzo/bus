@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -126,7 +126,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
     }
 
     @Override
-    public int calcLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+    public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         int len = 0;
         for (Attributes item : this) {
             len += 8 + item.calcLength(encOpts, explicitVR);
@@ -142,7 +142,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
     }
 
     @Override
-    public int getEncodedLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+    public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
         if (isEmpty())
             return encOpts.undefEmptySequenceLength ? -1 : 0;
 
@@ -156,7 +156,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
     }
 
     @Override
-    public void writeTo(DicomOutputStream out, VR vr) throws IOException {
+    public void writeTo(ImageOutputStream out, VR vr) throws IOException {
         for (Attributes item : this)
             item.writeItemTo(out);
     }

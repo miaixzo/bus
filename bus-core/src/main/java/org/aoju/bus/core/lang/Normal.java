@@ -41,6 +41,10 @@ public class Normal {
     /**
      * 字符串:空
      */
+    public static final String BUS = "bus";
+    /**
+     * 字符串:空
+     */
     public static final String EMPTY = "";
     /**
      * 字符串:null
@@ -78,6 +82,10 @@ public class Normal {
      * URL 协议表示Jar文件: "jar"
      */
     public static final String URL_PROTOCOL_JAR = "jar";
+    /**
+     * LIB 协议表示lib文件: "lib"
+     */
+    public static final String LIB_PROTOCOL_JAR = "lib";
     /**
      * URL 协议表示zip文件: "zip"
      */

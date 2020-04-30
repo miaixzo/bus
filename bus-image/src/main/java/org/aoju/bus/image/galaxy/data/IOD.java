@@ -411,17 +411,17 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
     private static class SAXHandler extends DefaultHandler {
 
-        private StringBuilder sb = new StringBuilder();
+        private final StringBuilder sb = new StringBuilder();
+        private final List<String> values = new ArrayList<String>();
+        private final List<Code> codes = new ArrayList<Code>();
+        private final LinkedList<IOD> iodStack = new LinkedList<IOD>();
+        private final LinkedList<Condition> conditionStack = new LinkedList<Condition>();
+        private final Map<String, IOD> id2iod = new HashMap<String, IOD>();
+        private final Map<String, Condition> id2cond = new HashMap<String, Condition>();
         private boolean processCharacters;
         private boolean elementConditions;
         private boolean itemConditions;
         private String idref;
-        private List<String> values = new ArrayList<String>();
-        private List<Code> codes = new ArrayList<Code>();
-        private LinkedList<IOD> iodStack = new LinkedList<IOD>();
-        private LinkedList<Condition> conditionStack = new LinkedList<Condition>();
-        private Map<String, IOD> id2iod = new HashMap<String, IOD>();
-        private Map<String, Condition> id2cond = new HashMap<String, Condition>();
         private Locator locator;
 
         public SAXHandler(IOD iod) {

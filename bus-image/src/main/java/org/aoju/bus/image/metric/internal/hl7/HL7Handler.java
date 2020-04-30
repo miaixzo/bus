@@ -25,6 +25,7 @@
 package org.aoju.bus.image.metric.internal.hl7;
 
 import org.aoju.bus.image.metric.Connection;
+import org.aoju.bus.image.metric.acquire.HL7DeviceExtension;
 import org.aoju.bus.image.metric.internal.net.TCPHandler;
 import org.aoju.bus.logger.Logger;
 

@@ -50,10 +50,6 @@ public class DateRange implements Serializable {
         return end;
     }
 
-    public boolean isStartDateExeedsEndDate() {
-        return start != null && end != null && start.after(end);
-    }
-
     public boolean contains(Date when) {
         return !(start != null && start.after(when)
                 || end != null && end.before(when));

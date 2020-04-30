@@ -25,13 +25,12 @@
 package org.aoju.bus.image.nimble.opencv;
 
 import org.aoju.bus.image.nimble.Photometric;
-import org.aoju.bus.image.nimble.codec.BytesWithImageImageDescriptor;
+import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.osgi.OpenCVNativeLoader;
 
 import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
@@ -47,10 +46,6 @@ import java.nio.ByteOrder;
  * @since JDK 1.8+
  */
 public class NativeJPEGImageWriter extends ImageWriter {
-    static {
-        OpenCVNativeLoader loader = new OpenCVNativeLoader();
-        loader.init();
-    }
 
     NativeJPEGImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
@@ -93,10 +88,10 @@ public class NativeJPEGImageWriter extends ImageWriter {
 
         JPEGImageWriteParam jpegParams = (JPEGImageWriteParam) param;
 
-        if (!(stream instanceof BytesWithImageImageDescriptor)) {
+        if (!(stream instanceof BytesWithImageDescriptor)) {
             throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
         }
-        ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
+        ImageDescriptor desc = ((BytesWithImageDescriptor) stream).getImageDescriptor();
         Photometric pi = desc.getPhotometric();
 
         if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi

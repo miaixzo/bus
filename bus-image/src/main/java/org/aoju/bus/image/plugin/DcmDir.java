@@ -32,8 +32,8 @@ import org.aoju.bus.image.galaxy.DirWriter;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.media.RecordFactory;
 import org.aoju.bus.image.galaxy.media.RecordType;
 import org.aoju.bus.logger.Logger;
@@ -57,11 +57,11 @@ public class DcmDir {
      * default number of characters per line
      */
     private static final int DEFAULT_WIDTH = 78;
-    private static ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
+    private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
     private final FilesetInfo fsInfo = new FilesetInfo();
     private boolean inUse;
     private int width = DEFAULT_WIDTH;
-    private DicomEncodingOptions encOpts = DicomEncodingOptions.DEFAULT;
+    private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
     private boolean origSeqLength;
     private boolean checkDuplicate;
 
@@ -162,7 +162,7 @@ public class DcmDir {
         this.origSeqLength = origSeqLength;
     }
 
-    private void setEncodingOptions(DicomEncodingOptions encOpts) {
+    private void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
@@ -270,10 +270,10 @@ public class DcmDir {
 
         Attributes fmi;
         Attributes dataset;
-        DicomInputStream din = null;
+        ImageInputStream din = null;
         try {
-            din = new DicomInputStream(f);
-            din.setIncludeBulkData(DicomInputStream.IncludeBulkData.NO);
+            din = new ImageInputStream(f);
+            din.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             fmi = din.readFileMetaInformation();
             dataset = din.readDataset(-1, Tag.PixelData);
         } catch (IOException e) {
@@ -378,10 +378,10 @@ public class DcmDir {
         String styuid;
         String seruid;
         String iuid;
-        DicomInputStream din = null;
+        ImageInputStream din = null;
         try {
-            din = new DicomInputStream(f);
-            din.setIncludeBulkData(DicomInputStream.IncludeBulkData.NO);
+            din = new ImageInputStream(f);
+            din.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             Attributes fmi = din.readFileMetaInformation();
             Attributes dataset = din.readDataset(-1, Tag.StudyID);
             iuid = (fmi != null)

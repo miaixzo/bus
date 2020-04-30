@@ -27,7 +27,7 @@ package org.aoju.bus.image.metric;
 import org.aoju.bus.image.Status;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ import java.io.IOException;
 public class DimseRSPHandler {
 
     private final int msgId;
-    private PresentationContext pc;
+    private Presentation pc;
     private volatile Timeout timeout;
     private boolean stopOnPending;
 
@@ -47,7 +47,7 @@ public class DimseRSPHandler {
         this.msgId = msgId;
     }
 
-    final void setPC(PresentationContext pc) {
+    final void setPC(Presentation pc) {
         this.pc = pc;
     }
 

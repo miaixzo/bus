@@ -30,6 +30,7 @@ import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.IOD;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.data.ValidationResult;
+import org.aoju.bus.image.metric.ImageException;
 
 /**
  * @author Kimi Liu
@@ -163,7 +164,7 @@ public enum Level {
     };
 
     public static Level valueOf(Attributes attrs,
-                                String[] qrLevels) throws ServiceException {
+                                String[] qrLevels) throws ImageException {
         ValidationResult result = new ValidationResult();
         attrs.validate(new IOD.DataElement(Tag.QueryRetrieveLevel, VR.LO,
                         IOD.DataElementType.TYPE_1, 1, 1, 0).setValues(qrLevels),
@@ -172,9 +173,9 @@ public enum Level {
         return Level.valueOf(attrs.getString(Tag.QueryRetrieveLevel));
     }
 
-    private static void check(ValidationResult result) throws ServiceException {
+    private static void check(ValidationResult result) throws ImageException {
         if (!result.isValid())
-            throw new ServiceException(
+            throw new ImageException(
                     Status.IdentifierDoesNotMatchSOPClass,
                     result.getErrorComment())
                     .setOffendingElements(result.getOffendingElements());
@@ -182,13 +183,13 @@ public enum Level {
 
     public void validateQueryKeys(Attributes attrs,
                                   Level rootLevel, boolean relational)
-            throws ServiceException {
+            throws ImageException {
         check(attrs.validate(queryKeysIOD(rootLevel, relational)));
     }
 
     public void validateRetrieveKeys(Attributes attrs,
                                      Level rootLevel, boolean relational)
-            throws ServiceException {
+            throws ImageException {
         check(attrs.validate(retrieveKeysIOD(rootLevel, relational)));
     }
 

@@ -30,7 +30,7 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.image.nimble.codec.jpeg.JPEG;
 import org.aoju.bus.image.nimble.codec.jpeg.JPEGHeader;
 import org.aoju.bus.image.nimble.codec.mpeg.MPEGHeader;
@@ -138,7 +138,7 @@ public class Jpg2Dcm {
                 throw new IOException(MessageFormat.format("failed-to-parse", inFileType, infile));
 
             int itemLen = (int) fileLength;
-            try (DicomOutputStream dos = new DicomOutputStream(outfile)) {
+            try (ImageOutputStream dos = new ImageOutputStream(outfile)) {
                 dos.writeDataset(metadata.createFileMetaInformation(inFileType.getTransferSyntaxUID()), metadata);
                 dos.writeHeader(Tag.PixelData, VR.OB, -1);
                 dos.writeHeader(Tag.Item, null, 0);

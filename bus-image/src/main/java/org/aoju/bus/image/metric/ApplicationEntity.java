@@ -28,11 +28,11 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Dimse;
+import org.aoju.bus.image.Option;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.acquire.AEExtension;
 import org.aoju.bus.image.metric.internal.pdu.*;
-import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -426,7 +426,7 @@ public class ApplicationEntity implements Serializable {
             throw new IllegalStateException("Not attached to Device");
     }
 
-    void onDimseRQ(Association as, PresentationContext pc, Dimse cmd,
+    void onDimseRQ(Association as, Presentation pc, Dimse cmd,
                    Attributes cmdAttrs, PDVInputStream data) throws IOException {
         DimseRQHandler tmp = getDimseRQHandler();
         if (tmp == null) {
@@ -492,27 +492,27 @@ public class ApplicationEntity implements Serializable {
         return (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).get(sopClass);
     }
 
-    protected PresentationContext negotiate(AAssociateRQ rq, AAssociateAC ac,
-                                            PresentationContext rqpc) {
+    protected Presentation negotiate(AAssociateRQ rq, AAssociateAC ac,
+                                     Presentation rqpc) {
         String as = rqpc.getAbstractSyntax();
         TransferCapability tc = roleSelection(rq, ac, as);
         int pcid = rqpc.getPCID();
         if (tc == null)
-            return new PresentationContext(pcid,
-                    PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
+            return new Presentation(pcid,
+                    Presentation.ABSTRACT_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
 
         String ts = tc.selectTransferSyntax(rqpc.getTransferSyntaxes());
         if (ts == null)
-            return new PresentationContext(pcid,
-                    PresentationContext.TRANSFER_SYNTAX_NOT_SUPPORTED,
+            return new Presentation(pcid,
+                    Presentation.TRANSFER_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
 
         byte[] info = negotiate(rq.getExtNegotiationFor(as), tc);
         if (info != null)
-            ac.addExtendedNegotiation(new ExtendedNegotiate(as, info));
-        return new PresentationContext(pcid,
-                PresentationContext.ACCEPTANCE, ts);
+            ac.addExtendedNegotiate(new ExtendedNegotiate(as, info));
+        return new Presentation(pcid,
+                Presentation.ACCEPTANCE, ts);
     }
 
     private TransferCapability roleSelection(AAssociateRQ rq,
@@ -565,11 +565,11 @@ public class ApplicationEntity implements Serializable {
         if (storageOptions != null)
             return storageOptions.toExtendedNegotiationInformation();
 
-        EnumSet<QueryOption> queryOptions = tc.getQueryOptions();
-        if (queryOptions != null) {
-            EnumSet<QueryOption> commonOpts = QueryOption.toOptions(exneg);
-            commonOpts.retainAll(queryOptions);
-            return QueryOption.toExtendedNegotiationInformation(commonOpts);
+        EnumSet<Option.Type> types = tc.getTypes();
+        if (types != null) {
+            EnumSet<Option.Type> commonOpts = Option.Type.toOptions(exneg);
+            commonOpts.retainAll(types);
+            return Option.Type.toExtendedNegotiationInformation(commonOpts);
         }
         return null;
     }

@@ -1593,7 +1593,7 @@ public class FileUtils {
         // 兼容Spring风格的ClassPath路径,去除前缀,不区分大小写
         String pathToUse = StringUtils.removePrefixIgnoreCase(path, "classpath:");
         // 去除file:前缀
-        pathToUse = StringUtils.removePrefixIgnoreCase(pathToUse, "file:");
+        pathToUse = StringUtils.removePrefixIgnoreCase(pathToUse, Normal.FILE_URL_PREFIX);
         // 统一使用斜杠
         pathToUse = pathToUse.replaceAll("[/\\\\]{1,}", Symbol.SLASH).trim();
 

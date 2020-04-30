@@ -159,7 +159,7 @@ public class Launcher {
 
         if (hold == null || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
             if (keyfile != null && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
-                throw new IOException("could not delete key file: " + keyfile.getCanonicalPath());
+                throw new IOException("could not delete key file : " + keyfile.getCanonicalPath());
             }
         }
 

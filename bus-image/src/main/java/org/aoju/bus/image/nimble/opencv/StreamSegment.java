@@ -25,11 +25,10 @@
 package org.aoju.bus.image.nimble.opencv;
 
 import org.aoju.bus.image.galaxy.data.BulkData;
-import org.aoju.bus.image.nimble.codec.BytesWithImageImageDescriptor;
+import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.aoju.bus.image.nimble.stream.SegmentedImageStream;
 import org.aoju.bus.logger.Logger;
-import org.opencv.osgi.OpenCVNativeLoader;
 
 import javax.imageio.ImageReadParam;
 import javax.imageio.stream.FileCacheImageInputStream;
@@ -51,11 +50,6 @@ import java.util.List;
  */
 public abstract class StreamSegment {
 
-    static {
-        OpenCVNativeLoader loader = new OpenCVNativeLoader();
-        loader.init();
-    }
-
     private final long[] segPosition;
     private final long[] segLength;
     private final ImageDescriptor imageDescriptor;
@@ -74,8 +68,8 @@ public abstract class StreamSegment {
             return getFileStreamSegment((SegmentedImageStream) iis);
         } else if (iis instanceof FileCacheImageInputStream) {
             throw new IllegalArgumentException("No adaptor implemented yet for FileCacheImageInputStream");
-        } else if (iis instanceof BytesWithImageImageDescriptor) {
-            BytesWithImageImageDescriptor stream = (BytesWithImageImageDescriptor) iis;
+        } else if (iis instanceof BytesWithImageDescriptor) {
+            BytesWithImageDescriptor stream = (BytesWithImageDescriptor) iis;
             return new MemoryStreamSegment(stream.getBytes(), stream.getImageDescriptor());
         }
         throw new IllegalArgumentException("No stream adaptor found for " + iis.getClass().getName() + "!");

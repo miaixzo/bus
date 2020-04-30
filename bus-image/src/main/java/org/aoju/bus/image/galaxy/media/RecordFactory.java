@@ -81,9 +81,9 @@ public class RecordFactory {
 
         EnumMap<RecordType, int[]> recordKeys = new EnumMap<>(
                 RecordType.class);
-        HashMap<String, RecordType> recordTypes = new HashMap<String, RecordType>(
+        HashMap<String, RecordType> recordTypes = new HashMap<>(
                 134);
-        HashMap<String, String> privateRecordUIDs = new HashMap<String, String>();
+        HashMap<String, String> privateRecordUIDs = new HashMap<>();
         HashMap<String, int[]> privateRecordKeys = new HashMap<>();
         for (Attributes item : sq) {
             RecordType type = RecordType.forCode(item.getString(

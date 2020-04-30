@@ -44,16 +44,16 @@ import java.util.List;
  */
 public class Xml2Dcm {
 
-    private DicomInputStream.IncludeBulkData includeBulkData = DicomInputStream.IncludeBulkData.URI;
+    private final BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
+    private ImageInputStream.IncludeBulkData includeBulkData = ImageInputStream.IncludeBulkData.URI;
     private boolean catBlkFiles = false;
     private String blkFilePrefix = "blk";
     private String blkFileSuffix;
     private File blkDirectory;
-    private BasicBulkDataDescriptor bulkDataDescriptor = new BasicBulkDataDescriptor();
     private String tsuid;
     private boolean withfmi;
     private boolean nofmi;
-    private DicomEncodingOptions encOpts = DicomEncodingOptions.DEFAULT;
+    private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
     private List<File> bulkDataFiles;
     private Attributes fmi;
     private Attributes dataset;
@@ -76,7 +76,7 @@ public class Xml2Dcm {
         }
     }
 
-    public final void setIncludeBulkData(DicomInputStream.IncludeBulkData includeBulkData) {
+    public final void setIncludeBulkData(ImageInputStream.IncludeBulkData includeBulkData) {
         this.includeBulkData = includeBulkData;
     }
 
@@ -116,7 +116,7 @@ public class Xml2Dcm {
         this.nofmi = nofmi;
     }
 
-    public final void setEncodingOptions(DicomEncodingOptions encOpts) {
+    public final void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
@@ -129,7 +129,7 @@ public class Xml2Dcm {
                 fmi.getString(Tag.TransferSyntaxUID, null))) {
             fmi = dataset.createFileMetaInformation(tsuid);
         }
-        DicomOutputStream dos = new DicomOutputStream(
+        ImageOutputStream dos = new ImageOutputStream(
                 new BufferedOutputStream(out),
                 fmi != null
                         ? UID.ExplicitVRLittleEndian
@@ -148,7 +148,7 @@ public class Xml2Dcm {
                 f.delete();
     }
 
-    public void parse(DicomInputStream dis) throws IOException {
+    public void parse(ImageInputStream dis) throws IOException {
         dis.setIncludeBulkData(includeBulkData);
         dis.setBulkDataDescriptor(bulkDataDescriptor);
         dis.setBulkDataDirectory(blkDirectory);

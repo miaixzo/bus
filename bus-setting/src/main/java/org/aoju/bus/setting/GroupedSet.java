@@ -101,7 +101,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
         final URL url = UriUtils.getURL(pathBaseClassLoader);
         if (url == null) {
-            throw new RuntimeException(StringUtils.format("Can not find GroupSet file: [{}]", pathBaseClassLoader));
+            throw new RuntimeException(StringUtils.format("Can not find GroupSet file : [{}]", pathBaseClassLoader));
         }
         this.init(url, charset);
     }
@@ -118,7 +118,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
         }
         final URL url = UriUtils.getURL(configFile);
         if (url == null) {
-            throw new RuntimeException(StringUtils.format("Can not find GroupSet file: [{}]", configFile.getAbsolutePath()));
+            throw new RuntimeException(StringUtils.format("Can not find GroupSet file : [{}]", configFile.getAbsolutePath()));
         }
         this.init(url, charset);
     }
@@ -133,7 +133,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     public GroupedSet(String path, Class<?> clazz, Charset charset) {
         final URL url = UriUtils.getURL(path, clazz);
         if (url == null) {
-            throw new RuntimeException(StringUtils.format("Can not find GroupSet file: [{}]", path));
+            throw new RuntimeException(StringUtils.format("Can not find GroupSet file : [{}]", path));
         }
         this.init(url, charset);
     }

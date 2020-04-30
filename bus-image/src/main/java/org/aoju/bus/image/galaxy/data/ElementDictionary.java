@@ -33,8 +33,7 @@ import java.util.ServiceLoader;
  */
 public abstract class ElementDictionary {
 
-    private static final ServiceLoader<ElementDictionary> loader =
-            ServiceLoader.load(ElementDictionary.class);
+    private static final ServiceLoader<ElementDictionary> loader = ServiceLoader.load(ElementDictionary.class);
     private final String privateCreator;
     private final Class<?> tagClass;
 

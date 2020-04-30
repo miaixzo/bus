@@ -33,7 +33,7 @@ import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.ContentHandlerAdapter;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -80,10 +80,10 @@ public class Common {
                 throw new InstrumentException(e);
             }
         } else {
-            DicomInputStream in = null;
+            ImageInputStream in = null;
             try {
-                in = new DicomInputStream(f);
-                in.setIncludeBulkData(DicomInputStream.IncludeBulkData.NO);
+                in = new ImageInputStream(f);
+                in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
                 Attributes fmi = in.readFileMetaInformation();
                 long dsPos = in.getPosition();
                 Attributes ds = in.readDataset(-1, Tag.PixelData);

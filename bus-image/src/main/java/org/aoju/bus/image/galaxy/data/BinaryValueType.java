@@ -451,7 +451,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Date[] toDate(Object val, TimeZone tz, boolean ceil,
-                         DatePrecisions precisions) {
+                         DatePrecision precisions) {
         throw new UnsupportedOperationException();
     }
 

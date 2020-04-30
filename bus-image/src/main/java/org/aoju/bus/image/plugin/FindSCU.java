@@ -26,21 +26,21 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.image.Device;
-import org.aoju.bus.image.Status;
-import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.UID;
+import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.image.galaxy.io.SAXReader;
 import org.aoju.bus.image.galaxy.io.SAXWriter;
-import org.aoju.bus.image.metric.*;
+import org.aoju.bus.image.metric.ApplicationEntity;
+import org.aoju.bus.image.metric.Association;
+import org.aoju.bus.image.metric.Connection;
+import org.aoju.bus.image.metric.DimseRSPHandler;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Templates;
@@ -70,13 +70,14 @@ public class FindSCU {
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
     private final AAssociateRQ rq = new AAssociateRQ();
+    private final Attributes keys = new Attributes();
+    private final AtomicInteger totNumMatches = new AtomicInteger();
     private int priority;
     private int cancelAfter;
     private InformationModel model;
     private File outDir;
     private DecimalFormat outFileFormat;
     private int[] inFilter;
-    private Attributes keys = new Attributes();
     private boolean catOut = false;
     private boolean xml = false;
     private boolean xmlIndent = false;
@@ -86,7 +87,6 @@ public class FindSCU {
     private Templates xsltTpls;
     private OutputStream out;
     private Association as;
-    private AtomicInteger totNumMatches = new AtomicInteger();
 
     public FindSCU() throws IOException {
         device.addConnection(conn);
@@ -108,13 +108,13 @@ public class FindSCU {
     }
 
     public final void setInformationModel(InformationModel model, String[] tss,
-                                          EnumSet<QueryOption> queryOptions) {
+                                          EnumSet<Option.Type> types) {
         this.model = model;
-        rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
-        if (!queryOptions.isEmpty()) {
-            model.adjustQueryOptions(queryOptions);
-            rq.addExtendedNegotiation(new ExtendedNegotiate(model.cuid,
-                    QueryOption.toExtendedNegotiationInformation(queryOptions)));
+        rq.addPresentationContext(new Presentation(1, model.cuid, tss));
+        if (!types.isEmpty()) {
+            model.adjustQueryOptions(types);
+            rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid,
+                    Option.Type.toExtendedNegotiationInformation(types)));
         }
         if (model.level != null)
             addLevel(model.level);
@@ -208,11 +208,11 @@ public class FindSCU {
         Attributes attrs;
         String filePath = f.getPath();
         String fileExt = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();
-        DicomInputStream dis = null;
+        ImageInputStream dis = null;
         try {
             attrs = fileExt.equals("xml")
                     ? SAXReader.parse(filePath)
-                    : new DicomInputStream(f).readDataset(-1, -1);
+                    : new ImageInputStream(f).readDataset(-1, -1);
             if (inFilter != null) {
                 attrs = new Attributes(inFilter.length + 1);
                 attrs.addSelected(attrs, inFilter);
@@ -278,8 +278,8 @@ public class FindSCU {
             if (xml) {
                 writeAsXML(data, out);
             } else {
-                DicomOutputStream dos =
-                        new DicomOutputStream(out, UID.ImplicitVRLittleEndian);
+                ImageOutputStream dos =
+                        new ImageOutputStream(out, UID.ImplicitVRLittleEndian);
                 dos.writeDataset(null, data);
             }
             out.flush();
@@ -345,10 +345,10 @@ public class FindSCU {
             this.level = level;
         }
 
-        public void adjustQueryOptions(EnumSet<QueryOption> queryOptions) {
+        public void adjustQueryOptions(EnumSet<Option.Type> types) {
             if (level == null) {
-                queryOptions.add(QueryOption.RELATIONAL);
-                queryOptions.add(QueryOption.DATETIME);
+                types.add(Option.Type.RELATIONAL);
+                types.add(Option.Type.DATETIME);
             }
         }
     }

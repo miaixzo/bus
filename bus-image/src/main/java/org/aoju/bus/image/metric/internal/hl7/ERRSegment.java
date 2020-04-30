@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.image.Builder;
+
 /**
  * @author Kimi Liu
  * @version 5.8.8
@@ -31,28 +33,10 @@ package org.aoju.bus.image.metric.internal.hl7;
  */
 public class ERRSegment extends HL7Segment {
 
-    public static final String SegmentSequenceError = "100";
-    public static final String RequiredFieldMissing = "101";
-    public static final String DataTypeError = "102";
-    public static final String TableValueNotFound = "103";
-    public static final String UnsupportedMessageType = "200";
-    public static final String UnsupportedEventCode = "201";
-    public static final String UnsupportedProcessingID = "202";
-    public static final String UnsupportedVersionID = "203";
-    public static final String UnknownKeyIdentifier = "204";
-    public static final String DuplicateKeyIdentifier = "205";
-    public static final String ApplicationRecordLocked = "206";
-    public static final String ApplicationInternalError = "207";
-
-    public static final String UnknownSendingApplication = "MSH^1^3";
-    public static final String UnknownSendingFacility = "MSH^1^4";
-    public static final String UnknownReceivingApplication = "MSH^1^5";
-    public static final String UnknownReceivingFacility = "MSH^1^6";
-
     public ERRSegment(char fieldSeparator, String encodingCharacters) {
         super(9, fieldSeparator, encodingCharacters);
         setField(0, "ERR");
-        setHL7ErrorCode(ApplicationInternalError);
+        setHL7ErrorCode(Builder.ApplicationInternalError);
         setSeverity("E");
     }
 
@@ -98,4 +82,5 @@ public class ERRSegment extends HL7Segment {
         setField(8, userMessage);
         return this;
     }
+
 }

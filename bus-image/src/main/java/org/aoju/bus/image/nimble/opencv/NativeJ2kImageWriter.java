@@ -24,13 +24,12 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
-import org.aoju.bus.image.nimble.codec.BytesWithImageImageDescriptor;
+import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.osgi.OpenCVNativeLoader;
 
 import javax.imageio.*;
 import javax.imageio.metadata.IIOMetadata;
@@ -46,11 +45,6 @@ import java.nio.ByteOrder;
  * @since JDK 1.8+
  */
 public class NativeJ2kImageWriter extends ImageWriter {
-
-    static {
-        OpenCVNativeLoader loader = new OpenCVNativeLoader();
-        loader.init();
-    }
 
     NativeJ2kImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
@@ -75,10 +69,10 @@ public class NativeJ2kImageWriter extends ImageWriter {
 
         J2kImageWriteParam j2kParams = (J2kImageWriteParam) param;
 
-        if (!(stream instanceof BytesWithImageImageDescriptor)) {
+        if (!(stream instanceof BytesWithImageDescriptor)) {
             throw new IllegalArgumentException("stream does not implement BytesWithImageImageDescriptor!");
         }
-        ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
+        ImageDescriptor desc = ((BytesWithImageDescriptor) stream).getImageDescriptor();
 
         RenderedImage renderedImage = image.getRenderedImage();
         Mat buf = null;

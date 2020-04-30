@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * @author Kimi Liu
  * @version 5.8.8
@@ -9332,7 +9334,7 @@ public class Keyword {
             case -73507:
                 return "SequenceDelimitationItem";
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

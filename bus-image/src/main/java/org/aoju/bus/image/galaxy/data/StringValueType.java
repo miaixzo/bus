@@ -453,7 +453,7 @@ public enum StringValueType implements ValueType {
 
     @Override
     public Date[] toDate(Object val, TimeZone tz, boolean ceil,
-                         DatePrecisions precisions) {
+                         DatePrecision precisions) {
         if (temporalType == null)
             throw new UnsupportedOperationException();
 

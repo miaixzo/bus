@@ -36,7 +36,7 @@ import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.DimseRSPHandler;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -55,6 +55,7 @@ public class IanSCU {
     private final Connection remote = new Connection();
     private final AAssociateRQ rq = new AAssociateRQ();
     private final Attributes attrs = new Attributes();
+    private final HashMap<String, Attributes> map = new HashMap<String, Attributes>();
     private String uidSuffix;
     private String refPpsIUID;
     private String refPpsCUID = UID.ModalityPerformedProcedureStepSOPClass;
@@ -63,8 +64,6 @@ public class IanSCU {
     private String retrieveURI;
     private String retrieveURL;
     private String retrieveUID;
-
-    private HashMap<String, Attributes> map = new HashMap<String, Attributes>();
     private Association as;
 
     public IanSCU() {
@@ -79,10 +78,10 @@ public class IanSCU {
 
     public void setTransferSyntaxes(String[] tss) {
         rq.addPresentationContext(
-                new PresentationContext(1, UID.VerificationSOPClass,
+                new Presentation(1, UID.VerificationSOPClass,
                         UID.ImplicitVRLittleEndian));
         rq.addPresentationContext(
-                new PresentationContext(3,
+                new Presentation(3,
                         UID.InstanceAvailabilityNotificationSOPClass,
                         tss));
     }

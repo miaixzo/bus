@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 
 import java.io.IOException;
 
@@ -44,16 +44,16 @@ public interface Value {
         }
 
         @Override
-        public int getEncodedLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+        public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
             return vr == VR.SQ && encOpts.undefEmptySequenceLength ? -1 : 0;
         }
 
         @Override
-        public void writeTo(DicomOutputStream dos, VR vr) {
+        public void writeTo(ImageOutputStream dos, VR vr) {
         }
 
         @Override
-        public int calcLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr) {
+        public int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
             return vr == VR.SQ && encOpts.undefEmptySequenceLength ? 8 : 0;
         }
 
@@ -72,10 +72,10 @@ public interface Value {
 
     byte[] toBytes(VR vr, boolean bigEndian) throws IOException;
 
-    void writeTo(DicomOutputStream out, VR vr) throws IOException;
+    void writeTo(ImageOutputStream out, VR vr) throws IOException;
 
-    int calcLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr);
+    int calcLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr);
 
-    int getEncodedLength(DicomEncodingOptions encOpts, boolean explicitVR, VR vr);
+    int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr);
 
 }

@@ -33,20 +33,15 @@ import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
-import org.aoju.bus.image.metric.ApplicationEntity;
-import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.DimseRSPHandler;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
+import org.aoju.bus.image.metric.*;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.image.metric.internal.pdu.RoleSelection;
-import org.aoju.bus.image.metric.internal.pdv.PDVInputStream;
 import org.aoju.bus.image.metric.service.BasicCStoreSCP;
-import org.aoju.bus.image.metric.service.ServiceException;
-import org.aoju.bus.image.metric.service.ServiceRegistry;
+import org.aoju.bus.image.metric.service.ServiceHandler;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -70,16 +65,14 @@ public class GetSCU {
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
     private final AAssociateRQ rq = new AAssociateRQ();
+    private final Attributes keys = new Attributes();
     private int priority;
     private InformationModel model;
     private File storageDir;
-    private Attributes keys = new Attributes();
-    private int[] inFilter = DEF_IN_FILTER;
-    private Association as;
-    private BasicCStoreSCP storageSCP = new BasicCStoreSCP("*") {
+    private final BasicCStoreSCP storageSCP = new BasicCStoreSCP("*") {
 
         @Override
-        protected void store(Association as, PresentationContext pc, Attributes rq,
+        protected void store(Association as, Presentation pc, Attributes rq,
                              PDVInputStream data, Attributes rsp)
                 throws IOException {
             if (storageDir == null)
@@ -93,13 +86,15 @@ public class GetSCU {
                 storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid),
                         data, file);
             } catch (Exception e) {
-                throw new ServiceException(Status.ProcessingFailure, e);
+                throw new ImageException(Status.ProcessingFailure, e);
             }
 
         }
 
 
     };
+    private int[] inFilter = DEF_IN_FILTER;
+    private Association as;
 
     public GetSCU() throws IOException {
         ae = new ApplicationEntity("GETSCU");
@@ -137,7 +132,7 @@ public class GetSCU {
                          PDVInputStream data, File file) throws IOException {
         Logger.info("{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
-        DicomOutputStream out = new DicomOutputStream(file);
+        ImageOutputStream out = new ImageOutputStream(file);
         try {
             out.writeFileMetaInformation(fmi);
             data.copyTo(out);
@@ -146,10 +141,10 @@ public class GetSCU {
         }
     }
 
-    private ServiceRegistry createServiceRegistry() {
-        ServiceRegistry serviceRegistry = new ServiceRegistry();
-        serviceRegistry.addDicomService(storageSCP);
-        return serviceRegistry;
+    private ServiceHandler createServiceRegistry() {
+        ServiceHandler serviceHandler = new ServiceHandler();
+        serviceHandler.addDicomService(storageSCP);
+        return serviceHandler;
     }
 
     public void setStorageDirectory(File storageDir) {
@@ -166,9 +161,9 @@ public class GetSCU {
     public final void setInformationModel(InformationModel model, String[] tss,
                                           boolean relational) {
         this.model = model;
-        rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
+        rq.addPresentationContext(new Presentation(1, model.cuid, tss));
         if (relational)
-            rq.addExtendedNegotiation(new ExtendedNegotiate(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         if (model.level != null)
             addLevel(model.level);
     }
@@ -189,7 +184,7 @@ public class GetSCU {
     public void addOfferedStorageSOPClass(String cuid, String... tsuids) {
         if (!rq.containsPresentationContextFor(cuid))
             rq.addRoleSelection(new RoleSelection(cuid, false, true));
-        rq.addPresentationContext(new PresentationContext(
+        rq.addPresentationContext(new Presentation(
                 2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
     }
 
@@ -206,9 +201,9 @@ public class GetSCU {
 
     public void retrieve(File f) throws IOException, InterruptedException {
         Attributes attrs = new Attributes();
-        DicomInputStream dis = null;
+        ImageInputStream dis = null;
         try {
-            attrs.addSelected(new DicomInputStream(f).readDataset(-1, -1), inFilter);
+            attrs.addSelected(new ImageInputStream(f).readDataset(-1, -1), inFilter);
         } finally {
             IoUtils.close(dis);
         }

@@ -40,7 +40,7 @@ public class HL7ContentHandler extends DefaultHandler {
 
     private final Writer writer;
     private final char[] escape = {'\\', 0, '\\'};
-    private char[] delimiters = Delimiter.DEFAULT.toCharArray();
+    private final char[] delimiters = Delimiter.DEFAULT.toCharArray();
     private boolean ignoreCharacters = true;
 
     public HL7ContentHandler(Writer writer) {

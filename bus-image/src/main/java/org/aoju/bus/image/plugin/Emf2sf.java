@@ -27,10 +27,10 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.builtin.MultiframeExtractor;
+import org.aoju.bus.image.builtin.Multiframe;
 import org.aoju.bus.image.galaxy.data.Attributes;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +43,7 @@ import java.text.DecimalFormat;
  */
 public class Emf2sf {
 
-    private MultiframeExtractor extractor = new MultiframeExtractor();
+    private final Multiframe extractor = new Multiframe();
     private int[] frames;
     private DecimalFormat outFileFormat;
     private File outDir;
@@ -95,9 +95,9 @@ public class Emf2sf {
 
     public int extract(File file) throws IOException {
         Attributes src;
-        DicomInputStream dis = new DicomInputStream(file);
+        ImageInputStream dis = new ImageInputStream(file);
         try {
-            dis.setIncludeBulkData(DicomInputStream.IncludeBulkData.URI);
+            dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
             src = dis.readDataset(-1, -1);
         } finally {
             IoUtils.close(dis);
@@ -118,7 +118,7 @@ public class Emf2sf {
     private void extract(File file, Attributes fmi, Attributes src, int frame)
             throws IOException {
         Attributes sf = extractor.extract(src, frame);
-        DicomOutputStream out = new DicomOutputStream(
+        ImageOutputStream out = new ImageOutputStream(
                 new File(outDir, fname(file, frame + 1)));
         try {
             out.writeDataset(fmi != null

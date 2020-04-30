@@ -30,9 +30,9 @@ import org.aoju.bus.image.builtin.DeIdentifier;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -47,13 +47,13 @@ import java.text.MessageFormat;
 public class Deidentify {
 
     private final DeIdentifier deidentifier;
-    private DicomEncodingOptions encOpts = DicomEncodingOptions.DEFAULT;
+    private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
 
     public Deidentify(DeIdentifier.Option... options) {
         deidentifier = new DeIdentifier(options);
     }
 
-    public void setEncodingOptions(DicomEncodingOptions encOpts) {
+    public void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
@@ -91,15 +91,15 @@ public class Deidentify {
     public void transcode(File src, File dest) throws IOException {
         Attributes fmi;
         Attributes dataset;
-        try (DicomInputStream dis = new DicomInputStream(src)) {
-            dis.setIncludeBulkData(DicomInputStream.IncludeBulkData.URI);
+        try (ImageInputStream dis = new ImageInputStream(src)) {
+            dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
             fmi = dis.readFileMetaInformation();
             dataset = dis.readDataset(-1, -1);
         }
         deidentifier.deidentify(dataset);
         if (fmi != null)
             fmi = dataset.createFileMetaInformation(fmi.getString(Tag.TransferSyntaxUID));
-        try (DicomOutputStream dos = new DicomOutputStream(dest)) {
+        try (ImageOutputStream dos = new ImageOutputStream(dest)) {
             dos.setEncodingOptions(encOpts);
             dos.writeDataset(fmi, dataset);
         }

@@ -33,6 +33,7 @@ import org.aoju.bus.image.galaxy.data.Value;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -1960,7 +1961,7 @@ public class UID {
     private static final String UUID_ROOT = "2.25";
     private static final Pattern PATTERN =
             Pattern.compile("[012]((\\.0)|(\\.[1-9]\\d*))+");
-    private static final Charset ASCII = Charset.forName("US-ASCII");
+    private static final Charset ASCII = StandardCharsets.US_ASCII;
     public static String root = UUID_ROOT;
 
     static {

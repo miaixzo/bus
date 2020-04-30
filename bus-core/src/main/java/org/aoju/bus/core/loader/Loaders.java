@@ -257,4 +257,17 @@ public abstract class Loaders {
         return new JarLoader(context, jarFile);
     }
 
+    /**
+     * 创建lib包资源加载器
+     * <p>
+     * 从当前JAR归档总加载动态库信息dll/so加载库
+     * 1.将文件从当前JAR存档复制到系统临时目录
+     * 2.JAR中的文件被复制到系统临时目录中，然后加载。退出后将删除临时文件.
+     *
+     * @return 资源加载器
+     */
+    public static Loader nat() {
+        return new NatLoader();
+    }
+
 }

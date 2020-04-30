@@ -31,9 +31,6 @@ package org.aoju.bus.image.galaxy.data;
  */
 public class Implementation {
 
-    private static final String IMPL_CLASS_UID = "1.2.40.0.13.1.3";
-    private static final String IMPL_VERS_NAME = versionName();
-
     private static String versionName() {
         StringBuilder sb = new StringBuilder(16);
         sb.append("aoju-");
@@ -43,11 +40,11 @@ public class Implementation {
     }
 
     public static String getClassUID() {
-        return IMPL_CLASS_UID;
+        return "1.2.40.0.13.1.3";
     }
 
     public static String getVersionName() {
-        return IMPL_VERS_NAME;
+        return versionName();
     }
 
 }

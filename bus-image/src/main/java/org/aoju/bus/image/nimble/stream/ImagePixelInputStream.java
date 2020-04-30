@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.stream;
 
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.nimble.codec.BytesWithImageImageDescriptor;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.aoju.bus.image.nimble.codec.TransferSyntaxType;
 
@@ -40,9 +40,9 @@ import java.util.Arrays;
  * @since JDK 1.8+
  */
 public class ImagePixelInputStream extends MemoryCacheImageInputStream
-        implements BytesWithImageImageDescriptor {
+        implements BytesWithImageDescriptor {
 
-    private final DicomInputStream dis;
+    private final ImageInputStream dis;
     private final ImageDescriptor imageDescriptor;
     private final TransferSyntaxType tsType;
     private final byte[] basicOffsetTable;
@@ -53,12 +53,12 @@ public class ImagePixelInputStream extends MemoryCacheImageInputStream
     private long frameEndPos = -1L;
     private boolean endOfStream;
 
-    public ImagePixelInputStream(DicomInputStream dis, ImageDescriptor imageDescriptor)
+    public ImagePixelInputStream(ImageInputStream dis, ImageDescriptor imageDescriptor)
             throws IOException {
         this(dis, imageDescriptor, TransferSyntaxType.forUID(dis.getTransferSyntax()));
     }
 
-    public ImagePixelInputStream(DicomInputStream dis, ImageDescriptor imageDescriptor,
+    public ImagePixelInputStream(ImageInputStream dis, ImageDescriptor imageDescriptor,
                                  TransferSyntaxType tsType) throws IOException {
         super(dis);
         this.dis = dis;

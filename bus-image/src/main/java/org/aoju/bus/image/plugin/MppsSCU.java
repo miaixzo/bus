@@ -38,7 +38,7 @@ import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.DimseRSPHandler;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
-import org.aoju.bus.image.metric.internal.pdu.PresentationContext;
+import org.aoju.bus.image.metric.internal.pdu.Presentation;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -161,6 +161,8 @@ public class MppsSCU {
     private final ApplicationEntity ae;
     private final Connection remote;
     private final AAssociateRQ rq = new AAssociateRQ();
+    private final HashMap<String, MppsWithIUID> map = new HashMap<String, MppsWithIUID>();
+    private final ArrayList<MppsWithIUID> created = new ArrayList<MppsWithIUID>();
     private Attributes attrs;
     private String uidSuffix;
     private boolean newPPSID;
@@ -173,8 +175,6 @@ public class MppsSCU {
     private String finalStatus = COMPLETED;
     private Attributes discontinuationReason;
     private Properties codes;
-    private HashMap<String, MppsWithIUID> map = new HashMap<String, MppsWithIUID>();
-    private ArrayList<MppsWithIUID> created = new ArrayList<MppsWithIUID>();
     private Association as;
     //default response handler
     private RSPHandlerFactory rspHandlerFactory = new RSPHandlerFactory() {
@@ -294,10 +294,10 @@ public class MppsSCU {
 
     public void setTransferSyntaxes(String[] tss) {
         rq.addPresentationContext(
-                new PresentationContext(1, UID.VerificationSOPClass,
+                new Presentation(1, UID.VerificationSOPClass,
                         UID.ImplicitVRLittleEndian));
         rq.addPresentationContext(
-                new PresentationContext(3,
+                new Presentation(3,
                         UID.ModalityPerformedProcedureStepSOPClass,
                         tss));
     }

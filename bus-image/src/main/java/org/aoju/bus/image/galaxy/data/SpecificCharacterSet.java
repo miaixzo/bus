@@ -43,11 +43,9 @@ import java.util.StringTokenizer;
 public class SpecificCharacterSet {
 
     public static final SpecificCharacterSet ASCII = new SpecificCharacterSet(new Codec[]{Codec.ISO_646});
-
+    private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder1 = new ThreadLocal<>();
+    private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder2 = new ThreadLocal<>();
     private static SpecificCharacterSet DEFAULT = ASCII;
-    private static ThreadLocal<SoftReference<Encoder>> cachedEncoder1 = new ThreadLocal<SoftReference<Encoder>>();
-    private static ThreadLocal<SoftReference<Encoder>> cachedEncoder2 = new ThreadLocal<SoftReference<Encoder>>();
-
     protected final Codec[] codecs;
     protected final String[] dicomCodes;
 
@@ -99,7 +97,7 @@ public class SpecificCharacterSet {
         Encoder enc;
         if ((sr = tl.get()) == null || (enc = sr.get()) == null
                 || enc.codec != codec)
-            tl.set(new SoftReference<Encoder>(enc = new Encoder(codec)));
+            tl.set(new SoftReference<>(enc = new Encoder(codec)));
         return enc;
     }
 

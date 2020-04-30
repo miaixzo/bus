@@ -52,11 +52,11 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 /**
- * System information. This is the main entry point to Oshi.
- * <p>
- * This object provides getters which instantiate the appropriate
- * platform-specific implementations of {@link OperatingSystem}
- * (software) and {@link HardwareLayer} (hardware).
+ * 系统信息。这是主要入口
+ * 这个对象提供了getters
+ * 它实例化了软件和硬件的适当的特定于平台上的实现
+ * {@link OperatingSystem}
+ * {@link HardwareLayer}
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -87,11 +87,9 @@ public class Systemd {
     private final Supplier<HardwareLayer> hardware = Memoizer.memoize(this::createHardware);
 
     /**
-     * <p>
-     * Getter for the field <code>currentPlatformEnum</code>.
-     * </p>
+     * 获取字段 <code>currentPlatformEnum</code>
      *
-     * @return Returns the currentPlatformEnum.
+     * @return 返回<code>currentPlatformEnum</code>
      */
     public static Platform.OS getCurrentPlatform() {
         return _PLATFORM;
@@ -439,10 +437,10 @@ public class Systemd {
     }
 
     /**
-     * Creates a new instance of the appropriate platform-specific
+     * 创建适当的特定于平台的新实例
      * {@link OperatingSystem}.
      *
-     * @return A new instance of {@link OperatingSystem}.
+     * @return 新实例 {@link OperatingSystem}.
      */
     public OperatingSystem getOperatingSystem() {
         return os.get();
@@ -467,10 +465,10 @@ public class Systemd {
     }
 
     /**
-     * Creates a new instance of the appropriate platform-specific
+     * 创建适当的特定于平台的新实例
      * {@link HardwareLayer}.
      *
-     * @return A new instance of {@link HardwareLayer}.
+     * @return 新实例 {@link HardwareLayer}.
      */
     public HardwareLayer getHardware() {
         return hardware.get();

@@ -55,7 +55,8 @@ public class AttributesFormat extends Format {
             '0', '1', '2', '3', '4', '5', '6', '7',
             '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
             'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't', 'u', 'v'};
+            'o', 'p', 'q', 'r', 's', 't', 'u', 'v'
+    };
     private static final int LONG_BYTES = 8;
 
     private final String pattern;

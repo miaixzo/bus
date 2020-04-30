@@ -32,9 +32,9 @@ import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Fragments;
 import org.aoju.bus.image.galaxy.data.VR;
-import org.aoju.bus.image.galaxy.io.DicomEncodingOptions;
-import org.aoju.bus.image.galaxy.io.DicomInputStream;
-import org.aoju.bus.image.galaxy.io.DicomOutputStream;
+import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
+import org.aoju.bus.image.galaxy.io.ImageInputStream;
+import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.image.nimble.codec.Compressor;
 import org.aoju.bus.image.nimble.codec.Decompressor;
 import org.aoju.bus.image.nimble.codec.Transcoder;
@@ -65,7 +65,7 @@ public class Dcm2Dcm {
     private boolean retainfmi;
     private boolean nofmi;
     private boolean legacy;
-    private DicomEncodingOptions encOpts = DicomEncodingOptions.DEFAULT;
+    private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
     private int maxThreads = 1;
 
     private static Object toValue(String s) {
@@ -99,7 +99,7 @@ public class Dcm2Dcm {
         this.legacy = legacy;
     }
 
-    public final void setEncodingOptions(DicomEncodingOptions encOpts) {
+    public final void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
@@ -164,9 +164,9 @@ public class Dcm2Dcm {
     public void transcodeLegacy(File src, File dest) throws IOException {
         Attributes fmi;
         Attributes dataset;
-        DicomInputStream dis = new DicomInputStream(src);
+        ImageInputStream dis = new ImageInputStream(src);
         try {
-            dis.setIncludeBulkData(DicomInputStream.IncludeBulkData.URI);
+            dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
             fmi = dis.readFileMetaInformation();
             dataset = dis.readDataset(-1, -1);
         } finally {
@@ -174,7 +174,7 @@ public class Dcm2Dcm {
         }
         Object pixeldata = dataset.getValue(Tag.PixelData);
         Compressor compressor = null;
-        DicomOutputStream dos = null;
+        ImageOutputStream dos = null;
         try {
             String tsuid = this.tsuid;
             if (pixeldata != null) {
@@ -192,7 +192,7 @@ public class Dcm2Dcm {
                 fmi.setString(Tag.TransferSyntaxUID, VR.UI, tsuid);
             else
                 fmi = dataset.createFileMetaInformation(tsuid);
-            dos = new DicomOutputStream(dest);
+            dos = new ImageOutputStream(dest);
             dos.setEncodingOptions(encOpts);
             dos.writeDataset(fmi, dataset);
         } finally {

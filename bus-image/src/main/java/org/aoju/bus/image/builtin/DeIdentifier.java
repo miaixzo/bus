@@ -374,9 +374,9 @@ public class DeIdentifier {
 
     private final EnumSet<Option> options;
     private final Attributes dummyValues = new Attributes();
+    private final int[] o;
     private int[] x = X;
     private int[] u = U;
-    private int[] o;
 
     public DeIdentifier(Option... options) {
         this.options = EnumSet.of(Option.BasicApplicationConfidentialityProfile, options);
