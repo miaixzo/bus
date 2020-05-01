@@ -29,18 +29,16 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.utils.PinyinUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -657,38 +655,26 @@ public final class Builder {
     /**
      * Read a configuration file from the class path and return its properties
      *
-     * @param propsFilename The filename
+     * @param fileName The filename
      * @return A {@link Properties} object containing the properties.
      */
-    public static Properties readPropertiesFromFilename(String propsFilename) {
-        Properties archProps = new Properties();
-        // Load the configuration file from the classpath
+    public static Properties readPropertiesFromFilename(String fileName) {
+        Properties p = new Properties();
         try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            if (loader == null) {
-                loader = ClassLoader.getSystemClassLoader();
-                if (loader == null) {
-                    throw new IOException();
-                }
+            String path = Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName;
+            InputStream is = PinyinUtils.class.getResourceAsStream(path);
+            Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(reader);
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.trim().split(Symbol.EQUAL);
+                p.setProperty(tokens[0], tokens[1]);
             }
-            List<URL> resources = Collections.list(loader.getResources(propsFilename));
-            if (resources.isEmpty()) {
-                Logger.warn("No {} file found on the classpath", propsFilename);
-            } else {
-                if (resources.size() > 1) {
-                    Logger.warn("Configuration conflict: there is more than one {} file on the classpath", propsFilename);
-                }
-
-                try (InputStream in = resources.get(0).openStream()) {
-                    if (in != null) {
-                        archProps.load(in);
-                    }
-                }
-            }
+            br.close();
         } catch (IOException e) {
-            Logger.warn("Failed to load default configuration");
+            throw new RuntimeException(e);
         }
-        return archProps;
+        return p;
     }
 
     /**
