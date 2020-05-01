@@ -30,8 +30,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.ptr.NativeLongByReference;
 
 /**
- * The I/O Kit framework implements non-kernel access to I/O Kit objects
- * (drivers and nubs) through the device-interface mechanism.
+ * I/O Kit框架通过设备接口机制实现对I/O Kit对象(驱动程序和nub)的非内核访问
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -41,6 +40,10 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
 
     IOKit INSTANCE = Native.load("IOKit", IOKit.class);
 
-    int IOConnectCallStructMethod(IOConnect connection, int selector, Structure inputStructure,
-                                  NativeLong structureInputSize, Structure outputStructure, NativeLongByReference structureOutputSize);
+    int IOConnectCallStructMethod(IOConnect connection,
+                                  int selector,
+                                  Structure inputStructure,
+                                  NativeLong structureInputSize,
+                                  Structure outputStructure,
+                                  NativeLongByReference structureOutputSize);
 }

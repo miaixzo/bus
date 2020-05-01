@@ -41,10 +41,6 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 /**
- * <p>
- * WmiQueryHandler class.
- * </p>
- *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
@@ -54,7 +50,7 @@ public class WmiQueryHandler {
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
     private static final Object[] EMPTY_OBJECT_ARRAY = Normal.EMPTY_OBJECT_ARRAY;
     private static int globalTimeout = Config.get("oshi.util.wmi.timeout", -1);
-    // Factory to create this or a subclass
+    // 创建这个类或子类
     private static Class<? extends WmiQueryHandler> customClass = null;
 
     static {
@@ -63,22 +59,20 @@ public class WmiQueryHandler {
         }
     }
 
-    // Cache failed wmi classes
+    // 缓存失败的wmi类
     private final Set<String> failedWmiClassNames = new HashSet<>();
-    // Timeout for WMI queries
+    // WMI查询超时
     private int wmiTimeout = globalTimeout;
-    // Preferred threading model
+    // 首选的线程模型
     private int comThreading = Ole32.COINIT_MULTITHREADED;
-    // Track initialization of Security
+    // 安全跟踪初始化
     private boolean securityInitialized = false;
 
     /**
-     * Factory method to create an instance of this class. To override this class,
-     * use {@link #setInstanceClass(Class)} to define a sublcass which extends
-     * {@link WmiQueryHandler}.
+     * 方法来创建此类的实例。要覆盖这个类，使用{@link #setInstanceClass(Class)}
+     * 来定义一个扩展了{@link WmiQueryHandler}的子类
      *
-     * @return An instance of this class or a class defined by
-     * {@link #setInstanceClass(Class)}
+     * @return 类的实例 {@link #setInstanceClass(Class)}
      */
     public static WmiQueryHandler createInstance() {
         if (customClass == null) {
@@ -282,4 +276,5 @@ public class WmiQueryHandler {
     public void setWmiTimeout(int wmiTimeout) {
         this.wmiTimeout = wmiTimeout;
     }
+
 }

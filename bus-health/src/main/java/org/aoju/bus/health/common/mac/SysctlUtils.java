@@ -33,7 +33,7 @@ import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.logger.Logger;
 
 /**
- * Provides access to sysctl calls on OS X
+ * 提供对OS X上的sysctl调用的访问
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -47,11 +47,11 @@ public class SysctlUtils {
     }
 
     /**
-     * Executes a sysctl call with an int result
+     * 执行带有int结果的sysctl调用
      *
-     * @param name name of the sysctl
-     * @param def  default int value
-     * @return The int result of the call if successful; the default otherwise
+     * @param name 系统的名称
+     * @param def  默认int值
+     * @return 如果调用成功，则调用的int结果;否则默认
      */
     public static int sysctl(String name, int def) {
         IntByReference size = new IntByReference(SystemB.INT_SIZE);
@@ -64,11 +64,11 @@ public class SysctlUtils {
     }
 
     /**
-     * Executes a sysctl call with a long result
+     * 执行带有长结果的sysctl调用
      *
-     * @param name name of the sysctl
-     * @param def  default long value
-     * @return The long result of the call if successful; the default otherwise
+     * @param name 系统的名称
+     * @param def  默认的长整型值
+     * @return 如果调用成功，则调用返回的长整型结果;否则默认
      */
     public static long sysctl(String name, long def) {
         IntByReference size = new IntByReference(SystemB.UINT64_SIZE);
@@ -81,20 +81,20 @@ public class SysctlUtils {
     }
 
     /**
-     * Executes a sysctl call with a String result
+     * 执行带有字符串结果的sysctl调用
      *
-     * @param name name of the sysctl
-     * @param def  default String value
-     * @return The String result of the call if successful; the default otherwise
+     * @param name 系统的名称
+     * @param def  默认字符串值
+     * @return 如果调用成功，则调用返回的字符串结果;否则默认
      */
     public static String sysctl(String name, String def) {
-        // Call first time with null pointer to get value of size
+        // 第一次调用空指针来获取大小值
         IntByReference size = new IntByReference();
         if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
-        // Add 1 to size for null terminated string
+        // 为空终止字符串的大小添加1
         Pointer p = new Memory(size.getValue() + 1);
         if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
@@ -104,11 +104,11 @@ public class SysctlUtils {
     }
 
     /**
-     * Executes a sysctl call with a Structure result
+     * 执行带有结构结果的sysctl调用
      *
-     * @param name   name of the sysctl
-     * @param struct structure for the result
-     * @return True if structure is successfuly populated, false otherwise
+     * @param name   系统的名称
+     * @param struct 构造结果
+     * @return 如果结构成功填充为真，则为假
      */
     public static boolean sysctl(String name, Structure struct) {
         if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), new IntByReference(struct.size()), null, 0)) {
@@ -118,4 +118,5 @@ public class SysctlUtils {
         struct.read();
         return true;
     }
+
 }

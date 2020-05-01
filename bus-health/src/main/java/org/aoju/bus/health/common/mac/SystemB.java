@@ -28,8 +28,8 @@ import com.sun.jna.Native;
 import org.aoju.bus.health.common.unix.CLibrary;
 
 /**
- * System class. This class should be considered non-API as it may be removed
- * if/when its code is incorporated into the JNA project.
+ * 系统类。这个类应该被认为是非api的，因为如果/当
+ * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -38,4 +38,5 @@ import org.aoju.bus.health.common.unix.CLibrary;
 public interface SystemB extends CLibrary, com.sun.jna.platform.mac.SystemB {
 
     SystemB INSTANCE = Native.load("System", SystemB.class);
+
 }

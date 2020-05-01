@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
- * Provides access to some /proc filesystem info on Linux
+ * 提供对Linux上某些/proc文件系统信息的访问
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -46,19 +46,19 @@ import java.util.regex.Pattern;
 public class ProcUtils {
 
     /**
-     * The proc path for CPU information
+     * CPU信息的进程路径
      */
     public static final String CPUINFO = "/cpuinfo";
 
     /**
-     * The proc path for CPU statistics
+     * 用于CPU统计信息的proc路径
      */
     public static final String STAT = "/stat";
 
     private static final Pattern DIGITS = Pattern.compile("\\d+");
 
     /**
-     * The /proc filesystem location. Update hourly.
+     * proc文件系统位置。每小时更新
      */
     private static Supplier<String> proc = Memoizer.memoize(ProcUtils::queryProcConfig, TimeUnit.HOURS.toNanos(1));
 
@@ -66,11 +66,9 @@ public class ProcUtils {
     }
 
     /**
-     * The proc filesystem location may be customized to allow alternative proc
-     * plugins, particularly useful for containers.
+     * 可以对proc文件系统位置进行定制，以允许使用其他proc插件，对于容器尤其有用
      *
-     * @return The proc filesystem path, with a leading / but not a trailing one,
-     * e.g., "/proc"
+     * @return proc文件系统路径，前面有/但后面没有，例如，“/proc”
      */
     public static String getProcPath() {
         return proc.get();
@@ -78,7 +76,7 @@ public class ProcUtils {
 
     private static String queryProcConfig() {
         String procPath = Config.get("oshi.util.proc.path", "/proc");
-        // Ensure prefix begins with path separator, but doesn't end with one
+        // 确保前缀以路径分隔符开始，但不以1结尾
         procPath = Symbol.C_SLASH + procPath.replaceAll("/$|^/", "");
         if (!new File(procPath).exists()) {
             throw new Config.PropertyException("oshi.util.proc.path", "The path does not exist");
@@ -87,16 +85,16 @@ public class ProcUtils {
     }
 
     /**
-     * Parses the first value in /proc/uptime for seconds since boot
+     * 将/proc/正常运行时间中的第一个值解析为启动后的秒数
      *
-     * @return Seconds since boot
+     * @return 秒后启动
      */
     public static double getSystemUptimeSeconds() {
         String uptime = Builder.getStringFromFile(getProcPath() + "/uptime");
         int spaceIndex = uptime.indexOf(Symbol.C_SPACE);
         try {
             if (spaceIndex < 0) {
-                // No space, error
+                // 没有空间,错误
                 return 0d;
             } else {
                 return Double.parseDouble(uptime.substring(0, spaceIndex));
@@ -107,14 +105,14 @@ public class ProcUtils {
     }
 
     /**
-     * Gets the CPU ticks array from /proc/stat
+     * 从/proc/stat获取CPU时钟阵列
      *
-     * @return Array of CPU ticks
+     * @return CPU时钟阵列
      */
     public static long[] readSystemCpuLoadTicks() {
         long[] ticks = new long[CentralProcessor.TickType.values().length];
-        // /proc/stat expected format
-        // first line is overall user,nice,system,idle,iowait,irq, etc.
+        // /proc/stat 预期的格式
+        // 第一行是总体用户、nice、系统、idle、iowait、irq等
         // cpu 3357 0 4313 1362393 ...
         String tickStr;
         List<String> procStat = Builder.readFile(getProcPath() + STAT);
@@ -123,30 +121,27 @@ public class ProcUtils {
         } else {
             return ticks;
         }
-        // Split the line. Note the first (0) element is "cpu" so remaining
-        // elements are offset by 1 from the enum index
+        //  第一个(0)元素是“cpu”，因此其余元素被enum索引中的1所偏移
         String[] tickArr = Builder.whitespaces.split(tickStr);
         if (tickArr.length <= CentralProcessor.TickType.IDLE.getIndex()) {
-            // If ticks don't at least go user/nice/system/idle, abort
             return ticks;
         }
-        // Note tickArr is offset by 1 because first element is "cpu"
+        // 注意，tickArr的偏移量为1，因为第一个元素是“cpu”
         for (int i = 0; i < CentralProcessor.TickType.values().length; i++) {
             ticks[i] = Builder.parseLongOrDefault(tickArr[i + 1], 0L);
         }
-        // Ignore guest or guest_nice, they are included in user/nice
         return ticks;
     }
 
     /**
-     * Gets an array of files in the /proc directory with only numeric digit
-     * filenames, corresponding to processes
+     * 获取/proc目录中的文件数组，其中只有与进程对应的数字文件名
      *
-     * @return An array of File objects for the process files
+     * @return 进程文件的文件对象数组
      */
     public static File[] getPidFiles() {
         File procdir = new File(getProcPath());
         File[] pids = procdir.listFiles(f -> DIGITS.matcher(f.getName()).matches());
         return pids != null ? pids : new File[0];
     }
+
 }

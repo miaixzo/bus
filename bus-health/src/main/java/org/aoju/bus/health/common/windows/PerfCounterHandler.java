@@ -35,17 +35,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * <p>
- * PerfCounterQueryHandler class.
- * </p>
- *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
 public class PerfCounterHandler {
 
-    // Singleton pattern
+    // 单例模式
     private static PerfCounterHandler instance;
     private Map<PerfDataUtils.PerfCounter, HANDLEByReference> counterHandleMap = new ConcurrentHashMap<>();
     private Map<String, HANDLEByReference> queryHandleMap = new ConcurrentHashMap<>();
@@ -56,9 +52,9 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Instantiate this class as a singleton
+     * 将这个类实例化为单例
      *
-     * @return The singleton instance
+     * @return 单例实例
      */
     public static synchronized PerfCounterHandler getInstance() {
         if (instance == null) {
@@ -68,33 +64,29 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Begin monitoring a Performance Data counter, attached to a query whose key is
-     * the counter's object.
+     * 开始监视一个性能数据计数器，该计数器附加到一个查询，该查询的键是计数器的对象
      *
-     * @param counter A PerfCounter object.
-     * @return True if the counter was successfully added.
+     * @param counter 一个PerfCounter对象
+     * @return 如果成功添加了计数器，则为真
      */
     public boolean addCounterToQuery(PerfDataUtils.PerfCounter counter) {
         return addCounterToQuery(counter, counter.getObject());
     }
 
     /**
-     * Begin monitoring a Performance Data counter, attached to a query whose key is
-     * the specified string.
+     * 开始监视一个性能数据计数器，该计数器附加到一个键为指定字符串的查询
      *
-     * @param counter A PerfCounter object.
-     * @param key     A string used as the key for the query. All counters with this key
-     *                will be updated when any single counter is updated.
-     * @return True if the counter was successfully added.
+     * @param counter 一个PerfCounter对象
+     * @param key     用作查询键的字符串。当任何一个计数器被更新时，所有具有此键的计数器都将被更新
+     * @return 如果成功添加了计数器，则为真
      */
     public boolean addCounterToQuery(PerfDataUtils.PerfCounter counter, String key) {
-        // Open a new query or get the handle to an existing one
+        // 打开一个新查询或获取一个现有查询的句柄
         HANDLEByReference q = getOrOpenQuery(key);
         if (q == null) {
             Logger.error("Failed to open a query for PDH object: {}", counter.getObject());
             return false;
         }
-        // Get a new handle for the counter
         HANDLEByReference p = new HANDLEByReference();
         if (PerfDataUtils.addCounter(q, counter.getCounterPath(), p)) {
             counterHandleMap.put(counter, p);
@@ -108,34 +100,31 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Stop monitoring a Performance Data counter, attached to a query whose key is
-     * the counter's object.
+     * 停止监视附加到查询(其键是计数器的对象)上的性能数据计数器
      *
-     * @param counter A PerfCounter object
-     * @return True if the counter was successfully removed.
+     * @param counter PerfCounter对象
+     * @return 如果成功移除计数器，则为真
      */
     public boolean removeCounterFromQuery(PerfDataUtils.PerfCounter counter) {
         return removeCounterFromQuery(counter, counter.getObject());
     }
 
     /**
-     * Stop monitoring a Performance Data counter, attached to a query whose key is
-     * the specified string..
+     * 停止监视附加到键为指定字符串的查询的性能数据计数器
      *
-     * @param counter A PerfCounter object
-     * @param key     A string used as the key for the query. All counters with this key
-     *                will be updated when any single counter is updated.
-     * @return True if the counter was successfully removed.
+     * @param counter PerfCounter对象
+     * @param key     用作查询键的字符串。当任何一个计数器被更新时，所有具有此键的计数器都将被更新
+     * @return 如果成功移除计数器，则为真
      */
     public boolean removeCounterFromQuery(PerfDataUtils.PerfCounter counter, String key) {
         HANDLEByReference href = counterHandleMap.remove(counter);
-        // null if handle wasn't present
+        // 如果句柄不存在，则为空
         boolean success = false;
         if (href != null) {
             success = PerfDataUtils.removeCounter(href);
         }
         List<PerfDataUtils.PerfCounter> counterList = queryCounterMap.get(key);
-        // null if list wasn't present
+        // 如果列表不存在，则为空
         if (counterList != null && counterList.remove(counter) && counterList.isEmpty()) {
             queryCounterMap.remove(key);
             PerfDataUtils.closeQuery(queryHandleMap.remove(key));
@@ -144,26 +133,25 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Stop monitoring Performance Data counters for a particular queryKey and
-     * release their resources
+     * 停止监视特定queryKey的性能数据计数器，并释放它们的资源
      *
-     * @param queryKey The counter object to remove counters from
+     * @param queryKey 要从中移除计数器的计数器对象
      */
     public void removeAllCountersFromQuery(String queryKey) {
-        // Remove counter list from queryCounter Map
+        // 从queryCounter映射中删除计数器列表
         List<PerfDataUtils.PerfCounter> counterList = queryCounterMap.remove(queryKey);
         if (counterList == null) {
             return;
         }
-        // Remove all counters from counterHandle map
+        // 从处理映射中移除所有计数器
         for (PerfDataUtils.PerfCounter counter : counterList) {
             HANDLEByReference href = counterHandleMap.remove(counter);
-            // null if handle wasn't present
+            // 如果句柄不存在，则为空
             if (href != null) {
                 PerfDataUtils.removeCounter(href);
             }
         }
-        // Remove query from query map
+        // 从查询映射中删除查询
         HANDLEByReference href = queryHandleMap.remove(queryKey);
         if (href != null) {
             PerfDataUtils.closeQuery(href);
@@ -171,15 +159,15 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Stop monitoring all Performance Data counters and release their resources
+     * 停止监视所有性能数据计数器并释放它们的资源
      */
     public void removeAllCounters() {
-        // Remove all counter handles
+        // 删除所有计数器手柄
         for (HANDLEByReference href : counterHandleMap.values()) {
             PerfDataUtils.removeCounter(href);
         }
         counterHandleMap.clear();
-        // Remove all queries
+        // 删除所有的查询
         for (HANDLEByReference query : queryHandleMap.values()) {
             PerfDataUtils.closeQuery(query);
         }
@@ -188,11 +176,10 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Update all counters on a query.
+     * 更新查询中的所有计数器
      *
-     * @param key The key of the query to update.
-     * @return The timestamp for the update of all the counters, in milliseconds
-     * since the epoch, or 0 if the update failed
+     * @param key 要更新的查询的键
+     * @return 更新所有计数器的时间戳，以从epoch开始的毫秒为单位，如果更新失败则为0
      */
     public long updateQuery(String key) {
         if (!queryHandleMap.containsKey(key)) {
@@ -203,11 +190,10 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Query the raw counter value of a Performance Data counter. Further
-     * mathematical manipulation/conversion is left to the caller.
+     * 查询性能数据计数器的原始计数器值。进一步的数学操作/转换留给调用者
      *
-     * @param counter The counter to query
-     * @return The raw value of the counter
+     * @param counter 要查询的计数器
+     * @return 计数器的原始值
      */
     public long queryCounter(PerfDataUtils.PerfCounter counter) {
         if (!counterHandleMap.containsKey(counter)) {
@@ -224,13 +210,12 @@ public class PerfCounterHandler {
     }
 
     /**
-     * Open a query for the given string, or confirm a query is already open for
-     * that string. Multiple counters may be added to this string, but will all be
-     * queried at the same time.
+     * 为给定的字符串打开一个查询，或者确认已经为该字符串打开了一个查询
+     * 可以将多个计数器添加到此字符串，但将同时查询所有计数器
      *
-     * @param key String to associate with the counter. Most code defaults to the
-     *            English PDH object name so custom keys should avoid these strings.
-     * @return A handle to the query, or null if an error occurred.
+     * @param key 与计数器关联的字符串。大多数代码默认使用英文PDH对象
+     *            名称，因此自定义键应该避免这些字符串
+     * @return 一个查询句柄，如果发生错误则为null
      */
     private HANDLEByReference getOrOpenQuery(String key) {
         if (queryHandleMap.containsKey(key)) {
@@ -245,4 +230,5 @@ public class PerfCounterHandler {
         }
         return null;
     }
+
 }

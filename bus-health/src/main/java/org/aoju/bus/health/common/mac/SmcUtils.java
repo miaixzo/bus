@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Provides access to SMC calls on OS X
+ * 提供对OS X上SMC调用的访问
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -58,14 +58,14 @@ public class SmcUtils {
     public static final byte SMC_CMD_READ_KEYINFO = 9;
     public static final int KERNEL_INDEX_SMC = 2;
     /**
-     * Byte array used for matching return type
+     * 用于匹配返回类型的字节数组
      */
     private static final byte[] DATATYPE_SP78 = Builder.asciiStringToByteArray("sp78", 5);
     private static final byte[] DATATYPE_FPE2 = Builder.asciiStringToByteArray("fpe2", 5);
     private static final byte[] DATATYPE_FLT = Builder.asciiStringToByteArray("flt ", 5);
     private static IOKit IO = IOKit.INSTANCE;
     /**
-     * Map for caching info retrieved by a key necessary for subsequent calls.
+     * 映射缓存信息，由后续调用所需的键检索
      */
     private static Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
 
@@ -73,9 +73,9 @@ public class SmcUtils {
     }
 
     /**
-     * Open a connection to SMC.
+     * 打开到SMC的连接.
      *
-     * @return The connection if successful, null if failure
+     * @return 如果连接成功，则为空
      */
     public static IOConnect smcOpen() {
         IOService smcService = IOKitUtil.getMatchingService("AppleSMC");
@@ -94,48 +94,47 @@ public class SmcUtils {
     }
 
     /**
-     * Close connection to SMC.
+     *与SMC紧密连接
      *
-     * @param conn The connection
-     * @return 0 if successful, nonzero if failure
+     * @param conn 连接
+     * @return 0表示成功，非0表示失败
      */
     public static int smcClose(IOConnect conn) {
         return IO.IOServiceClose(conn);
     }
 
     /**
-     * Get a value from SMC which is in a floating point datatype (SP78, FPE2, FLT)
+     *从SMC中获取浮点数据类型(SP78, FPE2, FLT)的值
      *
-     * @param conn The connection
-     * @param key  The key to retrieve
-     * @return Double representing the value
+     * @param conn 连接
+     * @param key  检索键
+     * @return 双精度值
      */
     public static double smcGetFloat(IOConnect conn, String key) {
         SMCVal val = new SMCVal();
         int result = smcReadKey(conn, key, val);
         if (result == 0 && val.dataSize > 0) {
             if (Arrays.equals(val.dataType, DATATYPE_SP78) && val.dataSize == 2) {
-                // First bit is sign, next 7 bits are integer portion, last 8 bits are
-                // fractional portion
+                // 第一个位是符号，接下来的7位是整数部分，最后的8位是小数部分
                 return val.bytes[0] + val.bytes[1] / 256d;
             } else if (Arrays.equals(val.dataType, DATATYPE_FPE2) && val.dataSize == 2) {
-                // First E (14) bits are integer portion last 2 bits are fractional portion
+                // 前E(14)位是整数部分，后2位是小数部分
                 return Builder.byteArrayToFloat(val.bytes, val.dataSize, 2);
             } else if (Arrays.equals(val.dataType, DATATYPE_FLT) && val.dataSize == 4) {
-                // Standard 32-bit floating point
+                // 标准的32位浮点数
                 return ByteBuffer.wrap(val.bytes).order(ByteOrder.LITTLE_ENDIAN).getFloat();
             }
         }
-        // Read failed
+        // 读取失败
         return 0d;
     }
 
     /**
-     * Get a 64-bit integer value from SMC
+     * 从SMC中获取一个64位的整数值
      *
-     * @param conn The connection
-     * @param key  The key to retrieve
-     * @return Long representing the value
+     * @param conn 连接
+     * @param key  检索键
+     * @return 长整型值
      */
     public static long smcGetLong(IOConnect conn, String key) {
         SMCVal val = new SMCVal();
@@ -148,12 +147,12 @@ public class SmcUtils {
     }
 
     /**
-     * Get cached keyInfo if it exists, or generate new keyInfo
+     * 获取缓存的keyInfo(如果存在的话)，或者生成新的keyInfo
      *
-     * @param conn            The connection
-     * @param inputStructure  Key data input
-     * @param outputStructure Key data output
-     * @return 0 if successful, nonzero if failure
+     * @param conn            连接
+     * @param inputStructure  关键数据输入
+     * @param outputStructure 关键数据输出
+     * @return 0表示成功，非0表示失败
      */
     public static int smcGetKeyInfo(IOConnect conn, SMCKeyData inputStructure, SMCKeyData outputStructure) {
         if (keyInfoCache.containsKey(inputStructure.key)) {
@@ -179,10 +178,10 @@ public class SmcUtils {
     /**
      * Read a key from SMC
      *
-     * @param conn The connection
-     * @param key  Key to read
-     * @param val  Structure to receive the result
-     * @return 0 if successful, nonzero if failure
+     * @param conn 连接
+     * @param key  读取key
+     * @param val  接收结果
+     * @return 0表示成功，非0表示失败
      */
     public static int smcReadKey(IOConnect conn, String key, SMCVal val) {
         SMCKeyData inputStructure = new SMCKeyData();
@@ -207,13 +206,13 @@ public class SmcUtils {
     }
 
     /**
-     * Call SMC
+     *调用SMC
      *
-     * @param conn            The connection
-     * @param index           Kernel index
-     * @param inputStructure  Key data input
-     * @param outputStructure Key data output
-     * @return 0 if successful, nonzero if failure
+     * @param conn            连接
+     * @param index           内核指数
+     * @param inputStructure  关键数据输入
+     * @param outputStructure 关键数据输出
+     * @return 0表示成功，非0表示失败
      */
     public static int smcCall(IOConnect conn, int index, SMCKeyData inputStructure, SMCKeyData outputStructure) {
         return IO.IOConnectCallStructMethod(conn, index, inputStructure, new NativeLong(inputStructure.size()),
@@ -221,7 +220,7 @@ public class SmcUtils {
     }
 
     /**
-     * Holds the return value of SMC version query.
+     * 保存SMC版本查询的返回值.
      */
     @FieldOrder({"major", "minor", "build", "reserved", "release"})
     public static class SMCKeyDataVers extends Structure {
@@ -234,7 +233,7 @@ public class SmcUtils {
     }
 
     /**
-     * Holds the return value of SMC pLimit query.
+     * 保存SMC pLimit查询的返回值
      */
     @FieldOrder({"version", "length", "cpuPLimit", "gpuPLimit", "memPLimit"})
     public static class SMCKeyDataPLimitData extends Structure {
@@ -246,7 +245,7 @@ public class SmcUtils {
     }
 
     /**
-     * Holds the return value of SMC KeyInfo query.
+     * 保存SMC KeyInfo查询的返回值
      */
     @FieldOrder({"dataSize", "dataType", "dataAttributes"})
     public static class SMCKeyDataKeyInfo extends Structure {
@@ -256,7 +255,7 @@ public class SmcUtils {
     }
 
     /**
-     * Holds the return value of SMC query.
+     * 保存SMC查询的返回值
      */
     @FieldOrder({"key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes"})
     public static class SMCKeyData extends Structure {
@@ -272,7 +271,7 @@ public class SmcUtils {
     }
 
     /**
-     * Holds an SMC value
+     * 保持SMC值
      */
     @FieldOrder({"key", "dataSize", "dataType", "bytes"})
     public static class SMCVal extends Structure {
@@ -281,4 +280,5 @@ public class SmcUtils {
         public byte[] dataType = new byte[5];
         public byte[] bytes = new byte[32];
     }
+
 }

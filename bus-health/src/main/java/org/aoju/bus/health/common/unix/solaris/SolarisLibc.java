@@ -28,16 +28,17 @@ import com.sun.jna.Native;
 import org.aoju.bus.health.common.unix.CLibrary;
 
 /**
- * C library. This class should be considered non-API as it may be removed
- * if/when its code is incorporated into the JNA project.
+ * C动态库。这个类应该被认为是非api的，因为如果/当
+ * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
 public interface SolarisLibc extends CLibrary {
+
     /**
-     * Constant <code>INSTANCE</code>
+     * 常量 <code>INSTANCE</code>
      */
     SolarisLibc INSTANCE = Native.load("c", SolarisLibc.class);
 

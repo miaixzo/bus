@@ -29,8 +29,8 @@ import com.sun.jna.platform.linux.LibC;
 import org.aoju.bus.health.common.unix.CLibrary;
 
 /**
- * Linux C Library. This class should be considered non-API as it may be removed
- * if/when its code is incorporated into the JNA project.
+ * Linux C动态库，这个类应该被认为是非api的，
+ * 因为如果/当它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
  * @version 5.8.8

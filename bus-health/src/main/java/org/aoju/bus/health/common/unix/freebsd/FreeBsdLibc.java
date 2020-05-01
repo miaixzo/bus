@@ -32,135 +32,95 @@ import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.health.common.unix.CLibrary;
 
 /**
- * C library. This class should be considered non-API as it may be removed
- * if/when its code is incorporated into the JNA project.
+ * C动态库,这个类应该被认为是非api的，因为如果/当
+ * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
 public interface FreeBsdLibc extends CLibrary {
+
     /**
-     * Constant <code>INSTANCE</code>
+     * 常量 <code>INSTANCE</code>
      */
     FreeBsdLibc INSTANCE = Native.load("libc", FreeBsdLibc.class);
-
-    /*
-     * Data size
-     */
     /**
-     * Constant <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
+     * 常量 <code>UINT64_SIZE=Native.getNativeSize(long.class)</code>
      */
     int UINT64_SIZE = Native.getNativeSize(long.class);
     /**
-     * Constant <code>INT_SIZE=Native.getNativeSize(int.class)</code>
+     * 常量 <code>INT_SIZE=Native.getNativeSize(int.class)</code>
      */
     int INT_SIZE = Native.getNativeSize(int.class);
-
-    /*
-     * CPU state indices
-     */
     /**
-     * Constant <code>CPUSTATES=5</code>
+     * 常量 <code>CPUSTATES=5</code>
      */
     int CPUSTATES = 5;
     /**
-     * Constant <code>CP_USER=0</code>
+     * 常量 <code>CP_USER=0</code>
      */
     int CP_USER = 0;
     /**
-     * Constant <code>CP_NICE=1</code>
+     * 常量 <code>CP_NICE=1</code>
      */
     int CP_NICE = 1;
     /**
-     * Constant <code>CP_SYS=2</code>
+     * 常量 <code>CP_SYS=2</code>
      */
     int CP_SYS = 2;
     /**
-     * Constant <code>CP_INTR=3</code>
+     * 常量 <code>CP_INTR=3</code>
      */
     int CP_INTR = 3;
     /**
-     * Constant <code>CP_IDLE=4</code>
+     * 常量 <code>CP_IDLE=4</code>
      */
     int CP_IDLE = 4;
 
     /**
-     * The sysctl() function retrieves system information and allows processes with
-     * appropriate privileges to set system information. The information available
-     * from sysctl() consists of integers, strings, and tables.
-     * <p>
-     * The state is described using a "Management Information Base" (MIB) style
-     * name, listed in name, which is a namelen length array of integers.
-     * <p>
-     * The information is copied into the buffer specified by oldp. The size of the
-     * buffer is given by the location specified by oldlenp before the call, and
-     * that location gives the amount of data copied after a successful call and
-     * after a call that returns with the error code ENOMEM. If the amount of data
-     * available is greater than the size of the buffer supplied, the call supplies
-     * as much data as fits in the buffer provided and returns with the error code
-     * ENOMEM. If the old value is not desired, oldp and oldlenp should be set to
-     * NULL.
-     * <p>
-     * The size of the available data can be determined by calling sysctl() with the
-     * NULL argument for oldp. The size of the available data will be returned in
-     * the location pointed to by oldlenp. For some operations, the amount of space
-     * may change often. For these operations, the system attempts to round up so
-     * that the returned size is large enough for a call to return the data shortly
-     * thereafter.
-     * <p>
-     * To set a new value, newp is set to point to a buffer of length newlen from
-     * which the requested value is to be taken. If a new value is not to be set,
-     * newp should be set to NULL and newlen set to 0.
+     * 函数的作用是:检索系统信息，并允许具有适当权限的进程设置系统信息sysctl()提供的信息
+     * 包括整数、字符串和表。
+     * 状态是使用“管理信息库”(MIB)样式名来描述的，它列在name中，是一个整数的namelen长度数组.
+     * 信息被复制到oldp指定的缓冲区中。缓冲区的大小由oldlenp在调用之前指定的位置给出，该位置
+     * 给出在成功调用之后以及在返回错误代码ENOMEM的调用之后复制的数据量。如果可用的数据量大于
+     * 提供的缓冲区的大小，则调用提供与提供的缓冲区相匹配的所有数据，并返回错误代码ENOMEM
+     * 如果不需要旧值，oldp和oldlenp应该设置为NULL
      *
-     * @param name    MIB array of integers
-     * @param namelen length of the MIB array
-     * @param oldp    Information retrieved
-     * @param oldlenp Size of information retrieved
-     * @param newp    Information to be written
-     * @param newlen  Size of information to be written
-     * @return 0 on success; sets errno on failure
+     * @param name    整数的MIB数组
+     * @param namelen MIB数组的长度
+     * @param oldp    信息检索
+     * @param oldlenp 检索到的信息的大小
+     * @param newp    待写信息
+     * @param newlen  要写入的信息的大小
+     * @return 0成功;设置errno失败
      */
     int sysctl(int[] name, int namelen, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
 
     /**
-     * The sysctlbyname() function accepts an ASCII representation of the name and
-     * internally looks up the integer name vector. Apart from that, it behaves the
-     * same as the standard sysctl() function.
+     * sysctlbyname()函数接受名称的ASCII表示形式，并在内部查找整数名称向量
+     * 除此之外，它的行为与标准的sysctl()函数相同
      *
-     * @param name    ASCII representation of the MIB name
-     * @param oldp    Information retrieved
-     * @param oldlenp Size of information retrieved
-     * @param newp    Information to be written
-     * @param newlen  Size of information to be written
-     * @return 0 on success; sets errno on failure
+     * @param name    MIB名称的ASCII表示
+     * @param oldp    信息检索
+     * @param oldlenp 检索到的信息的大小
+     * @param newp    待写信息
+     * @param newlen  要写入的信息的大小
+     * @return 0成功;设置errno失败
      */
     int sysctlbyname(String name, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
 
     /**
-     * The sysctlnametomib() function accepts an ASCII representation of the name,
-     * looks up the integer name vector, and returns the numeric representation in
-     * the mib array pointed to by mibp. The number of elements in the mib array is
-     * given by the location specified by sizep before the call, and that location
-     * gives the number of entries copied after a successful call. The resulting mib
-     * and size may be used in subsequent sysctl() calls to get the data associated
-     * with the requested ASCII name. This interface is intended for use by
-     * applications that want to repeatedly request the same variable (the sysctl()
-     * function runs in about a third the time as the same request made via the
-     * sysctlbyname() function).
-     * <p>
-     * The number of elements in the mib array can be determined by calling
-     * sysctlnametomib() with the NULL argument for mibp.
-     * <p>
-     * The sysctlnametomib() function is also useful for fetching mib prefixes. If
-     * size on input is greater than the number of elements written, the array still
-     * contains the additional elements which may be written programmatically.
+     * sysctlnametomib()函数接受名称的ASCII表示形式，查找整数名称向量，并返回mibp指向的mib数组
+     * 中的数字表示形式。mib数组中的元素数量由调用前sizep指定的位置给出，而该位置给出了调用成功后
+     * 复制的条目数量。在随后的sysctl()调用中，可以使用得到的mib和size来获得与所请求的ASCII名称
+     * 相关联的数据。此接口用于希望重复请求相同变量的应用程序(sysctl()函数的运行时间约为通过
+     * sysctlbyname()函数发出的相同请求的三分之一)
      *
-     * @param name ASCII representation of the name
-     * @param mibp Integer array containing the corresponding name vector.
-     * @param size On input, number of elements in the returned array; on output, the
-     *             number of entries copied.
-     * @return 0 on success; sets errno on failure
+     * @param name 名称的ASCII表示
+     * @param mibp 包含对应名称向量的整数数组
+     * @param size 输入时，返回数组中的元素数;在输出时，复制的项数
+     * @return 0成功;设置errno失败
      */
     int sysctlnametomib(String name, Pointer mibp, IntByReference size);
 

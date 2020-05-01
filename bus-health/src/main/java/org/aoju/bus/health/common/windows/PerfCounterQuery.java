@@ -34,9 +34,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * <p>
- * PerfCounterQuery class.
- * </p>
+ * 计数器相关查询支持
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -45,19 +43,19 @@ import java.util.Map;
 public class PerfCounterQuery<T extends Enum<T>> {
 
     /**
-     * Constant <code>TOTAL_INSTANCE="_Total"</code>
+     * 常量 <code>TOTAL_INSTANCE="_Total"</code>
      */
     public static final String TOTAL_INSTANCE = "_Total";
     /**
-     * Constant <code>TOTAL_INSTANCES="*_Total"</code>
+     * 常量 <code>TOTAL_INSTANCES="*_Total"</code>
      */
     public static final String TOTAL_INSTANCES = "*_Total";
     /**
-     * Constant <code>NOT_TOTAL_INSTANCE="^ + TOTAL_INSTANCE"</code>
+     * 常量 <code>NOT_TOTAL_INSTANCE="^ + TOTAL_INSTANCE"</code>
      */
     public static final String NOT_TOTAL_INSTANCE = Symbol.CARET + TOTAL_INSTANCE;
     /**
-     * Constant <code>NOT_TOTAL_INSTANCES="^ + TOTAL_INSTANCES"</code>
+     * 常量 <code>NOT_TOTAL_INSTANCES="^ + TOTAL_INSTANCES"</code>
      */
     public static final String NOT_TOTAL_INSTANCES = Symbol.CARET + TOTAL_INSTANCES;
     protected final Class<T> propertyEnum;
@@ -67,43 +65,36 @@ public class PerfCounterQuery<T extends Enum<T>> {
     protected CounterDataSource source;
 
     /*
-     * Multiple classes use these constants
+     * 多个类使用这些常量
      */
     protected PerfCounterHandler pdhQueryHandler;
     protected WmiQueryHandler wmiQueryHandler;
     protected WmiQuery<T> counterQuery = null;
     /*
-     * Only one will be non-null depending on source
+     *枚举源，只有一个是非空的
      */
     private EnumMap<T, PerfDataUtils.PerfCounter> counterMap = null;
 
     /**
-     * Construct a new object to hold performance counter data source and results
+     * 构造一个新对象来保存性能计数器数据源和结果
      *
-     * @param propertyEnum An enum which implements
-     *                     {@link PerfCounterQuery.PdhCounterProperty}
-     *                     and contains the WMI field (Enum value) and PDH Counter string
-     *                     (instance and counter)
-     * @param perfObject   The PDH object for this counter; all counters on this object will
-     *                     be refreshed at the same time
-     * @param perfWmiClass The WMI PerfData_RawData_* class corresponding to the PDH object
+     * @param propertyEnum 实现{@link PerfCounterQuery 的枚举
+     *                     包含WMI字段(Enum值)和PDH计数器字符串(实例和计数器)
+     * @param perfObject   此计数器的PDH对象;此对象上的所有计数器将同时刷新
+     * @param perfWmiClass 对应于PDH对象的WMI PerfData_RawData_*类
      */
     public PerfCounterQuery(Class<T> propertyEnum, String perfObject, String perfWmiClass) {
         this(propertyEnum, perfObject, perfWmiClass, perfObject);
     }
 
     /**
-     * Construct a new object to hold performance counter data source and results
+     * 构造一个新对象来保存性能计数器数据源和结果
      *
-     * @param propertyEnum An enum which implements
-     *                     {@link PerfCounterQuery.PdhCounterProperty}
-     *                     and contains the WMI field (Enum value) and PDH Counter string
-     *                     (instance and counter)
-     * @param perfObject   The PDH object for this counter; all counters on this object will
-     *                     be refreshed at the same time
-     * @param perfWmiClass The WMI PerfData_RawData_* class corresponding to the PDH object
-     * @param queryKey     An optional key for PDH counter updates; defaults to the PDH
-     *                     object name
+     * @param propertyEnum 实现{@link PerfCounterQuery 的枚举
+     *                     包含WMI字段(Enum值)和PDH计数器字符串(实例和计数器)
+     * @param perfObject   此计数器的PDH对象;此对象上的所有计数器将同时刷新
+     * @param perfWmiClass 对应于PDH对象的WMI PerfData_RawData_*类
+     * @param queryKey     用于PDH计数器更新的可选密钥;默认为PDH对象名称
      */
     public PerfCounterQuery(Class<T> propertyEnum, String perfObject, String perfWmiClass, String queryKey) {
         this.propertyEnum = propertyEnum;
@@ -112,16 +103,14 @@ public class PerfCounterQuery<T extends Enum<T>> {
         this.queryKey = queryKey;
         this.pdhQueryHandler = PerfCounterHandler.getInstance();
         this.wmiQueryHandler = WmiQueryHandler.createInstance();
-        // Start off with PDH as source; if query here fails we will permanently
-        // fall back to WMI
         this.source = CounterDataSource.PDH;
     }
 
     /**
-     * Set the Data Source for these counters
+     * 设置这些计数器的数据源
      *
-     * @param source The source of data
-     * @return Whether the data source was successfully set
+     * @param source 数据来源
+     * @return 数据源是否设置成功
      */
     public boolean setDataSource(CounterDataSource source) {
         this.source = source;
@@ -136,17 +125,14 @@ public class PerfCounterQuery<T extends Enum<T>> {
                 initWmiCounters();
                 return true;
             default:
-                // This should never happen unless you've added a new source and
-                // forgot to add a case for it
                 throw new IllegalArgumentException("Invalid Data Source specified.");
         }
     }
 
     /**
-     * Initialize PDH counters for this data source. Adds necessary counters to a
-     * PDH Query.
+     * 初始化此数据源的PDH计数器。向PDH查询添加必要的计数器
      *
-     * @return True if the counters were successfully added.
+     * @return 如果计数器被成功添加，则为真
      */
     protected boolean initPdhCounters() {
         this.counterMap = new EnumMap<>(propertyEnum);
@@ -163,8 +149,7 @@ public class PerfCounterQuery<T extends Enum<T>> {
     }
 
     /**
-     * Uninitialize PDH counters for this data source. Removes necessary counters
-     * from the PDH Query, releasing their handles.
+     * 不初始化此数据源的PDH计数器。从PDH查询中删除必要的计数器，释放它们的句柄
      */
     protected void unInitPdhCounters() {
         pdhQueryHandler.removeAllCountersFromQuery(this.queryKey);
@@ -172,38 +157,34 @@ public class PerfCounterQuery<T extends Enum<T>> {
     }
 
     /**
-     * Initialize the WMI query object needed to retrieve counters for this data
-     * source.
+     * 初始化检索此数据源的计数器所需的WMI查询对象
      */
     protected void initWmiCounters() {
         this.counterQuery = new WmiQuery<>(perfWmiClass, propertyEnum);
     }
 
     /**
-     * Uninitializes the WMI query object needed to retrieve counters for this data
-     * source, allowing it to be garbage collected.
+     * 未初始化检索此数据源的计数器所需的WMI查询对象，从而允许对其进行垃圾收集
      */
     protected void unInitWmiCounters() {
         this.counterQuery = null;
     }
 
     /**
-     * Query the current data source (PDH or WMI) for the Performance Counter values
-     * corresponding to the property enum.
+     * 查询当前数据源(PDH或WMI)，以获得与属性enum对应的性能计数器值
      *
-     * @return A map of the values by the counter enum.
+     * @return 计数器枚举值的映射
      */
     public Map<T, Long> queryValues() {
         EnumMap<T, Long> valueMap = new EnumMap<>(propertyEnum);
         T[] props = this.propertyEnum.getEnumConstants();
         if (source.equals(CounterDataSource.PDH)) {
-            // Set up the query and counter handles, and query
+            // 设置查询和计数器句柄以及查询
             if (initPdhCounters() && queryPdh(valueMap, props)) {
-                // If both init and query return true, then valueMap contains
-                // the results. Release the handles.
+                // 如果init和查询都返回true，则valueMap包含结果。释放句柄
                 unInitPdhCounters();
             } else {
-                // If either init or query failed, switch to WMI
+                // 如果init或查询失败，则切换到WMI
                 setDataSource(CounterDataSource.WMI);
             }
         }
@@ -220,8 +201,7 @@ public class PerfCounterQuery<T extends Enum<T>> {
             }
             return true;
         }
-        // Zero timestamp means update failed after muliple
-        // attempts; fallback to WMI
+        // 0时间戳表示多次尝试后更新失败;回退到WMI
         return false;
     }
 
@@ -247,31 +227,32 @@ public class PerfCounterQuery<T extends Enum<T>> {
     }
 
     /**
-     * Source of performance counter data.
+     * 性能计数器数据的来源
      */
     public enum CounterDataSource {
         /**
-         * Performance Counter data will be pulled from a PDH Counter
+         * 性能计数器数据将从PDH计数器中提取
          */
         PDH,
         /**
-         * Performance Counter data will be pulled from a WMI PerfData_RawData_* table
+         * 性能计数器数据将从WMI PerfData_RawData_*表中提取
          */
         WMI
     }
 
     /**
-     * Contract for Counter Property Enums
+     * 属性枚举计数器
      */
     public interface PdhCounterProperty {
         /**
-         * @return Returns the instance.
+         * @return 返回的实例
          */
         String getInstance();
 
         /**
-         * @return Returns the counter.
+         * @return 返回计数器
          */
         String getCounter();
     }
+
 }

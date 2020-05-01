@@ -29,6 +29,8 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.win32.W32APIOptions;
 
 /**
+ * 提供进程相关支持
+ *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
@@ -38,33 +40,15 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
     Kernel32 INSTANCE = Native.load("kernel32", Kernel32.class, W32APIOptions.DEFAULT_OPTIONS);
 
     /**
-     * Retrieves the process affinity mask for the specified process and the system
-     * affinity mask for the system.
+     * 检索指定进程的进程关联掩码和系统的系统关联掩码
      *
-     * @param hProcess              A handle to the process whose affinity mask is desired.
-     *                              <p>
-     *                              This handle must have the {@link WinNT#PROCESS_QUERY_INFORMATION}
-     *                              or {@link WinNT#PROCESS_QUERY_LIMITED_INFORMATION} access right.
-     * @param lpProcessAffinityMask A pointer to a variable that receives the affinity mask for the
-     *                              specified process.
-     * @param lpSystemAffinityMask  A pointer to a variable that receives the affinity mask for the
-     *                              system.
-     * @return If the function succeeds, returns {@code true} and the function sets
-     * the variables pointed to by {@code lpProcessAffinityMask} and
-     * {@code lpSystemAffinityMask} to the appropriate affinity masks.
-     * <p>
-     * On a system with more than 64 processors, if the threads of the
-     * calling process are in a single processor group, the function sets
-     * the variables pointed to by {@code lpProcessAffinityMask} and
-     * {@code lpSystemAffinityMask} to the process affinity mask and the
-     * processor mask of active logical processors for that group. If the
-     * calling process contains threads in multiple groups, the function
-     * returns zero for both affinity masks.
-     * <p>
-     * If the function fails, the return value is {@code false}, and the
-     * values of the variables pointed to by {@code lpProcessAffinityMask}
-     * and {@code lpSystemAffinityMask} are undefined. To get extended error
-     * information, call {@link #GetLastError()}.
+     * @param hProcess              进程的句柄，需要它的关联掩码
+     *                              该句柄必须具有{@link WinNT#PROCESS_QUERY_INFORMATION}
+     *                              或{@link WinNT#PROCESS_QUERY_LIMITED_INFORMATION}访问权限
+     * @param lpProcessAffinityMask 指向接收指定进程的关联掩码的变量的指针
+     * @param lpSystemAffinityMask  指向接收系统关联掩码的变量的指针
+     * @return 如果函数成功，则返回{@code true}，并将{@code lpProcessAffinityMask}
+     * 和{@code lpSystemAffinityMask}所指向的变量设置为适当的关联掩码
      */
     boolean GetProcessAffinityMask(HANDLE hProcess, ULONG_PTRByReference lpProcessAffinityMask,
                                    ULONG_PTRByReference lpSystemAffinityMask);

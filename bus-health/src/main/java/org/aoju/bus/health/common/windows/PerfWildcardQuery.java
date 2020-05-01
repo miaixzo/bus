@@ -36,6 +36,8 @@ import org.aoju.bus.logger.Logger;
 import java.util.*;
 
 /**
+ * 性能计数器支持
+ *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
@@ -48,56 +50,25 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
     private List<String> instancesFromLastQuery = new ArrayList<>();
 
     /**
-     * Construct a new object to hold performance counter data source and results
+     * 构造一个新对象来保存性能计数器数据源和结果
      *
-     * @param propertyEnum An enum which implements
-     *                     {@link PerfWildcardQuery.PdhCounterWildcardProperty}
-     *                     and contains the WMI field (Enum value) and PDH Counter string
-     *                     (instance or counter).
-     *                     <p>
-     *                     The first element of the enum defines the instance filter, rather
-     *                     than a counter name. This acts as a filter for PDH instances only
-     *                     and should correlate with a WMI String field defining the same
-     *                     name. If the instance is null then all counters will be added to
-     *                     the PDH query, otherwise the PDH counter will only include
-     *                     instances which are wildcard matches with the given instance,
-     *                     replacing '?' with a single character, '*' with any number of
-     *                     characters, and reversing the test if the first character is ^.
-     *                     If the counter source is WMI, the instance filtering has no
-     *                     effect, and it is the responsibility of the user to add filtering
-     *                     to the perfWmiClass string using a WHERE clause.
-     * @param perfObject   The PDH object for this counter; all counters on this object will
-     *                     be refreshed at the same time
-     * @param perfWmiClass The WMI PerfData_RawData_* class corresponding to the PDH object
+     * @param propertyEnum 实现{@link PerfWildcardQuery 的枚举。包含WMI字段(Enum值)和
+     *                     PDH计数器字符串(实例或计数器)
+     * @param perfObject   此计数器的PDH对象;此对象上的所有计数器将同时刷新
+     * @param perfWmiClass 对应于PDH对象的WMI PerfData_RawData_*类
      */
     public PerfWildcardQuery(Class<T> propertyEnum, String perfObject, String perfWmiClass) {
         this(propertyEnum, perfObject, perfWmiClass, perfObject);
     }
 
     /**
-     * Construct a new object to hold performance counter data source and results
+     * 构造一个新对象来保存性能计数器数据源和结果
      *
-     * @param propertyEnum An enum which implements
-     *                     {@link PerfWildcardQuery.PdhCounterWildcardProperty}
-     *                     and contains the WMI field (Enum value) and PDH Counter string
-     *                     (instance or counter).
-     *                     <p>
-     *                     The first element of the enum defines the instance filter, rather
-     *                     than a counter name. This acts as a filter for PDH instances only
-     *                     and should correlate with a WMI String field defining the same
-     *                     name. If the instance is null then all counters will be added to
-     *                     the PDH query, otherwise the PDH counter will only include
-     *                     instances which are wildcard matches with the given instance,
-     *                     replacing '?' with a single character, '*' with any number of
-     *                     characters, and reversing the test if the first character is ^.
-     *                     If the counter source is WMI, the instance filtering has no
-     *                     effect, and it is the responsibility of the user to add filtering
-     *                     to the perfWmiClass string using a WHERE clause.
-     * @param perfObject   The PDH object for this counter; all counters on this object will
-     *                     be refreshed at the same time
-     * @param perfWmiClass The WMI PerfData_RawData_* class corresponding to the PDH object
-     * @param queryKey     An optional key for PDH counter updates; defaults to the PDH
-     *                     object name
+     * @param propertyEnum 实现{@link PerfWildcardQuery 的枚举
+     *                     包含WMI字段(Enum值)和PDH计数器字符串(实例或计数器)
+     * @param perfObject   此计数器的PDH对象;此对象上的所有计数器将同时刷新
+     * @param perfWmiClass 对应于PDH对象的WMI PerfData_RawData_*类
+     * @param queryKey     用于PDH计数器更新的可选密钥;默认为PDH对象名称
      */
     public PerfWildcardQuery(Class<T> propertyEnum, String perfObject, String perfWmiClass, String queryKey) {
         super(propertyEnum, perfObject, perfWmiClass, queryKey);
@@ -112,16 +83,13 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
     }
 
     /**
-     * Localize a PerfCounter string. English counter names should normally be in
-     * HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows
-     * NT\CurrentVersion\Perflib\009\Counter, but language manipulations may delete
-     * the 009 index. In this case we can assume English must be the language and
-     * continue. We may still fail to match the name if the assumption is wrong but
-     * it's better than nothing.
+     * 本地化一个PerfCounter字符串。英文计数器名通常应该在HKEY_LOCAL_MACHINE\SOFTWARE\
+     * Microsoft\Windows NT\CurrentVersion\Perflib\009\ counter中，但是语言操作可能
+     * 会删除009索引。在这种情况下，我们可以假设英语必须是语言并继续。如果这个假设是错误的
+     * 我们可能仍然无法匹配名称，但这总比没有好
      *
-     * @param perfObject A String to localize
-     * @return The localized string if localization succussful, or the original
-     * string otherwise.
+     * @param perfObject 要本地化的字符串
+     * @return 如果本地化成功，则为本地化后的字符串，否则为原始字符串
      */
     private static String localize(String perfObject) {
         String localized = null;
@@ -137,59 +105,38 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
         return localized;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Initialize PDH counters for this data source. Adds necessary counters to a
-     * PDH Query.
-     */
     @Override
     protected boolean initPdhCounters() {
         return fillCounterListMap();
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Uninitialize PDH counters for this data source. Removes necessary counters
-     * from the PDH Query, releasing their handles.
-     */
     @Override
     protected void unInitPdhCounters() {
         pdhQueryHandler.removeAllCountersFromQuery(this.queryKey);
         this.counterListMap = null;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This method is not implemented on this class.
-     *
-     * @see #queryValuesWildcard
-     */
     @Override
     public Map<T, Long> queryValues() {
         throw new UnsupportedOperationException("Use queryValuesWildcard() on this class.");
     }
 
     /**
-     * Query the current data source (PDH or WMI) for the Performance Counter values
-     * corresponding to the property enum.
+     * 查询当前数据源(PDH或WMI)，以获得与属性enum对应的性能计数器值
      *
-     * @return A map of the values by the counter enum.
+     * @return 计数器枚举值的映射
      */
     public Map<T, List<Long>> queryValuesWildcard() {
         EnumMap<T, List<Long>> valueMap = new EnumMap<>(propertyEnum);
         this.instancesFromLastQuery.clear();
         T[] props = this.propertyEnum.getEnumConstants();
         if (source.equals(CounterDataSource.PDH)) {
-            // Set up the query and counter handles, and query
+            // 设置查询和计数器句柄以及查询
             if (initPdhCounters() && queryPdhWildcard(valueMap, props)) {
-                // If both init and query return true, then valueMap contains
-                // the results. Release the handles.
+                // 如果init和查询都返回true，则valueMap包含结果。释放处理
                 unInitPdhCounters();
             } else {
-                // If either init or query failed, switch to WMI
+                // 如果init或查询失败，则切换到WMI
                 setDataSource(CounterDataSource.WMI);
             }
         }
@@ -214,19 +161,18 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
             }
             return true;
         }
-        // Zero timestamp means update failed after multiple attempts; fall back
-        // to WMI
+        // 0时间戳表示多次尝试后更新失败;回到WMI
         return false;
     }
 
     private void queryWmiWildcard(Map<T, List<Long>> valueMap, T[] props) {
         WmiResult<T> result = wmiQueryHandler.queryWMI(this.counterQuery);
         if (result.getResultCount() > 0) {
-            // First element is instance name
+            // 第一个元素是实例名
             for (int i = 0; i < result.getResultCount(); i++) {
                 instancesFromLastQuery.add(WmiUtils.getString(result, props[0], i));
             }
-            // Remaining elements are counters
+            // 其余元素是计数器
             for (int p = 1; p < props.length; p++) {
                 T prop = props[p];
                 List<Long> values = new ArrayList<>();
@@ -254,16 +200,16 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
     }
 
     /**
-     * List the instances corresponding to the value map lists
+     * 列出与值映射列表对应的实例
      *
-     * @return A list of the in the order they are returned in the value map query
+     * @return 它们在值映射查询中返回的顺序的列表
      */
     public List<String> getInstancesFromLastQuery() {
         return this.instancesFromLastQuery;
     }
 
     private boolean fillCounterListMap() {
-        // Get list of instances
+        // 获取实例列表
         final PdhEnumObjectItems objectItems;
         try {
             objectItems = PdhUtil.PdhEnumObjectItems(null, null, perfObjectLocalized, 100);
@@ -271,12 +217,11 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
             return false;
         }
         List<String> instances = objectItems.getInstances();
-        // Filter out instances not matching filter
+        // 过滤掉不匹配的实例
         instances.removeIf(i -> !Builder.wildcardMatch(i.toLowerCase(), this.instanceFilter));
-        // Track instances not in counter list, to add
+        // 跟踪不在计数器列表中的实例，以便添加
         Set<String> instancesToAdd = new HashSet<>(instances);
-        // Populate map with instances to add. Skip first counter, which defines
-        // instance filter
+        // 用要添加的实例填充映射。跳过第一个计数器，它定义了实例过滤器
         this.counterListMap = new EnumMap<>(propertyEnum);
         for (int i = 1; i < propertyEnum.getEnumConstants().length; i++) {
             T prop = propertyEnum.getEnumConstants()[i];
@@ -296,13 +241,15 @@ public class PerfWildcardQuery<T extends Enum<T>> extends PerfCounterQuery<T> {
     }
 
     /**
-     * Contract for Counter Property Enums
+     * 枚举属性计数器
      */
     public interface PdhCounterWildcardProperty {
+
         /**
-         * @return Returns the counter. The first element of the enum will return the
-         * instance filter rather than a counter.
+         * @return 返回计数器枚举的第一个元素将返回实例过滤器，而不是计数器
          */
         String getCounter();
+
     }
+
 }

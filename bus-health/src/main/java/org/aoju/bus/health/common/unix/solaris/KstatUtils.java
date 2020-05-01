@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Provides access to kstat information on Solaris
+ * 提供对Solaris上的kstat信息的访问
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -49,9 +49,8 @@ public class KstatUtils {
 
     private static final LibKstat KS = LibKstat.INSTANCE;
 
-    // Opens the kstat chain. Automatically closed on exit.
-    // Only one thread may access the chain at any time, so we wrap this object in
-    // the KstatChain class which locks the class until closed.
+    // 打开kstat链。自动关闭在退出。任何时候只有一个线程可以访问这个链，
+    // 所以我们将这个对象封装在KstatChain类中，这个类会一直锁定这个类直到关闭.
     private static final KstatCtl KC = KS.kstat_open();
     private static final ReentrantLock CHAIN = new ReentrantLock();
 
@@ -59,26 +58,22 @@ public class KstatUtils {
     }
 
     /**
-     * Create a copy of the Kstat chain and lock it for use by this object.
+     * 创建Kstat链的副本并将其锁定，以供该对象使用
      *
-     * @return A locked copy of the chain. It should be unlocked/released when you
-     * are done with it with {@link KstatChain#close()}.
+     * @return 一个锁上的链的副本。当您使用{@link KstatChain#close()}完成时，它应该被解锁/释放
      */
     public static KstatChain openChain() {
         return new KstatChain();
     }
 
     /**
-     * Convenience method for {@link LibKstat#kstat_data_lookup} with String return
-     * values. Searches the kstat's data section for the record with the specified
-     * name. This operation is valid only for kstat types which have named data
-     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
-     * have named data records.
+     * 方便的方法{@链接LibKstat#kstat_data_lookup}与字符串返回值
+     * 在kstat的data部分中搜索具有指定名称的记录。此操作仅对已命名数据记录的kstat类型有效
+     * 目前，只有KSTAT_TYPE_NAMED和KSTAT_TYPE_TIMER kstats有命名数据记录.
      *
-     * @param ksp  The kstat to search
-     * @param name The key for the name-value pair, or name of the timer as
-     *             applicable
-     * @return The value as a String.
+     * @param ksp  要搜索的kstat
+     * @param name 名称-值对的键，或计时器的名称(如适用)
+     * @return 字符串值
      */
     public static String dataLookupString(Kstat ksp, String name) {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
@@ -110,17 +105,13 @@ public class KstatUtils {
     }
 
     /**
-     * Convenience method for {@link LibKstat#kstat_data_lookup} with numeric return
-     * values. Searches the kstat's data section for the record with the specified
-     * name. This operation is valid only for kstat types which have named data
-     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
-     * have named data records.
+     * 具有数字返回值的{@link LibKstat#kstat_data_lookup}的便利方法
+     * 在kstat的data部分中搜索具有指定名称的记录。此操作仅对已命名数据记录的kstat类型有效
+     * 目前，只有KSTAT_TYPE_NAMED和KSTAT_TYPE_TIMER kstats有命名数据记录。
      *
-     * @param ksp  The kstat to search
-     * @param name The key for the name-value pair, or name of the timer as
-     *             applicable
-     * @return The value as a long. If the data type is a character or string type,
-     * returns 0 and logs an error.
+     * @param ksp  要搜索的kstat
+     * @param name 名称-值对的键，或计时器的名称(如适用)
+     * @return 长整型的值。如果数据类型是字符或字符串类型，则返回0并记录错误。
      */
     public static long dataLookupLong(Kstat ksp, String name) {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
@@ -151,14 +142,11 @@ public class KstatUtils {
     }
 
     /**
-     * A copy of the Kstat chain, encapsulating a {@code kstat_ctl_t} object. Only
-     * one thread may actively use this object at any time.
-     * <p>
-     * Instantiating this object is accomplished using the
-     * {@link KstatUtils#openChain} method. It locks and updates the chain and is the
-     * equivalent of calling {@link LibKstat#kstat_open}. The control object should
-     * be closed with {@link #close}, the equivalent of calling
-     * {@link LibKstat#kstat_close}
+     * Kstat链的一个副本，它封装了一个{@code kstat_ctl_t}对象
+     * 任何时候只有一个线程可以积极地使用这个对象
+     * 实例化这个对象是使用{@link KstatUtils#openChain}方法完成的。它锁定和更新链
+     * 相当于调用{@link LibKstat#kstat_open}。控件对象应该使用{@link #close}关闭
+     * 这相当于调用{@link LibKstat#kstat_close}。
      */
     public static class KstatChain implements AutoCloseable {
 
@@ -168,16 +156,13 @@ public class KstatUtils {
         }
 
         /**
-         * Convenience method for {@link LibKstat#kstat_read} which gets data from the
-         * kernel for the kstat pointed to by {@code ksp}. {@code ksp.ks_data} is
-         * automatically allocated (or reallocated) to be large enough to hold all of
-         * the data. {@code ksp.ks_ndata} is set to the number of data fields,
-         * {@code ksp.ks_data_size} is set to the total size of the data, and
-         * ksp.ks_snaptime is set to the high-resolution time at which the data snapshot
-         * was taken.
+         * {@link LibKstat#kstat_read}的便利方法，它从内核获取由{@code ksp}指向的kstat的数据
+         * {@code过度增殖。ks_data}被自动分配(或重新分配)到足够大以容纳所有数据。
+         * {@code过度增殖。将ks_ndata}设置为数据字段的数量{@code ksp。将ks_data_size}设置为
+         * 数据的总大小和ksp。ks_snaptime设置为拍摄数据快照的高分辨率时间
          *
-         * @param ksp The kstat from which to retrieve data
-         * @return {@code true} if successful; {@code false} otherwise
+         * @param ksp 要从中检索数据的kstat
+         * @return {@code true}如果成功;{@code false}
          */
         public boolean read(Kstat ksp) {
             int retry = 0;
@@ -195,35 +180,30 @@ public class KstatUtils {
         }
 
         /**
-         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
-         * chain, searching for a kstat with the same {@code module}, {@code instance},
-         * and {@code name} fields; this triplet uniquely identifies a kstat. If
-         * {@code module} is {@code null}, {@code instance} is -1, or {@code name} is
-         * {@code null}, then those fields will be ignored in the search.
+         * 方便的方法{@link LibKstat#kstat_lookup}。遍历kstat链，使用相同的
+         * {@code module}、{@code instance}和{@code name}字段搜索kstat;这个三元组唯
+         * 一地标识一个kstat，如果{@code module}是{@code null}， {@code instance}是-1
+         * 或者{@code name}是{@code null}，那么这些字段将在搜索中被忽略。
          *
-         * @param module   The module, or null to ignore
-         * @param instance The instance, or -1 to ignore
-         * @param name     The name, or null to ignore
-         * @return The first match of the requested Kstat structure if found, or
-         * {@code null}
+         * @param module   模块，或忽略null
+         * @param instance 实例，或者忽略-1
+         * @param name     名称，或忽略null
+         * @return 如果找到请求的Kstat结构的第一个匹配项，或者{@code null}
          */
         public Kstat lookup(String module, int instance, String name) {
             return KS.kstat_lookup(KC, module, instance, name);
         }
 
         /**
-         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
-         * chain, searching for all kstats with the same {@code module},
-         * {@code instance}, and {@code name} fields; this triplet uniquely identifies a
-         * kstat. If {@code module} is {@code null}, {@code instance} is -1, or
-         * {@code name} is {@code null}, then those fields will be ignored in the
-         * search.
+         * 方便的方法{@link LibKstat#kstat_lookup}。遍历kstat链，使用相同的
+         * {@code module}、{@code instance}和{@code name}字段搜索所有kstats;
+         * 这个三元组唯一地标识一个kstat。如果{@code module}是{@code null}，
+         * {@code instance}是-1，或者{@code name}是{@code null}，那么这些字段将在搜索中被忽略
          *
-         * @param module   The module, or null to ignore
-         * @param instance The instance, or -1 to ignore
-         * @param name     The name, or null to ignore
-         * @return All matches of the requested Kstat structure if found, or an empty
-         * list otherwise
+         * @param module   模块，或忽略null
+         * @param instance 实例，或者忽略-1
+         * @param name     名称，或忽略null
+         * @return 如果找到所请求的Kstat结构的所有匹配项，则为空列表
          */
         public List<Kstat> lookupAll(String module, int instance, String name) {
             List<Kstat> kstats = new ArrayList<>();
@@ -238,25 +218,21 @@ public class KstatUtils {
         }
 
         /**
-         * Convenience method for {@link LibKstat#kstat_chain_update}. Brings this kstat
-         * header chain in sync with that of the kernel.
-         * <p>
-         * This function compares the kernel's current kstat chain ID(KCID), which is
-         * incremented every time the kstat chain changes, to this object's KCID.
+         * 方便的方法{@link LibKstat#kstat_chain_update}。使这个kstat头链与内核的头链同步。
          *
-         * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or -1 on
-         * failure.
+         * @return 如果kstat链已经更改，则为0，如果没有更改，则为-1
          */
         public int update() {
             return KS.kstat_chain_update(KC);
         }
 
         /**
-         * Release the lock on the chain.
+         * 解开链条上的锁
          */
         @Override
         public void close() {
             CHAIN.unlock();
         }
     }
+
 }

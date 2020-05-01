@@ -32,9 +32,8 @@ import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
 
 /**
- * C library with code common to all *nix-based operating systems. This class
- * should be considered non-API as it may be removed if/when its code is
- * incorporated into the JNA project.
+ * C动态库，包含所有基于*nix的操作系统的公共代码。这个类应该被认为是非api的，
+ * 因为如果/当它的代码被合并到JNA项目中时，它可能会被删除。
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -42,90 +41,85 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public interface CLibrary extends LibCAPI, Library {
 
-    /*
-     * For getaddrinfo()
-     */
     /**
-     * Constant <code>AI_CANONNAME=2</code>
+     * 常量 <code>AI_CANONNAME=2</code>
      */
     int AI_CANONNAME = 2;
 
     /**
-     * Returns the process ID of the calling process. The ID is guaranteed to be
-     * unique and is useful for constructing temporary file names.
+     * 返回调用进程的进程ID。ID保证是惟一的，对于构造临时文件名很有用
      *
-     * @return the process ID of the calling process.
+     * @return 调用进程的进程ID
      */
     int getpid();
 
     /**
-     * Given node and service, which identify an Internet host and a service,
-     * getaddrinfo() returns one or more addrinfo structures, each of which contains
-     * an Internet address that can be specified in a call to bind(2) or connect(2).
+     * getaddrinfo()返回一个或多个addrinfo结构，其中每个结构
+     * 包含一个Internet地址，可以在绑定(2)或连接(2)的调用中指定
      *
-     * @param node    a numerical network address or a network hostname, whose network
-     *                addresses are looked up and resolved.
-     * @param service sets the port in each returned address structure.
-     * @param hints   specifies criteria for selecting the socket address structures
-     *                returned in the list pointed to by res.
-     * @param res     returned address structure
-     * @return 0 on success; sets errno on failure
+     * @param node    一个数字网络地址或网络主机名，其网络地址被查找并解析
+     * @param service 设置每个返回地址结构中的端口
+     * @param hints   指定选择由res指向的列表中返回的套接字地址结构的条件
+     * @param res     返回地址结构
+     * @return 0成功;设置errno失败
      */
     int getaddrinfo(String node, String service, Addrinfo hints, PointerByReference res);
 
     /**
-     * Frees the memory that was allocated for the dynamically allocated linked list
-     * res.
+     * 释放为动态分配的链表res分配的内存
      *
-     * @param res Pointer to linked list returned by getaddrinfo
+     * @param res 指向getaddrinfo返回的链表的指针
      */
     void freeaddrinfo(Pointer res);
 
     /**
-     * Translates getaddrinfo error codes to a human readable string, suitable for
-     * error reporting.
+     * 将getaddrinfo错误代码转换为人类可读的字符串，适合于错误报告
      *
-     * @param e Error code from getaddrinfo
-     * @return A human-readable version of the error code
+     * @param e 来自getaddrinfo的错误代码
+     * @return 人类可读的错误代码版本
      */
     String gai_strerror(int e);
 
     /**
-     * Places the contents of the symbolic link path in the buffer buf, which has
-     * size bufsiz.
+     * 将符号链接路径的内容放在大小为bufsiz的缓冲区buf中
      *
-     * @param path    A symbolic link
-     * @param buf     Holds actual path to location pointed to by symlink
-     * @param bufsize size of data in buffer
-     * @return readlink() places the contents of the symbolic link path in the
-     * buffer buf, which has size bufsiz. readlink() does not append a null
-     * byte to buf. It will truncate the contents (to a length of bufsiz
-     * characters), in case the buffer is too small to hold all of the
-     * contents.
+     * @param path    一个符号链接
+     * @param buf     包含符号链接指向的位置的实际路径
+     * @param bufsize 缓冲区中的数据大小
+     * @return readlink()将符号链接路径的内容放在大小为bufsiz的缓冲区buf中
+     * readlink()不会向buf追加空字节。它将截断内容(长度为bufsiz字符)，以防缓冲区太小而容纳不了所有内容
      */
     int readlink(String path, Pointer buf, int bufsize);
 
     /**
-     * Return type for BSD sysctl kern.boottime
+     * 返回类型为BSD sysctl kernel .boottime
      */
     @FieldOrder({"tv_sec", "tv_usec"})
     class Timeval extends Structure {
-        public long tv_sec; // seconds
-        public long tv_usec; // microseconds
+        /**
+         * 秒
+         */
+        public long tv_sec;
+        /**
+         * 微秒
+         */
+        public long tv_usec;
     }
 
     @FieldOrder({"sa_family", "sa_data"})
     class Sockaddr extends Structure {
+
         public short sa_family;
         public byte[] sa_data = new byte[14];
 
         public static class ByReference extends Sockaddr implements Structure.ByReference {
         }
+
     }
 
-    @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
-            "ai_next"})
+    @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname", "ai_next"})
     class Addrinfo extends Structure {
+
         public int ai_flags;
         public int ai_family;
         public int ai_socktype;
@@ -144,6 +138,8 @@ public interface CLibrary extends LibCAPI, Library {
         }
 
         public static class ByReference extends Addrinfo implements Structure.ByReference {
+
         }
     }
+
 }
