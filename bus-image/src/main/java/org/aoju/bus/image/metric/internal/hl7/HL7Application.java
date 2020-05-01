@@ -397,4 +397,5 @@ public class HL7Application implements Serializable {
                     + " configured for HL7 Application: " + name);
         return hl7AppExt;
     }
+
 }
