@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License                                                               *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -24,15 +24,23 @@
  ********************************************************************************/
 package org.aoju.bus.health;
 
+import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.health.builtin.hardware.*;
+import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -50,31 +58,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * General constants used in multiple classes
+ * String parsing utility.
  *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class Builder {
+@ThreadSafe
+public final class Builder {
 
-    /**
-     * Constant <code>HEX_ERROR="0x%08X"</code>
-     */
-    public static final String HEX_ERROR = "0x%08X";
-    /**
-     * String to report for unknown information
-     */
-    public static final String UNKNOWN = "unknown";
+    public static final String BUS_HEALTH_ARCH_PROPERTIES = "bus-health-arch.properties";
+    public static final String BUS_HEALTH_ADDR_PROPERTIES = "bus-health-addr.properties";
+    public static final String BUS_HEALTH_PROPERTIES = "bus-health.properties";
+
     /**
      * The official/approved path for sysfs information. Note: /sys/class/dmi/id
      * symlinks here
      */
     public static final String SYSFS_SERIAL_PATH = "/sys/devices/virtual/dmi/id/";
+
     /**
      * The Unix Epoch, a default value when WMI DateTime queries return no value.
      */
     public static final OffsetDateTime UNIX_EPOCH = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
+
     /**
      * Constant <code>whitespacesColonWhitespace</code>
      */
@@ -92,31 +99,9 @@ public class Builder {
      */
     public static final Pattern startWithNotDigits = Pattern.compile("^[^0-9]*");
     /**
-     * Binary prefixes, used in IEC Standard for naming bytes.
-     * (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission)
-     * <p>
-     * Should be used for most representations of bytes
+     * Constant <code>HEX_ERROR="0x%08X"</code>
      */
-    private static final long KIBI = 1L << 10;
-    private static final long MEBI = 1L << 20;
-    private static final long GIBI = 1L << 30;
-    private static final long TEBI = 1L << 40;
-    private static final long PEBI = 1L << 50;
-    private static final long EXBI = 1L << 60;
-    /**
-     * Decimal prefixes, used for Hz and other metric units and for bytes by hard
-     * drive manufacturers
-     */
-    private static final long KILO = 1000L;
-    private static final long MEGA = 1000000L;
-    private static final long GIGA = 1000000000L;
-    private static final long TERA = 1000000000000L;
-    private static final long PETA = 1000000000000000L;
-    private static final long EXA = 1000000000000000000L;
-    /*
-     * Two's complement reference: 2^64.
-     */
-    private static final BigInteger TWOS_COMPLEMENT_REF = BigInteger.ONE.shiftLeft(64);
+    public static final String HEX_ERROR = "0x%08X";
     private static final String DEFAULT_Logger_MSG = "{} didn't parse. Returning default. {}";
     /*
      * Used for matching
@@ -136,6 +121,19 @@ public class Builder {
     private static final Pattern UUID_PATTERN = Pattern
             .compile(".*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
     /*
+     * Pattern for Windows PnPDeviceID vendor and product ID
+     */
+    private static final Pattern VENDOR_PRODUCT_ID = Pattern
+            .compile(".*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4}).*");
+    /*
+     * Pattern for Linux lspci machine readable
+     */
+    private static final Pattern LSPCI_MACHINE_READABLE = Pattern.compile("(.+)\\s\\[(.*?)\\]");
+    /*
+     * Pattern for Linux lspci memory
+     */
+    private static final Pattern LSPCI_MEMORY_SIZE = Pattern.compile(".+\\s\\[size=(\\d+)([kKMGT])\\]");
+    /*
      * Hertz related variables.
      */
     private static final String HZ = "Hz";
@@ -154,13 +152,49 @@ public class Builder {
             100_000_000L, 1_000_000_000L, 10_000_000_000L, 100_000_000_000L, 1_000_000_000_000L, 10_000_000_000_000L,
             100_000_000_000_000L, 1_000_000_000_000_000L, 10_000_000_000_000_000L, 100_000_000_000_000_000L,
             1_000_000_000_000_000_000L};
-
     // Fast hex character lookup
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-
     // Format returned by WMI for DateTime
     private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ",
             Locale.US);
+    private static final String READING_LOG = "Reading file {}";
+    private static final String READ_LOG = "Read {}";
+    /**
+     * Binary prefixes, used in IEC Standard for naming bytes.
+     * (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission)
+     * <p>
+     * Should be used for most representations of bytes
+     */
+    private static final long KIBI = 1L << 10;
+    private static final long MEBI = 1L << 20;
+    private static final long GIBI = 1L << 30;
+    private static final long TEBI = 1L << 40;
+    private static final long PEBI = 1L << 50;
+    private static final long EXBI = 1L << 60;
+    /**
+     * Decimal prefixes, used for Hz and other metric units and for bytes by hard
+     * drive manufacturers
+     */
+    private static final long KILO = 1_000L;
+    private static final long MEGA = 1_000_000L;
+    private static final long GIGA = 1_000_000_000L;
+    private static final long TERA = 1_000_000_000_000L;
+    private static final long PETA = 1_000_000_000_000_000L;
+    private static final long EXA = 1_000_000_000_000_000_000L;
+    /*
+     * Two's complement reference: 2^64.
+     */
+    private static final BigInteger TWOS_COMPLEMENT_REF = BigInteger.ONE.shiftLeft(64);
+
+    private static final Platform platform;
+    /**
+     * 硬件信息
+     */
+    private static final HardwareAbstractionLayer hardware;
+    /**
+     * 系统信息
+     */
+    private static final OperatingSystem os;
 
     static {
         multipliers = new HashMap<>();
@@ -170,13 +204,123 @@ public class Builder {
         multipliers.put(GHZ, 1_000_000_000L);
         multipliers.put(THZ, 1_000_000_000_000L);
         multipliers.put(PHZ, 1_000_000_000_000_000L);
+        platform = new Platform();
+        hardware = platform.getHardware();
+        os = platform.getOperatingSystem();
+    }
+
+    private Builder() {
     }
 
     /**
-     * Everything in this class is static, never instantiate it
+     * 获取操作系统相关信息，包括系统版本、文件系统、进程等
+     *
+     * @return 操作系统相关信息
      */
-    private Builder() {
-        throw new AssertionError();
+    public static OperatingSystem getOs() {
+        return os;
+    }
+
+    /**
+     * 获取硬件相关信息，包括内存、硬盘、网络设备、显示器、USB、声卡等
+     *
+     * @return 硬件相关信息
+     */
+    public static HardwareAbstractionLayer getHardware() {
+        return hardware;
+    }
+
+    /**
+     * 获取BIOS中计算机相关信息，比如序列号、固件版本等
+     *
+     * @return 获取BIOS中计算机相关信息
+     */
+    public static ComputerSystem getSystem() {
+        return hardware.getComputerSystem();
+    }
+
+    /**
+     * 获取内存相关信息，比如总内存、可用内存等
+     *
+     * @return 内存相关信息
+     */
+    public static GlobalMemory getMemory() {
+        return hardware.getMemory();
+    }
+
+    /**
+     * 获取CPU（处理器）相关信息，比如CPU负载等
+     *
+     * @return CPU（处理器）相关信息
+     */
+    public static CentralProcessor getProcessor() {
+        return hardware.getProcessor();
+    }
+
+    /**
+     * Sleeps for the specified number of milliseconds.
+     *
+     * @param ms How long to sleep
+     */
+    public static void sleep(long ms) {
+        try {
+            Logger.trace("Sleeping for {} ms", ms);
+            Thread.sleep(ms);
+        } catch (InterruptedException e) { // NOSONAR squid:S2142
+            Logger.warn("Interrupted while sleeping for {} ms: {}", ms, e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Tests if a String matches another String with a wildcard pattern.
+     *
+     * @param text    The String to test
+     * @param pattern The String containing a wildcard pattern where ? represents a
+     *                single character and * represents any number of characters. If the
+     *                first character of the pattern is a carat (^) the test is
+     *                performed against the remaining characters and the result of the
+     *                test is the opposite.
+     * @return True if the String matches or if the first character is ^ and the
+     * remainder of the String does not match.
+     */
+    public static boolean wildcardMatch(String text, String pattern) {
+        if (pattern.length() > 0 && pattern.charAt(0) == '^') {
+            return !wildcardMatch(text, pattern.substring(1));
+        }
+        return text.matches(pattern.replace("?", ".?").replace("*", ".*?"));
+    }
+
+    /**
+     * Gets a map containing current working directory info
+     *
+     * @param pid a process ID, optional
+     * @return a map of process IDs to their current working directory. If
+     * {@code pid} is a negative number, all processes are returned;
+     * otherwise the map may contain only a single element for {@code pid}
+     */
+    public static Map<Integer, String> getCwdMap(int pid) {
+        List<String> lsof = Executor.runNative("lsof -Fn -d cwd" + (pid < 0 ? "" : " -p " + pid));
+        Map<Integer, String> cwdMap = new HashMap<>();
+        Integer key = -1;
+        for (String line : lsof) {
+            if (line.isEmpty()) {
+                continue;
+            }
+            switch (line.charAt(0)) {
+                case 'p':
+                    key = Builder.parseIntOrDefault(line.substring(1), -1);
+                    break;
+                case 'n':
+                    cwdMap.put(key, line.substring(1));
+                    break;
+                case 'f':
+                    // ignore the 'cwd' file descriptor
+                default:
+                    break;
+            }
+        }
+        return cwdMap;
     }
 
     /**
@@ -360,35 +504,417 @@ public class Builder {
     }
 
     /**
-     * <p>
-     * getCwdMap.
-     * </p>
+     * Read an entire file at one time. Intended primarily for Linux /proc
+     * filesystem to avoid recalculating file contents on iterative reads.
      *
-     * @param pid a int.
-     * @return a {@link java.util.Map} object.
+     * @param filename The file to read
+     * @return A list of Strings representing each line of the file, or an empty
+     * list if file could not be read or is empty
      */
-    public static Map<Integer, String> getCwdMap(int pid) {
-        List<String> lsof = Command.runNative("lsof -Fn -d cwd" + (pid < 0 ? "" : " -p " + pid));
-        Map<Integer, String> cwdMap = new HashMap<>();
-        Integer key = -1;
-        for (String line : lsof) {
-            if (line.isEmpty()) {
-                continue;
+    public static List<String> readFile(String filename) {
+        return readFile(filename, true);
+    }
+
+    /**
+     * Read an entire file at one time. Intended primarily for Linux /proc
+     * filesystem to avoid recalculating file contents on iterative reads.
+     *
+     * @param filename    The file to read
+     * @param reportError Whether to log errors reading the file
+     * @return A list of Strings representing each line of the file, or an empty
+     * list if file could not be read or is empty
+     */
+    public static List<String> readFile(String filename, boolean reportError) {
+        if (new File(filename).canRead()) {
+            if (Logger.get().isDebug()) {
+                Logger.debug(READING_LOG, filename);
             }
-            switch (line.charAt(0)) {
-                case 'p':
-                    key = parseIntOrDefault(line.substring(1), -1);
+            try {
+                return Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                if (reportError) {
+                    Logger.error("Error reading file {}. {}", filename, e.getMessage());
+                }
+            }
+        } else if (reportError) {
+            Logger.warn("File not found or not readable: {}", filename);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Read a file and return the long value contained therein. Intended primarily
+     * for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise zero
+     */
+    public static long getLongFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> read = readFile(filename, false);
+        if (!read.isEmpty()) {
+            if (Logger.get().isTrace()) {
+                Logger.trace(READ_LOG, read.get(0));
+            }
+            return Builder.parseLongOrDefault(read.get(0), 0L);
+        }
+        return 0L;
+    }
+
+    /**
+     * Read a file and return the unsigned long value contained therein as a long.
+     * Intended primarily for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise zero
+     */
+    public static long getUnsignedLongFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> read = readFile(filename, false);
+        if (!read.isEmpty()) {
+            if (Logger.get().isTrace()) {
+                Logger.trace(READ_LOG, read.get(0));
+            }
+            return Builder.parseUnsignedLongOrDefault(read.get(0), 0L);
+        }
+        return 0L;
+    }
+
+    /**
+     * Read a file and return the int value contained therein. Intended primarily
+     * for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise zero
+     */
+    public static int getIntFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        try {
+            List<String> read = readFile(filename, false);
+            if (!read.isEmpty()) {
+                if (Logger.get().isTrace()) {
+                    Logger.trace(READ_LOG, read.get(0));
+                }
+                return Integer.parseInt(read.get(0));
+            }
+        } catch (NumberFormatException ex) {
+            Logger.warn("Unable to read value from {}. {}", filename, ex.getMessage());
+        }
+        return 0;
+    }
+
+    /**
+     * Read a file and return the String value contained therein. Intended primarily
+     * for Linux /sys filesystem
+     *
+     * @param filename The file to read
+     * @return The value contained in the file, if any; otherwise empty string
+     */
+    public static String getStringFromFile(String filename) {
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> read = readFile(filename, false);
+        if (!read.isEmpty()) {
+            if (Logger.get().isTrace()) {
+                Logger.trace(READ_LOG, read.get(0));
+            }
+            return read.get(0);
+        }
+        return Normal.EMPTY;
+    }
+
+    /**
+     * Read a file and return a map of string keys to string values contained
+     * therein. Intended primarily for Linux /proc/[pid]/io
+     *
+     * @param filename  The file to read
+     * @param separator Characters in each line of the file that separate the key and the
+     *                  value
+     * @return The map contained in the file, if any; otherwise empty map
+     */
+    public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
+        Map<String, String> map = new HashMap<>();
+        if (Logger.get().isDebug()) {
+            Logger.debug(READING_LOG, filename);
+        }
+        List<String> lines = readFile(filename, false);
+        for (String line : lines) {
+            String[] parts = line.split(separator);
+            if (parts.length == 2) {
+                map.put(parts[0], parts[1].trim());
+            }
+        }
+        return map;
+    }
+
+    /**
+     * Read a configuration file from the class path and return its properties
+     *
+     * @param propsFilename The filename
+     * @return A {@link Properties} object containing the properties.
+     */
+    public static Properties readPropertiesFromFilename(String propsFilename) {
+        Properties archProps = new Properties();
+        // Load the configuration file from the classpath
+        try {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            if (loader == null) {
+                loader = ClassLoader.getSystemClassLoader();
+                if (loader == null) {
+                    throw new IOException();
+                }
+            }
+            List<URL> resources = Collections.list(loader.getResources(propsFilename));
+            if (resources.isEmpty()) {
+                Logger.warn("No {} file found on the classpath", propsFilename);
+            } else {
+                if (resources.size() > 1) {
+                    Logger.warn("Configuration conflict: there is more than one {} file on the classpath", propsFilename);
+                }
+
+                try (InputStream in = resources.get(0).openStream()) {
+                    if (in != null) {
+                        archProps.load(in);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Logger.warn("Failed to load default configuration");
+        }
+        return archProps;
+    }
+
+    /**
+     * Gets the Manufacturer ID from (up to) 3 5-bit characters in bytes 8 and 9
+     *
+     * @param edid The EDID byte array
+     * @return The manufacturer ID
+     */
+    public static String getManufacturerID(byte[] edid) {
+        // Bytes 8-9 are manufacturer ID in 3 5-bit characters.
+        String temp = String
+                .format("%8s%8s", Integer.toBinaryString(edid[8] & 0xFF), Integer.toBinaryString(edid[9] & 0xFF))
+                .replace(Symbol.C_SPACE, '0');
+        Logger.debug("Manufacurer ID: {}", temp);
+        return String.format("%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
+                (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
+                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace("@", Normal.EMPTY);
+    }
+
+    /**
+     * Gets the Product ID, bytes 10 and 11
+     *
+     * @param edid The EDID byte array
+     * @return The product ID
+     */
+    public static String getProductID(byte[] edid) {
+        // Bytes 10-11 are product ID expressed in hex characters
+        return Integer.toHexString(
+                ByteBuffer.wrap(Arrays.copyOfRange(edid, 10, 12)).order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xffff);
+    }
+
+    /**
+     * Gets the Serial number, bytes 12-15
+     *
+     * @param edid The EDID byte array
+     * @return If all 4 bytes represent alphanumeric characters, a 4-character
+     * string, otherwise a hex string.
+     */
+    public static String getSerialNo(byte[] edid) {
+        // Bytes 12-15 are Serial number (last 4 characters)
+        if (Logger.get().isDebug()) {
+            Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
+        }
+        return String.format("%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
+                getAlphaNumericOrHex(edid[13]), getAlphaNumericOrHex(edid[12]));
+    }
+
+    private static String getAlphaNumericOrHex(byte b) {
+        return Character.isLetterOrDigit((char) b) ? String.format("%s", (char) b) : String.format("%02X", b);
+    }
+
+    /**
+     * Return the week of year of manufacture
+     *
+     * @param edid The EDID byte array
+     * @return The week of year
+     */
+    public static byte getWeek(byte[] edid) {
+        // Byte 16 is manufacture week
+        return edid[16];
+    }
+
+    /**
+     * Return the year of manufacture
+     *
+     * @param edid The EDID byte array
+     * @return The year of manufacture
+     */
+    public static int getYear(byte[] edid) {
+        // Byte 17 is manufacture year-1990
+        byte temp = edid[17];
+        Logger.debug("Year-1990: {}", temp);
+        return temp + 1990;
+    }
+
+    /**
+     * Return the EDID version
+     *
+     * @param edid The EDID byte array
+     * @return The EDID version
+     */
+    public static String getVersion(byte[] edid) {
+        // Bytes 18-19 are EDID version
+        return edid[18] + Symbol.DOT + edid[19];
+    }
+
+    /**
+     * Test if this EDID is a digital monitor based on byte 20
+     *
+     * @param edid The EDID byte array
+     * @return True if the EDID represents a digital monitor, false otherwise
+     */
+    public static boolean isDigital(byte[] edid) {
+        // Byte 20 is Video input params
+        return 1 == (edid[20] & 0xff) >> 7;
+    }
+
+    /**
+     * Get monitor width in cm
+     *
+     * @param edid The EDID byte array
+     * @return Monitor width in cm
+     */
+    public static int getHcm(byte[] edid) {
+        // Byte 21 is horizontal size in cm
+        return edid[21];
+    }
+
+    /**
+     * Get monitor height in cm
+     *
+     * @param edid The EDID byte array
+     * @return Monitor height in cm
+     */
+    public static int getVcm(byte[] edid) {
+        // Byte 22 is vertical size in cm
+        return edid[22];
+    }
+
+    /**
+     * Get the VESA descriptors
+     *
+     * @param edid The EDID byte array
+     * @return A 2D array with four 18-byte elements representing VESA descriptors
+     */
+    public static byte[][] getDescriptors(byte[] edid) {
+        byte[][] desc = new byte[4][18];
+        for (int i = 0; i < desc.length; i++) {
+            System.arraycopy(edid, 54 + 18 * i, desc[i], 0, 18);
+        }
+        return desc;
+    }
+
+    /**
+     * Get the VESA descriptor type
+     *
+     * @param desc An 18-byte VESA descriptor
+     * @return An integer representing the first four bytes of the VESA descriptor
+     */
+    public static int getDescriptorType(byte[] desc) {
+        return ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 4)).getInt();
+    }
+
+    /**
+     * Parse a detailed timing descriptor
+     *
+     * @param desc An 18-byte VESA descriptor
+     * @return A string describing part of the detailed timing descriptor
+     */
+    public static String getTimingDescriptor(byte[] desc) {
+        int clock = ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 2)).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100;
+        int hActive = (desc[2] & 0xff) + ((desc[4] & 0xf0) << 4);
+        int vActive = (desc[5] & 0xff) + ((desc[7] & 0xf0) << 4);
+        return String.format("Clock %dMHz, Active Pixels %dx%d ", clock, hActive, vActive);
+    }
+
+    /**
+     * Parse descriptor range limits
+     *
+     * @param desc An 18-byte VESA descriptor
+     * @return A string describing some of the range limits
+     */
+    public static String getDescriptorRangeLimits(byte[] desc) {
+        return String.format("Field Rate %d-%d Hz vertical, %d-%d Hz horizontal, Max clock: %d MHz", desc[5], desc[6],
+                desc[7], desc[8], desc[9] * 10);
+    }
+
+    /**
+     * Parse descriptor text
+     *
+     * @param desc An 18-byte VESA descriptor
+     * @return Plain text starting at the 4th byte
+     */
+    public static String getDescriptorText(byte[] desc) {
+        return new String(Arrays.copyOfRange(desc, 4, 18), StandardCharsets.US_ASCII).trim();
+    }
+
+    /**
+     * Parse an EDID byte array into user-readable information
+     *
+     * @param edid An EDID byte array
+     * @return User-readable text represented by the EDID
+     */
+    public static String toString(byte[] edid) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("  Manuf. ID=").append(getManufacturerID(edid));
+        sb.append(", Product ID=").append(getProductID(edid));
+        sb.append(", ").append(isDigital(edid) ? "Digital" : "Analog");
+        sb.append(", Serial=").append(getSerialNo(edid));
+        sb.append(", ManufDate=").append(getWeek(edid) * 12 / 52 + 1).append('/')
+                .append(getYear(edid));
+        sb.append(", EDID v").append(getVersion(edid));
+        int hSize = getHcm(edid);
+        int vSize = getVcm(edid);
+        sb.append(String.format("%n  %d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54, vSize / 2.54));
+        byte[][] desc = getDescriptors(edid);
+        for (byte[] b : desc) {
+            switch (getDescriptorType(b)) {
+                case 0xff:
+                    sb.append("\n  Serial Number: ").append(getDescriptorText(b));
                     break;
-                case 'n':
-                    cwdMap.put(key, line.substring(1));
+                case 0xfe:
+                    sb.append("\n  Unspecified Text: ").append(getDescriptorText(b));
                     break;
-                case 'f':
-                    // ignore the 'cwd' file descriptor
+                case 0xfd:
+                    sb.append("\n  Range Limits: ").append(getDescriptorRangeLimits(b));
+                    break;
+                case 0xfc:
+                    sb.append("\n  Monitor Name: ").append(getDescriptorText(b));
+                    break;
+                case 0xfb:
+                    sb.append("\n  White Point Data: ").append(Builder.byteArrayToHexString(b));
+                    break;
+                case 0xfa:
+                    sb.append("\n  Standard Timing ID: ").append(Builder.byteArrayToHexString(b));
+                    break;
                 default:
+                    if (getDescriptorType(b) <= 0x0f && getDescriptorType(b) >= 0x00) {
+                        sb.append("\n  Manufacturer Data: ").append(Builder.byteArrayToHexString(b));
+                    } else {
+                        sb.append("\n  Preferred Timing: ").append(getTimingDescriptor(b));
+                    }
                     break;
             }
         }
-        return cwdMap;
+        return sb.toString();
     }
 
     /**
@@ -512,7 +1038,7 @@ public class Builder {
         // Check if string is valid hex
         if (!VALID_HEX.matcher(digits).matches() || (len & 0x1) != 0) {
             Logger.warn("Invalid hexadecimal string: {}", digits);
-            return Normal.EMPTY_BYTE_ARRAY;
+            return new byte[0];
         }
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
@@ -785,7 +1311,7 @@ public class Builder {
      * @return the value contained between single tick marks
      */
     public static String getSingleQuoteStringValue(String line) {
-        return getStringBetween(line, Symbol.C_SINGLE_QUOTE);
+        return getStringBetween(line, '\'');
     }
 
     /**
@@ -795,7 +1321,7 @@ public class Builder {
      * @return the value contained between double tick marks
      */
     public static String getDoubleQuoteStringValue(String line) {
-        return getStringBetween(line, Symbol.C_DOUBLE_QUOTES);
+        return getStringBetween(line, '"');
     }
 
     /**
@@ -814,7 +1340,7 @@ public class Builder {
     public static String getStringBetween(String line, char c) {
         int firstOcc = line.indexOf(c);
         if (firstOcc < 0) {
-            return "";
+            return Normal.EMPTY;
         }
         return line.substring(firstOcc + 1, line.lastIndexOf(c)).trim();
     }
@@ -840,7 +1366,7 @@ public class Builder {
      */
     public static int getNthIntValue(String line, int n) {
         // Split the string by non-digits,
-        String[] split = notDigits.split(startWithNotDigits.matcher(line).replaceFirst(""));
+        String[] split = notDigits.split(startWithNotDigits.matcher(line).replaceFirst(Normal.EMPTY));
         if (split.length >= n) {
             return parseIntOrDefault(split[n - 1], 0);
         }
@@ -882,6 +1408,10 @@ public class Builder {
      * sys filesystem, minimizing new object creation. Users should perform other
      * sanity checks of data.
      * <p>
+     * As a special case, non-numeric fields (such as UUIDs in OpenVZ) at the end of
+     * the list are ignored. Values greater than the max long value return the max
+     * long value.
+     * <p>
      * The indices parameters are referenced assuming the length as specified, and
      * leading characters are ignored. For example, if the string is "foo 12 34 5"
      * and the length is 3, then index 0 is 12, index 1 is 34, and index 2 is 5.
@@ -910,33 +1440,48 @@ public class Builder {
         int power = 0;
         int c;
         boolean delimCurrent = false;
+        boolean numeric = true;
+        boolean numberFound = false; // ignore nonnumeric at end
+        boolean dashSeen = false; // to flag uuids as nonnumeric
         while (--charIndex > 0 && parsedIndex >= 0) {
             c = s.charAt(charIndex);
             if (c == delimiter) {
+                // first parseable number?
+                if (!numberFound && numeric) {
+                    numberFound = true;
+                }
                 if (!delimCurrent) {
-                    power = 0;
-                    if (indices[parsedIndex] == stringIndex--) {
+                    if (numberFound && indices[parsedIndex] == stringIndex--) {
                         parsedIndex--;
                     }
                     delimCurrent = true;
+                    power = 0;
+                    dashSeen = false;
+                    numeric = true;
                 }
-            } else if (indices[parsedIndex] != stringIndex || c == Symbol.C_PLUS) {
+            } else if (indices[parsedIndex] != stringIndex || c == '+' || !numeric) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
-            } else if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) {
-                if (power > 18) {
-                    Logger.error("Number is too big for a long parsing string '{}' to long array", s);
-                    return new long[indices.length];
+            } else if (c >= '0' && c <= '9' && !dashSeen) {
+                if (power > 18 || power == 17 && c == '9' && parsed[parsedIndex] > 223372036854775807L) {
+                    parsed[parsedIndex] = Long.MAX_VALUE;
+                } else {
+                    parsed[parsedIndex] += (c - '0') * Builder.POWERS_OF_TEN[power++];
                 }
-                parsed[parsedIndex] += (c - Symbol.C_ZERO) * POWERS_OF_TEN[power++];
                 delimCurrent = false;
-            } else if (c == Symbol.C_HYPHEN) {
+            } else if (c == '-') {
                 parsed[parsedIndex] *= -1L;
                 delimCurrent = false;
+                dashSeen = true;
             } else {
+                // Flag as nonnumeric and continue unless we've seen a numeric
                 // error on everything else
-                Logger.error("Illegal character parsing string '{}' to long array: {}", s, s.charAt(charIndex));
-                return new long[indices.length];
+                if (numberFound) {
+                    Logger.error("Illegal character parsing string '{}' to long array: {}", s, s.charAt(charIndex));
+                    return new long[indices.length];
+                }
+                parsed[parsedIndex] = 0;
+                numeric = false;
             }
         }
         if (parsedIndex > 0) {
@@ -950,6 +1495,9 @@ public class Builder {
      * Parses a delimited string to count elements of an array of longs. Intended to
      * be called once to calculate the {@code length} field for
      * {@link #parseStringToLongArray}.
+     * <p>
+     * As a special case, non-numeric fields (such as UUIDs in OpenVZ) at the end of
+     * the list are ignored.
      *
      * @param s         The string to parse
      * @param delimiter The character to delimit by
@@ -964,18 +1512,34 @@ public class Builder {
 
         int c;
         boolean delimCurrent = false;
+        boolean numeric = true;
+        boolean dashSeen = false; // to flag uuids as nonnumeric
         while (--charIndex > 0) {
             c = s.charAt(charIndex);
             if (c == delimiter) {
                 if (!delimCurrent) {
-                    numbers++;
+                    if (numeric) {
+                        numbers++;
+                    }
                     delimCurrent = true;
+                    dashSeen = false;
+                    numeric = true;
                 }
-            } else if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE || c == Symbol.C_HYPHEN || c == Symbol.C_PLUS) {
+            } else if (c == '+' || !numeric) {
+                // Doesn't impact parsing, ignore
                 delimCurrent = false;
+            } else if (c >= '0' && c <= '9' && !dashSeen) {
+                delimCurrent = false;
+            } else if (c == '-') {
+                delimCurrent = false;
+                dashSeen = true;
             } else {
-                // we found non-digit or delimiter, exit
-                return numbers;
+                // we found non-digit or delimiter. If not last field, exit
+                if (numbers > 0) {
+                    return numbers;
+                }
+                // Else flag as nonnumeric and continue
+                numeric = false;
             }
         }
         // We got to beginning of string with only numbers, count start as a delimiter
@@ -994,7 +1558,7 @@ public class Builder {
      */
     public static String getTextBetweenStrings(String text, String before, String after) {
 
-        String result = "";
+        String result = Normal.EMPTY;
 
         if (text.indexOf(before) >= 0 && text.indexOf(after) >= 0) {
             result = text.substring(text.indexOf(before) + before.length(), text.length());
@@ -1052,7 +1616,7 @@ public class Builder {
             LocalTime offsetAsLocalTime = LocalTime.MIDNIGHT.plusMinutes(tzInMinutes);
             return OffsetDateTime.parse(
                     cimDateTime.substring(0, 22) + offsetAsLocalTime.format(DateTimeFormatter.ISO_LOCAL_TIME),
-                    CIM_FORMAT);
+                    Builder.CIM_FORMAT);
         } catch (IndexOutOfBoundsException // if cimDate not 22+ chars
                 | NumberFormatException // if TZ minutes doesn't parse
                 | DateTimeParseException e) {
@@ -1062,396 +1626,187 @@ public class Builder {
     }
 
     /**
-     * Sleeps for the specified number of milliseconds.
+     * Checks if a file path equals or starts with an prefix in the given list
      *
-     * @param ms How long to sleep
+     * @param prefixList A list of path prefixes
+     * @param path       a string path to check
+     * @return true if the path exactly equals, or starts with one of the strings in
+     * prefixList
      */
-    public static void sleep(long ms) {
-        try {
-            Logger.trace("Sleeping for {} ms", ms);
-            Thread.sleep(ms);
-        } catch (InterruptedException e) { // NOSONAR squid:S2142
-            Logger.warn("Interrupted while sleeping for {} ms: {}", ms, e);
-            Thread.currentThread().interrupt();
+    public static boolean filePathStartsWith(List<String> prefixList, String path) {
+        for (String match : prefixList) {
+            if (path.equals(match) || path.startsWith(match + "/")) {
+                return true;
+            }
         }
+        return false;
     }
 
     /**
-     * Tests if a String matches another String with a wildcard pattern.
+     * Parses a string such as "4096 MB" to its long. Used to parse macOS and *nix
+     * memory chip sizes. Although the units given are decimal they must parse to
+     * binary units.
      *
-     * @param text    The String to test
-     * @param pattern The String containing a wildcard pattern where ? represents a
-     *                single character and * represents any number of characters. If the
-     *                first character of the pattern is a carat (^) the test is
-     *                performed against the remaining characters and the result of the
-     *                test is the opposite.
-     * @return True if the String matches or if the first character is ^ and the
-     * remainder of the String does not match.
+     * @param size A string of memory sizes like "4096 MB"
+     * @return the size parsed to a long
      */
-    public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
-            return !wildcardMatch(text, pattern.substring(1));
-        }
-        return text.matches(pattern.replace(Symbol.QUESTION_MARK, ".?").replace(Symbol.STAR, ".*?"));
-    }
-
-    /**
-     * Gets the Manufacturer ID from (up to) 3 5-bit characters in bytes 8 and 9
-     *
-     * @param edid The EDID byte array
-     * @return The manufacturer ID
-     */
-    public static String getManufacturerID(byte[] edid) {
-        // Bytes 8-9 are manufacturer ID in 3 5-bit characters.
-        String temp = String
-                .format("%8s%8s", Integer.toBinaryString(edid[8] & 0xFF), Integer.toBinaryString(edid[9] & 0xFF))
-                .replace(Symbol.C_SPACE, Symbol.C_ZERO);
-        Logger.debug("Manufacurer ID: {}", temp);
-        return String.format("%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace(Symbol.AT, "");
-    }
-
-    /**
-     * Gets the Product ID, bytes 10 and 11
-     *
-     * @param edid The EDID byte array
-     * @return The product ID
-     */
-    public static String getProductID(byte[] edid) {
-        // Bytes 10-11 are product ID expressed in hex characters
-        return Integer.toHexString(
-                ByteBuffer.wrap(Arrays.copyOfRange(edid, 10, 12)).order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xffff);
-    }
-
-    /**
-     * Gets the Serial number, bytes 12-15
-     *
-     * @param edid The EDID byte array
-     * @return If all 4 bytes represent alphanumeric characters, a 4-character
-     * string, otherwise a hex string.
-     */
-    public static String getSerialNo(byte[] edid) {
-        // Bytes 12-15 are Serial number (last 4 characters)
-
-        Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
-
-        return String.format("%s%s%s%s", getAlphaNumericOrHex(edid[15]), getAlphaNumericOrHex(edid[14]),
-                getAlphaNumericOrHex(edid[13]), getAlphaNumericOrHex(edid[12]));
-    }
-
-    private static String getAlphaNumericOrHex(byte b) {
-        return Character.isLetterOrDigit((char) b) ? String.format("%s", (char) b) : String.format("%02X", b);
-    }
-
-    /**
-     * Return the week of year of manufacture
-     *
-     * @param edid The EDID byte array
-     * @return The week of year
-     */
-    public static byte getWeek(byte[] edid) {
-        // Byte 16 is manufacture week
-        return edid[16];
-    }
-
-    /**
-     * Return the year of manufacture
-     *
-     * @param edid The EDID byte array
-     * @return The year of manufacture
-     */
-    public static int getYear(byte[] edid) {
-        // Byte 17 is manufacture year-1990
-        byte temp = edid[17];
-        Logger.debug("Year-1990: {}", temp);
-        return temp + 1990;
-    }
-
-    /**
-     * Return the EDID version
-     *
-     * @param edid The EDID byte array
-     * @return The EDID version
-     */
-    public static String getVersion(byte[] edid) {
-        // Bytes 18-19 are EDID version
-        return edid[18] + Symbol.DOT + edid[19];
-    }
-
-    /**
-     * Test if this EDID is a digital monitor based on byte 20
-     *
-     * @param edid The EDID byte array
-     * @return True if the EDID represents a digital monitor, false otherwise
-     */
-    public static boolean isDigital(byte[] edid) {
-        // Byte 20 is Video input params
-        return 1 == (edid[20] & 0xff) >> 7;
-    }
-
-    /**
-     * Get monitor width in cm
-     *
-     * @param edid The EDID byte array
-     * @return Monitor width in cm
-     */
-    public static int getHcm(byte[] edid) {
-        // Byte 21 is horizontal size in cm
-        return edid[21];
-    }
-
-    /**
-     * Get monitor height in cm
-     *
-     * @param edid The EDID byte array
-     * @return Monitor height in cm
-     */
-    public static int getVcm(byte[] edid) {
-        // Byte 22 is vertical size in cm
-        return edid[22];
-    }
-
-    /**
-     * Get the VESA descriptors
-     *
-     * @param edid The EDID byte array
-     * @return A 2D array with four 18-byte elements representing VESA descriptors
-     */
-    public static byte[][] getDescriptors(byte[] edid) {
-        byte[][] desc = new byte[4][18];
-        for (int i = 0; i < desc.length; i++) {
-            System.arraycopy(edid, 54 + 18 * i, desc[i], 0, 18);
-        }
-        return desc;
-    }
-
-    /**
-     * Get the VESA descriptor type
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return An integer representing the first four bytes of the VESA descriptor
-     */
-    public static int getDescriptorType(byte[] desc) {
-        return ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 4)).getInt();
-    }
-
-    /**
-     * Parse a detailed timing descriptor
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return A string describing part of the detailed timing descriptor
-     */
-    public static String getTimingDescriptor(byte[] desc) {
-        int clock = ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 2)).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100;
-        int hActive = (desc[2] & 0xff) + ((desc[4] & 0xf0) << 4);
-        int vActive = (desc[5] & 0xff) + ((desc[7] & 0xf0) << 4);
-        return String.format("Clock %dMHz, Active Pixels %dx%d ", clock, hActive, vActive);
-    }
-
-    /**
-     * Parse descriptor range limits
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return A string describing some of the range limits
-     */
-    public static String getDescriptorRangeLimits(byte[] desc) {
-        return String.format("Field Rate %d-%d Hz vertical, %d-%d Hz horizontal, Max clock: %d MHz", desc[5], desc[6],
-                desc[7], desc[8], desc[9] * 10);
-    }
-
-    /**
-     * Parse descriptor text
-     *
-     * @param desc An 18-byte VESA descriptor
-     * @return Plain text starting at the 4th byte
-     */
-    public static String getDescriptorText(byte[] desc) {
-        return new String(Arrays.copyOfRange(desc, 4, 18), StandardCharsets.US_ASCII).trim();
-    }
-
-    /**
-     * Parse an EDID byte array into user-readable information
-     *
-     * @param edid An EDID byte array
-     * @return User-readable text represented by the EDID
-     */
-    public static String toString(byte[] edid) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("  Manuf. ID=").append(Builder.getManufacturerID(edid));
-        sb.append(", Product ID=").append(Builder.getProductID(edid));
-        sb.append(", ").append(Builder.isDigital(edid) ? "Digital" : "Analog");
-        sb.append(", Serial=").append(Builder.getSerialNo(edid));
-        sb.append(", ManufDate=").append(Builder.getWeek(edid) * 12 / 52 + 1).append(Symbol.C_SLASH)
-                .append(Builder.getYear(edid));
-        sb.append(", EDID v").append(Builder.getVersion(edid));
-        int hSize = Builder.getHcm(edid);
-        int vSize = Builder.getVcm(edid);
-        sb.append(String.format("%n  %d x %d cm (%.1f x %.1f in)", hSize, vSize, hSize / 2.54, vSize / 2.54));
-        byte[][] desc = getDescriptors(edid);
-        for (byte[] b : desc) {
-            switch (getDescriptorType(b)) {
-                case 0xff:
-                    sb.append("\n  Serial Number: ").append(getDescriptorText(b));
+    public static long parseDecimalMemorySizeToBinary(String size) {
+        String[] mem = Builder.whitespaces.split(size);
+        long capacity = Builder.parseLongOrDefault(mem[0], 0L);
+        if (mem.length == 2 && mem[1].length() > 1) {
+            switch (mem[1].charAt(0)) {
+                case 'T':
+                    capacity <<= 40;
                     break;
-                case 0xfe:
-                    sb.append("\n  Unspecified Text: ").append(getDescriptorText(b));
+                case 'G':
+                    capacity <<= 30;
                     break;
-                case 0xfd:
-                    sb.append("\n  Range Limits: ").append(getDescriptorRangeLimits(b));
+                case 'M':
+                    capacity <<= 20;
                     break;
-                case 0xfc:
-                    sb.append("\n  Monitor Name: ").append(getDescriptorText(b));
-                    break;
-                case 0xfb:
-                    sb.append("\n  White Point Data: ").append(Builder.byteArrayToHexString(b));
-                    break;
-                case 0xfa:
-                    sb.append("\n  Standard Timing ID: ").append(Builder.byteArrayToHexString(b));
+                case 'K':
+                case 'k':
+                    capacity <<= 10;
                     break;
                 default:
-                    if (getDescriptorType(b) <= 0x0f && getDescriptorType(b) >= 0x00) {
-                        sb.append("\n  Manufacturer Data: ").append(Builder.byteArrayToHexString(b));
-                    } else {
-                        sb.append("\n  Preferred Timing: ").append(getTimingDescriptor(b));
-                    }
                     break;
             }
         }
-        return sb.toString();
+        return capacity;
     }
 
     /**
-     * Read an entire file at one time. Intended primarily for Linux /proc
-     * filesystem to avoid recalculating file contents on iterative reads.
+     * Parse a Windows PnPDeviceID to get the vendor ID and product ID.
      *
-     * @param filename The file to read
-     * @return A list of Strings representing each line of the file, or an empty
-     * list if file could not be read or is empty
+     * @param pnpDeviceId The PnPDeviceID
+     * @return A {@link Pair} where the first element is the vendor ID and second
+     * element is the product ID, if parsing was successful, or {@code null}
+     * otherwise
      */
-    public static List<String> readFile(String filename) {
-        return readFile(filename, true);
+    public static Pair<String, String> parsePnPDeviceIdToVendorProductId(String pnpDeviceId) {
+        Matcher m = VENDOR_PRODUCT_ID.matcher(pnpDeviceId);
+        if (m.matches()) {
+            String vendorId = "0x" + m.group(1).toLowerCase();
+            String productId = "0x" + m.group(2).toLowerCase();
+            return Pair.of(vendorId, productId);
+        }
+        return null;
     }
 
     /**
-     * Read an entire file at one time. Intended primarily for Linux /proc
-     * filesystem to avoid recalculating file contents on iterative reads.
+     * Parse a Linux lshw resources string to calculate the memory size
      *
-     * @param filename    The file to read
-     * @param reportError Whether to log errors reading the file
-     * @return A list of Strings representing each line of the file, or an empty
-     * list if file could not be read or is empty
+     * @param resources A string containing one or more elements of the form
+     *                  {@code memory:b00000000-bffffffff}
+     * @return The number of bytes consumed by the memory in the {@code resources}
+     * string
      */
-    public static List<String> readFile(String filename, boolean reportError) {
-        if (new File(filename).canRead()) {
-            Logger.debug("Reading file {}", filename);
-            try {
-                return Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                if (reportError) {
-                    Logger.error("Error reading file {}. {}", filename, e);
+    public static long parseLshwResourceString(String resources) {
+        long bytes = 0L;
+        // First split by whitespace
+        String[] resourceArray = whitespaces.split(resources);
+        for (String r : resourceArray) {
+            // Remove prefix
+            if (r.startsWith("memory:")) {
+                // Split to low and high
+                String[] mem = r.substring(7).split("-");
+                if (mem.length == 2) {
+                    try {
+                        // Parse the hex strings
+                        bytes += Long.parseLong(mem[1], 16) - Long.parseLong(mem[0], 16) + 1;
+                    } catch (NumberFormatException e) {
+                        Logger.trace(DEFAULT_Logger_MSG, r, e);
+                    }
                 }
             }
-        } else if (reportError) {
-            Logger.warn("File not found or not readable: {}", filename);
         }
-        return new ArrayList<>();
+        return bytes;
     }
 
     /**
-     * Read a file and return the long value contained therein. Intended primarily
-     * for Linux /sys filesystem
+     * Parse a Linux lspci machine readble line to its name and id
      *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise zero
+     * @param line A string in the form Foo [bar]
+     * @return A pair separating the String before the square brackets and within
+     * them if found, null otherwise
      */
-    public static long getLongFromFile(String filename) {
-        Logger.debug("Reading file {}", filename);
-        List<String> read = readFile(filename, false);
-        if (!read.isEmpty()) {
-            Logger.trace("Read {}", read.get(0));
-            return Builder.parseLongOrDefault(read.get(0), 0L);
+    public static Pair<String, String> parseLspciMachineReadable(String line) {
+        Matcher matcher = LSPCI_MACHINE_READABLE.matcher(line);
+        if (matcher.matches()) {
+            return Pair.of(matcher.group(1), matcher.group(2));
         }
-        return 0L;
+        return null;
     }
 
     /**
-     * Read a file and return the unsigned long value contained therein as a long.
-     * Intended primarily for Linux /sys filesystem
+     * Parse a Linux lspci line containing memory size
      *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise zero
+     * @param line A string in the form Foo [size=256M]
+     * @return A the memory size in bytes
      */
-    public static long getUnsignedLongFromFile(String filename) {
-        Logger.debug("Reading file {}", filename);
-        List<String> read = readFile(filename, false);
-        if (!read.isEmpty()) {
-            Logger.trace("Read {}", read.get(0));
-            return Builder.parseUnsignedLongOrDefault(read.get(0), 0L);
-        }
-        return 0L;
-    }
-
-    /**
-     * Read a file and return the int value contained therein. Intended primarily
-     * for Linux /sys filesystem
-     *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise zero
-     */
-    public static int getIntFromFile(String filename) {
-        Logger.debug("Reading file {}", filename);
-        try {
-            List<String> read = readFile(filename, false);
-            if (!read.isEmpty()) {
-                Logger.trace("Read {}", read.get(0));
-                return Integer.parseInt(read.get(0));
-            }
-        } catch (NumberFormatException ex) {
-            Logger.warn("Unable to read value from {}. {}", filename, ex);
+    public static long parseLspciMemorySize(String line) {
+        Matcher matcher = LSPCI_MEMORY_SIZE.matcher(line);
+        if (matcher.matches()) {
+            return parseDecimalMemorySizeToBinary(matcher.group(1) + " " + matcher.group(2) + "B");
         }
         return 0;
     }
 
     /**
-     * Read a file and return the String value contained therein. Intended primarily
-     * for Linux /sys filesystem
+     * Parse a space-delimited list of integers which include hyphenated ranges to a
+     * list of just the integers. For example, 0 1 4-7 parses to a list containing
+     * 0, 1, 4, 5, 6, and 7.
      *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise empty string
+     * @param str A string containing space-delimited integers or ranges of integers
+     *            with a hyphen
+     * @return A list of integers representing the provided range(s).
      */
-    public static String getStringFromFile(String filename) {
-        Logger.debug("Reading file {}", filename);
-        List<String> read = readFile(filename, false);
-        if (!read.isEmpty()) {
-            Logger.trace("Read {}", read.get(0));
-            return read.get(0);
+    public static List<Integer> parseHyphenatedIntList(String str) {
+        List<Integer> result = new ArrayList<>();
+        for (String s : whitespaces.split(str)) {
+            if (s.contains("-")) {
+                int first = getFirstIntValue(s);
+                int last = getNthIntValue(s, 2);
+                for (int i = first; i <= last; i++) {
+                    result.add(i);
+                }
+            } else {
+                int only = Builder.parseIntOrDefault(s, -1);
+                if (only >= 0) {
+                    result.add(only);
+                }
+            }
         }
-        return "";
+        return result;
     }
 
     /**
-     * Read a file and return a map of string keys to string values contained
-     * therein. Intended primarily for Linux /proc/[pid]/io
+     * 输出到<code>StringBuilder</code>
      *
-     * @param filename  The file to read
-     * @param separator Characters in each line of the file that separate the key and the
-     *                  value
-     * @return The map contained in the file, if any; otherwise empty map
+     * @param builder <code>StringBuilder</code>对象
+     * @param caption 标题
+     * @param value   值
      */
-    public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
-        Map<String, String> map = new HashMap<>();
+    public static void append(StringBuilder builder, String caption, Object value) {
+        builder.append(caption).append(StringUtils.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
+    }
 
-        Logger.debug("Reading file {}", filename);
+    /**
+     * 获取传感器相关信息，例如CPU温度、风扇转速等，传感器可能有多个
+     *
+     * @return 传感器相关信息
+     */
+    public Sensors getSensors() {
+        return hardware.getSensors();
+    }
 
-        List<String> lines = readFile(filename, false);
-        for (String line : lines) {
-            String[] parts = line.split(separator);
-            if (parts.length == 2) {
-                map.put(parts[0], parts[1].trim());
-            }
-        }
-        return map;
+    /**
+     * 获取磁盘相关信息，可能有多个磁盘（包括可移动磁盘等）
+     *
+     * @return 磁盘相关信息
+     */
+    public List<HWDiskStore> getDiskStores() {
+        return hardware.getDiskStores();
     }
 
 }

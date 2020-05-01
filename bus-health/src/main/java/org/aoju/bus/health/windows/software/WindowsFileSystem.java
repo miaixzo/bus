@@ -1,0 +1,370 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License                                                               *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
+package org.aoju.bus.health.windows.software;
+
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.builtin.software.AbstractFileSystem;
+import org.aoju.bus.health.builtin.software.OSFileStore;
+import org.aoju.bus.health.windows.WmiQuery;
+import org.aoju.bus.health.windows.drivers.ProcessInformation;
+import org.aoju.bus.health.windows.drivers.ProcessInformation.HandleCountProperty;
+import org.aoju.bus.health.windows.drivers.Win32LogicalDisk;
+import org.aoju.bus.health.windows.drivers.Win32LogicalDisk.LogicalDiskProperty;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * The Windows File System contains {@link OSFileStore}s which
+ * are a storage pool, device, partition, volume, concrete file system or other
+ * implementation specific means of file storage. In Windows, these are
+ * represented by a drive letter, e.g., "A:\" and "C:\"
+ *
+ * @author Kimi Liu
+ * @version 5.8.8
+ * @since JDK 1.8+
+ */
+@ThreadSafe
+public class WindowsFileSystem extends AbstractFileSystem {
+
+    private static final int BUFSIZE = 255;
+
+    private static final int SEM_FAILCRITICALERRORS = 0x0001;
+
+    private static final int FILE_CASE_SENSITIVE_SEARCH = 0x00000001;
+    private static final int FILE_CASE_PRESERVED_NAMES = 0x00000002;
+    private static final int FILE_FILE_COMPRESSION = 0x00000010;
+    private static final int FILE_DAX_VOLUME = 0x20000000;
+    private static final int FILE_NAMED_STREAMS = 0x00040000;
+    private static final int FILE_PERSISTENT_ACLS = 0x00000008;
+    private static final int FILE_READ_ONLY_VOLUME = 0x00080000;
+    private static final int FILE_SEQUENTIAL_WRITE_ONCE = 0x00100000;
+    private static final int FILE_SUPPORTS_ENCRYPTION = 0x00020000;
+    private static final int FILE_SUPPORTS_OBJECT_IDS = 0x00010000;
+    private static final int FILE_SUPPORTS_REPARSE_POINTS = 0x00000080;
+    private static final int FILE_SUPPORTS_SPARSE_FILES = 0x00000040;
+    private static final int FILE_SUPPORTS_TRANSACTIONS = 0x00200000;
+    private static final int FILE_SUPPORTS_USN_JOURNAL = 0x02000000;
+    private static final int FILE_UNICODE_ON_DISK = 0x00000004;
+    private static final int FILE_VOLUME_IS_COMPRESSED = 0x00008000;
+    private static final int FILE_VOLUME_QUOTAS = 0x00000020;
+
+    private static final Map<Integer, String> OPTIONS_MAP = new HashMap<>();
+    private static final long MAX_WINDOWS_HANDLES;
+
+    static {
+        OPTIONS_MAP.put(FILE_CASE_PRESERVED_NAMES, "casepn");
+        OPTIONS_MAP.put(FILE_CASE_SENSITIVE_SEARCH, "casess");
+        OPTIONS_MAP.put(FILE_FILE_COMPRESSION, "fcomp");
+        OPTIONS_MAP.put(FILE_DAX_VOLUME, "dax");
+        OPTIONS_MAP.put(FILE_NAMED_STREAMS, "streams");
+        OPTIONS_MAP.put(FILE_PERSISTENT_ACLS, "acls");
+        OPTIONS_MAP.put(FILE_SEQUENTIAL_WRITE_ONCE, "wronce");
+        OPTIONS_MAP.put(FILE_SUPPORTS_ENCRYPTION, "efs");
+        OPTIONS_MAP.put(FILE_SUPPORTS_OBJECT_IDS, "oids");
+        OPTIONS_MAP.put(FILE_SUPPORTS_REPARSE_POINTS, "reparse");
+        OPTIONS_MAP.put(FILE_SUPPORTS_SPARSE_FILES, "sparse");
+        OPTIONS_MAP.put(FILE_SUPPORTS_TRANSACTIONS, "trans");
+        OPTIONS_MAP.put(FILE_SUPPORTS_USN_JOURNAL, "journaled");
+        OPTIONS_MAP.put(FILE_UNICODE_ON_DISK, "unicode");
+        OPTIONS_MAP.put(FILE_VOLUME_IS_COMPRESSED, "vcomp");
+        OPTIONS_MAP.put(FILE_VOLUME_QUOTAS, "quota");
+    }
+
+    static {
+        // Determine whether 32-bit or 64-bit handle limit, although both are
+        // essentially infinite for practical purposes. See
+        // https://blogs.technet.microsoft.com/markrussinovich/2009/09/29/pushing-the-limits-of-windows-handles/
+        if (System.getenv("ProgramFiles(x86)") == null) {
+            MAX_WINDOWS_HANDLES = 16_777_216L - 32_768L;
+        } else {
+            MAX_WINDOWS_HANDLES = 16_777_216L - 65_536L;
+        }
+    }
+
+    /**
+     * <p>
+     * Constructor for WindowsFileSystem.
+     * </p>
+     */
+    public WindowsFileSystem() {
+        // Set error mode to fail rather than prompt for FLoppy/CD-Rom
+        Kernel32.INSTANCE.SetErrorMode(SEM_FAILCRITICALERRORS);
+    }
+
+    /**
+     * Private method for getting all mounted local drives.
+     *
+     * @param volumeToMatch an optional string to filter match, null otherwise
+     * @return A list of {@link OSFileStore} objects representing all local mounted
+     * volumes
+     */
+    private static ArrayList<OSFileStore> getLocalVolumes(String volumeToMatch) {
+        ArrayList<OSFileStore> fs;
+        String volume;
+        String strFsType;
+        String strName;
+        String strMount;
+        WinNT.HANDLE hVol;
+        WinNT.LARGE_INTEGER userFreeBytes;
+        WinNT.LARGE_INTEGER totalBytes;
+        WinNT.LARGE_INTEGER systemFreeBytes;
+        boolean retVal;
+        char[] aVolume;
+        char[] fstype;
+        char[] name;
+        char[] mount;
+        IntByReference pFlags;
+
+        fs = new ArrayList<>();
+        aVolume = new char[BUFSIZE];
+
+        hVol = Kernel32.INSTANCE.FindFirstVolume(aVolume, BUFSIZE);
+        if (hVol == WinBase.INVALID_HANDLE_VALUE) {
+            return fs;
+        }
+
+        while (true) {
+            fstype = new char[16];
+            name = new char[BUFSIZE];
+            mount = new char[BUFSIZE];
+            pFlags = new IntByReference();
+
+            userFreeBytes = new WinNT.LARGE_INTEGER(0L);
+            totalBytes = new WinNT.LARGE_INTEGER(0L);
+            systemFreeBytes = new WinNT.LARGE_INTEGER(0L);
+
+            volume = new String(aVolume).trim();
+            Kernel32.INSTANCE.GetVolumeInformation(volume, name, BUFSIZE, null, null, pFlags, fstype, 16);
+            final int flags = pFlags.getValue();
+            Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(volume, mount, BUFSIZE, null);
+
+            strMount = new String(mount).trim();
+            if (!strMount.isEmpty() && (volumeToMatch == null || volumeToMatch.equals(volume))) {
+                strName = new String(name).trim();
+                strFsType = new String(fstype).trim();
+
+                StringBuilder options = new StringBuilder((FILE_READ_ONLY_VOLUME & flags) == 0 ? "rw" : "ro");
+                String moreOptions = OPTIONS_MAP.entrySet().stream().filter(e -> (e.getKey() & flags) > 0)
+                        .map(Map.Entry::getValue).collect(Collectors.joining(Symbol.COMMA));
+                if (!moreOptions.isEmpty()) {
+                    options.append(Symbol.C_COMMA).append(moreOptions);
+                }
+                Kernel32.INSTANCE.GetDiskFreeSpaceEx(volume, userFreeBytes, totalBytes, systemFreeBytes);
+                // Parse uuid from volume name
+                String uuid = Builder.parseUuidOrDefault(volume, Normal.EMPTY);
+
+                // Volume is mounted
+                OSFileStore osStore = new OSFileStore();
+                osStore.setName(String.format("%s (%s)", strName, strMount));
+                osStore.setVolume(volume);
+                osStore.setLabel(strName);
+                osStore.setMount(strMount);
+                osStore.setDescription(getDriveType(strMount));
+                osStore.setType(strFsType);
+                osStore.setOptions(options.toString());
+                osStore.setUUID(uuid);
+                osStore.setFreeSpace(systemFreeBytes.getValue());
+                osStore.setUsableSpace(userFreeBytes.getValue());
+                osStore.setTotalSpace(totalBytes.getValue());
+                fs.add(osStore);
+            }
+            retVal = Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE);
+            if (!retVal) {
+                Kernel32.INSTANCE.FindVolumeClose(hVol);
+                break;
+            }
+        }
+
+        return fs;
+    }
+
+    /**
+     * Private method for getting logical drives listed in WMI.
+     *
+     * @param nameToMatch an optional string to filter match, null otherwise
+     * @param localOnly   Whether to only search local drives
+     * @return A list of {@link OSFileStore} objects representing all network
+     * mounted volumes
+     */
+    private static List<OSFileStore> getWmiVolumes(String nameToMatch, boolean localOnly) {
+        long free;
+        long total;
+        List<OSFileStore> fs = new ArrayList<>();
+        WmiResult<LogicalDiskProperty> drives = Win32LogicalDisk.queryLogicalDisk(nameToMatch, localOnly);
+        for (int i = 0; i < drives.getResultCount(); i++) {
+            free = WmiQuery.getUint64(drives, LogicalDiskProperty.FREESPACE, i);
+            total = WmiQuery.getUint64(drives, LogicalDiskProperty.SIZE, i);
+            String description = WmiQuery.getString(drives, LogicalDiskProperty.DESCRIPTION, i);
+            String name = WmiQuery.getString(drives, LogicalDiskProperty.NAME, i);
+            String label = WmiQuery.getString(drives, LogicalDiskProperty.VOLUMENAME, i);
+            int type = WmiQuery.getUint32(drives, LogicalDiskProperty.DRIVETYPE, i);
+            String volume;
+            if (type != 4) {
+                char[] chrVolume = new char[BUFSIZE];
+                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + "\\", chrVolume, BUFSIZE);
+                volume = new String(chrVolume).trim();
+            } else {
+                volume = WmiQuery.getString(drives, LogicalDiskProperty.PROVIDERNAME, i);
+                String[] split = volume.split("\\\\");
+                if (split.length > 1 && split[split.length - 1].length() > 0) {
+                    description = split[split.length - 1];
+                }
+            }
+            OSFileStore osStore = new OSFileStore();
+            osStore.setName(String.format("%s (%s)", description, name));
+            osStore.setVolume(volume);
+            osStore.setLabel(label);
+            osStore.setMount(name + "\\");
+            osStore.setDescription(getDriveType(name));
+            osStore.setType(WmiQuery.getString(drives, LogicalDiskProperty.FILESYSTEM, i));
+            osStore.setUUID(Normal.EMPTY);
+            osStore.setFreeSpace(free); // no separate field, assume same
+            osStore.setUsableSpace(free);
+            osStore.setTotalSpace(total);
+            fs.add(osStore);
+        }
+        return fs;
+    }
+
+    /**
+     * Private method for getting mounted drive type.
+     *
+     * @param drive Mounted drive
+     * @return A drive type description
+     */
+    private static String getDriveType(String drive) {
+        switch (Kernel32.INSTANCE.GetDriveType(drive)) {
+            case 2:
+                return "Removable drive";
+            case 3:
+                return "Fixed drive";
+            case 4:
+                return "Network drive";
+            case 5:
+                return "CD-ROM";
+            case 6:
+                return "RAM drive";
+            default:
+                return "Unknown drive type";
+        }
+    }
+
+    /**
+     * <p>
+     * updateFileStoreStats.
+     * </p>
+     *
+     * @param osFileStore a {@link OSFileStore} object.
+     * @return a boolean.
+     */
+    public static boolean updateFileStoreStats(OSFileStore osFileStore) {
+        // Check if we have the volume locally
+        List<OSFileStore> volumes = getLocalVolumes(osFileStore.getVolume());
+        if (volumes.isEmpty()) {
+            // Not locally, search WMI
+            String nameToMatch = osFileStore.getMount().length() < 2 ? null : osFileStore.getMount().substring(0, 2);
+            volumes = getWmiVolumes(nameToMatch, false);
+        }
+        for (OSFileStore fileStore : volumes) {
+            if (osFileStore.getVolume().equals(fileStore.getVolume())
+                    && osFileStore.getMount().equals(fileStore.getMount())) {
+                osFileStore.setLogicalVolume(fileStore.getLogicalVolume());
+                osFileStore.setDescription(fileStore.getDescription());
+                osFileStore.setType(fileStore.getType());
+                osFileStore.setFreeSpace(fileStore.getFreeSpace());
+                osFileStore.setUsableSpace(fileStore.getUsableSpace());
+                osFileStore.setTotalSpace(fileStore.getTotalSpace());
+                osFileStore.setFreeInodes(fileStore.getFreeInodes());
+                osFileStore.setTotalInodes(fileStore.getTotalInodes());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public OSFileStore[] getFileStores(boolean localOnly) {
+        // Create list to hold results
+        ArrayList<OSFileStore> result;
+
+        // Begin with all the local volumes
+        result = getLocalVolumes(null);
+
+        // Build a map of existing mount point to OSFileStore
+        Map<String, OSFileStore> volumeMap = new HashMap<>();
+        for (OSFileStore volume : result) {
+            volumeMap.put(volume.getMount(), volume);
+        }
+
+        // Iterate through volumes in WMI and update description (if it exists)
+        // or add new if it doesn't (expected for network drives)
+        for (OSFileStore wmiVolume : getWmiVolumes(null, localOnly)) {
+            if (volumeMap.containsKey(wmiVolume.getMount())) {
+                // If the volume is already in our list, update the name field
+                // using WMI's more verbose name and update label if needed
+                OSFileStore volume = volumeMap.get(wmiVolume.getMount());
+                volume.setName(wmiVolume.getName());
+                if (volume.getLabel().isEmpty()) {
+                    volume.setLabel(wmiVolume.getLabel());
+                }
+            } else if (!localOnly) {
+                // Otherwise add the new volume in its entirety
+                result.add(wmiVolume);
+            }
+        }
+        return result.toArray(new OSFileStore[0]);
+    }
+
+    @Override
+    public long getOpenFileDescriptors() {
+        Map<HandleCountProperty, List<Long>> valueListMap = ProcessInformation.queryHandles();
+        List<Long> valueList = valueListMap.get(HandleCountProperty.HANDLECOUNT);
+        long descriptors = 0L;
+        if (valueList != null) {
+            for (int i = 0; i < valueList.size(); i++) {
+                descriptors += valueList.get(i);
+            }
+        }
+        return descriptors;
+    }
+
+    @Override
+    public long getMaxFileDescriptors() {
+        return MAX_WINDOWS_HANDLES;
+    }
+
+}
