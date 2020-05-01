@@ -224,14 +224,14 @@ public class HL7Application implements Serializable {
             throw new HL7Exception(
                     new ERRSegment(msh)
                             .setHL7ErrorCode(Builder.TableValueNotFound)
-                            .setErrorLocation(Normal.UNKNOWNReceivingApplication)
+                            .setErrorLocation(Builder.UnknownReceivingApplication)
                             .setUserMessage("Receiving Application not recognized"));
         if (!(acceptedSendingApplications.isEmpty()
                 || acceptedSendingApplications.contains(msh.getSendingApplicationWithFacility())))
             throw new HL7Exception(
                     new ERRSegment(msh)
                             .setHL7ErrorCode(Builder.TableValueNotFound)
-                            .setErrorLocation(Normal.UNKNOWNSendingApplication)
+                            .setErrorLocation(Builder.UnknownSendingApplication)
                             .setUserMessage("Sending Application not recognized"));
         String messageType = msh.getMessageType();
         if (!(acceptedMessageTypes.contains("*")
