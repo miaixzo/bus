@@ -26,7 +26,6 @@ package org.aoju.bus.extra.ftp;
 
 /**
  * FTP连接模式
- * 见：https://www.cnblogs.com/huhaoshida/p/5412615.html
  *
  * @author Kimi Liu
  * @version 5.8.8

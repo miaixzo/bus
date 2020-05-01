@@ -41,15 +41,15 @@ public class Normal {
     /**
      * 字符串:空
      */
-    public static final String BUS = "bus";
-    /**
-     * 字符串:空
-     */
     public static final String EMPTY = "";
     /**
      * 字符串:null
      */
     public static final String NULL = "null";
+    /**
+     * 字符串:unknown
+     */
+    public static final String UNKNOWN = "unknown";
     /**
      * 字符串:undefined
      */

@@ -161,8 +161,8 @@ public class MppsSCU {
     private final ApplicationEntity ae;
     private final Connection remote;
     private final AAssociateRQ rq = new AAssociateRQ();
-    private final HashMap<String, MppsWithIUID> map = new HashMap<String, MppsWithIUID>();
-    private final ArrayList<MppsWithIUID> created = new ArrayList<MppsWithIUID>();
+    private final HashMap<String, MppsWithIUID> map = new HashMap<>();
+    private final ArrayList<MppsWithIUID> created = new ArrayList<>();
     private Attributes attrs;
     private String uidSuffix;
     private boolean newPPSID;

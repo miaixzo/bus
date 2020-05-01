@@ -24,10 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.utils;
 
-import org.aoju.bus.core.lang.Filter;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.Validator;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
@@ -629,7 +626,7 @@ public class NetUtils {
      * @return 是否未知
      */
     public static boolean isUnknow(String checkString) {
-        return StringUtils.isBlank(checkString) || "unknown".equalsIgnoreCase(checkString);
+        return StringUtils.isBlank(checkString) || Normal.UNKNOWN.equalsIgnoreCase(checkString);
     }
 
     /**
