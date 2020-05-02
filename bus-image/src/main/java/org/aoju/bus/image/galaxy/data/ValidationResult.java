@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.IOD.DataElement;
@@ -246,7 +247,7 @@ public class ValidationResult {
             appendAttribute(level, tag, sb);
             VR.Holder vr = new VR.Holder();
             Object value = attrs.getValue(tag, vr);
-            sb.append(' ').append(vr.vr);
+            sb.append(Symbol.C_SPACE).append(vr.vr);
             sb.append(" [");
             vr.vr.prompt(value,
                     attrs.bigEndian(),
@@ -271,7 +272,7 @@ public class ValidationResult {
                     ValidationResult itemResult = iav.itemValidationResults[i];
                     if (!itemResult.isValid()) {
                         appendPrefixTo(level + 1, sb);
-                        sb.append("Invalid Item ").append(i + 1).append(':')
+                        sb.append("Invalid Item ").append(i + 1).append(Symbol.C_COLON)
                                 .append(Property.LINE_SEPARATOR);
                         itemResult.appendTextTo(level + 1, seq.get(i), sb);
                     }
@@ -283,13 +284,13 @@ public class ValidationResult {
     private void appendAttribute(int level, int tag, StringBuilder sb) {
         appendPrefixTo(level, sb);
         sb.append(Tag.toString(tag))
-                .append(' ')
+                .append(Symbol.C_SPACE)
                 .append(ElementDictionary.keywordOf(tag, null));
     }
 
     private void appendPrefixTo(int level, StringBuilder sb) {
         while (level-- > 0)
-            sb.append('>');
+            sb.append(Symbol.C_GT);
     }
 
     public enum Invalid {

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
@@ -251,7 +252,7 @@ public class ApplicationEntity implements Serializable {
         String[] aets = new String[masqueradeCallingAETs.size()];
         int i = 0;
         for (Map.Entry<String, String> entry : masqueradeCallingAETs.entrySet()) {
-            aets[i] = entry.getKey().equals("*")
+            aets[i] = entry.getKey().equals(Symbol.STAR)
                     ? entry.getValue()
                     : '[' + entry.getKey() + ']' + entry.getValue();
             i++;
@@ -267,7 +268,7 @@ public class ApplicationEntity implements Serializable {
                 if (end > 0)
                     masqueradeCallingAETs.put(aet.substring(1, end), aet.substring(end + 1));
             } else {
-                masqueradeCallingAETs.put("*", aet);
+                masqueradeCallingAETs.put(Symbol.STAR, aet);
             }
         }
     }
@@ -275,7 +276,7 @@ public class ApplicationEntity implements Serializable {
     public String getCallingAETitle(String calledAET) {
         String callingAET = masqueradeCallingAETs.get(calledAET);
         if (callingAET == null) {
-            callingAET = masqueradeCallingAETs.get("*");
+            callingAET = masqueradeCallingAETs.get(Symbol.STAR);
             if (callingAET == null)
                 callingAET = aet;
         }
@@ -283,7 +284,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     public boolean isMasqueradeCallingAETitle(String calledAET) {
-        return masqueradeCallingAETs.containsKey(calledAET) || masqueradeCallingAETs.containsKey("*");
+        return masqueradeCallingAETs.containsKey(calledAET) || masqueradeCallingAETs.containsKey(Symbol.STAR);
     }
 
     /**
@@ -554,7 +555,7 @@ public class ApplicationEntity implements Serializable {
                 return tc;
         }
 
-        return tcs.get("*");
+        return tcs.get(Symbol.STAR);
     }
 
     private byte[] negotiate(ExtendedNegotiate exneg, TransferCapability tc) {

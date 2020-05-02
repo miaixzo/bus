@@ -90,7 +90,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 InetAddress address = interfaceAddress.getAddress();
                 if (address.getHostAddress().length() > 0) {
                     if (address.getHostAddress().contains(Symbol.COLON)) {
-                        ipv6list.add(address.getHostAddress().split("%")[0]);
+                        ipv6list.add(address.getHostAddress().split(Symbol.PERCENT)[0]);
                         prefixLengthList.add(interfaceAddress.getNetworkPrefixLength());
                     } else {
                         ipv4list.add(address.getHostAddress());
@@ -215,7 +215,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: ").append(getName()).append(" ").append("(").append(getDisplayName()).append(")").append("\n");
+        sb.append("Name: ").append(getName()).append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT).append("\n");
         sb.append("  MAC Address: ").append(getMacaddr()).append("\n");
         sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append("\n");
         sb.append("  IPv4: ").append(Arrays.toString(getIPv4addr())).append("\n");

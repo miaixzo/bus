@@ -27,6 +27,7 @@ package org.aoju.bus.http.socket;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Normal;
 
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -152,7 +153,7 @@ final class WebSocketReader {
                 break;
             case WebSocketProtocol.OPCODE_CONTROL_CLOSE:
                 int code = WebSocketProtocol.CLOSE_NO_STATUS_CODE;
-                String reason = "";
+                String reason = Normal.EMPTY;
                 long bufferSize = controlFrameBuffer.size();
                 if (bufferSize == 1) {
                     throw new ProtocolException("Malformed close payload length of 1.");

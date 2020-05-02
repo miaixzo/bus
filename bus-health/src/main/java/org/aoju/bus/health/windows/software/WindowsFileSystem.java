@@ -235,7 +235,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
             String volume;
             if (type != 4) {
                 char[] chrVolume = new char[BUFSIZE];
-                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + "\\", chrVolume, BUFSIZE);
+                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + Symbol.BACKSLASH, chrVolume, BUFSIZE);
                 volume = new String(chrVolume).trim();
             } else {
                 volume = WmiQuery.getString(drives, LogicalDiskProperty.PROVIDERNAME, i);
@@ -248,7 +248,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
             osStore.setName(String.format("%s (%s)", description, name));
             osStore.setVolume(volume);
             osStore.setLabel(label);
-            osStore.setMount(name + "\\");
+            osStore.setMount(name + Symbol.BACKSLASH);
             osStore.setDescription(getDriveType(name));
             osStore.setType(WmiQuery.getString(drives, LogicalDiskProperty.FILESYSTEM, i));
             osStore.setUUID(Normal.EMPTY);

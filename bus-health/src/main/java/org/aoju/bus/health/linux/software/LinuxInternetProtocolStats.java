@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
@@ -52,7 +53,7 @@ public class LinuxInternetProtocolStats implements InternetProtocolStats {
         long outResets = 0;
         List<String> netstat = Executor.runNative(netstatStr);
         for (String s : netstat) {
-            String[] split = s.trim().split(" ", 2);
+            String[] split = s.trim().split(Symbol.SPACE, 2);
             if (split.length == 2) {
                 switch (split[1]) {
                     case "connections established":
@@ -102,7 +103,7 @@ public class LinuxInternetProtocolStats implements InternetProtocolStats {
         long datagramsReceivedErrors = 0;
         List<String> netstat = Executor.runNative(netstatStr);
         for (String s : netstat) {
-            String[] split = s.trim().split(" ", 2);
+            String[] split = s.trim().split(Symbol.SPACE, 2);
             if (split.length == 2) {
                 switch (split[1]) {
                     case "packets sent":

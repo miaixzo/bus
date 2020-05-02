@@ -1,5 +1,6 @@
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -91,7 +92,7 @@ public class Builder {
             return new String[]{Symbol.STAR};
         }
 
-        String[] uids = (String[]) StringUtils.split(s, ',').toArray();
+        String[] uids = (String[]) StringUtils.split(s, Symbol.C_COMMA).toArray();
         for (int i = 0; i < uids.length; i++) {
             uids[i] = toUID(uids[i]);
         }
@@ -176,7 +177,7 @@ public class Builder {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");   //$NON-NLS-3$ //$NON-NLS-4$
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? Normal.EMPTY : "i");   //$NON-NLS-3$ //$NON-NLS-4$
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 

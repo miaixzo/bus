@@ -253,11 +253,11 @@ public class Platform {
                 break;
             default:
                 osPrefix = name.toLowerCase();
-                int space = osPrefix.indexOf(" ");
+                int space = osPrefix.indexOf(Symbol.SPACE);
                 if (space != -1) {
                     osPrefix = osPrefix.substring(0, space);
                 }
-                osPrefix += "-" + arch;
+                osPrefix += Symbol.HYPHEN + arch;
                 break;
         }
         return osPrefix;

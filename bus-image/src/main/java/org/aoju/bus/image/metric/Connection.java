@@ -25,6 +25,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
@@ -903,12 +904,12 @@ public class Connection implements Serializable {
             String remoteProxy = remoteConn.getHttpProxy();
             if (remoteProxy != null) {
                 String userauth = null;
-                String[] ss = Property.split(remoteProxy, '@');
+                String[] ss = Property.split(remoteProxy, Symbol.C_AT);
                 if (ss.length > 1) {
                     userauth = ss[0];
                     remoteProxy = ss[1];
                 }
-                ss = Property.split(remoteProxy, ':');
+                ss = Property.split(remoteProxy, Symbol.C_COLON);
                 int proxyPort = ss.length > 1 ? Integer.parseInt(ss[1]) : 8080;
                 s.connect(new InetSocketAddress(ss[0], proxyPort), connectTimeout);
                 try {
@@ -964,9 +965,9 @@ public class Connection implements Serializable {
                                   String userauth, int connectTimeout) throws IOException {
         StringBuilder request = new StringBuilder(128);
         request.append("CONNECT ")
-                .append(hostname).append(':').append(port)
+                .append(hostname).append(Symbol.C_COLON).append(port)
                 .append(" HTTP/1.1\r\nHost: ")
-                .append(hostname).append(':').append(port);
+                .append(hostname).append(Symbol.C_COLON).append(port);
         if (userauth != null) {
             byte[] b = userauth.getBytes(StandardCharsets.UTF_8);
             char[] base64 = new char[(b.length + 2) / 3 * 4];

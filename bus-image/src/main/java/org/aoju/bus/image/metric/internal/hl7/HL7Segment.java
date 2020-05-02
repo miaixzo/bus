@@ -24,6 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
@@ -55,7 +58,7 @@ public class HL7Segment implements Serializable {
     }
 
     public HL7Segment(int size) {
-        this(size, '|', "^~\\&");
+        this(size, Symbol.C_OR, "^~\\&");
     }
 
     public HL7Segment(String s, char fieldSeparator, String encodingCharacters) {
@@ -67,10 +70,10 @@ public class HL7Segment implements Serializable {
     public static String concat(String[] ss, char delim) {
         int n = ss.length;
         if (n == 0)
-            return "";
+            return Normal.EMPTY;
         if (n == 1) {
             String s = ss[0];
-            return s != null ? s : "";
+            return s != null ? s : Normal.EMPTY;
         }
         int len = n - 1;
         for (String s : ss)
@@ -162,7 +165,7 @@ public class HL7Segment implements Serializable {
     }
 
     public static HL7Segment makeMSH() {
-        return makeMSH(21, '|', "^~\\&");
+        return makeMSH(21, Symbol.C_OR, "^~\\&");
     }
 
     public static HL7Segment makeMSH(int size, char fieldSeparator, String encodingCharacters) {
@@ -216,30 +219,30 @@ public class HL7Segment implements Serializable {
     }
 
     public String getSendingApplicationWithFacility() {
-        return getField(2, "") + '|' + getField(3, "");
+        return getField(2, Normal.EMPTY) + Symbol.C_OR + getField(3, Normal.EMPTY);
     }
 
     public void setSendingApplicationWithFacility(String s) {
-        String[] ss = split(s, '|');
+        String[] ss = split(s, Symbol.C_OR);
         setField(2, ss[0]);
         if (ss.length > 1)
             setField(3, ss[1]);
     }
 
     public String getReceivingApplicationWithFacility() {
-        return getField(4, "") + '|' + getField(5, "");
+        return getField(4, Normal.EMPTY) + Symbol.C_OR + getField(5, Normal.EMPTY);
     }
 
     public void setReceivingApplicationWithFacility(String s) {
-        String[] ss = split(s, '|');
+        String[] ss = split(s, Symbol.C_OR);
         setField(4, ss[0]);
         if (ss.length > 1)
             setField(5, ss[1]);
     }
 
     public String getMessageType() {
-        String s = getField(8, "").replace(getComponentSeparator(), '^');
-        int end = s.indexOf('^', s.indexOf('^') + 1);
+        String s = getField(8, Normal.EMPTY).replace(getComponentSeparator(), Symbol.C_CARET);
+        int end = s.indexOf(Symbol.C_CARET, s.indexOf(Symbol.C_CARET) + 1);
         return end > 0 ? s.substring(0, end) : s;
     }
 

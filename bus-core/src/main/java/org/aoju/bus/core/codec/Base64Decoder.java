@@ -25,6 +25,7 @@
 package org.aoju.bus.core.codec;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -149,11 +150,11 @@ public class Base64Decoder {
         while ((len -= 2) >= 0) {
             out.write((byte) ((Normal.DECODE_64_TABLE[ch[off++]] << 2)
                     | ((b2 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 4)));
-            if ((len-- == 0) || ch[off] == '=')
+            if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
             out.write((byte) ((b2 << 4)
                     | ((b3 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 2)));
-            if ((len-- == 0) || ch[off] == '=')
+            if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                 break;
             out.write((byte) ((b3 << 6) | Normal.DECODE_64_TABLE[ch[off++]]));
         }

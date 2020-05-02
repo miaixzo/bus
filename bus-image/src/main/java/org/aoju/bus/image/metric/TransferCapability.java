@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Option;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Property;
@@ -162,7 +163,7 @@ public class TransferCapability implements Serializable {
     }
 
     public boolean containsTransferSyntax(String ts) {
-        return "*".equals(transferSyntaxes[0]) || Property.contains(transferSyntaxes, ts);
+        return Symbol.STAR.equals(transferSyntaxes[0]) || Property.contains(transferSyntaxes, ts);
     }
 
     public String selectTransferSyntax(String... transferSyntaxes) {

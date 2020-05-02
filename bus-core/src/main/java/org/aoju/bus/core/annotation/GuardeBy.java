@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
@@ -45,6 +47,6 @@ public @interface GuardeBy {
      *
      * @return 对应的锁信息
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
 }

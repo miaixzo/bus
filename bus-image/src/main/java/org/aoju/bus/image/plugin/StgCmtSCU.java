@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Dimse;
@@ -168,7 +169,7 @@ public class StgCmtSCU {
         Common.updateAttributes(inst, attrs, uidSuffix);
         String cuid = inst.getString(Tag.SOPClassUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
-        String splitkey = splitTag != 0 ? inst.getString(splitTag) : "";
+        String splitkey = splitTag != 0 ? inst.getString(splitTag) : Normal.EMPTY;
         if (cuid == null || iuid == null || splitkey == null)
             return false;
 
@@ -219,7 +220,7 @@ public class StgCmtSCU {
     private void waitForOutstandingResults() throws InterruptedException {
         synchronized (outstandingResults) {
             while (!outstandingResults.isEmpty()) {
-                Logger.info("" + outstandingResults.size());
+                Logger.info(Normal.EMPTY + outstandingResults.size());
                 outstandingResults.wait();
             }
         }

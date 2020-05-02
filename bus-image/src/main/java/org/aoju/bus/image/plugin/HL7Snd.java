@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StreamUtils;
@@ -68,7 +69,7 @@ public class HL7Snd extends Device {
 
     public void sendFiles(List<String> pathnames) throws IOException {
         for (String pathname : pathnames)
-            if (pathname.equals("-"))
+            if (pathname.equals(Symbol.HYPHEN))
                 send(readFromStdIn());
             else {
                 Path path = Paths.get(pathname);

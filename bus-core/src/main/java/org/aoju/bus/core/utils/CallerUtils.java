@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.utils;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.caller.Caller;
 import org.aoju.bus.core.lang.caller.SecurityCaller;
 import org.aoju.bus.core.lang.caller.StackTraceCaller;
@@ -102,7 +103,7 @@ public class CallerUtils {
             return methodName;
         }
 
-        return stackTraceElement.getClassName() + "." + methodName;
+        return stackTraceElement.getClassName() + Symbol.DOT + methodName;
     }
 
     /**

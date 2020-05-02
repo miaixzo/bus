@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Code;
 import org.aoju.bus.image.galaxy.data.Issuer;
@@ -931,7 +932,7 @@ public class Device implements Serializable {
         String[] ss = new String[limitAssociationsInitiatedBy.size()];
         int i = 0;
         for (Entry<String, Integer> entry : limitAssociationsInitiatedBy.entrySet()) {
-            ss[i++] = entry.getKey() + '=' + entry.getValue();
+            ss[i++] = entry.getKey() + Symbol.C_EQUAL + entry.getValue();
         }
         return ss;
     }
@@ -939,7 +940,7 @@ public class Device implements Serializable {
     public void setLimitAssociationsInitiatedBy(String[] values) {
         Map<String, Integer> tmp = new HashMap<>();
         for (String value : values) {
-            int endIndex = value.lastIndexOf('=');
+            int endIndex = value.lastIndexOf(Symbol.C_EQUAL);
             try {
                 tmp.put(value.substring(0, endIndex), Integer.valueOf(value.substring(endIndex + 1)));
             } catch (IllegalArgumentException e) {
@@ -1009,7 +1010,7 @@ public class Device implements Serializable {
     public ApplicationEntity getApplicationEntity(String aet, boolean matchOtherAETs) {
         ApplicationEntity ae = aes.get(aet);
         if (ae == null)
-            ae = aes.get("*");
+            ae = aes.get(Symbol.STAR);
         if (ae == null && matchOtherAETs)
             for (ApplicationEntity ae1 : getApplicationEntities())
                 if (ae1.isOtherAETitle(aet))

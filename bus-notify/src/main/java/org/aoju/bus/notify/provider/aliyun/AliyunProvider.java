@@ -75,9 +75,9 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
     protected String specialUrlEncode(String value) {
         try {
             return URLEncoder.encode(value, Charset.DEFAULT_UTF_8)
-                    .replace("+", "%20")
-                    .replace("*", "%2A")
-                    .replace("%7E", "~");
+                    .replace(Symbol.PLUS, "%20")
+                    .replace(Symbol.STAR, "%2A")
+                    .replace("%7E", Symbol.TILDE);
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException("aliyun specialUrlEncode error");
         }

@@ -167,7 +167,7 @@ public class MacFileSystem extends AbstractFileSystem {
                         description = "Network Drive";
                     }
                     String path = new String(fs[f].f_mntonname, StandardCharsets.UTF_8).trim();
-                    String name = "";
+                    String name = Normal.EMPTY;
                     File file = new File(path);
                     if (name.isEmpty()) {
                         name = file.getName();
@@ -187,7 +187,7 @@ public class MacFileSystem extends AbstractFileSystem {
                         options.append(Symbol.C_COMMA).append(moreOptions);
                     }
 
-                    String uuid = "";
+                    String uuid = Normal.EMPTY;
                     // Use volume to find DiskArbitration volume name and search for
                     // the registry entry for UUID
                     String bsdName = volume.replace("/dev/disk", "disk");
@@ -241,7 +241,7 @@ public class MacFileSystem extends AbstractFileSystem {
                     osStore.setDescription(description);
                     osStore.setType(type);
                     osStore.setOptions(options.toString());
-                    osStore.setUUID(uuid == null ? "" : uuid);
+                    osStore.setUUID(uuid == null ? Normal.EMPTY : uuid);
                     osStore.setFreeSpace(file.getFreeSpace());
                     osStore.setUsableSpace(file.getUsableSpace());
                     osStore.setTotalSpace(file.getTotalSpace());

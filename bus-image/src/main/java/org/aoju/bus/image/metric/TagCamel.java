@@ -25,6 +25,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.logger.Logger;
 
@@ -244,7 +245,7 @@ public class TagCamel implements Serializable {
         if (value instanceof String) {
             str = (String) value;
         } else if (value instanceof String[]) {
-            str = Arrays.asList((String[]) value).stream().collect(Collectors.joining("\\"));
+            str = Arrays.asList((String[]) value).stream().collect(Collectors.joining(Symbol.BACKSLASH));
         } else if (value instanceof TemporalAccessor) {
             str = TagValue.formatDateTime((TemporalAccessor) value);
         } else if (value instanceof TemporalAccessor[]) {
@@ -275,7 +276,7 @@ public class TagCamel implements Serializable {
         if (index != -1) {
             boolean suffix = format.length() > index + fmLength;
             // If the value ($V) is followed by ':' that means a number formatter is used
-            if (suffix && format.charAt(index + fmLength) == ':') {
+            if (suffix && format.charAt(index + fmLength) == Symbol.C_COLON) {
                 fmLength++;
                 if (format.charAt(index + fmLength) == 'f' && decimal) {
                     fmLength++;
@@ -314,8 +315,8 @@ public class TagCamel implements Serializable {
     }
 
     private static String getPattern(int startIndex, String format) {
-        int beginIndex = format.indexOf('$', startIndex);
-        int endIndex = format.indexOf('$', startIndex + 2);
+        int beginIndex = format.indexOf(Symbol.C_DOLLAR, startIndex);
+        int endIndex = format.indexOf(Symbol.C_DOLLAR, startIndex + 2);
         if (beginIndex == -1 || endIndex == -1) {
             return null;
         }
@@ -347,7 +348,7 @@ public class TagCamel implements Serializable {
         StringBuilder builder = new StringBuilder();
         for (String w : s.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")) {
             builder.append(w);
-            builder.append(' ');
+            builder.append(Symbol.C_SPACE);
         }
         return builder.toString().trim();
     }

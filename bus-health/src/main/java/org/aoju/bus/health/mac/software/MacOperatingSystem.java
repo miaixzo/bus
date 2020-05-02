@@ -31,6 +31,7 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.*;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -77,7 +78,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             // Usually this works. If it doesn't, fall back to text parsing.
             // Boot time will be the first consecutive string of digits.
             BOOTTIME = Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", ""),
+                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
                     System.currentTimeMillis() / 1000);
         } else {
             // tv now points to a 64-bit timeval structure for boot time.
@@ -114,7 +115,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     public AbstractOperatingSystem.FamilyVersionInfo queryFamilyVersionInfo() {
         String family = this.major == 10 && this.minor >= 12 ? "macOS" : System.getProperty("os.name");
         String codeName = parseCodeName();
-        String buildNumber = Sysctl.sysctl("kern.osversion", "");
+        String buildNumber = Sysctl.sysctl("kern.osversion", Normal.EMPTY);
         return new FamilyVersionInfo(family, new OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
@@ -159,7 +160,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             }
         }
         Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
-        return "";
+        return Normal.EMPTY;
     }
 
     @Override
@@ -214,12 +215,12 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             return null;
         }
         String name = null;
-        String path = "";
+        String path = Normal.EMPTY;
         Pointer buf = new Memory(SystemB.PROC_PIDPATHINFO_MAXSIZE);
         if (0 < SystemB.INSTANCE.proc_pidpath(pid, buf, SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
             path = buf.getString(0).trim();
             // Overwrite name with last part of path
-            String[] pathSplit = path.split("/");
+            String[] pathSplit = path.split(Symbol.SLASH);
             if (pathSplit.length > 0) {
                 name = pathSplit[pathSplit.length - 1];
             }
@@ -356,7 +357,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             Logger.warn(
                     "Failed syctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
                     pid, Native.getLastError());
-            return "";
+            return Normal.EMPTY;
         }
         // Procargs contains an int representing total # of args, followed by a
         // null-terminated execpath string and then the arguments, each
@@ -366,7 +367,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         // Sanity check
         if (nargs < 0 || nargs > 1024) {
             Logger.error("Nonsensical number of process arguments for pid {}: {}", pid, nargs);
-            return "";
+            return Normal.EMPTY;
         }
         List<String> args = new ArrayList<>(nargs);
         // Skip first int (containing value of nargs)

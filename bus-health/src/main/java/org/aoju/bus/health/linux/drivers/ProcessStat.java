@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.linux.ProcPath;
@@ -67,8 +68,8 @@ public final class ProcessStat {
             return null;
         }
         // Get process name from between parentheses and state immediately after
-        int nameStart = stat.indexOf('(') + 1;
-        int nameEnd = stat.indexOf(')');
+        int nameStart = stat.indexOf(Symbol.C_PARENTHESE_LEFT) + 1;
+        int nameEnd = stat.indexOf(Symbol.C_PARENTHESE_RIGHT);
         String name = stat.substring(nameStart, nameEnd);
         Character state = stat.charAt(nameEnd + 2);
         // Split everything after the state

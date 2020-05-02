@@ -33,7 +33,7 @@ import java.math.BigInteger;
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"responseOption", "adhocQuery"})
+@XmlType(propOrder = {"responseOption", "adhocQuery"})
 @XmlRootElement(name = "AdhocQueryRequest", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0")
 public class AdhocQueryRequest extends RegistryRequestType {
 

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Format;
@@ -52,13 +53,13 @@ public class StoreSCP {
 
     private static final String PART_EXT = ".part";
     private final Device device = new Device("storescp");
-    private final ApplicationEntity ae = new ApplicationEntity("*");
+    private final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
     private final Connection conn = new Connection();
     private File storageDir;
     private Format filePathFormat;
     private int status;
     private int responseDelay;
-    private final BasicCStoreSCP cstoreSCP = new BasicCStoreSCP("*") {
+    private final BasicCStoreSCP cstoreSCP = new BasicCStoreSCP(Symbol.STAR) {
 
         @Override
         protected void store(Association as, Presentation pc,

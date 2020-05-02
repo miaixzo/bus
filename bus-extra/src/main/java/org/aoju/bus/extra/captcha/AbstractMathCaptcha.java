@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.extra.captcha;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.Random;
 
 /**
@@ -52,7 +54,7 @@ public abstract class AbstractMathCaptcha extends AbstractCaptcha {
         int rand3 = random.nextInt(10);
         cs[0] = (char) ('0' + rand0);
         cs[1] = (char) ('0' + rand1);
-        cs[2] = rand2 ? '+' : '-';
+        cs[2] = rand2 ? Symbol.C_PLUS : Symbol.C_HYPHEN;
         cs[3] = (char) ('0' + rand3);
 
         int num1 = rand0 * 10 + rand1;

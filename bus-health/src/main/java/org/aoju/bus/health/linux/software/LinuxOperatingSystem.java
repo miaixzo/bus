@@ -106,7 +106,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     static {
         String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
-        if (!stat.isEmpty() && stat.contains(")")) {
+        if (!stat.isEmpty() && stat.contains(Symbol.PARENTHESE_RIGHT)) {
             // add 3 to account for pid, process name in prarenthesis, and state
             PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, Symbol.C_SPACE) + 3;
         } else {
@@ -215,7 +215,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // If we've gotten this far with no match, use the distrib-release
         // filename (defaults will eventually give "Unknown")
         String family = filenameToFamily(etcDistribRelease.replace("/etc/", "").replace("release", "")
-                .replace("version", "").replace("-", "").replace("_", ""));
+                .replace("version", "").replace(Symbol.HYPHEN, "").replace(Symbol.UNDERLINE, ""));
         return Triple.of(family, Normal.UNKNOWN, Normal.UNKNOWN);
     }
 

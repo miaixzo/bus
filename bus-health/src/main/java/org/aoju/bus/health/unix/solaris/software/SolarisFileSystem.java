@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.solaris.software;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
@@ -74,7 +75,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
              2293351 free files     22282240 filesys id
                  ufs fstype       0x00000004 flag             255 filename length
             */
-            if (line.startsWith("/")) {
+            if (line.startsWith(Symbol.SLASH)) {
                 key = Builder.whitespaces.split(line)[0];
                 total = null;
             } else if (line.contains("available") && line.contains("total files")) {
@@ -108,14 +109,14 @@ public class SolarisFileSystem extends AbstractFileSystem {
             // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type)) || PSEUDO_FS_TYPES.contains(type) || path.equals("/dev")
                     || Builder.filePathStartsWith(TMP_FS_PATHS, path)
-                    || volume.startsWith("rpool") && !path.equals("/")) {
+                    || volume.startsWith("rpool") && !path.equals(Symbol.SLASH)) {
                 continue;
             }
 
-            String name = path.substring(path.lastIndexOf('/') + 1);
+            String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
             // Special case for /, pull last element of volume instead
             if (name.isEmpty()) {
-                name = volume.substring(volume.lastIndexOf('/') + 1);
+                name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
             }
 
             if (nameToMatch != null && !nameToMatch.equals(name)) {
@@ -127,7 +128,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
             long freeSpace = f.getFreeSpace();
 
             String description;
-            if (volume.startsWith("/dev") || path.equals("/")) {
+            if (volume.startsWith("/dev") || path.equals(Symbol.SLASH)) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";

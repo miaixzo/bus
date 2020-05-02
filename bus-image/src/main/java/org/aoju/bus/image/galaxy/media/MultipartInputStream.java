@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -73,11 +75,11 @@ public class MultipartInputStream extends FilterInputStream {
         boolean backslash = false;
         int count = 0;
         for (char c : cs) {
-            if (c != '\"' && c != '\\' || backslash) {
+            if (c != '\"' && c != Symbol.C_BACKSLASH || backslash) {
                 cs[count++] = c;
                 backslash = false;
             } else {
-                backslash = c == '\\';
+                backslash = c == Symbol.C_BACKSLASH;
             }
         }
         return new String(cs, 0, count);
@@ -177,7 +179,7 @@ public class MultipartInputStream extends FilterInputStream {
         while (readHeaderParam(field)) {
             String name = field.toString();
             String value = "";
-            int endName = name.indexOf(':');
+            int endName = name.indexOf(Symbol.C_COLON);
             if (endName != -1) {
                 value = unquote(name.substring(endName + 1)).trim();
                 name = name.substring(0, endName);

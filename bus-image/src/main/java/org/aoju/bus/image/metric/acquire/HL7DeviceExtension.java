@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.acquire;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.internal.hl7.*;
@@ -83,7 +84,7 @@ public class HL7DeviceExtension extends DeviceExtension {
     public HL7Application getHL7Application(String name, boolean matchOtherAppNames) {
         HL7Application app = hl7apps.get(name);
         if (app == null)
-            app = hl7apps.get("*");
+            app = hl7apps.get(Symbol.STAR);
         if (app == null && matchOtherAppNames)
             for (HL7Application app1 : getHL7Applications())
                 if (app1.isOtherApplicationName(name))

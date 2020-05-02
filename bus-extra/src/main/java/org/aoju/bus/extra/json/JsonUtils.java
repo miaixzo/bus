@@ -31,6 +31,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONLibDataFormatSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
@@ -160,14 +162,14 @@ public class JsonUtils {
      */
     public static <T> List<T> convertJsonToList(String text, Class<T> clazz) {
         List<T> list = new ArrayList<>();
-        if (!text.equals("")) {
+        if (!text.equals(Normal.EMPTY)) {
 
             if (text.contains(Symbol.BRACE_LEFT) || text.contains(Symbol.BRACKET_LEFT)) {
                 text = text;
             } else {
                 // 转码
                 try {
-                    text = URLDecoder.decode(text, "utf-8");
+                    text = URLDecoder.decode(text, Charset.DEFAULT_UTF_8);
                 } catch (UnsupportedEncodingException e) {
                     throw new InstrumentException(e);
                 }
@@ -216,7 +218,7 @@ public class JsonUtils {
             return (JSON) JSON.toJSON(object);
         } catch (ClassCastException e) {
             // 类型失败后,转换为string类型
-            return JSON.parseObject("" + object.toString());
+            return JSON.parseObject(Normal.EMPTY + object.toString());
         } catch (Exception e) {
             throw new InstrumentException(e);
         }

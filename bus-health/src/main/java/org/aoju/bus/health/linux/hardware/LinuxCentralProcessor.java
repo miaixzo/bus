@@ -61,7 +61,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // 0,0
         // 1,0
         for (String line : lscpu) {
-            if (line.startsWith("#")) {
+            if (line.startsWith(Symbol.SHAPE)) {
                 continue;
             }
             String[] split = line.split(Symbol.COMMA);
@@ -174,7 +174,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     cpuName = splitLine[1];
                     break;
                 case "flags":
-                    flags = splitLine[1].toLowerCase().split(" ");
+                    flags = splitLine[1].toLowerCase().split(Symbol.SPACE);
                     for (String flag : flags) {
                         if ("lm".equals(flag)) {
                             cpu64bit = true;

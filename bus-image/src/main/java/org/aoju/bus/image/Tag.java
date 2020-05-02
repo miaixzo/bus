@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 
 /**
@@ -4806,17 +4807,17 @@ public class Tag {
 
     public static String toString(int tag) {
         char[] s = {
-                '(',
+                Symbol.C_PARENTHESE_LEFT,
                 HEX_DIGITS[(tag >>> 28)],
                 HEX_DIGITS[(tag >>> 24) & 0xF],
                 HEX_DIGITS[(tag >>> 20) & 0xF],
                 HEX_DIGITS[(tag >>> 16) & 0xF],
-                ',',
+                Symbol.C_COMMA,
                 HEX_DIGITS[(tag >>> 12) & 0xF],
                 HEX_DIGITS[(tag >>> 8) & 0xF],
                 HEX_DIGITS[(tag >>> 4) & 0xF],
                 HEX_DIGITS[(tag >>> 0) & 0xF],
-                ')'};
+                Symbol.C_PARENTHESE_RIGHT};
         return new String(s);
     }
 
@@ -4896,7 +4897,7 @@ public class Tag {
     }
 
     public static int[] parseTagPath(String tagPath) {
-        String[] names = Property.split(tagPath, '.');
+        String[] names = Property.split(tagPath, Symbol.C_DOT);
         int[] tags = new int[names.length];
         for (int i = 0; i < tags.length; i++)
             if ((tags[i] = forName(names[i])) == -1)

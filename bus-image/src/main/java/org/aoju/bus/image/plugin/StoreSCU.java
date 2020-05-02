@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Status;
@@ -331,14 +332,13 @@ public class StoreSCU {
 
     class RelatedGeneralSOPClasses {
 
-        private final HashMap<String, CommonExtended> commonExtNegs =
-                new HashMap<String, CommonExtended>();
+        private final HashMap<String, CommonExtended> commonExtNegs = new HashMap<>();
 
         public void init(Properties props) {
             for (String cuid : props.stringPropertyNames())
                 commonExtNegs.put(cuid, new CommonExtended(cuid,
                         UID.StorageServiceClass,
-                        Property.split(props.getProperty(cuid), ',')));
+                        Property.split(props.getProperty(cuid), Symbol.C_COMMA)));
         }
 
         public CommonExtended getCommonExtendedNegotiation(String cuid) {

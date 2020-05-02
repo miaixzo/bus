@@ -35,7 +35,12 @@ import org.aoju.bus.core.lang.Symbol;
  */
 public class AntFilter extends RegexFilter implements Filter {
 
-    public static final String[] SYMBOLS = {"\\", "$", "(", ")", "+", ".", "[", "]", "^", "{", "}", "|"};
+    public static final String[] SYMBOLS = {
+            Symbol.BACKSLASH, Symbol.DOLLAR, Symbol.PARENTHESE_LEFT,
+            Symbol.PARENTHESE_RIGHT, Symbol.PLUS, Symbol.DOT,
+            Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT, Symbol.CARET,
+            Symbol.BRACE_LEFT, Symbol.BRACE_RIGHT, Symbol.OR
+    };
 
     public AntFilter(String ant) {
         super(convert(ant));

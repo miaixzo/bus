@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.io.Serializable;
 import java.lang.annotation.*;
 
@@ -39,7 +41,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
 public @interface Named {
 
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     class Names implements Named, Serializable {
 

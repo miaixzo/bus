@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.solaris.software;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -199,9 +200,9 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             sproc.setStartTime(now - sproc.getUpTime());
             sproc.setUserTime(Builder.parseDHMSOrDefault(split[12], 0L));
             sproc.setPath(split[13]);
-            sproc.setName(sproc.getPath().substring(sproc.getPath().lastIndexOf('/') + 1));
+            sproc.setName(sproc.getPath().substring(sproc.getPath().lastIndexOf(Symbol.C_SLASH) + 1));
             sproc.setCommandLine(split[14]);
-            sproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(sproc.getProcessID(), ""));
+            sproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(sproc.getProcessID(), Normal.EMPTY));
             // bytes read/written not easily available
 
             if (slowFields) {
@@ -328,7 +329,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                     }
                     services.add(new OSService(name, 0, STOPPED));
                 }
-            } else if (line.startsWith(" ")) {
+            } else if (line.startsWith(Symbol.SPACE)) {
                 String[] split = Builder.whitespaces.split(line.trim());
                 if (split.length == 3) {
                     services.add(new OSService(split[2], Builder.parseIntOrDefault(split[1], 0), RUNNING));

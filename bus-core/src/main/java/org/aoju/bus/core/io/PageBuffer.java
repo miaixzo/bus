@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -178,7 +180,7 @@ public class PageBuffer {
                         freeBuffer.setParentLimit(next.getParentLimit());
                         iterator.remove();
                     } else if (next.getParentPosition() < freeBuffer.getParentLimit()) {
-                        throw new IllegalStateException("");
+                        throw new IllegalStateException(Normal.EMPTY);
                     }
                 }
                 return;

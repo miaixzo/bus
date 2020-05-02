@@ -167,8 +167,8 @@ public class HWPartition {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getIdentification()).append(": ");
-        sb.append(getName()).append(" ");
-        sb.append("(").append(getType()).append(") ");
+        sb.append(getName()).append(Symbol.SPACE);
+        sb.append(Symbol.PARENTHESE_LEFT).append(getType()).append(") ");
         sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(", ");
         sb.append("size: ").append(Builder.formatBytesDecimal(getSize()));
         sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : " @ " + getMountPoint());

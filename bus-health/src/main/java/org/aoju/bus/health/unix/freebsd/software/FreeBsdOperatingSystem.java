@@ -28,6 +28,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -65,7 +66,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             // Usually this works. If it doesn't, fall back to text parsing.
             // Boot time will be the first consecutive string of digits.
             return Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", ""),
+                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
                     System.currentTimeMillis() / 1000);
         }
         // tv now points to a 128-bit timeval structure for boot time.
@@ -82,9 +83,9 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     public FamilyVersionInfo queryFamilyVersionInfo() {
         String family = BsdSysctl.sysctl("kern.ostype", "FreeBSD");
 
-        String version = BsdSysctl.sysctl("kern.osrelease", "");
-        String versionInfo = BsdSysctl.sysctl("kern.version", "");
-        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, "").replace(version, "").trim();
+        String version = BsdSysctl.sysctl("kern.osrelease", Normal.EMPTY);
+        String versionInfo = BsdSysctl.sysctl("kern.version", Normal.EMPTY);
+        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
 
         return new FamilyVersionInfo(family, new OSVersionInfo(version, null, buildNumber));
     }
@@ -147,7 +148,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     private List<OSProcess> getProcessListFromPS(String psCommand, int pid, boolean slowFields) {
         Map<Integer, String> cwdMap = Builder.getCwdMap(pid);
         List<OSProcess> procs = new ArrayList<>();
-        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? "" : pid));
+        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
         if (procList.isEmpty() || procList.size() < 2) {
             return procs;
         }
@@ -203,9 +204,9 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             fproc.setKernelTime(Builder.parseDHMSOrDefault(split[12], 0L));
             fproc.setUserTime(Builder.parseDHMSOrDefault(split[13], 0L) - fproc.getKernelTime());
             fproc.setPath(split[14]);
-            fproc.setName(fproc.getPath().substring(fproc.getPath().lastIndexOf('/') + 1));
+            fproc.setName(fproc.getPath().substring(fproc.getPath().lastIndexOf(Symbol.C_SLASH) + 1));
             fproc.setCommandLine(split[15]);
-            fproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(fproc.getProcessID(), ""));
+            fproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(fproc.getProcessID(), Normal.EMPTY));
 
             if (slowFields) {
                 List<String> openFilesList = Executor.runNative(String.format("lsof -p %d", pid));

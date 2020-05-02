@@ -27,6 +27,7 @@ package org.aoju.bus.health.windows;
 import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.NotThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.util.EnumMap;
@@ -53,11 +54,11 @@ public class PerfCounterQuery<T extends Enum<T>> {
     /**
      * 常量 <code>NOT_TOTAL_INSTANCE="^ + TOTAL_INSTANCE"</code>
      */
-    public static final String NOT_TOTAL_INSTANCE = "^" + TOTAL_INSTANCE;
+    public static final String NOT_TOTAL_INSTANCE = Symbol.CARET + TOTAL_INSTANCE;
     /**
      * 常量 <code>NOT_TOTAL_INSTANCES="^ + TOTAL_INSTANCES"</code>
      */
-    public static final String NOT_TOTAL_INSTANCES = "^" + TOTAL_INSTANCES;
+    public static final String NOT_TOTAL_INSTANCES = Symbol.CARET + TOTAL_INSTANCES;
     /*
      * 设置实例化
      */

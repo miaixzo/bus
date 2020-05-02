@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 
 import java.util.Date;
@@ -36,8 +37,8 @@ import java.util.TimeZone;
  */
 public enum StringValueType implements ValueType {
 
-    ASCII("\\", null),
-    STRING("\\", null) {
+    ASCII(Symbol.BACKSLASH, null),
+    STRING(Symbol.BACKSLASH, null) {
         @Override
         public boolean useSpecificCharacterSet() {
             return true;
@@ -80,9 +81,9 @@ public enum StringValueType implements ValueType {
             return s;
         }
     },
-    DA("\\", TemporalType.DA),
-    DT("\\", TemporalType.DT),
-    TM("\\", TemporalType.TM),
+    DA(Symbol.BACKSLASH, TemporalType.DA),
+    DT(Symbol.BACKSLASH, TemporalType.DT),
+    TM(Symbol.BACKSLASH, TemporalType.TM),
     PN("^=\\", null) {
         @Override
         public boolean useSpecificCharacterSet() {
@@ -94,7 +95,7 @@ public enum StringValueType implements ValueType {
             return cs;
         }
     },
-    DS("\\", null) {
+    DS(Symbol.BACKSLASH, null) {
         @Override
         public byte[] toBytes(Object val, SpecificCharacterSet cs) {
 
@@ -199,7 +200,7 @@ public enum StringValueType implements ValueType {
             return super.prompt(val, bigEndian, cs, maxChars, sb);
         }
     },
-    IS("\\", null) {
+    IS(Symbol.BACKSLASH, null) {
         @Override
         public boolean isIntValue() {
             return true;
@@ -306,7 +307,7 @@ public enum StringValueType implements ValueType {
                 sb.setLength(maxLength + 1);
                 return false;
             }
-            sb.append('\\');
+            sb.append(Symbol.C_BACKSLASH);
         }
         sb.setLength(sb.length() - 1);
         return true;
@@ -357,7 +358,7 @@ public enum StringValueType implements ValueType {
 
         if (val instanceof String[])
             return cs(cs).encode(
-                    Property.concat((String[]) val, '\\'), delimiters);
+                    Property.concat((String[]) val, Symbol.C_BACKSLASH), delimiters);
 
         throw new UnsupportedOperationException();
     }
@@ -395,7 +396,7 @@ public enum StringValueType implements ValueType {
     }
 
     protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
-        return Property.splitAndTrim(s, '\\');
+        return Property.splitAndTrim(s, Symbol.C_BACKSLASH);
     }
 
     @Override
@@ -491,7 +492,7 @@ public enum StringValueType implements ValueType {
     }
 
     protected Object toMultiValue(String s) {
-        return Property.splitAndTrim(s, '\\');
+        return Property.splitAndTrim(s, Symbol.C_BACKSLASH);
     }
 
     @Override

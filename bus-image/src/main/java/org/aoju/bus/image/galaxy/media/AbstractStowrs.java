@@ -25,6 +25,7 @@
 package org.aoju.bus.image.galaxy.media;
 
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -136,7 +137,7 @@ public class AbstractStowrs implements AutoCloseable {
             if (lastField > Calendar.MINUTE) {
                 appendXX(cal.get(Calendar.SECOND), toAppendTo);
                 if (lastField > Calendar.SECOND) {
-                    toAppendTo.append('.');
+                    toAppendTo.append(Symbol.C_DOT);
                     appendXXX(cal.get(Calendar.MILLISECOND), toAppendTo);
                 }
             }

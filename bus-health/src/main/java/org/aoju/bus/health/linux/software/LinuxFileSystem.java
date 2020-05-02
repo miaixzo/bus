@@ -27,6 +27,7 @@ package org.aoju.bus.health.linux.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
@@ -69,7 +70,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         // Parse /proc/mounts to get fs types
         List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
         for (String mount : mounts) {
-            String[] split = mount.split(" ");
+            String[] split = mount.split(Symbol.SPACE);
             // As reported in fstab(5) manpage, struct is:
             // 1st field is volume name
             // 2nd field is path with spaces escaped as \040
@@ -82,7 +83,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             // Exclude pseudo file systems
-            String path = split[1].replaceAll(UNICODE_SPACE, " ");
+            String path = split[1].replaceAll(UNICODE_SPACE, Symbol.SPACE);
             String type = split[2];
             if ((localOnly && NETWORK_FS_TYPES.contains(type)) // Skip non-local drives if requested
                     || PSEUDO_FS_TYPES.contains(type) // exclude non-fs types
@@ -94,9 +95,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
             String options = split[3];
 
-            String name = split[0].replaceAll(UNICODE_SPACE, " ");
-            if (path.equals("/")) {
-                name = "/";
+            String name = split[0].replaceAll(UNICODE_SPACE, Symbol.SPACE);
+            if (path.equals(Symbol.SLASH)) {
+                name = Symbol.SLASH;
             }
 
             // If only updating for one name, skip others
@@ -104,7 +105,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 continue;
             }
 
-            String volume = split[0].replaceAll(UNICODE_SPACE, " ");
+            String volume = split[0].replaceAll(UNICODE_SPACE, Symbol.SPACE);
             String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], "") : "";
 
             String description;

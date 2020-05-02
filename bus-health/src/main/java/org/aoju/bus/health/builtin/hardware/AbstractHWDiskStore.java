@@ -25,6 +25,7 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
 /**
@@ -74,12 +75,12 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
         sb.append(getName()).append(": ");
         sb.append("(model: ").append(getModel());
         sb.append(" - S/N: ").append(getSerial()).append(") ");
-        sb.append("size: ").append(getSize() > 0 ? Builder.formatBytesDecimal(getSize()) : "?").append(", ");
-        sb.append("reads: ").append(readwrite ? getReads() : "?");
-        sb.append(" (").append(readwrite ? Builder.formatBytes(getReadBytes()) : "?").append("), ");
-        sb.append("writes: ").append(readwrite ? getWrites() : "?");
-        sb.append(" (").append(readwrite ? Builder.formatBytes(getWriteBytes()) : "?").append("), ");
-        sb.append("xfer: ").append(readwrite ? getTransferTime() : "?");
+        sb.append("size: ").append(getSize() > 0 ? Builder.formatBytesDecimal(getSize()) : Symbol.QUESTION_MARK).append(", ");
+        sb.append("reads: ").append(readwrite ? getReads() : Symbol.QUESTION_MARK);
+        sb.append(" (").append(readwrite ? Builder.formatBytes(getReadBytes()) : Symbol.QUESTION_MARK).append("), ");
+        sb.append("writes: ").append(readwrite ? getWrites() : Symbol.QUESTION_MARK);
+        sb.append(" (").append(readwrite ? Builder.formatBytes(getWriteBytes()) : Symbol.QUESTION_MARK).append("), ");
+        sb.append("xfer: ").append(readwrite ? getTransferTime() : Symbol.QUESTION_MARK);
         return sb.toString();
     }
 

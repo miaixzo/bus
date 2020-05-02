@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -46,7 +47,7 @@ import java.io.IOException;
  */
 public class IanSCP extends Device {
 
-    private final ApplicationEntity ae = new ApplicationEntity("*");
+    private final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
     private final Connection conn = new Connection();
     private File storageDir;
     private int status;

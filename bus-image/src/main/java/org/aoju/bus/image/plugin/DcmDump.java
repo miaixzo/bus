@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.*;
@@ -148,20 +149,20 @@ public class DcmDump implements ImageInputHandler {
         line.append(dis.getTagPosition()).append(": ");
         int level = dis.level();
         while (level-- > 0)
-            line.append('>');
+            line.append(Symbol.C_GT);
     }
 
     private void appendHeader(ImageInputStream dis, StringBuilder line) {
-        line.append(Tag.toString(dis.tag())).append(' ');
+        line.append(Tag.toString(dis.tag())).append(Symbol.C_SPACE);
         VR vr = dis.vr();
         if (vr != null)
-            line.append(vr).append(' ');
-        line.append('#').append(dis.length());
+            line.append(vr).append(Symbol.C_TAB);
+        line.append(Symbol.C_SHAPE).append(dis.length());
     }
 
     private void appendKeyword(ImageInputStream dis, StringBuilder line) {
         if (line.length() < width) {
-            line.append(" ");
+            line.append(Symbol.SPACE);
             line.append(ElementDictionary.keywordOf(dis.tag(), null));
             if (line.length() > width)
                 line.setLength(width);

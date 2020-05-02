@@ -581,9 +581,9 @@ public class NetUtils {
     public static boolean isInRange(String ip, String cidr) {
         String[] ips = StringUtils.splitToArray(ip, Symbol.C_DOT);
         int ipAddr = (Integer.parseInt(ips[0]) << 24) | (Integer.parseInt(ips[1]) << 16) | (Integer.parseInt(ips[2]) << 8) | Integer.parseInt(ips[3]);
-        int type = Integer.parseInt(cidr.replaceAll(".*/", ""));
+        int type = Integer.parseInt(cidr.replaceAll(".*/", Normal.EMPTY));
         int mask = 0xFFFFFFFF << (32 - type);
-        String cidrIp = cidr.replaceAll("/.*", "");
+        String cidrIp = cidr.replaceAll("/.*", Normal.EMPTY);
         String[] cidrIps = cidrIp.split("\\.");
         int cidrIpAddr = (Integer.parseInt(cidrIps[0]) << 24) | (Integer.parseInt(cidrIps[1]) << 16) | (Integer.parseInt(cidrIps[2]) << 8) | Integer.parseInt(cidrIps[3]);
         return (ipAddr & mask) == (cidrIpAddr & mask);
@@ -649,14 +649,14 @@ public class NetUtils {
      */
     private static Set<String> getAllowIpList(String allowIp) {
         Set<String> ipList = new HashSet<>();
-        for (String allow : allowIp.replaceAll("\\s", "").split(";")) {
-            if (allow.contains("*")) {
+        for (String allow : allowIp.replaceAll("\\s", Normal.EMPTY).split(Symbol.SEMICOLON)) {
+            if (allow.contains(Symbol.STAR)) {
                 String[] ips = allow.split("\\.");
                 String[] from = new String[]{"0", "0", "0", "0"};
                 String[] end = new String[]{"255", "255", "255", "255"};
                 List<String> tem = new ArrayList<>();
                 for (int i = 0; i < ips.length; i++) {
-                    if (ips[i].contains("*")) {
+                    if (ips[i].contains(Symbol.STAR)) {
                         tem = complete(ips[i]);
                         from[i] = null;
                         end[i] = null;
@@ -669,8 +669,8 @@ public class NetUtils {
                 StringBuilder endIP = new StringBuilder();
                 for (int i = 0; i < 4; i++) {
                     if (from[i] != null) {
-                        fromIP.append(from[i]).append(".");
-                        endIP.append(end[i]).append(".");
+                        fromIP.append(from[i]).append(Symbol.DOT);
+                        endIP.append(end[i]).append(Symbol.DOT);
                     } else {
                         fromIP.append("[*].");
                         endIP.append("[*].");
@@ -681,8 +681,8 @@ public class NetUtils {
 
                 for (String s : tem) {
                     String ip = fromIP.toString().replace("[*]",
-                            s.split(";")[0]) + Symbol.HYPHEN + endIP.toString().replace("[*]",
-                            s.split(";")[1]);
+                            s.split(Symbol.SEMICOLON)[0]) + Symbol.HYPHEN + endIP.toString().replace("[*]",
+                            s.split(Symbol.SEMICOLON)[1]);
                     if (validate(ip)) {
                         ipList.add(ip);
                     }
@@ -769,11 +769,11 @@ public class NetUtils {
     private static String complete(String arg, int length) {
         String from, end;
         if (length == 1) {
-            from = arg.replace("*", "0");
-            end = arg.replace("*", "9");
+            from = arg.replace(Symbol.STAR, "0");
+            end = arg.replace(Symbol.STAR, "9");
         } else {
-            from = arg.replace("*", "00");
-            end = arg.replace("*", "99");
+            from = arg.replace(Symbol.STAR, "00");
+            end = arg.replace(Symbol.STAR, "99");
         }
 
         if (Integer.valueOf(from) > 255) {
@@ -783,7 +783,7 @@ public class NetUtils {
             end = "255";
         }
 
-        return from + ";" + end;
+        return from + Symbol.SEMICOLON + end;
     }
 
     /**

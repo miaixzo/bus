@@ -29,6 +29,7 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.http.Httpx;
@@ -97,8 +98,8 @@ public class TwitterProvider extends DefaultProvider {
             map.put(urlEncode(e.getKey()), e.getValue());
         }
         String str = parseMapToString(map, true);
-        String baseStr = method.toUpperCase() + "&" + urlEncode(baseUrl) + "&" + urlEncode(str);
-        String signKey = apiSecret + "&" + (StringUtils.isEmpty(tokenSecret) ? "" : tokenSecret);
+        String baseStr = method.toUpperCase() + Symbol.AND + urlEncode(baseUrl) + Symbol.AND + urlEncode(str);
+        String signKey = apiSecret + Symbol.AND + (StringUtils.isEmpty(tokenSecret) ? "" : tokenSecret);
         byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1);
 
         return new String(Base64.encode(signature, false));
@@ -197,7 +198,9 @@ public class TwitterProvider extends DefaultProvider {
             if (sb.length() > PREAMBLE.length()) {
                 sb.append(", ");
             }
-            sb.append(param.getKey()).append("=\"").append(urlEncode(param.getValue())).append('"');
+            sb.append(param.getKey()).append("=\"")
+                    .append(urlEncode(param.getValue()))
+                    .append(Symbol.C_DOUBLE_QUOTES);
         }
 
         return sb.toString();

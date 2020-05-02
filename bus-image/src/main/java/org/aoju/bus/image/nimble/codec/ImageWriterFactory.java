@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.image.galaxy.Property;
@@ -53,7 +54,7 @@ public class ImageWriterFactory implements Serializable {
     private PatchJPEGLS patchJPEGLS;
 
     private static String nullify(String s) {
-        return s == null || s.isEmpty() || s.equals("*") ? null : s;
+        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageWriterFactory getDefault() {
@@ -168,9 +169,9 @@ public class ImageWriterFactory implements Serializable {
         Properties props = new Properties();
         props.load(in);
         for (Map.Entry<Object, Object> entry : props.entrySet()) {
-            String[] ss = Property.split((String) entry.getValue(), ':');
+            String[] ss = Property.split((String) entry.getValue(), Symbol.C_COLON);
             map.put((String) entry.getKey(), new ImageWriterParam(ss[0], ss[1],
-                    ss[2], Property.split(ss[3], ';')));
+                    ss[2], Property.split(ss[3], Symbol.C_SEMICOLON)));
         }
     }
 

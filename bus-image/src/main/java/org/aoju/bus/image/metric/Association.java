@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.*;
@@ -87,7 +88,7 @@ public class Association {
         this.requestor = ae != null;
         this.name = "" + sock.getLocalSocketAddress()
                 + delim() + sock.getRemoteSocketAddress()
-                + '(' + serialNo + ')';
+                + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
         this.conn = local;
         this.device = local.getDevice();
         this.monitor = device.getAssociationMonitor();
@@ -436,7 +437,7 @@ public class Association {
     }
 
     void write(AAssociateRQ rq) throws IOException {
-        name = rq.getCallingAET() + delim() + rq.getCalledAET() + '(' + serialNo + ')';
+        name = rq.getCallingAET() + delim() + rq.getCalledAET() + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
         this.rq = rq;
         Logger.info("{} << A-ASSOCIATE-RQ", name);
         Logger.debug("{}", rq);
@@ -540,7 +541,7 @@ public class Association {
     }
 
     public void onAAssociateRQ(AAssociateRQ rq) throws IOException {
-        name = rq.getCalledAET() + delim() + rq.getCallingAET() + '(' + serialNo + ')';
+        name = rq.getCalledAET() + delim() + rq.getCallingAET() + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
         Logger.info("{} >> A-ASSOCIATE-RQ", name);
         Logger.debug("{}", rq);
         stopTimeout();

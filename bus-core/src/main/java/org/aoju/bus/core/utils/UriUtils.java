@@ -437,7 +437,7 @@ public class UriUtils {
             body = url;
         }
 
-        final int paramsSepIndex = StringUtils.indexOf(body, '?');
+        final int paramsSepIndex = StringUtils.indexOf(body, Symbol.C_QUESTION_MARK);
         String params = null;
         if (paramsSepIndex > 0) {
             params = StringUtils.subSuf(body, paramsSepIndex);

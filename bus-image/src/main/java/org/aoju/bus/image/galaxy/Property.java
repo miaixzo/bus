@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
@@ -64,7 +66,7 @@ public class Property implements Serializable {
     }
 
     public Property(String s) {
-        int endParamName = s.indexOf('=');
+        int endParamName = s.indexOf(Symbol.C_EQUAL);
         name = s.substring(0, endParamName);
         value = valueOf(s.substring(endParamName + 1));
     }
@@ -212,29 +214,29 @@ public class Property implements Serializable {
     }
 
     private static String substring(String s, int beginIndex, int endIndex) {
-        while (beginIndex < endIndex && s.charAt(beginIndex) <= ' ')
+        while (beginIndex < endIndex && s.charAt(beginIndex) <= Symbol.C_SPACE)
             beginIndex++;
-        while (beginIndex < endIndex && s.charAt(endIndex - 1) <= ' ')
+        while (beginIndex < endIndex && s.charAt(endIndex - 1) <= Symbol.C_SPACE)
             endIndex--;
         return beginIndex < endIndex ? s.substring(beginIndex, endIndex) : "";
     }
 
     public static String trimTrailing(String s) {
         int endIndex = s.length();
-        while (endIndex > 0 && s.charAt(endIndex - 1) <= ' ')
+        while (endIndex > 0 && s.charAt(endIndex - 1) <= Symbol.C_SPACE)
             endIndex--;
         return s.substring(0, endIndex);
     }
 
     public static int parseIS(String s) {
         return s != null && s.length() != 0
-                ? Integer.parseInt(s.charAt(0) == '+' ? s.substring(1) : s)
+                ? Integer.parseInt(s.charAt(0) == Symbol.C_PLUS ? s.substring(1) : s)
                 : 0;
     }
 
     public static double parseDS(String s) {
         return s != null && s.length() != 0
-                ? Double.parseDouble(s.replace(',', '.'))
+                ? Double.parseDouble(s.replace(Symbol.C_COMMA, Symbol.C_DOT))
                 : 0;
     }
 
@@ -286,10 +288,10 @@ public class Property implements Serializable {
         while (stk.hasMoreTokens()) {
             String tk = stk.nextToken();
             char ch1 = tk.charAt(0);
-            if (ch1 == '*') {
+            if (ch1 == Symbol.C_STAR) {
                 regex.append(".*");
-            } else if (ch1 == '?') {
-                regex.append(".");
+            } else if (ch1 == Symbol.C_QUESTION_MARK) {
+                regex.append(Symbol.DOT);
             } else {
                 regex.append("\\Q").append(tk).append("\\E");
             }
@@ -299,7 +301,7 @@ public class Property implements Serializable {
     }
 
     public static boolean containsWildCard(String s) {
-        return (s.indexOf('*') >= 0 || s.indexOf('?') >= 0);
+        return (s.indexOf(Symbol.C_STAR) >= 0 || s.indexOf(Symbol.C_QUESTION_MARK) >= 0);
     }
 
     public static String[] maskNull(String[] ss) {
@@ -360,11 +362,11 @@ public class Property implements Serializable {
     }
 
     public static boolean isIPAddr(String s) {
-        String[] ss = split(s, ':');
+        String[] ss = split(s, Symbol.C_COLON);
         if (ss.length > 1)
             return ss.length == 8;
 
-        ss = split(s, '.');
+        ss = split(s, Symbol.C_DOT);
         if (ss.length != 4)
             return false;
 
@@ -449,7 +451,7 @@ public class Property implements Serializable {
 
     @Override
     public String toString() {
-        return name + '=' + value;
+        return name + Symbol.C_EQUAL + value;
     }
 
     public void setAt(Object o) {

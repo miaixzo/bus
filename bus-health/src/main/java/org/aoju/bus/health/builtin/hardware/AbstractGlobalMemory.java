@@ -76,7 +76,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                             bankLabel = split[1].trim();
                             break;
                         case "Locator":
-                            locator = "/" + split[1].trim();
+                            locator = Symbol.SLASH + split[1].trim();
                             break;
                         case "Size":
                             capacity = Builder.parseDecimalMemorySizeToBinary(split[1].trim());
@@ -107,7 +107,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
         StringBuilder sb = new StringBuilder();
         sb.append("Available: ");
         sb.append(Builder.formatBytes(getAvailable()));
-        sb.append("/");
+        sb.append(Symbol.SLASH);
         sb.append(Builder.formatBytes(getTotal()));
         return sb.toString();
     }

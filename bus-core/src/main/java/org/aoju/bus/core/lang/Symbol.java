@@ -185,10 +185,17 @@ public class Symbol {
     public static final String STAR = Normal.EMPTY + C_STAR;
 
     /**
+     * 符号: 人民币
+     */
+    public static final char C_CNY = '¥';
+    public static final String CNY = Normal.EMPTY + C_CNY;
+
+    /**
      * 符号: 美元
      */
     public static final char C_DOLLAR = '$';
     public static final String DOLLAR = Normal.EMPTY + C_DOLLAR;
+
     /**
      * 符号: #
      */
@@ -323,42 +330,52 @@ public class Symbol {
      * 符号: 回车换行
      */
     public static final String CRLF = "\r\n";
+
     /**
      * 符号: 回车换行
      */
     public static final String NEWLINE = ",\n";
+
     /**
      * 符号: {}
      */
     public static final String DELIM = "{}";
+
     /**
      * 符号: []
      */
     public static final String BRACKET = "[]";
+
     /**
      * 符号: [L
      */
     public static final String NON_PREFIX = "[L";
+
     /**
      * HTML: 空格
      */
     public static final String HTML_NBSP = "&nbsp;";
+
     /**
      * HTML: 与
      */
     public static final String HTML_AMP = "&amp;";
+
     /**
      * HTML: ＂
      */
     public static final String HTML_QUOTE = "&quot;";
+
     /**
      * HTML: '
      */
     public static final String HTML_APOS = "&apos;";
+
     /**
      * HTML: 小于号
      */
     public static final String HTML_LT = "&lt;";
+
     /**
      * HTML: 大于号
      */

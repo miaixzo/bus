@@ -33,6 +33,7 @@ import org.aoju.bus.cache.magic.AnnoHolder;
 import org.aoju.bus.cache.magic.CacheExpire;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.cache.magic.MethodHolder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 
 import java.lang.annotation.Annotation;
@@ -85,7 +86,7 @@ public class CacheInfoContainer {
 
     private static AnnoHolder.Builder scanKeys(AnnoHolder.Builder builder, Annotation[][] pAnnotations) {
         int multiIndex = -1;
-        String id = "";
+        String id = Normal.EMPTY;
         Map<Integer, CacheKey> cacheKeyMap = new LinkedHashMap<>(pAnnotations.length);
 
         for (int pIndex = 0; pIndex < pAnnotations.length; ++pIndex) {

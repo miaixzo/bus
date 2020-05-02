@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.solaris.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 
@@ -60,7 +61,7 @@ public final class Lshal {
         for (String line : lshal) {
             if (line.startsWith("udi ")) {
                 String udi = Builder.getSingleQuoteStringValue(line);
-                diskName = udi.substring(udi.lastIndexOf('/') + 1);
+                diskName = udi.substring(udi.lastIndexOf(Symbol.C_SLASH) + 1);
             } else {
                 line = line.trim();
                 if (line.startsWith("block.major") && diskName != null) {

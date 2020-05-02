@@ -201,9 +201,9 @@ public class BaseInsertProvider extends MapperTemplate {
                 continue;
             }
             if (Assert.isNotEmpty(column.getSequenceName()) || column.isIdentity() || column.isUuid()) {
-                sql.append(column.getColumn() + ",");
+                sql.append(column.getColumn() + Symbol.COMMA);
             } else {
-                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumn() + ",", isNotEmpty()));
+                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumn() + Symbol.COMMA, isNotEmpty()));
             }
         }
         sql.append("</trim>");
@@ -215,19 +215,19 @@ public class BaseInsertProvider extends MapperTemplate {
             //优先使用传入的属性值,当原属性property!=null时,用原属性
             //自增的情况下,如果默认有值,就会备份到property_cache中,所以这里需要先判断备份的值是否存在
             if (column.isIdentity()) {
-                sql.append(SqlSourceBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", ",")));
+                sql.append(SqlSourceBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", Symbol.COMMA)));
             } else {
                 //其他情况值仍然存在原property中
-                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder(null, null, ","), isNotEmpty()));
+                sql.append(SqlSourceBuilder.getIfNotNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
             //当属性为null时,如果存在主键策略,会自动获取值,如果不存在,则使用null
             //序列的情况
             if (Assert.isNotEmpty(column.getSequenceName())) {
-                sql.append(SqlSourceBuilder.getIfIsNull(column, getSeqNextVal(column) + " ,", isNotEmpty()));
+                sql.append(SqlSourceBuilder.getIfIsNull(column, getSeqNextVal(column) + Symbol.C_SPACE + Symbol.COMMA, isNotEmpty()));
             } else if (column.isIdentity()) {
-                sql.append(SqlSourceBuilder.getIfCacheIsNull(column, column.getColumnHolder() + ","));
+                sql.append(SqlSourceBuilder.getIfCacheIsNull(column, column.getColumnHolder() + Symbol.COMMA));
             } else if (column.isUuid()) {
-                sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, "_bind", ","), isNotEmpty()));
+                sql.append(SqlSourceBuilder.getIfIsNull(column, column.getColumnHolder(null, "_bind", Symbol.COMMA), isNotEmpty()));
             }
         }
         sql.append("</trim>");

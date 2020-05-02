@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.nimble.Photometric;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.aoju.bus.logger.Logger;
@@ -138,7 +139,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         int nScanlineStride = params.getBytesPerLine() / ((nBitDepth + 7) / 8);
 
         if (nType < 0 || (nType > ImageParameters.TYPE_BIT)) {
-            throw new UnsupportedOperationException("Unsupported data type" + " " + nType);
+            throw new UnsupportedOperationException("Unsupported data type" + Symbol.SPACE + nType);
         }
 
         int[] bandOffsets = new int[nBands];

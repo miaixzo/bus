@@ -24,19 +24,16 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
-import org.aoju.bus.office.provider.LocalOfficeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
- * 文档在线预览配置
+ * 影像解析预览
  *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-@ConditionalOnClass({LocalOfficeProvider.class})
 @EnableConfigurationProperties(ImageProperties.class)
 public class ImageConfiguration {
 

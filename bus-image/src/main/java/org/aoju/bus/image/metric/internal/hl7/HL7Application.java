@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Device;
@@ -234,7 +235,7 @@ public class HL7Application implements Serializable {
                             .setErrorLocation(Builder.UnknownSendingApplication)
                             .setUserMessage("Sending Application not recognized"));
         String messageType = msh.getMessageType();
-        if (!(acceptedMessageTypes.contains("*")
+        if (!(acceptedMessageTypes.contains(Symbol.STAR)
                 || acceptedMessageTypes.contains(messageType)))
             throw new HL7Exception(
                     new ERRSegment(msh)

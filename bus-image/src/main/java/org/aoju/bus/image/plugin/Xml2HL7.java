@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.metric.internal.hl7.HL7ContentHandler;
 
 import javax.xml.parsers.SAXParser;
@@ -43,7 +44,7 @@ public class Xml2HL7 {
         SAXParser p = f.newSAXParser();
         HL7ContentHandler ch = new HL7ContentHandler(
                 new OutputStreamWriter(System.out));
-        if (fname.equals("-")) {
+        if (fname.equals(Symbol.HYPHEN)) {
             p.parse(System.in, ch);
         } else {
             p.parse(new File(fname), ch);

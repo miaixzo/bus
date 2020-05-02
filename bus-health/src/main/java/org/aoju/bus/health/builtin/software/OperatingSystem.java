@@ -27,6 +27,7 @@ package org.aoju.bus.health.builtin.software;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.Collection;
@@ -301,7 +302,7 @@ public interface OperatingSystem {
 
             StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Normal.UNKNOWN);
             if (!StringUtils.isBlank(getCodeName())) {
-                sb.append(" (").append(getCodeName()).append(')');
+                sb.append(" (").append(getCodeName()).append(Symbol.C_PARENTHESE_RIGHT);
             }
             if (!StringUtils.isBlank(getBuildNumber())) {
                 sb.append(" build ").append(getBuildNumber());

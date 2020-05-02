@@ -123,8 +123,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
                         File[] codecs = file.listFiles();
                         if (codecs != null) {
                             for (File codec : codecs) {
-                                if (!codec.isDirectory() && codec.getName().contains("#")) {
-                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf('#'));
+                                if (!codec.isDirectory() && codec.getName().contains(Symbol.SHAPE)) {
+                                    cardCodec = codec.getName().substring(0, codec.getName().indexOf(Symbol.C_SHAPE));
                                     break;
                                 }
                             }
@@ -150,8 +150,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
      */
     private static String getCardName(File file) {
         String cardName = "Not Found..";
-        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(ProcPath.ASOUND + "/" + CARDS_FILE, Symbol.COLON);
-        String cardId = Builder.getStringFromFile(file.getPath() + "/" + ID_FILE);
+        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(ProcPath.ASOUND + Symbol.SLASH + CARDS_FILE, Symbol.COLON);
+        String cardId = Builder.getStringFromFile(file.getPath() + Symbol.SLASH + ID_FILE);
         for (Map.Entry<String, String> entry : cardNamePairs.entrySet()) {
             if (entry.getKey().contains(cardId)) {
                 cardName = entry.getValue();

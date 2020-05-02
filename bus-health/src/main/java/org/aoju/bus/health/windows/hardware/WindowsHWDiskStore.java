@@ -27,6 +27,8 @@ package org.aoju.bus.health.windows.hardware;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.Kernel32;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
@@ -188,7 +190,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             mAnt = DEVICE_ID.matcher(WmiQuery.getRefString(diskPartitionMap, DiskToPartitionProperty.ANTECEDENT, i));
             mDep = DEVICE_ID.matcher(WmiQuery.getRefString(diskPartitionMap, DiskToPartitionProperty.DEPENDENT, i));
             if (mAnt.matches() && mDep.matches()) {
-                maps.partitionToLogicalDriveMap.put(mAnt.group(1), mDep.group(1) + "\\");
+                maps.partitionToLogicalDriveMap.put(mAnt.group(1), mDep.group(1) + Symbol.BACKSLASH);
             }
         }
 
@@ -196,13 +198,13 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         WmiResult<DiskPartitionProperty> hwPartitionQueryMap = Win32DiskPartition.queryPartition();
         for (int i = 0; i < hwPartitionQueryMap.getResultCount(); i++) {
             String deviceID = WmiQuery.getString(hwPartitionQueryMap, DiskPartitionProperty.DEVICEID, i);
-            String logicalDrive = maps.partitionToLogicalDriveMap.getOrDefault(deviceID, "");
-            String uuid = "";
+            String logicalDrive = maps.partitionToLogicalDriveMap.getOrDefault(deviceID, Normal.EMPTY);
+            String uuid = Normal.EMPTY;
             if (!logicalDrive.isEmpty()) {
                 // Get matching volume for UUID
                 char[] volumeChr = new char[BUFSIZE];
                 Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(logicalDrive, volumeChr, BUFSIZE);
-                uuid = Builder.parseUuidOrDefault(new String(volumeChr).trim(), "");
+                uuid = Builder.parseUuidOrDefault(new String(volumeChr).trim(), Normal.EMPTY);
             }
             maps.partitionMap.put(deviceID,
                     new HWPartition(WmiQuery.getString(hwPartitionQueryMap, DiskPartitionProperty.NAME, i),

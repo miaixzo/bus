@@ -26,6 +26,7 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.Version;
 import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
@@ -127,10 +128,10 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
 
             Buffer buffer = new Buffer();
             buffer.writeUtf8(s, 0, i);
-            buffer.writeUtf8CodePoint('?');
+            buffer.writeUtf8CodePoint(Symbol.C_QUESTION_MARK);
             for (int j = i + Character.charCount(c); j < length; j += Character.charCount(c)) {
                 c = s.codePointAt(j);
-                buffer.writeUtf8CodePoint(c > '\u001f' && c < '\u007f' ? c : '?');
+                buffer.writeUtf8CodePoint(c > '\u001f' && c < '\u007f' ? c : Symbol.C_QUESTION_MARK);
             }
             return buffer.readUtf8();
         }
@@ -323,7 +324,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
             hostname = proxyAddress.getHostName();
             hostPort = proxyAddress.getPort();
         }
-        return new SocketPermission(hostname + ":" + hostPort, "connect, resolve");
+        return new SocketPermission(hostname + Symbol.COLON + hostPort, "connect, resolve");
     }
 
     @Override

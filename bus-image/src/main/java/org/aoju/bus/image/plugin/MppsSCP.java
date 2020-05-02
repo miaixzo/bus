@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Status;
@@ -54,7 +55,7 @@ import java.io.IOException;
 public class MppsSCP {
 
     private final Device device = new Device("mppsscp");
-    private final ApplicationEntity ae = new ApplicationEntity("*");
+    private final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
     private final Connection conn = new Connection();
     private File storageDir;
     private IOD mppsNCreateIOD;

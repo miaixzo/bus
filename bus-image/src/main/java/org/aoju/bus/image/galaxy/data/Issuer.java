@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
 
@@ -53,7 +54,7 @@ public class Issuer implements Serializable {
     }
 
     public Issuer(String s) {
-        this(s, '&');
+        this(s, Symbol.C_AND);
     }
 
     public Issuer(String s, char delim) {
@@ -204,7 +205,7 @@ public class Issuer implements Serializable {
 
     @Override
     public String toString() {
-        return toString('&');
+        return toString(Symbol.C_AND);
     }
 
     public String toString(char delim) {

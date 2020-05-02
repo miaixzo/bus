@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.solaris.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
@@ -59,7 +60,7 @@ public class SolarisInternetProtocolStats implements InternetProtocolStats {
             // Now of form tcpXX = 123
             for (String stat : stats) {
                 if (stat != null) {
-                    String[] split = stat.split("=");
+                    String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "tcpCurrEstab":
@@ -118,7 +119,7 @@ public class SolarisInternetProtocolStats implements InternetProtocolStats {
             // Now of form udpXX = 123
             for (String stat : stats) {
                 if (stat != null) {
-                    String[] split = stat.split("=");
+                    String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
                             case "udpOutDatagrams":

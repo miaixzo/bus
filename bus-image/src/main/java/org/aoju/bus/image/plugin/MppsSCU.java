@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Format;
 import org.aoju.bus.image.Status;
@@ -389,7 +390,7 @@ public class MppsSCU {
             case 1:
                 map.values().iterator().next().iuid += ".1";
         }
-        return ppsuid + '.' + (size + 1);
+        return ppsuid + Symbol.C_DOT + (size + 1);
     }
 
     private String mkPPSID() {

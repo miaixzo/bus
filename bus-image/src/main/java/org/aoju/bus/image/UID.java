@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
@@ -2439,7 +2440,7 @@ public class UID {
             return map.get(uid);
         } catch (Exception e) {
         }
-        return "?";
+        return Symbol.QUESTION_MARK;
     }
 
     public static String forName(String keyword) {
@@ -2523,7 +2524,7 @@ public class UID {
         int uuidlen = uuidStr.length();
         char[] cs = new char[rootlen + uuidlen + 1];
         root.getChars(0, rootlen, cs, 0);
-        cs[rootlen] = '.';
+        cs[rootlen] = Symbol.C_DOT;
         uuidStr.getChars(0, uuidlen, cs, rootlen + 1);
         return new String(cs);
     }

@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.freebsd.software;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.unix.CLibrary;
@@ -59,7 +60,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
             if (Logger.get().isError()) {
                 Logger.warn("Failed getaddrinfo(): {}", LIBC.gai_strerror(res));
             }
-            return "";
+            return Normal.EMPTY;
         }
         CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
         String canonname = info.ai_canonname.trim();

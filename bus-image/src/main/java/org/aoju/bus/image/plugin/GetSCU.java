@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
@@ -69,7 +70,7 @@ public class GetSCU {
     private int priority;
     private InformationModel model;
     private File storageDir;
-    private final BasicCStoreSCP storageSCP = new BasicCStoreSCP("*") {
+    private final BasicCStoreSCP storageSCP = new BasicCStoreSCP(Symbol.STAR) {
 
         @Override
         protected void store(Association as, Presentation pc, Attributes rq,

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.io;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.AttributesSelector;
@@ -171,8 +172,8 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
             Iterator<VR> vr = entry.getValue().iterator();
             sb.append(vr.next());
             while (vr.hasNext())
-                sb.append(',').append(vr.next());
-            ss[i] = sb.append('=').append(entry.getKey()).toString();
+                sb.append(Symbol.C_COMMA).append(vr.next());
+            ss[i] = sb.append(Symbol.C_EQUAL).append(entry.getKey()).toString();
         }
         return ss;
     }
@@ -180,12 +181,12 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     public void setLengthsThresholdsFromStrings(String... ss) {
         EnumMap<VR, Integer> tmp = new EnumMap<>(VR.class);
         for (String s : ss) {
-            String[] entry = Property.split(s, '=');
+            String[] entry = Property.split(s, Symbol.C_EQUAL);
             if (entry.length != 2)
                 throw new IllegalArgumentException(s);
             try {
                 Integer length = Integer.valueOf(entry[1]);
-                for (String vr : Property.split(entry[0], ',')) {
+                for (String vr : Property.split(entry[0], Symbol.C_COMMA)) {
                     tmp.put(VR.valueOf(vr), length);
                 }
             } catch (IllegalArgumentException e) {

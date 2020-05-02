@@ -161,7 +161,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
         String sp = WmiQuery.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
         if (!sp.isEmpty() && !"unknown".equals(sp)) {
-            version = version + " " + sp.replace("Service Pack ", "SP");
+            version = version + Symbol.SPACE + sp.replace("Service Pack ", "SP");
         }
 
         return version;

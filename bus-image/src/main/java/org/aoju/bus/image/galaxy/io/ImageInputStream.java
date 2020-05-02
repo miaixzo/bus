@@ -25,6 +25,7 @@
 package org.aoju.bus.image.galaxy.io;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.core.utils.IoUtils;
@@ -127,10 +128,10 @@ public class ImageInputStream extends FilterInputStream
     public static String toAttributePath(List<ItemPointer> itemPointers, int tag) {
         StringBuilder sb = new StringBuilder();
         for (ItemPointer itemPointer : itemPointers) {
-            sb.append('/').append(Tag.toHexString(itemPointer.sequenceTag))
-                    .append('/').append(itemPointer.itemIndex);
+            sb.append(Symbol.C_SLASH).append(Tag.toHexString(itemPointer.sequenceTag))
+                    .append(Symbol.C_SLASH).append(itemPointer.itemIndex);
         }
-        sb.append('/').append(Tag.toHexString(tag));
+        sb.append(Symbol.C_SLASH).append(Tag.toHexString(tag));
         return sb.toString();
     }
 

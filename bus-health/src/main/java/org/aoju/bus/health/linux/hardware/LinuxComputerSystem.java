@@ -145,7 +145,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     private static String queryModelFromDeviceTree() {
         String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
         if (!modelStr.isEmpty()) {
-            return modelStr.replace("Machine: ", "");
+            return modelStr.replace("Machine: ", Normal.EMPTY);
         }
         return null;
     }

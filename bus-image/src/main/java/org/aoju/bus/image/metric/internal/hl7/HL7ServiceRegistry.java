@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.metric.Connection;
 
 import java.net.Socket;
@@ -61,7 +62,7 @@ public class HL7ServiceRegistry extends DefaultHL7Listener {
             throws HL7Exception {
         HL7MessageListener listener = listeners.get(msg.msh().getMessageType());
         if (listener == null) {
-            listener = listeners.get("*");
+            listener = listeners.get(Symbol.STAR);
             if (listener == null)
                 return super.onMessage(hl7App, conn, s, msg);
         }

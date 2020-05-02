@@ -283,10 +283,10 @@ public final class Builder {
      * remainder of the String does not match.
      */
     public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == '^') {
+        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
             return !wildcardMatch(text, pattern.substring(1));
         }
-        return text.matches(pattern.replace("?", ".?").replace("*", ".*?"));
+        return text.matches(pattern.replace("?", ".?").replace(Symbol.STAR, ".*?"));
     }
 
     /**
@@ -298,7 +298,7 @@ public final class Builder {
      * otherwise the map may contain only a single element for {@code pid}
      */
     public static Map<Integer, String> getCwdMap(int pid) {
-        List<String> lsof = Executor.runNative("lsof -Fn -d cwd" + (pid < 0 ? "" : " -p " + pid));
+        List<String> lsof = Executor.runNative("lsof -Fn -d cwd" + (pid < 0 ? Normal.EMPTY : " -p " + pid));
         Map<Integer, String> cwdMap = new HashMap<>();
         Integer key = -1;
         for (String line : lsof) {
@@ -691,7 +691,7 @@ public final class Builder {
         Logger.debug("Manufacurer ID: {}", temp);
         return String.format("%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
                 (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace("@", Normal.EMPTY);
+                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace(Symbol.AT, Normal.EMPTY);
     }
 
     /**
@@ -864,7 +864,7 @@ public final class Builder {
         sb.append(", Product ID=").append(getProductID(edid));
         sb.append(", ").append(isDigital(edid) ? "Digital" : "Analog");
         sb.append(", Serial=").append(getSerialNo(edid));
-        sb.append(", ManufDate=").append(getWeek(edid) * 12 / 52 + 1).append('/')
+        sb.append(", ManufDate=").append(getWeek(edid) * 12 / 52 + 1).append(Symbol.C_SLASH)
                 .append(getYear(edid));
         sb.append(", EDID v").append(getVersion(edid));
         int hSize = getHcm(edid);
@@ -1307,7 +1307,7 @@ public final class Builder {
      * @return the value contained between double tick marks
      */
     public static String getDoubleQuoteStringValue(String line) {
-        return getStringBetween(line, '"');
+        return getStringBetween(line, Symbol.C_DOUBLE_QUOTES);
     }
 
     /**
@@ -1445,7 +1445,7 @@ public final class Builder {
                     dashSeen = false;
                     numeric = true;
                 }
-            } else if (indices[parsedIndex] != stringIndex || c == '+' || !numeric) {
+            } else if (indices[parsedIndex] != stringIndex || c == Symbol.C_PLUS || !numeric) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
@@ -1511,7 +1511,7 @@ public final class Builder {
                     dashSeen = false;
                     numeric = true;
                 }
-            } else if (c == '+' || !numeric) {
+            } else if (c == Symbol.C_PLUS || !numeric) {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
@@ -1621,7 +1621,7 @@ public final class Builder {
      */
     public static boolean filePathStartsWith(List<String> prefixList, String path) {
         for (String match : prefixList) {
-            if (path.equals(match) || path.startsWith(match + "/")) {
+            if (path.equals(match) || path.startsWith(match + Symbol.SLASH)) {
                 return true;
             }
         }
@@ -1695,7 +1695,7 @@ public final class Builder {
             // Remove prefix
             if (r.startsWith("memory:")) {
                 // Split to low and high
-                String[] mem = r.substring(7).split("-");
+                String[] mem = r.substring(7).split(Symbol.HYPHEN);
                 if (mem.length == 2) {
                     try {
                         // Parse the hex strings
@@ -1733,7 +1733,7 @@ public final class Builder {
     public static long parseLspciMemorySize(String line) {
         Matcher matcher = LSPCI_MEMORY_SIZE.matcher(line);
         if (matcher.matches()) {
-            return parseDecimalMemorySizeToBinary(matcher.group(1) + " " + matcher.group(2) + "B");
+            return parseDecimalMemorySizeToBinary(matcher.group(1) + Symbol.SPACE + matcher.group(2) + "B");
         }
         return 0;
     }
@@ -1750,7 +1750,7 @@ public final class Builder {
     public static List<Integer> parseHyphenatedIntList(String str) {
         List<Integer> result = new ArrayList<>();
         for (String s : whitespaces.split(str)) {
-            if (s.contains("-")) {
+            if (s.contains(Symbol.HYPHEN)) {
                 int first = getFirstIntValue(s);
                 int last = getNthIntValue(s, 2);
                 for (int i = first; i <= last; i++) {

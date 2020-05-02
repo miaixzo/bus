@@ -79,7 +79,7 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
         Map<String, Triple<String, String, Long>> diskInfoMap = GeomDiskList.queryDisks();
 
         // Get list of disks from sysctl
-        List<String> devices = Arrays.asList(Builder.whitespaces.split(BsdSysctl.sysctl("kern.disks", "")));
+        List<String> devices = Arrays.asList(Builder.whitespaces.split(BsdSysctl.sysctl("kern.disks", Normal.EMPTY)));
 
         // Run iostat -Ix to enumerate disks by name and get kb r/w
         List<String> iostat = Executor.runNative("iostat -Ix");

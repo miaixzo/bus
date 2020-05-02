@@ -32,6 +32,7 @@ import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
 import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import com.sun.jna.platform.win32.WinNT.*;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -101,12 +102,12 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      */
     @Override
     protected ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = "";
-        String cpuName = "";
-        String cpuIdentifier = "";
-        String cpuFamily = "";
-        String cpuModel = "";
-        String cpuStepping = "";
+        String cpuVendor = Normal.EMPTY;
+        String cpuName = Normal.EMPTY;
+        String cpuIdentifier = Normal.EMPTY;
+        String cpuFamily = Normal.EMPTY;
+        String cpuModel = Normal.EMPTY;
+        String cpuStepping = Normal.EMPTY;
         String processorID;
         boolean cpu64bit = false;
 
@@ -162,7 +163,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             found = s.equals(key);
         }
         // If key string not found, return empty string
-        return "";
+        return Normal.EMPTY;
     }
 
     @Override

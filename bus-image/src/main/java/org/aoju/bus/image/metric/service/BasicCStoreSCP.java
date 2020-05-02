@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.service;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.Status;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -43,7 +44,7 @@ import java.io.IOException;
 public class BasicCStoreSCP extends AbstractService {
 
     public BasicCStoreSCP() {
-        super("*");
+        super(Symbol.STAR);
     }
 
     public BasicCStoreSCP(String... sopClasses) {

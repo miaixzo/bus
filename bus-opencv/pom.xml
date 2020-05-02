@@ -20,6 +20,14 @@
         <opencv.dcm.version>4.2.0-dcm</opencv.dcm.version>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-health</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
     <licenses>
         <license>
             <name>The MIT License</name>
@@ -64,64 +72,6 @@
                     <execution>
                         <id>attach-javadocs</id>
                         <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <id>src-dependencies</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.weasis.thirdparty.org.opencv</groupId>
-                                    <artifactId>opencv</artifactId>
-                                    <version>${opencv.dcm.version}</version>
-                                    <classifier>sources</classifier>
-                                </artifactItem>
-                            </artifactItems>
-                            <excludes>META-INF/**</excludes>
-                            <outputDirectory>${project.build.directory}/sources-import</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/main/java</source>
-                                <source>${project.build.directory}/sources-import</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>bind-sources</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -185,77 +135,6 @@
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy</id>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>copy</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.weasis.thirdparty.org.opencv</groupId>
-                                            <artifactId>libopencv_java</artifactId>
-                                            <version>${opencv.dcm.version}</version>
-                                            <type>so</type>
-                                            <classifier>linux-x86-64</classifier>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.outputDirectory}/lib/linux-x86_64
-                                            </outputDirectory>
-                                            <destFileName>opencv_java.so</destFileName>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.weasis.thirdparty.org.opencv</groupId>
-                                            <artifactId>libopencv_java</artifactId>
-                                            <version>${opencv.dcm.version}</version>
-                                            <type>so</type>
-                                            <classifier>linux-x86</classifier>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.outputDirectory}/lib/linux-i386
-                                            </outputDirectory>
-                                            <destFileName>opencv_java.so</destFileName>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.weasis.thirdparty.org.opencv</groupId>
-                                            <artifactId>libopencv_java</artifactId>
-                                            <version>${opencv.dcm.version}</version>
-                                            <type>jnilib</type>
-                                            <classifier>macosx-x86-64</classifier>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.outputDirectory}/lib/macosx-x86-64
-                                            </outputDirectory>
-                                            <destFileName>opencv_java.so</destFileName>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.weasis.thirdparty.org.opencv</groupId>
-                                            <artifactId>opencv_java</artifactId>
-                                            <version>${opencv.dcm.version}</version>
-                                            <type>dll</type>
-                                            <classifier>windows-x86</classifier>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.outputDirectory}/lib/win-i386
-                                            </outputDirectory>
-                                            <destFileName>opencv_java.dll</destFileName>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.weasis.thirdparty.org.opencv</groupId>
-                                            <artifactId>opencv_java</artifactId>
-                                            <version>${opencv.dcm.version}</version>
-                                            <type>dll</type>
-                                            <classifier>windows-x86-64</classifier>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.outputDirectory}/lib/win32-x86-64
-                                            </outputDirectory>
-                                            <destFileName>opencv_java.dll</destFileName>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

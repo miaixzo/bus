@@ -25,6 +25,7 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
 /**
@@ -42,11 +43,11 @@ public abstract class AbstractVirtualMemory implements VirtualMemory {
         StringBuilder sb = new StringBuilder();
         sb.append("Swap Used/Avail: ");
         sb.append(Builder.formatBytes(getSwapUsed()));
-        sb.append("/");
+        sb.append(Symbol.SLASH);
         sb.append(Builder.formatBytes(getSwapTotal()));
         sb.append(", Virtual Memory In Use/Max=");
         sb.append(Builder.formatBytes(getVirtualInUse()));
-        sb.append("/");
+        sb.append(Symbol.SLASH);
         sb.append(Builder.formatBytes(getVirtualMax()));
         return sb.toString();
     }

@@ -26,6 +26,7 @@ package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.Arrays;
 
@@ -88,7 +89,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
         StringBuilder sb = new StringBuilder(String.format(indentFmt, Normal.EMPTY));
         sb.append(usbDevice.getName());
         if (usbDevice.getVendor().length() > 0) {
-            sb.append(" (").append(usbDevice.getVendor()).append(')');
+            sb.append(" (").append(usbDevice.getVendor()).append(Symbol.C_PARENTHESE_RIGHT);
         }
         if (usbDevice.getSerialNumber().length() > 0) {
             sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(']');

@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.builtin;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.*;
@@ -133,9 +135,9 @@ public class Multiframe {
         addPixelData(dest, emf, frame);
         dest.setString(Tag.SOPClassUID, VR.UI, cuid);
         dest.setString(Tag.SOPInstanceUID, VR.UI, uidMapper.get(
-                dest.getString(Tag.SOPInstanceUID)) + '.' + (frame + 1));
+                dest.getString(Tag.SOPInstanceUID)) + Symbol.C_DOT + (frame + 1));
         dest.setString(Tag.InstanceNumber, VR.IS,
-                createInstanceNumber(dest.getString(Tag.InstanceNumber, ""), frame));
+                createInstanceNumber(dest.getString(Tag.InstanceNumber, Normal.EMPTY), frame));
         dest.setString(Tag.ImageType, VR.CS, dest.getStrings(Tag.FrameType));
         dest.remove(Tag.FrameType);
         if (!preserveSeriesInstanceUID)
@@ -167,7 +169,7 @@ public class Multiframe {
             for (int i = 0; i < n; i++) {
                 Attributes newRef = new Attributes(ref);
                 newRef.setString(Tag.ReferencedSOPInstanceUID, VR.UI,
-                        iuid + '.' + (frames != null ? frames[i] : (i + 1)));
+                        iuid + Symbol.C_DOT + (frames != null ? frames[i] : (i + 1)));
                 newRefs.add(newRef);
             }
         }

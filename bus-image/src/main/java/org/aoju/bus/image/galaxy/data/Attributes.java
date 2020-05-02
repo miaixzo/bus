@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Format;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -1747,7 +1748,7 @@ public class Attributes implements Serializable {
         int dtlen = dt.length();
         if (dtlen > 8) {
             char ch = dt.charAt(dtlen - 5);
-            if (ch == '+' || ch == '-')
+            if (ch == Symbol.C_PLUS || ch == Symbol.C_HYPHEN)
                 return dt;
         }
         try {
@@ -2513,7 +2514,7 @@ public class Attributes implements Serializable {
             appendAttribute(privateCreator, tag, vrs[i], value,
                     sb.length() + maxWidth, sb, prefix);
             if (value instanceof Sequence)
-                lines += appendItems((Sequence) value, limit - lines, maxWidth, sb, prefix + '>');
+                lines += appendItems((Sequence) value, limit - lines, maxWidth, sb, prefix + Symbol.C_GT);
         }
         return lines;
     }
@@ -2533,7 +2534,7 @@ public class Attributes implements Serializable {
 
     private StringBuilder appendAttribute(String privateCreator, int tag, VR vr, Object value,
                                           int maxLength, StringBuilder sb, String prefix) {
-        sb.append(prefix).append(Tag.toString(tag)).append(' ').append(vr).append(" [");
+        sb.append(prefix).append(Tag.toString(tag)).append(Symbol.C_SPACE).append(vr).append(" [");
         if (vr.prompt(value, bigEndian, getSpecificCharacterSet(vr),
                 maxLength - sb.length() - 1, sb)) {
             sb.append("] ").append(ElementDictionary.keywordOf(tag, privateCreator));

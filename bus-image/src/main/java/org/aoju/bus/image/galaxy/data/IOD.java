@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
@@ -58,7 +59,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             } catch (NullPointerException npe) {
                 throw new FileNotFoundException(uri);
             }
-        } else if (uri.indexOf(':') < 2) {
+        } else if (uri.indexOf(Symbol.C_COLON) < 2) {
             uri = new File(uri).toURI().toString();
         }
         IOD iod = new IOD();
@@ -617,7 +618,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                     throw new SAXException(
                             (vr == VR.SQ ? "invalid items=\""
                                     : "invalid vm=\"")
-                                    + vm + '"');
+                                    + vm + Symbol.C_DOUBLE_QUOTES);
                 }
             }
             DataElement el = new DataElement(tag, vr, type, minVM, maxVM,
@@ -635,7 +636,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             try {
                 return DataElementType.valueOf("TYPE_" + s);
             } catch (IllegalArgumentException e) {
-                throw new SAXException("unrecognized type=\"" + s + '"');
+                throw new SAXException("unrecognized type=\"" + s + Symbol.C_DOUBLE_QUOTES);
             }
         }
 
@@ -645,7 +646,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             } catch (NullPointerException e) {
                 throw new SAXException("missing vr attribute");
             } catch (IllegalArgumentException e) {
-                throw new SAXException("unrecognized vr=\"" + s + '"');
+                throw new SAXException("unrecognized vr=\"" + s + Symbol.C_DOUBLE_QUOTES);
             }
         }
 
@@ -655,24 +656,24 @@ public class IOD extends ArrayList<IOD.DataElement> {
             } catch (NullPointerException e) {
                 throw new SAXException("missing tag attribute");
             } catch (IllegalArgumentException e) {
-                throw new SAXException("invalid tag=\"" + s + '"');
+                throw new SAXException("invalid tag=\"" + s + Symbol.C_DOUBLE_QUOTES);
             }
         }
 
         private int[] tagPathOf(String s) throws SAXException {
-            String[] ss = Property.split(s, '/');
+            String[] ss = Property.split(s, Symbol.C_SLASH);
             if (ss.length == 0)
                 throw new SAXException("missing tag attribute");
 
             try {
                 int[] tagPath = new int[ss.length];
                 for (int i = 0; i < tagPath.length; i++)
-                    tagPath[i] = ss[i].equals("..")
+                    tagPath[i] = ss[i].equals(Symbol.DOUBLE_DOT)
                             ? -1
                             : (int) Long.parseLong(s, 16);
                 return tagPath;
             } catch (IllegalArgumentException e) {
-                throw new SAXException("invalid tag=\"" + s + '"');
+                throw new SAXException("invalid tag=\"" + s + Symbol.C_DOUBLE_QUOTES);
             }
         }
 
@@ -681,7 +682,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             try {
                 return s != null ? Integer.parseInt(s) : def;
             } catch (IllegalArgumentException e) {
-                throw new SAXException("invalid valueNumber=\"" + s + '"');
+                throw new SAXException("invalid valueNumber=\"" + s + Symbol.C_DOUBLE_QUOTES);
             }
         }
 
@@ -797,7 +798,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         private void endCondition(String name) throws SAXException {
             Condition cond = conditionStack.removeLast();
             if (cond.isEmpty())
-                throw new SAXException('<' + name + "> must not be empty");
+                throw new SAXException(Symbol.C_LT + name + "> must not be empty");
 
             if (!values.isEmpty()) {
                 try {

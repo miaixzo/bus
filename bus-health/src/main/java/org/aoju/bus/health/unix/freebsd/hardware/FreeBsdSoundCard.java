@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
@@ -90,7 +91,7 @@ final class FreeBsdSoundCard extends AbstractSoundCard {
         }
         List<SoundCard> soundCards = new ArrayList<>();
         for (String _key : sounds) {
-            soundCards.add(new FreeBsdSoundCard(productMap.get(_key), vendorMap.get(_key) + " " + productMap.get(_key),
+            soundCards.add(new FreeBsdSoundCard(productMap.get(_key), vendorMap.get(_key) + Symbol.SPACE + productMap.get(_key),
                     productMap.get(_key)));
         }
         return soundCards;

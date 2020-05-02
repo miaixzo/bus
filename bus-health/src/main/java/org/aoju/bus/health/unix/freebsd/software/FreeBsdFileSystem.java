@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.freebsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -85,7 +86,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
         // Find any partition UUIDs and map them
         Map<String, String> uuidMap = new HashMap<>();
         // Now grab dmssg output
-        String device = "";
+        String device = Normal.EMPTY;
         for (String line : Executor.runNative("geom part list")) {
             if (line.contains("Name: ")) {
                 device = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
@@ -97,7 +98,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             line = line.trim();
             if (line.startsWith("rawuuid:")) {
                 uuidMap.put(device, line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1));
-                device = "";
+                device = Normal.EMPTY;
             }
         }
 
@@ -111,7 +112,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             Filesystem    1K-blocks   Used   Avail Capacity iused  ifree %iused  Mounted on
             /dev/twed0s1a   2026030 584112 1279836    31%    2751 279871    1%   /
             */
-            if (line.startsWith("/")) {
+            if (line.startsWith(Symbol.SLASH)) {
                 String[] split = Builder.whitespaces.split(line);
                 if (split.length > 7) {
                     inodeFreeMap.put(split[0], Builder.parseLongOrDefault(split[6], 0L));
@@ -141,14 +142,14 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type)) || PSEUDO_FS_TYPES.contains(type) || path.equals("/dev")
                     || Builder.filePathStartsWith(TMP_FS_PATHS, path)
-                    || volume.startsWith("rpool") && !path.equals("/")) {
+                    || volume.startsWith("rpool") && !path.equals(Symbol.SLASH)) {
                 continue;
             }
 
-            String name = path.substring(path.lastIndexOf('/') + 1);
+            String name = path.substring(path.lastIndexOf(Symbol.C_SLASH) + 1);
             // Special case for /, pull last element of volume instead
             if (name.isEmpty()) {
-                name = volume.substring(volume.lastIndexOf('/') + 1);
+                name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
             }
             File f = new File(path);
             long totalSpace = f.getTotalSpace();
@@ -156,7 +157,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             long freeSpace = f.getFreeSpace();
 
             String description;
-            if (volume.startsWith("/dev") || path.equals("/")) {
+            if (volume.startsWith("/dev") || path.equals(Symbol.SLASH)) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";
@@ -166,7 +167,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
                 description = "Mount Point";
             }
             // Match UUID
-            String uuid = uuidMap.getOrDefault(name, "");
+            String uuid = uuidMap.getOrDefault(name, Normal.EMPTY);
 
             // Add to the list
             OSFileStore osStore = new OSFileStore();

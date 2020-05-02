@@ -30,6 +30,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
@@ -230,7 +231,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         String freqLevels = BsdSysctl.sysctl("dev.cpu.0.freq_levels", Normal.EMPTY);
         // MHz/Watts pairs like: 2501/32000 2187/27125 2000/24000
         for (String s : Builder.whitespaces.split(freqLevels)) {
-            long freq = Builder.parseLongOrDefault(s.split("/")[0], -1L);
+            long freq = Builder.parseLongOrDefault(s.split(Symbol.SLASH)[0], -1L);
             if (max < freq) {
                 max = freq;
             }

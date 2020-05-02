@@ -29,6 +29,7 @@ import com.sun.jna.platform.win32.Cfgmgr32;
 import com.sun.jna.platform.win32.Cfgmgr32Util;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -135,7 +136,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
                 String pnpDeviceID = WmiQuery.getString(pnpEntity, PnPEntityProperty.PNPDEVICEID, i);
                 String name = WmiQuery.getString(pnpEntity, PnPEntityProperty.NAME, i);
                 String vendor = WmiQuery.getString(pnpEntity, PnPEntityProperty.MANUFACTURER, i);
-                WindowsUsbDevice device = new WindowsUsbDevice(name, vendor, null, null, "", pnpDeviceID,
+                WindowsUsbDevice device = new WindowsUsbDevice(name, vendor, null, null, Normal.EMPTY, pnpDeviceID,
                         new WindowsUsbDevice[0]);
                 usbDeviceCache.put(pnpDeviceID, device);
                 Logger.debug("Adding {} to USB device cache.", pnpDeviceID);

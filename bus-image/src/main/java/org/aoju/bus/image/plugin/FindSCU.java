@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.*;
@@ -205,7 +206,7 @@ public class FindSCU {
     public void query(File f) throws Exception {
         Attributes attrs;
         String filePath = f.getPath();
-        String fileExt = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();
+        String fileExt = filePath.substring(filePath.lastIndexOf(Symbol.DOT) + 1).toLowerCase();
         ImageInputStream dis = null;
         try {
             attrs = fileExt.equals("xml")

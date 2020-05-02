@@ -26,6 +26,7 @@ package org.aoju.bus.health.linux;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Config;
 
 import java.io.File;
@@ -67,7 +68,7 @@ public final class ProcPath {
     private static String queryProcConfig() {
         String procPath = Config.get("health.proc.path", "/proc");
         // Ensure prefix begins with path separator, but doesn't end with one
-        procPath = '/' + procPath.replaceAll("/$|^/", Normal.EMPTY);
+        procPath = Symbol.C_SLASH + procPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(procPath).exists()) {
             throw new Config.PropertyException("health.proc.path", "The path does not exist");
         }

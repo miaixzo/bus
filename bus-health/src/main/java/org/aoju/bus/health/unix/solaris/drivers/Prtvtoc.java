@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.solaris.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
@@ -61,7 +62,7 @@ public final class Prtvtoc {
             for (String line : prtvotc) {
                 // If line starts with asterisk we ignore except for the one
                 // specifying bytes per sector
-                if (line.startsWith("*")) {
+                if (line.startsWith(Symbol.STAR)) {
                     if (line.endsWith("bytes/sector")) {
                         split = Builder.whitespaces.split(line);
                         if (split.length > 0) {

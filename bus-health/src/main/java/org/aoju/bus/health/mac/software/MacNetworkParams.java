@@ -28,6 +28,7 @@ import com.sun.jna.Native;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
@@ -61,12 +62,12 @@ final class MacNetworkParams extends AbstractNetworkParams {
     public String getDomainName() {
         CLibrary.Addrinfo hint = new CLibrary.Addrinfo();
         hint.ai_flags = CLibrary.AI_CANONNAME;
-        String hostname = "";
+        String hostname;
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             Logger.error("Unknown host exception when getting address of local host: {}", e.getMessage());
-            return "";
+            return Normal.EMPTY;
         }
         PointerByReference ptr = new PointerByReference();
         int res = SYS.getaddrinfo(hostname, null, hint, ptr);
@@ -74,7 +75,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
             if (Logger.get().isError()) {
                 Logger.error("Failed getaddrinfo(): {}", SYS.gai_strerror(res));
             }
-            return "";
+            return Normal.EMPTY;
         }
         CLibrary.Addrinfo info = new CLibrary.Addrinfo(ptr.getValue());
         String canonname = info.ai_canonname.trim();
@@ -104,7 +105,7 @@ final class MacNetworkParams extends AbstractNetworkParams {
             if (v6Table && line.startsWith(DEFAULT_GATEWAY)) {
                 String[] fields = Builder.whitespaces.split(line);
                 if (fields.length > 2 && fields[2].contains("G")) {
-                    return fields[1].split("%")[0];
+                    return fields[1].split(Symbol.PERCENT)[0];
                 }
             } else if (line.startsWith(IPV6_ROUTE_HEADER)) {
                 v6Table = true;
