@@ -22,25 +22,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.annotation;
+package org.aoju.bus.starter.office;
 
-import org.aoju.bus.starter.preview.PreviewConfiguration;
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+import lombok.RequiredArgsConstructor;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.office.Builder;
+import org.aoju.bus.office.Provider;
+import org.aoju.bus.office.Registry;
+import org.aoju.bus.office.provider.LocalOfficeProvider;
+import org.aoju.bus.office.provider.OnlineOfficeProvider;
+import org.springframework.stereotype.Component;
 
 /**
- * 启用在线预览
+ * 文档在线预览服务提供
  *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-@Inherited
-@Documented
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Import({PreviewConfiguration.class})
-public @interface EnablePreview {
+@Component
+@RequiredArgsConstructor
+public class OfficeProviderService {
+
+    public OfficeProviderService(Provider localProvider,
+                                 Provider onlineProvider) {
+        Registry.getInstance().register(Registry.LOCAL, localProvider);
+        Registry.getInstance().register(Registry.ONLINE, onlineProvider);
+    }
+
+    public Provider get(String type) {
+        if (Registry.getInstance().contains(type)) {
+            if (Registry.LOCAL.equals(type)) {
+                return (LocalOfficeProvider) Registry.getInstance().require(Registry.LOCAL);
+            }
+            if (Registry.ONLINE.equals(type)) {
+                return (OnlineOfficeProvider) Registry.getInstance().require(Registry.ONLINE);
+            }
+        }
+        throw new InstrumentException(Builder.FAILURE);
+    }
 
 }

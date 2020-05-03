@@ -49,23 +49,26 @@ public class ServiceHandler implements DimseRQHandler {
 
     private final HashMap<String, DimseRQHandler> services = new HashMap<>();
 
-    public void addDicomService(DicomService service) {
+    public void addService(ImageService service) {
         addDimseRQHandler(service, service.getSOPClasses());
+    }
+
+    public void removeService(ImageService service) {
+        removeDimseRQHandler(service.getSOPClasses());
     }
 
     public synchronized void addDimseRQHandler(DimseRQHandler service,
                                                String... sopClasses) {
-        for (String uid : sopClasses)
+        for (String uid : sopClasses) {
             services.put(uid, service);
-    }
+        }
 
-    public void removeDicomService(DicomService service) {
-        removeDimseRQHandler(service.getSOPClasses());
     }
 
     public synchronized void removeDimseRQHandler(String... sopClasses) {
-        for (String uid : sopClasses)
+        for (String uid : sopClasses) {
             services.remove(uid);
+        }
     }
 
     @Override
@@ -97,8 +100,7 @@ public class ServiceHandler implements DimseRQHandler {
             return service;
 
         if (dimse == Dimse.C_STORE_RQ) {
-            CommonExtended commonExtNeg = as
-                    .getCommonExtendedNegotiationFor(cuid);
+            CommonExtended commonExtNeg = as.getCommonExtendedNegotiationFor(cuid);
             if (commonExtNeg != null) {
                 for (String uid : commonExtNeg.getRelatedGeneralSOPClassUIDs()) {
                     service = services.get(uid);

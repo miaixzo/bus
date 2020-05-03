@@ -25,6 +25,7 @@
 package org.aoju.bus.image;
 
 import lombok.Data;
+import org.aoju.bus.image.centre.Device;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Connection;
@@ -151,7 +152,7 @@ public class Args {
      * Bind the connection with the callingNode
      *
      * @param connection  Connection
-     * @param callingNode DicomNode
+     * @param callingNode Node
      */
     public void configureBind(Connection connection, Node callingNode) {
         if (callingNode.getHostname() != null) {
@@ -167,7 +168,7 @@ public class Args {
      *
      * @param applicationEntity ApplicationEntity
      * @param connection        Connection
-     * @param callingNode       DicomNode
+     * @param callingNode       the Node
      */
     public void configureBind(ApplicationEntity applicationEntity, Connection connection, Node callingNode) {
         applicationEntity.setAETitle(callingNode.getAet());

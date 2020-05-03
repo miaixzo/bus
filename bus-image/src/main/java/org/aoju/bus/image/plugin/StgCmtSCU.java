@@ -37,7 +37,7 @@ import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.image.metric.service.AbstractService;
 import org.aoju.bus.image.metric.service.BasicCEchoSCP;
-import org.aoju.bus.image.metric.service.DicomService;
+import org.aoju.bus.image.metric.service.ImageService;
 import org.aoju.bus.image.metric.service.ServiceHandler;
 import org.aoju.bus.logger.Logger;
 
@@ -67,7 +67,7 @@ public class StgCmtSCU {
     private boolean keepAlive;
     private int splitTag;
     private int status;
-    private final DicomService stgcmtResultHandler =
+    private final ImageService stgcmtResultHandler =
             new AbstractService(UID.StorageCommitmentPushModelSOPClass) {
 
                 @Override
@@ -99,8 +99,8 @@ public class StgCmtSCU {
         this.remote = new Connection();
         this.ae = ae;
         ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addDicomService(new BasicCEchoSCP());
-        serviceHandler.addDicomService(stgcmtResultHandler);
+        serviceHandler.addService(new BasicCEchoSCP());
+        serviceHandler.addService(stgcmtResultHandler);
         ae.setDimseRQHandler(serviceHandler);
     }
 

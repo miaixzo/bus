@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.aoju.bus.logger.Logger;
@@ -107,7 +108,7 @@ public class NativeJLSImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_JPEGLS_LOSSY_ERROR] = jpeglsNLE; // Lossy error for jpeg-ls
 
                 dicomParams = new MatOfInt(params);
-                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, "");
+                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);
                 if (buf.empty()) {
                     throw new IIOException("Native JPEG-LS encoding error: null image");
                 }

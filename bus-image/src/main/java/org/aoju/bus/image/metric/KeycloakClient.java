@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.image.Device;
+import org.aoju.bus.image.centre.Device;
 
 /**
  * @author Kimi Liu

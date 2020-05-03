@@ -22,44 +22,74 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.preview;
+package org.aoju.bus.image.centre;
 
-import lombok.RequiredArgsConstructor;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.office.Builder;
-import org.aoju.bus.office.Provider;
-import org.aoju.bus.office.Registry;
-import org.aoju.bus.office.provider.LocalOfficeProvider;
-import org.aoju.bus.office.provider.OnlineOfficeProvider;
-import org.springframework.stereotype.Component;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
- * 文档在线预览服务提供
- *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-@Component
-@RequiredArgsConstructor
-public class PreviewProviderService {
+public class DeviceService {
 
-    public PreviewProviderService(Provider localProvider,
-                                  Provider onlineProvider) {
-        Registry.getInstance().register(Registry.LOCAL, localProvider);
-        Registry.getInstance().register(Registry.ONLINE, onlineProvider);
+    protected Device device;
+    protected ExecutorService executor;
+    protected ScheduledExecutorService scheduledExecutor;
+
+    public DeviceService(Device device) {
+        this.device = Objects.requireNonNull(device);
     }
 
-    public Provider get(String type) {
-        if (Registry.getInstance().contains(type)) {
-            if (Registry.LOCAL.equals(type)) {
-                return (LocalOfficeProvider) Registry.getInstance().require(Registry.LOCAL);
-            }
-            if (Registry.ONLINE.equals(type)) {
-                return (OnlineOfficeProvider) Registry.getInstance().require(Registry.ONLINE);
-            }
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
+    }
+
+    public boolean isRunning() {
+        return executor != null;
+    }
+
+    public void start() throws Exception {
+        if (device == null)
+            throw new IllegalStateException("Not initialized");
+        if (executor != null)
+            throw new IllegalStateException("Already started");
+        executor = executerService();
+        scheduledExecutor = scheduledExecuterService();
+        try {
+            device.setExecutor(executor);
+            device.setScheduledExecutor(scheduledExecutor);
+            device.bindConnections();
+        } catch (Exception e) {
+            stop();
+            throw e;
         }
-        throw new InstrumentException(Builder.FAILURE);
+    }
+
+    public void stop() {
+        if (device != null)
+            device.unbindConnections();
+        if (scheduledExecutor != null)
+            scheduledExecutor.shutdown();
+        if (executor != null)
+            executor.shutdown();
+        executor = null;
+        scheduledExecutor = null;
+    }
+
+    protected ExecutorService executerService() {
+        return Executors.newCachedThreadPool();
+    }
+
+    protected ScheduledExecutorService scheduledExecuterService() {
+        return Executors.newSingleThreadScheduledExecutor();
     }
 
 }

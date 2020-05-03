@@ -68,7 +68,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     public void parse(ImageInputStream dis) throws IOException {
-        dis.setDicomInputHandler(this);
+        dis.setImageInputHandler(this);
         dis.readDataset(-1, -1);
     }
 

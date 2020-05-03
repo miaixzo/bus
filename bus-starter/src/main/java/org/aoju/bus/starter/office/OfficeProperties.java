@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.preview;
+package org.aoju.bus.starter.office;
 
 import lombok.Data;
 import org.aoju.bus.core.utils.StringUtils;
@@ -41,8 +41,8 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.PREVIEW)
-public class PreviewProperties {
+@ConfigurationProperties(prefix = BusXExtend.OFFICE)
+public class OfficeProperties {
 
     /**
      * 表示office主目录。如果没有设置，

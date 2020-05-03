@@ -94,7 +94,7 @@ public abstract class HL7Charset {
         return "US-ASCII";
     }
 
-    public static String toDicomCharacterSetCode(String code) {
+    public static String toCharacterSetCode(String code) {
         if (code != null && !code.isEmpty())
             switch (code.charAt(code.length() - 1)) {
                 case '0':

@@ -38,7 +38,7 @@ import java.io.IOException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public abstract class AbstractService implements DicomService {
+public abstract class AbstractService implements ImageService {
 
     private final String[] sopClasses;
 

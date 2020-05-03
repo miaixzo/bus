@@ -31,7 +31,7 @@ import org.aoju.bus.image.metric.DimseRQHandler;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public interface DicomService extends DimseRQHandler {
+public interface ImageService extends DimseRQHandler {
 
     String[] getSOPClasses();
 

@@ -25,8 +25,8 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.UID;
+import org.aoju.bus.image.*;
+import org.aoju.bus.image.centre.DeviceService;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -37,6 +37,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.text.MessageFormat;
 
 /**
  * @author Kimi Liu
@@ -45,9 +46,128 @@ import java.security.GeneralSecurityException;
  */
 public class Modality {
 
-    static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+    public static String calledAET;
 
-    private static String calledAET;
+    /**
+     * @param callingNode 调用DICOM节点的配置
+     * @param calledNode  被调用的DICOM节点配置
+     * @param keys        匹配和返回键。没有值的Args是返回键
+     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
+     */
+    public static Status process(Node callingNode,
+                                 Node calledNode,
+                                 Args... keys) {
+        return process(null, callingNode, calledNode, 0, keys);
+    }
+
+    /**
+     * @param params      可选的高级参数(代理、身份验证、连接和TLS)
+     * @param callingNode 调用DICOM节点的配置
+     * @param calledNode  被调用的DICOM节点配置
+     * @param keys        匹配和返回键。没有值的Args是返回键
+     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
+     */
+    public static Status process(Args params,
+                                 Node callingNode,
+                                 Node calledNode,
+                                 Args... keys) {
+        return process(params, callingNode, calledNode, 0, keys);
+    }
+
+    /**
+     * @param params      可选的高级参数(代理、身份验证、连接和TLS)
+     * @param callingNode 调用DICOM节点的配置
+     * @param calledNode  被调用的DICOM节点配置
+     * @param cancelAfter 接收到指定数目的匹配项后，取消查询请求
+     * @param keys        匹配和返回键。没有值的Args是返回键
+     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
+     */
+    public static Status process(Args params,
+                                 Node callingNode,
+                                 Node calledNode,
+                                 int cancelAfter,
+                                 Args... keys) {
+        if (callingNode == null || calledNode == null) {
+            throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
+        }
+
+        Args options = params == null ? new Args() : params;
+
+        try (FindSCU findSCU = new FindSCU()) {
+            Connection remote = findSCU.getRemoteConnection();
+            Connection conn = findSCU.getConnection();
+            options.configureConnect(findSCU.getAAssociateRQ(), remote, calledNode);
+            options.configureBind(findSCU.getApplicationEntity(), conn, callingNode);
+            DeviceService service = new DeviceService(findSCU.getDevice());
+
+            options.configure(conn);
+            options.configureTLS(conn, remote);
+
+            findSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
+                    options.getTypes());
+
+            addKeys(findSCU, keys);
+
+            findSCU.setCancelAfter(cancelAfter);
+            findSCU.setPriority(options.getPriority());
+
+            service.start();
+            try {
+                Status dcmState = findSCU.getState();
+                long t1 = System.currentTimeMillis();
+                findSCU.open();
+                long t2 = System.currentTimeMillis();
+                findSCU.query();
+                Builder.forceGettingAttributes(dcmState, findSCU);
+                long t3 = System.currentTimeMillis();
+                String timeMsg =
+                        MessageFormat.format("DICOM C-Find connected in {2}ms from {0} to {1}. Query in {3}ms.",
+                                findSCU.getAAssociateRQ().getCallingAET(), findSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                                t3 - t2);
+                return Status.build(dcmState, timeMsg, null);
+            } catch (Exception e) {
+                Logger.error("findscu", e);
+                Builder.forceGettingAttributes(findSCU.getState(), findSCU);
+                return Status.build(findSCU.getState(), null, e);
+            } finally {
+                Builder.close(findSCU);
+                service.stop();
+            }
+        } catch (Exception e) {
+            Logger.error("findscu", e);
+            return new Status(org.aoju.bus.image.Status.UnableToProcess,
+                    "DICOM Find failed :" + e.getMessage(), null);
+        }
+    }
+
+    private static void addKeys(FindSCU findSCU, Args[] keys) {
+        for (Args p : keys) {
+            int[] pSeq = p.getParentSeqTags();
+            if (pSeq == null || pSeq.length == 0) {
+                CFind.addAttributes(findSCU.getKeys(), p);
+            } else {
+                Attributes parent = findSCU.getKeys();
+                for (int value : pSeq) {
+                    Sequence lastSeq = parent.getSequence(value);
+                    if (lastSeq == null || lastSeq.isEmpty()) {
+                        lastSeq = parent.newSequence(value, 1);
+                        lastSeq.add(new Attributes());
+                    }
+                    parent = lastSeq.get(0);
+                }
+
+                CFind.addAttributes(parent, p);
+            }
+        }
+    }
+
+    private static FindSCU.InformationModel getInformationModel(Args options) {
+        Object model = options.getInformationModel();
+        if (model instanceof FindSCU.InformationModel) {
+            return (FindSCU.InformationModel) model;
+        }
+        return FindSCU.InformationModel.MWL;
+    }
 
     public static void setTlsParams(Connection remote, Connection conn) {
         remote.setTlsProtocols(conn.getTlsProtocols());
@@ -110,7 +230,7 @@ public class Modality {
         Logger.info("===========================================================");
         Logger.info(message + ". Press <enter> to continue.");
         Logger.info("===========================================================");
-        bufferedReader.read();
+        new BufferedReader(new InputStreamReader(System.in)).read();
     }
 
     private static void sendObjects(StoreSCU storescu) throws IOException,

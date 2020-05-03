@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.annotation;
 
-import org.aoju.bus.starter.cache.CacheConfiguration;
+import org.aoju.bus.starter.image.ImageConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -40,7 +40,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import({CacheConfiguration.class})
+@Import({ImageConfiguration.class})
 public @interface EnableImage {
 
 }

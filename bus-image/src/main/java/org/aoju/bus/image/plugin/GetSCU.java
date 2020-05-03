@@ -26,7 +26,11 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.image.*;
+import org.aoju.bus.image.Builder;
+import org.aoju.bus.image.Status;
+import org.aoju.bus.image.Tag;
+import org.aoju.bus.image.UID;
+import org.aoju.bus.image.centre.Device;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -154,7 +158,7 @@ public class GetSCU implements AutoCloseable {
 
     private ServiceHandler createServiceRegistry() {
         ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addDicomService(storageSCP);
+        serviceHandler.addService(storageSCP);
         return serviceHandler;
     }
 

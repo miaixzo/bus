@@ -28,6 +28,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.image.*;
+import org.aoju.bus.image.centre.Device;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
@@ -58,7 +59,7 @@ public class StoreSCP extends BasicCStoreSCP {
     private final Connection conn = new Connection();
     private final String storageDir;
     private final List<Node> authorizedCallingNodes;
-    private final Service service;
+    private final Rollers rollers;
     private volatile int status = Status.Success;
 
     /**
@@ -70,19 +71,19 @@ public class StoreSCP extends BasicCStoreSCP {
 
     /**
      * @param storageDir the base path of storage folder
-     * @param service    the service
+     * @param rollers    the service
      */
-    public StoreSCP(String storageDir, Service service) {
-        this(storageDir, null, service);
+    public StoreSCP(String storageDir, Rollers rollers) {
+        this(storageDir, null, rollers);
     }
 
     /**
      * @param storageDir             the base path of storage folder
      * @param authorizedCallingNodes the list of authorized nodes to call store files (authorizedCallingNodes allow to check hostname
      *                               unlike acceptedCallingAETitles)
-     * @param service                the service
+     * @param rollers                the service
      */
-    public StoreSCP(String storageDir, List<Node> authorizedCallingNodes, Service service) {
+    public StoreSCP(String storageDir, List<Node> authorizedCallingNodes, Rollers rollers) {
         this.storageDir = Objects.requireNonNull(storageDir);
         device.setDimseRQHandler(createServiceRegistry());
         device.addConnection(conn);
@@ -90,7 +91,7 @@ public class StoreSCP extends BasicCStoreSCP {
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
         this.authorizedCallingNodes = authorizedCallingNodes;
-        this.service = service;
+        this.rollers = rollers;
     }
 
     private static void renameTo(Association as, File from, File dest) throws IOException {
@@ -141,8 +142,8 @@ public class StoreSCP extends BasicCStoreSCP {
         try {
             Attributes fmi = as.createFileMetaInformation(iuid, cuid, tsuid);
             storeTo(as, fmi, data, file);
-            if (ObjectUtils.isNotEmpty(service)) {
-                service.supports(fmi, file);
+            if (ObjectUtils.isNotEmpty(rollers)) {
+                rollers.supports(fmi, file);
             }
         } catch (Exception e) {
             throw new ImageException(Status.ProcessingFailure, e);
@@ -163,8 +164,8 @@ public class StoreSCP extends BasicCStoreSCP {
 
     private ServiceHandler createServiceRegistry() {
         ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addDicomService(new BasicCEchoSCP());
-        serviceHandler.addDicomService(this);
+        serviceHandler.addService(new BasicCEchoSCP());
+        serviceHandler.addService(this);
         return serviceHandler;
     }
 

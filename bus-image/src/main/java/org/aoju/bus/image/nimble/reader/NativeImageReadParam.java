@@ -33,7 +33,7 @@ import javax.imageio.ImageReadParam;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class DicomImageReadParam extends ImageReadParam {
+public class NativeImageReadParam extends ImageReadParam {
 
     private float windowCenter;
     private float windowWidth;

@@ -39,7 +39,7 @@ import java.util.Locale;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class DicomImageReaderSpi extends ImageReaderSpi {
+public class NativeImageReaderSpi extends ImageReaderSpi {
 
     private static final String vendorName = "org.aoju.bus.image";
     private static final String version = Implementation.getVersionName();
@@ -48,9 +48,9 @@ public class DicomImageReaderSpi extends ImageReaderSpi {
     private static final String[] MIMETypes = {"application/dicom"};
     private static final Class<?>[] inputTypes = {ImageInputStream.class, InputStream.class, DicomMetaData.class};
 
-    public DicomImageReaderSpi() {
+    public NativeImageReaderSpi() {
         super(vendorName, version, formatNames, suffixes, MIMETypes,
-                DicomImageReader.class.getName(), inputTypes,
+                NativeImageReader.class.getName(), inputTypes,
                 null,  // writerSpiNames
                 false, // supportsStandardStreamMetadataFormat
                 null,  // nativeStreamMetadataFormatName
@@ -92,7 +92,7 @@ public class DicomImageReaderSpi extends ImageReaderSpi {
     @Override
     public ImageReader createReaderInstance(Object extension)
             throws IOException {
-        return new DicomImageReader(this);
+        return new NativeImageReader(this);
     }
 
 }

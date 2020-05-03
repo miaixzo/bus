@@ -237,7 +237,7 @@ public class ImageInputStream extends FilterInputStream
             return Collections.emptyList();
     }
 
-    public final void setDicomInputHandler(ImageInputHandler handler) {
+    public final void setImageInputHandler(ImageInputHandler handler) {
         if (handler == null)
             throw new NullPointerException("handler");
         this.handler = handler;

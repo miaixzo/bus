@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.preview;
+package org.aoju.bus.starter.office;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
@@ -50,16 +50,16 @@ import java.util.stream.Stream;
  * @since JDK 1.8+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
-@EnableConfigurationProperties(PreviewProperties.class)
-public class PreviewConfiguration {
+@EnableConfigurationProperties(OfficeProperties.class)
+public class OfficeConfiguration {
 
     @Autowired
-    PreviewProperties properties;
+    OfficeProperties properties;
 
     @Bean
-    public PreviewProviderService previewProviderFactory(final OfficeManager localOfficeManager,
-                                                         final OfficeManager onlineOfficeManager) {
-        return new PreviewProviderService(
+    public OfficeProviderService previewProviderFactory(final OfficeManager localOfficeManager,
+                                                        final OfficeManager onlineOfficeManager) {
+        return new OfficeProviderService(
                 LocalOfficeProvider.builder()
                         .officeManager(localOfficeManager)
                         .formatRegistry(RegistryInstanceHolder.getInstance())

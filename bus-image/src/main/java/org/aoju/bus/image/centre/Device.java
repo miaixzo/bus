@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.image;
+package org.aoju.bus.image.centre;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;

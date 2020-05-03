@@ -62,7 +62,7 @@ import java.util.Set;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class DicomImageReader extends ImageReader implements Closeable {
+public class NativeImageReader extends ImageReader implements Closeable {
 
     public static final String POST_PIXEL_DATA = "postPixelData";
 
@@ -116,7 +116,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
     private Photometric pmiAfterDecompression;
     private ImageDescriptor imageDescriptor;
 
-    public DicomImageReader(ImageReaderSpi originatingProvider) {
+    public NativeImageReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
     }
 
@@ -300,7 +300,7 @@ public class DicomImageReader extends ImageReader implements Closeable {
 
     @Override
     public ImageReadParam getDefaultReadParam() {
-        return new DicomImageReadParam();
+        return new NativeImageReadParam();
     }
 
     /**
@@ -528,8 +528,8 @@ public class DicomImageReader extends ImageReader implements Closeable {
                               int frameIndex, ImageReadParam param, int outBits, byte[] ovlyData) {
         Attributes ovlyAttrs = metadata.getAttributes();
         int grayscaleValue = 0xffff;
-        if (param instanceof DicomImageReadParam) {
-            DicomImageReadParam dParam = (DicomImageReadParam) param;
+        if (param instanceof NativeImageReadParam) {
+            NativeImageReadParam dParam = (NativeImageReadParam) param;
             Attributes psAttrs = dParam.getPresentationState();
             if (psAttrs != null) {
                 if (psAttrs.containsValue(Tag.OverlayData | gg0000))
@@ -544,8 +544,8 @@ public class DicomImageReader extends ImageReader implements Closeable {
     }
 
     private int[] getActiveOverlayGroupOffsets(ImageReadParam param) {
-        if (param instanceof DicomImageReadParam) {
-            DicomImageReadParam dParam = (DicomImageReadParam) param;
+        if (param instanceof NativeImageReadParam) {
+            NativeImageReadParam dParam = (NativeImageReadParam) param;
             Attributes psAttrs = dParam.getPresentationState();
             if (psAttrs != null)
                 return Overlays.getActiveOverlayGroupOffsets(psAttrs);
@@ -568,9 +568,9 @@ public class DicomImageReader extends ImageReader implements Closeable {
         Attributes imgAttrs = metadata.getAttributes();
         StoredValue sv = StoredValue.valueOf(imgAttrs);
         LookupTableFactory lutParam = new LookupTableFactory(sv);
-        DicomImageReadParam dParam = param instanceof DicomImageReadParam
-                ? (DicomImageReadParam) param
-                : new DicomImageReadParam();
+        NativeImageReadParam dParam = param instanceof NativeImageReadParam
+                ? (NativeImageReadParam) param
+                : new NativeImageReadParam();
         Attributes psAttrs = dParam.getPresentationState();
         if (psAttrs != null) {
             lutParam.setModalityLUT(psAttrs);
