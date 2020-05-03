@@ -25,6 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -55,7 +56,7 @@ public class IanSCU {
     private final Connection remote = new Connection();
     private final AAssociateRQ rq = new AAssociateRQ();
     private final Attributes attrs = new Attributes();
-    private final HashMap<String, Attributes> map = new HashMap<String, Attributes>();
+    private final HashMap<String, Attributes> map = new HashMap<>();
     private String uidSuffix;
     private String refPpsIUID;
     private String refPpsCUID = UID.ModalityPerformedProcedureStepSOPClass;
@@ -123,7 +124,7 @@ public class IanSCU {
         as = ae.connect(conn, remote, rq);
     }
 
-    public void close() throws IOException, InterruptedException {
+    public void close() throws IOException {
         if (as != null) {
             as.release();
         }
@@ -144,7 +145,7 @@ public class IanSCU {
     }
 
     public boolean addInstance(Attributes inst) {
-        Common.updateAttributes(inst, attrs, uidSuffix);
+        Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
         if (suid == null)
             return false;

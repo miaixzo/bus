@@ -26,10 +26,7 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.image.Format;
-import org.aoju.bus.image.Status;
-import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.UID;
+import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.Sequence;
@@ -44,7 +41,10 @@ import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * @author Kimi Liu
@@ -303,18 +303,6 @@ public class MppsSCU {
                         tss));
     }
 
-    public void scanFiles(List<String> fnames, boolean printout) {
-        Common.scan(fnames, printout, (f, fmi, dsPos, ds) -> {
-            if (UID.ModalityPerformedProcedureStepSOPClass.equals(
-                    fmi.getString(Tag.MediaStorageSOPClassUID))) {
-                return addMPPS(
-                        fmi.getString(Tag.MediaStorageSOPInstanceUID),
-                        ds);
-            }
-            return addInstance(ds);
-        });
-    }
-
     public void open() throws IOException, InterruptedException,
             InstrumentException, GeneralSecurityException {
         as = ae.connect(remote, rq);
@@ -363,7 +351,7 @@ public class MppsSCU {
     }
 
     public boolean addInstance(Attributes inst) {
-        Common.updateAttributes(inst, attrs, uidSuffix);
+        Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
         if (suid == null)
             return false;

@@ -6,6 +6,7 @@ import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.BulkData;
+import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
@@ -81,6 +82,9 @@ public class Builder {
     public static final int LAST = 2;
     private static final int INIT_BUFFER_SIZE = 8192;
     private static final int MAX_BUFFER_SIZE = 10485768;
+
+    public static final String IMAGE_ORIGINAL_SUFFIX = ".dcm";
+    public static final String IMAGE_CONVERT_SUFFIX = ".jpg";
 
     public static String toUID(String uid) {
         uid = uid.trim();
@@ -353,6 +357,33 @@ public class Builder {
         byte[] buffer = {};
         int fileLength = 0;
         JPEGHeader jpegHeader;
+    }
+
+    public static boolean updateAttributes(Attributes data, Attributes attrs,
+                                           String uidSuffix) {
+        if (attrs.isEmpty() && uidSuffix == null)
+            return false;
+        if (uidSuffix != null) {
+            data.setString(Tag.StudyInstanceUID, VR.UI,
+                    data.getString(Tag.StudyInstanceUID) + uidSuffix);
+            data.setString(Tag.SeriesInstanceUID, VR.UI,
+                    data.getString(Tag.SeriesInstanceUID) + uidSuffix);
+            data.setString(Tag.SOPInstanceUID, VR.UI,
+                    data.getString(Tag.SOPInstanceUID) + uidSuffix);
+        }
+        data.update(Attributes.UpdatePolicy.OVERWRITE, attrs, null);
+        return true;
+    }
+
+    public static int toTag(String tagOrKeyword) {
+        try {
+            return Integer.parseInt(tagOrKeyword, 16);
+        } catch (IllegalArgumentException e) {
+            int tag = ElementDictionary.tagForKeyword(tagOrKeyword, null);
+            if (tag == -1)
+                throw new IllegalArgumentException(tagOrKeyword);
+            return tag;
+        }
     }
 
 }

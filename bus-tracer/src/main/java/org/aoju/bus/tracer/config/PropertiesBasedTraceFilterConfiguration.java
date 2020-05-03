@@ -190,4 +190,5 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
         }
         return trimmedPatterns;
     }
+
 }

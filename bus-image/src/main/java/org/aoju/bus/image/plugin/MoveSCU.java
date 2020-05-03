@@ -24,22 +24,19 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Device;
+import org.aoju.bus.image.Status;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
-import org.aoju.bus.image.metric.ApplicationEntity;
-import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.DimseRSPHandler;
+import org.aoju.bus.image.metric.*;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 import org.aoju.bus.image.metric.internal.pdu.Presentation;
+import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +47,7 @@ import java.security.GeneralSecurityException;
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class MoveSCU extends Device {
+public class MoveSCU extends Device implements AutoCloseable {
 
     private static final int[] DEF_IN_FILTER = {
             Tag.SOPInstanceUID,
@@ -60,34 +57,40 @@ public class MoveSCU extends Device {
     private final ApplicationEntity ae = new ApplicationEntity("MOVESCU");
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
-    private final AAssociateRQ rq = new AAssociateRQ();
-    private final Attributes keys = new Attributes();
+    private final transient AAssociateRQ rq = new AAssociateRQ();
+    private final transient Status state;
     private int priority;
     private String destination;
     private InformationModel model;
+    private Attributes keys = new Attributes();
     private int[] inFilter = DEF_IN_FILTER;
-    private Association as;
+    private transient Association as;
 
     public MoveSCU() {
+        this(null);
+    }
+
+    public MoveSCU(Progress progress) {
         super("movescu");
         addConnection(conn);
         addApplicationEntity(ae);
         ae.addConnection(conn);
+        state = new Status(progress);
     }
 
     public final void setPriority(int priority) {
         this.priority = priority;
     }
 
-    public final void setInformationModel(InformationModel model,
-                                          String[] tss,
-                                          boolean relational) {
+    public final void setInformationModel(InformationModel model, String[] tss, boolean relational) {
         this.model = model;
         rq.addPresentationContext(new Presentation(1, model.cuid, tss));
-        if (relational)
+        if (relational) {
             rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
-        if (model.level != null)
+        }
+        if (model.level != null) {
             addLevel(model.level);
+        }
     }
 
     public void addLevel(String s) {
@@ -107,11 +110,32 @@ public class MoveSCU extends Device {
         this.inFilter = inFilter;
     }
 
-    public void open() throws IOException, InterruptedException,
-            InstrumentException, GeneralSecurityException {
+    public ApplicationEntity getApplicationEntity() {
+        return ae;
+    }
+
+    public Connection getRemoteConnection() {
+        return remote;
+    }
+
+    public AAssociateRQ getAAssociateRQ() {
+        return rq;
+    }
+
+    public Association getAssociation() {
+        return as;
+    }
+
+    public Attributes getKeys() {
+        return keys;
+    }
+
+    public void open()
+            throws IOException, InterruptedException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
+    @Override
     public void close() throws IOException, InterruptedException {
         if (as != null && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
@@ -121,11 +145,8 @@ public class MoveSCU extends Device {
 
     public void retrieve(File f) throws IOException, InterruptedException {
         Attributes attrs = new Attributes();
-        ImageInputStream dis = null;
-        try {
-            attrs.addSelected(new ImageInputStream(f).readDataset(-1, -1), inFilter);
-        } finally {
-            IoUtils.close(dis);
+        try (ImageInputStream dis = new ImageInputStream(f)) {
+            attrs.addSelected(dis.readDataset(-1, -1), inFilter);
         }
         attrs.addAll(keys);
         retrieve(attrs);
@@ -139,16 +160,33 @@ public class MoveSCU extends Device {
         DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
             @Override
-            public void onDimseRSP(Association as, Attributes cmd,
-                                   Attributes data) {
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                 super.onDimseRSP(as, cmd, data);
+                Progress p = state.getProgress();
+                if (p != null) {
+                    p.setAttributes(cmd);
+                    if (p.isCancel()) {
+                        try {
+                            this.cancel(as);
+                        } catch (IOException e) {
+                            Logger.error("Cancel C-MOVE", e);
+                        }
+                    }
+                }
             }
         };
-
         as.cmove(model.cuid, priority, keys, null, destination, rspHandler);
     }
 
-    private enum InformationModel {
+    public Connection getConnection() {
+        return conn;
+    }
+
+    public Status getState() {
+        return state;
+    }
+
+    public enum InformationModel {
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelMOVE, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelMOVE, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelMOVERetired, "STUDY"),
@@ -163,6 +201,11 @@ public class MoveSCU extends Device {
             this.cuid = cuid;
             this.level = level;
         }
+
+        public String getCuid() {
+            return cuid;
+        }
+
     }
 
 }

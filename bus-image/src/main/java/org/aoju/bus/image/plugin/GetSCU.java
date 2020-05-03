@@ -25,12 +25,8 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.image.Device;
-import org.aoju.bus.image.Status;
-import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.UID;
+import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -48,61 +44,88 @@ import org.aoju.bus.logger.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class GetSCU {
+public class GetSCU implements AutoCloseable {
 
     private static final int[] DEF_IN_FILTER = {
             Tag.SOPInstanceUID,
             Tag.StudyInstanceUID,
             Tag.SeriesInstanceUID
     };
+    private static final String TMP_DIR = "tmp";
     private final Device device = new Device("getscu");
     private final ApplicationEntity ae;
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
     private final AAssociateRQ rq = new AAssociateRQ();
-    private final Attributes keys = new Attributes();
+    private final Status state;
     private int priority;
     private InformationModel model;
     private File storageDir;
-    private final BasicCStoreSCP storageSCP = new BasicCStoreSCP(Symbol.STAR) {
+    private Attributes keys = new Attributes();
+    private int[] inFilter = DEF_IN_FILTER;
+    private Association as;
+    private DimseRSPHandler rspHandler;
+    private BasicCStoreSCP storageSCP = new BasicCStoreSCP(Symbol.STAR) {
 
         @Override
-        protected void store(Association as, Presentation pc, Attributes rq,
-                             PDVInputStream data, Attributes rsp)
+        protected void store(Association as, Presentation pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
-            if (storageDir == null)
+            if (storageDir == null) {
                 return;
+            }
 
             String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
             String cuid = rq.getString(Tag.AffectedSOPClassUID);
             String tsuid = pc.getTransferSyntax();
-            File file = new File(storageDir, iuid);
+            File file = new File(storageDir, TMP_DIR + File.separator + iuid);
             try {
-                storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid),
-                        data, file);
+                storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid), data, file);
+                renameTo(as, file, new File(storageDir, iuid));
             } catch (Exception e) {
-                throw new ImageException(Status.ProcessingFailure, e);
+                throw new ImageException(org.aoju.bus.image.Status.ProcessingFailure, e);
             }
-
+            updateProgress(as, null);
         }
 
-
     };
-    private int[] inFilter = DEF_IN_FILTER;
-    private Association as;
 
-    public GetSCU() throws IOException {
+    public GetSCU() {
+        this(null);
+    }
+
+    public GetSCU(Progress progress) {
         ae = new ApplicationEntity("GETSCU");
         device.addConnection(conn);
         device.addApplicationEntity(ae);
         ae.addConnection(conn);
         device.setDimseRQHandler(createServiceRegistry());
+        state = new Status(progress);
+    }
+
+    public static void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {
+        Logger.debug("{}: M-WRITE {}", as, file);
+        file.getParentFile().mkdirs();
+        ImageOutputStream out = new ImageOutputStream(file);
+        try {
+            out.writeFileMetaInformation(fmi);
+            data.copyTo(out);
+        } finally {
+            IoUtils.close(out);
+        }
+    }
+
+    private static void renameTo(Association as, File from, File dest) throws IOException {
+        Logger.info("{}: M-RENAME {} to {}", as, from, dest);
+        Builder.prepareToWriteFile(dest);
+        if (!from.renameTo(dest))
+            throw new IOException("Failed to rename " + from + " to " + dest);
     }
 
     public ApplicationEntity getApplicationEntity() {
@@ -129,19 +152,6 @@ public class GetSCU {
         return keys;
     }
 
-    private void storeTo(Association as, Attributes fmi,
-                         PDVInputStream data, File file) throws IOException {
-        Logger.info("{}: M-WRITE {}", as, file);
-        file.getParentFile().mkdirs();
-        ImageOutputStream out = new ImageOutputStream(file);
-        try {
-            out.writeFileMetaInformation(fmi);
-            data.copyTo(out);
-        } finally {
-            IoUtils.close(out);
-        }
-    }
-
     private ServiceHandler createServiceRegistry() {
         ServiceHandler serviceHandler = new ServiceHandler();
         serviceHandler.addDicomService(storageSCP);
@@ -149,9 +159,11 @@ public class GetSCU {
     }
 
     public void setStorageDirectory(File storageDir) {
-        if (storageDir != null)
-            if (storageDir.mkdirs())
-                Logger.info("M-WRITE " + storageDir);
+        if (storageDir != null) {
+            if (storageDir.mkdirs()) {
+                System.out.println("M-WRITE " + storageDir);
+            }
+        }
         this.storageDir = storageDir;
     }
 
@@ -159,14 +171,15 @@ public class GetSCU {
         this.priority = priority;
     }
 
-    public final void setInformationModel(InformationModel model, String[] tss,
-                                          boolean relational) {
+    public final void setInformationModel(InformationModel model, String[] tss, boolean relational) {
         this.model = model;
         rq.addPresentationContext(new Presentation(1, model.cuid, tss));
-        if (relational)
+        if (relational) {
             rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
-        if (model.level != null)
+        }
+        if (model.level != null) {
             addLevel(model.level);
+        }
     }
 
     public void addLevel(String s) {
@@ -183,16 +196,18 @@ public class GetSCU {
     }
 
     public void addOfferedStorageSOPClass(String cuid, String... tsuids) {
-        if (!rq.containsPresentationContextFor(cuid))
+        if (!rq.containsPresentationContextFor(cuid)) {
             rq.addRoleSelection(new RoleSelection(cuid, false, true));
-        rq.addPresentationContext(new Presentation(
-                2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
+        }
+        rq.addPresentationContext(new Presentation(2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
     }
 
-    public void open() throws IOException, InterruptedException, InstrumentException, GeneralSecurityException {
+    public void open()
+            throws IOException, InterruptedException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
+    @Override
     public void close() throws IOException, InterruptedException {
         if (as != null && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
@@ -202,11 +217,8 @@ public class GetSCU {
 
     public void retrieve(File f) throws IOException, InterruptedException {
         Attributes attrs = new Attributes();
-        ImageInputStream dis = null;
-        try {
-            attrs.addSelected(new ImageInputStream(f).readDataset(-1, -1), inFilter);
-        } finally {
-            IoUtils.close(dis);
+        try (ImageInputStream dis = new ImageInputStream(f)) {
+            attrs.addSelected(dis.readDataset(-1, -1), inFilter);
         }
         attrs.addAll(keys);
         retrieve(attrs);
@@ -220,9 +232,9 @@ public class GetSCU {
         DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
             @Override
-            public void onDimseRSP(Association as, Attributes cmd,
-                                   Attributes data) {
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                 super.onDimseRSP(as, cmd, data);
+                updateProgress(as, cmd);
             }
         };
 
@@ -234,10 +246,44 @@ public class GetSCU {
     }
 
     private void retrieve(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
-        as.cget(model.cuid, priority, keys, null, rspHandler);
+        this.rspHandler = rspHandler;
+        as.cget(model.getCuid(), priority, keys, null, rspHandler);
+    }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
+    public Status getState() {
+        return state;
+    }
+
+    public void stop() {
+        try {
+            close();
+        } catch (Exception e) {
+            // Do nothing
+        }
+        ((ExecutorService) device.getExecutor()).shutdown();
+        device.getScheduledExecutor().shutdown();
+    }
+
+    private void updateProgress(Association as, Attributes cmd) {
+        Progress p = state.getProgress();
+        if (p != null) {
+            p.setAttributes(cmd);
+            if (p.isCancel() && rspHandler != null) {
+                try {
+                    rspHandler.cancel(as);
+                } catch (IOException e) {
+                    Logger.error("Cancel C-GET", e);
+                }
+            }
+        }
     }
 
     public enum InformationModel {
+
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelGET, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelGET, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelGETRetired, "STUDY"),
@@ -246,12 +292,16 @@ public class GetSCU {
         HangingProtocol(UID.HangingProtocolInformationModelGET, null),
         ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelGET, null);
 
-        final String cuid;
         final String level;
+        private final String cuid;
 
         InformationModel(String cuid, String level) {
             this.cuid = cuid;
             this.level = level;
+        }
+
+        public String getCuid() {
+            return cuid;
         }
     }
 

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -163,7 +164,7 @@ public class MkKOS {
     }
 
     public boolean addInstance(Attributes inst) {
-        Common.updateAttributes(inst, attrs, uidSuffix);
+        Builder.updateAttributes(inst, attrs, uidSuffix);
         String studyIUID = inst.getString(Tag.StudyInstanceUID);
         String seriesIUID = inst.getString(Tag.SeriesInstanceUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);

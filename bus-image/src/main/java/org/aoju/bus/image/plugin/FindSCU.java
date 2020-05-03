@@ -25,7 +25,6 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -35,14 +34,13 @@ import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 import org.aoju.bus.image.galaxy.io.SAXReader;
 import org.aoju.bus.image.galaxy.io.SAXWriter;
-import org.aoju.bus.image.metric.ApplicationEntity;
-import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.DimseRSPHandler;
+import org.aoju.bus.image.metric.*;
 import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.ExtendedNegotiate;
 import org.aoju.bus.image.metric.internal.pdu.Presentation;
+import org.aoju.bus.logger.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerFactory;
@@ -57,13 +55,16 @@ import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * findscu应用程序为查询/检索、Modality工作列表管理、统一工作列表和过程步骤
+ * 挂起协议Query/Retrieve 支持Query/Retrieve服务类实现一个服务类用户(SCU)
+ * findscu只支持使用C-FIND消息的查询功能
+ *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class FindSCU {
+public class FindSCU implements AutoCloseable {
 
-    private static SAXTransformerFactory saxtf;
     private final Device device = new Device("findscu");
     private final ApplicationEntity ae = new ApplicationEntity("FINDSCU");
     private final Connection conn = new Connection();
@@ -71,6 +72,8 @@ public class FindSCU {
     private final AAssociateRQ rq = new AAssociateRQ();
     private final Attributes keys = new Attributes();
     private final AtomicInteger totNumMatches = new AtomicInteger();
+    private final Status state;
+    private SAXTransformerFactory saxtf;
     private int priority;
     private int cancelAfter;
     private InformationModel model;
@@ -87,17 +90,18 @@ public class FindSCU {
     private OutputStream out;
     private Association as;
 
-    public FindSCU() throws IOException {
+    public FindSCU() {
         device.addConnection(conn);
         device.addApplicationEntity(ae);
         ae.addConnection(conn);
+        state = new Status(new Progress());
     }
 
     static void mergeKeys(Attributes attrs, Attributes keys) {
         try {
             attrs.accept(new MergeNested(keys), false);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         attrs.addAll(keys);
     }
@@ -106,17 +110,17 @@ public class FindSCU {
         this.priority = priority;
     }
 
-    public final void setInformationModel(InformationModel model, String[] tss,
-                                          EnumSet<Option.Type> types) {
+    public final void setInformationModel(InformationModel model, String[] tss, EnumSet<Option.Type> types) {
         this.model = model;
         rq.addPresentationContext(new Presentation(1, model.cuid, tss));
         if (!types.isEmpty()) {
             model.adjustQueryOptions(types);
-            rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid,
-                    Option.Type.toExtendedNegotiationInformation(types)));
+            rq.addExtendedNegotiate(
+                    new ExtendedNegotiate(model.cuid, Option.Type.toExtendedNegotiationInformation(types)));
         }
-        if (model.level != null)
+        if (model.level != null) {
             addLevel(model.level);
+        }
     }
 
     public void addLevel(String s) {
@@ -152,8 +156,7 @@ public class FindSCU {
         this.xmlIncludeKeyword = includeKeyword;
     }
 
-    public final void setXMLIncludeNamespaceDeclaration(
-            boolean includeNamespaceDeclaration) {
+    public final void setXMLIncludeNamespaceDeclaration(boolean includeNamespaceDeclaration) {
         this.xmlIncludeNamespaceDeclaration = includeNamespaceDeclaration;
     }
 
@@ -189,11 +192,11 @@ public class FindSCU {
         return keys;
     }
 
-    public void open() throws IOException, InterruptedException,
-            InstrumentException, GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
+    @Override
     public void close() throws IOException, InterruptedException {
         if (as != null && as.isReadyForDataTransfer()) {
             as.waitForOutstandingRSP();
@@ -206,18 +209,18 @@ public class FindSCU {
     public void query(File f) throws Exception {
         Attributes attrs;
         String filePath = f.getPath();
-        String fileExt = filePath.substring(filePath.lastIndexOf(Symbol.DOT) + 1).toLowerCase();
-        ImageInputStream dis = null;
-        try {
-            attrs = fileExt.equals("xml")
-                    ? SAXReader.parse(filePath)
-                    : new ImageInputStream(f).readDataset(-1, -1);
-            if (inFilter != null) {
-                attrs = new Attributes(inFilter.length + 1);
-                attrs.addSelected(attrs, inFilter);
+        String fileExt = filePath.substring(filePath.lastIndexOf(Symbol.C_DOT) + 1).toLowerCase();
+
+        if (fileExt.equals("xml")) {
+            attrs = SAXReader.parse(filePath);
+        } else {
+            try (ImageInputStream dis = new ImageInputStream(f)) {
+                attrs = dis.readDataset(-1, -1);
             }
-        } finally {
-            IoUtils.close(dis);
+        }
+        if (inFilter != null) {
+            attrs = new Attributes(inFilter.length + 1);
+            attrs.addSelected(attrs, inFilter);
         }
         mergeKeys(attrs, keys);
         query(attrs);
@@ -234,20 +237,22 @@ public class FindSCU {
             int numMatches;
 
             @Override
-            public void onDimseRSP(Association as, Attributes cmd,
-                                   Attributes data) {
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                 super.onDimseRSP(as, cmd, data);
                 int status = cmd.getInt(Tag.Status, -1);
-                if (Status.isPending(status)) {
+                if (org.aoju.bus.image.Status.isPending(status)) {
                     FindSCU.this.onResult(data);
                     ++numMatches;
-                    if (cancelAfter != 0 && numMatches >= cancelAfter)
+                    if (cancelAfter != 0 && numMatches >= cancelAfter) {
                         try {
                             cancel(as);
                             cancelAfter = 0;
                         } catch (IOException e) {
-                            throw new InstrumentException(e);
+                            Logger.error("Building response", e);
                         }
+                    }
+                } else {
+                    state.setStatus(status);
                 }
             }
         };
@@ -264,28 +269,28 @@ public class FindSCU {
     }
 
     private void onResult(Attributes data) {
+        state.setList(data);
         int numMatches = totNumMatches.incrementAndGet();
-        if (outDir == null)
+        if (outDir == null) {
             return;
+        }
 
         try {
             if (out == null) {
                 File f = new File(outDir, fname(numMatches));
-                out = new BufferedOutputStream(
-                        new FileOutputStream(f));
+                out = new BufferedOutputStream(new FileOutputStream(f));
             }
             if (xml) {
                 writeAsXML(data, out);
             } else {
-                ImageOutputStream dos =
-                        new ImageOutputStream(out, UID.ImplicitVRLittleEndian);
+                ImageOutputStream dos = new ImageOutputStream(out, UID.ImplicitVRLittleEndian);
                 dos.writeDataset(null, data);
             }
             out.flush();
         } catch (Exception e) {
+            Logger.error("Building response", e);
             IoUtils.close(out);
             out = null;
-            throw new InstrumentException(e);
         } finally {
             if (!catOut) {
                 IoUtils.close(out);
@@ -302,8 +307,7 @@ public class FindSCU {
 
     private void writeAsXML(Attributes attrs, OutputStream out) throws Exception {
         TransformerHandler th = getTransformerHandler();
-        th.getTransformer().setOutputProperty(OutputKeys.INDENT,
-                xmlIndent ? "yes" : "no");
+        th.getTransformer().setOutputProperty(OutputKeys.INDENT, xmlIndent ? "yes" : "no");
         th.setResult(new StreamResult(out));
         SAXWriter saxWriter = new SAXWriter(th);
         saxWriter.setIncludeKeyword(xmlIncludeKeyword);
@@ -313,25 +317,35 @@ public class FindSCU {
 
     private TransformerHandler getTransformerHandler() throws Exception {
         SAXTransformerFactory tf = saxtf;
-        if (tf == null)
-            saxtf = tf = (SAXTransformerFactory) TransformerFactory
-                    .newInstance();
-        if (xsltFile == null)
+        if (tf == null) {
+            saxtf = tf = (SAXTransformerFactory) TransformerFactory.newInstance();
+            tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        }
+        if (xsltFile == null) {
             return tf.newTransformerHandler();
+        }
 
         Templates tpls = xsltTpls;
-        if (tpls == null) ;
-        xsltTpls = tpls = tf.newTemplates(new StreamSource(xsltFile));
+        if (tpls == null) {
+            xsltTpls = tpls = tf.newTemplates(new StreamSource(xsltFile));
+        }
 
         return tf.newTransformerHandler(tpls);
+    }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
+    public Status getState() {
+        return state;
     }
 
     public enum InformationModel {
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelFIND, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelFIND, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelFINDRetired, "STUDY"),
-        MWL(UID.ModalityWorklistInformationModelFIND, null),
-        UPSPull(UID.UnifiedProcedureStepPullSOPClass, null),
+        MWL(UID.ModalityWorklistInformationModelFIND, null), UPSPull(UID.UnifiedProcedureStepPullSOPClass, null),
         UPSWatch(UID.UnifiedProcedureStepWatchSOPClass, null),
         HangingProtocol(UID.HangingProtocolInformationModelFIND, null),
         ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelFIND, null);
@@ -349,6 +363,10 @@ public class FindSCU {
                 types.add(Option.Type.RELATIONAL);
                 types.add(Option.Type.DATETIME);
             }
+        }
+
+        public String getCuid() {
+            return cuid;
         }
     }
 

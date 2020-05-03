@@ -33,9 +33,10 @@ import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.logger.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.util.List;
 
 /**
  * @author Kimi Liu
@@ -123,22 +124,8 @@ public class Modality {
         }
     }
 
-    private static void scanFiles(List<String> fnames, String tmpPrefix, String tmpSuffix,
-                                  File tmpDir, final MppsSCU mppsscu, final StoreSCU storescu, final StgCmtSCU stgcmtscu)
-            throws IOException {
-        printNextStepMessage("Will now scan files in " + fnames);
-        File tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
-        tmpFile.deleteOnExit();
-        final BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(tmpFile)));
-        try {
-            Common.scan(fnames, (f, fmi, dsPos, ds) -> mppsscu.addInstance(ds)
-                    && storescu.addFile(fileInfos, f, dsPos, fmi, ds)
-                    && stgcmtscu.addInstance(ds));
-            storescu.setTmpFile(tmpFile);
-        } finally {
-            fileInfos.close();
-        }
+    public static void setCalledAET(String calledAET) {
+        Modality.calledAET = calledAET;
     }
 
 }

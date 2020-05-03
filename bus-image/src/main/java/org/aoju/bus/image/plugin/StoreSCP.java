@@ -26,10 +26,8 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.image.Device;
-import org.aoju.bus.image.Format;
-import org.aoju.bus.image.Status;
-import org.aoju.bus.image.Tag;
+import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
@@ -43,72 +41,61 @@ import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
-public class StoreSCP {
+public class StoreSCP extends BasicCStoreSCP {
 
-    private static final String PART_EXT = ".part";
     private final Device device = new Device("storescp");
     private final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
     private final Connection conn = new Connection();
-    private File storageDir;
-    private Format filePathFormat;
-    private int status;
-    private int responseDelay;
-    private final BasicCStoreSCP cstoreSCP = new BasicCStoreSCP(Symbol.STAR) {
+    private final String storageDir;
+    private final List<Node> authorizedCallingNodes;
+    private final Service service;
+    private volatile int status = Status.Success;
 
-        @Override
-        protected void store(Association as, Presentation pc,
-                             Attributes rq, PDVInputStream data, Attributes rsp)
-                throws IOException {
-            try {
-                rsp.setInt(Tag.Status, VR.US, status);
-                if (storageDir == null)
-                    return;
+    /**
+     * @param storageDir the base path of storage folder
+     */
+    public StoreSCP(String storageDir) {
+        this(storageDir, null);
+    }
 
-                String cuid = rq.getString(Tag.AffectedSOPClassUID);
-                String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
-                String tsuid = pc.getTransferSyntax();
-                File file = new File(storageDir, iuid + PART_EXT);
-                try {
-                    storeTo(as, as.createFileMetaInformation(iuid, cuid, tsuid),
-                            data, file);
-                    renameTo(as, file, new File(storageDir,
-                            filePathFormat == null
-                                    ? iuid
-                                    : filePathFormat.format(parse(file))));
-                } catch (Exception e) {
-                    deleteFile(as, file);
-                    throw new ImageException(Status.ProcessingFailure, e);
-                }
-            } finally {
-                if (responseDelay > 0)
-                    try {
-                        Thread.sleep(responseDelay);
-                    } catch (InterruptedException ignore) {
-                    }
-            }
-        }
+    /**
+     * @param storageDir the base path of storage folder
+     * @param service    the service
+     */
+    public StoreSCP(String storageDir, Service service) {
+        this(storageDir, null, service);
+    }
 
-    };
-
-    public StoreSCP() {
+    /**
+     * @param storageDir             the base path of storage folder
+     * @param authorizedCallingNodes the list of authorized nodes to call store files (authorizedCallingNodes allow to check hostname
+     *                               unlike acceptedCallingAETitles)
+     * @param service                the service
+     */
+    public StoreSCP(String storageDir, List<Node> authorizedCallingNodes, Service service) {
+        this.storageDir = Objects.requireNonNull(storageDir);
         device.setDimseRQHandler(createServiceRegistry());
         device.addConnection(conn);
         device.addApplicationEntity(ae);
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
+        this.authorizedCallingNodes = authorizedCallingNodes;
+        this.service = service;
     }
 
-    private static void renameTo(Association as, File from, File dest)
-            throws IOException {
+    private static void renameTo(Association as, File from, File dest) throws IOException {
         Logger.info("{}: M-RENAME {} to {}", as, from, dest);
-        if (!dest.getParentFile().mkdirs())
-            dest.delete();
+        Builder.prepareToWriteFile(dest);
         if (!from.renameTo(dest))
             throw new IOException("Failed to rename " + from + " to " + dest);
     }
@@ -130,9 +117,40 @@ public class StoreSCP {
             Logger.warn("{}: M-DELETE {} failed!", as, file);
     }
 
-    private void storeTo(Association as, Attributes fmi,
-                         PDVInputStream data, File file) throws IOException {
-        Logger.info("{}: M-WRITE {}", as, file);
+    @Override
+    protected void store(Association as, Presentation pc, Attributes rq, PDVInputStream data, Attributes rsp)
+            throws IOException {
+        if (authorizedCallingNodes != null && !authorizedCallingNodes.isEmpty()) {
+            Node sourceNode = Node.buildRemoteDicomNode(as);
+            boolean valid = authorizedCallingNodes.stream().anyMatch(n -> n.getAet().equals(sourceNode.getAet())
+                    && (!n.isValidate() || n.equalsHostname(sourceNode.getHostname())));
+            if (!valid) {
+                rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
+                Logger.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", sourceNode,
+                        rq.getString(Tag.AffectedSOPInstanceUID));
+                return;
+            }
+        }
+
+        rsp.setInt(Tag.Status, VR.US, status);
+
+        String cuid = rq.getString(Tag.AffectedSOPClassUID);
+        String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
+        String tsuid = pc.getTransferSyntax();
+        File file = new File(storageDir, File.separator + iuid + Builder.IMAGE_ORIGINAL_SUFFIX);
+        try {
+            Attributes fmi = as.createFileMetaInformation(iuid, cuid, tsuid);
+            storeTo(as, fmi, data, file);
+            if (ObjectUtils.isNotEmpty(service)) {
+                service.supports(fmi, file);
+            }
+        } catch (Exception e) {
+            throw new ImageException(Status.ProcessingFailure, e);
+        }
+    }
+
+    private void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {
+        Logger.debug("{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
         ImageOutputStream out = new ImageOutputStream(file);
         try {
@@ -146,26 +164,43 @@ public class StoreSCP {
     private ServiceHandler createServiceRegistry() {
         ServiceHandler serviceHandler = new ServiceHandler();
         serviceHandler.addDicomService(new BasicCEchoSCP());
-        serviceHandler.addDicomService(cstoreSCP);
+        serviceHandler.addDicomService(this);
         return serviceHandler;
-    }
-
-    public void setStorageDirectory(File storageDir) {
-        if (storageDir != null)
-            storageDir.mkdirs();
-        this.storageDir = storageDir;
-    }
-
-    public void setStorageFilePathFormat(String pattern) {
-        this.filePathFormat = new Format(pattern);
     }
 
     public void setStatus(int status) {
         this.status = status;
     }
 
-    public void setResponseDelay(int responseDelay) {
-        this.responseDelay = responseDelay;
+    public void loadDefaultTransferCapability(URL transferCapabilityFile) {
+        Properties p = new Properties();
+
+        try {
+            if (transferCapabilityFile != null) {
+                p.load(transferCapabilityFile.openStream());
+            }
+        } catch (IOException e) {
+            Logger.error("Cannot read sop-classes", e);
+        }
+
+        for (String cuid : p.stringPropertyNames()) {
+            String ts = p.getProperty(cuid);
+            TransferCapability tc =
+                    new TransferCapability(null, Builder.toUID(cuid), TransferCapability.Role.SCP, Builder.toUIDs(ts));
+            ae.addTransferCapability(tc);
+        }
+    }
+
+    public ApplicationEntity getApplicationEntity() {
+        return ae;
+    }
+
+    public Connection getConnection() {
+        return conn;
+    }
+
+    public Device getDevice() {
+        return device;
     }
 
 }

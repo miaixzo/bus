@@ -1477,23 +1477,6 @@ public class Imgproc {
      * #drawContours or #fillPoly , can be different. Also, the function will most certainly give a wrong
      * results for contours with self-intersections.
      * <p>
-     * Example:
-     * <code>
-     * vector&lt;Point&gt; contour;
-     * contour.push_back(Point2f(0, 0));
-     * contour.push_back(Point2f(10, 0));
-     * contour.push_back(Point2f(10, 10));
-     * contour.push_back(Point2f(5, 4));
-     * <p>
-     * double area0 = contourArea(contour);
-     * vector&lt;Point&gt; approx;
-     * approxPolyDP(contour, approx, 5, true);
-     * double area1 = contourArea(approx);
-     * <p>
-     * cout &lt;&lt; "area0 =" &lt;&lt; area0 &lt;&lt; endl &lt;&lt;
-     * "area1 =" &lt;&lt; area1 &lt;&lt; endl &lt;&lt;
-     * "approx poly vertices" &lt;&lt; approx.size() &lt;&lt; endl;
-     * </code>
      *
      * @param contour  Input vector of 2D points (contour vertices), stored in std::vector or Mat.
      * @param oriented Oriented area flag. If it is true, the function returns a signed area value,
@@ -1514,23 +1497,6 @@ public class Imgproc {
      * #drawContours or #fillPoly , can be different. Also, the function will most certainly give a wrong
      * results for contours with self-intersections.
      * <p>
-     * Example:
-     * <code>
-     * vector&lt;Point&gt; contour;
-     * contour.push_back(Point2f(0, 0));
-     * contour.push_back(Point2f(10, 0));
-     * contour.push_back(Point2f(10, 10));
-     * contour.push_back(Point2f(5, 4));
-     * <p>
-     * double area0 = contourArea(contour);
-     * vector&lt;Point&gt; approx;
-     * approxPolyDP(contour, approx, 5, true);
-     * double area1 = contourArea(approx);
-     * <p>
-     * cout &lt;&lt; "area0 =" &lt;&lt; area0 &lt;&lt; endl &lt;&lt;
-     * "area1 =" &lt;&lt; area1 &lt;&lt; endl &lt;&lt;
-     * "approx poly vertices" &lt;&lt; approx.size() &lt;&lt; endl;
-     * </code>
      *
      * @param contour Input vector of 2D points (contour vertices), stored in std::vector or Mat.
      *                depending on the contour orientation (clockwise or counter-clockwise). Using this feature you can
@@ -1631,15 +1597,10 @@ public class Imgproc {
 
     /**
      * Performs a point-in-contour test.
-     * <p>
      * The function determines whether the point is inside a contour, outside, or lies on an edge (or
      * coincides with a vertex). It returns positive (inside), negative (outside), or zero (on an edge)
      * value, correspondingly. When measureDist=false , the return value is +1, -1, and 0, respectively.
      * Otherwise, the return value is a signed distance between the point and the nearest contour edge.
-     * <p>
-     * See below a sample output of the function where each image pixel is tested against the contour:
-     * <p>
-     * ![sample output](pics/pointpolygon.png)
      *
      * @param contour     Input contour.
      * @param pt          Point tested against the contour.
@@ -1659,19 +1620,15 @@ public class Imgproc {
 
     /**
      * Applies a fixed-level threshold to each array element.
-     * <p>
      * The function applies fixed-level thresholding to a multiple-channel array. The function is typically
      * used to get a bi-level (binary) image out of a grayscale image ( #compare could be also used for
      * this purpose) or for removing a noise, that is, filtering out pixels with too small or too large
      * values. There are several types of thresholding supported by the function. They are determined by
      * type parameter.
-     * <p>
      * Also, the special values #THRESH_OTSU or #THRESH_TRIANGLE may be combined with one of the
      * above values. In these cases, the function determines the optimal threshold value using the Otsu's
      * or Triangle algorithm and uses it instead of the specified thresh.
-     *
-     * <b>Note:</b> Currently, the Otsu's and Triangle methods are implemented only for 8-bit single-channel images.
-     *
+
      * @param src    input array (multiple-channel, 8-bit or 32-bit floating point).
      * @param dst    output array of the same size  and type and the same number of channels as src.
      * @param thresh threshold value.
@@ -1702,7 +1659,6 @@ public class Imgproc {
      *                     of the other, they are not considered nested and an intersection will be found regardless of the value of handleNested.
      * @return Absolute value of area of intersecting polygon
      *
-     * <b>Note:</b> intersectConvexConvex doesn't confirm that both polygons are convex and will return invalid results if they aren't.
      */
     public static float intersectConvexConvex(Mat _p1, Mat _p2, Mat _p12, boolean handleNested) {
         return intersectConvexConvex_0(_p1.nativeObj, _p2.nativeObj, _p12.nativeObj, handleNested);
@@ -1731,7 +1687,6 @@ public class Imgproc {
 
     /**
      * Computes the "minimal work" distance between two weighted point configurations.
-     * <p>
      * The function computes the earth mover distance and/or a lower boundary of the distance between the
      * two weighted point configurations. One of the applications described in CITE: RubnerSept98,
      * CITE: Rubner2000 is multi-dimensional histogram comparison for image retrieval. EMD is a transportation
@@ -1770,7 +1725,6 @@ public class Imgproc {
 
     /**
      * Computes the "minimal work" distance between two weighted point configurations.
-     * <p>
      * The function computes the earth mover distance and/or a lower boundary of the distance between the
      * two weighted point configurations. One of the applications described in CITE: RubnerSept98,
      * CITE: Rubner2000 is multi-dimensional histogram comparison for image retrieval. EMD is a transportation
@@ -1808,7 +1762,6 @@ public class Imgproc {
 
     /**
      * Computes the "minimal work" distance between two weighted point configurations.
-     * <p>
      * The function computes the earth mover distance and/or a lower boundary of the distance between the
      * two weighted point configurations. One of the applications described in CITE: RubnerSept98,
      * CITE: Rubner2000 is multi-dimensional histogram comparison for image retrieval. EMD is a transportation
@@ -1850,7 +1803,6 @@ public class Imgproc {
 
     /**
      * computes the connected components labeled image of boolean image
-     * <p>
      * image with 4 or 8 way connectivity - returns N, the total number of labels [0, N-1] where 0
      * represents the background label. ltype specifies the output label image type, an important
      * consideration based on the total number of labels or alternatively the total number of pixels in
@@ -1913,7 +1865,6 @@ public class Imgproc {
 
     /**
      * computes the connected components labeled image of boolean image and also produces a statistics output for each label
-     * <p>
      * image with 4 or 8 way connectivity - returns N, the total number of labels [0, N-1] where 0
      * represents the background label. ltype specifies the output label image type, an important
      * consideration based on the total number of labels or alternatively the total number of pixels in
@@ -1996,62 +1947,6 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     * <p>
-     * The function cv::floodFill fills a connected component starting from the seed point with the specified
-     * color. The connectivity is determined by the color/brightness closeness of the neighbor pixels. The
-     * pixel at \((x,y)\) is considered to belong to the repainted domain if:
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and floating range
-     * \(\texttt{src} (x',y')- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} (x',y')+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and floating range
-     * \(\texttt{src} (x',y')_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} (x',y')_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} (x',y')_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} (x',y')_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} (x',y')_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} (x',y')_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     * <p>
-     * <p>
-     * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the
-     * component. That is, to be added to the connected component, a color/brightness of the pixel should
-     * be close enough to:
-     * <ul>
-     *   <li>
-     *  Color/brightness of one of its neighbors that already belong to the connected component in case
-     * of a floating range.
-     *   </li>
-     *   <li>
-     *  Color/brightness of the seed point in case of a fixed range.
-     *   </li>
-     * </ul>
-     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build
      * a mask and then extract the contour, or copy the region to another image, and so on.
      *
@@ -2103,62 +1998,6 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     * <p>
-     * The function cv::floodFill fills a connected component starting from the seed point with the specified
-     * color. The connectivity is determined by the color/brightness closeness of the neighbor pixels. The
-     * pixel at \((x,y)\) is considered to belong to the repainted domain if:
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and floating range
-     * \(\texttt{src} (x',y')- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} (x',y')+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and floating range
-     * \(\texttt{src} (x',y')_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} (x',y')_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} (x',y')_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} (x',y')_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} (x',y')_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} (x',y')_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     * <p>
-     * <p>
-     * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the
-     * component. That is, to be added to the connected component, a color/brightness of the pixel should
-     * be close enough to:
-     * <ul>
-     *   <li>
-     *  Color/brightness of one of its neighbors that already belong to the connected component in case
-     * of a floating range.
-     *   </li>
-     *   <li>
-     *  Color/brightness of the seed point in case of a fixed range.
-     *   </li>
-     * </ul>
-     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build
      * a mask and then extract the contour, or copy the region to another image, and so on.
      *
@@ -2209,64 +2048,6 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     * <p>
-     * The function cv::floodFill fills a connected component starting from the seed point with the specified
-     * color. The connectivity is determined by the color/brightness closeness of the neighbor pixels. The
-     * pixel at \((x,y)\) is considered to belong to the repainted domain if:
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and floating range
-     * \(\texttt{src} (x',y')- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} (x',y')+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and floating range
-     * \(\texttt{src} (x',y')_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} (x',y')_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} (x',y')_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} (x',y')_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} (x',y')_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} (x',y')_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     * <p>
-     * <p>
-     * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the
-     * component. That is, to be added to the connected component, a color/brightness of the pixel should
-     * be close enough to:
-     * <ul>
-     *   <li>
-     *  Color/brightness of one of its neighbors that already belong to the connected component in case
-     * of a floating range.
-     *   </li>
-     *   <li>
-     *  Color/brightness of the seed point in case of a fixed range.
-     *   </li>
-     * </ul>
-     * <p>
-     * Use these functions to either mark a connected component with the specified color in-place, or build
-     * a mask and then extract the contour, or copy the region to another image, and so on.
      *
      * @param image     Input/output 1- or 3-channel, 8-bit, or floating-point image. It is modified by the
      *                  function unless the #FLOODFILL_MASK_ONLY flag is set in the second variant of the function. See
@@ -2293,11 +2074,6 @@ public class Imgproc {
      *                  neighbours and fill the mask with a value of 255. The following additional options occupy higher
      *                  bits and therefore may be further combined with the connectivity and mask fill values using
      *                  bit-wise or (|), see #FloodFillFlags.
-     *
-     *                  <b>Note:</b> Since the mask is larger than the filled image, a pixel \((x, y)\) in image corresponds to the
-     *                  pixel \((x+1, y+1)\) in the mask .
-     *                  <p>
-     *                  SEE: findContours
      * @return automatically generated
      */
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect, Scalar loDiff) {
@@ -2314,62 +2090,6 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     * <p>
-     * The function cv::floodFill fills a connected component starting from the seed point with the specified
-     * color. The connectivity is determined by the color/brightness closeness of the neighbor pixels. The
-     * pixel at \((x,y)\) is considered to belong to the repainted domain if:
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and floating range
-     * \(\texttt{src} (x',y')- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} (x',y')+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and floating range
-     * \(\texttt{src} (x',y')_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} (x',y')_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} (x',y')_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} (x',y')_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} (x',y')_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} (x',y')_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     * <p>
-     * <p>
-     * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the
-     * component. That is, to be added to the connected component, a color/brightness of the pixel should
-     * be close enough to:
-     * <ul>
-     *   <li>
-     *  Color/brightness of one of its neighbors that already belong to the connected component in case
-     * of a floating range.
-     *   </li>
-     *   <li>
-     *  Color/brightness of the seed point in case of a fixed range.
-     *   </li>
-     * </ul>
-     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build
      * a mask and then extract the contour, or copy the region to another image, and so on.
      *
@@ -2418,62 +2138,6 @@ public class Imgproc {
 
     /**
      * Fills a connected component with the given color.
-     * <p>
-     * The function cv::floodFill fills a connected component starting from the seed point with the specified
-     * color. The connectivity is determined by the color/brightness closeness of the neighbor pixels. The
-     * pixel at \((x,y)\) is considered to belong to the repainted domain if:
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and floating range
-     * \(\texttt{src} (x',y')- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} (x',y')+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a grayscale image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)- \texttt{loDiff} \leq \texttt{src} (x,y)  \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)+ \texttt{upDiff}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and floating range
-     * \(\texttt{src} (x',y')_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} (x',y')_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} (x',y')_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} (x',y')_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} (x',y')_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} (x',y')_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  in case of a color image and fixed range
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r- \texttt{loDiff} _r \leq \texttt{src} (x,y)_r \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_r+ \texttt{upDiff} _r,\)
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g- \texttt{loDiff} _g \leq \texttt{src} (x,y)_g \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_g+ \texttt{upDiff} _g\)
-     * and
-     * \(\texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b- \texttt{loDiff} _b \leq \texttt{src} (x,y)_b \leq \texttt{src} ( \texttt{seedPoint} .x, \texttt{seedPoint} .y)_b+ \texttt{upDiff} _b\)
-     *   </li>
-     * </ul>
-     * <p>
-     * <p>
-     * where \(src(x',y')\) is the value of one of pixel neighbors that is already known to belong to the
-     * component. That is, to be added to the connected component, a color/brightness of the pixel should
-     * be close enough to:
-     * <ul>
-     *   <li>
-     *  Color/brightness of one of its neighbors that already belong to the connected component in case
-     * of a floating range.
-     *   </li>
-     *   <li>
-     *  Color/brightness of the seed point in case of a fixed range.
-     *   </li>
-     * </ul>
-     * <p>
      * Use these functions to either mark a connected component with the specified color in-place, or build
      * a mask and then extract the contour, or copy the region to another image, and so on.
      *
@@ -2500,11 +2164,6 @@ public class Imgproc {
      *                  neighbours and fill the mask with a value of 255. The following additional options occupy higher
      *                  bits and therefore may be further combined with the connectivity and mask fill values using
      *                  bit-wise or (|), see #FloodFillFlags.
-     *
-     *                  <b>Note:</b> Since the mask is larger than the filled image, a pixel \((x, y)\) in image corresponds to the
-     *                  pixel \((x+1, y+1)\) in the mask .
-     *                  <p>
-     *                  SEE: findContours
      * @return automatically generated
      */
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal) {
@@ -5064,7 +4723,7 @@ public class Imgproc {
      * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the
      *              channels is derived automatically from src and code.
      *              <p>
-     *              The function can do the following transformations:
+     *              can do the following transformations:
      *
      *              <ul>
      *                <li>
@@ -5114,7 +4773,7 @@ public class Imgproc {
      * @param code Color space conversion code (see the description below).
      *             channels is derived automatically from src and code.
      *             <p>
-     *             The function can do the following transformations:
+     *              can do the following transformations:
      *
      *             <ul>
      *               <li>
@@ -7258,39 +6917,6 @@ public class Imgproc {
      * @param center    The transformation center;
      * @param maxRadius The radius of the bounding circle to transform. It determines the inverse magnitude scale parameter too.
      * @param flags     A combination of interpolation methods, see #InterpolationFlags
-     *
-     *                  <b>Note:</b>
-     *                  <ul>
-     *                    <li>
-     *                     The function can not operate in-place.
-     *                    </li>
-     *                    <li>
-     *                     To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are measured from 0 to 360 with accuracy about 0.3 degrees.
-     *                    </li>
-     *                  </ul>
-     *                  <p>
-     *                  SEE: cv::logPolar
-     * @deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius, flags)
-     * <p>
-     * <p>
-     * Transform the source image using the following transformation (See REF: polar_remaps_reference_image "Polar remaps reference image c)"):
-     * \(\begin{array}{l}
-     * dst( \rho , \phi ) = src(x,y) \\
-     * dst.size() \leftarrow src.size()
-     * \end{array}\)
-     * <p>
-     * where
-     * \(\begin{array}{l}
-     * I = (dx,dy) = (x - center.x,y - center.y) \\
-     * \rho = Kmag \cdot \texttt{magnitude} (I) ,\\
-     * \phi = angle \cdot \texttt{angle} (I)
-     * \end{array}\)
-     * <p>
-     * and
-     * \(\begin{array}{l}
-     * Kx = src.cols / maxRadius \\
-     * Ky = src.rows / 2\Pi
-     * \end{array}\)
      */
     @Deprecated
     public static void linearPolar(Mat src, Mat dst, Point center, double maxRadius, int flags) {
@@ -7310,42 +6936,6 @@ public class Imgproc {
      * @param center The transformation center; where the output precision is maximal
      * @param M      Magnitude scale parameter. It determines the radius of the bounding circle to transform too.
      * @param flags  A combination of interpolation methods, see #InterpolationFlags
-     *
-     *               <b>Note:</b>
-     *               <ul>
-     *                 <li>
-     *                  The function can not operate in-place.
-     *                 </li>
-     *                 <li>
-     *                  To calculate magnitude and angle in degrees #cartToPolar is used internally thus angles are measured from 0 to 360 with accuracy about 0.3 degrees.
-     *                 </li>
-     *               </ul>
-     *               <p>
-     *               SEE: cv::linearPolar
-     * @deprecated This function produces same result as cv::warpPolar(src, dst, src.size(), center, maxRadius, flags+WARP_POLAR_LOG);
-     * <p>
-     * <p>
-     * Transform the source image using the following transformation (See REF: polar_remaps_reference_image "Polar remaps reference image d)"):
-     * \(\begin{array}{l}
-     * dst( \rho , \phi ) = src(x,y) \\
-     * dst.size() \leftarrow src.size()
-     * \end{array}\)
-     * <p>
-     * where
-     * \(\begin{array}{l}
-     * I = (dx,dy) = (x - center.x,y - center.y) \\
-     * \rho = M \cdot log_e(\texttt{magnitude} (I)) ,\\
-     * \phi = Kangle \cdot \texttt{angle} (I) \\
-     * \end{array}\)
-     * <p>
-     * and
-     * \(\begin{array}{l}
-     * M = src.cols / log_e(maxRadius) \\
-     * Kangle = src.rows / 2\Pi \\
-     * \end{array}\)
-     * <p>
-     * The function emulates the human "foveal" vision and can be used for fast scale and
-     * rotation-invariant template matching, for object tracking and so forth.
      */
     @Deprecated
     public static void logPolar(Mat src, Mat dst, Point center, double M, int flags) {
@@ -8972,85 +8562,6 @@ public class Imgproc {
 
     /**
      * Remaps an image to polar or semilog-polar coordinates space
-     * <p>
-     * polar_remaps_reference_image
-     * ![Polar remaps reference](pics/polar_remap_doc.png)
-     * <p>
-     * Transform the source image using the following transformation:
-     * \(
-     * dst(\rho , \phi ) = src(x,y)
-     * \)
-     * <p>
-     * where
-     * \(
-     * \begin{array}{l}
-     * \vec{I} = (x - center.x, \;y - center.y) \\
-     * \phi = Kangle \cdot \texttt{angle} (\vec{I}) \\
-     * \rho = \left\{\begin{matrix}
-     * Klin \cdot \texttt{magnitude} (\vec{I}) &amp; default \\
-     * Klog \cdot log_e(\texttt{magnitude} (\vec{I})) &amp; if \; semilog \\
-     * \end{matrix}\right.
-     * \end{array}
-     * \)
-     * <p>
-     * and
-     * \(
-     * \begin{array}{l}
-     * Kangle = dsize.height / 2\Pi \\
-     * Klin = dsize.width / maxRadius \\
-     * Klog = dsize.width / log_e(maxRadius) \\
-     * \end{array}
-     * \)
-     * <p>
-     * <p>
-     * \par Linear vs semilog mapping
-     * <p>
-     * Polar mapping can be linear or semi-log. Add one of #WarpPolarMode to {@code flags} to specify the polar mapping mode.
-     * <p>
-     * Linear is the default mode.
-     * <p>
-     * The semilog mapping emulates the human "foveal" vision that permit very high acuity on the line of sight (central vision)
-     * in contrast to peripheral vision where acuity is minor.
-     * <p>
-     * \par Option on {@code dsize}:
-     *
-     * <ul>
-     *   <li>
-     *  if both values in {@code dsize &lt;=0 } (default),
-     * the destination image will have (almost) same area of source bounding circle:
-     * \(\begin{array}{l}
-     * dsize.area  \leftarrow (maxRadius^2 \cdot \Pi) \\
-     * dsize.width = \texttt{cvRound}(maxRadius) \\
-     * dsize.height = \texttt{cvRound}(maxRadius \cdot \Pi) \\
-     * \end{array}\)
-     *   </li>
-     * </ul>
-     *
-     *
-     * <ul>
-     *   <li>
-     *  if only {@code dsize.height &lt;= 0},
-     * the destination image area will be proportional to the bounding circle area but scaled by {@code Kx * Kx}:
-     * \(\begin{array}{l}
-     * dsize.height = \texttt{cvRound}(dsize.width \cdot \Pi) \\
-     * \end{array}
-     * \)
-     *   </li>
-     * </ul>
-     *
-     * <ul>
-     *   <li>
-     *  if both values in {@code dsize &gt; 0 },
-     * the destination image will have the given size therefore the area of the bounding circle will be scaled to {@code dsize}.
-     *   </li>
-     * </ul>
-     * <p>
-     * <p>
-     * \par Reverse mapping
-     * <p>
-     * You can get reverse mapping adding #WARP_INVERSE_MAP to {@code flags}
-     * \snippet polar_transforms.cpp InverseMap
-     * <p>
      * In addiction, to calculate the original coordinate from a polar mapped coordinate \((rho, phi)-&gt;(x, y)\):
      * \snippet polar_transforms.cpp InverseCoordinate
      *

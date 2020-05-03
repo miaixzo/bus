@@ -27,10 +27,7 @@ package org.aoju.bus.image.plugin;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.image.Dimse;
-import org.aoju.bus.image.Status;
-import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.UID;
+import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -166,7 +163,7 @@ public class StgCmtSCU {
     }
 
     public boolean addInstance(Attributes inst) {
-        Common.updateAttributes(inst, attrs, uidSuffix);
+        Builder.updateAttributes(inst, attrs, uidSuffix);
         String cuid = inst.getString(Tag.SOPClassUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
         String splitkey = splitTag != 0 ? inst.getString(splitTag) : Normal.EMPTY;
