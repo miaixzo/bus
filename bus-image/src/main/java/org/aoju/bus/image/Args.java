@@ -25,7 +25,6 @@
 package org.aoju.bus.image;
 
 import lombok.Data;
-import org.aoju.bus.image.centre.Device;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Connection;
@@ -139,7 +138,29 @@ public class Args {
         }
     }
 
-    public void configureConnect(AAssociateRQ aAssociateRQ, Connection remote, Node calledNode) {
+    public String getTagName() {
+        return ElementDictionary.keywordOf(tag, null);
+    }
+
+    /**
+     * Bind the connection with the callingNode
+     *
+     * @param connection  Connection
+     * @param callingNode Node
+     */
+    public void configureBind(Connection connection,
+                              Node callingNode) {
+        if (callingNode.getHostname() != null) {
+            connection.setHostname(callingNode.getHostname());
+        }
+        if (callingNode.getPort() != null) {
+            connection.setPort(callingNode.getPort());
+        }
+    }
+
+    public void configureBind(AAssociateRQ aAssociateRQ,
+                              Connection remote,
+                              Node calledNode) {
         aAssociateRQ.setCalledAET(calledNode.getAet());
         if (identity != null) {
             aAssociateRQ.setIdentityRQ(identity);
@@ -149,28 +170,15 @@ public class Args {
     }
 
     /**
-     * Bind the connection with the callingNode
-     *
-     * @param connection  Connection
-     * @param callingNode Node
-     */
-    public void configureBind(Connection connection, Node callingNode) {
-        if (callingNode.getHostname() != null) {
-            connection.setHostname(callingNode.getHostname());
-        }
-        if (callingNode.getPort() != null) {
-            connection.setPort(callingNode.getPort());
-        }
-    }
-
-    /**
      * Bind the connection and applicationEntity with the callingNode
      *
      * @param applicationEntity ApplicationEntity
      * @param connection        Connection
      * @param callingNode       the Node
      */
-    public void configureBind(ApplicationEntity applicationEntity, Connection connection, Node callingNode) {
+    public void configureBind(ApplicationEntity applicationEntity,
+                              Connection connection,
+                              Node callingNode) {
         applicationEntity.setAETitle(callingNode.getAet());
         if (callingNode.getHostname() != null) {
             connection.setHostname(callingNode.getHostname());
@@ -222,10 +230,6 @@ public class Args {
                 throw new IOException(e);
             }
         }
-    }
-
-    public String getTagName() {
-        return ElementDictionary.keywordOf(tag, null);
     }
 
 }

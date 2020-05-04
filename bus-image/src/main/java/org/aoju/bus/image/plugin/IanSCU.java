@@ -26,9 +26,9 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Builder;
+import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
-import org.aoju.bus.image.centre.Device;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;

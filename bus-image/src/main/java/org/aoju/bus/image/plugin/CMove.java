@@ -25,7 +25,6 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.image.*;
-import org.aoju.bus.image.centre.DeviceService;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.Progress;
 import org.aoju.bus.logger.Logger;
@@ -44,56 +43,54 @@ public class CMove {
      * @param calledNode     被调用的DICOM节点配置
      * @param destinationAet 目标 aetitle
      * @param progress       处理的进度
-     * @param args           匹配和返回键。没有值的Args是返回键
+     * @param keys           匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
     public static Status process(Node callingNode,
                                  Node calledNode,
                                  String destinationAet,
                                  Progress progress,
-                                 Args... args) {
-        return CMove.process(null, callingNode, calledNode, destinationAet, progress, args);
+                                 Args... keys) {
+        return CMove.process(new Args(), callingNode, calledNode, destinationAet, progress, keys);
     }
 
     /**
-     * @param params         可选的高级参数(代理、身份验证、连接和TLS)
+     * @param args           可选的高级参数(代理、身份验证、连接和TLS)
      * @param callingNode    调用DICOM节点的配置
      * @param calledNode     被调用的DICOM节点配置
      * @param destinationAet 目标 aetitle
      * @param progress       处理的进度
-     * @param args           匹配和返回键。没有值的Args是返回键
+     * @param keys           匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args params,
+    public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode,
                                  String destinationAet,
                                  Progress progress,
-                                 Args... args) {
+                                 Args... keys) {
         if (callingNode == null || calledNode == null || destinationAet == null) {
             throw new IllegalArgumentException("callingNode, calledNode or destinationAet cannot be null!");
         }
-        Args options = params == null ? new Args() : params;
 
         try (MoveSCU moveSCU = new MoveSCU(progress)) {
             Connection remote = moveSCU.getRemoteConnection();
             Connection conn = moveSCU.getConnection();
-            options.configureConnect(moveSCU.getAAssociateRQ(), remote, calledNode);
-            options.configureBind(moveSCU.getApplicationEntity(), conn, callingNode);
-            DeviceService service = new DeviceService(moveSCU);
+            args.configureBind(moveSCU.getAAssociateRQ(), remote, calledNode);
+            args.configureBind(moveSCU.getApplicationEntity(), conn, callingNode);
 
-            options.configure(conn);
-            options.configureTLS(conn, remote);
+            args.configure(conn);
+            args.configureTLS(conn, remote);
 
-            moveSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
-                    options.getTypes().contains(Option.Type.RELATIONAL));
+            moveSCU.setInformationModel(getInformationModel(args), args.getTsuidOrder(),
+                    args.getTypes().contains(Option.Type.RELATIONAL));
 
-            for (Args p : args) {
+            for (Args p : keys) {
                 moveSCU.addKey(p.getTag(), p.getValues());
             }
             moveSCU.setDestination(destinationAet);
 
-            service.start();
+            moveSCU.start();
             try {
                 Status dcmState = moveSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -113,7 +110,7 @@ public class CMove {
                 return Status.build(moveSCU.getState(), null, e);
             } finally {
                 Builder.close(moveSCU);
-                service.stop();
+                moveSCU.stop();
             }
         } catch (Exception e) {
             Logger.error("movescu", e);

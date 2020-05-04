@@ -25,7 +25,7 @@
 package org.aoju.bus.image.galaxy;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.image.centre.Device;
+import org.aoju.bus.image.Device;
 
 /**
  * @author Kimi Liu

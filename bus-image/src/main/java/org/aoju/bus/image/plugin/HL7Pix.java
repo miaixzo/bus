@@ -26,7 +26,7 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.image.centre.Device;
+import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.internal.hl7.HL7Message;
 import org.aoju.bus.image.metric.internal.hl7.HL7Segment;

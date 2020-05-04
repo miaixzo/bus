@@ -22,9 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.image.centre;
+package org.aoju.bus.image;
 
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Code;
 import org.aoju.bus.image.galaxy.data.Issuer;
@@ -111,10 +112,35 @@ public class Device implements Serializable {
     private Boolean arcDevExt;
 
     public Device() {
+
     }
 
     public Device(String name) {
         setDeviceName(name);
+    }
+
+    public boolean isRunning() {
+        return executor != null;
+    }
+
+    public void start() {
+        try {
+            if (executor != null) {
+                throw new IllegalStateException("Already started");
+            }
+            bindConnections();
+        } catch (Exception e) {
+            stop();
+            throw new InstrumentException("Binding error, please check the port or IP");
+        }
+    }
+
+    public void stop() {
+        unbindConnections();
+        if (scheduledExecutor != null)
+            scheduledExecutor.shutdown();
+        executor = null;
+        scheduledExecutor = null;
     }
 
     private static X509Certificate[] toArray(Collection<X509Certificate[]> c) {

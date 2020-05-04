@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.acquire;
 
-import org.aoju.bus.image.centre.Device;
+import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
 
 import java.io.Serializable;

@@ -17,17 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <opencv.dcm.version>4.2.0-dcm</opencv.dcm.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bus-health</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
 
     <licenses>
         <license>

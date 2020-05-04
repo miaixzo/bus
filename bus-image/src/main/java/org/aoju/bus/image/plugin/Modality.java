@@ -26,7 +26,6 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.*;
-import org.aoju.bus.image.centre.DeviceService;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -61,28 +60,28 @@ public class Modality {
     }
 
     /**
-     * @param params      可选的高级参数(代理、身份验证、连接和TLS)
+     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
      * @param callingNode 调用DICOM节点的配置
      * @param calledNode  被调用的DICOM节点配置
      * @param keys        匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Args params,
+    public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode,
                                  Args... keys) {
-        return process(params, callingNode, calledNode, 0, keys);
+        return process(args, callingNode, calledNode, 0, keys);
     }
 
     /**
-     * @param params      可选的高级参数(代理、身份验证、连接和TLS)
+     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
      * @param callingNode 调用DICOM节点的配置
      * @param calledNode  被调用的DICOM节点配置
      * @param cancelAfter 接收到指定数目的匹配项后，取消查询请求
      * @param keys        匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Args params,
+    public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode,
                                  int cancelAfter,
@@ -91,27 +90,25 @@ public class Modality {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 
-        Args options = params == null ? new Args() : params;
-
         try (FindSCU findSCU = new FindSCU()) {
             Connection remote = findSCU.getRemoteConnection();
             Connection conn = findSCU.getConnection();
-            options.configureConnect(findSCU.getAAssociateRQ(), remote, calledNode);
-            options.configureBind(findSCU.getApplicationEntity(), conn, callingNode);
-            DeviceService service = new DeviceService(findSCU.getDevice());
+            args.configureBind(findSCU.getAAssociateRQ(), remote, calledNode);
+            args.configureBind(findSCU.getApplicationEntity(), conn, callingNode);
+            Device device = findSCU.getDevice();
 
-            options.configure(conn);
-            options.configureTLS(conn, remote);
+            args.configure(conn);
+            args.configureTLS(conn, remote);
 
-            findSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
-                    options.getTypes());
+            findSCU.setInformationModel(getInformationModel(args), args.getTsuidOrder(),
+                    args.getTypes());
 
             addKeys(findSCU, keys);
 
             findSCU.setCancelAfter(cancelAfter);
-            findSCU.setPriority(options.getPriority());
+            findSCU.setPriority(args.getPriority());
 
-            service.start();
+            device.start();
             try {
                 Status dcmState = findSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -131,7 +128,7 @@ public class Modality {
                 return Status.build(findSCU.getState(), null, e);
             } finally {
                 Builder.close(findSCU);
-                service.stop();
+                device.stop();
             }
         } catch (Exception e) {
             Logger.error("findscu", e);

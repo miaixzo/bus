@@ -25,7 +25,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.image.centre.Device;
+import org.aoju.bus.image.Device;
 
 import java.util.ArrayList;
 import java.util.Arrays;

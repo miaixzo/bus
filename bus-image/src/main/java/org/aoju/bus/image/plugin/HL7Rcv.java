@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.image.centre.Device;
+import org.aoju.bus.image.Device;
 import org.aoju.bus.image.galaxy.io.SAXTransformer;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.acquire.HL7DeviceExtension;

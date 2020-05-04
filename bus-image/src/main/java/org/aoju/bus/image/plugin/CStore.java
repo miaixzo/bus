@@ -24,12 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
-import org.aoju.bus.image.Args;
-import org.aoju.bus.image.Builder;
-import org.aoju.bus.image.Node;
-import org.aoju.bus.image.Status;
-import org.aoju.bus.image.centre.Device;
-import org.aoju.bus.image.centre.DeviceService;
+import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Connection;
@@ -105,8 +100,6 @@ public class CStore {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 
-        Args options = args == null ? new Args() : args;
-
         StoreSCU storeSCU = null;
 
         try {
@@ -118,20 +111,19 @@ public class CStore {
             ae.addConnection(conn);
             storeSCU = new StoreSCU(ae, progress, args.getEditors());
             Connection remote = storeSCU.getRemoteConnection();
-            DeviceService service = new DeviceService(device);
 
-            options.configureConnect(storeSCU.getAAssociateRQ(), remote, calledNode);
-            options.configureBind(ae, conn, callingNode);
+            args.configureBind(storeSCU.getAAssociateRQ(), remote, calledNode);
+            args.configureBind(ae, conn, callingNode);
 
-            options.configure(conn);
-            options.configureTLS(conn, remote);
+            args.configure(conn);
+            args.configureTLS(conn, remote);
 
             storeSCU.setAttributes(new Attributes());
 
             if (args.isExtendNegociation()) {
                 configureRelatedSOPClass(storeSCU, args.getExtendSopClassesURL());
             }
-            storeSCU.setPriority(options.getPriority());
+            storeSCU.setPriority(args.getPriority());
 
             storeSCU.scanFiles(files, false);
 
@@ -141,7 +133,7 @@ public class CStore {
             if (n == 0) {
                 return new Status(Status.UnableToProcess, "No DICOM file has been found!", null);
             } else {
-                service.start();
+                device.start();
                 try {
                     long t1 = System.currentTimeMillis();
                     storeSCU.open();
@@ -160,7 +152,7 @@ public class CStore {
                     return Status.build(storeSCU.getState(), null, e);
                 } finally {
                     Builder.close(storeSCU);
-                    service.stop();
+                    device.stop();
                 }
             }
         } catch (Exception e) {

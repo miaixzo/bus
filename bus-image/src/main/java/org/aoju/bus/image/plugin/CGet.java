@@ -26,7 +26,6 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.*;
-import org.aoju.bus.image.centre.DeviceService;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.Progress;
 import org.aoju.bus.logger.Logger;
@@ -49,83 +48,81 @@ public class CGet {
      * @param calledNode  被调用的DICOM节点配置
      * @param progress    处理的进度
      * @param outputDir   文件输出路径
-     * @param args        匹配和返回键。没有值的Args是返回键
+     * @param keys        匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
     public static Status process(Node callingNode,
                                  Node calledNode,
                                  Progress progress,
                                  File outputDir,
-                                 Args... args) {
-        return process(null, callingNode, calledNode, progress, outputDir, args);
+                                 Args... keys) {
+        return process(new Args(), callingNode, calledNode, progress, outputDir, keys);
     }
 
     /**
-     * @param params      可选的高级参数(代理、身份验证、连接和TLS)
+     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
      * @param callingNode 调用DICOM节点的配置
      * @param calledNode  被调用的DICOM节点配置
      * @param progress    处理的进度
      * @param outputDir   文件输出路径
-     * @param args        匹配和返回键。没有值的keys是返回键
+     * @param keys        匹配和返回键。没有值的keys是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args params,
+    public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode,
                                  Progress progress,
                                  File outputDir,
-                                 Args... args) {
-        return process(params, callingNode, calledNode, progress, outputDir, null, args);
+                                 Args... keys) {
+        return process(args, callingNode, calledNode, progress, outputDir, null, keys);
     }
 
     /**
-     * @param params      可选的高级参数(代理、身份验证、连接和TLS)
+     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
      * @param callingNode 调用DICOM节点的配置
      * @param calledNode  被调用的DICOM节点配置
      * @param progress    处理的进度
      * @param outputDir   文件输出路径
      * @param sopClassURL the url
-     * @param args        匹配和返回键。没有值的keys是返回键
+     * @param keys        匹配和返回键。没有值的keys是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(Args params,
+    public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode,
                                  Progress progress,
                                  File outputDir,
                                  URL sopClassURL,
-                                 Args... args) {
+                                 Args... keys) {
         if (callingNode == null || calledNode == null || outputDir == null) {
             throw new IllegalArgumentException("callingNode, calledNode or outputDir cannot be null!");
         }
-        GetSCU getSCU;
-        Args options = params == null ? new Args() : params;
 
         try {
-            getSCU = new GetSCU(progress);
+            GetSCU getSCU = new GetSCU(progress);
             Connection remote = getSCU.getRemoteConnection();
             Connection conn = getSCU.getConnection();
-            options.configureConnect(getSCU.getAAssociateRQ(), remote, calledNode);
-            options.configureBind(getSCU.getApplicationEntity(), conn, callingNode);
-            DeviceService service = new DeviceService(getSCU.getDevice());
+            args.configureBind(getSCU.getAAssociateRQ(), remote, calledNode);
+            args.configureBind(getSCU.getApplicationEntity(), conn, callingNode);
+            Device device = getSCU.getDevice();
 
-            options.configure(conn);
-            options.configureTLS(conn, remote);
+            args.configure(conn);
+            args.configureTLS(conn, remote);
 
-            getSCU.setPriority(options.getPriority());
+            getSCU.setPriority(args.getPriority());
 
             getSCU.setStorageDirectory(outputDir);
 
-            getSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
-                    options.getTypes().contains(Option.Type.RELATIONAL));
+            getSCU.setInformationModel(getInformationModel(args), args.getTsuidOrder(),
+                    args.getTypes().contains(Option.Type.RELATIONAL));
 
             configureRelatedSOPClass(getSCU, sopClassURL);
 
-            for (Args p : args) {
+            for (Args p : keys) {
                 getSCU.addKey(p.getTag(), p.getValues());
             }
 
-            service.start();
+            device.start();
             try {
                 Status dcmState = getSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -145,7 +142,7 @@ public class CGet {
                 return Status.build(getSCU.getState(), null, e);
             } finally {
                 Builder.close(getSCU);
-                service.stop();
+                device.stop();
             }
         } catch (Exception e) {
             Logger.error("getscu", e);

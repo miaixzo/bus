@@ -25,8 +25,6 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.image.*;
-import org.aoju.bus.image.centre.Device;
-import org.aoju.bus.image.centre.DeviceService;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.ApplicationEntity;
 import org.aoju.bus.image.metric.Connection;
@@ -62,19 +60,17 @@ public class Echo {
     }
 
     /**
-     * @param params      可选的高级参数(代理、身份验证、连接和TLS)
+     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
      * @param callingNode 调用DICOM节点的配置
      * @param calledNode  被调用的DICOM节点配置
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Args params,
+    public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode) {
         if (callingNode == null || calledNode == null) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
-
-        Args options = params == null ? new Args() : params;
 
         try {
             Device device = new Device("storescu");
@@ -85,18 +81,16 @@ public class Echo {
             ae.addConnection(conn);
             StoreSCU storeSCU = new StoreSCU(ae, null);
             Connection remote = storeSCU.getRemoteConnection();
-            DeviceService service = new DeviceService(device);
 
-            options.configureConnect(storeSCU.getAAssociateRQ(), remote, calledNode);
-            options.configureBind(ae, conn, callingNode);
+            args.configureBind(storeSCU.getAAssociateRQ(), remote, calledNode);
+            args.configureBind(ae, conn, callingNode);
 
-            // configure
-            options.configure(conn);
-            options.configureTLS(conn, remote);
+            args.configure(conn);
+            args.configureTLS(conn, remote);
 
-            storeSCU.setPriority(options.getPriority());
+            storeSCU.setPriority(args.getPriority());
 
-            service.start();
+            device.start();
             try {
                 long t1 = System.currentTimeMillis();
                 storeSCU.open();
@@ -110,7 +104,7 @@ public class Echo {
                 return new Status(rsp.getInt(Tag.Status, Status.Success), message, null);
             } finally {
                 Builder.close(storeSCU);
-                service.stop();
+                device.stop();
             }
         } catch (Exception e) {
             String message = "DICOM Echo failed, storescu: " + e.getMessage();

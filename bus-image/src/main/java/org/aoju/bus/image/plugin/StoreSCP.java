@@ -28,7 +28,6 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.image.*;
-import org.aoju.bus.image.centre.Device;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;

@@ -28,7 +28,7 @@ import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.image.centre.Device;
+import org.aoju.bus.image.Device;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.metric.internal.net.TCPHandler;
 import org.aoju.bus.image.metric.internal.net.TCPListener;

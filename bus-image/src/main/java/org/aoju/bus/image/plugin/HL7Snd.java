@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StreamUtils;
-import org.aoju.bus.image.centre.Device;
+import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.internal.hl7.MLLPConnection;
 

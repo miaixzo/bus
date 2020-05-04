@@ -24,8 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
+import org.aoju.bus.image.Args;
+import org.aoju.bus.image.Centre;
+import org.aoju.bus.image.Node;
+import org.aoju.bus.image.centre.StoreSCPCentre;
+import org.aoju.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 /**
  * 影像解析预览
@@ -39,5 +45,20 @@ public class ImageConfiguration {
 
     @Autowired
     ImageProperties properties;
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public Centre onStoreSCP() {
+        if (properties.opencv) {
+            new OpenCVNativeLoader().init();
+        }
+        StoreSCPCentre store = StoreSCPCentre.Builder();
+        store.setArgs(new Args(true));
+        store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.ports)));
+
+        store.setRollers(null);
+        store.setStoreSCP(null);
+        store.setDevice(store.getStoreSCP().getDevice());
+        return store.build();
+    }
 
 }
