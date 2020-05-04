@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
@@ -84,7 +85,7 @@ public class BulkData implements Value {
         this.uriPathEnd = uri.length();
         this.offset = 0;
         this.length = -1;
-        int pathEnd = uri.indexOf('?');
+        int pathEnd = uri.indexOf(Symbol.C_QUESTION_MARK);
         if (pathEnd < 0)
             return;
 

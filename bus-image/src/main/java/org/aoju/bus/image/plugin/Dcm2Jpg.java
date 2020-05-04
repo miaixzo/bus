@@ -24,12 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.nimble.BufferedImages;
-import org.aoju.bus.image.nimble.reader.DicomImageReadParam;
+import org.aoju.bus.image.nimble.reader.NativeImageReadParam;
 import org.aoju.bus.logger.Logger;
 
 import javax.imageio.*;
@@ -239,8 +240,8 @@ public class Dcm2Jpg {
     }
 
     private ImageReadParam readParam() {
-        DicomImageReadParam param =
-                (DicomImageReadParam) imageReader.getDefaultReadParam();
+        NativeImageReadParam param =
+                (NativeImageReadParam) imageReader.getDefaultReadParam();
         param.setWindowCenter(windowCenter);
         param.setWindowWidth(windowWidth);
         param.setAutoWindowing(autoWindowing);
@@ -260,7 +261,7 @@ public class Dcm2Jpg {
     }
 
     private String suffix(File src) {
-        return src.getName() + '.' + suffix;
+        return src.getName() + Symbol.C_DOT + suffix;
     }
 
 }

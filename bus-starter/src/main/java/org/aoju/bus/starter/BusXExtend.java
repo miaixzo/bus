@@ -80,7 +80,7 @@ public class BusXExtend {
     /**
      * 文件预览
      */
-    public static final String PREVIEW = "extend.preview";
+    public static final String OFFICE = "extend.office";
     /**
      * 数据脱敏
      */

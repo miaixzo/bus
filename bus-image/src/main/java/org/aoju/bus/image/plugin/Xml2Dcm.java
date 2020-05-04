@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -69,7 +70,7 @@ public class Xml2Dcm {
             throws Exception {
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser p = f.newSAXParser();
-        if (fname.equals("-")) {
+        if (fname.equals(Symbol.HYPHEN)) {
             p.parse(System.in, ch);
         } else {
             p.parse(new File(fname), ch);

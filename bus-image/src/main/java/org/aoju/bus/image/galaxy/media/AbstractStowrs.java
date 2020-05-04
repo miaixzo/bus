@@ -25,6 +25,7 @@
 package org.aoju.bus.image.galaxy.media;
 
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -136,7 +137,7 @@ public class AbstractStowrs implements AutoCloseable {
             if (lastField > Calendar.MINUTE) {
                 appendXX(cal.get(Calendar.SECOND), toAppendTo);
                 if (lastField > Calendar.SECOND) {
-                    toAppendTo.append('.');
+                    toAppendTo.append(Symbol.C_DOT);
                     appendXXX(cal.get(Calendar.MILLISECOND), toAppendTo);
                 }
             }
@@ -245,7 +246,6 @@ public class AbstractStowrs implements AutoCloseable {
             Logger.info("STOWRS server response message: HTTP Status-Code 200: OK for all the image set");
         } else if (code == HttpURLConnection.HTTP_ACCEPTED || code == HttpURLConnection.HTTP_CONFLICT) {
             Logger.warn("STOWRS server response message: HTTP Status-Code {}: {}", code, httpPost.getResponseMessage());
-            // See http://dicom.nema.org/medical/dicom/current/output/chtml/part18/sect_6.6.html#table_6.6.1-1
             return SAXReader.parse(httpPost.getInputStream());
         } else {
             throw new InstrumentException(String.format("STOWRS server response message: HTTP Status-Code %d: %s",

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.image.galaxy.Property;
@@ -52,7 +53,7 @@ public class ImageReaderFactory implements Serializable {
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
 
     private static String nullify(String s) {
-        return s == null || s.isEmpty() || s.equals("*") ? null : s;
+        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageReaderFactory getDefault() {
@@ -171,9 +172,9 @@ public class ImageReaderFactory implements Serializable {
         Properties props = new Properties();
         props.load(in);
         for (Map.Entry<Object, Object> entry : props.entrySet()) {
-            String[] ss = Property.split((String) entry.getValue(), ':');
+            String[] ss = Property.split((String) entry.getValue(), Symbol.C_COLON);
             map.put((String) entry.getKey(), new ImageReaderParam(ss[0], ss[1], ss[2],
-                    ss.length > 3 ? Property.split(ss[3], ';') : Property.EMPTY_STRING));
+                    ss.length > 3 ? Property.split(ss[3], Symbol.C_SEMICOLON) : Property.EMPTY_STRING));
         }
     }
 

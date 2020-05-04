@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License                                                               *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -24,55 +24,21 @@
  ********************************************************************************/
 package org.aoju.bus.health;
 
-import org.aoju.bus.logger.Logger;
+import org.aoju.bus.core.annotation.NotThreadSafe;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Collections;
-import java.util.List;
 import java.util.Properties;
 
 /**
- * The global configuration utility. See
- * {@code src/main/resources/oshi.properties} for default values.
+ * The global configuration utility.
  *
  * @author Kimi Liu
  * @version 5.8.8
  * @since JDK 1.8+
  */
+@NotThreadSafe
 public final class Config {
 
-    private static final Properties configuration = new Properties();
-
-    static {
-        // Load the configuration file from the classpath
-        try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            if (loader == null) {
-                loader = ClassLoader.getSystemClassLoader();
-                if (loader == null) {
-                    throw new IOException();
-                }
-            }
-            List<URL> resources = Collections.list(loader.getResources("oshi.properties"));
-            if (resources.isEmpty()) {
-                Logger.warn("No default configuration found");
-            } else {
-                if (resources.size() > 1) {
-                    Logger.warn("Configuration conflict: there is more than one oshi.properties file on the classpath");
-                }
-
-                try (InputStream in = resources.get(0).openStream()) {
-                    if (in != null) {
-                        configuration.load(in);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            Logger.warn("Failed to load default configuration");
-        }
-    }
+    private static final Properties CONFIG = Builder.readPropertiesFromFilename(Builder.BUS_HEALTH_PROPERTIES);
 
     private Config() {
     }
@@ -85,7 +51,7 @@ public final class Config {
      * @return The property value or the given default if not found
      */
     public static String get(String key, String def) {
-        return configuration.getProperty(key, def);
+        return CONFIG.getProperty(key, def);
     }
 
     /**
@@ -96,7 +62,7 @@ public final class Config {
      * @return The property value or the given default if not found
      */
     public static int get(String key, int def) {
-        String value = configuration.getProperty(key);
+        String value = CONFIG.getProperty(key);
         return value == null ? def : Builder.parseIntOrDefault(value, def);
     }
 
@@ -108,7 +74,7 @@ public final class Config {
      * @return The property value or the given default if not found
      */
     public static double get(String key, double def) {
-        String value = configuration.getProperty(key);
+        String value = CONFIG.getProperty(key);
         return value == null ? def : Builder.parseDoubleOrDefault(value, def);
     }
 
@@ -120,7 +86,7 @@ public final class Config {
      * @return The property value or the given default if not found
      */
     public static boolean get(String key, boolean def) {
-        String value = configuration.getProperty(key);
+        String value = CONFIG.getProperty(key);
         return value == null ? def : Boolean.parseBoolean(value);
     }
 
@@ -133,9 +99,9 @@ public final class Config {
      */
     public static void set(String key, Object val) {
         if (val == null) {
-            configuration.remove(key);
+            CONFIG.remove(key);
         } else {
-            configuration.setProperty(key, val.toString());
+            CONFIG.setProperty(key, val.toString());
         }
     }
 
@@ -145,14 +111,14 @@ public final class Config {
      * @param key The property key
      */
     public static void remove(String key) {
-        configuration.remove(key);
+        CONFIG.remove(key);
     }
 
     /**
      * Clear the configuration.
      */
     public static void clear() {
-        configuration.clear();
+        CONFIG.clear();
     }
 
     /**
@@ -161,7 +127,7 @@ public final class Config {
      * @param properties The new properties
      */
     public static void load(Properties properties) {
-        configuration.putAll(properties);
+        CONFIG.putAll(properties);
     }
 
     /**
@@ -169,7 +135,7 @@ public final class Config {
      */
     public static class PropertyException extends RuntimeException {
 
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = -7482581936621748005L;
 
         /**
          * @param property The property name
@@ -186,4 +152,5 @@ public final class Config {
             super("Invalid property \"" + property + "\": " + message);
         }
     }
+
 }

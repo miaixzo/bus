@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.nimble.Photometric;
 import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
@@ -133,7 +134,7 @@ public class NativeJPEGImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = jpegParams.getPointTransform(); // JPEG lossless transformation point
 
                 dicomParams = new MatOfInt(params);
-                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, "");
+                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);
                 if (buf.empty()) {
                     throw new IIOException("Native JPEG encoding error: null image");
                 }

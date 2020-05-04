@@ -49,7 +49,7 @@ public class HashID {
 
     private static final String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     private static final String DEFAULT_SEPS = "cfhistuCFHISTU";
-    private static final String DEFAULT_SALT = "";
+    private static final String DEFAULT_SALT = Normal.EMPTY;
 
     private static final Pattern PATTERN = Pattern.compile("[\\w\\W]{1,12}");
 

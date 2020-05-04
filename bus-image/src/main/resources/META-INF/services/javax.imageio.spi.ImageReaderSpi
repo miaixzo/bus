@@ -1,4 +1,4 @@
-org.aoju.bus.image.nimble.reader.DicomImageReaderSpi
+org.aoju.bus.image.nimble.reader.NativeImageReaderSpi
 org.aoju.bus.image.nimble.opencv.NativeJLSImageReaderSpi
 org.aoju.bus.image.nimble.opencv.NativeJPEGImageReaderSpi
 org.aoju.bus.image.nimble.opencv.NativeJ2kImageReaderSpi

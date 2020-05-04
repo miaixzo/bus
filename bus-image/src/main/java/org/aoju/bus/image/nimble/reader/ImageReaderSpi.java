@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.reader;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.galaxy.data.Implementation;
 
 import javax.imageio.stream.ImageInputStream;
@@ -41,8 +42,8 @@ public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
     private static final String version = Implementation.getVersionName();
     private static final String[] formatNames = {"rle", "RLE"};
     private static final Class<?>[] inputTypes = {ImageInputStream.class};
-    private static final String[] entensions = {""};
-    private static final String[] mimeType = {""};
+    private static final String[] entensions = {Normal.EMPTY};
+    private static final String[] mimeType = {Normal.EMPTY};
 
     public ImageReaderSpi() {
         super(vendorName, version, formatNames,

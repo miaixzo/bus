@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Code;
 import org.aoju.bus.image.galaxy.data.Issuer;
@@ -110,10 +112,35 @@ public class Device implements Serializable {
     private Boolean arcDevExt;
 
     public Device() {
+
     }
 
     public Device(String name) {
         setDeviceName(name);
+    }
+
+    public boolean isRunning() {
+        return executor != null;
+    }
+
+    public void start() {
+        try {
+            if (executor != null) {
+                throw new IllegalStateException("Already started");
+            }
+            bindConnections();
+        } catch (Exception e) {
+            stop();
+            throw new InstrumentException("Binding error, please check the port or IP");
+        }
+    }
+
+    public void stop() {
+        unbindConnections();
+        if (scheduledExecutor != null)
+            scheduledExecutor.shutdown();
+        executor = null;
+        scheduledExecutor = null;
     }
 
     private static X509Certificate[] toArray(Collection<X509Certificate[]> c) {
@@ -931,7 +958,7 @@ public class Device implements Serializable {
         String[] ss = new String[limitAssociationsInitiatedBy.size()];
         int i = 0;
         for (Entry<String, Integer> entry : limitAssociationsInitiatedBy.entrySet()) {
-            ss[i++] = entry.getKey() + '=' + entry.getValue();
+            ss[i++] = entry.getKey() + Symbol.C_EQUAL + entry.getValue();
         }
         return ss;
     }
@@ -939,7 +966,7 @@ public class Device implements Serializable {
     public void setLimitAssociationsInitiatedBy(String[] values) {
         Map<String, Integer> tmp = new HashMap<>();
         for (String value : values) {
-            int endIndex = value.lastIndexOf('=');
+            int endIndex = value.lastIndexOf(Symbol.C_EQUAL);
             try {
                 tmp.put(value.substring(0, endIndex), Integer.valueOf(value.substring(endIndex + 1)));
             } catch (IllegalArgumentException e) {
@@ -1009,7 +1036,7 @@ public class Device implements Serializable {
     public ApplicationEntity getApplicationEntity(String aet, boolean matchOtherAETs) {
         ApplicationEntity ae = aes.get(aet);
         if (ae == null)
-            ae = aes.get("*");
+            ae = aes.get(Symbol.STAR);
         if (ae == null && matchOtherAETs)
             for (ApplicationEntity ae1 : getApplicationEntities())
                 if (ae1.isOtherAETitle(aet))

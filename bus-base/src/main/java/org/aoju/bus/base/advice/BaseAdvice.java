@@ -113,8 +113,8 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = BusinessException.class)
     public Object businessException(BusinessException e) {
         Logger.error(RuntimeUtils.getStackTrace(e));
-        if(StringUtils.isBlank(e.getErrcode())) {
-            return write(ErrorCode.EM_100513,e.getMessage());
+        if (StringUtils.isBlank(e.getErrcode())) {
+            return write(ErrorCode.EM_100513, e.getMessage());
         }
         return write(e.getErrcode());
     }

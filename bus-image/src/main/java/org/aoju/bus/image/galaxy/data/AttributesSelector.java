@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 
 import java.io.Serializable;
@@ -164,7 +165,7 @@ public class AttributesSelector implements Serializable {
             appendTo(ip.sequenceTag, ip.privateCreator, "\"]/Item", sb);
             if (ip.itemIndex >= 0)
                 sb.append("[@number=\"").append(ip.itemIndex + 1).append("\"]");
-            sb.append('/');
+            sb.append(Symbol.C_SLASH);
         }
         return appendTo(tag, privateCreator, "\"]", sb);
     }

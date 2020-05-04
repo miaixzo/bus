@@ -36,6 +36,7 @@ import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
 import org.apache.ibatis.reflection.MetaObject;
@@ -66,7 +67,7 @@ public class AbstractSqlSQLParser {
                 for (Statement statement : statements.getStatements()) {
                     if (null != statement) {
                         if (i++ > 0) {
-                            sqlStringBuilder.append(';');
+                            sqlStringBuilder.append(Symbol.C_SEMICOLON);
                         }
                         sqlStringBuilder.append(this.processParser(statement));
                     }

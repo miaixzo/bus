@@ -1,10 +1,12 @@
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.BulkData;
+import org.aoju.bus.image.galaxy.data.ElementDictionary;
 import org.aoju.bus.image.galaxy.data.VR;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
@@ -81,6 +83,9 @@ public class Builder {
     private static final int INIT_BUFFER_SIZE = 8192;
     private static final int MAX_BUFFER_SIZE = 10485768;
 
+    public static final String IMAGE_ORIGINAL_SUFFIX = ".dcm";
+    public static final String IMAGE_CONVERT_SUFFIX = ".jpg";
+
     public static String toUID(String uid) {
         uid = uid.trim();
         return Symbol.STAR.equals(uid) || Character.isDigit(uid.charAt(0)) ? uid : UID.forName(uid);
@@ -91,7 +96,7 @@ public class Builder {
             return new String[]{Symbol.STAR};
         }
 
-        String[] uids = (String[]) StringUtils.split(s, ',').toArray();
+        String[] uids = (String[]) StringUtils.split(s, Symbol.C_COMMA).toArray();
         for (int i = 0; i < uids.length; i++) {
             uids[i] = toUID(uids[i]);
         }
@@ -176,7 +181,7 @@ public class Builder {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");   //$NON-NLS-3$ //$NON-NLS-4$
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? Normal.EMPTY : "i");   //$NON-NLS-3$ //$NON-NLS-4$
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
@@ -352,6 +357,33 @@ public class Builder {
         byte[] buffer = {};
         int fileLength = 0;
         JPEGHeader jpegHeader;
+    }
+
+    public static boolean updateAttributes(Attributes data, Attributes attrs,
+                                           String uidSuffix) {
+        if (attrs.isEmpty() && uidSuffix == null)
+            return false;
+        if (uidSuffix != null) {
+            data.setString(Tag.StudyInstanceUID, VR.UI,
+                    data.getString(Tag.StudyInstanceUID) + uidSuffix);
+            data.setString(Tag.SeriesInstanceUID, VR.UI,
+                    data.getString(Tag.SeriesInstanceUID) + uidSuffix);
+            data.setString(Tag.SOPInstanceUID, VR.UI,
+                    data.getString(Tag.SOPInstanceUID) + uidSuffix);
+        }
+        data.update(Attributes.UpdatePolicy.OVERWRITE, attrs, null);
+        return true;
+    }
+
+    public static int toTag(String tagOrKeyword) {
+        try {
+            return Integer.parseInt(tagOrKeyword, 16);
+        } catch (IllegalArgumentException e) {
+            int tag = ElementDictionary.tagForKeyword(tagOrKeyword, null);
+            if (tag == -1)
+                throw new IllegalArgumentException(tagOrKeyword);
+            return tag;
+        }
     }
 
 }

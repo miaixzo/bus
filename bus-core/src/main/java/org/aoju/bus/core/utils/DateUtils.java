@@ -968,7 +968,7 @@ public class DateUtils {
      */
     public static DateTime parseTimeToday(String timeString) {
         timeString = StringUtils.format("{} {}", formatDate(new DateTime()), timeString);
-        if (1 == StringUtils.count(timeString, ':')) {
+        if (1 == StringUtils.count(timeString, Symbol.C_COLON)) {
             // 时间格式为 HH:mm
             return parse(timeString, Fields.NORM_DATETIME_MINUTE_PATTERN);
         } else {
@@ -2973,7 +2973,7 @@ public class DateUtils {
         }
 
         // 日期时间分开处理
-        final List<String> dateAndTime = StringUtils.splitTrim(dateStr, ' ');
+        final List<String> dateAndTime = StringUtils.splitTrim(dateStr, Symbol.C_SPACE);
         final int size = dateAndTime.size();
         if (size < 1 || size > 2) {
             // 非可被标准处理的格式
@@ -2989,9 +2989,9 @@ public class DateUtils {
 
         // 时间部分
         if (size == 2) {
-            builder.append(' ');
-            String timePart = dateAndTime.get(1).replaceAll("[时分秒]", ":");
-            timePart = StringUtils.removeSuffix(timePart, ":");
+            builder.append(Symbol.C_SPACE);
+            String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
+            timePart = StringUtils.removeSuffix(timePart, Symbol.COLON);
             builder.append(timePart);
         }
 
@@ -3490,7 +3490,7 @@ public class DateUtils {
     public String getLunar(boolean showLeap) {
         if (this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
                 || this.ldate > 30) {
-            throw new InstrumentException("Wrong lunar ldate: " + lmonth + " " + ldate);
+            throw new InstrumentException("Wrong lunar ldate: " + lmonth + Symbol.SPACE + ldate);
         }
         if (showLeap) {
             return (this.isLeapMonth ? "闰" : "") + getMonthName(this.lmonth) + "月"
@@ -3636,7 +3636,7 @@ public class DateUtils {
     public String toString() {
         if (this.lyear < MIN_YEAR || this.lyear > MAX_YEAR || this.lmonth < 1 || this.lmonth > 12 || this.ldate < 1
                 || this.ldate > 30) {
-            return "Wrong lunar date: " + lyear + " " + lmonth + " " + ldate;
+            return "Wrong lunar date: " + lyear + Symbol.SPACE + lmonth + Symbol.SPACE + ldate;
         }
         return getYearName(this.lyear) + "年" + (this.isLeapMonth ? "闰" : "") + getMonthName(this.lmonth) + "月"
                 + getDayName(this.ldate);

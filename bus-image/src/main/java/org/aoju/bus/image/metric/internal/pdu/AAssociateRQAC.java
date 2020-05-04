@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Capacity;
 import org.aoju.bus.image.galaxy.Property;
@@ -310,7 +311,7 @@ public abstract class AAssociateRQAC {
                 .append("  maxPDULength: ").append(maxPDULength)
                 .append(Property.LINE_SEPARATOR)
                 .append("  maxOpsInvoked/maxOpsPerformed: ")
-                .append(maxOpsInvoked).append("/").append(maxOpsPerformed)
+                .append(maxOpsInvoked).append(Symbol.SLASH).append(maxOpsPerformed)
                 .append(Property.LINE_SEPARATOR);
         if (identityRQ != null)
             identityRQ.promptTo(sb).append(Property.LINE_SEPARATOR);

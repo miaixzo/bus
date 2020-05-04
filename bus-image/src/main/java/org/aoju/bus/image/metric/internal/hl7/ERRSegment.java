@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Builder;
 
 /**
@@ -41,7 +42,7 @@ public class ERRSegment extends HL7Segment {
     }
 
     public ERRSegment() {
-        this('|', "^~\\&");
+        this(Symbol.C_OR, "^~\\&");
     }
 
     public ERRSegment(HL7Segment msh) {
@@ -49,7 +50,7 @@ public class ERRSegment extends HL7Segment {
     }
 
     public ERRSegment setErrorLocation(String errorLocation) {
-        setField(2, errorLocation.replace('^', getComponentSeparator()));
+        setField(2, errorLocation.replace(Symbol.C_CARET, getComponentSeparator()));
         return this;
     }
 

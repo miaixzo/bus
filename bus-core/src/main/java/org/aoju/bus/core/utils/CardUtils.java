@@ -25,6 +25,7 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -728,7 +729,7 @@ public class CardUtils {
     };
 
     public static String getname(String cardnumber) {
-        cardnumber = cardnumber.replaceAll(" ", Normal.EMPTY);
+        cardnumber = cardnumber.replaceAll(Symbol.SPACE, Normal.EMPTY);
         String charBin = cardnumber.substring(0, 6);
         int bin = Integer.valueOf(charBin);
         int index = binarySearch(bankBin, bin);

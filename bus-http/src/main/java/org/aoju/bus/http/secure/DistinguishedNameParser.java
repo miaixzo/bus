@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.secure;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import javax.security.auth.x500.X500Principal;
@@ -320,7 +321,7 @@ public final class DistinguishedNameParser {
             return null;
         }
         while (true) {
-            String attValue = "";
+            String attValue = Normal.EMPTY;
 
             if (pos == length) {
                 return null;

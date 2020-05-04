@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 import org.opencv.core.*;
 import org.opencv.core.Point;
@@ -585,7 +586,7 @@ public class ImageProcessor {
         try {
             return Imgcodecs.imwrite(file.getPath(), srcImg);
         } catch (OutOfMemoryError | CvException e) {
-            Logger.error("", e);
+            Logger.error(Normal.EMPTY, e);
             delete(file);
             return false;
         } finally {
@@ -601,7 +602,7 @@ public class ImageProcessor {
         try (ImageCV dstImg = ImageConversion.toMat(source)) {
             return Imgcodecs.imwrite(file.getPath(), dstImg);
         } catch (OutOfMemoryError | CvException e) {
-            Logger.error("", e);
+            Logger.error(Normal.EMPTY, e);
             return false;
         }
     }
@@ -681,7 +682,7 @@ public class ImageProcessor {
     public void process(Mat sourceImage, Mat resultImage, int tileSize) {
 
         if (sourceImage.rows() != resultImage.rows() || sourceImage.cols() != resultImage.cols()) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException(Normal.EMPTY);
         }
 
         final int rowTiles = (sourceImage.rows() / tileSize) + (sourceImage.rows() % tileSize != 0 ? 1 : 0);

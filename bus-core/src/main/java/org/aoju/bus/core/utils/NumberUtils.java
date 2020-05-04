@@ -1016,7 +1016,7 @@ public class NumberUtils {
                 foundDigit = true;
                 allowSigns = false;
 
-            } else if (chars[i] == '.') {
+            } else if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;
@@ -1053,7 +1053,7 @@ public class NumberUtils {
                 // can't have an E at the last byte
                 return false;
             }
-            if (chars[i] == '.') {
+            if (chars[i] == Symbol.C_DOT) {
                 if (hasDecPoint || hasExp) {
                     // two decimal points or dec in exponent
                     return false;

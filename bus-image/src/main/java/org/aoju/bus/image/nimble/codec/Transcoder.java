@@ -111,7 +111,7 @@ public class Transcoder implements Closeable {
             int tag = dis.tag();
             if (dis.level() == 0 && tag == Tag.PixelData) {
                 imageDescriptor = new ImageDescriptor(attrs);
-                initDicomOutputStream();
+                initOutputStream();
                 processPixelData();
                 postPixelData = new Attributes(dis.bigEndian());
             } else {
@@ -163,7 +163,7 @@ public class Transcoder implements Closeable {
     public Transcoder(ImageInputStream dis) throws IOException {
         this.dis = dis;
         dis.readFileMetaInformation();
-        dis.setDicomInputHandler(imageInputHandler);
+        dis.setImageInputHandler(imageInputHandler);
         dataset = new Attributes(dis.bigEndian(), 64);
         srcTransferSyntax = dis.getTransferSyntax();
         srcTransferSyntaxType = TransferSyntaxType.forUID(srcTransferSyntax);
@@ -359,7 +359,7 @@ public class Transcoder implements Closeable {
                 destTransferSyntaxType = TransferSyntaxType.NATIVE;
                 lossyCompression = false;
             }
-            initDicomOutputStream();
+            initOutputStream();
             writeDataset();
         } else if (postPixelData != null)
             dos.writeDataset(null, postPixelData);
@@ -710,7 +710,7 @@ public class Transcoder implements Closeable {
         }
     }
 
-    private void initDicomOutputStream() throws IOException {
+    private void initOutputStream() throws IOException {
         dos = new ImageOutputStream(handler.newOutputStream(this, dataset),
                 includeFileMetaInformation ? UID.ExplicitVRLittleEndian : destTransferSyntax);
         dos.setEncodingOptions(encOpts);

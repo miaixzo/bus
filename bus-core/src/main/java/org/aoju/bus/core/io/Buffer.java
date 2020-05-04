@@ -770,7 +770,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         if (byteCount > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("byteCount > Integer.MAX_VALUE: " + byteCount);
         }
-        if (byteCount == 0) return "";
+        if (byteCount == 0) return Normal.EMPTY;
 
         Segment s = head;
         if (s.pos + byteCount > s.limit) {

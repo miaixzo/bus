@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * @author Kimi Liu
  * @version 5.8.8
@@ -67,7 +69,7 @@ public class HL7Exception extends Exception {
     }
 
     private static String toAck(HL7Segment err) {
-        return err.getField(3, "").startsWith("1") ? AE : AR;
+        return err.getField(3, Normal.EMPTY).startsWith("1") ? AE : AR;
     }
 
     public final String getAcknowledgmentCode() {

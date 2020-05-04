@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 
@@ -124,7 +125,7 @@ public class AttributesFormat extends Format {
         for (int i = 0; i < tagPaths.length; i++) {
             formatBuilder.append(tokens.get(j++)).append('{').append(i);
             String tagStr = tokens.get(j++);
-            int typeStart = tagStr.indexOf(',') + 1;
+            int typeStart = tagStr.indexOf(Symbol.C_COMMA) + 1;
             boolean rnd = tagStr.startsWith("rnd");
             if (!rnd && !tagStr.startsWith("now")) {
                 int tagStrLen = typeStart != 0
@@ -143,7 +144,7 @@ public class AttributesFormat extends Format {
                 }
             }
             if (typeStart != 0) {
-                int typeEnd = tagStr.indexOf(',', typeStart);
+                int typeEnd = tagStr.indexOf(Symbol.C_COMMA, typeStart);
                 try {
                     types[i] = Type.valueOf(tagStr.substring(typeStart,
                             typeEnd < 0 ? tagStr.length() : typeEnd));

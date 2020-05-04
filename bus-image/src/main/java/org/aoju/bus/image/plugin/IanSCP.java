@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -32,7 +33,7 @@ import org.aoju.bus.image.metric.*;
 import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.image.metric.service.AbstractService;
 import org.aoju.bus.image.metric.service.BasicCEchoSCP;
-import org.aoju.bus.image.metric.service.DicomService;
+import org.aoju.bus.image.metric.service.ImageService;
 import org.aoju.bus.image.metric.service.ServiceHandler;
 import org.aoju.bus.logger.Logger;
 
@@ -46,12 +47,12 @@ import java.io.IOException;
  */
 public class IanSCP extends Device {
 
-    private final ApplicationEntity ae = new ApplicationEntity("*");
+    private final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
     private final Connection conn = new Connection();
     private File storageDir;
     private int status;
 
-    private final DicomService ianSCP =
+    private final ImageService ianSCP =
             new AbstractService(UID.InstanceAvailabilityNotificationSOPClass) {
 
                 @Override
@@ -73,8 +74,8 @@ public class IanSCP extends Device {
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
         ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addDicomService(new BasicCEchoSCP());
-        serviceHandler.addDicomService(ianSCP);
+        serviceHandler.addService(new BasicCEchoSCP());
+        serviceHandler.addService(ianSCP);
         ae.setDimseRQHandler(serviceHandler);
     }
 

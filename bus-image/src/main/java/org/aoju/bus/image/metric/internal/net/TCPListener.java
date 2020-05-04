@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.net;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.Monitoring;
 import org.aoju.bus.image.metric.SocketListener;
@@ -62,7 +63,7 @@ public class TCPListener implements SocketListener {
             conn.getDevice().execute(() -> listen());
 
         } catch (IOException e) {
-            throw new IOException("Unable to start TCPListener on " + conn.getHostname() + ":" + conn.getPort(), e);
+            throw new IOException("Unable to start TCPListener on " + conn.getHostname() + Symbol.COLON + conn.getPort(), e);
         }
     }
 

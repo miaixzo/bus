@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class HeaderFieldValues {
         char c;
         while (hasCharacter()) {
             c = chars[position];
-            if (c == '=' || c == ';') {
+            if (c == Symbol.C_EQUAL || c == Symbol.C_SEMICOLON) {
                 break;
             }
             end++;
@@ -76,13 +77,13 @@ public class HeaderFieldValues {
         char c;
         while (hasCharacter()) {
             c = chars[position];
-            if (!quoted && c == ';') {
+            if (!quoted && c == Symbol.C_SEMICOLON) {
                 break;
             }
-            if (!charEscaped && c == '"') {
+            if (!charEscaped && c == Symbol.C_DOUBLE_QUOTES) {
                 quoted = !quoted;
             }
-            charEscaped = (!charEscaped && c == '\\');
+            charEscaped = (!charEscaped && c == Symbol.C_BACKSLASH);
             end++;
             position++;
         }
@@ -99,7 +100,9 @@ public class HeaderFieldValues {
             end--;
         }
         // Remove quotation marks if exists
-        if (quoted && ((end - start) >= 2) && (chars[start] == '"') && (chars[end - 1] == '"')) {
+        if (quoted && ((end - start) >= 2)
+                && (chars[start] == Symbol.C_DOUBLE_QUOTES)
+                && (chars[end - 1] == Symbol.C_DOUBLE_QUOTES)) {
             start++;
             end--;
         }
@@ -125,11 +128,11 @@ public class HeaderFieldValues {
                 while (hasCharacter()) {
                     String name = parseValue();
                     String value = null;
-                    if (hasCharacter() && (chars[position] == '=')) {
+                    if (hasCharacter() && (chars[position] == Symbol.C_EQUAL)) {
                         position++;
                         value = parseQuotedValue();
                     }
-                    if (hasCharacter() && (chars[position] == ';')) {
+                    if (hasCharacter() && (chars[position] == Symbol.C_SEMICOLON)) {
                         position++;
                     }
 

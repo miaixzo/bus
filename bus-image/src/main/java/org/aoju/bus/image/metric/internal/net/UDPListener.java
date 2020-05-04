@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.net;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.SocketListener;
@@ -50,7 +51,7 @@ public class UDPListener implements SocketListener {
         try {
             ds = new DatagramSocket(conn.getBindPoint());
         } catch (BindException e) {
-            throw new IOException("Cannot start UDP listener on " + conn.getBindPoint().getHostName() + ":" + conn.getBindPoint().getPort(), e);
+            throw new IOException("Cannot start UDP listener on " + conn.getBindPoint().getHostName() + Symbol.COLON + conn.getBindPoint().getPort(), e);
         }
         conn.setReceiveBufferSize(ds);
         conn.getDevice().execute(() -> listen());

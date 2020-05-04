@@ -503,13 +503,13 @@ public abstract class DefaultProvider implements Provider {
     public Map<String, String> parseStringToMap(String str, boolean decode) {
         if (StringUtils.isNotEmpty(str)) {
             // 去除 URL 路径信息
-            int beginPos = str.indexOf("?");
+            int beginPos = str.indexOf(Symbol.QUESTION_MARK);
             if (beginPos > -1) {
                 str = str.substring(beginPos + 1);
             }
 
             // 去除 # 后面的内容
-            int endPos = str.indexOf("#");
+            int endPos = str.indexOf(Symbol.SHAPE);
             if (endPos > -1) {
                 str = str.substring(0, endPos);
             }
@@ -520,7 +520,7 @@ public abstract class DefaultProvider implements Provider {
             return params;
         }
 
-        if (!str.contains("&")) {
+        if (!str.contains(Symbol.AND)) {
             params.put(decode ? urlDecode(str) : str, Normal.EMPTY);
             return params;
         }
@@ -536,7 +536,7 @@ public abstract class DefaultProvider implements Provider {
         for (i = 0; i < len; i++) {
             c = str.charAt(i);
             // 键值对的分界点
-            if (c == '=') {
+            if (c == Symbol.C_EQUAL) {
                 if (null == name) {
                     // name可以是""
                     name = str.substring(pos, i);
@@ -544,7 +544,7 @@ public abstract class DefaultProvider implements Provider {
                 pos = i + 1;
             }
             // 参数对的分界点
-            else if (c == '&') {
+            else if (c == Symbol.C_AND) {
                 if (null == name && pos != i) {
                     // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
                     addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
@@ -574,7 +574,7 @@ public abstract class DefaultProvider implements Provider {
         key = decode ? urlDecode(key) : key;
         value = decode ? urlDecode(value) : value;
         if (params.containsKey(key)) {
-            params.put(key, params.get(key) + "," + value);
+            params.put(key, params.get(key) + Symbol.COMMA + value);
         } else {
             params.put(key, value);
         }

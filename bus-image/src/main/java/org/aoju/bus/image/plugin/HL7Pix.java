@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
@@ -45,13 +46,13 @@ public class HL7Pix extends Device {
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
     private String sendingApplication = "hl7pix^aoju";
-    private String receivingApplication = "";
+    private String receivingApplication = Normal.EMPTY;
     private String charset;
 
     private Socket sock;
     private MLLPConnection mllp;
 
-    public HL7Pix() throws IOException {
+    public HL7Pix() {
         super("hl7pix");
         addConnection(conn);
     }

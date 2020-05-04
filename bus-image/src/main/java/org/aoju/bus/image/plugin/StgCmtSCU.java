@@ -24,12 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.image.Dimse;
-import org.aoju.bus.image.Status;
-import org.aoju.bus.image.Tag;
-import org.aoju.bus.image.UID;
+import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -39,7 +37,7 @@ import org.aoju.bus.image.metric.internal.pdu.AAssociateRQ;
 import org.aoju.bus.image.metric.internal.pdu.Presentation;
 import org.aoju.bus.image.metric.service.AbstractService;
 import org.aoju.bus.image.metric.service.BasicCEchoSCP;
-import org.aoju.bus.image.metric.service.DicomService;
+import org.aoju.bus.image.metric.service.ImageService;
 import org.aoju.bus.image.metric.service.ServiceHandler;
 import org.aoju.bus.logger.Logger;
 
@@ -69,7 +67,7 @@ public class StgCmtSCU {
     private boolean keepAlive;
     private int splitTag;
     private int status;
-    private final DicomService stgcmtResultHandler =
+    private final ImageService stgcmtResultHandler =
             new AbstractService(UID.StorageCommitmentPushModelSOPClass) {
 
                 @Override
@@ -101,8 +99,8 @@ public class StgCmtSCU {
         this.remote = new Connection();
         this.ae = ae;
         ServiceHandler serviceHandler = new ServiceHandler();
-        serviceHandler.addDicomService(new BasicCEchoSCP());
-        serviceHandler.addDicomService(stgcmtResultHandler);
+        serviceHandler.addService(new BasicCEchoSCP());
+        serviceHandler.addService(stgcmtResultHandler);
         ae.setDimseRQHandler(serviceHandler);
     }
 
@@ -165,10 +163,10 @@ public class StgCmtSCU {
     }
 
     public boolean addInstance(Attributes inst) {
-        Common.updateAttributes(inst, attrs, uidSuffix);
+        Builder.updateAttributes(inst, attrs, uidSuffix);
         String cuid = inst.getString(Tag.SOPClassUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
-        String splitkey = splitTag != 0 ? inst.getString(splitTag) : "";
+        String splitkey = splitTag != 0 ? inst.getString(splitTag) : Normal.EMPTY;
         if (cuid == null || iuid == null || splitkey == null)
             return false;
 
@@ -219,7 +217,7 @@ public class StgCmtSCU {
     private void waitForOutstandingResults() throws InterruptedException {
         synchronized (outstandingResults) {
             while (!outstandingResults.isEmpty()) {
-                Logger.info("" + outstandingResults.size());
+                Logger.info(Normal.EMPTY + outstandingResults.size());
                 outstandingResults.wait();
             }
         }

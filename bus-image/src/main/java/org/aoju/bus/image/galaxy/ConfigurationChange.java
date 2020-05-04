@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +96,7 @@ public class ConfigurationChange {
 
         StringBuilder sb = new StringBuilder(objects.size() * 64);
         for (ModifiedObject obj : objects) {
-            sb.append(obj.changeType).append(' ').append(obj.dn).append('\n');
+            sb.append(obj.changeType).append(Symbol.C_SPACE).append(obj.dn).append('\n');
             if (obj.attributes != null) {
                 for (ModifiedAttribute attr : obj.attributes) {
                     sb.append("  ").append(attr.name).append(": ")

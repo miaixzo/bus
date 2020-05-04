@@ -25,6 +25,7 @@
 package org.aoju.bus.extra.ftp;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ArrayUtils;
@@ -82,7 +83,7 @@ public class FtpUtils extends AbstractFtp {
      * @param port 端口
      */
     public FtpUtils(String host, int port) {
-        this(host, port, "anonymous", "");
+        this(host, port, "anonymous", Normal.EMPTY);
     }
 
     /**

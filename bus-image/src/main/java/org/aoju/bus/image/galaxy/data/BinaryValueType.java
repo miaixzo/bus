@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ByteUtils;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
@@ -543,7 +544,7 @@ public enum BinaryValueType implements ValueType {
                 return false;
             }
             if (i > 0)
-                sb.append('\\');
+                sb.append(Symbol.C_BACKSLASH);
         }
         return true;
     }

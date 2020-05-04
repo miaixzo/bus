@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.metric.TransferCapability;
@@ -64,7 +65,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
             return;
         sb.append(indent).append("cuids: ");
         for (String cuid : cuids)
-            UID.promptTo(cuid, sb).append(',');
+            UID.promptTo(cuid, sb).append(Symbol.C_COMMA);
         sb.setLength(sb.length() - 1);
         sb.append(Property.LINE_SEPARATOR);
     }
@@ -75,7 +76,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
             return;
         sb.append(indent).append("aets: ");
         for (String aet : aets)
-            sb.append(aet).append(',');
+            sb.append(aet).append(Symbol.C_COMMA);
         sb.setLength(sb.length() - 1);
         sb.append(Property.LINE_SEPARATOR);
     }

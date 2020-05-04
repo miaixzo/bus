@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.logger.Logger;
 
@@ -84,7 +85,7 @@ public class SpecificCharacterSet {
         for (String code : codes) {
             if (code != null && !code.isEmpty() && !code.startsWith("ISO 2022")) {
                 Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]",
-                        Property.concat(codes, '\\'), Property.maskNull(codes[0], ""));
+                        Property.concat(codes, Symbol.C_BACKSLASH), Property.maskNull(codes[0], ""));
                 return new String[]{codes[0]};
             }
         }
@@ -161,7 +162,7 @@ public class SpecificCharacterSet {
         JIS_X_201("JIS_X0201", true, 0x284a, 0x2949, 1) {
             @Override
             public String toText(String s) {
-                return s.replace('\\', '¥');
+                return s.replace(Symbol.C_BACKSLASH, Symbol.C_CNY);
             }
         },
         TIS_620("TIS-620", true, 0x2842, 0x2d54, 1),

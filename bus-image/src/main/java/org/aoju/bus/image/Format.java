@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.DatePrecision;
 
@@ -119,7 +120,7 @@ public class Format extends java.text.Format {
             if (lastField > Calendar.MINUTE) {
                 appendXX(cal.get(Calendar.SECOND), toAppendTo);
                 if (lastField > Calendar.SECOND) {
-                    toAppendTo.append('.');
+                    toAppendTo.append(Symbol.C_DOT);
                     appendXXX(cal.get(Calendar.MILLISECOND), toAppendTo);
                 }
             }
@@ -152,7 +153,7 @@ public class Format extends java.text.Format {
             offset = -offset;
             sb.append('-');
         } else
-            sb.append('+');
+            sb.append(Symbol.C_PLUS);
         int min = offset / 60000;
         appendXX(min / 60, sb);
         appendXX(min % 60, sb);
@@ -330,10 +331,10 @@ public class Format extends java.text.Format {
     private static String tzid(String s) {
         int length = s.length();
         if (length > 4) {
-            char[] tzid = {'G', 'M', 'T', 0, 0, 0, ':', 0, 0};
+            char[] tzid = {'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0};
             s.getChars(length - 5, length - 2, tzid, 3);
             s.getChars(length - 2, length, tzid, 7);
-            if ((tzid[3] == '+' || tzid[3] == '-')
+            if ((tzid[3] == Symbol.C_PLUS || tzid[3] == Symbol.C_HYPHEN)
                     && Character.isDigit(tzid[4])
                     && Character.isDigit(tzid[5])
                     && Character.isDigit(tzid[7])
@@ -432,7 +433,7 @@ public class Format extends java.text.Format {
         for (int i = 0; i < tagPaths.length; i++) {
             formatBuilder.append(tokens.get(j++)).append('{').append(i);
             String tagStr = tokens.get(j++);
-            int typeStart = tagStr.indexOf(',') + 1;
+            int typeStart = tagStr.indexOf(Symbol.C_COMMA) + 1;
             boolean rnd = tagStr.startsWith("rnd");
             if (!rnd && !tagStr.startsWith("now")) {
                 int tagStrLen = typeStart != 0
@@ -451,7 +452,7 @@ public class Format extends java.text.Format {
                 }
             }
             if (typeStart != 0) {
-                int typeEnd = tagStr.indexOf(',', typeStart);
+                int typeEnd = tagStr.indexOf(Symbol.C_COMMA, typeStart);
                 try {
                     types[i] = Type.valueOf(tagStr.substring(typeStart,
                             typeEnd < 0 ? tagStr.length() : typeEnd));

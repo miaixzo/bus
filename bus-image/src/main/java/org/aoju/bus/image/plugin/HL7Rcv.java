@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.galaxy.io.SAXTransformer;
 import org.aoju.bus.image.metric.Connection;
@@ -39,7 +40,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.net.Socket;
 import java.net.URL;
 import java.util.Date;
 
@@ -55,33 +55,28 @@ public class HL7Rcv {
 
     private final Device device = new Device("hl7rcv");
     private final HL7DeviceExtension hl7Ext = new HL7DeviceExtension();
-    private final HL7Application hl7App = new HL7Application("*");
+    private final HL7Application hl7App = new HL7Application(Symbol.STAR);
     private final Connection conn = new Connection();
     private String storageDir;
     private String charset;
     private Templates tpls;
     private String[] xsltParams;
-    private final HL7MessageListener handler = new HL7MessageListener() {
-
-        @Override
-        public UnparsedHL7Message onMessage(HL7Application hl7App, Connection conn, Socket s, UnparsedHL7Message msg)
-                throws HL7Exception {
-            try {
-                return HL7Rcv.this.onMessage(msg);
-            } catch (Exception e) {
-                throw new HL7Exception(
-                        new ERRSegment(msg.msh()).setUserMessage(e.getMessage()),
-                        e);
-            }
+    private final HL7MessageListener handler = (hl7App, conn, s, msg) -> {
+        try {
+            return HL7Rcv.this.onMessage(msg);
+        } catch (Exception e) {
+            throw new HL7Exception(
+                    new ERRSegment(msg.msh()).setUserMessage(e.getMessage()),
+                    e);
         }
     };
 
-    public HL7Rcv() throws IOException {
+    public HL7Rcv() {
         conn.setProtocol(Connection.Protocol.HL7);
         device.addDeviceExtension(hl7Ext);
         device.addConnection(conn);
         hl7Ext.addHL7Application(hl7App);
-        hl7App.setAcceptedMessageTypes("*");
+        hl7App.setAcceptedMessageTypes(Symbol.STAR);
         hl7App.addConnection(conn);
         hl7App.setHL7MessageListener(handler);
     }

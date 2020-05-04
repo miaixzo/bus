@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -39,7 +40,7 @@ import java.io.Writer;
 public class HL7ContentHandler extends DefaultHandler {
 
     private final Writer writer;
-    private final char[] escape = {'\\', 0, '\\'};
+    private final char[] escape = {Symbol.C_BACKSLASH, 0, Symbol.C_BACKSLASH};
     private final char[] delimiters = Delimiter.DEFAULT.toCharArray();
     private boolean ignoreCharacters = true;
 

@@ -102,7 +102,7 @@ public class XmlUtils {
      * @return XML文档对象
      */
     public static Document readXML(String pathOrContent) {
-        if (StringUtils.startWith(pathOrContent, '<')) {
+        if (StringUtils.startWith(pathOrContent, Symbol.C_LT)) {
             return parseXml(pathOrContent);
         }
         return readXML(FileUtils.file(pathOrContent));

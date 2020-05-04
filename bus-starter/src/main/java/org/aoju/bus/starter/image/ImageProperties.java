@@ -29,7 +29,7 @@ import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 文档预览配置类
+ * 影像解析配置
  *
  * @author Kimi Liu
  * @version 5.8.8
@@ -38,5 +38,33 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = BusXExtend.IMAGE)
 public class ImageProperties {
+
+    /**
+     * 服务器地址
+     */
+    String host;
+    /**
+     * 端口信息
+     */
+    String ports;
+    /**
+     * 服务名称
+     */
+    String aeTitle;
+
+    /**
+     * 原始文件保存路径
+     */
+    String dcmPath;
+
+    /**
+     * 转换后图片保存路径
+     */
+    String imgPath;
+
+    /**
+     * 是否启用opencv
+     */
+    boolean opencv;
 
 }

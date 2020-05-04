@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * @author Kimi Liu
  * @version 5.8.8
@@ -60,7 +62,7 @@ public enum BinaryPrefix {
                     unitStart--;
                 String val = s.substring(0, unitStart);
                 long unitSize = unitStart < unitEnd ? valueOf(s.substring(unitStart, unitEnd)).size() : 1L;
-                return (s.indexOf('.') >= 0)
+                return (s.indexOf(Symbol.C_DOT) >= 0)
                         ? (long) (Double.parseDouble(val) * unitSize)
                         : Long.parseLong(val) * unitSize;
             } catch (IllegalArgumentException e) {

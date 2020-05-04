@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.logger.Logger;
 
@@ -37,37 +38,37 @@ import java.util.TimeZone;
  */
 public enum VR {
 
-    AE(0x4145, 8, ' ', StringValueType.ASCII, false),
-    AS(0x4153, 8, ' ', StringValueType.ASCII, false),
+    AE(0x4145, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
+    AS(0x4153, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
     AT(0x4154, 8, 0, BinaryValueType.TAG, false),
-    CS(0x4353, 8, ' ', StringValueType.ASCII, false),
-    DA(0x4441, 8, ' ', StringValueType.DA, false),
-    DS(0x4453, 8, ' ', StringValueType.DS, false),
-    DT(0x4454, 8, ' ', StringValueType.DT, false),
+    CS(0x4353, 8, Symbol.C_SPACE, StringValueType.ASCII, false),
+    DA(0x4441, 8, Symbol.C_SPACE, StringValueType.DA, false),
+    DS(0x4453, 8, Symbol.C_SPACE, StringValueType.DS, false),
+    DT(0x4454, 8, Symbol.C_SPACE, StringValueType.DT, false),
     FD(0x4644, 8, 0, BinaryValueType.DOUBLE, false),
     FL(0x464c, 8, 0, BinaryValueType.FLOAT, false),
-    IS(0x4953, 8, ' ', StringValueType.IS, false),
-    LO(0x4c4f, 8, ' ', StringValueType.STRING, false),
-    LT(0x4c54, 8, ' ', StringValueType.TEXT, false),
+    IS(0x4953, 8, Symbol.C_SPACE, StringValueType.IS, false),
+    LO(0x4c4f, 8, Symbol.C_SPACE, StringValueType.STRING, false),
+    LT(0x4c54, 8, Symbol.C_SPACE, StringValueType.TEXT, false),
     OB(0x4f42, 12, 0, BinaryValueType.BYTE, true),
     OD(0x4f44, 12, 0, BinaryValueType.DOUBLE, true),
     OF(0x4f46, 12, 0, BinaryValueType.FLOAT, true),
     OL(0x4f4c, 12, 0, BinaryValueType.INT, true),
     OW(0x4f57, 12, 0, BinaryValueType.SHORT, true),
-    PN(0x504e, 8, ' ', StringValueType.PN, false),
-    SH(0x5348, 8, ' ', StringValueType.STRING, false),
+    PN(0x504e, 8, Symbol.C_SPACE, StringValueType.PN, false),
+    SH(0x5348, 8, Symbol.C_SPACE, StringValueType.STRING, false),
     SL(0x534c, 8, 0, BinaryValueType.INT, false),
     SQ(0x5351, 12, 0, SequenceValueType.SQ, false),
     SS(0x5353, 8, 0, BinaryValueType.SHORT, false),
-    ST(0x5354, 8, ' ', StringValueType.TEXT, false),
-    TM(0x544d, 8, ' ', StringValueType.TM, false),
-    UC(0x5543, 12, ' ', StringValueType.STRING, false),
+    ST(0x5354, 8, Symbol.C_SPACE, StringValueType.TEXT, false),
+    TM(0x544d, 8, Symbol.C_SPACE, StringValueType.TM, false),
+    UC(0x5543, 12, Symbol.C_SPACE, StringValueType.STRING, false),
     UI(0x5549, 8, 0, StringValueType.ASCII, false),
     UL(0x554c, 8, 0, BinaryValueType.UINT, false),
     UN(0x554e, 12, 0, BinaryValueType.BYTE, true),
-    UR(0x5552, 12, ' ', StringValueType.UR, false),
+    UR(0x5552, 12, Symbol.C_SPACE, StringValueType.UR, false),
     US(0x5553, 8, 0, BinaryValueType.USHORT, false),
-    UT(0x5554, 12, ' ', StringValueType.TEXT, false);
+    UT(0x5554, 12, Symbol.C_SPACE, StringValueType.TEXT, false);
 
     private static final VR[] VALUE_OF = new VR[indexOf(UT) + 1];
 

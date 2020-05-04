@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.streams;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -67,7 +69,7 @@ public class QueueInputStream extends InputStream {
         StringBuilder sb = new StringBuilder();
         while (true) {
             switch (peek()) {
-                case ' ':
+                case Symbol.C_SPACE:
                 case '\r':
                 case '\n':
                 case -1:

@@ -119,10 +119,10 @@ public class Typed implements ParameterizedType, Serializable {
             } else {
                 buf.append(useOwner.toString());
             }
-            buf.append('.').append(raw.getSimpleName());
+            buf.append(Symbol.C_DOT).append(raw.getSimpleName());
         }
 
-        appendAllTo(buf.append('<'), ", ", this.actualTypeArguments).append('>');
+        appendAllTo(buf.append(Symbol.C_LT), ", ", this.actualTypeArguments).append(Symbol.C_GT);
         return buf.toString();
     }
 

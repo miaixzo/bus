@@ -1223,7 +1223,7 @@ public class FileUtils {
         try {
             jarFile = new JarFile(path.substring(0, index));
             // 防止出现jar!/org/aoju/这类路径导致文件找不到
-            return ZipUtils.listFileNames(jarFile, StringUtils.removePrefix(path.substring(index + 1), "/"));
+            return ZipUtils.listFileNames(jarFile, StringUtils.removePrefix(path.substring(index + 1), Symbol.SLASH));
         } catch (IOException e) {
             throw new InstrumentException(StringUtils.format("Can not read file path of [{}]", path), e);
         } finally {

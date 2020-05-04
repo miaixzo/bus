@@ -147,7 +147,7 @@ public class Dcm2Xml {
         SAXWriter saxWriter = new SAXWriter(th);
         saxWriter.setIncludeKeyword(includeKeyword);
         saxWriter.setIncludeNamespaceDeclaration(includeNamespaceDeclaration);
-        dis.setDicomInputHandler(saxWriter);
+        dis.setImageInputHandler(saxWriter);
         dis.readDataset(-1, -1);
     }
 

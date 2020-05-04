@@ -25,6 +25,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Cookie;
 import org.aoju.bus.http.UnoUrl;
@@ -107,9 +108,9 @@ public final class NetCookieJar implements CookieJar {
         List<Cookie> result = new ArrayList<>();
         for (int pos = 0, limit = header.length(), pairEnd; pos < limit; pos = pairEnd + 1) {
             pairEnd = Builder.delimiterOffset(header, pos, limit, ";,");
-            int equalsSign = Builder.delimiterOffset(header, pos, pairEnd, '=');
+            int equalsSign = Builder.delimiterOffset(header, pos, pairEnd, Symbol.C_EQUAL);
             String name = Builder.trimSubstring(header, pos, equalsSign);
-            if (name.startsWith("$")) continue;
+            if (name.startsWith(Symbol.DOLLAR)) continue;
 
             // We have either name=value or just a name.
             String value = equalsSign < pairEnd

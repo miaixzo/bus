@@ -24,6 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
@@ -90,9 +93,9 @@ public class HL7Message extends ArrayList<HL7Segment> {
         HL7Segment qpd = new HL7Segment(5);
         qpd.setField(0, "QPD");
         qpd.setField(1, "IHE PIX Query");
-        qpd.setField(2, "QRY" + msh.getField(9, ""));
+        qpd.setField(2, "QRY" + msh.getField(9, Normal.EMPTY));
         qpd.setField(3, pid);
-        qpd.setField(4, HL7Segment.concat(domains, '~'));
+        qpd.setField(4, HL7Segment.concat(domains, Symbol.C_TILDE));
         HL7Segment rcp = new HL7Segment(8);
         rcp.setField(0, "RCP");
         rcp.setField(1, "I");

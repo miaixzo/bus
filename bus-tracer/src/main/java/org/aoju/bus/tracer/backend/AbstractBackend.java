@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.backend;
 
-
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.config.PropertiesBasedTraceFilterConfiguration;
 import org.aoju.bus.tracer.config.PropertyChain;

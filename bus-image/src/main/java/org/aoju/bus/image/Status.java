@@ -25,6 +25,7 @@
 package org.aoju.bus.image;
 
 import lombok.Data;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Progress;
@@ -323,7 +324,7 @@ public class Status {
         if (e != null) {
             hasFailed = true;
             if (msg.length() > 0) {
-                msg.append(" ");
+                msg.append(Symbol.SPACE);
             }
             msg.append(e.getLocalizedMessage());
         }

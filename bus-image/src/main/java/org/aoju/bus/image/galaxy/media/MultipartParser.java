@@ -25,6 +25,7 @@
 package org.aoju.bus.image.galaxy.media;
 
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.io.EOFException;
@@ -98,7 +99,7 @@ public class MultipartParser {
                 int k = start;
                 while (k < length) {
                     char c = header.charAt(k);
-                    if (c != ' ' && c != '\t') {
+                    if (c != Symbol.C_SPACE && c != '\t') {
                         break;
                     }
                     ++k;
@@ -107,18 +108,18 @@ public class MultipartParser {
                     break;
                 }
                 end = parseEOF(header, k);
-                buf.append(" ");
+                buf.append(Symbol.SPACE);
                 buf.append(header, k, end);
                 start = end + 2;
             }
 
             String field = buf.toString();
-            int index = field.indexOf(':');
+            int index = field.indexOf(Symbol.C_COLON);
             if (index == -1) {
                 continue;
             }
             String name = field.substring(0, index).trim();
-            String value = field.substring(field.indexOf(':') + 1).trim();
+            String value = field.substring(field.indexOf(Symbol.C_COLON) + 1).trim();
 
             if (headers.containsKey(name)) {
                 headers.put(name, headers.get(name) + "," + value);

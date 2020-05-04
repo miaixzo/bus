@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -87,7 +89,7 @@ public class DcmDir {
                 Attributes dataset = parser.toDataset(nextLine);
                 if (dataset != null) {
                     String iuid = dataset.getString(Tag.SOPInstanceUID);
-                    char prompt = '.';
+                    char prompt = Symbol.C_DOT;
                     Attributes fmi = null;
                     if (iuid != null) {
                         fmi = dataset.createFileMetaInformation(UID.ImplicitVRLittleEndian);
@@ -231,7 +233,7 @@ public class DcmDir {
         int indexLen = index.length();
         int i = 1;
         while (rec != null) {
-            index.append(i++).append('.');
+            index.append(i++).append(Symbol.C_DOT);
             list(heading(rec, index), rec);
             list(inUse
                             ? in.findLowerDirectoryRecordInUse(rec, false)
@@ -247,9 +249,9 @@ public class DcmDir {
     private String heading(Attributes rec, StringBuilder index) {
         int prefixLen = index.length();
         try {
-            return index.append(' ')
-                    .append(rec.getString(Tag.DirectoryRecordType, ""))
-                    .append(':').toString();
+            return index.append(Symbol.C_SPACE)
+                    .append(rec.getString(Tag.DirectoryRecordType, Normal.EMPTY))
+                    .append(Symbol.C_COLON).toString();
         } finally {
             index.setLength(prefixLen);
         }
@@ -288,7 +290,7 @@ public class DcmDir {
                 } catch (Exception ignore) {
                 }
         }
-        char prompt = '.';
+        char prompt = Symbol.C_DOT;
         if (fmi == null) {
             fmi = dataset.createFileMetaInformation(UID.ImplicitVRLittleEndian);
             prompt = 'F';

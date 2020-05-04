@@ -192,7 +192,7 @@ public class FastDateParser extends AbstractFormater implements DateParser {
             }
         }
         for (final String symbol : sorted) {
-            simpleQuote(regex, symbol).append('|');
+            simpleQuote(regex, symbol).append(Symbol.C_OR);
         }
         return values;
     }

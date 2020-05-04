@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Device;
 
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class WebApplication {
     }
 
     public void setServicePath(String servicePath) {
-        this.servicePath = servicePath.startsWith("/") ? servicePath : '/' + servicePath;
+        this.servicePath = servicePath.startsWith(Symbol.SLASH) ? servicePath : Symbol.C_SLASH + servicePath;
     }
 
     public String getAETitle() {
@@ -175,7 +176,7 @@ public class WebApplication {
         return new StringBuilder(64)
                 .append(conn.isTls() ? "https://" : "http://")
                 .append(conn.getHostname())
-                .append(':')
+                .append(Symbol.C_COLON)
                 .append(conn.getPort())
                 .append(servicePath);
     }

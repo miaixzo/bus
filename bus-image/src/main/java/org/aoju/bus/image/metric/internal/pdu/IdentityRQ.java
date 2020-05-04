@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 
 import java.nio.charset.StandardCharsets;
@@ -143,7 +144,7 @@ public class IdentityRQ {
             sb.append(Property.LINE_SEPARATOR)
                     .append("    passcode: ");
             for (int i = secondaryField.length; --i >= 0; )
-                sb.append('*');
+                sb.append(Symbol.C_STAR);
         } else if (secondaryField.length > 0) {
             sb.append(Property.LINE_SEPARATOR)
                     .append("    secondaryField: byte[")

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import javax.xml.stream.XMLStreamReader;
@@ -66,7 +67,7 @@ public final class TagValue {
     }
 
     public static String[] getStringArrayTagAttribute(XMLStreamReader xmler, String attribute, String[] defaultValue) {
-        return getStringArrayTagAttribute(xmler, attribute, defaultValue, "\\");
+        return getStringArrayTagAttribute(xmler, attribute, defaultValue, Symbol.BACKSLASH);
     }
 
     public static String[] getStringArrayTagAttribute(XMLStreamReader xmler, String attribute, String[] defaultValue,
@@ -96,7 +97,7 @@ public final class TagValue {
     }
 
     public static int[] getIntArrayTagAttribute(XMLStreamReader xmler, String attribute, int[] defaultValue) {
-        return getIntArrayTagAttribute(xmler, attribute, defaultValue, "\\");
+        return getIntArrayTagAttribute(xmler, attribute, defaultValue, Symbol.BACKSLASH);
     }
 
     public static int[] getIntArrayTagAttribute(XMLStreamReader xmler, String attribute, int[] defaultValue,
@@ -130,7 +131,7 @@ public final class TagValue {
     }
 
     public static double[] getDoubleArrayTagAttribute(XMLStreamReader xmler, String attribute, double[] defaultValue) {
-        return getDoubleArrayTagAttribute(xmler, attribute, defaultValue, "\\");
+        return getDoubleArrayTagAttribute(xmler, attribute, defaultValue, Symbol.BACKSLASH);
     }
 
     public static double[] getDoubleArrayTagAttribute(XMLStreamReader xmler, String attribute, double[] defaultValue,
@@ -164,7 +165,7 @@ public final class TagValue {
     }
 
     public static float[] getFloatArrayTagAttribute(XMLStreamReader xmler, String attribute, float[] defaultValue) {
-        return getFloatArrayTagAttribute(xmler, attribute, defaultValue, "\\");
+        return getFloatArrayTagAttribute(xmler, attribute, defaultValue, Symbol.BACKSLASH);
     }
 
     public static float[] getFloatArrayTagAttribute(XMLStreamReader xmler, String attribute, float[] defaultValue,
@@ -206,7 +207,7 @@ public final class TagValue {
 
     public static TemporalAccessor[] getDatesFromElement(XMLStreamReader xmler, String attribute, TagCamel.TagType type,
                                                          TemporalAccessor[] defaultValue) {
-        return getDatesFromElement(xmler, attribute, type, defaultValue, "\\");
+        return getDatesFromElement(xmler, attribute, type, defaultValue, Symbol.BACKSLASH);
     }
 
     public static TemporalAccessor[] getDatesFromElement(XMLStreamReader xmler, String attribute, TagCamel.TagType type,

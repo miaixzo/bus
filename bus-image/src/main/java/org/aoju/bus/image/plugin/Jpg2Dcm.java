@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -196,7 +197,7 @@ public class Jpg2Dcm {
 
         static FileType valueOf(File file) {
             String contentType = FileTypeMap.getDefaultFileTypeMap().getContentType(file);
-            return valueOf(contentType.substring(contentType.lastIndexOf("/") + 1));
+            return valueOf(contentType.substring(contentType.lastIndexOf(Symbol.SLASH) + 1));
         }
 
         public String getSOPClassUID() {

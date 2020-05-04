@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.tuple;
 
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.builder.CompareBuilder;
 import org.aoju.bus.core.lang.Symbol;
 
@@ -47,6 +48,7 @@ import java.util.Objects;
  * @version 5.8.8
  * @since JDK 1.8+
  */
+@ThreadSafe
 public abstract class Pair<L, R> implements Map.Entry<L, R>, Comparable<Pair<L, R>>, Serializable {
 
     /**
