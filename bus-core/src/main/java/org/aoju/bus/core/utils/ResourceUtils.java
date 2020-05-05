@@ -54,7 +54,7 @@ public class ResourceUtils {
      * @since 3.1.1
      */
     public static String readUtf8Str(String resource) {
-        return new ClassPathResource(resource).readUtf8Str();
+        return getResourceObj(resource).readStr(org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
