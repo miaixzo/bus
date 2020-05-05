@@ -53,12 +53,12 @@ import java.util.Properties;
  */
 public class StoreSCP extends BasicCStoreSCP {
 
-    private final Device device = new Device("storescp");
-    private final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
-    private final Connection conn = new Connection();
-    private final String storageDir;
-    private final List<Node> authorizedCallingNodes;
-    private final Rollers rollers;
+    public final Device device = new Device("storescp");
+    public final ApplicationEntity ae = new ApplicationEntity(Symbol.STAR);
+    public final Connection conn = new Connection();
+    public final String storageDir;
+    public final List<Node> authorizedCallingNodes;
+    public Rollers rollers;
     private volatile int status = Status.Success;
 
     /**
@@ -69,20 +69,12 @@ public class StoreSCP extends BasicCStoreSCP {
     }
 
     /**
-     * @param storageDir the base path of storage folder
-     * @param rollers    the service
-     */
-    public StoreSCP(String storageDir, Rollers rollers) {
-        this(storageDir, null, rollers);
-    }
-
-    /**
      * @param storageDir             the base path of storage folder
      * @param authorizedCallingNodes the list of authorized nodes to call store files (authorizedCallingNodes allow to check hostname
      *                               unlike acceptedCallingAETitles)
-     * @param rollers                the service
      */
-    public StoreSCP(String storageDir, List<Node> authorizedCallingNodes, Rollers rollers) {
+    public StoreSCP(String storageDir,
+                    List<Node> authorizedCallingNodes) {
         this.storageDir = Objects.requireNonNull(storageDir);
         device.setDimseRQHandler(createServiceRegistry());
         device.addConnection(conn);
@@ -90,7 +82,6 @@ public class StoreSCP extends BasicCStoreSCP {
         ae.setAssociationAcceptor(true);
         ae.addConnection(conn);
         this.authorizedCallingNodes = authorizedCallingNodes;
-        this.rollers = rollers;
     }
 
     private static void renameTo(Association as, File from, File dest) throws IOException {
@@ -201,6 +192,14 @@ public class StoreSCP extends BasicCStoreSCP {
 
     public Device getDevice() {
         return device;
+    }
+
+    public Rollers getRollers() {
+        return rollers;
+    }
+
+    public void setRollers(Rollers rollers) {
+        this.rollers = rollers;
     }
 
 }

@@ -14,9 +14,9 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class StoreSCPCentre extends AbstractCentre {
 
+    protected StoreSCP storeSCP;
     protected ExecutorService executor;
     protected ScheduledExecutorService scheduledExecutor;
-    private StoreSCP storeSCP;
 
     public static StoreSCPCentre Builder() {
         return new StoreSCPCentre();
@@ -80,6 +80,9 @@ public class StoreSCPCentre extends AbstractCentre {
 
     @Override
     public StoreSCPCentre build() {
+        if (executor != null) {
+            throw new IllegalStateException("Already started");
+        }
         if (ObjectUtils.isEmpty(node)) {
             throw new NullPointerException("The node cannot be null.");
         }
@@ -89,7 +92,9 @@ public class StoreSCPCentre extends AbstractCentre {
         if (ObjectUtils.isEmpty(device)) {
             throw new NullPointerException("The device cannot be null.");
         }
-
+        if (rollers != null) {
+            storeSCP.setRollers(rollers);
+        }
         executor = executerService();
         scheduledExecutor = scheduledExecuterService();
 

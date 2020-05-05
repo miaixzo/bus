@@ -125,9 +125,6 @@ public class Device implements Serializable {
 
     public void start() {
         try {
-            if (executor != null) {
-                throw new IllegalStateException("Already started");
-            }
             bindConnections();
         } catch (Exception e) {
             stop();
@@ -1234,7 +1231,7 @@ public class Device implements Serializable {
         return sb.append(indent).append(']');
     }
 
-    public void reconfigure(Device from) throws IOException, GeneralSecurityException {
+    public void reconfigure(Device from) {
         setDeviceAttributes(from);
         reconfigureConnections(from);
         reconfigureApplicationEntities(from);
