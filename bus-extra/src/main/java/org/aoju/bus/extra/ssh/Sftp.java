@@ -29,12 +29,14 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.extra.ftp.AbstractFtp;
+import org.aoju.bus.extra.ftp.FtpConfig;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -83,7 +85,17 @@ public class Sftp extends AbstractFtp {
      * @param charset 编码
      */
     public Sftp(String sshHost, int sshPort, String sshUser, String sshPass, Charset charset) {
-        init(sshHost, sshPort, sshUser, sshPass, charset);
+        this(new FtpConfig(sshHost, sshPort, sshUser, sshPass, charset));
+    }
+
+    /**
+     * 构造
+     *
+     * @param config FTP配置
+     */
+    public Sftp(FtpConfig config) {
+        super(config);
+        init(config);
     }
 
     /**
@@ -102,6 +114,7 @@ public class Sftp extends AbstractFtp {
      * @param charset 编码
      */
     public Sftp(Session session, Charset charset) {
+        super(FtpConfig.create().setCharset(charset));
         init(session, charset);
     }
 
@@ -112,6 +125,7 @@ public class Sftp extends AbstractFtp {
      * @param charset 编码
      */
     public Sftp(ChannelSftp channel, Charset charset) {
+        super(FtpConfig.create().setCharset(charset));
         init(channel, charset);
     }
 
@@ -125,11 +139,23 @@ public class Sftp extends AbstractFtp {
      * @param charset 编码
      */
     public void init(String sshHost, int sshPort, String sshUser, String sshPass, Charset charset) {
-        this.host = sshHost;
-        this.port = sshPort;
-        this.user = sshUser;
-        this.password = sshPass;
         init(SSHUtils.getSession(sshHost, sshPort, sshUser, sshPass), charset);
+    }
+
+    /**
+     * 初始化
+     */
+    public void init() {
+        init(this.ftpConfig);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param config FTP配置
+     */
+    public void init(FtpConfig config) {
+        init(config.getHost(), config.getPort(), config.getUser(), config.getPassword(), config.getCharset());
     }
 
     /**
@@ -140,7 +166,7 @@ public class Sftp extends AbstractFtp {
      */
     public void init(Session session, Charset charset) {
         this.session = session;
-        init(SSHUtils.openSftp(session), charset);
+        init(SSHUtils.openSftp(session, (int) this.ftpConfig.getConnectionTimeout()), charset);
     }
 
     /**
@@ -150,7 +176,7 @@ public class Sftp extends AbstractFtp {
      * @param charset 编码
      */
     public void init(ChannelSftp channel, Charset charset) {
-        this.charset = charset;
+        this.ftpConfig.setCharset(charset);
         try {
             channel.setFilenameEncoding(charset.toString());
         } catch (SftpException e) {
@@ -161,8 +187,8 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public Sftp reconnectIfTimeout() {
-        if (false == this.cd(Symbol.SLASH) && StringUtils.isNotBlank(this.host)) {
-            init(this.host, this.port, this.user, this.password, this.charset);
+        if (false == this.cd(Symbol.SLASH) && StringUtils.isNotBlank(this.ftpConfig.getHost())) {
+            init(this.ftpConfig);
         }
         return this;
     }
@@ -353,8 +379,8 @@ public class Sftp extends AbstractFtp {
     }
 
     @Override
-    public boolean upload(String srcFilePath, File destFile) {
-        put(srcFilePath, FileUtils.getAbsolutePath(destFile));
+    public boolean upload(String destPath, File file) {
+        put(FileUtils.getAbsolutePath(file), destPath);
         return true;
     }
 
@@ -373,13 +399,26 @@ public class Sftp extends AbstractFtp {
      * 将本地文件上传到目标服务器,目标文件名为destPath,若destPath为目录,则目标文件名将与srcFilePath文件名相同
      *
      * @param srcFilePath 本地文件路径
-     * @param destPath    目标路径,
+     * @param destPath    目标路径
      * @param mode        {@link Mode} 模式
      * @return this
      */
     public Sftp put(String srcFilePath, String destPath, Mode mode) {
+        return put(srcFilePath, destPath, null, mode);
+    }
+
+    /**
+     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与srcFilePath文件名相同。
+     *
+     * @param srcFilePath 本地文件路径
+     * @param destPath    目标路径，
+     * @param monitor     上传进度监控，通过实现此接口完成进度显示
+     * @param mode        {@link Mode} 模式
+     * @return this
+     */
+    public Sftp put(String srcFilePath, String destPath, SftpProgressMonitor monitor, Mode mode) {
         try {
-            channel.put(srcFilePath, destPath, mode.ordinal());
+            channel.put(srcFilePath, destPath, monitor, mode.ordinal());
         } catch (SftpException e) {
             throw new InstrumentException(e);
         }

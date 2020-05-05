@@ -151,7 +151,6 @@ public class SSHUtils {
      * @param privateKeyPath 私钥的路径
      * @param passphrase     私钥文件的密码，可以为null
      * @return SSH会话
-     * @since 5.0.0
      */
     public static Session createSession(String sshHost, int sshPort, String sshUser, String privateKeyPath, byte[] passphrase) {
         Assert.notEmpty(privateKeyPath, "PrivateKey Path must be not empty!");
@@ -174,7 +173,6 @@ public class SSHUtils {
      * @param sshPort 端口
      * @param sshUser 用户名，如果为null，默认root
      * @return {@link Session}
-     * @since 5.0.3
      */
     public static Session createSession(JSch jsch, String sshHost, int sshPort, String sshUser) {
         Assert.notEmpty(sshHost, "SSH Host must be not empty!");
@@ -266,30 +264,18 @@ public class SSHUtils {
      * @return {@link ChannelSftp}
      */
     public static ChannelSftp openSftp(Session session) {
-        return (ChannelSftp) openChannel(session, ChannelType.SFTP);
+        return openSftp(session, 0);
     }
 
     /**
-     * 创建Sftp
+     * 打开SFTP连接
      *
-     * @param sshHost 远程主机
-     * @param sshPort 远程主机端口
-     * @param sshUser 远程主机用户名
-     * @param sshPass 远程主机密码
-     * @return {@link Sftp}
+     * @param session Session会话
+     * @param timeout 连接超时时长，单位毫秒
+     * @return {@link ChannelSftp}
      */
-    public static Sftp createSftp(String sshHost, int sshPort, String sshUser, String sshPass) {
-        return new Sftp(sshHost, sshPort, sshUser, sshPass);
-    }
-
-    /**
-     * 创建Sftp
-     *
-     * @param session SSH会话
-     * @return {@link Sftp}
-     */
-    public static Sftp createSftp(Session session) {
-        return new Sftp(session);
+    public static ChannelSftp openSftp(Session session, int timeout) {
+        return (ChannelSftp) openChannel(session, ChannelType.SFTP, timeout);
     }
 
     /**
@@ -317,6 +303,47 @@ public class SSHUtils {
             throw new InstrumentException(e);
         }
         return channel;
+    }
+
+    /**
+     * 打开Channel连接
+     *
+     * @param session     Session会话
+     * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
+     * @param timeout     连接超时时长，单位毫秒
+     * @return {@link Channel}
+     */
+    public static Channel openChannel(Session session, ChannelType channelType, int timeout) {
+        final Channel channel = createChannel(session, channelType);
+        try {
+            channel.connect(Math.max(timeout, 0));
+        } catch (JSchException e) {
+            throw new InstrumentException(e);
+        }
+        return channel;
+    }
+
+    /**
+     * 创建Sftp
+     *
+     * @param sshHost 远程主机
+     * @param sshPort 远程主机端口
+     * @param sshUser 远程主机用户名
+     * @param sshPass 远程主机密码
+     * @return {@link Sftp}
+     */
+    public static Sftp createSftp(String sshHost, int sshPort, String sshUser, String sshPass) {
+        return new Sftp(sshHost, sshPort, sshUser, sshPass);
+    }
+
+    /**
+     * 创建Sftp
+     *
+     * @param session SSH会话
+     * @return {@link Sftp}
+     */
+    public static Sftp createSftp(Session session) {
+        return new Sftp(session);
     }
 
     /**
