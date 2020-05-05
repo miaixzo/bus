@@ -43,7 +43,7 @@ import java.nio.file.Path;
  * 本地文件上传
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class LocalFileProvider extends AbstractProvider {

@@ -30,7 +30,7 @@ import org.aoju.bus.proxy.Provider;
  * 总是返回相同的对象
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class AlwaysProvider implements Provider {

@@ -33,7 +33,7 @@ import com.sun.jna.PointerType;
  * 与Udev对话的接口
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public interface Udev extends Library {

@@ -41,7 +41,7 @@ import java.util.Map;
  * Sound card data obtained via /proc/asound directory
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 @Immutable

@@ -39,7 +39,7 @@ import java.util.Arrays;
  * Cors 跨域支持
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {CorsProperties.class})

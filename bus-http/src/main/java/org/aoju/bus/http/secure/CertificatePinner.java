@@ -45,7 +45,7 @@ import java.util.*;
  * 则{@link CertificatePinner}不能用于pin自签名证书
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public final class CertificatePinner {

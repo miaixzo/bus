@@ -36,7 +36,7 @@ import java.lang.annotation.*;
  * 后期用途：可能会直接基于 class 进行反射创建,要求有些类需要显示指定这个注解
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 @Documented
