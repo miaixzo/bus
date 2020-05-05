@@ -97,11 +97,6 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     @Override
-    public String readUtf8Str() throws InstrumentException {
-        return resources.get(cursor).readUtf8Str();
-    }
-
-    @Override
     public byte[] readBytes() throws InstrumentException {
         return resources.get(cursor).readBytes();
     }
@@ -117,7 +112,7 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     @Override
-    public Resource next() {
+    public synchronized Resource next() {
         if (cursor >= resources.size()) {
             throw new ConcurrentModificationException();
         }

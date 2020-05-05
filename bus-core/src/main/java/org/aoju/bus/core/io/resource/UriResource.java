@@ -111,11 +111,6 @@ public class UriResource implements Resource {
     }
 
     @Override
-    public String readUtf8Str() throws InstrumentException {
-        return readStr(org.aoju.bus.core.lang.Charset.UTF_8);
-    }
-
-    @Override
     public byte[] readBytes() throws InstrumentException {
         InputStream in = null;
         try {

@@ -197,7 +197,7 @@ public class Normal {
      * 表示为真的字符串
      */
     public static final String[] TRUE_ARRAY = {
-            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确"
+            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确", "對", "√"
     };
     /**
      * 用于建立十六进制字符的输出的小写字符数组

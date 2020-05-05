@@ -172,6 +172,21 @@ public class TableMap<K, V> implements Map<K, V>, Serializable {
         );
     }
 
+
+    /**
+     * 根据value获得对应的key,只返回找到的第一个value对应的key值
+     *
+     * @param value 值
+     * @return 键
+     */
+    public K getKey(V value) {
+        final int index = values.indexOf(value);
+        if (index > -1 && index < keys.size()) {
+            return keys.get(index);
+        }
+        return null;
+    }
+
     private static class Entry<K, V> implements Map.Entry<K, V> {
 
         private K key;

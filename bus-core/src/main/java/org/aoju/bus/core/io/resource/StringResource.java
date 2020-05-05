@@ -105,11 +105,6 @@ public class StringResource implements Resource {
     }
 
     @Override
-    public String readUtf8Str() throws InstrumentException {
-        return this.data;
-    }
-
-    @Override
     public byte[] readBytes() throws InstrumentException {
         return this.data.getBytes(this.charset);
     }

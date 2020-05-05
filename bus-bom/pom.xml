@@ -72,6 +72,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>bus-image</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>bus-limiter</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -93,6 +98,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-office</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-opencv</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
