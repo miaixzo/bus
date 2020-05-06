@@ -37,12 +37,11 @@ import java.util.Comparator;
  */
 public class Comparables<E extends Comparable<? super E>> implements Comparator<E>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 单例
      */
     public static final Comparables INSTANCE = new Comparables<>();
+    private static final long serialVersionUID = 1L;
 
     /**
      * 构造

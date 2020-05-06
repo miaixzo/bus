@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.setting.profile;
 
-import org.aoju.bus.core.lang.Singleton;
+import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.setting.Setting;
 
 /**
@@ -46,7 +46,7 @@ public class GlobalProfile {
      * @return {@link Profile}
      */
     public static Profile setProfile(String profile) {
-        return Singleton.get(Profile.class, profile);
+        return Instances.singletion(Profile.class, profile);
     }
 
     /**
@@ -56,7 +56,7 @@ public class GlobalProfile {
      * @return {@link Setting}
      */
     public static Setting getSetting(String settingName) {
-        return Singleton.get(Profile.class).getSetting(settingName);
+        return Instances.singletion(Profile.class).getSetting(settingName);
     }
 
 }

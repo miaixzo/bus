@@ -29,6 +29,7 @@ import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.BasicType;
+import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableObject;
@@ -441,7 +442,7 @@ public class ClassUtils {
             if (isStatic(method)) {
                 return ReflectUtils.invoke(null, method, args);
             } else {
-                return ReflectUtils.invoke(isSingleton ? Singleton.get(clazz) : clazz.newInstance(), method, args);
+                return ReflectUtils.invoke(isSingleton ? Instances.singletion(clazz) : clazz.newInstance(), method, args);
             }
         } catch (Exception e) {
             throw new InstrumentException(e);
@@ -458,7 +459,7 @@ public class ClassUtils {
         if (null == clazz) {
             return false;
         }
-        return BasicType.PRIMITIVE_WRAPPER_MAP.containsKey(clazz);
+        return BasicType.WRAPPER_PRIMITIVE_MAP.containsKey(clazz);
     }
 
     /**

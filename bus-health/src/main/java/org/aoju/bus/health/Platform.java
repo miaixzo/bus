@@ -25,7 +25,7 @@
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.Singleton;
+import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
@@ -456,7 +456,7 @@ public class Platform {
      * @return <code>JvmSpecInfo</code>对象
      */
     public static JvmSpec getJvmSpecInfo() {
-        return Singleton.get(JvmSpec.class);
+        return Instances.singletion(JvmSpec.class);
     }
 
     /**
@@ -465,7 +465,7 @@ public class Platform {
      * @return <code>JvmInfo</code>对象
      */
     public static Jvm getJvmInfo() {
-        return Singleton.get(Jvm.class);
+        return Instances.singletion(Jvm.class);
     }
 
     /**
@@ -474,7 +474,7 @@ public class Platform {
      * @return <code>JavaSpecInfo</code>对象
      */
     public static JavaSpec getJavaSpecInfo() {
-        return Singleton.get(JavaSpec.class);
+        return Instances.singletion(JavaSpec.class);
     }
 
     /**
@@ -483,7 +483,7 @@ public class Platform {
      * @return <code>JavaInfo</code>对象
      */
     public static Java getJavaInfo() {
-        return Singleton.get(Java.class);
+        return Instances.singletion(Java.class);
     }
 
     /**
@@ -492,7 +492,7 @@ public class Platform {
      * @return <code>JreInfo</code>对象
      */
     public static JavaRuntime getJavaRuntimeInfo() {
-        return Singleton.get(JavaRuntime.class);
+        return Instances.singletion(JavaRuntime.class);
     }
 
     /**
@@ -501,7 +501,7 @@ public class Platform {
      * @return <code>OsInfo</code>对象
      */
     public static OperatingSystem getOsInfo() {
-        return Singleton.get(OperatingSystem.class);
+        return Instances.singletion(OperatingSystem.class);
     }
 
     /**
@@ -510,7 +510,7 @@ public class Platform {
      * @return <code>UserInfo</code>对象
      */
     public static OSUser getUserInfo() {
-        return Singleton.get(OSUser.class);
+        return Instances.singletion(OSUser.class);
     }
 
     /**
@@ -519,7 +519,7 @@ public class Platform {
      * @return <code>HostInfo</code>对象
      */
     public static NetworkParams getHostInfo() {
-        return Singleton.get(NetworkParams.class);
+        return Instances.singletion(NetworkParams.class);
     }
 
     /**

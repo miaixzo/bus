@@ -1607,7 +1607,7 @@ public class StringUtils extends TextUtils {
      * @return 截取后的字符串
      */
     public static String[] subBetweenAll(CharSequence str, CharSequence prefix, CharSequence suffix) {
-        if (hasEmpty(str, prefix, suffix)) {
+        if (hasEmpty(str, prefix, suffix) || false == contains(str, prefix)) {
             return new String[0];
         }
 
