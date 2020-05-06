@@ -176,7 +176,8 @@ public class ResourceUtils {
      * @return {@link URL}
      */
     public static URL getResource(String resource, Class<?> baseClass) {
-        return (null != baseClass) ? baseClass.getClassLoader().getResource(resource) : ClassUtils.getClassLoader().getResource(resource);
+        URL url = (null != baseClass) ? baseClass.getResource(resource) : ClassUtils.getClassLoader().getResource(resource);
+        return url != null ? url : baseClass.getClassLoader().getResource(resource);
     }
 
     /**
