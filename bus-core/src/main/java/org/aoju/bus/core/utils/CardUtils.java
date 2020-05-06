@@ -47,7 +47,7 @@ public class CardUtils {
      * (目前，新发行的银联标准卡一定带有国际化的银联新标识，新发的非银联标准卡使用旧的联网通用银联标识)、
      * 卡号前6位为622126至622925之一的银行卡，是中国银行卡产业共有的民族品牌
      */
-    private final static int[] bankBin = {
+    private final static int[] BANK_BIN = {
             621098, 622150, 622151, 622181, 622188, 955100, 621095, 620062, 621285, 621798, 621799,
             621797, 620529, 622199, 621096, 621622, 623219, 621674, 623218, 621599, 370246, 370248,
             370249, 427010, 427018, 427019, 427020, 427029, 427030, 427039, 370247, 438125, 438126,
@@ -176,7 +176,7 @@ public class CardUtils {
     /**
      * 发卡行.卡种名称
      */
-    private static final String[] bankName = {
+    private static final String[] BANK_NAME = {
             "邮储银行·绿卡通", "邮储银行·绿卡银联标准卡", "邮储银行·绿卡银联标准卡", "邮储银行·绿卡专用卡", "邮储银行·绿卡银联标准卡",
             "邮储银行·绿卡(银联卡)", "邮储银行·绿卡VIP卡", "邮储银行·银联标准卡", "邮储银行·中职学生资助卡", "邮政储蓄银行·IC绿卡通VIP卡",
             "邮政储蓄银行·IC绿卡通", "邮政储蓄银行·IC联名卡", "邮政储蓄银行·IC预付费卡", "邮储银行·绿卡银联标准卡", "邮储银行·绿卡通",
@@ -397,7 +397,7 @@ public class CardUtils {
     /**
      * 支付宝银行编码对应名称
      */
-    public static Map<String, String> bankMap = new HashMap<String, String>() {
+    public static Map<String, String> BANK_MAP = new HashMap<String, String>() {
         {
             put("CDB", "国家开发银行");
             put("ICBC", "中国工商银行");
@@ -732,11 +732,11 @@ public class CardUtils {
         cardnumber = cardnumber.replaceAll(Symbol.SPACE, Normal.EMPTY);
         String charBin = cardnumber.substring(0, 6);
         int bin = Integer.valueOf(charBin);
-        int index = binarySearch(bankBin, bin);
-        if (index == -1 || index > bankName.length) {
+        int index = binarySearch(BANK_BIN, bin);
+        if (index == -1 || index > BANK_NAME.length) {
             return null;
         }
-        return bankName[index];
+        return BANK_NAME[index];
     }
 
     public static int binarySearch(int[] srcArray, int des) {
@@ -817,7 +817,7 @@ public class CardUtils {
         // 获取银行卡的信息
         String name = getname(cardId);
         if (StringUtils.isEmpty(name)) {
-            name = bankMap.get(name);
+            name = BANK_MAP.get(name);
         }
         return name;
     }
