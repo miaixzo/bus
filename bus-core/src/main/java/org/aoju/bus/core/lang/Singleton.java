@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 注意：单例针对的是类和对象,因此get方法第一次调用时创建的对象始终唯一,也就是说就算参数变更,返回的依旧是第一次创建的对象
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public final class Singleton {

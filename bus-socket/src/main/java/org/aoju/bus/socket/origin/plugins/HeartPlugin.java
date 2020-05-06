@@ -38,7 +38,7 @@ import java.util.TimerTask;
  * 心跳插件
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public abstract class HeartPlugin<T> extends AbstractPlugin<T> {

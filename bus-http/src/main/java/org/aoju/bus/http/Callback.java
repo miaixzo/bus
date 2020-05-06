@@ -32,7 +32,7 @@ import java.io.IOException;
  * 异步回调信息
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public interface Callback {

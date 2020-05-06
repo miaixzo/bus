@@ -33,7 +33,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class Normal {
@@ -197,7 +197,7 @@ public class Normal {
      * 表示为真的字符串
      */
     public static final String[] TRUE_ARRAY = {
-            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确"
+            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确", "對", "√"
     };
     /**
      * 用于建立十六进制字符的输出的小写字符数组

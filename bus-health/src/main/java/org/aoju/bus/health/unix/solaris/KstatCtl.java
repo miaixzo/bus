@@ -43,7 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 提供对Solaris上的kstat信息的访问
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 @ThreadSafe

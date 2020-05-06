@@ -36,7 +36,7 @@ import java.util.List;
  * Sound card data obtained via AppleHDA kext
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 @Immutable

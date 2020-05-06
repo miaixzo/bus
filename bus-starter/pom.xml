@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>5.8.8</version>
+    <version>5.8.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -47,6 +47,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-crypto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-health</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

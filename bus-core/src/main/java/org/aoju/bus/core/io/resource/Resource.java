@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * 资源可以是文件、URL、ClassPath中的文件亦或者jar包中的文件
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public interface Resource {
@@ -80,15 +80,6 @@ public interface Resource {
      * @throws InstrumentException 包装{@link IOException}
      */
     String readStr(Charset charset) throws InstrumentException;
-
-    /**
-     * 读取资源内容,读取完毕后会关闭流
-     * 关闭流并不影响下一次读取
-     *
-     * @return 读取资源内容
-     * @throws InstrumentException 包装IOException
-     */
-    String readUtf8Str() throws InstrumentException;
 
     /**
      * 读取资源内容,读取完毕后会关闭流

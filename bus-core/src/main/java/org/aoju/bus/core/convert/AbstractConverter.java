@@ -36,7 +36,7 @@ import java.util.Map;
  * 转换器不会抛出转换异常,转换失败时会返回{@code null}
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public abstract class AbstractConverter<T> implements Converter<T> {

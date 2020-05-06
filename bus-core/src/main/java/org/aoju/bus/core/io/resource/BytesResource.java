@@ -39,7 +39,7 @@ import java.nio.charset.Charset;
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class BytesResource implements Resource {
@@ -90,11 +90,6 @@ public class BytesResource implements Resource {
     @Override
     public String readStr(Charset charset) throws InstrumentException {
         return StringUtils.toString(this.bytes, charset);
-    }
-
-    @Override
-    public String readUtf8Str() throws InstrumentException {
-        return readStr(org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     @Override

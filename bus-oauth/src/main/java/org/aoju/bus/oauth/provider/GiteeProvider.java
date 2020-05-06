@@ -38,7 +38,7 @@ import org.aoju.bus.oauth.magic.Property;
  * Gitee登录
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class GiteeProvider extends DefaultProvider {

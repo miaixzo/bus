@@ -37,7 +37,7 @@ import java.util.*;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class TableMap<K, V> implements Map<K, V>, Serializable {
@@ -170,6 +170,21 @@ public class TableMap<K, V> implements Map<K, V>, Serializable {
                 this.keys,
                 CollUtils.indexOfAll(this.values, (ele) -> ObjectUtils.equal(ele, value))
         );
+    }
+
+
+    /**
+     * 根据value获得对应的key,只返回找到的第一个value对应的key值
+     *
+     * @param value 值
+     * @return 键
+     */
+    public K getKey(V value) {
+        final int index = values.indexOf(value);
+        if (index > -1 && index < keys.size()) {
+            return keys.get(index);
+        }
+        return null;
     }
 
     private static class Entry<K, V> implements Map.Entry<K, V> {

@@ -33,7 +33,7 @@ import java.io.Serializable;
  *
  * @param <T> 可变的类型
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class MutableObject<T> implements Mutable<T>, Serializable {

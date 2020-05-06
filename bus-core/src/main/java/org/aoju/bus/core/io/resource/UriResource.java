@@ -41,7 +41,7 @@ import java.nio.charset.Charset;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class UriResource implements Resource {
@@ -108,11 +108,6 @@ public class UriResource implements Resource {
         } finally {
             IoUtils.close(reader);
         }
-    }
-
-    @Override
-    public String readUtf8Str() throws InstrumentException {
-        return readStr(org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     @Override

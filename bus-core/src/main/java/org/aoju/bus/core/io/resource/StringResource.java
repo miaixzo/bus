@@ -38,7 +38,7 @@ import java.nio.charset.Charset;
  * 字符串资源,字符串做为资源
  *
  * @author Kimi Liu
- * @version 5.8.8
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class StringResource implements Resource {
@@ -101,11 +101,6 @@ public class StringResource implements Resource {
 
     @Override
     public String readStr(Charset charset) throws InstrumentException {
-        return this.data;
-    }
-
-    @Override
-    public String readUtf8Str() throws InstrumentException {
         return this.data;
     }
 
