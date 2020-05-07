@@ -1969,7 +1969,13 @@ public class Tag {
     public static final int NumberOfFrames = 2621448;
     public static final int FrameIncrementPointer = 2621449;
     public static final int FrameDimensionPointer = 2621450;
+    /**
+     * 图像行数(图像高度)
+     */
     public static final int Rows = 2621456;
+    /**
+     * 图像列数(图像宽度)
+     */
     public static final int Columns = 2621457;
     public static final int Planes = 2621458;
     public static final int UltrasoundColorDataPresent = 2621460;
@@ -1999,9 +2005,15 @@ public class Tag {
     public static final int BlockColumns = 2621586;
     public static final int RowOverlap = 2621587;
     public static final int ColumnOverlap = 2621588;
+    /**
+     * 图像数据存储位数，一般是8位和16位，本文图像处理用的是16位图像
+     */
     public static final int BitsAllocated = 2621696;
     public static final int BitsStored = 2621697;
     public static final int HighBit = 2621698;
+    /**
+     * 是否是带符号，0是无符号，1是有符号
+     */
     public static final int PixelRepresentation = 2621699;
     public static final int SmallestValidPixelValue = 2621700;
     public static final int LargestValidPixelValue = 2621701;
@@ -2050,7 +2062,13 @@ public class Tag {
     public static final int PixelSpacingCalibrationDescription = 2624004;
     public static final int PixelIntensityRelationship = 2625600;
     public static final int PixelIntensityRelationshipSign = 2625601;
+    /**
+     * 默认窗位
+     */
     public static final int WindowCenter = 2625616;
+    /**
+     * 默认窗宽
+     */
     public static final int WindowWidth = 2625617;
     public static final int RescaleIntercept = 2625618;
     public static final int RescaleSlope = 2625619;
@@ -4664,6 +4682,9 @@ public class Tag {
     public static final int ExtendedOffsetTableLengths = 2145386498;
     public static final int FloatPixelData = 2145386504;
     public static final int DoubleFloatPixelData = 2145386505;
+    /**
+     * 这个字段里存的就是Dicom文件的图像数据
+     */
     public static final int PixelData = 2145386512;
     public static final int CoefficientsSDVN = 2145386528;
     public static final int CoefficientsSDHN = 2145386544;
