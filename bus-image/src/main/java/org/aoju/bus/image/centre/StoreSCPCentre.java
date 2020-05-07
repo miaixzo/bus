@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.centre;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.image.metric.Connection;
@@ -86,7 +87,7 @@ public class StoreSCPCentre extends AbstractCentre {
             storeSCP.loadDefaultTransferCapability(transferCapabilityFile);
         } else {
             storeSCP.getApplicationEntity()
-                    .addTransferCapability(new TransferCapability(null, "*", TransferCapability.Role.SCP, "*"));
+                    .addTransferCapability(new TransferCapability(null, Symbol.STAR, TransferCapability.Role.SCP, Symbol.STAR));
         }
 
         device.start();
