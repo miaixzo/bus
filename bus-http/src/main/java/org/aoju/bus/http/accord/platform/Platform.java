@@ -253,7 +253,6 @@ public class Platform {
 
     public CertificateChainCleaner buildCertificateChainCleaner(SSLSocketFactory sslSocketFactory) {
         X509TrustManager trustManager = trustManager(sslSocketFactory);
-
         if (trustManager == null) {
             throw new IllegalStateException("Unable to extract the trust manager on "
                     + Platform.get()
@@ -266,16 +265,11 @@ public class Platform {
 
     public SSLContext getSSLContext() {
         String jvmVersion = System.getProperty("java.specification.version");
-        if ("1.7".equals(jvmVersion)) {
-            try {
+        try {
+            if ("1.7".equals(jvmVersion)) {
                 // JDK 1.7(公共版本)只支持带命名协议的> TLSv1
                 return SSLContext.getInstance("TLSv1.2");
-            } catch (NoSuchAlgorithmException e) {
-                Logger.error(e);
             }
-        }
-
-        try {
             return SSLContext.getInstance("TLS");
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("No TLS provider", e);
@@ -287,6 +281,7 @@ public class Platform {
     }
 
     public void configureSslSocketFactory(SSLSocketFactory socketFactory) {
+
     }
 
     @Override

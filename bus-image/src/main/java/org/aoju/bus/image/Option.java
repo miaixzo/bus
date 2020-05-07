@@ -83,6 +83,7 @@ public class Option {
     private String truststorePass;
 
     public Option() {
+
     }
 
     public Option(boolean tlsNeedClientAuth,
@@ -93,8 +94,18 @@ public class Option {
                   String truststoreURL,
                   String truststoreType,
                   String truststorePass) {
-        this(TLS, defaultProtocols, tlsNeedClientAuth, keystoreURL, keystoreType, keystorePass, keyPass, truststoreURL,
-                truststoreType, truststorePass);
+        this(
+                TLS,
+                defaultProtocols,
+                tlsNeedClientAuth,
+                keystoreURL,
+                keystoreType,
+                keystorePass,
+                keyPass,
+                truststoreURL,
+                truststoreType,
+                truststorePass
+        );
     }
 
     public Option(String[] cipherSuites,
@@ -122,11 +133,6 @@ public class Option {
         this.truststorePass = truststorePass;
     }
 
-    /**
-     * @author Kimi Liu
-     * @version 5.8.9
-     * @since JDK 1.8+
-     */
     public enum Type {
 
         RELATIONAL,

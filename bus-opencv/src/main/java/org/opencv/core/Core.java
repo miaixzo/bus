@@ -1978,6 +1978,7 @@ public class Core {
 
     /**
      * naive nearest neighbor finder
+     *
      * @param src1     automatically generated
      * @param src2     automatically generated
      * @param dist     automatically generated
@@ -2421,6 +2422,7 @@ public class Core {
 
     /**
      * Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array.
+     *
      * @param src         input array that could be real or complex.
      * @param dst         output array whose size and type depends on the flags .
      * @param flags       transformation flags, representing a combination of the #DftFlags
@@ -2469,7 +2471,6 @@ public class Core {
      *            cross-correlation or convolution using DFT.
      *            SEE: dct , getOptimalDFTSize , mulSpectrums, filter2D , matchTemplate , flip , cartToPolar ,
      *            magnitude , phase
-
      */
     public static void dft(Mat src, Mat dst) {
         dft_2(src.nativeObj, dst.nativeObj);
@@ -2721,7 +2722,6 @@ public class Core {
     //
 
     /**
-     *
      * @param src input array or vector of matrices. all of the matrices must have the same number of rows and the same depth.
      * @param dst output array. It has the same number of rows and depth as the src, and the sum of cols of the src.
      *            same depth.
@@ -3340,6 +3340,7 @@ public class Core {
 
     /**
      * Normalizes the norm or value range of an array.
+     *
      * @param src   input array.
      * @param dst   output array of the same size as src .
      * @param alpha norm value to normalize to or the lower range boundary in case of the range
@@ -3458,6 +3459,7 @@ public class Core {
 
     /**
      * Calculates the rotation angle of 2D vectors.
+     *
      * @param x     input floating-point array of x-coordinates of 2D vectors.
      * @param y     input array of y-coordinates of 2D vectors; it must have the
      *              same size and the same type as x.
@@ -3746,6 +3748,7 @@ public class Core {
 
     /**
      * Initializes a scaled identity matrix.
+     *
      * @param mtx matrix to initialize (not necessarily square).
      * @param s   value to assign to diagonal elements.
      *            SEE: Mat::zeros, Mat::ones, Mat::setTo, Mat::operator=
@@ -3821,6 +3824,7 @@ public class Core {
      * ascending or descending order. So you should pass two operation flags to
      * get desired behaviour. Instead of reordering the elements themselves, it
      * stores the indices of sorted elements in the output array. For example:
+     *
      * @param src   input single-channel array.
      * @param dst   output integer array of the same size as src.
      * @param flags operation flags that could be a combination of cv::SortFlags
@@ -3981,6 +3985,7 @@ public class Core {
 
     /**
      * Transposes a matrix.
+     *
      * @param src input array.
      * @param dst output array of the same type as src.
      */
@@ -3994,7 +3999,6 @@ public class Core {
     //
 
     /**
-     *
      * @param src input array or vector of matrices. all of the matrices must have the same number of cols and the same depth
      * @param dst output array. It has the same number of cols and depth as the src, and the sum of rows of the src.
      *            same depth.

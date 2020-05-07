@@ -54,6 +54,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class Device implements Serializable {
 
+    /**
+     * AE可以发起的最大开放关联数
+     */
     private final LinkedHashMap<String, Integer> limitAssociationsInitiatedBy = new LinkedHashMap<>();
     private final LinkedHashMap<String, X509Certificate[]> authorizedNodeCertificates = new LinkedHashMap<>();
     private final LinkedHashMap<String, X509Certificate[]> thisNodeCertificates = new LinkedHashMap<>();
@@ -63,14 +66,41 @@ public class Device implements Serializable {
     private final LinkedHashMap<String, KeycloakClient> keycloakClients = new LinkedHashMap<>();
     private final Map<Class<? extends DeviceExtension>, DeviceExtension> extensions = new HashMap<>();
     private transient final List<Association> associations = new ArrayList<>();
+    /**
+     * 设备名称
+     */
     private String deviceName;
+    /**
+     * 设备标识
+     */
     private String deviceUID;
+    /**
+     * 设备描述
+     */
     private String description;
+    /**
+     * 设备制造商
+     */
     private String manufacturer;
+    /**
+     * 设备商型号名称
+     */
     private String manufacturerModelName;
+    /**
+     * 工作站名称
+     */
     private String stationName;
+    /**
+     * 设备序列号
+     */
     private String deviceSerialNumber;
+    /**
+     * 信任证书URL
+     */
     private String trustStoreURL;
+    /**
+     * 信任证书类型
+     */
     private String trustStoreType;
     private String trustStorePin;
     private String trustStorePinProperty;
@@ -88,15 +118,33 @@ public class Device implements Serializable {
     private Issuer issuerOfServiceEpisodeID;
     private Issuer issuerOfContainerIdentifier;
     private Issuer issuerOfSpecimenIdentifier;
+    /**
+     * 软件版本
+     */
     private String[] softwareVersions = {};
     private String[] primaryDeviceTypes = {};
+    /**
+     * 设备关联的机构名称
+     */
     private String[] institutionNames = {};
     private Code[] institutionCodes = {};
+    /**
+     * 设备的机构的地址
+     */
     private String[] institutionAddresses = {};
+    /**
+     * 设备关联的部门名称
+     */
     private String[] institutionalDepartmentNames = {};
     private String[] relatedDeviceRefs = {};
+    /**
+     * 设备数据对象
+     */
     private byte[][] vendorData = {};
     private int limitOpenAssociations;
+    /**
+     * 当前是否安装在网络
+     */
     private boolean installed = true;
     private boolean roleSelectionNegotiationLenient;
     private TimeZone timeZoneOfDevice;
@@ -117,6 +165,20 @@ public class Device implements Serializable {
 
     public Device(String name) {
         setDeviceName(name);
+    }
+
+    private static X509Certificate[] toArray(Collection<X509Certificate[]> c) {
+        int size = 0;
+        for (X509Certificate[] certs : c)
+            size += certs.length;
+
+        X509Certificate[] dest = new X509Certificate[size];
+        int destPos = 0;
+        for (X509Certificate[] certs : c) {
+            System.arraycopy(certs, 0, dest, destPos, certs.length);
+            destPos += certs.length;
+        }
+        return dest;
     }
 
     public boolean isRunning() {
@@ -140,38 +202,24 @@ public class Device implements Serializable {
         scheduledExecutor = null;
     }
 
-    private static X509Certificate[] toArray(Collection<X509Certificate[]> c) {
-        int size = 0;
-        for (X509Certificate[] certs : c)
-            size += certs.length;
-
-        X509Certificate[] dest = new X509Certificate[size];
-        int destPos = 0;
-        for (X509Certificate[] certs : c) {
-            System.arraycopy(certs, 0, dest, destPos, certs.length);
-            destPos += certs.length;
-        }
-        return dest;
-    }
-
     private void checkNotEmpty(String name, String val) {
         if (val != null && val.isEmpty())
             throw new IllegalArgumentException(name + " cannot be empty");
     }
 
     /**
-     * Get the name of this device.
+     * 获取该设备的名称
      *
-     * @return A String containing the device name.
+     * @return 包含设备名的字符串
      */
     public final String getDeviceName() {
         return deviceName;
     }
 
     /**
-     * Set the name of this device.
+     * 设置此设备的名称
      *
-     * @param name A String containing the device name.
+     * @param name 包含设备名的字符串
      */
     public final void setDeviceName(String name) {
         checkNotEmpty("Device Name", name);
@@ -179,18 +227,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * Get the description of this device.
+     * 获取该设备的描述
      *
-     * @return A String containing the device description.
+     * @return 包含设备描述的字符串
      */
     public final String getDescription() {
         return description;
     }
 
     /**
-     * Set the description of this device.
+     * 设置该设备的描述
      *
-     * @param description A String containing the device description.
+     * @param description 包含设备描述的字符串
      */
     public final void setDescription(String description) {
         this.description = description;
@@ -205,150 +253,133 @@ public class Device implements Serializable {
     }
 
     /**
-     * Get the manufacturer of this device.
+     * 获取这个设备的制造商
      *
-     * @return A String containing the device manufacturer.
+     * @return 包含设备制造商的字符串
      */
     public final String getManufacturer() {
         return manufacturer;
     }
 
     /**
-     * Set the manufacturer of this device.
-     * <p>
-     * This should be the same as the value of Manufacturer (0008,0070) in SOP
-     * instances created by this device.
+     * 设置该设备的制造商
+     * 这应该与该设备创建的SOP实例中的制造商(0008,0070)的值相同
      *
-     * @param manufacturer A String containing the device manufacturer.
+     * @param manufacturer 包含设备制造商的字符串
      */
     public final void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
     }
 
     /**
-     * Get the manufacturer model name of this device.
+     * 获取该设备的制造商型号名称
      *
-     * @return A String containing the device manufacturer model name.
+     * @return 包含设备制造商模型名称的字符串
      */
     public final String getManufacturerModelName() {
         return manufacturerModelName;
     }
 
     /**
-     * Set the manufacturer model name of this device.
-     * <p>
-     * This should be the same as the value of Manufacturer Model Name
-     * (0008,1090) in SOP instances created by this device.
+     * 设置此设备的制造商型号名称
+     * 这应该与该设备创建的SOP实例中的制造商型号名称(0008,1090)的值相同
      *
-     * @param manufacturerModelName A String containing the device manufacturer model name.
+     * @param manufacturerModelName 包含设备制造商模型名称的字符串
      */
     public final void setManufacturerModelName(String manufacturerModelName) {
         this.manufacturerModelName = manufacturerModelName;
     }
 
     /**
-     * Get the software versions running on (or implemented by) this device.
+     * 获取在该设备上运行(或由该设备实现)的软件版本
      *
-     * @return A String array containing the software versions.
+     * @return 包含软件版本的字符串数组
      */
     public final String[] getSoftwareVersions() {
         return softwareVersions;
     }
 
     /**
-     * Set the software versions running on (or implemented by) this device.
-     * <p>
-     * This should be the same as the values of Software Versions (0018,1020) in
-     * SOP instances created by this device.
+     * 设置在该设备上运行(或由该设备实现)的软件版本
+     * 这应该与该设备创建的SOP实例中的软件版本(0018、1020)的值相同
      *
-     * @param softwareVersions A String array containing the software versions.
+     * @param softwareVersions 包含软件版本的字符串数组
      */
     public final void setSoftwareVersions(String... softwareVersions) {
         this.softwareVersions = softwareVersions;
     }
 
     /**
-     * Get the station name belonging to this device.
+     * 获取属于此设备的工作站名称
      *
-     * @return A String containing the station name.
+     * @return 包含电台名称的字符串
      */
     public final String getStationName() {
         return stationName;
     }
 
     /**
-     * Set the station name belonging to this device.
-     * <p>
-     * This should be the same as the value of Station Name (0008,1010) in SOP
-     * instances created by this device.
+     * 设置属于此设备的工作站名称
+     * 这应该与此设备创建的SOP实例中的站名(0008,1010)的值相同
      *
-     * @param stationName A String containing the station name.
+     * @param stationName 包含电台名称的字符串
      */
     public final void setStationName(String stationName) {
         this.stationName = stationName;
     }
 
     /**
-     * Get the serial number belonging to this device.
+     * 获取属于该设备的序列号
      *
-     * @return A String containing the serial number.
+     * @return 包含序列号的字符串
      */
     public final String getDeviceSerialNumber() {
         return deviceSerialNumber;
     }
 
     /**
-     * Set the serial number of this device.
-     * <p>
-     * This should be the same as the value of Device Serial Number (0018,1000)
-     * in SOP instances created by this device.
+     * 设置此设备的序列号
+     * 这应该与该设备创建的SOP实例中的设备序列号(0018,1000)的值相同
      *
-     * @param deviceSerialNumber A String containing the serial number.
+     * @param deviceSerialNumber 包含此设备的类型编解码器的字符串数组
      */
     public final void setDeviceSerialNumber(String deviceSerialNumber) {
         this.deviceSerialNumber = deviceSerialNumber;
     }
 
     /**
-     * Get the type codec associated with this device.
+     * 获取与此设备关联的类型编解码器
      *
-     * @return A String array containing the type codec of this device.
+     * @return 包含此设备的类型编解码器的字符串数组
      */
     public final String[] getPrimaryDeviceTypes() {
         return primaryDeviceTypes;
     }
 
     /**
-     * Set the type codec associated with this device.
-     * <p>
-     * Represents the kind of device and is most applicable for acquisition
-     * modalities. Types should be selected from the list of internal values
-     * (0008,0100) for Context ID 30 in PS3.16 when applicable.
+     * 设置与此设备关联的类型编解码器
+     * 表示一种设备，最适用于采集方式。如果适用，类型应该从PS3.16中上下文ID 30的内部值(0008,0100)列表中选择
      *
-     * @param primaryDeviceTypes string
+     * @param primaryDeviceTypes 主要设备类型
      */
     public void setPrimaryDeviceTypes(String... primaryDeviceTypes) {
         this.primaryDeviceTypes = primaryDeviceTypes;
     }
 
     /**
-     * Get the institution name associated with this device; may be the site
-     * where it resides or is operating on behalf of.
+     * 获取与此设备关联的机构名称;可能是它所驻留或代表的站点吗
      *
-     * @return A String array containing the institution name values.
+     * @return 包含机构名称值的字符串数组
      */
     public final String[] getInstitutionNames() {
         return institutionNames;
     }
 
     /**
-     * Set the institution name associated with this device; may be the site
-     * where it resides or is operating on behalf of.
-     * <p>
-     * Should be the same as the value of Institution Name (0008,0080) in SOP
-     * Instances created by this device.
+     * 设置与此设备关联的机构名称;可能是它所驻留或代表的站点吗
+     * 是否应该与该设备创建的SOP实例中的机构名称(0008,0080)相同
      *
-     * @param names A String array containing the institution name values.
+     * @param names 包含机构名称值的字符串数组
      */
     public void setInstitutionNames(String... names) {
         institutionNames = names;
@@ -363,42 +394,38 @@ public class Device implements Serializable {
     }
 
     /**
-     * Set the address of the institution which operates this device.
+     * 设置操作该设备的机构的地址
      *
-     * @return A String array containing the institution address values.
+     * @return 包含机构地址值的字符串数组
      */
     public final String[] getInstitutionAddresses() {
         return institutionAddresses;
     }
 
     /**
-     * Get the address of the institution which operates this device.
-     * <p>
-     * Should be the same as the value of Institution Address (0008,0081)
-     * attribute in SOP Instances created by this device.
+     * 获取操作该设备的机构的地址
+     * 是否与该设备创建的SOP实例中的机构地址(0008,0081)属性值相同
      *
-     * @param addresses A String array containing the institution address values.
+     * @param addresses 包含机构地址值的字符串数组
      */
     public void setInstitutionAddresses(String... addresses) {
         institutionAddresses = addresses;
     }
 
     /**
-     * Get the department name associated with this device.
+     * 获取与此设备关联的部门名称
      *
-     * @return A String array containing the dept. name values.
+     * @return 包含部门名称值的字符串数组
      */
     public final String[] getInstitutionalDepartmentNames() {
         return institutionalDepartmentNames;
     }
 
     /**
-     * Set the department name associated with this device.
-     * <p>
-     * Should be the same as the value of Institutional Department Name
-     * (0008,1040) in SOP Instances created by this device.
+     * 设置与此设备关联的部门名称
+     * 是否应该与该设备创建的SOP实例中的机构部门名称(0008,1040)的值相同
      *
-     * @param names A String array containing the dept. name values.
+     * @param names 包含部门名称值的字符串数组
      */
     public void setInstitutionalDepartmentNames(String... names) {
         institutionalDepartmentNames = names;
@@ -631,40 +658,36 @@ public class Device implements Serializable {
     }
 
     /**
-     * Get device specific vendor configuration information
+     * 获取设备特定的供应商配置信息
      *
-     * @return An Object of the device data.
+     * @return 设备数据的一个对象
      */
     public final byte[][] getVendorData() {
         return vendorData;
     }
 
     /**
-     * Set device specific vendor configuration information
+     * 设置设备特定的供应商配置信息
      *
-     * @param vendorData An Object of the device data.
+     * @param vendorData 设备数据的一个对象
      */
     public void setVendorData(byte[]... vendorData) {
         this.vendorData = vendorData;
     }
 
     /**
-     * Get a boolean to indicate whether this device is presently installed on
-     * the network. (This is useful for pre-configuration, mobile vans, and
-     * similar situations.)
+     * 获取一个布尔值，指示此设备当前是否安装在网络上(这对于预配置、移动货车和类似情况非常有用)
      *
-     * @return A boolean which will be true if this device is installed.
+     * @return 一个布尔值，如果安装了这个设备，它将为真
      */
     public final boolean isInstalled() {
         return installed;
     }
 
     /**
-     * Get a boolean to indicate whether this device is presently installed on
-     * the network. (This is useful for pre-configuration, mobile vans, and
-     * similar situations.)
+     * 设置一个布尔值，指示此设备当前是否安装在网络上(这对于预配置、移动货车和类似情况非常有用)
      *
-     * @param installed A boolean which will be true if this device is installed.
+     * @param installed 一个布尔值，如果安装了这个设备，它将为真
      */
     public final void setInstalled(boolean installed) {
         if (this.installed == installed)
@@ -803,7 +826,6 @@ public class Device implements Serializable {
         return null;
     }
 
-
     public void addApplicationEntity(ApplicationEntity ae) {
         ae.setDevice(this);
         aes.put(ae.getAETitle(), ae);
@@ -915,13 +937,14 @@ public class Device implements Serializable {
     }
 
     /**
-     * Returns maximal number of open Associations which can be initiated by the specified remote AE.
-     * If the limit is exceeded, further Association requests from that AE will be rejected with
-     * Result = 2 - rejected-transient, Source = 1 - DICOM UL service-user, Reason = 2 - local-limit-exceeded.
+     * 返回指定的远程AE可以发起的最大开放关联数。如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝
+     * Result = 2 - rejected-transient，
+     * Source = 1 - DICOM UL service-user，
+     * Reason = 2 - local-limit-exceeded
      *
-     * @param callingAET AE Title of remote AE.
-     * @return maximal number of open Associations or 0 for no limit.
-     * @throws NullPointerException if callingAET is null.
+     * @param callingAET 远程AE的AE名称
+     * @return 开放关联的最大数目或无限制为0
+     * @throws NullPointerException 如果callingAET为空
      * @see #setLimitAssociationsInitiatedBy(String, int)
      */
     public int getLimitAssociationsInitiatedBy(String callingAET) {
@@ -930,14 +953,15 @@ public class Device implements Serializable {
     }
 
     /**
-     * Sets maximal number of open Associations which can be initiated by the specified remote AE.
-     * If the limit is exceeded, further Association requests from that AE will be rejected with
-     * Result = 2 - rejected-transient, Source = 1 - DICOM UL service-user, Reason = 2 - local-limit-exceeded.
+     * 返回指定的远程AE可以发起的最大开放关联数。如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝
+     * Result = 2 - rejected-transient，
+     * Source = 1 - DICOM UL service-user，
+     * Reason = 2 - local-limit-exceeded
      *
-     * @param callingAET AE Title of remote AE.
-     * @param limit      maximal number of open Associations or 0 for no limit.
-     * @throws NullPointerException     if callingAET is null.
-     * @throws IllegalArgumentException if limit is lesser than zero.
+     * @param callingAET 远程AE的AE名称
+     * @param limit      开放关联的最大数目或无限制为0
+     * @throws NullPointerException     如果callingAET为空
+     * @throws IllegalArgumentException 如果限制小于零
      * @see #getLimitAssociationsInitiatedBy(String)
      */
     public void setLimitAssociationsInitiatedBy(String callingAET, int limit) {

@@ -97,9 +97,9 @@ public class Args {
     }
 
     /**
-     * @param editors             a editor to modify DICOM attributes
-     * @param extendNegociation   extends SOP classes negotiation
-     * @param extendSopClassesURL configuration file of the SOP classes negotiation extension
+     * @param editors             修改DICOM属性的编辑器
+     * @param extendNegociation   扩展SOP类
+     * @param extendSopClassesURL SOP类扩展的配置文件
      */
     public Args(Editors editors,
                 boolean extendNegociation,
@@ -116,12 +116,12 @@ public class Args {
     }
 
     /**
-     * @param option                  optional advanced parameters (proxy, authentication, connection and TLS)
-     * @param bindCallingAet          when true it will set the AET of the listener DICOM node. Only requests with matching called AETitle
-     *                                will be accepted. If false all the called AETs will be accepted.
-     * @param storagePattern          the storage pattern
-     * @param transferCapabilityFile  an URL for getting a file containing the transfer capabilities (sopClasses, roles, transferSyntaxes)
-     * @param acceptedCallingAETitles the list of the accepted calling AETitles. Null will accepted all the AETitles.
+     * @param option                  可选的高级参数(代理、身份验证、连接和TLS)
+     * @param bindCallingAet          当为true时，它将设置侦听器DICOM节点的AET。只有匹配称为AETitle的请求将被接受。
+     *                                如果为假，所有被调用的AETs将被接受
+     * @param storagePattern          存储模式
+     * @param transferCapabilityFile  获取包含传输功能(sopclass、role、transferSyntaxes)的文件的URL
+     * @param acceptedCallingAETitles 可接受的呼叫aetitle的列表。空将接受所有aetitle
      */
     public Args(Option option,
                 boolean bindCallingAet,
@@ -143,10 +143,10 @@ public class Args {
     }
 
     /**
-     * Bind the connection with the callingNode
+     * 使用callingNode绑定连接
      *
-     * @param connection  Connection
-     * @param callingNode Node
+     * @param connection  连接信息
+     * @param callingNode 节点信息
      */
     public void configureBind(Connection connection,
                               Node callingNode) {
@@ -170,11 +170,11 @@ public class Args {
     }
 
     /**
-     * Bind the connection and applicationEntity with the callingNode
+     * 将连接和应用程序实体与callingNode绑定
      *
-     * @param applicationEntity ApplicationEntity
-     * @param connection        Connection
-     * @param callingNode       the Node
+     * @param applicationEntity 应用实体
+     * @param connection        连接信息
+     * @param callingNode       节点信息
      */
     public void configureBind(ApplicationEntity applicationEntity,
                               Connection connection,

@@ -161,24 +161,22 @@ public class Format extends java.text.Format {
     }
 
     /**
-     * Returns Timezone Offset From UTC in format {@code (+|i)HHMM} of specified
-     * Timezone without concerning Daylight saving time (DST).
+     * 返回指定时区的格式{@code (+|i)HHMM}的UTC时区偏移量，不涉及夏令时(DST).
      *
-     * @param tz Timezone
-     * @return Timezone Offset From UTC in format {@code (+|i)HHMM}
+     * @param tz 时区
+     * @return 来自UTC的时区偏移量，格式为{@code (+|i)HHMM}
      */
     public static String formatTimezoneOffsetFromUTC(TimeZone tz) {
         return appendZZZZZ(tz.getRawOffset(), new StringBuilder(5)).toString();
     }
 
     /**
-     * Returns Timezone Offset From UTC in format {@code (+|i)HHMM} of specified
-     * Timezone on specified date. If no date is specified, DST is considered
-     * for the current date.
+     * 在指定日期以指定时区的格式{@code(+|i)HHMM}从UTC返回时区偏移量
+     * 如果未指定日期，则考虑当前日期为夏令时
      *
-     * @param tz   Timezone
-     * @param date Date or {@code null}
-     * @return Timezone Offset From UTC in format {@code (+|i)HHMM}
+     * @param tz   时区
+     * @param date 日期或{@code null}
+     * @return 来自UTC的时区偏移量，格式为{@code (+|i)HHMM}
      */
     public static String formatTimezoneOffsetFromUTC(TimeZone tz, Date date) {
         return appendZZZZZ(tz.getOffset(date == null

@@ -1628,7 +1628,7 @@ public class Imgproc {
      * Also, the special values #THRESH_OTSU or #THRESH_TRIANGLE may be combined with one of the
      * above values. In these cases, the function determines the optimal threshold value using the Otsu's
      * or Triangle algorithm and uses it instead of the specified thresh.
-
+     *
      * @param src    input array (multiple-channel, 8-bit or 32-bit floating point).
      * @param dst    output array of the same size  and type and the same number of channels as src.
      * @param thresh threshold value.
@@ -1658,7 +1658,6 @@ public class Imgproc {
      *                     When false, no intersection is found. If the polygons share a side or the vertex of one polygon lies on an edge
      *                     of the other, they are not considered nested and an intersection will be found regardless of the value of handleNested.
      * @return Absolute value of area of intersecting polygon
-     *
      */
     public static float intersectConvexConvex(Mat _p1, Mat _p2, Mat _p12, boolean handleNested) {
         return intersectConvexConvex_0(_p1.nativeObj, _p2.nativeObj, _p12.nativeObj, handleNested);
@@ -4723,7 +4722,7 @@ public class Imgproc {
      * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the
      *              channels is derived automatically from src and code.
      *              <p>
-     *              can do the following transformations:
+     *              llowing transformations:
      *
      *              <ul>
      *                <li>
@@ -4773,7 +4772,7 @@ public class Imgproc {
      * @param code Color space conversion code (see the description below).
      *             channels is derived automatically from src and code.
      *             <p>
-     *              can do the following transformations:
+     *             ollowing transformations:
      *
      *             <ul>
      *               <li>
