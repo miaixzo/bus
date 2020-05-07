@@ -231,7 +231,7 @@ public class Platform {
                 osPrefix = "w32ce-" + arch;
                 break;
             case com.sun.jna.Platform.MAC:
-                osPrefix = "darwin";
+                osPrefix = "macosx-" + arch;
                 break;
             case com.sun.jna.Platform.LINUX:
                 osPrefix = "linux-" + arch;
