@@ -188,9 +188,9 @@ public class Device implements Serializable {
     public void start() {
         try {
             bindConnections();
-        } catch (Exception e) {
+        } catch (Exception ex) {
             stop();
-            throw new InstrumentException("Binding error, please check the port or IP");
+            throw new InstrumentException(ex);
         }
     }
 
