@@ -62,7 +62,7 @@ import java.util.Set;
  * @version 5.8.9
  * @since JDK 1.8+
  */
-public class NativeImageReader extends ImageReader implements Closeable {
+public class NativeDCMImageReader extends ImageReader implements Closeable {
 
     public static final String POST_PIXEL_DATA = "postPixelData";
 
@@ -116,7 +116,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
     private Photometric pmiAfterDecompression;
     private ImageDescriptor imageDescriptor;
 
-    public NativeImageReader(ImageReaderSpi originatingProvider) {
+    public NativeDCMImageReader(ImageReaderSpi originatingProvider) {
         super(originatingProvider);
     }
 
@@ -300,7 +300,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
 
     @Override
     public ImageReadParam getDefaultReadParam() {
-        return new NativeImageReadParam();
+        return new NativeDCMImageReadParam();
     }
 
     /**
@@ -334,7 +334,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public IIOMetadata getImageMetadata(int frameIndex) throws IOException {
+    public IIOMetadata getImageMetadata(int frameIndex) {
         return null;
     }
 
@@ -528,8 +528,8 @@ public class NativeImageReader extends ImageReader implements Closeable {
                               int frameIndex, ImageReadParam param, int outBits, byte[] ovlyData) {
         Attributes ovlyAttrs = metadata.getAttributes();
         int grayscaleValue = 0xffff;
-        if (param instanceof NativeImageReadParam) {
-            NativeImageReadParam dParam = (NativeImageReadParam) param;
+        if (param instanceof NativeDCMImageReadParam) {
+            NativeDCMImageReadParam dParam = (NativeDCMImageReadParam) param;
             Attributes psAttrs = dParam.getPresentationState();
             if (psAttrs != null) {
                 if (psAttrs.containsValue(Tag.OverlayData | gg0000))
@@ -544,8 +544,8 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     private int[] getActiveOverlayGroupOffsets(ImageReadParam param) {
-        if (param instanceof NativeImageReadParam) {
-            NativeImageReadParam dParam = (NativeImageReadParam) param;
+        if (param instanceof NativeDCMImageReadParam) {
+            NativeDCMImageReadParam dParam = (NativeDCMImageReadParam) param;
             Attributes psAttrs = dParam.getPresentationState();
             if (psAttrs != null)
                 return Overlays.getActiveOverlayGroupOffsets(psAttrs);
@@ -568,9 +568,9 @@ public class NativeImageReader extends ImageReader implements Closeable {
         Attributes imgAttrs = metadata.getAttributes();
         StoredValue sv = StoredValue.valueOf(imgAttrs);
         LookupTableFactory lutParam = new LookupTableFactory(sv);
-        NativeImageReadParam dParam = param instanceof NativeImageReadParam
-                ? (NativeImageReadParam) param
-                : new NativeImageReadParam();
+        NativeDCMImageReadParam dParam = param instanceof NativeDCMImageReadParam
+                ? (NativeDCMImageReadParam) param
+                : new NativeDCMImageReadParam();
         Attributes psAttrs = dParam.getPresentationState();
         if (psAttrs != null) {
             lutParam.setModalityLUT(psAttrs);
@@ -833,4 +833,94 @@ public class NativeImageReader extends ImageReader implements Closeable {
         dispose();
     }
 
+    /**
+     * @author Kimi Liu
+     * @version 5.8.9
+     * @since JDK 1.8+
+     */
+    public static class NativeDCMImageReadParam extends ImageReadParam {
+
+        private float windowCenter;
+        private float windowWidth;
+        private boolean autoWindowing = true;
+        private boolean preferWindow = true;
+        private int windowIndex;
+        private int voiLUTIndex;
+        private int overlayActivationMask = 0xf;
+        private int overlayGrayscaleValue = 0xffff;
+        private Attributes presentationState;
+
+        public float getWindowCenter() {
+            return windowCenter;
+        }
+
+        public void setWindowCenter(float windowCenter) {
+            this.windowCenter = windowCenter;
+        }
+
+        public float getWindowWidth() {
+            return windowWidth;
+        }
+
+        public void setWindowWidth(float windowWidth) {
+            this.windowWidth = windowWidth;
+        }
+
+        public boolean isAutoWindowing() {
+            return autoWindowing;
+        }
+
+        public void setAutoWindowing(boolean autoWindowing) {
+            this.autoWindowing = autoWindowing;
+        }
+
+        public boolean isPreferWindow() {
+            return preferWindow;
+        }
+
+        public void setPreferWindow(boolean preferWindow) {
+            this.preferWindow = preferWindow;
+        }
+
+        public int getWindowIndex() {
+            return windowIndex;
+        }
+
+        public void setWindowIndex(int windowIndex) {
+            this.windowIndex = Math.max(windowIndex, 0);
+        }
+
+        public int getVOILUTIndex() {
+            return voiLUTIndex;
+        }
+
+        public void setVOILUTIndex(int voiLUTIndex) {
+            this.voiLUTIndex = Math.max(voiLUTIndex, 0);
+        }
+
+        public Attributes getPresentationState() {
+            return presentationState;
+        }
+
+        public void setPresentationState(Attributes presentationState) {
+            this.presentationState = presentationState;
+        }
+
+        public int getOverlayActivationMask() {
+            return overlayActivationMask;
+        }
+
+        public void setOverlayActivationMask(int overlayActivationMask) {
+            this.overlayActivationMask = overlayActivationMask;
+        }
+
+        public int getOverlayGrayscaleValue() {
+            return overlayGrayscaleValue;
+        }
+
+        public void setOverlayGrayscaleValue(int overlayGrayscaleValue) {
+            this.overlayGrayscaleValue = overlayGrayscaleValue;
+        }
+
+    }
 }
