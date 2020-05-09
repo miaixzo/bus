@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.Args;
 import org.aoju.bus.image.Centre;
 import org.aoju.bus.image.Node;
@@ -33,6 +34,9 @@ import org.aoju.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @author Kimi Liu
@@ -49,15 +53,25 @@ public class ImageConfiguration {
     Rollers rollers;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public Centre onStoreSCP() {
+    public Centre onStoreSCP() throws MalformedURLException {
         if (properties.opencv) {
             new OpenCVNativeLoader().init();
         }
         StoreSCPCentre store = StoreSCPCentre.Builder();
-        store.setArgs(new Args(true));
+        Args args = new Args(true);
+        if (StringUtils.isEmpty(properties.relClasses)) {
+            args.setExtendSopClassesURL(new URL(properties.relClasses));
+        }
+        if (StringUtils.isEmpty(properties.tcsClass)) {
+            args.setTransferCapabilityFile(new URL(properties.tcsClass));
+        }
+        store.setArgs(args);
         store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.port)));
         store.setRollers(rollers);
         store.setStoreSCP(properties.dcmPath);
+        if (StringUtils.isEmpty(properties.sopClass)) {
+            store.getStoreSCP().loadDefaultTransferCapability(new URL(properties.sopClass));
+        }
         store.setDevice(store.getStoreSCP().getDevice());
         return store.build();
     }

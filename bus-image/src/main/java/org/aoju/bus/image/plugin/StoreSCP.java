@@ -163,12 +163,12 @@ public class StoreSCP extends BasicCStoreSCP {
         this.status = status;
     }
 
-    public void loadDefaultTransferCapability(URL transferCapabilityFile) {
+    public void loadDefaultTransferCapability(URL url) {
         Properties p = new Properties();
 
         try {
-            if (transferCapabilityFile != null) {
-                p.load(transferCapabilityFile.openStream());
+            if (url != null) {
+                p.load(url.openStream());
             }
         } catch (IOException e) {
             Logger.error("Cannot read sop-classes", e);

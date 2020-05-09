@@ -67,4 +67,9 @@ public class ImageProperties {
      */
     boolean opencv;
 
+    String tcsClass;
+
+    String sopClass;
+
+    String relClasses;
 }
