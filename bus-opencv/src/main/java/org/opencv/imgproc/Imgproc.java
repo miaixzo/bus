@@ -4722,7 +4722,7 @@ public class Imgproc {
      * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the
      *              channels is derived automatically from src and code.
      *              <p>
-     *              llowing transformations:
+     *              formations:
      *
      *              <ul>
      *                <li>
@@ -4772,7 +4772,7 @@ public class Imgproc {
      * @param code Color space conversion code (see the description below).
      *             channels is derived automatically from src and code.
      *             <p>
-     *             ollowing transformations:
+     *             nsformations:
      *
      *             <ul>
      *               <li>
