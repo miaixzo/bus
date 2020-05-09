@@ -1673,6 +1673,121 @@ public class UriUtils {
     }
 
     /**
+     * 枚举，用于标识每个URI组件允许的字符.
+     * 包含指示给定字符在特定URI组件中是否有效 .
+     */
+    public enum Type {
+
+        SCHEME {
+            @Override
+            public boolean isAllowed(int c) {
+                return isAlpha(c) || isDigit(c) || Symbol.C_PLUS == c || Symbol.C_HYPHEN == c || Symbol.C_DOT == c;
+            }
+        },
+        AUTHORITY {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c) || Symbol.C_COLON == c || Symbol.C_AT == c;
+            }
+        },
+        USER_INFO {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c) || Symbol.C_COLON == c;
+            }
+        },
+        HOST_IPV4 {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c);
+            }
+        },
+        HOST_IPV6 {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c) || isSubDelimiter(c) || Symbol.C_BRACKET_LEFT == c || Symbol.C_BRACKET_RIGHT == c || Symbol.C_COLON == c;
+            }
+        },
+        PORT {
+            @Override
+            public boolean isAllowed(int c) {
+                return isDigit(c);
+            }
+        },
+        PATH {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c) || Symbol.C_SLASH == c;
+            }
+        },
+        PATH_SEGMENT {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c);
+            }
+        },
+        QUERY {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c) || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c;
+            }
+        },
+        QUERY_PARAM {
+            @Override
+            public boolean isAllowed(int c) {
+                if (Symbol.C_EQUAL == c || Symbol.C_AND == c) {
+                    return false;
+                } else {
+                    return isPchar(c) || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c;
+                }
+            }
+        },
+        FRAGMENT {
+            @Override
+            public boolean isAllowed(int c) {
+                return isPchar(c) || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c;
+            }
+        },
+        URI {
+            @Override
+            public boolean isAllowed(int c) {
+                return isUnreserved(c);
+            }
+        };
+
+        public abstract boolean isAllowed(int c);
+
+        protected boolean isAlpha(int c) {
+            return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
+        }
+
+        protected boolean isDigit(int c) {
+            return (c >= Symbol.C_ZERO && c <= Symbol.C_NINE);
+        }
+
+        protected boolean isGenericDelimiter(int c) {
+            return (Symbol.C_COLON == c || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c || Symbol.C_SHAPE == c || Symbol.C_BRACKET_LEFT == c || Symbol.C_BRACKET_RIGHT == c || Symbol.C_AT == c);
+        }
+
+        protected boolean isSubDelimiter(int c) {
+            return (Symbol.C_NOT == c || Symbol.C_DOLLAR == c || Symbol.C_AND == c || Symbol.C_SINGLE_QUOTE == c || Symbol.C_PARENTHESE_LEFT == c || Symbol.C_PARENTHESE_RIGHT == c || Symbol.C_STAR == c || Symbol.C_PLUS == c ||
+                    Symbol.C_COMMA == c || Symbol.C_SEMICOLON == c || Symbol.C_EQUAL == c);
+        }
+
+        protected boolean isReserved(int c) {
+            return (isGenericDelimiter(c) || isSubDelimiter(c));
+        }
+
+        protected boolean isUnreserved(int c) {
+            return (isAlpha(c) || isDigit(c) || Symbol.C_HYPHEN == c || Symbol.C_DOT == c || Symbol.C_UNDERLINE == c || Symbol.C_TILDE == c);
+        }
+
+        protected boolean isPchar(int c) {
+            return (isUnreserved(c) || isSubDelimiter(c) || Symbol.C_COLON == c || Symbol.C_AT == c);
+        }
+    }
+
+    /**
      * URL中Path部分的封装
      */
     public static class Path {
@@ -2079,121 +2194,6 @@ public class UriUtils {
             }
         }
 
-    }
-
-    /**
-     * 枚举，用于标识每个URI组件允许的字符.
-     * 包含指示给定字符在特定URI组件中是否有效 .
-     */
-    public enum Type {
-
-        SCHEME {
-            @Override
-            public boolean isAllowed(int c) {
-                return isAlpha(c) || isDigit(c) || Symbol.C_PLUS == c || Symbol.C_HYPHEN == c || Symbol.C_DOT == c;
-            }
-        },
-        AUTHORITY {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c) || Symbol.C_COLON == c || Symbol.C_AT == c;
-            }
-        },
-        USER_INFO {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c) || Symbol.C_COLON == c;
-            }
-        },
-        HOST_IPV4 {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c);
-            }
-        },
-        HOST_IPV6 {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c) || isSubDelimiter(c) || Symbol.C_BRACKET_LEFT == c || Symbol.C_BRACKET_RIGHT == c || Symbol.C_COLON == c;
-            }
-        },
-        PORT {
-            @Override
-            public boolean isAllowed(int c) {
-                return isDigit(c);
-            }
-        },
-        PATH {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c) || Symbol.C_SLASH == c;
-            }
-        },
-        PATH_SEGMENT {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c);
-            }
-        },
-        QUERY {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c) || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c;
-            }
-        },
-        QUERY_PARAM {
-            @Override
-            public boolean isAllowed(int c) {
-                if (Symbol.C_EQUAL == c || Symbol.C_AND == c) {
-                    return false;
-                } else {
-                    return isPchar(c) || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c;
-                }
-            }
-        },
-        FRAGMENT {
-            @Override
-            public boolean isAllowed(int c) {
-                return isPchar(c) || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c;
-            }
-        },
-        URI {
-            @Override
-            public boolean isAllowed(int c) {
-                return isUnreserved(c);
-            }
-        };
-
-        public abstract boolean isAllowed(int c);
-
-        protected boolean isAlpha(int c) {
-            return (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
-        }
-
-        protected boolean isDigit(int c) {
-            return (c >= Symbol.C_ZERO && c <= Symbol.C_NINE);
-        }
-
-        protected boolean isGenericDelimiter(int c) {
-            return (Symbol.C_COLON == c || Symbol.C_SLASH == c || Symbol.C_QUESTION_MARK == c || Symbol.C_SHAPE == c || Symbol.C_BRACKET_LEFT == c || Symbol.C_BRACKET_RIGHT == c || Symbol.C_AT == c);
-        }
-
-        protected boolean isSubDelimiter(int c) {
-            return (Symbol.C_NOT == c || Symbol.C_DOLLAR == c || Symbol.C_AND == c || Symbol.C_SINGLE_QUOTE == c || Symbol.C_PARENTHESE_LEFT == c || Symbol.C_PARENTHESE_RIGHT == c || Symbol.C_STAR == c || Symbol.C_PLUS == c ||
-                    Symbol.C_COMMA == c || Symbol.C_SEMICOLON == c || Symbol.C_EQUAL == c);
-        }
-
-        protected boolean isReserved(int c) {
-            return (isGenericDelimiter(c) || isSubDelimiter(c));
-        }
-
-        protected boolean isUnreserved(int c) {
-            return (isAlpha(c) || isDigit(c) || Symbol.C_HYPHEN == c || Symbol.C_DOT == c || Symbol.C_UNDERLINE == c || Symbol.C_TILDE == c);
-        }
-
-        protected boolean isPchar(int c) {
-            return (isUnreserved(c) || isSubDelimiter(c) || Symbol.C_COLON == c || Symbol.C_AT == c);
-        }
     }
 
 }
