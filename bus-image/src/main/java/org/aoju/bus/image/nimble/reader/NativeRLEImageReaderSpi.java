@@ -78,5 +78,4 @@ public class NativeRLEImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
             throws IOException {
         return new NativeRLEImageReader(this);
     }
-
 }

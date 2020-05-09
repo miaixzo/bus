@@ -61,7 +61,6 @@ public abstract class StreamSegment {
     }
 
     public static StreamSegment getStreamSegment(ImageInputStream iis, ImageReadParam param) throws IOException {
-
         if (iis instanceof ExtendSegmentedInputImageStream) {
             return new FileStreamSegment((ExtendSegmentedInputImageStream) iis);
         } else if (iis instanceof SegmentedImageStream) {

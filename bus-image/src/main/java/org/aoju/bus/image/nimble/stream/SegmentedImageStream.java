@@ -57,7 +57,8 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
     private ImageDescriptor imageDescriptor;
 
     public SegmentedImageStream(ImageInputStream stream,
-                                Fragments pixeldataFragments, int frameIndex) throws IOException {
+                                Fragments pixeldataFragments,
+                                int frameIndex) throws IOException {
         if (frameIndex == -1) {
             frameIndex = 0;
         } else {

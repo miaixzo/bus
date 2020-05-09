@@ -33,7 +33,9 @@ import java.nio.ByteBuffer;
  * @since JDK 1.8+
  */
 public interface BytesWithImageDescriptor {
+
     ByteBuffer getBytes() throws IOException;
 
     ImageDescriptor getImageDescriptor();
+
 }
