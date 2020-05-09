@@ -25,7 +25,6 @@
 package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
@@ -37,7 +36,6 @@ import javax.imageio.spi.ImageWriterSpi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
@@ -77,14 +75,11 @@ public class ImageWriterFactory implements Serializable {
 
     private static ImageWriterFactory initDefault() {
         ImageWriterFactory factory = new ImageWriterFactory();
-        String name = System.getProperty(ImageWriterFactory.class.getName(),
-                "org/aoju/bus/image/nimble/codec/ImageWriterFactory.properties");
+        URL url = ResourceUtils.getResource("ImageWriterFactory.properties", ImageWriterFactory.class);
         try {
-            factory.load(name);
+            factory.load(url.openStream());
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "Failed to load Image Writer Factory configuration from: "
-                            + name, e);
+            throw new RuntimeException("Failed to load Image Reader Factory configuration from: " + url.toString(), e);
         }
         return factory;
     }
@@ -94,7 +89,7 @@ public class ImageWriterFactory implements Serializable {
     }
 
     public static ImageWriter getImageWriter(ImageWriterParam param) {
-        return Boolean.getBoolean("org.aoju.bus.image.nimble.codec.useServiceLoader")
+        return Boolean.getBoolean("org.aoju.bus.image.nimble.codec.UseServiceLoader")
                 ? getImageWriterFromServiceLoader(param)
                 : getImageWriterFromImageIOServiceRegistry(param);
     }
@@ -146,23 +141,6 @@ public class ImageWriterFactory implements Serializable {
             }
         }
         return spi;
-    }
-
-    public void load(String name) throws IOException {
-        URL url;
-        try {
-            url = new URL(name);
-        } catch (MalformedURLException e) {
-            url = ResourceUtils.getResource(name, this.getClass());
-            if (url == null)
-                throw new IOException("No such resource: " + name);
-        }
-        InputStream in = url.openStream();
-        try {
-            load(in);
-        } finally {
-            IoUtils.close(in);
-        }
     }
 
     public void load(InputStream in) throws IOException {
@@ -260,7 +238,7 @@ public class ImageWriterFactory implements Serializable {
                     "formatName='" + formatName + '\'' +
                     ", className='" + className + '\'' +
                     ", patchJPEGLS=" + patchJPEGLS +
-                    ", imageWriteParams=" + Arrays.toString(imageWriteParams) +
+                    ", imageWriterParam=" + Arrays.toString(imageWriteParams) +
                     '}';
         }
     }

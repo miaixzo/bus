@@ -46,10 +46,6 @@ import java.nio.ByteOrder;
  */
 public class NativeJ2kImageWriter extends ImageWriter {
 
-    static {
-        new OpenCVNativeLoader().init();
-    }
-
     NativeJ2kImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
     }

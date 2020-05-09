@@ -65,7 +65,7 @@ public class RecordFactory {
 
     public void loadDefaultConfiguration() {
         try {
-            loadConfiguration(ResourceUtils.getResource("org/aoju/bus/image/galaxy/media/RecordFactory.xml", this.getClass()).toString());
+            loadConfiguration(ResourceUtils.getResource("RecordFactory.xml", RecordFactory.class).toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

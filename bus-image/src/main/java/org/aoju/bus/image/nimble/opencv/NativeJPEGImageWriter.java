@@ -48,10 +48,6 @@ import java.nio.ByteOrder;
  */
 public class NativeJPEGImageWriter extends ImageWriter {
 
-    static {
-        new OpenCVNativeLoader().init();
-    }
-
     NativeJPEGImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
     }

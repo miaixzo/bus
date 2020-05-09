@@ -50,10 +50,6 @@ import java.util.List;
  */
 public abstract class StreamSegment {
 
-    static {
-        new OpenCVNativeLoader().init();
-    }
-
     private final long[] segPosition;
     private final long[] segLength;
     private final ImageDescriptor imageDescriptor;

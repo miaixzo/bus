@@ -26,7 +26,6 @@ package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
@@ -38,7 +37,6 @@ import javax.imageio.spi.ImageReaderSpi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
@@ -77,14 +75,13 @@ public class ImageReaderFactory implements Serializable {
 
     private static ImageReaderFactory initDefault() {
         ImageReaderFactory factory = new ImageReaderFactory();
-        String name = System.getProperty(ImageReaderFactory.class.getName(),
-                "org/aoju/bus/image/nimble/codec/ImageReaderFactory.properties");
+        URL url = ResourceUtils.getResource("ImageReaderFactory.properties", ImageReaderFactory.class);
         try {
-            factory.load(name);
+            factory.load(url.openStream());
         } catch (Exception e) {
             throw new RuntimeException(
                     "Failed to load Image Reader Factory configuration from: "
-                            + name, e);
+                            + url.toString(), e);
         }
         return factory;
     }
@@ -150,23 +147,6 @@ public class ImageReaderFactory implements Serializable {
             }
         }
         return spi;
-    }
-
-    public void load(String name) throws IOException {
-        URL url;
-        try {
-            url = new URL(name);
-        } catch (MalformedURLException e) {
-            url = ResourceUtils.getResource(name, this.getClass());
-            if (url == null)
-                throw new IOException("No such resource: " + name);
-        }
-        InputStream in = url.openStream();
-        try {
-            load(in);
-        } finally {
-            IoUtils.close(in);
-        }
     }
 
     public void load(InputStream in) throws IOException {
@@ -256,11 +236,11 @@ public class ImageReaderFactory implements Serializable {
 
         @Override
         public String toString() {
-            return "ImageWriterParam{" +
+            return "ImageReaderParam{" +
                     "formatName='" + formatName + '\'' +
                     ", className='" + className + '\'' +
                     ", patchJPEGLS=" + patchJPEGLS +
-                    ", imageReadParams=" + Arrays.toString(imageReadParams) +
+                    ", imageReaderParam=" + Arrays.toString(imageReadParams) +
                     '}';
         }
     }

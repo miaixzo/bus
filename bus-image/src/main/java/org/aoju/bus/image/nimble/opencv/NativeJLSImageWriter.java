@@ -48,10 +48,6 @@ import java.nio.ByteOrder;
  */
 public class NativeJLSImageWriter extends ImageWriter {
 
-    static {
-        new OpenCVNativeLoader().init();
-    }
-
     NativeJLSImageWriter(ImageWriterSpi originatingProvider) {
         super(originatingProvider);
     }
@@ -84,8 +80,7 @@ public class NativeJLSImageWriter extends ImageWriter {
         try {
             ImageCV mat = null;
             try {
-                // Band interleaved mode (PlanarConfiguration = 1) is converted to pixel interleaved
-                // So the input image has always a pixel interleaved mode mode((PlanarConfiguration = 0)
+                // 将交叉模式(PlanarConfiguration = 1)转换为像素模式，因此输入图像始终具有像素模式(PlanarConfiguration = 0)
                 mat = ImageConversion.toMat(renderedImage, param.getSourceRegion(), false);
 
                 int jpeglsNLE = param instanceof JPEGLSImageWriteParam ? ((JPEGLSImageWriteParam) param).getNearLossless() : 0;
@@ -97,7 +92,7 @@ public class NativeJLSImageWriter extends ImageWriter {
                 if (signed) {
                     Logger.warn("Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
                     jpeglsNLE = 0;
-                    bitCompressed = 16; // Extend to bit allocated to avoid exception as negative values are treated as large positive values
+                    bitCompressed = 16; // 扩展到分配的位以避免异常，因为将负值视为大正值
                 }
 
                 int[] params = new int[15];
