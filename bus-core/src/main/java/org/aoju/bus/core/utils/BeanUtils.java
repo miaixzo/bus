@@ -31,6 +31,7 @@ import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 
@@ -60,7 +61,7 @@ public class BeanUtils {
         if (ClassUtils.isNormalClass(clazz)) {
             final Method[] methods = clazz.getMethods();
             for (Method method : methods) {
-                if (method.getParameterTypes().length == 1 && method.getName().startsWith("set")) {
+                if (method.getParameterTypes().length == 1 && method.getName().startsWith(Normal.SET)) {
                     // 检测包含标准的setXXX方法即视为标准的JavaBean
                     return true;
                 }
@@ -152,7 +153,7 @@ public class BeanUtils {
         if (ClassUtils.isNormalClass(clazz)) {
             final Method[] methods = clazz.getMethods();
             for (Method method : methods) {
-                if (method.getParameterTypes().length == 1 && method.getName().startsWith("set")) {
+                if (method.getParameterTypes().length == 1 && method.getName().startsWith(Normal.SET)) {
                     // 检测包含标准的setXXX方法即视为标准的JavaBean
                     return true;
                 }
@@ -172,7 +173,7 @@ public class BeanUtils {
         if (ClassUtils.isNormalClass(clazz)) {
             for (Method method : clazz.getMethods()) {
                 if (method.getParameterTypes().length == 0) {
-                    if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
+                    if (method.getName().startsWith(Normal.GET) || method.getName().startsWith(Normal.IS)) {
                         return true;
                     }
                 }

@@ -25,11 +25,9 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.FileType;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.map.TableMap;
 
 import java.io.*;
 import java.net.*;
@@ -38,13 +36,146 @@ import java.util.*;
 import java.util.jar.JarFile;
 
 /**
- * 统一资源定位符相关工具类
+ * URL相关工具
  *
  * @author Kimi Liu
  * @version 5.8.9
  * @since JDK 1.8+
  */
 public class UriUtils {
+
+    /**
+     * 协议，例如http
+     */
+    private String scheme;
+    /**
+     * 主机，例如127.0.0.1
+     */
+    private String host;
+    /**
+     * 端口，默认-1
+     */
+    private int port = -1;
+    /**
+     * 路径，例如/aa/bb/cc
+     */
+    private Path path;
+    /**
+     * 查询语句，例如a=1&amp;b=2
+     */
+    private Query query;
+    /**
+     * 标识符，例如#后边的部分
+     */
+    private String fragment;
+
+    /**
+     * 编码，用于URLEncode和URLDecode
+     */
+    private Charset charset;
+
+    /**
+     * 构造
+     */
+    public UriUtils() {
+        this.charset = org.aoju.bus.core.lang.Charset.UTF_8;
+    }
+
+    /**
+     * 构造
+     *
+     * @param scheme   协议，默认http
+     * @param host     主机，例如127.0.0.1
+     * @param port     端口，-1表示默认端口
+     * @param path     路径，例如/aa/bb/cc
+     * @param query    查询，例如a=1&amp;b=2
+     * @param fragment 标识符例如#后边的部分
+     * @param charset  编码，用于URLEncode和URLDecode
+     */
+    public UriUtils(String scheme, String host, int port, Path path, Query query, String fragment, Charset charset) {
+        this.charset = charset;
+        this.scheme = scheme;
+        this.host = host;
+        this.port = port;
+        this.path = path;
+        this.query = query;
+        this.setFragment(fragment);
+    }
+
+    /**
+     * 创建空的UriUtils
+     *
+     * @return UriUtils
+     */
+    public static UriUtils create() {
+        return new UriUtils();
+    }
+
+    /**
+     * 使用URL字符串构建UriUtils
+     *
+     * @param url     URL字符串
+     * @param charset 编码，用于URLEncode和URLDecode
+     * @return UriUtils
+     */
+    public static UriUtils of(String url, Charset charset) {
+        Assert.notBlank(url, "Url must be not blank!");
+        return of(url(url.trim()), charset);
+    }
+
+    /**
+     * 使用URI构建UriUtils
+     *
+     * @param uri     URI
+     * @param charset 编码，用于URLEncode和URLDecode
+     * @return UriUtils
+     */
+    public static UriUtils of(URI uri, Charset charset) {
+        return of(uri.getScheme(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getRawQuery(), uri.getFragment(), charset);
+    }
+
+    /**
+     * 使用URL构建UriUtils
+     *
+     * @param url     URL
+     * @param charset 编码，用于URLEncode和URLDecode
+     * @return UriUtils
+     */
+    public static UriUtils of(URL url, Charset charset) {
+        return of(url.getProtocol(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef(), charset);
+    }
+
+    /**
+     * 构建UriUtils
+     *
+     * @param scheme   协议，默认http
+     * @param host     主机，例如127.0.0.1
+     * @param port     端口，-1表示默认端口
+     * @param path     路径，例如/aa/bb/cc
+     * @param query    查询，例如a=1&amp;b=2
+     * @param fragment 标识符例如#后边的部分
+     * @param charset  编码，用于URLEncode和URLDecode
+     * @return UriUtils
+     */
+    public static UriUtils of(String scheme, String host, int port, String path, String query, String fragment, Charset charset) {
+        return of(scheme, host, port, Path.of(path, charset), Query.of(query, charset), fragment, charset);
+    }
+
+    /**
+     * 构建UriUtils
+     *
+     * @param scheme   协议，默认http
+     * @param host     主机，例如127.0.0.1
+     * @param port     端口，-1表示默认端口
+     * @param path     路径，例如/aa/bb/cc
+     * @param query    查询，例如a=1&amp;b=2
+     * @param fragment 标识符例如#后边的部分
+     * @param charset  编码，用于URLEncode和URLDecode
+     * @return UriUtils
+     */
+    public static UriUtils of(String scheme, String host, int port, Path path, Query query, String fragment, Charset charset) {
+        return new UriUtils(scheme, host, port, path, query, fragment, charset);
+    }
 
     /**
      * 通过一个字符串形式的URL地址创建URL对象
@@ -105,7 +236,7 @@ public class UriUtils {
         Assert.notBlank(urlStr, "Url is blank !");
         // 去掉url中的空白符,防止空白符导致的异常
         urlStr = StringUtils.cleanBlank(urlStr);
-        return UriUtils.url(urlStr, handler);
+        return url(urlStr, handler);
     }
 
     /**
@@ -117,18 +248,6 @@ public class UriUtils {
      */
     public static URL getURL(String pathBaseClassLoader) {
         return ResourceUtils.getResource(pathBaseClassLoader);
-    }
-
-    /**
-     * 获得URL
-     *
-     * @param path  相对给定 class所在的路径
-     * @param clazz 指定class
-     * @return URL
-     * @see ResourceUtils#getResource(String, Class)
-     */
-    public static URL getURL(String path, Class<?> clazz) {
-        return ResourceUtils.getResource(path, clazz);
     }
 
     /**
@@ -154,7 +273,7 @@ public class UriUtils {
      * @return URL
      * @throws InstrumentException MalformedURLException
      */
-    public static URL[] getURLs(File... files) {
+    public static URL[] getURL(File... files) {
         final URL[] urls = new URL[files.length];
         try {
             for (int i = 0; i < files.length; i++) {
@@ -165,6 +284,18 @@ public class UriUtils {
         }
 
         return urls;
+    }
+
+    /**
+     * 获得URL
+     *
+     * @param path  相对给定 class所在的路径
+     * @param clazz 指定class
+     * @return URL
+     * @see ResourceUtils#getResource(String, Class)
+     */
+    public static URL getURL(String path, Class<?> clazz) {
+        return ResourceUtils.getResource(path, clazz);
     }
 
     /**
@@ -208,7 +339,6 @@ public class UriUtils {
      * @param url URL
      * @return 编码后的URL
      * @throws InstrumentException UnsupportedEncodingException
-     * @since 3.1.9
      */
     public static String encode(String url) throws InstrumentException {
         return encode(url, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
@@ -274,7 +404,7 @@ public class UriUtils {
         String path = null;
         try {
             // URL对象的getPath方法对于包含中文或空格的问题
-            path = UriUtils.toURI(url).getPath();
+            path = toURI(url).getPath();
         } catch (InstrumentException e) {
             // ignore
         }
@@ -320,7 +450,6 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return 是否为文件
-     * @since 3.1.9
      */
     public static boolean isFileURL(URL url) {
         String protocol = url.getProtocol();
@@ -350,7 +479,7 @@ public class UriUtils {
      * @return whether the URL has been identified as a JAR file URL
      */
     public static boolean isJarFileURL(URL url) {
-        return (Normal.URL_PROTOCOL_FILE.equals(url.getProtocol()) && //
+        return (Normal.URL_PROTOCOL_FILE.equals(url.getProtocol()) &&
                 url.getPath().toLowerCase().endsWith(FileType.JAR));
     }
 
@@ -359,7 +488,6 @@ public class UriUtils {
      *
      * @param url {@link URL}
      * @return InputStream流
-     * @since 5.8.9
      */
     public static InputStream getStream(URL url) {
         Assert.notNull(url);
@@ -376,7 +504,6 @@ public class UriUtils {
      * @param url     {@link URL}
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 5.8.9
      */
     public static BufferedReader getReader(URL url, Charset charset) {
         return IoUtils.getReader(getStream(url), charset);
@@ -988,9 +1115,9 @@ public class UriUtils {
                     if (null == name) {
                         // 对于像&a&这类无参数值的字符串,我们将name为a的值设为""
                         name = paramPart.substring(pos, i);
-                        builder.append(UriUtils.encodeQuery(name, charset)).append(Symbol.C_EQUAL);
+                        builder.append(encodeQuery(name, charset)).append(Symbol.C_EQUAL);
                     } else {
-                        builder.append(UriUtils.encodeQuery(name, charset)).append(Symbol.C_EQUAL).append(UriUtils.encodeQuery(paramPart.substring(pos, i), charset)).append(Symbol.C_AND);
+                        builder.append(encodeQuery(name, charset)).append(Symbol.C_EQUAL).append(encodeQuery(paramPart.substring(pos, i), charset)).append(Symbol.C_AND);
                     }
                     name = null;
                 }
@@ -1000,13 +1127,13 @@ public class UriUtils {
 
         // 结尾处理
         if (null != name) {
-            builder.append(UriUtils.encodeQuery(name, charset)).append(Symbol.C_EQUAL);
+            builder.append(encodeQuery(name, charset)).append(Symbol.C_EQUAL);
         }
         if (pos != i) {
             if (null == name && pos > 0) {
                 builder.append(Symbol.C_EQUAL);
             }
-            builder.append(UriUtils.encodeQuery(paramPart.substring(pos, i), charset));
+            builder.append(encodeQuery(paramPart.substring(pos, i), charset));
         }
 
         // 以&结尾则去除之
@@ -1058,9 +1185,9 @@ public class UriUtils {
             }
             valueStr = Convert.toString(value);
             if (StringUtils.isNotEmpty(key)) {
-                sb.append(UriUtils.encodeAll(key, charset)).append(Symbol.EQUAL);
+                sb.append(encodeAll(key, charset)).append(Symbol.EQUAL);
                 if (StringUtils.isNotEmpty(valueStr)) {
-                    sb.append(UriUtils.encodeAll(valueStr, charset));
+                    sb.append(encodeAll(valueStr, charset));
                 }
             }
         }
@@ -1204,8 +1331,8 @@ public class UriUtils {
      * @param charset 编码
      */
     private static void addParam(Map<String, List<String>> params, String name, String value, String charset) {
-        name = UriUtils.decode(name, charset);
-        value = UriUtils.decode(value, charset);
+        name = decode(name, charset);
+        value = decode(value, charset);
         List<String> values = params.get(name);
         if (values == null) {
             values = new ArrayList<>(1);
@@ -1230,6 +1357,728 @@ public class UriUtils {
         } catch (URISyntaxException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 获取协议，例如http
+     *
+     * @return 协议，例如http
+     */
+    public String getScheme() {
+        return scheme;
+    }
+
+    /**
+     * 设置协议，例如http
+     *
+     * @param scheme 协议，例如http
+     * @return this
+     */
+    public UriUtils setScheme(String scheme) {
+        this.scheme = scheme;
+        return this;
+    }
+
+    /**
+     * 获取协议，例如http，如果用户未定义协议，使用默认的http协议
+     *
+     * @return 协议，例如http
+     */
+    public String getSchemeWithDefault() {
+        return StringUtils.emptyToDefault(this.scheme, Http.HTTP);
+    }
+
+    /**
+     * 获取 主机，例如127.0.0.1
+     *
+     * @return 主机，例如127.0.0.1
+     */
+    public String getHost() {
+        return host;
+    }
+
+    /**
+     * 设置主机，例如127.0.0.1
+     *
+     * @param host 主机，例如127.0.0.1
+     * @return this
+     */
+    public UriUtils setHost(String host) {
+        this.host = host;
+        return this;
+    }
+
+    /**
+     * 获取端口，默认-1
+     *
+     * @return 端口，默认-1
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * 设置端口，默认-1
+     *
+     * @param port 端口，默认-1
+     * @return this
+     */
+    public UriUtils setPort(int port) {
+        this.port = port;
+        return this;
+    }
+
+    /**
+     * 获得authority部分
+     *
+     * @return authority部分
+     */
+    public String getAuthority() {
+        return (port < 0) ? host : host + ":" + port;
+    }
+
+    /**
+     * 获取路径，例如/aa/bb/cc
+     *
+     * @return 路径，例如/aa/bb/cc
+     */
+    public Path getPath() {
+        return path;
+    }
+
+    /**
+     * 设置路径，例如/aa/bb/cc，将覆盖之前所有的path相关设置
+     *
+     * @param path 路径，例如/aa/bb/cc
+     * @return this
+     */
+    public UriUtils setPath(Path path) {
+        this.path = path;
+        return this;
+    }
+
+    /**
+     * 获得路径，例如/aa/bb/cc
+     *
+     * @return 路径，例如/aa/bb/cc
+     */
+    public String getPathStr() {
+        return null == this.path ? Symbol.SLASH : this.path.build(charset);
+    }
+
+    /**
+     * 增加路径节点
+     *
+     * @param segment 路径节点
+     * @return this
+     */
+    public UriUtils addPath(String segment) {
+        if (StringUtils.isBlank(segment)) {
+            return this;
+        }
+        if (null == this.path) {
+            this.path = new Path();
+        }
+        this.path.add(segment);
+        return this;
+    }
+
+    /**
+     * 追加path节点
+     *
+     * @param segment path节点
+     * @return this
+     */
+    public UriUtils appendPath(CharSequence segment) {
+        if (StringUtils.isEmpty(segment)) {
+            return this;
+        }
+
+        if (this.path == null) {
+            this.path = new Path();
+        }
+        this.path.add(segment);
+        return this;
+    }
+
+    /**
+     * 获取查询语句，例如a=1&amp;b=2
+     *
+     * @return 查询语句，例如a=1&amp;b=2
+     */
+    public Query getQuery() {
+        return query;
+    }
+
+    /**
+     * 设置查询语句，例如a=1&amp;b=2，将覆盖之前所有的query相关设置
+     *
+     * @param query 查询语句，例如a=1&amp;b=2
+     * @return this
+     */
+    public UriUtils setQuery(Query query) {
+        this.query = query;
+        return this;
+    }
+
+    /**
+     * 获取查询语句，例如a=1&amp;b=2
+     *
+     * @return 查询语句，例如a=1&amp;b=2
+     */
+    public String getQueryStr() {
+        return null == this.query ? null : this.query.build(this.charset);
+    }
+
+    /**
+     * 添加查询项，支持重复键
+     *
+     * @param key   键
+     * @param value 值
+     * @return this
+     */
+    public UriUtils addQuery(String key, String value) {
+        if (StringUtils.isEmpty(key)) {
+            return this;
+        }
+
+        if (this.query == null) {
+            this.query = new Query();
+        }
+        this.query.add(key, value);
+        return this;
+    }
+
+    /**
+     * 获取标识符，#后边的部分
+     *
+     * @return 标识符，例如#后边的部分
+     */
+    public String getFragment() {
+        return fragment;
+    }
+
+    /**
+     * 设置标识符，例如#后边的部分
+     *
+     * @param fragment 标识符，例如#后边的部分
+     * @return this
+     */
+    public UriUtils setFragment(String fragment) {
+        if (StringUtils.isEmpty(fragment)) {
+            this.fragment = null;
+        }
+        this.fragment = StringUtils.removePrefix(fragment, "#");
+        return this;
+    }
+
+    /**
+     * 获取标识符，#后边的部分
+     *
+     * @return 标识符，例如#后边的部分
+     */
+    public String getFragmentEncoded() {
+        return encodeAll(this.fragment, this.charset);
+    }
+
+    /**
+     * 获取编码，用于URLEncode和URLDecode
+     *
+     * @return 编码
+     */
+    public Charset getCharset() {
+        return charset;
+    }
+
+    /**
+     * 设置编码，用于URLEncode和URLDecode
+     *
+     * @param charset 编码
+     * @return this
+     */
+    public UriUtils setCharset(Charset charset) {
+        this.charset = charset;
+        return this;
+    }
+
+    /**
+     * 创建URL字符串
+     *
+     * @return URL字符串
+     */
+    public String build() {
+        return toURL().toString();
+    }
+
+    /**
+     * 转换为{@link URL} 对象
+     *
+     * @return {@link URL}
+     */
+    public URL toURL() {
+        return toURL(null);
+    }
+
+    /**
+     * 转换为{@link URL} 对象
+     *
+     * @param handler {@link URLStreamHandler}，null表示默认
+     * @return {@link URL}
+     */
+    public URL toURL(URLStreamHandler handler) {
+        final StringBuilder fileBuilder = new StringBuilder();
+
+        // path
+        fileBuilder.append(StringUtils.blankToDefault(getPathStr(), Symbol.SLASH));
+
+        // query
+        final String query = getQueryStr();
+        if (StringUtils.isNotBlank(query)) {
+            fileBuilder.append(Symbol.C_QUESTION_MARK).append(query);
+        }
+
+        // fragment
+        if (StringUtils.isNotBlank(this.fragment)) {
+            fileBuilder.append(Symbol.C_SHAPE).append(getFragmentEncoded());
+        }
+
+        try {
+            return new URL(getSchemeWithDefault(), host, port, fileBuilder.toString(), handler);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+
+    /**
+     * 转换为URI
+     *
+     * @return URI
+     */
+    public URI toURI() {
+        try {
+            return new URI(
+                    getSchemeWithDefault(),
+                    getAuthority(),
+                    getPathStr(),
+                    getQueryStr(),
+                    getFragmentEncoded());
+        } catch (URISyntaxException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return build();
+    }
+
+    /**
+     * URL中Path部分的封装
+     */
+    public static class Path {
+        private List<String> segments;
+        private boolean withEngTag;
+
+        /**
+         * 构建Path
+         *
+         * @param pathStr 初始化的路径字符串
+         * @param charset decode用的编码，null表示不做decode
+         * @return {@link Path}
+         */
+        public static Path of(String pathStr, Charset charset) {
+            final Path Path = new Path();
+            Path.parse(pathStr, charset);
+            return Path;
+        }
+
+        /**
+         * 修正节点，包括去掉前后的/，去掉空白符
+         *
+         * @param segment 节点
+         * @return 修正后的节点
+         */
+        private static String fixSegment(CharSequence segment) {
+            if (StringUtils.isEmpty(segment) || Symbol.SLASH.contentEquals(segment)) {
+                return null;
+            }
+
+            String segmentStr = StringUtils.toString(segment);
+            segmentStr = StringUtils.trim(segmentStr);
+            segmentStr = StringUtils.removePrefix(segmentStr, Symbol.SLASH);
+            segmentStr = StringUtils.removeSuffix(segmentStr, Symbol.SLASH);
+            segmentStr = StringUtils.trim(segmentStr);
+            return segmentStr;
+        }
+
+        /**
+         * 是否path的末尾加/
+         *
+         * @param withEngTag 是否path的末尾加/
+         * @return this
+         */
+        public Path setWithEndTag(boolean withEngTag) {
+            this.withEngTag = withEngTag;
+            return this;
+        }
+
+        /**
+         * 获取path的节点列表
+         *
+         * @return 节点列表
+         */
+        public List<String> getSegments() {
+            return this.segments;
+        }
+
+        /**
+         * 获得指定节点
+         *
+         * @param index 节点位置
+         * @return 节点，无节点或者越界返回null
+         */
+        public String getSegment(int index) {
+            if (null == this.segments || index >= this.segments.size()) {
+                return null;
+            }
+            return this.segments.get(index);
+        }
+
+        /**
+         * 添加到path最后面
+         *
+         * @param segment Path节点
+         * @return this
+         */
+        public Path add(CharSequence segment) {
+            add(segment, false);
+            return this;
+        }
+
+        /**
+         * 添加到path最前面
+         *
+         * @param segment Path节点
+         * @return this
+         */
+        public Path addBefore(CharSequence segment) {
+            add(segment, true);
+            return this;
+        }
+
+        /**
+         * 解析path
+         *
+         * @param path    路径，类似于aaa/bb/ccc
+         * @param charset decode编码，null表示不解码
+         * @return this
+         */
+        public Path parse(String path, Charset charset) {
+            Path Path = new Path();
+
+            if (StringUtils.isNotEmpty(path)) {
+                path = path.trim();
+
+                // 原URL中以/结尾，则这个规则需保留
+                if (StringUtils.endWith(path, Symbol.C_SLASH)) {
+                    this.withEngTag = true;
+                }
+
+                final StringTokenizer tokenizer = new StringTokenizer(path, Symbol.SLASH);
+                while (tokenizer.hasMoreTokens()) {
+                    add(decode(tokenizer.nextToken(), charset));
+                }
+            }
+
+            return Path;
+        }
+
+        /**
+         * 构建path，前面带'/'
+         *
+         * @param charset encode编码，null表示不做encode
+         * @return 如果没有任何内容，则返回空字符串""
+         */
+        public String build(Charset charset) {
+            if (CollUtils.isEmpty(this.segments)) {
+                return Normal.EMPTY;
+            }
+
+            final StringBuilder builder = new StringBuilder();
+            for (String segment : segments) {
+                builder.append(Symbol.C_SLASH).append(encodeAll(segment, charset));
+            }
+            if (withEngTag || StringUtils.isEmpty(builder)) {
+                builder.append(Symbol.C_SLASH);
+            }
+            return builder.toString();
+        }
+
+        @Override
+        public String toString() {
+            return build(null);
+        }
+
+        /**
+         * 增加节点
+         *
+         * @param segment 节点
+         * @param before  是否在前面添加
+         */
+        private void add(CharSequence segment, boolean before) {
+            final String seg = fixSegment(segment);
+            if (null == seg) {
+                return;
+            }
+
+
+            if (this.segments == null) {
+                this.segments = new LinkedList<>();
+            }
+            if (before) {
+                this.segments.add(0, seg);
+            } else {
+                this.segments.add(seg);
+            }
+        }
+    }
+
+    /**
+     * URL中查询字符串部分的封装，类似于：
+     * <pre>
+     *   key1=v1&amp;key2=&amp;key3=v3
+     * </pre>
+     */
+    public static class Query {
+
+        private final TableMap<CharSequence, CharSequence> query;
+
+        /**
+         * 构造
+         */
+        public Query() {
+            this(null);
+        }
+
+        /**
+         * 构造
+         *
+         * @param queryMap 初始化的查询键值对
+         */
+        public Query(Map<? extends CharSequence, ?> queryMap) {
+            if (MapUtils.isNotEmpty(queryMap)) {
+                query = new TableMap<>(queryMap.size());
+                addAll(queryMap);
+            } else {
+                query = new TableMap<>(MapUtils.DEFAULT_INITIAL_CAPACITY);
+            }
+        }
+
+        /**
+         * 构建Query
+         *
+         * @param queryMap 初始化的查询键值对
+         * @return {@link Query}
+         */
+        public static Query of(Map<? extends CharSequence, ?> queryMap) {
+            return new Query(queryMap);
+        }
+
+        /**
+         * 构建Query
+         *
+         * @param queryStr 初始化的查询字符串
+         * @param charset  decode用的编码，null表示不做decode
+         * @return {@link Query}
+         */
+        public static Query of(String queryStr, Charset charset) {
+            final Query Query = new Query();
+            Query.parse(queryStr, charset);
+            return Query;
+        }
+
+        /**
+         * 对象转换为字符串，用于URL的Query中
+         *
+         * @param value 值
+         * @return 字符串
+         */
+        private static String toStr(Object value) {
+            String result;
+            if (value instanceof Iterable) {
+                result = CollUtils.join((Iterable<?>) value, Symbol.COMMA);
+            } else if (value instanceof Iterator) {
+                result = IterUtils.join((Iterator<?>) value, Symbol.COMMA);
+            } else {
+                result = Convert.toString(value);
+            }
+            return result;
+        }
+
+        /**
+         * 增加键值对
+         *
+         * @param key   键
+         * @param value 值，集合和数组转换为逗号分隔形式
+         * @return this
+         */
+        public Query add(CharSequence key, Object value) {
+            this.query.put(key, toStr(value));
+            return this;
+        }
+
+        /**
+         * 批量增加键值对
+         *
+         * @param queryMap query中的键值对
+         * @return this
+         */
+        public Query addAll(Map<? extends CharSequence, ?> queryMap) {
+            if (MapUtils.isNotEmpty(queryMap)) {
+                queryMap.forEach(this::add);
+            }
+            return this;
+        }
+
+        /**
+         * 解析URL中的查询字符串
+         *
+         * @param queryStr 查询字符串，类似于key1=v1&amp;key2=&amp;key3=v3
+         * @param charset  decode编码，null表示不做decode
+         * @return this
+         */
+        public Query parse(String queryStr, Charset charset) {
+            if (StringUtils.isBlank(queryStr)) {
+                return this;
+            }
+
+            // 去掉Path部分
+            int pathEndPos = queryStr.indexOf(Symbol.C_QUESTION_MARK);
+            if (pathEndPos > -1) {
+                queryStr = StringUtils.subSuf(queryStr, pathEndPos + 1);
+                if (StringUtils.isBlank(queryStr)) {
+                    return this;
+                }
+            }
+
+            final int len = queryStr.length();
+            String name = null;
+            int pos = 0; // 未处理字符开始位置
+            int i; // 未处理字符结束位置
+            char c; // 当前字符
+            for (i = 0; i < len; i++) {
+                c = queryStr.charAt(i);
+                switch (c) {
+                    case Symbol.C_EQUAL://键和值的分界符
+                        if (null == name) {
+                            // name可以是""
+                            name = queryStr.substring(pos, i);
+                            // 开始位置从分节符后开始
+                            pos = i + 1;
+                        }
+                        // 当=不作为分界符时，按照普通字符对待
+                        break;
+                    case Symbol.C_AND://键值对之间的分界符
+                        addParam(name, queryStr.substring(pos, i), charset);
+                        name = null;
+                        if (i + 4 < len && Symbol.HTML_AMP.equals(queryStr.substring(i + 1, i + 5))) {
+                            //"&amp;"转义为"&"
+                            i += 4;
+                        }
+                        // 开始位置从分节符后开始
+                        pos = i + 1;
+                        break;
+                }
+            }
+
+            // 处理结尾
+            addParam(name, queryStr.substring(pos, i), charset);
+            return this;
+        }
+
+        /**
+         * 获得查询的Map
+         *
+         * @return 查询的Map，只读
+         */
+        public Map<CharSequence, CharSequence> getQueryMap() {
+            return MapUtils.unmodifiable(this.query);
+        }
+
+        /**
+         * 获取查询值
+         *
+         * @param key 键
+         * @return 值
+         */
+        public CharSequence get(CharSequence key) {
+            if (MapUtils.isEmpty(this.query)) {
+                return null;
+            }
+            return this.query.get(key);
+        }
+
+        /**
+         * 构建URL查询字符串，即将key-value键值对转换为key1=v1&amp;key2=&amp;key3=v3形式
+         *
+         * @param charset encode编码，null表示不做encode编码
+         * @return URL查询字符串
+         */
+        public String build(Charset charset) {
+            if (MapUtils.isEmpty(this.query)) {
+                return Normal.EMPTY;
+            }
+
+            final StringBuilder sb = new StringBuilder();
+            boolean isFirst = true;
+            CharSequence key;
+            CharSequence value;
+            for (Map.Entry<CharSequence, CharSequence> entry : this.query) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    sb.append("&");
+                }
+                key = entry.getKey();
+                if (StringUtils.isNotEmpty(key)) {
+                    sb.append(encodeAll(StringUtils.toString(key), charset)).append("=");
+                    value = entry.getValue();
+                    if (StringUtils.isNotEmpty(value)) {
+                        sb.append(encodeAll(StringUtils.toString(value), charset));
+                    }
+                }
+            }
+            return sb.toString();
+        }
+
+        @Override
+        public String toString() {
+            return build(null);
+        }
+
+        /**
+         * 将键值对加入到值为List类型的Map中,，情况如下：
+         * <pre>
+         *     1、key和value都不为null，类似于 "a=1"或者"=1"，直接put
+         *     2、key不为null，value为null，类似于 "a="，值传""
+         *     3、key为null，value不为null，类似于 "1"
+         *     4、key和value都为null，忽略之，比如&&
+         * </pre>
+         *
+         * @param key     key，为null则value作为key
+         * @param value   value，为null且key不为null时传入""
+         * @param charset 编码
+         */
+        private void addParam(String key, String value, Charset charset) {
+            if (null != key) {
+                final String actualKey = decode(key, charset);
+                this.query.put(actualKey, StringUtils.nullToEmpty(decode(value, charset)));
+            } else if (null != value) {
+                // name为空，value作为name，value赋值""
+                this.query.put(decode(value, charset), Normal.EMPTY);
+            }
+        }
+
     }
 
     /**

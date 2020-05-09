@@ -26,6 +26,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.builder.Builder;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.map.TableMap;
 
@@ -191,7 +192,7 @@ public class TypeUtils {
         if (isJavaBean(clazz)) {
             final Method[] methods = clazz.getMethods();
             for (Method method : methods) {
-                if (method.getParameterTypes().length == 1 && method.getName().startsWith("set")) {
+                if (method.getParameterTypes().length == 1 && method.getName().startsWith(Normal.SET)) {
                     // 检测包含标准的setXXX方法即视为标准的JavaBean
                     return true;
                 }
