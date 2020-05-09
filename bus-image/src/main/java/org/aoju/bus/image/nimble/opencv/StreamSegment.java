@@ -50,6 +50,10 @@ import java.util.List;
  */
 public abstract class StreamSegment {
 
+    static {
+        new OpenCVNativeLoader().init();
+    }
+
     private final long[] segPosition;
     private final long[] segLength;
     private final ImageDescriptor imageDescriptor;
@@ -61,8 +65,8 @@ public abstract class StreamSegment {
     }
 
     public static StreamSegment getStreamSegment(ImageInputStream iis, ImageReadParam param) throws IOException {
-        if (iis instanceof ExtendSegmentedInputImageStream) {
-            return new FileStreamSegment((ExtendSegmentedInputImageStream) iis);
+        if (iis instanceof ExtendInputImageStream) {
+            return new FileStreamSegment((ExtendInputImageStream) iis);
         } else if (iis instanceof SegmentedImageStream) {
             return getFileStreamSegment((SegmentedImageStream) iis);
         } else if (iis instanceof FileCacheImageInputStream) {

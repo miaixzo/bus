@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.ResourceUtils;
@@ -174,7 +175,7 @@ public class ImageReaderFactory implements Serializable {
         for (Map.Entry<Object, Object> entry : props.entrySet()) {
             String[] ss = Property.split((String) entry.getValue(), Symbol.C_COLON);
             map.put((String) entry.getKey(), new ImageReaderParam(ss[0], ss[1], ss[2],
-                    ss.length > 3 ? Property.split(ss[3], Symbol.C_SEMICOLON) : Property.EMPTY_STRING));
+                    ss.length > 3 ? Property.split(ss[3], Symbol.C_SEMICOLON) : Normal.EMPTY_STRING_ARRAY));
         }
     }
 

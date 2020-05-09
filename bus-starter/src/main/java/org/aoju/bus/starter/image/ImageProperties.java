@@ -62,14 +62,10 @@ public class ImageProperties {
      */
     String imgPath;
 
-    /**
-     * 是否启用opencv
-     */
-    boolean opencv;
-
     String tcsClass;
 
     String sopClass;
 
     String relClass;
+
 }

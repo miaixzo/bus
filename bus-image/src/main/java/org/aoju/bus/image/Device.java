@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.galaxy.Property;
@@ -520,7 +521,7 @@ public class Device implements Serializable {
     }
 
     public String[] getAuthorizedNodeCertificateRefs() {
-        return authorizedNodeCertificates.keySet().toArray(Property.EMPTY_STRING);
+        return authorizedNodeCertificates.keySet().toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     public final String getTrustStoreURL() {
@@ -646,7 +647,7 @@ public class Device implements Serializable {
     }
 
     public String[] getThisNodeCertificateRefs() {
-        return thisNodeCertificates.keySet().toArray(Property.EMPTY_STRING);
+        return thisNodeCertificates.keySet().toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     public final String[] getRelatedDeviceRefs() {

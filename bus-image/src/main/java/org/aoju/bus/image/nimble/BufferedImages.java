@@ -36,6 +36,7 @@ import java.awt.image.*;
 public class BufferedImages {
 
     private BufferedImages() {
+
     }
 
     public static BufferedImage convertToIntRGB(BufferedImage bi) {

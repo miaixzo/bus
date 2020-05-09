@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
-import org.aoju.bus.image.galaxy.Property;
+import org.aoju.bus.core.lang.Normal;
 
 import java.io.IOException;
 
@@ -65,7 +65,7 @@ public class AAbort extends IOException {
 
     private static final String[][] REASONS = {
             SERVICE_USER_REASONS,
-            Property.EMPTY_STRING,
+            Normal.EMPTY_STRING_ARRAY,
             SERVICE_PROVIDER_REASONS
     };
 

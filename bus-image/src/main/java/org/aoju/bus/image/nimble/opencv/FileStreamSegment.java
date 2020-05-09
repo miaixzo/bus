@@ -52,7 +52,7 @@ public class FileStreamSegment extends StreamSegment {
         this.filePath = getFilePath(fdes);
     }
 
-    FileStreamSegment(ExtendSegmentedInputImageStream stream) {
+    FileStreamSegment(ExtendInputImageStream stream) {
         super(stream.getSegmentPositions(), stream.getSegmentLengths(), stream.getImageDescriptor());
         this.filePath = stream.getFile().getAbsolutePath();
     }

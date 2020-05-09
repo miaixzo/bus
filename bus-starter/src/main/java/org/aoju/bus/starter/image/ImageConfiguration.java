@@ -31,7 +31,6 @@ import org.aoju.bus.image.Centre;
 import org.aoju.bus.image.Node;
 import org.aoju.bus.image.Rollers;
 import org.aoju.bus.image.centre.StoreSCPCentre;
-import org.aoju.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -52,9 +51,6 @@ public class ImageConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Centre onStoreSCP() {
-        if (properties.opencv) {
-            new OpenCVNativeLoader().init();
-        }
         StoreSCPCentre store = StoreSCPCentre.Builder();
         Args args = new Args(true);
         if (StringUtils.isNotEmpty(properties.relClass)) {

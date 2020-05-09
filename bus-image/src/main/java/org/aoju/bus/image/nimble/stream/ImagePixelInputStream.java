@@ -159,4 +159,5 @@ public class ImagePixelInputStream extends MemoryCacheImageInputStream
     public boolean isEndOfStream() {
         return endOfStream;
     }
+
 }

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.io;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
@@ -156,7 +157,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
     public String[] getLengthsThresholdsAsStrings() {
         if (lengthsThresholdByVR.isEmpty())
-            return Property.EMPTY_STRING;
+            return Normal.EMPTY_STRING_ARRAY;
 
         Map<Integer, EnumSet<VR>> vrsByLength = new HashMap<>();
         for (Map.Entry<VR, Integer> entry : lengthsThresholdByVR.entrySet()) {
