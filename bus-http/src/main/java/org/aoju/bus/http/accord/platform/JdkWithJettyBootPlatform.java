@@ -69,7 +69,7 @@ public class JdkWithJettyBootPlatform extends Platform {
             Class<?> clientProviderClass = Class.forName(negoClassName + "$ClientProvider");
             Class<?> serverProviderClass = Class.forName(negoClassName + "$ServerProvider");
             Method putMethod = negoClass.getMethod("put", SSLSocket.class, providerClass);
-            Method getMethod = negoClass.getMethod("get", SSLSocket.class);
+            Method getMethod = negoClass.getMethod(Normal.GET, SSLSocket.class);
             Method removeMethod = negoClass.getMethod("remove", SSLSocket.class);
             return new JdkWithJettyBootPlatform(
                     putMethod, getMethod, removeMethod, clientProviderClass, serverProviderClass);

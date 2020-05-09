@@ -27,6 +27,7 @@ package org.aoju.bus.core.beans.copier.provider;
 import org.aoju.bus.core.beans.BeanDesc;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.BeanUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -66,7 +67,7 @@ public class BeanValueProvider implements ValueProvider<String> {
         BeanDesc.PropDesc sourcePd = sourcePdMap.get(key);
         if (null == sourcePd && (Boolean.class == valueType || boolean.class == valueType)) {
             //boolean类型字段字段名支持两种方式
-            sourcePd = sourcePdMap.get(StringUtils.upperFirstAndAddPre(key, "is"));
+            sourcePd = sourcePdMap.get(StringUtils.upperFirstAndAddPre(key, Normal.IS));
         }
 
         Object result = null;
@@ -89,7 +90,7 @@ public class BeanValueProvider implements ValueProvider<String> {
 
     @Override
     public boolean containsKey(String key) {
-        return sourcePdMap.containsKey(key) || sourcePdMap.containsKey(StringUtils.upperFirstAndAddPre(key, "is"));
+        return sourcePdMap.containsKey(key) || sourcePdMap.containsKey(StringUtils.upperFirstAndAddPre(key, Normal.IS));
     }
 
 }

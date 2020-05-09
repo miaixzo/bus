@@ -133,7 +133,7 @@ public class StoreSCP extends BasicCStoreSCP {
             Attributes fmi = as.createFileMetaInformation(iuid, cuid, tsuid);
             storeTo(as, fmi, data, file);
             if (ObjectUtils.isNotEmpty(rollers)) {
-                rollers.supports(fmi, file);
+                rollers.supports(fmi, file, this.getClass());
             }
         } catch (Exception e) {
             throw new ImageException(Status.ProcessingFailure, e);

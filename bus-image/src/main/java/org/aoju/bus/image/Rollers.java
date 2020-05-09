@@ -41,10 +41,11 @@ public interface Rollers {
     /**
      * @param attributes 完整影像信息
      * @param file       影像原始文件
+     * @param clazz      调用类信息
      * @return 根据业务需要返回不同类型的值
      */
-    default Object supports(Attributes attributes, File file) {
-        return attributes;
+    default Object supports(Attributes attributes, File file, Class<?> clazz) {
+        return file;
     }
 
 }

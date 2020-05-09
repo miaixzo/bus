@@ -166,9 +166,14 @@ public class TreeUtils {
             return node;
         }
 
+        final List<TreeMap<T>> children = node.getChildren();
+        if (null == children) {
+            return null;
+        }
+
         // 查找子节点
         TreeMap<T> childNode;
-        for (TreeMap<T> child : node.getChildren()) {
+        for (TreeMap<T> child : children) {
             childNode = child.getNode(id);
             if (null != childNode) {
                 return childNode;

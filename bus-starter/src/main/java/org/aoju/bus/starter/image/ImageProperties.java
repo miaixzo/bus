@@ -46,7 +46,7 @@ public class ImageProperties {
     /**
      * 端口信息
      */
-    String ports;
+    String port;
     /**
      * 服务名称
      */

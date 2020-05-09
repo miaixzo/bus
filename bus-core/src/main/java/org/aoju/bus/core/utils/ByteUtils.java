@@ -35,7 +35,6 @@ import java.nio.charset.Charset;
  */
 public class ByteUtils {
 
-
     public static int bytesToVR(byte[] bytes, int off) {
         return bytesToUShortBE(bytes, off);
     }

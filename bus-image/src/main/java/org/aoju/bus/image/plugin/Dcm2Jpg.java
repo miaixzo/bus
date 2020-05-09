@@ -30,7 +30,7 @@ import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.nimble.BufferedImages;
-import org.aoju.bus.image.nimble.reader.NativeImageReadParam;
+import org.aoju.bus.image.nimble.reader.NativeDCMImageReader;
 import org.aoju.bus.logger.Logger;
 
 import javax.imageio.*;
@@ -240,8 +240,8 @@ public class Dcm2Jpg {
     }
 
     private ImageReadParam readParam() {
-        NativeImageReadParam param =
-                (NativeImageReadParam) imageReader.getDefaultReadParam();
+        NativeDCMImageReader.NativeDCMImageReadParam param =
+                (NativeDCMImageReader.NativeDCMImageReadParam) imageReader.getDefaultReadParam();
         param.setWindowCenter(windowCenter);
         param.setWindowWidth(windowWidth);
         param.setAutoWindowing(autoWindowing);

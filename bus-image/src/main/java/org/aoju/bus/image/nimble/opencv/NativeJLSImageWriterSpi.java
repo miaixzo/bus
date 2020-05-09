@@ -62,4 +62,5 @@ public class NativeJLSImageWriterSpi extends ImageWriterSpi {
     public ImageWriter createWriterInstance(Object extension) {
         return new NativeJLSImageWriter(this);
     }
+
 }

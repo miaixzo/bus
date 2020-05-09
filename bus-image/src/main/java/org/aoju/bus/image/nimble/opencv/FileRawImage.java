@@ -35,8 +35,6 @@ import java.util.Objects;
  */
 public class FileRawImage {
 
-    public static final int HEADER_LENGTH = 46;
-
     private final File file;
 
     public FileRawImage(File file) {

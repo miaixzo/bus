@@ -55,7 +55,7 @@ public class ImageConfiguration {
         }
         StoreSCPCentre store = StoreSCPCentre.Builder();
         store.setArgs(new Args(true));
-        store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.ports)));
+        store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.port)));
         store.setRollers(rollers);
         store.setStoreSCP(properties.dcmPath);
         store.setDevice(store.getStoreSCP().getDevice());

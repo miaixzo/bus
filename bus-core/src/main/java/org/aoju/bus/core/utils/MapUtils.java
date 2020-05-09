@@ -28,10 +28,7 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.map.CamelCaseLinkedMap;
-import org.aoju.bus.core.map.CamelCaseMap;
-import org.aoju.bus.core.map.MapBuilder;
-import org.aoju.bus.core.map.MapProxy;
+import org.aoju.bus.core.map.*;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -713,12 +710,36 @@ public class MapUtils {
     }
 
     /**
+     * 创建Map包装类MapWrapper
+     * {@link MapWrapper}对Map做一次包装
+     *
+     * @param <K> key的类型
+     * @param <V> value的类型
+     * @param map 被代理的Map
+     * @return {@link MapWrapper}
+     */
+    public static <K, V> MapWrapper<K, V> wrap(Map<K, V> map) {
+        return new MapWrapper<>(map);
+    }
+
+    /**
+     * 将对应Map转换为不可修改的Map
+     *
+     * @param map Map
+     * @param <K> 键类型
+     * @param <V> 值类型
+     * @return 不修改Map
+     */
+    public static <K, V> Map<K, V> unmodifiable(Map<K, V> map) {
+        return Collections.unmodifiableMap(map);
+    }
+
+    /**
      * 创建代理Map
      * {@link MapProxy}对Map做一次包装,提供各种getXXX方法
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
-     * @since 5.8.9
      */
     public static MapProxy createProxy(Map<?, ?> map) {
         return MapProxy.create(map);

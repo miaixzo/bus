@@ -47,6 +47,30 @@ public class Normal {
      */
     public static final String NULL = "null";
     /**
+     * is
+     */
+    public static final String IS = "is";
+    /**
+     * set
+     */
+    public static final String SET = "set";
+    /**
+     * get
+     */
+    public static final String GET = "get";
+    /**
+     * equals
+     */
+    public static final String EQUALS = "equals";
+    /**
+     * hashCode
+     */
+    public static final String HASHCODE = "hashCode";
+    /**
+     * toString
+     */
+    public static final String TOSTRING = "toString";
+    /**
      * 字符串:unknown
      */
     public static final String UNKNOWN = "unknown";

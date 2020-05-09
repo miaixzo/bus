@@ -45,16 +45,6 @@ import java.util.Set;
  */
 public class ReflectUtils {
 
-    /**
-     * set方法前缀
-     */
-    public static final String SETTER_PREFIX = "set";
-
-    /**
-     * get方法前缀
-     */
-    public static final String GETTER_PREFIX = "get";
-
     private static final String CGLIB_CLASS_SEPARATOR = Symbol.DOLLAR + Symbol.DOLLAR;
 
     /**
@@ -81,7 +71,7 @@ public class ReflectUtils {
     public static Object invokeGetter(Object obj, String name) {
         Object object = obj;
         for (String method : StringUtils.split(name, Symbol.DOT)) {
-            String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(method);
+            String getterMethodName = Normal.GET + StringUtils.capitalize(method);
             object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
         }
         return object;
@@ -100,10 +90,10 @@ public class ReflectUtils {
         String[] names = StringUtils.split(name, Symbol.DOT);
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
-                String getterMethodName = GETTER_PREFIX + StringUtils.capitalize(names[i]);
+                String getterMethodName = Normal.GET + StringUtils.capitalize(names[i]);
                 object = invokeMethod(object, getterMethodName, new Class[]{}, new Object[]{});
             } else {
-                String setterMethodName = SETTER_PREFIX + StringUtils.capitalize(names[i]);
+                String setterMethodName = Normal.SET + StringUtils.capitalize(names[i]);
                 invokeMethodByName(object, setterMethodName, new Object[]{value});
             }
         }
@@ -793,7 +783,7 @@ public class ReflectUtils {
      * @return 是否为equals方法
      */
     public static boolean isEqualsMethod(Method method) {
-        if (method == null || false == ObjectUtils.equal(method.getName(), "equals")) {
+        if (method == null || false == ObjectUtils.equal(method.getName(), Normal.EQUALS)) {
             return false;
         }
         final Class<?>[] paramTypes = method.getParameterTypes();
@@ -1013,7 +1003,7 @@ public class ReflectUtils {
      * @return 返回结果
      */
     public static String getGetMethodName(String fieldName) {
-        return GETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return Normal.GET + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
     /**
@@ -1023,7 +1013,7 @@ public class ReflectUtils {
      * @return 返回结果
      */
     public static String getSetMethodName(String fieldName) {
-        return SETTER_PREFIX + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return Normal.SET + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
 

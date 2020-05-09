@@ -43,10 +43,10 @@ import java.util.regex.Pattern;
  */
 public class PatternUtils {
 
-    private static final Map<RegexWithFlag, Pattern> cache = new WeakHashMap<>();
-    private static final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock();
-    private static final ReentrantReadWriteLock.ReadLock readLock = cacheLock.readLock();
-    private static final ReentrantReadWriteLock.WriteLock writeLock = cacheLock.writeLock();
+    private static final Map<RegexWithFlag, Pattern> CACHE = new WeakHashMap<>();
+    private static final ReentrantReadWriteLock CACHE_LOCK = new ReentrantReadWriteLock();
+    private static final ReentrantReadWriteLock.ReadLock READ_LOCK = CACHE_LOCK.readLock();
+    private static final ReentrantReadWriteLock.WriteLock WRITE_LOCK = CACHE_LOCK.writeLock();
 
     /**
      * 先从Pattern池中查找正则对应的{@link Pattern},找不到则编译正则表达式并入池
@@ -718,12 +718,12 @@ public class PatternUtils {
      */
     private static Pattern isGet(RegexWithFlag key) {
         // 尝试读取缓存
-        readLock.lock();
+        READ_LOCK.lock();
         Pattern value;
         try {
-            value = cache.get(key);
+            value = CACHE.get(key);
         } finally {
-            readLock.unlock();
+            READ_LOCK.unlock();
         }
         return value;
     }
@@ -736,11 +736,11 @@ public class PatternUtils {
      * @return 值
      */
     private static Object isPut(RegexWithFlag key, Pattern value) {
-        writeLock.lock();
+        WRITE_LOCK.lock();
         try {
-            cache.put(key, value);
+            CACHE.put(key, value);
         } finally {
-            writeLock.unlock();
+            WRITE_LOCK.unlock();
         }
         return value;
     }
@@ -752,11 +752,11 @@ public class PatternUtils {
      * @return 移除的值
      */
     private static Object isRemove(Object key) {
-        writeLock.lock();
+        WRITE_LOCK.lock();
         try {
-            return cache.remove(key);
+            return CACHE.remove(key);
         } finally {
-            writeLock.unlock();
+            WRITE_LOCK.unlock();
         }
     }
 
@@ -774,11 +774,11 @@ public class PatternUtils {
      * 清空缓存池
      */
     public void clear() {
-        writeLock.lock();
+        WRITE_LOCK.lock();
         try {
-            cache.clear();
+            CACHE.clear();
         } finally {
-            writeLock.unlock();
+            WRITE_LOCK.unlock();
         }
     }
 

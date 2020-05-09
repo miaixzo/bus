@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
@@ -455,9 +456,7 @@ public class Property implements Serializable {
     }
 
     public void setAt(Object o) {
-        String setterName = "set"
-                + name.substring(0, 1).toUpperCase(Locale.ENGLISH)
-                + name.substring(1);
+        String setterName = Normal.SET + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
         try {
             Class<?> clazz = o.getClass();
             if (value instanceof String) {

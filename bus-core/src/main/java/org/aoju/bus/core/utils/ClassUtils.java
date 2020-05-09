@@ -29,6 +29,7 @@ import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.BasicType;
+import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableObject;
@@ -58,14 +59,14 @@ public class ClassUtils {
     /**
      * 原始类型名和其class对应表,例如：int =》 int.class
      */
-    private static final Map<String, Class<?>> primitiveWrapperMap = new HashMap<>();
-    private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<>();
-    private static SimpleCache<String, Class<?>> classCache = new SimpleCache<>();
+    private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
+    private static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new HashMap<>();
+    private static SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
 
     static {
         List<Class<?>> primitiveTypes = new ArrayList<>(32);
         // 加入原始类型
-        primitiveTypes.addAll(BasicType.primitiveWrapperMap.keySet());
+        primitiveTypes.addAll(BasicType.PRIMITIVE_WRAPPER_MAP.keySet());
         // 加入原始类型数组类型
         primitiveTypes.add(boolean[].class);
         primitiveTypes.add(byte[].class);
@@ -77,7 +78,7 @@ public class ClassUtils {
         primitiveTypes.add(short[].class);
         primitiveTypes.add(void.class);
         for (Class<?> primitiveType : primitiveTypes) {
-            primitiveWrapperMap.put(primitiveType.getName(), primitiveType);
+            PRIMITIVE_WRAPPER_MAP.put(primitiveType.getName(), primitiveType);
         }
     }
 
@@ -441,7 +442,7 @@ public class ClassUtils {
             if (isStatic(method)) {
                 return ReflectUtils.invoke(null, method, args);
             } else {
-                return ReflectUtils.invoke(isSingleton ? Singleton.get(clazz) : clazz.newInstance(), method, args);
+                return ReflectUtils.invoke(isSingleton ? Instances.singletion(clazz) : clazz.newInstance(), method, args);
             }
         } catch (Exception e) {
             throw new InstrumentException(e);
@@ -458,7 +459,7 @@ public class ClassUtils {
         if (null == clazz) {
             return false;
         }
-        return BasicType.wrapperPrimitiveMap.containsKey(clazz);
+        return BasicType.WRAPPER_PRIMITIVE_MAP.containsKey(clazz);
     }
 
     /**
@@ -883,7 +884,7 @@ public class ClassUtils {
         if (isNormalClass(clazz)) {
             final Method[] methods = clazz.getMethods();
             for (Method method : methods) {
-                if (method.getParameterTypes().length == 1 && method.getName().startsWith("set")) {
+                if (method.getParameterTypes().length == 1 && method.getName().startsWith(Normal.SET)) {
                     return true;
                 }
             }
@@ -1151,7 +1152,7 @@ public class ClassUtils {
         // 加载原始类型和缓存中的类
         Class<?> clazz = loadPrimitiveClass(name);
         if (clazz == null) {
-            clazz = classCache.get(name);
+            clazz = CLASS_CACHE.get(name);
         }
         if (clazz != null) {
             return clazz;
@@ -1189,7 +1190,7 @@ public class ClassUtils {
         }
 
         // 加入缓存并返回
-        return classCache.put(name, clazz);
+        return CLASS_CACHE.put(name, clazz);
     }
 
     /**
@@ -1203,7 +1204,7 @@ public class ClassUtils {
         if (StringUtils.isNotBlank(name)) {
             name = name.trim();
             if (name.length() <= 8) {
-                result = primitiveWrapperMap.get(name);
+                result = PRIMITIVE_WRAPPER_MAP.get(name);
             }
         }
         return result;
@@ -1373,7 +1374,7 @@ public class ClassUtils {
         // 大多数类名都很长，因为它们应该放在包中，所以长度检查是值得的.
         if (name != null && name.length() <= 8) {
             // Could be a primitive - likely.
-            result = primitiveWrapperMap.get(name);
+            result = PRIMITIVE_WRAPPER_MAP.get(name);
         }
         return result;
     }
@@ -1504,7 +1505,7 @@ public class ClassUtils {
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
         Class<?> convertedClass = cls;
         if (cls != null && cls.isPrimitive()) {
-            convertedClass = primitiveWrapperMap.get(cls);
+            convertedClass = PRIMITIVE_WRAPPER_MAP.get(cls);
         }
         return convertedClass;
     }
@@ -1540,7 +1541,7 @@ public class ClassUtils {
      * @see #primitiveToWrapper(Class)
      */
     public static Class<?> wrapperToPrimitive(final Class<?> cls) {
-        return wrapperPrimitiveMap.get(cls);
+        return WRAPPER_PRIMITIVE_MAP.get(cls);
     }
 
     /**

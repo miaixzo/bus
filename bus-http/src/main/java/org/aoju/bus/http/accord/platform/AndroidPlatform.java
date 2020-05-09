@@ -26,6 +26,7 @@ package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;
@@ -55,8 +56,6 @@ import java.util.List;
  * @since JDK 1.8+
  */
 public class AndroidPlatform extends Platform {
-
-    private static final int MAX_LOG_LENGTH = 4000;
 
     private final Class<?> sslParametersClass;
     private final OptionalMethod<Socket> setUseSessionTickets;
@@ -351,7 +350,7 @@ public class AndroidPlatform extends Platform {
 
             try {
                 Class<?> closeGuardClass = Class.forName("dalvik.system.CloseGuard");
-                getMethod = closeGuardClass.getMethod("get");
+                getMethod = closeGuardClass.getMethod(Normal.GET);
                 openMethod = closeGuardClass.getMethod("open", String.class);
                 warnIfOpenMethod = closeGuardClass.getMethod("warnIfOpen");
             } catch (Exception ignored) {

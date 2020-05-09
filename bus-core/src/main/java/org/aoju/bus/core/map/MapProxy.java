@@ -26,6 +26,7 @@ package org.aoju.bus.core.map;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.OptNullObject;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.BooleanUtils;
 import org.aoju.bus.core.utils.ClassUtils;
@@ -146,15 +147,15 @@ public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, Inv
                 // 匹配Getter
                 final String methodName = method.getName();
                 String fieldName = null;
-                if (methodName.startsWith("get")) {
+                if (methodName.startsWith(Normal.GET)) {
                     // 匹配getXXX
                     fieldName = StringUtils.removePreAndLowerFirst(methodName, 3);
-                } else if (BooleanUtils.isBoolean(returnType) && methodName.startsWith("is")) {
+                } else if (BooleanUtils.isBoolean(returnType) && methodName.startsWith(Normal.IS)) {
                     // 匹配isXXX
                     fieldName = StringUtils.removePreAndLowerFirst(methodName, 2);
-                } else if ("hashCode".equals(methodName)) {
+                } else if (Normal.HASHCODE.equals(methodName)) {
                     return this.hashCode();
-                } else if ("toString".equals(methodName)) {
+                } else if (Normal.TOSTRING.equals(methodName)) {
                     return this.toString();
                 }
 
@@ -170,12 +171,12 @@ public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, Inv
         } else if (1 == parameterTypes.length) {
             // 匹配Setter
             final String methodName = method.getName();
-            if (methodName.startsWith("set")) {
+            if (methodName.startsWith(Normal.SET)) {
                 final String fieldName = StringUtils.removePreAndLowerFirst(methodName, 3);
                 if (StringUtils.isNotBlank(fieldName)) {
                     this.put(fieldName, args[0]);
                 }
-            } else if ("equals".equals(methodName)) {
+            } else if (Normal.EQUALS.equals(methodName)) {
                 return this.equals(args[0]);
             }
         }

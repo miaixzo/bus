@@ -109,11 +109,10 @@ public class Builder {
     public static final int COMMAND = 1;
     public static final int PENDING = 0;
     public static final int LAST = 2;
-    private static final int INIT_BUFFER_SIZE = 8192;
-    private static final int MAX_BUFFER_SIZE = 10485768;
-
     public static final String IMAGE_ORIGINAL_SUFFIX = ".dcm";
     public static final String IMAGE_CONVERT_SUFFIX = ".jpg";
+    private static final int INIT_BUFFER_SIZE = 8192;
+    private static final int MAX_BUFFER_SIZE = 10485768;
 
     public static String toUID(String uid) {
         uid = uid.trim();
@@ -381,13 +380,6 @@ public class Builder {
         }
     }
 
-    private static class Parameters {
-        int realBufferLength = 0;
-        byte[] buffer = {};
-        int fileLength = 0;
-        JPEGHeader jpegHeader;
-    }
-
     public static boolean updateAttributes(Attributes data, Attributes attrs,
                                            String uidSuffix) {
         if (attrs.isEmpty() && uidSuffix == null)
@@ -413,6 +405,13 @@ public class Builder {
                 throw new IllegalArgumentException(tagOrKeyword);
             return tag;
         }
+    }
+
+    private static class Parameters {
+        int realBufferLength = 0;
+        byte[] buffer = {};
+        int fileLength = 0;
+        JPEGHeader jpegHeader;
     }
 
 }

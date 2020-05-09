@@ -22,13 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.image.nimble.opencv;
+package org.aoju.bus.image.nimble.reader;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.galaxy.data.Implementation;
 
-import javax.imageio.ImageReader;
-import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -36,31 +36,31 @@ import java.util.Locale;
  * @version 5.8.9
  * @since JDK 1.8+
  */
-public class RLEImageReaderSpi extends ImageReaderSpi {
+public class NativeRLEImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
 
     private static final String vendorName = "org.aoju.bus.image";
     private static final String version = Implementation.getVersionName();
     private static final String[] formatNames = {"rle", "RLE"};
     private static final Class<?>[] inputTypes = {ImageInputStream.class};
-    private static final String[] entensions = {""};
-    private static final String[] mimeType = {""};
+    private static final String[] entensions = {Normal.EMPTY};
+    private static final String[] mimeType = {Normal.EMPTY};
 
-    public RLEImageReaderSpi() {
+    public NativeRLEImageReaderSpi() {
         super(vendorName, version, formatNames,
-                entensions,
-                mimeType,
-                RLEImageReader.class.getName(), inputTypes,
-                null,
-                false,
-                null,
-                null,
-                null,
-                null,
-                false,
-                null,
-                null,
-                null,
-                null);
+                entensions,  // suffixes
+                mimeType,  // MIMETypes
+                NativeRLEImageReader.class.getName(), inputTypes,
+                null,  // writerSpiNames
+                false, // supportsStandardStreamMetadataFormat
+                null,  // nativeStreamMetadataFormatName
+                null,  // nativeStreamMetadataFormatClassName
+                null,  // extraStreamMetadataFormatNames
+                null,  // extraStreamMetadataFormatClassNames
+                false, // supportsStandardImageMetadataFormat
+                null,  // nativeImageMetadataFormatName
+                null,  // nativeImageMetadataFormatClassName
+                null,  // extraImageMetadataFormatNames
+                null); // extraImageMetadataFormatClassNames
     }
 
     @Override
@@ -74,8 +74,9 @@ public class RLEImageReaderSpi extends ImageReaderSpi {
     }
 
     @Override
-    public ImageReader createReaderInstance(Object extension) {
-        return new RLEImageReader(this);
+    public javax.imageio.ImageReader createReaderInstance(Object extension)
+            throws IOException {
+        return new NativeRLEImageReader(this);
     }
 
 }

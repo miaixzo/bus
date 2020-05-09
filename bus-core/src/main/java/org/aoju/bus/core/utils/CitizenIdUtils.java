@@ -51,94 +51,94 @@ public class CitizenIdUtils {
     /**
      * 每位加权因子
      */
-    private static final int[] power = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+    private static final int[] WEIGHTING = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
     /**
      * 省市代码表
      */
-    private static Map<String, String> cityCodes = new HashMap<>();
+    private static Map<String, String> CITY_CODE = new HashMap<>();
     /**
      * 台湾身份首字母对应数字
      */
-    private static Map<String, Integer> twFirstCode = new HashMap<>();
+    private static Map<String, Integer> TW_FIRST_CODE = new HashMap<>();
     /**
      * 香港身份首字母对应数字
      */
-    private static Map<String, Integer> hkFirstCode = new HashMap<>();
+    private static Map<String, Integer> HK_FIRST_CODE = new HashMap<>();
 
     static {
-        cityCodes.put("11", "北京");
-        cityCodes.put("12", "天津");
-        cityCodes.put("13", "河北");
-        cityCodes.put("14", "山西");
-        cityCodes.put("15", "内蒙古");
-        cityCodes.put("21", "辽宁");
-        cityCodes.put("22", "吉林");
-        cityCodes.put("23", "黑龙江");
-        cityCodes.put("31", "上海");
-        cityCodes.put("32", "江苏");
-        cityCodes.put("33", "浙江");
-        cityCodes.put("34", "安徽");
-        cityCodes.put("35", "福建");
-        cityCodes.put("36", "江西");
-        cityCodes.put("37", "山东");
-        cityCodes.put("41", "河南");
-        cityCodes.put("42", "湖北");
-        cityCodes.put("43", "湖南");
-        cityCodes.put("44", "广东");
-        cityCodes.put("45", "广西");
-        cityCodes.put("46", "海南");
-        cityCodes.put("50", "重庆");
-        cityCodes.put("51", "四川");
-        cityCodes.put("52", "贵州");
-        cityCodes.put("53", "云南");
-        cityCodes.put("54", "西藏");
-        cityCodes.put("61", "陕西");
-        cityCodes.put("62", "甘肃");
-        cityCodes.put("63", "青海");
-        cityCodes.put("64", "宁夏");
-        cityCodes.put("65", "新疆");
-        cityCodes.put("71", "台湾");
-        cityCodes.put("81", "香港");
-        cityCodes.put("82", "澳门");
-        cityCodes.put("91", "国外");
+        CITY_CODE.put("11", "北京");
+        CITY_CODE.put("12", "天津");
+        CITY_CODE.put("13", "河北");
+        CITY_CODE.put("14", "山西");
+        CITY_CODE.put("15", "内蒙古");
+        CITY_CODE.put("21", "辽宁");
+        CITY_CODE.put("22", "吉林");
+        CITY_CODE.put("23", "黑龙江");
+        CITY_CODE.put("31", "上海");
+        CITY_CODE.put("32", "江苏");
+        CITY_CODE.put("33", "浙江");
+        CITY_CODE.put("34", "安徽");
+        CITY_CODE.put("35", "福建");
+        CITY_CODE.put("36", "江西");
+        CITY_CODE.put("37", "山东");
+        CITY_CODE.put("41", "河南");
+        CITY_CODE.put("42", "湖北");
+        CITY_CODE.put("43", "湖南");
+        CITY_CODE.put("44", "广东");
+        CITY_CODE.put("45", "广西");
+        CITY_CODE.put("46", "海南");
+        CITY_CODE.put("50", "重庆");
+        CITY_CODE.put("51", "四川");
+        CITY_CODE.put("52", "贵州");
+        CITY_CODE.put("53", "云南");
+        CITY_CODE.put("54", "西藏");
+        CITY_CODE.put("61", "陕西");
+        CITY_CODE.put("62", "甘肃");
+        CITY_CODE.put("63", "青海");
+        CITY_CODE.put("64", "宁夏");
+        CITY_CODE.put("65", "新疆");
+        CITY_CODE.put("71", "台湾");
+        CITY_CODE.put("81", "香港");
+        CITY_CODE.put("82", "澳门");
+        CITY_CODE.put("91", "国外");
 
-        twFirstCode.put("A", 10);
-        twFirstCode.put("B", 11);
-        twFirstCode.put("C", 12);
-        twFirstCode.put("D", 13);
-        twFirstCode.put("E", 14);
-        twFirstCode.put("F", 15);
-        twFirstCode.put("G", 16);
-        twFirstCode.put("H", 17);
-        twFirstCode.put("J", 18);
-        twFirstCode.put("K", 19);
-        twFirstCode.put("L", 20);
-        twFirstCode.put("M", 21);
-        twFirstCode.put("N", 22);
-        twFirstCode.put("P", 23);
-        twFirstCode.put("Q", 24);
-        twFirstCode.put("R", 25);
-        twFirstCode.put("S", 26);
-        twFirstCode.put("T", 27);
-        twFirstCode.put("U", 28);
-        twFirstCode.put("V", 29);
-        twFirstCode.put("X", 30);
-        twFirstCode.put("Y", 31);
-        twFirstCode.put("W", 32);
-        twFirstCode.put("Z", 33);
-        twFirstCode.put("I", 34);
-        twFirstCode.put("O", 35);
+        TW_FIRST_CODE.put("A", 10);
+        TW_FIRST_CODE.put("B", 11);
+        TW_FIRST_CODE.put("C", 12);
+        TW_FIRST_CODE.put("D", 13);
+        TW_FIRST_CODE.put("E", 14);
+        TW_FIRST_CODE.put("F", 15);
+        TW_FIRST_CODE.put("G", 16);
+        TW_FIRST_CODE.put("H", 17);
+        TW_FIRST_CODE.put("J", 18);
+        TW_FIRST_CODE.put("K", 19);
+        TW_FIRST_CODE.put("L", 20);
+        TW_FIRST_CODE.put("M", 21);
+        TW_FIRST_CODE.put("N", 22);
+        TW_FIRST_CODE.put("P", 23);
+        TW_FIRST_CODE.put("Q", 24);
+        TW_FIRST_CODE.put("R", 25);
+        TW_FIRST_CODE.put("S", 26);
+        TW_FIRST_CODE.put("T", 27);
+        TW_FIRST_CODE.put("U", 28);
+        TW_FIRST_CODE.put("V", 29);
+        TW_FIRST_CODE.put("X", 30);
+        TW_FIRST_CODE.put("Y", 31);
+        TW_FIRST_CODE.put("W", 32);
+        TW_FIRST_CODE.put("Z", 33);
+        TW_FIRST_CODE.put("I", 34);
+        TW_FIRST_CODE.put("O", 35);
 
-        hkFirstCode.put("A", 1);// 持证人拥有香港居留权
-        hkFirstCode.put("B", 2);// 持证人所报称的出生日期或地点自首次登记以后,曾作出更改
-        hkFirstCode.put("C", 3);// 持证人登记领证时在香港的居留受到入境事务处处长的限制
-        hkFirstCode.put("N", 14);// 持证人所报的姓名自首次登记以后,曾作出更改
-        hkFirstCode.put("O", 15);// 持证人报称在香港、澳门及中国以外其他地区或国家出生
-        hkFirstCode.put("R", 18);// 持证人拥有香港入境权
-        hkFirstCode.put("U", 21);// 持证人登记领证时在香港的居留不受入境事务处处长的限制
-        hkFirstCode.put("W", 23);// 持证人报称在澳门地区出生
-        hkFirstCode.put("X", 24);// 持证人报称在中国大陆出生
-        hkFirstCode.put("Z", 26);// 持证人报称在香港出生
+        HK_FIRST_CODE.put("A", 1);// 持证人拥有香港居留权
+        HK_FIRST_CODE.put("B", 2);// 持证人所报称的出生日期或地点自首次登记以后,曾作出更改
+        HK_FIRST_CODE.put("C", 3);// 持证人登记领证时在香港的居留受到入境事务处处长的限制
+        HK_FIRST_CODE.put("N", 14);// 持证人所报的姓名自首次登记以后,曾作出更改
+        HK_FIRST_CODE.put("O", 15);// 持证人报称在香港、澳门及中国以外其他地区或国家出生
+        HK_FIRST_CODE.put("R", 18);// 持证人拥有香港入境权
+        HK_FIRST_CODE.put("U", 21);// 持证人登记领证时在香港的居留不受入境事务处处长的限制
+        HK_FIRST_CODE.put("W", 23);// 持证人报称在澳门地区出生
+        HK_FIRST_CODE.put("X", 24);// 持证人报称在中国大陆出生
+        HK_FIRST_CODE.put("Z", 26);// 持证人报称在香港出生
     }
 
     /**
@@ -231,6 +231,12 @@ public class CitizenIdUtils {
             return false;
         }
 
+        // 省份
+        final String proCode = idCard.substring(0, 2);
+        if (null == CITY_CODE.get(proCode)) {
+            return false;
+        }
+
         //校验生日
         if (false == Validator.isBirthday(idCard.substring(6, 14))) {
             return false;
@@ -261,7 +267,7 @@ public class CitizenIdUtils {
         if (PatternUtils.isMatch(RegEx.NUMBERS, idCard)) {
             // 省份
             String proCode = idCard.substring(0, 2);
-            if (null == cityCodes.get(proCode)) {
+            if (null == CITY_CODE.get(proCode)) {
                 return false;
             }
 
@@ -330,7 +336,7 @@ public class CitizenIdUtils {
         String start = idCard.substring(0, 1);
         String mid = idCard.substring(1, 9);
         String end = idCard.substring(9, 10);
-        Integer iStart = twFirstCode.get(start);
+        Integer iStart = TW_FIRST_CODE.get(start);
         if (null == iStart) {
             return false;
         }
@@ -525,7 +531,7 @@ public class CitizenIdUtils {
         int len = idCard.length();
         if (len == CHINA_ID_MIN_LENGTH || len == CHINA_ID_MAX_LENGTH) {
             String sProvinNum = idCard.substring(0, 2);
-            return cityCodes.get(sProvinNum);
+            return CITY_CODE.get(sProvinNum);
         }
         return null;
     }
@@ -598,9 +604,9 @@ public class CitizenIdUtils {
      */
     private static int getPowerSum(char[] iArr) {
         int iSum = 0;
-        if (power.length == iArr.length) {
+        if (WEIGHTING.length == iArr.length) {
             for (int i = 0; i < iArr.length; i++) {
-                iSum += Integer.valueOf(String.valueOf(iArr[i])) * power[i];
+                iSum += Integer.valueOf(String.valueOf(iArr[i])) * WEIGHTING[i];
             }
         }
         return iSum;

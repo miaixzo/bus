@@ -262,7 +262,7 @@ public class Image implements Serializable {
 
         // PNG图片特殊处理
         if (FileType.TYPE_PNG.equals(this.targetImageType)) {
-            final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance((double) scale, (double) scale), null);
+            final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(scale, scale), null);
             this.targetImage = op.filter(ImageUtils.toBufferedImage(srcImage), null);
         } else {
             final String scaleStr = Float.toString(scale);
