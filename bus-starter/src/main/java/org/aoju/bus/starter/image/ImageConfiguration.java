@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
+import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.Args;
 import org.aoju.bus.image.Centre;
@@ -34,9 +35,6 @@ import org.aoju.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * @author Kimi Liu
@@ -53,25 +51,22 @@ public class ImageConfiguration {
     Rollers rollers;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public Centre onStoreSCP() throws MalformedURLException {
+    public Centre onStoreSCP() {
         if (properties.opencv) {
             new OpenCVNativeLoader().init();
         }
         StoreSCPCentre store = StoreSCPCentre.Builder();
         Args args = new Args(true);
-        if (StringUtils.isEmpty(properties.relClasses)) {
-            args.setExtendSopClassesURL(new URL(properties.relClasses));
+        if (StringUtils.isNotEmpty(properties.relClass)) {
+            args.setExtendSopClassesURL(ResourceUtils.getResource(properties.relClass, ImageConfiguration.class));
         }
-        if (StringUtils.isEmpty(properties.tcsClass)) {
-            args.setTransferCapabilityFile(new URL(properties.tcsClass));
+        if (StringUtils.isNotEmpty(properties.sopClass)) {
+            args.setTransferCapabilityFile(ResourceUtils.getResource(properties.sopClass, ImageConfiguration.class));
         }
         store.setArgs(args);
         store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.port)));
         store.setRollers(rollers);
         store.setStoreSCP(properties.dcmPath);
-        if (StringUtils.isEmpty(properties.sopClass)) {
-            store.getStoreSCP().loadDefaultTransferCapability(new URL(properties.sopClass));
-        }
         store.setDevice(store.getStoreSCP().getDevice());
         return store.build();
     }

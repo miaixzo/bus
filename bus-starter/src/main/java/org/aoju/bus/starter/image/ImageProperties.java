@@ -71,5 +71,5 @@ public class ImageProperties {
 
     String sopClass;
 
-    String relClasses;
+    String relClass;
 }

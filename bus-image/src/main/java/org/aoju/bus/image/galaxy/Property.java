@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.io.Serializable;
@@ -46,7 +47,7 @@ public class Property implements Serializable {
     public static String LINE_SEPARATOR = AccessController.doPrivileged(
             (PrivilegedAction<String>) () -> System.getProperty("line.separator")
     );
-    public static String[] EMPTY_STRING = {};
+
     private final String name;
     private final Object value;
 
@@ -181,7 +182,7 @@ public class Property implements Serializable {
 
     public static String[] split(String s, char delim) {
         if (s == null || s.isEmpty())
-            return EMPTY_STRING;
+            return Normal.EMPTY_STRING_ARRAY;
 
         int count = 1;
         int delimPos = -1;
@@ -305,7 +306,7 @@ public class Property implements Serializable {
     }
 
     public static String[] maskNull(String[] ss) {
-        return maskNull(ss, EMPTY_STRING);
+        return maskNull(ss, Normal.EMPTY_STRING_ARRAY);
     }
 
     public static <T> T maskNull(T o, T mask) {
