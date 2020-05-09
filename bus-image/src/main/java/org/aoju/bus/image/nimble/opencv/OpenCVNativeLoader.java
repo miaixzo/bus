@@ -18,7 +18,7 @@ public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
 
     public void init() {
         try {
-            new org.opencv.osgi.OpenCVNativeLoader().init();
+            super.init();
         } catch (UnsatisfiedLinkError e) {
             try {
                 Loaders.nat().load(Symbol.SLASH + Normal.LIB_PROTOCOL_JAR
