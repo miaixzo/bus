@@ -41,7 +41,7 @@ import java.util.List;
  * 文件读取器
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class FileReader extends FileWrapper {
@@ -202,7 +202,6 @@ public class FileReader extends FileWrapper {
      *
      * @param lineHandler 行处理器
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public void readLines(LineHandler lineHandler) throws InstrumentException {
         BufferedReader reader = null;

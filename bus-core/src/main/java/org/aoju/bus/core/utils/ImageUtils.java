@@ -55,7 +55,7 @@ import java.util.Random;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class ImageUtils {
@@ -79,7 +79,6 @@ public class ImageUtils {
      * @param srcStream  源图像来源流
      * @param destStream 缩放后的图像写出到的流
      * @param scale      缩放比例 比例大于1时为放大,小于1大于0为缩小
-     * @since 3.1.9
      */
     public static void scale(InputStream srcStream, OutputStream destStream, float scale) {
         scale(read(srcStream), destStream, scale);
@@ -92,7 +91,6 @@ public class ImageUtils {
      * @param srcStream  源图像来源流
      * @param destStream 缩放后的图像写出到的流
      * @param scale      缩放比例 比例大于1时为放大,小于1大于0为缩小
-     * @since 3.1.9
      */
     public static void scale(ImageInputStream srcStream, ImageOutputStream destStream, float scale) {
         scale(read(srcStream), destStream, scale);
@@ -106,7 +104,6 @@ public class ImageUtils {
      * @param destFile 缩放后的图像写出到的流
      * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void scale(java.awt.Image srcImage, File destFile, float scale) throws InstrumentException {
         Image.from(srcImage).setTargetImageType(FileUtils.extName(destFile)).scale(scale).write(destFile);
@@ -120,7 +117,6 @@ public class ImageUtils {
      * @param out      缩放后的图像写出到的流
      * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void scale(java.awt.Image srcImage, OutputStream out, float scale) throws InstrumentException {
         scale(srcImage, getImageOutputStream(out), scale);
@@ -134,7 +130,6 @@ public class ImageUtils {
      * @param destImageStream 缩放后的图像写出到的流
      * @param scale           缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static void scale(java.awt.Image srcImage, ImageOutputStream destImageStream, float scale) throws InstrumentException {
         writeJpg(scale(srcImage, scale), destImageStream);
@@ -146,7 +141,6 @@ public class ImageUtils {
      * @param srcImage 源图像来源流
      * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @return {@link java.awt.Image}
-     * @since 3.1.9
      */
     public static java.awt.Image scale(java.awt.Image srcImage, float scale) {
         return Image.from(srcImage).scale(scale).getImg();
@@ -160,7 +154,6 @@ public class ImageUtils {
      * @param width    目标宽度
      * @param height   目标高度
      * @return {@link java.awt.Image}
-     * @since 3.1.9
      */
     public static java.awt.Image scale(java.awt.Image srcImage, int width, int height) {
         return Image.from(srcImage).scale(width, height).getImg();
@@ -246,7 +239,6 @@ public class ImageUtils {
      * @param srcImgFile  源图像文件
      * @param destImgFile 切片后的图像文件
      * @param rectangle   矩形对象,表示矩形区域的x,y,width,height
-     * @since 3.1.9
      */
     public static void cut(File srcImgFile, File destImgFile, Rectangle rectangle) {
         cut(read(srcImgFile), destImgFile, rectangle);
@@ -258,7 +250,6 @@ public class ImageUtils {
      * @param srcStream  源图像流
      * @param destStream 切片后的图像输出流
      * @param rectangle  矩形对象,表示矩形区域的x,y,width,height
-     * @since 3.1.9
      */
     public static void cut(InputStream srcStream, OutputStream destStream, Rectangle rectangle) {
         cut(read(srcStream), destStream, rectangle);
@@ -270,7 +261,6 @@ public class ImageUtils {
      * @param srcStream  源图像流
      * @param destStream 切片后的图像输出流
      * @param rectangle  矩形对象,表示矩形区域的x,y,width,height
-     * @since 3.1.9
      */
     public static void cut(ImageInputStream srcStream, ImageOutputStream destStream, Rectangle rectangle) {
         cut(read(srcStream), destStream, rectangle);
@@ -283,7 +273,6 @@ public class ImageUtils {
      * @param destFile  输出的文件
      * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void cut(java.awt.Image srcImage, File destFile, Rectangle rectangle) throws InstrumentException {
         write(cut(srcImage, rectangle), destFile);
@@ -296,7 +285,6 @@ public class ImageUtils {
      * @param out       切片后的图像输出流
      * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static void cut(java.awt.Image srcImage, OutputStream out, Rectangle rectangle) throws InstrumentException {
         cut(srcImage, getImageOutputStream(out), rectangle);
@@ -309,7 +297,6 @@ public class ImageUtils {
      * @param destImageStream 切片后的图像输出流
      * @param rectangle       矩形对象,表示矩形区域的x,y,width,height
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static void cut(java.awt.Image srcImage, ImageOutputStream destImageStream, Rectangle rectangle) throws InstrumentException {
         writeJpg(cut(srcImage, rectangle), destImageStream);
@@ -321,7 +308,6 @@ public class ImageUtils {
      * @param srcImage  源图像
      * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @return {@link BufferedImage}
-     * @since 3.1.9
      */
     public static java.awt.Image cut(java.awt.Image srcImage, Rectangle rectangle) {
         return Image.from(srcImage).setPositionBaseCentre(false).cut(rectangle).getImg();
@@ -508,7 +494,6 @@ public class ImageUtils {
      * @param srcStream  源图像流
      * @param formatName 包含格式非正式名称的 String：如JPG、JPEG、GIF等
      * @param destStream 目标图像输出流
-     * @since 3.1.9
      */
     public static void convert(InputStream srcStream, String formatName, OutputStream destStream) {
         write(read(srcStream), formatName, getImageOutputStream(destStream));
@@ -548,7 +533,6 @@ public class ImageUtils {
      *
      * @param srcStream  源图像流
      * @param destStream 目标图像流
-     * @since 3.1.9
      */
     public static void gray(InputStream srcStream, OutputStream destStream) {
         gray(read(srcStream), getImageOutputStream(destStream));
@@ -560,7 +544,6 @@ public class ImageUtils {
      *
      * @param srcStream  源图像流
      * @param destStream 目标图像流
-     * @since 3.1.9
      */
     public static void gray(ImageInputStream srcStream, ImageOutputStream destStream) {
         gray(read(srcStream), destStream);
@@ -571,7 +554,6 @@ public class ImageUtils {
      *
      * @param srcImage 源图像流
      * @param outFile  目标文件
-     * @since 5.8.9
      */
     public static void gray(java.awt.Image srcImage, File outFile) {
         write(gray(srcImage), outFile);
@@ -583,7 +565,6 @@ public class ImageUtils {
      *
      * @param srcImage 源图像流
      * @param out      目标图像流
-     * @since 5.8.9
      */
     public static void gray(java.awt.Image srcImage, OutputStream out) {
         gray(srcImage, getImageOutputStream(out));
@@ -596,7 +577,6 @@ public class ImageUtils {
      * @param srcImage        源图像流
      * @param destImageStream 目标图像流
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static void gray(java.awt.Image srcImage, ImageOutputStream destImageStream) throws InstrumentException {
         writeJpg(gray(srcImage), destImageStream);
@@ -607,7 +587,6 @@ public class ImageUtils {
      *
      * @param srcImage 源图像流
      * @return {@link java.awt.Image}灰度后的图片
-     * @since 3.1.9
      */
     public static java.awt.Image gray(java.awt.Image srcImage) {
         return Image.from(srcImage).gray().getImg();
@@ -755,7 +734,6 @@ public class ImageUtils {
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void pressText(java.awt.Image srcImage, File destFile, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
         write(pressText(srcImage, pressText, color, font, x, y, alpha), destFile);
@@ -774,7 +752,6 @@ public class ImageUtils {
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void pressText(java.awt.Image srcImage, OutputStream to, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
         pressText(srcImage, getImageOutputStream(to), pressText, color, font, x, y, alpha);
@@ -810,7 +787,6 @@ public class ImageUtils {
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
-     * @since 5.8.9
      */
     public static java.awt.Image pressText(java.awt.Image srcImage, String pressText, Color color, Font font, int x, int y, float alpha) {
         return Image.from(srcImage).pressText(pressText, color, font, x, y, alpha).getImg();
@@ -872,7 +848,6 @@ public class ImageUtils {
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void pressImage(java.awt.Image srcImage, File outFile, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
         write(pressImage(srcImage, pressImage, x, y, alpha), outFile);
@@ -889,7 +864,6 @@ public class ImageUtils {
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void pressImage(java.awt.Image srcImage, OutputStream out, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
         pressImage(srcImage, getImageOutputStream(out), pressImage, x, y, alpha);
@@ -948,7 +922,6 @@ public class ImageUtils {
      * @param degree    旋转角度
      * @param outFile   输出文件
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void rotate(File imageFile, int degree, File outFile) throws InstrumentException {
         rotate(read(imageFile), degree, outFile);
@@ -962,7 +935,6 @@ public class ImageUtils {
      * @param degree  旋转角度
      * @param outFile 输出文件
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void rotate(java.awt.Image image, int degree, File outFile) throws InstrumentException {
         write(rotate(image, degree), outFile);
@@ -976,7 +948,6 @@ public class ImageUtils {
      * @param degree 旋转角度
      * @param out    输出流
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void rotate(java.awt.Image image, int degree, OutputStream out) throws InstrumentException {
         writeJpg(rotate(image, degree), getImageOutputStream(out));
@@ -990,7 +961,6 @@ public class ImageUtils {
      * @param degree 旋转角度
      * @param out    输出图像流
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void rotate(java.awt.Image image, int degree, ImageOutputStream out) throws InstrumentException {
         writeJpg(rotate(image, degree), out);
@@ -1003,7 +973,6 @@ public class ImageUtils {
      * @param image  目标图像
      * @param degree 旋转角度
      * @return 旋转后的图片
-     * @since 5.8.9
      */
     public static java.awt.Image rotate(java.awt.Image image, int degree) {
         return Image.from(image).rotate(degree).getImg();
@@ -1015,7 +984,6 @@ public class ImageUtils {
      * @param imageFile 图像文件
      * @param outFile   输出文件
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void flip(File imageFile, File outFile) throws InstrumentException {
         flip(read(imageFile), outFile);
@@ -1027,7 +995,6 @@ public class ImageUtils {
      * @param image   图像
      * @param outFile 输出文件
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void flip(java.awt.Image image, File outFile) throws InstrumentException {
         write(flip(image), outFile);
@@ -1039,7 +1006,6 @@ public class ImageUtils {
      * @param image 图像
      * @param out   输出
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void flip(java.awt.Image image, OutputStream out) throws InstrumentException {
         flip(image, getImageOutputStream(out));
@@ -1051,7 +1017,6 @@ public class ImageUtils {
      * @param image 图像
      * @param out   输出
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void flip(java.awt.Image image, ImageOutputStream out) throws InstrumentException {
         writeJpg(flip(image), out);
@@ -1062,7 +1027,6 @@ public class ImageUtils {
      *
      * @param image 图像
      * @return 翻转后的图片
-     * @since 5.8.9
      */
     public static java.awt.Image flip(java.awt.Image image) {
         return Image.from(image).flip().getImg();
@@ -1316,7 +1280,6 @@ public class ImageUtils {
      *
      * @param fontFile 字体文件
      * @return {@link Font}
-     * @since 3.1.9
      */
     public static Font createFont(File fontFile) {
         try {
@@ -1339,7 +1302,6 @@ public class ImageUtils {
      *
      * @param fontStream 字体流
      * @return {@link Font}
-     * @since 3.1.9
      */
     public static Font createFont(InputStream fontStream) {
         try {
@@ -1363,7 +1325,6 @@ public class ImageUtils {
      * @param color {@link Color}背景颜色以及当前画笔颜色
      * @return {@link Graphics2D}
      * @see org.aoju.bus.core.image.Graphics#createGraphics(BufferedImage, Color)
-     * @since 3.2.3
      */
     public static Graphics2D createGraphics(BufferedImage image, Color color) {
         return org.aoju.bus.core.image.Graphics.createGraphics(image, color);
@@ -1420,7 +1381,6 @@ public class ImageUtils {
      * @param imageType 图片类型（图片扩展名）
      * @param out       写出到的目标流
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static void write(java.awt.Image image, String imageType, OutputStream out) throws InstrumentException {
         write(image, imageType, getImageOutputStream(out));
@@ -1434,7 +1394,6 @@ public class ImageUtils {
      * @param destImageStream 写出到的目标流
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static boolean write(java.awt.Image image, String imageType, ImageOutputStream destImageStream) throws InstrumentException {
         return write(image, imageType, destImageStream, 1);
@@ -1465,7 +1424,6 @@ public class ImageUtils {
      * @param image      {@link java.awt.Image}
      * @param targetFile 目标文件
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static void write(java.awt.Image image, File targetFile) throws InstrumentException {
         ImageOutputStream out = null;
@@ -1549,7 +1507,6 @@ public class ImageUtils {
      *
      * @param imageFile 图片文件
      * @return 图片
-     * @since 5.8.9
      */
     public static BufferedImage read(File imageFile) {
         try {
@@ -1574,7 +1531,6 @@ public class ImageUtils {
      *
      * @param imageStream 图片文件
      * @return 图片
-     * @since 5.8.9
      */
     public static BufferedImage read(InputStream imageStream) {
         try {
@@ -1589,7 +1545,6 @@ public class ImageUtils {
      *
      * @param imageStream 图片文件
      * @return 图片
-     * @since 5.8.9
      */
     public static BufferedImage read(ImageInputStream imageStream) {
         try {
@@ -1604,7 +1559,6 @@ public class ImageUtils {
      *
      * @param imageUrl 图片文件
      * @return 图片
-     * @since 5.8.9
      */
     public static BufferedImage read(URL imageUrl) {
         try {
@@ -1620,7 +1574,6 @@ public class ImageUtils {
      * @param out {@link OutputStream}
      * @return {@link ImageOutputStream}
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static ImageOutputStream getImageOutputStream(OutputStream out) throws InstrumentException {
         try {
@@ -1636,7 +1589,6 @@ public class ImageUtils {
      * @param outFile {@link File}
      * @return {@link ImageOutputStream}
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static ImageOutputStream getImageOutputStream(File outFile) throws InstrumentException {
         try {
@@ -1652,7 +1604,6 @@ public class ImageUtils {
      * @param in {@link InputStream}
      * @return {@link ImageInputStream}
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static ImageInputStream getImageInputStream(InputStream in) throws InstrumentException {
         try {
@@ -1811,7 +1762,6 @@ public class ImageUtils {
      * 生成随机颜色
      *
      * @return 随机颜色
-     * @since 3.1.9
      */
     public static Color randomColor() {
         return randomColor(null);
@@ -1822,7 +1772,6 @@ public class ImageUtils {
      *
      * @param random 随机对象 {@link Random}
      * @return 随机颜色
-     * @since 3.1.9
      */
     public static Color randomColor(Random random) {
         if (null == random) {

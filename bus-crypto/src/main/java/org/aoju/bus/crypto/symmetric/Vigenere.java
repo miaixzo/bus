@@ -30,7 +30,7 @@ package org.aoju.bus.crypto.symmetric;
  * 算法实现来自：https://github.com/zhaorenjie110/SymmetricEncryptionAndDecryption
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Vigenere {

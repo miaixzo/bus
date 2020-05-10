@@ -40,7 +40,7 @@ import java.util.List;
  * 并提取受信任的CA证书，以便进行证书固定
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public abstract class CertificateChainCleaner {

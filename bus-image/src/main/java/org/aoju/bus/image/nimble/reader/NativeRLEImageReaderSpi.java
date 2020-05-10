@@ -28,12 +28,11 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.galaxy.data.Implementation;
 
 import javax.imageio.stream.ImageInputStream;
-import java.io.IOException;
 import java.util.Locale;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class NativeRLEImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
@@ -74,8 +73,7 @@ public class NativeRLEImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
     }
 
     @Override
-    public javax.imageio.ImageReader createReaderInstance(Object extension)
-            throws IOException {
+    public javax.imageio.ImageReader createReaderInstance(Object extension) {
         return new NativeRLEImageReader(this);
     }
 

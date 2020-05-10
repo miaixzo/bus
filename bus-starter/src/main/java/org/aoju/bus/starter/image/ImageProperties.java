@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 影像解析配置
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @Data
@@ -66,5 +66,11 @@ public class ImageProperties {
      * 是否启用opencv
      */
     boolean opencv;
+
+    String tcsClass;
+
+    String sopClass;
+
+    String relClass;
 
 }

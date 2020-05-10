@@ -8,7 +8,7 @@
     <jd.oss.version>1.11.136</jd.oss.version>
     <minio.oss.version>3.0.12</minio.oss.version>
     <qiniu.oss.version>[7.2.0, 7.2.99]</qiniu.oss.version>
-    <tencent.oss.version>5.8.9</tencent.oss.version>
+    <tencent.oss.version>5.9.0</tencent.oss.version>
     <upyun.oss.version>4.0.1</upyun.oss.version>
 ```
 ```

@@ -50,7 +50,7 @@ import java.util.List;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class CellUtils {
@@ -265,7 +265,6 @@ public class CellUtils {
      * @param sheet       {@link Sheet}
      * @param locationRef 单元格地址标识符，例如A11，B5
      * @return 是否是合并单元格
-     * @since 5.8.9
      */
     public static boolean isMergedRegion(Sheet sheet, String locationRef) {
         final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
@@ -277,7 +276,6 @@ public class CellUtils {
      *
      * @param cell {@link Cell}
      * @return 是否是合并单元格
-     * @since 5.8.9
      */
     public static boolean isMergedRegion(Cell cell) {
         return isMergedRegion(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
@@ -364,7 +362,6 @@ public class CellUtils {
      *
      * @param cell {@link Cell}
      * @return 合并单元格
-     * @since 5.1.5
      */
     public static Cell getMergedRegionCell(Cell cell) {
         return getMergedRegionCell(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
@@ -378,7 +375,6 @@ public class CellUtils {
      * @param x     列号，从0开始，可以是合并单元格范围中的任意一列
      * @param y     行号，从0开始，可以是合并单元格范围中的任意一行
      * @return 合并单元格，如果非合并单元格，返回坐标对应的单元格
-     * @since 5.1.5
      */
     public static Cell getMergedRegionCell(Sheet sheet, int x, int y) {
         final List<CellRangeAddress> addrs = sheet.getMergedRegions();

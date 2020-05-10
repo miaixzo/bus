@@ -43,7 +43,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class RandomUtils {
@@ -53,7 +53,6 @@ public class RandomUtils {
      * ThreadLocalRandom是JDK 7之后提供并发产生随机数,能够解决多个线程发生的竞争争夺
      *
      * @return {@link ThreadLocalRandom}
-     * @since 3.1.9
      */
     public static ThreadLocalRandom getRandom() {
         return ThreadLocalRandom.current();
@@ -75,7 +74,6 @@ public class RandomUtils {
      * 获取{@link SecureRandom},类提供加密的强随机数生成器 (RNG)
      *
      * @return {@link SecureRandom}
-     * @since 3.1.9
      */
     public static SecureRandom getSecureRandom() {
         try {
@@ -131,7 +129,6 @@ public class RandomUtils {
      * @param min 最小数（包含）
      * @param max 最大数（不包含）
      * @return 随机数
-     * @since 3.3.0
      */
     public static long randomLong(long min, long max) {
         return getRandom().nextLong(min, max);
@@ -141,7 +138,6 @@ public class RandomUtils {
      * 获得随机数
      *
      * @return 随机数
-     * @since 3.3.0
      */
     public static long randomLong() {
         return getRandom().nextLong();
@@ -294,7 +290,6 @@ public class RandomUtils {
      * @param <T>   元素类型
      * @param array 列表
      * @return 随机元素
-     * @since 3.3.0
      */
     public static <T> T randomEle(T[] array) {
         return randomEle(array, array.length);
@@ -307,7 +302,6 @@ public class RandomUtils {
      * @param array 列表
      * @param limit 限制列表的前N项
      * @return 随机元素
-     * @since 3.3.0
      */
     public static <T> T randomEle(T[] array, int limit) {
         return array[randomInt(limit)];
@@ -448,7 +442,6 @@ public class RandomUtils {
      * 随机数字,数字为0~9单个数字
      *
      * @return 随机数字字符
-     * @since 3.1.9
      */
     public static int randomNumber() {
         return randomChar(Normal.NUMBER);
@@ -458,7 +451,6 @@ public class RandomUtils {
      * 随机字母或数字,小写
      *
      * @return 随机字符
-     * @since 3.1.9
      */
     public static char randomChar() {
         return randomChar(Normal.LOWER_NUMBER);
@@ -469,7 +461,6 @@ public class RandomUtils {
      *
      * @param baseString 随机字符选取的样本
      * @return 随机字符
-     * @since 3.1.9
      */
     public static char randomChar(String baseString) {
         return baseString.charAt(getRandom().nextInt(baseString.length()));

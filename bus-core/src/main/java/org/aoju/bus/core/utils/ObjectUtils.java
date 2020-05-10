@@ -40,7 +40,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -289,7 +289,6 @@ public class ObjectUtils {
      * @param obj1 对象1
      * @param obj2 对象2
      * @return 是否不等
-     * @since 3.0.7
      */
     public static boolean notEqual(Object obj1, Object obj2) {
         return false == equal(obj1, obj2);

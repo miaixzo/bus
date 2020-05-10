@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
  * 授权成功后的用户信息,根据授权平台的不同,获取的数据完整性也不同
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @Getter
@@ -43,8 +43,6 @@ public class Property {
 
     /**
      * 用户第三方系统的唯一id 在调用方集成改组件时,可以用uuid + source唯一确定一个用户
-     *
-     * @since 1.3.3
      */
     private String uuid;
     /**

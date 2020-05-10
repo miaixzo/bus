@@ -38,7 +38,7 @@ import java.util.HashMap;
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class QrConfig {
@@ -164,7 +164,6 @@ public class QrConfig {
      *
      * @param foreColor 前景色
      * @return this
-     * @since 5.1.1
      */
     public QrConfig setForeColor(Color foreColor) {
         if (null != foreColor) {
@@ -187,7 +186,6 @@ public class QrConfig {
      *
      * @param backColor 背景色,null表示透明背景
      * @return this
-     * @since 5.1.1
      */
     public QrConfig setBackColor(Color backColor) {
         if (null == backColor) {

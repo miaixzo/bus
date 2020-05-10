@@ -44,7 +44,7 @@ import java.util.Map;
  * 华为授权登录
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class HuaweiProvider extends DefaultProvider {
@@ -134,7 +134,6 @@ public class HuaweiProvider extends DefaultProvider {
      *
      * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
-     * @since 1.9.3
      */
     @Override
     public String authorize(String state) {

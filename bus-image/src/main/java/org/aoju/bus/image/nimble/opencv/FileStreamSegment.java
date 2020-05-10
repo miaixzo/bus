@@ -35,7 +35,7 @@ import java.lang.reflect.Field;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class FileStreamSegment extends StreamSegment {
@@ -52,7 +52,7 @@ public class FileStreamSegment extends StreamSegment {
         this.filePath = getFilePath(fdes);
     }
 
-    FileStreamSegment(ExtendSegmentedInputImageStream stream) {
+    FileStreamSegment(ExtendInputImageStream stream) {
         super(stream.getSegmentPositions(), stream.getSegmentLengths(), stream.getImageDescriptor());
         this.filePath = stream.getFile().getAbsolutePath();
     }

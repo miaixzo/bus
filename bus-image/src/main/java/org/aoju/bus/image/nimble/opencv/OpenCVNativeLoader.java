@@ -10,15 +10,15 @@ import org.opencv.core.Core;
 import java.io.IOException;
 
 /**
- * 提供加载opencv 动态库
+ * OpenCV动态库加载
  * 1. 默认加载运行环境下的opencv动态库
- * 2. 加载失败会自动加载jar中的opencv动态库
+ * 2. 加载失败会重试加载jar中的opencv动态库
  */
 public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
 
     public void init() {
         try {
-            new org.opencv.osgi.OpenCVNativeLoader().init();
+            super.init();
         } catch (UnsatisfiedLinkError e) {
             try {
                 Loaders.nat().load(Symbol.SLASH + Normal.LIB_PROTOCOL_JAR
@@ -28,8 +28,8 @@ public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
             } catch (IOException ie) {
                 Logger.error("Failed to load the native OpenCV library.");
             }
+            Logger.info("Successfully loaded OpenCV native library.");
         }
-        Logger.info("Successfully loaded OpenCV native library.");
     }
 
 }

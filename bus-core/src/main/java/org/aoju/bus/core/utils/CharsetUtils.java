@@ -33,7 +33,7 @@ import java.nio.charset.UnsupportedCharsetException;
  * 字符集工具类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class CharsetUtils {
@@ -61,7 +61,6 @@ public class CharsetUtils {
      *
      * @return 系统字符集编码
      * @see CharsetUtils#defaultCharsetName()
-     * @since 3.1.9
      */
     public static Charset systemCharset() {
         return FileUtils.isWindows() ? org.aoju.bus.core.lang.Charset.GBK : defaultCharset();
@@ -72,7 +71,6 @@ public class CharsetUtils {
      *
      * @return 系统字符集编码
      * @see CharsetUtils#defaultCharsetName()
-     * @since 3.1.9
      */
     public static String systemCharsetName() {
         return systemCharset().name();
@@ -139,7 +137,6 @@ public class CharsetUtils {
      * @param srcCharset  原文件的编码,必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
-     * @since 3.1.9
      */
     public static File convert(File file, Charset srcCharset, Charset destCharset) {
         final String str = FileUtils.readString(file, srcCharset);

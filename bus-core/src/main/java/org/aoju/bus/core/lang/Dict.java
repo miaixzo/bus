@@ -39,7 +39,7 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
@@ -297,7 +297,6 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param <T>  Bean类型
      * @param bean Bean
      * @return Bean
-     * @since 3.3.1
      */
     public <T> T toBeanIgnoreCase(T bean) {
         BeanUtils.fillBeanWithMapIgnoreCase(this, bean, false);

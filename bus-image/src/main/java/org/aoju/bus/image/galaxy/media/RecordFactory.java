@@ -43,7 +43,7 @@ import java.util.HashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class RecordFactory {
@@ -65,7 +65,7 @@ public class RecordFactory {
 
     public void loadDefaultConfiguration() {
         try {
-            loadConfiguration(ResourceUtils.getResource("org/aoju/bus/image/galaxy/media/RecordFactory.xml", this.getClass()).toString());
+            loadConfiguration(ResourceUtils.getResource("RecordFactory.xml", RecordFactory.class).toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

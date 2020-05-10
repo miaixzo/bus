@@ -49,7 +49,7 @@ import java.util.Optional;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Builder {
@@ -124,7 +124,7 @@ public class Builder {
             return new String[]{Symbol.STAR};
         }
 
-        String[] uids = (String[]) StringUtils.split(s, Symbol.C_COMMA).toArray();
+        String[] uids = StringUtils.split(s, Symbol.COMMA);
         for (int i = 0; i < uids.length; i++) {
             uids[i] = toUID(uids[i]);
         }

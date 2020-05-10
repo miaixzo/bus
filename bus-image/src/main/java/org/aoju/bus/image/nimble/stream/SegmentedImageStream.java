@@ -41,7 +41,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class SegmentedImageStream extends ImageInputStreamImpl {
@@ -57,7 +57,8 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
     private ImageDescriptor imageDescriptor;
 
     public SegmentedImageStream(ImageInputStream stream,
-                                Fragments pixeldataFragments, int frameIndex) throws IOException {
+                                Fragments pixeldataFragments,
+                                int frameIndex) throws IOException {
         if (frameIndex == -1) {
             frameIndex = 0;
         } else {

@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class DateUtils {
@@ -166,7 +166,6 @@ public class DateUtils {
      *
      * @param date Long类型Date（Unix时间戳）
      * @return 时间对象
-     * @since 3.0.7
      */
     public static DateTime date(Date date) {
         if (date instanceof DateTime) {
@@ -776,7 +775,6 @@ public class DateUtils {
      *
      * @param date 被格式化的日期
      * @return 格式化后的字符串
-     * @since 3.0.1
      */
     public static String formatTime(Date date) {
         if (null == date) {
@@ -930,7 +928,13 @@ public class DateUtils {
     }
 
     /**
-     * 格式yyyy-MM-dd
+     * 解析日期字符串，忽略时分秒，支持的格式包括：
+     * <pre>
+     * yyyy-MM-dd
+     * yyyy/MM/dd
+     * yyyy.MM.dd
+     * yyyy年MM月dd日
+     * </pre>
      *
      * @param dateString 标准形式的日期字符串
      * @return 日期对象
@@ -950,7 +954,14 @@ public class DateUtils {
     }
 
     /**
-     * 格式yyyy-MM-dd HH:mm:ss
+     * 解析日期时间字符串，格式支持：
+     *
+     * <pre>
+     * yyyy-MM-dd HH:mm:ss
+     * yyyy/MM/dd HH:mm:ss
+     * yyyy.MM.dd HH:mm:ss
+     * yyyy年MM月dd日 HH:mm:ss
+     * </pre>
      *
      * @param dateString 标准形式的时间字符串
      * @return 日期对象
@@ -964,7 +975,6 @@ public class DateUtils {
      *
      * @param timeString 标准形式的日期字符串
      * @return 日期对象
-     * @since 3.1.1
      */
     public static DateTime parseTimeToday(String timeString) {
         timeString = StringUtils.format("{} {}", formatDate(new DateTime()), timeString);
@@ -1382,7 +1392,6 @@ public class DateUtils {
      * 明天
      *
      * @return 明天
-     * @since 3.0.1
      */
     public static DateTime tomorrow() {
         return offsetDay(new DateTime(), 1);
@@ -1401,7 +1410,6 @@ public class DateUtils {
      * 下周
      *
      * @return 下周
-     * @since 3.0.1
      */
     public static DateTime nextWeek() {
         return offsetWeek(new DateTime(), 1);
@@ -1420,7 +1428,6 @@ public class DateUtils {
      * 下个月
      *
      * @return 下个月
-     * @since 3.0.1
      */
     public static DateTime nextMonth() {
         return offsetMonth(new DateTime(), 1);
@@ -1535,7 +1542,6 @@ public class DateUtils {
      * @param unit      相差的单位
      * @param isAbs     日期间隔是否只保留绝对值正数
      * @return 日期差
-     * @since 3.3.1
      */
     public static long between(Date beginDate, Date endDate, Fields.Unit unit, boolean isAbs) {
         return new Between(beginDate, endDate, isAbs).between(unit);
@@ -1547,7 +1553,6 @@ public class DateUtils {
      * @param beginDate 起始日期
      * @param endDate   结束日期
      * @return 日期差
-     * @since 3.0.1
      */
     public static long betweenMs(Date beginDate, Date endDate) {
         return new Between(beginDate, endDate).between(Fields.Unit.MS);
@@ -1567,7 +1572,6 @@ public class DateUtils {
      * @param endDate   结束日期
      * @param isReset   是否重置时间为起始时间
      * @return 日期差
-     * @since 3.0.1
      */
     public static long betweenDay(Date beginDate, Date endDate, boolean isReset) {
         if (isReset) {
@@ -1621,7 +1625,6 @@ public class DateUtils {
      * @param beginDate 起始日期
      * @param endDate   结束日期
      * @return XX天XX小时XX分XX秒
-     * @since 3.0.1
      */
     public static String formatBetween(Date beginDate, Date endDate) {
         return formatBetween(between(beginDate, endDate, Fields.Unit.MS));
@@ -1643,7 +1646,6 @@ public class DateUtils {
      *
      * @param betweenMs 日期间隔
      * @return XX天XX小时XX分XX秒XX毫秒
-     * @since 3.0.1
      */
     public static String formatBetween(long betweenMs) {
         return new DatePeriod(betweenMs, Fields.Level.MILLSECOND).format();
@@ -2696,7 +2698,6 @@ public class DateUtils {
      *
      * @param date 日期转换为日历的日期
      * @return 创建的日历
-     * @since 3.0
      */
     public static Calendar toCalendar(final Date date) {
         final Calendar calendar = Calendar.getInstance();
@@ -2710,7 +2711,6 @@ public class DateUtils {
      * @param date     日期转换为日历的日期
      * @param timeZone 时区
      * @return 创建的日历
-     * @since 3.0
      */
     public static Calendar toCalendar(final Date date, final TimeZone timeZone) {
         final Calendar calendar = Calendar.getInstance(timeZone);

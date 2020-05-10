@@ -31,7 +31,7 @@ import lombok.Data;
  * 返回消息
  *
  * @author Justubborn
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK1.8+
  */
 @Data

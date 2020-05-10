@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Format;
 import org.aoju.bus.image.Tag;
@@ -43,7 +44,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Attributes implements Serializable {
@@ -854,7 +855,7 @@ public class Attributes implements Serializable {
 
         Object value = values[index];
         if (value == Value.NULL)
-            return Property.EMPTY_STRING;
+            return Normal.EMPTY_STRING_ARRAY;
 
         if (vr == null)
             vr = vrs[index];
@@ -863,7 +864,7 @@ public class Attributes implements Serializable {
         if (vr.isStringType()) {
             value = decodeStringValue(index);
             if (value == Value.NULL)
-                return Property.EMPTY_STRING;
+                return Normal.EMPTY_STRING_ARRAY;
         }
         try {
             return toStrings(vr.toStrings(value, bigEndian,

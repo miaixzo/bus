@@ -55,7 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 负责使用给定的UnoUrl管理到office进程的连接.
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEventListener {

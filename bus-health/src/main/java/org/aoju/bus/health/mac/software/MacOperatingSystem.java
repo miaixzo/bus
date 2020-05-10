@@ -52,7 +52,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @ThreadSafe

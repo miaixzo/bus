@@ -35,7 +35,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Between {
@@ -67,7 +67,6 @@ public class Between {
      * @param begin 起始时间
      * @param end   结束时间
      * @param isAbs 日期间隔是否只保留绝对值正数
-     * @since 3.1.1
      */
     public Between(Date begin, Date end, boolean isAbs) {
         Assert.notNull(begin, "Begin date is null !");
@@ -103,7 +102,6 @@ public class Between {
      * @param end   结束时间
      * @param isAbs 日期间隔是否只保留绝对值正数
      * @return {@link Between}
-     * @since 3.2.3
      */
     public static Between create(Date begin, Date end, boolean isAbs) {
         return new Between(begin, end, isAbs);

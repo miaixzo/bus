@@ -32,7 +32,7 @@ import org.aoju.bus.core.utils.DateUtils;
  * 计算某个过程花费的时间,精确到毫秒
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class TimeInterval {
@@ -71,7 +71,6 @@ public class TimeInterval {
      * 重新开始计算时间（重置开始时间）
      *
      * @return this
-     * @since 3.0.1
      */
     public TimeInterval restart() {
         time = DateUtils.timestamp(isNano);

@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
+import org.aoju.bus.core.utils.ResourceUtils;
+import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.Args;
 import org.aoju.bus.image.Centre;
 import org.aoju.bus.image.Node;
@@ -36,7 +38,7 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {ImageProperties.class})
@@ -54,7 +56,14 @@ public class ImageConfiguration {
             new OpenCVNativeLoader().init();
         }
         StoreSCPCentre store = StoreSCPCentre.Builder();
-        store.setArgs(new Args(true));
+        Args args = new Args(true);
+        if (StringUtils.isNotEmpty(properties.relClass)) {
+            args.setExtendSopClassesURL(ResourceUtils.getResource(properties.relClass, ImageConfiguration.class));
+        }
+        if (StringUtils.isNotEmpty(properties.sopClass)) {
+            args.setTransferCapabilityFile(ResourceUtils.getResource(properties.sopClass, ImageConfiguration.class));
+        }
+        store.setArgs(args);
         store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.port)));
         store.setRollers(rollers);
         store.setStoreSCP(properties.dcmPath);

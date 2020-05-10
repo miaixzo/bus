@@ -51,7 +51,7 @@ import java.util.Iterator;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class NativeImageReader extends ImageReader implements Closeable {
@@ -348,8 +348,8 @@ public class NativeImageReader extends ImageReader implements Closeable {
             MatOfDouble positions = null;
             MatOfDouble lengths = null;
             try {
-                positions = new MatOfDouble(ExtendSegmentedInputImageStream.getDoubleArray(seg.getSegPosition()));
-                lengths = new MatOfDouble(ExtendSegmentedInputImageStream.getDoubleArray(seg.getSegLength()));
+                positions = new MatOfDouble(ExtendInputImageStream.getDoubleArray(seg.getSegPosition()));
+                lengths = new MatOfDouble(ExtendInputImageStream.getDoubleArray(seg.getSegLength()));
                 return ImageCV.toImageCV(Imgcodecs.dicomJpgFileRead(((FileStreamSegment) seg).getFilePath(), positions,
                         lengths, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
             } finally {

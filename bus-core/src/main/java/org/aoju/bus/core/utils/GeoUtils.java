@@ -39,7 +39,7 @@ import java.util.List;
  * 地理区域坐标距离计算工具类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class GeoUtils {
@@ -126,8 +126,6 @@ public class GeoUtils {
 
     /**
      * 坐标点类型
-     *
-     * @since 2.0.6
      */
     public enum PointType {
         WGS84, GCJ02, BD09
@@ -151,8 +149,6 @@ public class GeoUtils {
 
         /**
          * 坐标点类型, 默认为: WGS84
-         *
-         * @since 2.0.6
          */
         private PointType type;
 
@@ -162,7 +158,6 @@ public class GeoUtils {
          * @param longitude 经度
          * @param latitude  纬度
          * @param type      坐标点类型, 默认为WGS84
-         * @since 2.0.6
          */
         public Point(double longitude, double latitude, PointType type) {
             this.longitude = longitude;
@@ -206,7 +201,6 @@ public class GeoUtils {
 
         /**
          * @return 将当前坐标点转换为火星坐标
-         * @since 2.0.6
          */
         public Point toGcj02() {
             Point _point;
@@ -225,7 +219,6 @@ public class GeoUtils {
 
         /**
          * @return 将当前坐标点转换为GPS原始坐标
-         * @since 2.0.6
          */
         public Point toWgs84() {
             Point _point;
@@ -244,7 +237,6 @@ public class GeoUtils {
 
         /**
          * @return 将当前坐标点转换为百度坐标
-         * @since 2.0.6
          */
         public Point toBd09() {
             Point _point;
@@ -263,7 +255,6 @@ public class GeoUtils {
 
         /**
          * @return 保留小数点后六位
-         * @since 2.0.6
          */
         public Point retain6() {
             return new Point(Double.valueOf(String.format("%.6f", longitude)), Double.valueOf(String.format("%.6f", latitude)), type);
@@ -271,7 +262,6 @@ public class GeoUtils {
 
         /**
          * @return 是否超出中国范围
-         * @since 2.0.6
          */
         public boolean notInChina() {
             if (longitude < 72.004 || longitude > 137.8347) {

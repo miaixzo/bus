@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -31,7 +32,7 @@ import org.opencv.core.Rect;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class TiledAlgorithm {
@@ -48,7 +49,7 @@ public class TiledAlgorithm {
 
     void process(Mat sourceImage, Mat resultImage) {
         if (sourceImage.rows() != resultImage.rows() || sourceImage.cols() != resultImage.cols()) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException(Normal.EMPTY);
         }
 
         final int rows = (sourceImage.rows() / mTileSize) + (sourceImage.rows() % mTileSize != 0 ? 1 : 0);

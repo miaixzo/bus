@@ -45,7 +45,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public abstract class StreamSegment {
@@ -61,9 +61,8 @@ public abstract class StreamSegment {
     }
 
     public static StreamSegment getStreamSegment(ImageInputStream iis, ImageReadParam param) throws IOException {
-
-        if (iis instanceof ExtendSegmentedInputImageStream) {
-            return new FileStreamSegment((ExtendSegmentedInputImageStream) iis);
+        if (iis instanceof ExtendInputImageStream) {
+            return new FileStreamSegment((ExtendInputImageStream) iis);
         } else if (iis instanceof SegmentedImageStream) {
             return getFileStreamSegment((SegmentedImageStream) iis);
         } else if (iis instanceof FileCacheImageInputStream) {

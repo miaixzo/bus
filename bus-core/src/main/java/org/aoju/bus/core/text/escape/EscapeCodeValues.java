@@ -42,7 +42,7 @@ import java.util.Map;
  * ESCAPE信息
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class EscapeCodeValues {
@@ -132,7 +132,7 @@ public class EscapeCodeValues {
         final Map<CharSequence, CharSequence> APOS_ESCAPE;
         final Map<CharSequence, CharSequence> APOS_UNESCAPE;
 
-        ISO8859_1_ESCAPE_MAP.put("\u00A0", "&nbsp;");
+        ISO8859_1_ESCAPE_MAP.put("\u00A0", Symbol.HTML_NBSP);
         ISO8859_1_ESCAPE_MAP.put("\u00A1", "&iexcl;"); // inverted exclamation mark
         ISO8859_1_ESCAPE_MAP.put("\u00A2", "&cent;"); // cent sign
         ISO8859_1_ESCAPE_MAP.put("\u00A3", "&pound;"); // pound sign
@@ -392,11 +392,11 @@ public class EscapeCodeValues {
         HTML40_ESCAPE_MAP.put("\u2039", "&lsaquo;"); // single left-pointing angle quotation mark,U+2039 ISO proposed
         HTML40_ESCAPE_MAP.put("\u203A", "&rsaquo;"); // single right-pointing angle quotation mark,U+203A ISO proposed
         HTML40_ESCAPE_MAP.put("\u20AC", "&euro;"); // euro sign, U+20AC NEW
-        BASIC_ESCAPE_MAP.put(Symbol.DOUBLE_QUOTES, "&quot;"); // " - double-quote
-        BASIC_ESCAPE_MAP.put(Symbol.AND, "&amp;");   // & - ampersand
-        BASIC_ESCAPE_MAP.put(Symbol.LT, "&lt;");    // < - less-than
-        BASIC_ESCAPE_MAP.put(Symbol.GT, "&gt;");    // > - greater-than
-        APOS_ESCAPE_MAP.put(Symbol.SINGLE_QUOTE, "&apos;"); // XML apostrophe
+        BASIC_ESCAPE_MAP.put(Symbol.DOUBLE_QUOTES, Symbol.HTML_QUOTE); // " - double-quote
+        BASIC_ESCAPE_MAP.put(Symbol.AND, Symbol.HTML_AMP);   // & - ampersand
+        BASIC_ESCAPE_MAP.put(Symbol.LT, Symbol.HTML_LT);    // < - less-than
+        BASIC_ESCAPE_MAP.put(Symbol.GT, Symbol.HTML_GT);    // > - greater-than
+        APOS_ESCAPE_MAP.put(Symbol.SINGLE_QUOTE, Symbol.HTML_APOS); // XML apostrophe
         ESCAPE_JAVA_MAP.put(Symbol.DOUBLE_QUOTES, "\\\"");
         ESCAPE_JAVA_MAP.put(Symbol.BACKSLASH, "\\\\");
         ESCAPE_ECMASCRIPT_MAP.put(Symbol.SINGLE_QUOTE, "\\'");

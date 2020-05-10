@@ -38,7 +38,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * execution that execute instructions concurrently.
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @NotThreadSafe

@@ -38,7 +38,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class NetUtils {
@@ -310,7 +310,6 @@ public class NetUtils {
      * 获取本机所有网卡
      *
      * @return 所有网卡, 异常返回<code>null</code>
-     * @since 3.0.1
      */
     public static Collection<NetworkInterface> getNetworkInterfaces() {
         Enumeration<NetworkInterface> networkInterfaces = null;
@@ -415,7 +414,6 @@ public class NetUtils {
      * 参考：http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
      *
      * @return 本机网卡IP地址, 获取失败返回<code>null</code>
-     * @since 3.0.7
      */
     public static String getLocalhostStr() {
         InetAddress localhost = getLocalhost();
@@ -436,7 +434,6 @@ public class NetUtils {
      * 此方法不会抛出异常,获取失败将返回<code>null</code>
      *
      * @return 本机网卡IP地址, 获取失败返回<code>null</code>
-     * @since 3.0.1
      */
     public static InetAddress getLocalhost() {
         final LinkedHashSet<InetAddress> localAddressList = localAddressList(address -> {
@@ -520,7 +517,6 @@ public class NetUtils {
      * @param host 域名或IP地址,空表示任意地址
      * @param port 端口,0表示系统分配临时端口
      * @return {@link InetSocketAddress}
-     * @since 3.3.0
      */
     public static InetSocketAddress createAddress(String host, int port) {
         if (StringUtils.isBlank(host)) {
@@ -537,7 +533,6 @@ public class NetUtils {
      * @param isBlock 是否阻塞方式
      * @param data    需要发送的数据
      * @throws InstrumentException IO异常
-     * @since 3.3.0
      */
     public static void netCat(String host, int port, boolean isBlock, ByteBuffer data) throws InstrumentException {
         try (SocketChannel channel = SocketChannel.open(createAddress(host, port))) {
@@ -555,7 +550,6 @@ public class NetUtils {
      * @param port Server端口
      * @param data 数据
      * @throws InstrumentException 异常
-     * @since 3.3.0
      */
     public static void netCat(String host, int port, byte[] data) throws InstrumentException {
         OutputStream out = null;

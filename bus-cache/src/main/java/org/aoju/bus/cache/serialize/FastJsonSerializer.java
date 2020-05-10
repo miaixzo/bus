@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class FastJsonSerializer extends AbstractSerializer {

@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
  * 上下文配置类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @Data
@@ -60,15 +60,11 @@ public class Context {
 
     /**
      * Stack Overflow Key
-     *
-     * @since 1.9.0
      */
     private String overflowKey;
 
     /**
      * 企业微信,授权方的网页应用ID
-     *
-     * @since 2.0.0
      */
     private String agentId;
 

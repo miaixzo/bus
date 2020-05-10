@@ -40,7 +40,7 @@ import java.util.Map;
  * 支持Map和普通Bean
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class DynaBean extends Support<DynaBean> implements Serializable {
@@ -125,7 +125,6 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
      * @param <T>       属性值类型
      * @param fieldName 字段名
      * @return 字段值
-     * @since 3.1.1
      */
     public <T> T safeGet(String fieldName) {
         try {

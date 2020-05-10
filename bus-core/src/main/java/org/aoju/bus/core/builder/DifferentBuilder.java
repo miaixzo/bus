@@ -58,7 +58,7 @@ import java.util.List;
  * {@link DifferentResult#toString(ToStringStyle)}覆盖此样式选择。.
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @see Differentable
  * @see Different
  * @see DifferentResult
@@ -782,7 +782,6 @@ public class DifferentBuilder implements Builder<DifferentResult> {
      * @param fieldName       字段名
      * @param differentResult 要附加的{@code DiffResult}
      * @return this
-     * @since 3.5.0
      */
     public DifferentBuilder append(final String fieldName,
                                    final DifferentResult differentResult) {

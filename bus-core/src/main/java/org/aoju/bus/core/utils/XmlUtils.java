@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -219,7 +219,6 @@ public class XmlUtils {
      * @param doc      XML文档
      * @param isPretty 是否格式化输出
      * @return XML字符串
-     * @since 3.0.9
      */
     public static String toStr(Document doc, boolean isPretty) {
         return toStr(doc, Charset.DEFAULT_UTF_8, isPretty);
@@ -233,7 +232,6 @@ public class XmlUtils {
      * @param charset  编码
      * @param isPretty 是否格式化输出
      * @return XML字符串
-     * @since 3.0.9
      */
     public static String toStr(Document doc, String charset, boolean isPretty) {
         return toStr(doc, charset, isPretty, false);
@@ -248,7 +246,6 @@ public class XmlUtils {
      * @param isPretty           是否格式化输出
      * @param omitXmlDeclaration 是否输出 xml Declaration
      * @return XML字符串
-     * @since 5.1.2
      */
     public static String toStr(Document doc, String charset, boolean isPretty, boolean omitXmlDeclaration) {
         final StringWriter writer = StringUtils.getWriter();
@@ -322,7 +319,6 @@ public class XmlUtils {
      * @param writer  写出的Writer，Writer决定了输出XML的编码
      * @param charset 编码
      * @param indent  格式化输出中缩进量，小于1表示不格式化输出
-     * @since 3.0.9
      */
     public static void write(Node node, Writer writer, String charset, int indent) {
         transform(new DOMSource(node), new StreamResult(writer), charset, indent);
@@ -336,7 +332,6 @@ public class XmlUtils {
      * @param charset            编码
      * @param indent             格式化输出中缩进量，小于1表示不格式化输出
      * @param omitXmlDeclaration 是否输出 xml Declaration
-     * @since 5.1.2
      */
     public static void write(Node node, Writer writer, String charset, int indent, boolean omitXmlDeclaration) {
         transform(new DOMSource(node), new StreamResult(writer), charset, indent, omitXmlDeclaration);
@@ -362,7 +357,6 @@ public class XmlUtils {
      * @param charset            编码
      * @param indent             格式化输出中缩进量，小于1表示不格式化输出
      * @param omitXmlDeclaration 是否输出 xml Declaration
-     * @since 5.1.2
      */
     public static void write(Node node, OutputStream out, String charset, int indent, boolean omitXmlDeclaration) {
         transform(new DOMSource(node), new StreamResult(out), charset, indent, omitXmlDeclaration);
@@ -388,7 +382,6 @@ public class XmlUtils {
      * @param charset            编码
      * @param indent             格式化输出中缩进量，小于1表示不格式化输出
      * @param omitXmlDeclaration 是否输出 xml Declaration
-     * @since 5.1.2
      */
     public static void transform(Source source, Result result, String charset, int indent, boolean omitXmlDeclaration) {
         final TransformerFactory factory = TransformerFactory.newInstance();
@@ -573,7 +566,6 @@ public class XmlUtils {
      * 创建XPath
      *
      * @return {@link XPath}
-     * @since 5.8.9
      */
     public static XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
@@ -619,7 +611,6 @@ public class XmlUtils {
      * @param source     资源,可以是Docunent、Node节点等
      * @param returnType 返回类型,{@link XPathConstants}
      * @return 匹配返回类型的值
-     * @since 5.8.9
      */
     public static Object getByXPath(String expression, Object source, QName returnType) {
         final XPath xPath = createXPath();
@@ -653,19 +644,19 @@ public class XmlUtils {
             char c = string.charAt(i);
             switch (c) {
                 case Symbol.C_AND:
-                    sb.append("&amp;");
+                    sb.append(Symbol.HTML_AMP);
                     break;
                 case Symbol.C_LT:
-                    sb.append("&lt;");
+                    sb.append(Symbol.HTML_LT);
                     break;
                 case Symbol.C_GT:
-                    sb.append("&gt;");
+                    sb.append(Symbol.HTML_GT);
                     break;
                 case Symbol.C_DOUBLE_QUOTES:
-                    sb.append("&quot;");
+                    sb.append(Symbol.HTML_QUOTE);
                     break;
                 case Symbol.C_SINGLE_QUOTE:
-                    sb.append("&apos;");
+                    sb.append(Symbol.HTML_APOS);
                     break;
                 default:
                     sb.append(c);
@@ -745,7 +736,11 @@ public class XmlUtils {
      * @return bean
      */
     public static <T> T xmlToBean(Node node, Class<T> bean) {
-        return BeanUtils.toBean(xmlToMap(node), bean);
+        final Map<String, Object> map = xmlToMap(node);
+        if (null != map && map.size() == 1) {
+            return BeanUtils.toBean(map.get(bean.getSimpleName()), bean);
+        }
+        return BeanUtils.toBean(map, bean);
     }
 
     /**
@@ -1001,7 +996,7 @@ public class XmlUtils {
      * @return 字符串
      */
     public static String replaceEscapeCharacter(String xml) {
-        return xml.replaceAll("&lt;", Symbol.LT).replaceAll("&gt;", Symbol.GT).replaceAll("&quot;", Symbol.DOUBLE_QUOTES);
+        return xml.replaceAll(Symbol.HTML_LT, Symbol.LT).replaceAll(Symbol.HTML_GT, Symbol.GT).replaceAll(Symbol.HTML_QUOTE, Symbol.DOUBLE_QUOTES);
     }
 
     /**
@@ -1094,19 +1089,19 @@ public class XmlUtils {
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         marshaller.marshal(esbEntry, byteArrayOutputStream);
         String xmlContent = new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
-        return xmlContent.replace("&lt;", Symbol.LT).replace("&gt;", Symbol.GT).replace("&quot;", Symbol.DOUBLE_QUOTES);
+        return xmlContent.replace(Symbol.HTML_LT, Symbol.LT).replace(Symbol.HTML_GT, Symbol.GT).replace(Symbol.HTML_QUOTE, Symbol.DOUBLE_QUOTES);
     }
 
     public String getfield(String str, String field) {
-        String s1 = str.replace("<map>", "");
-        String s2 = s1.replace("</map>", "");
+        String s1 = str.replace("<map>", Normal.EMPTY);
+        String s2 = s1.replace("</map>", Normal.EMPTY);
         String[] entrys = s2.split("</entry>");
         for (String s : entrys) {
             if (s.contains(field)) {
                 return s.substring(s.indexOf(Symbol.GT) + 1);
             }
         }
-        return "";
+        return Normal.EMPTY;
     }
 
 }

@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Property implements Serializable {
@@ -47,7 +47,7 @@ public class Property implements Serializable {
     public static String LINE_SEPARATOR = AccessController.doPrivileged(
             (PrivilegedAction<String>) () -> System.getProperty("line.separator")
     );
-    public static String[] EMPTY_STRING = {};
+
     private final String name;
     private final Object value;
 
@@ -182,7 +182,7 @@ public class Property implements Serializable {
 
     public static String[] split(String s, char delim) {
         if (s == null || s.isEmpty())
-            return EMPTY_STRING;
+            return Normal.EMPTY_STRING_ARRAY;
 
         int count = 1;
         int delimPos = -1;
@@ -306,7 +306,7 @@ public class Property implements Serializable {
     }
 
     public static String[] maskNull(String[] ss) {
-        return maskNull(ss, EMPTY_STRING);
+        return maskNull(ss, Normal.EMPTY_STRING_ARRAY);
     }
 
     public static <T> T maskNull(T o, T mask) {
@@ -456,7 +456,9 @@ public class Property implements Serializable {
     }
 
     public void setAt(Object o) {
-        String setterName = Normal.SET + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+        String setterName = "set"
+                + name.substring(0, 1).toUpperCase(Locale.ENGLISH)
+                + name.substring(1);
         try {
             Class<?> clazz = o.getClass();
             if (value instanceof String) {

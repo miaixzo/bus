@@ -38,7 +38,7 @@ import java.nio.charset.Charset;
  * <p>
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class HexUtils {
@@ -213,7 +213,6 @@ public class HexUtils {
      *
      * @param color {@link Color}
      * @return Hex字符串
-     * @since 3.1.9
      */
     public static String encodeColor(Color color) {
         return encodeColor(color, Symbol.SHAPE);
@@ -225,7 +224,6 @@ public class HexUtils {
      * @param color  {@link Color}
      * @param prefix 前缀字符串,可以是#、0x等
      * @return Hex字符串
-     * @since 3.1.9
      */
     public static String encodeColor(Color color, String prefix) {
         final StringBuffer builder = new StringBuffer(prefix);
@@ -253,7 +251,6 @@ public class HexUtils {
      *
      * @param hexColor 16进制颜色值,可以以#开头,也可以用0x开头
      * @return {@link Color}
-     * @since 3.1.9
      */
     public static Color decodeColor(String hexColor) {
         return Color.decode(hexColor);

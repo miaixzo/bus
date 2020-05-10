@@ -35,7 +35,7 @@ import java.util.Map;
  * @param <K> Key类型
  * @param <V> Value类型
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class MapBuilder<K, V> implements Serializable {
@@ -81,7 +81,6 @@ public class MapBuilder<K, V> implements Serializable {
      * @param <V> Value类型
      * @param map Map实体类
      * @return MapBuilder
-     * @since 3.2.3
      */
     public static <K, V> MapBuilder<K, V> create(Map<K, V> map) {
         return new MapBuilder<>(map);
@@ -123,7 +122,6 @@ public class MapBuilder<K, V> implements Serializable {
      * 创建后的map
      *
      * @return 创建后的map
-     * @since 3.3.0
      */
     public Map<K, V> build() {
         return map();

@@ -39,7 +39,7 @@ import org.aoju.bus.oauth.magic.Property;
  * Gitlab登录
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class GitlabProvider extends DefaultProvider {
@@ -105,7 +105,6 @@ public class GitlabProvider extends DefaultProvider {
      *
      * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
-     * @since 2.0.1
      */
     @Override
     public String authorize(String state) {

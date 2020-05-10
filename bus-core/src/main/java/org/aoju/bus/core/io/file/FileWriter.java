@@ -41,7 +41,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class FileWriter extends FileWrapper {
@@ -218,7 +218,6 @@ public class FileWriter extends FileWrapper {
      * @param isAppend      是否追加
      * @return 目标文件
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public <T> File writeLines(Collection<T> list, LineSeparator lineSeparator, boolean isAppend) throws InstrumentException {
         try (PrintWriter writer = getPrintWriter(isAppend)) {

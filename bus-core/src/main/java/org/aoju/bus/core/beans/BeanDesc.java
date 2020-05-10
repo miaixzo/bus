@@ -50,7 +50,7 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class BeanDesc implements Serializable {
@@ -167,7 +167,7 @@ public class BeanDesc implements Serializable {
         for (Field field : ReflectUtils.getFields(this.beanClass)) {
             if (false == ModifierUtils.isStatic(field)) {
                 //只针对非static属性
-                this.propMap.put(field.getName(), createProp(field));
+                this.propMap.put(ReflectUtils.getFieldName(field), createProp(field));
             }
         }
         return this;
@@ -353,7 +353,7 @@ public class BeanDesc implements Serializable {
          * @return 字段名
          */
         public String getFieldName() {
-            return ReflectUtils.getFieldsName(this.field);
+            return ReflectUtils.getFieldName(this.field);
         }
 
         /**

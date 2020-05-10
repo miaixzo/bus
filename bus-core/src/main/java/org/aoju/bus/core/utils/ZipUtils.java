@@ -40,7 +40,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class ZipUtils {
@@ -275,7 +275,6 @@ public class ZipUtils {
      * @param data    要压缩的数据
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static File zip(File zipFile, String path, String data) throws InstrumentException {
         return zip(zipFile, path, data, DEFAULT_CHARSET);
@@ -290,7 +289,6 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static File zip(File zipFile, String path, String data, Charset charset) throws InstrumentException {
         return zip(zipFile, path, IoUtils.toStream(data, charset), charset);
@@ -305,7 +303,6 @@ public class ZipUtils {
      * @param in      要压缩的源
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static File zip(File zipFile, String path, InputStream in) throws InstrumentException {
         return zip(zipFile, path, in, DEFAULT_CHARSET);
@@ -320,7 +317,6 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static File zip(File zipFile, String path, InputStream in, Charset charset) throws InstrumentException {
         return zip(zipFile, new String[]{path}, new InputStream[]{in}, charset);
@@ -335,7 +331,6 @@ public class ZipUtils {
      * @param ins     要压缩的源
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static File zip(File zipFile, String[] paths, InputStream[] ins) throws InstrumentException {
         return zip(zipFile, paths, ins, DEFAULT_CHARSET);
@@ -351,7 +346,6 @@ public class ZipUtils {
      * @param charset 编码
      * @return 压缩文件
      * @throws InstrumentException IO异常
-     * @since 3.1.9
      */
     public static File zip(File zipFile, String[] paths, InputStream[] ins, Charset charset) throws InstrumentException {
         if (ArrayUtils.isEmpty(paths) || ArrayUtils.isEmpty(ins)) {
@@ -391,7 +385,6 @@ public class ZipUtils {
      * @param charset     编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static File unzip(String zipFilePath, Charset charset) throws InstrumentException {
         return unzip(FileUtils.file(zipFilePath), charset);
@@ -403,7 +396,6 @@ public class ZipUtils {
      * @param zipFile 压缩文件
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static File unzip(File zipFile) throws InstrumentException {
         return unzip(zipFile, DEFAULT_CHARSET);
@@ -416,7 +408,6 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static File unzip(File zipFile, Charset charset) throws InstrumentException {
         return unzip(zipFile, FileUtils.file(zipFile.getParentFile(), FileUtils.mainName(zipFile)), charset);
@@ -467,7 +458,6 @@ public class ZipUtils {
      * @param charset 编码
      * @return 解压的目录
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static File unzip(File zipFile, File outFile, Charset charset) throws InstrumentException {
         charset = (null == charset) ? DEFAULT_CHARSET : charset;
@@ -1120,7 +1110,6 @@ public class ZipUtils {
      * @param outFile  最外部路径
      * @param fileName 文件名,可以包含路径
      * @return 文件或目录
-     * @since 5.0.5
      */
     private static File buildFile(File outFile, String fileName) {
         if (false == FileUtils.isWindows()

@@ -58,7 +58,7 @@ import java.util.function.Consumer;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -255,7 +255,6 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @param keys 键列表,常用于别名
      * @return 值
-     * @since 3.1.9
      */
     public Object getAndRemove(String... keys) {
         Object value = null;
@@ -273,7 +272,6 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @param keys 键列表,常用于别名
      * @return 字符串值
-     * @since 3.1.9
      */
     public String getAndRemoveStr(String... keys) {
         Object value = null;
@@ -518,7 +516,6 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param key   键
      * @param value 值
      * @return this
-     * @since 3.3.1
      */
     public Setting set(String key, String value) {
         this.groupedMap.put(Normal.EMPTY, key, value);

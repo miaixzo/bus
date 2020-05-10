@@ -62,15 +62,13 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class EqualsBuilder implements Builder<Boolean> {
 
     /**
      * 反射方法用于检测循环对象引用和避免无限循环的对象注册表
-     *
-     * @since 3.0.0
      */
     private static final ThreadLocal<Set<Pair<HashKey, HashKey>>> REGISTRY = new ThreadLocal<>();
 
@@ -94,7 +92,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      * 返回当前线程中的反射方法遍历的对象对的注册表
      *
      * @return 设置要遍历的对象的注册表
-     * @since 3.0.0
      */
     static Set<Pair<HashKey, HashKey>> getRegistry() {
         return REGISTRY.get();
@@ -122,7 +119,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @param lhs this对象在注册表中查找
      * @param rhs 要在registry上查找的另一个对象
      * @return 如果注册表包含给定的对象，布尔true.
-     * @since 3.0.0
      */
     static boolean isRegistered(final Object lhs, final Object rhs) {
         final Set<Pair<HashKey, HashKey>> registry = getRegistry();
@@ -156,7 +152,6 @@ public class EqualsBuilder implements Builder<Boolean> {
      *
      * @param lhs 要注销此对象
      * @param rhs 另一个要注册的对象
-     * @since 3.0.0
      */
     private static void unregister(final Object lhs, final Object rhs) {
         final Set<Pair<HashKey, HashKey>> registry = getRegistry();

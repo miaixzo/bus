@@ -24,13 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
-import org.aoju.bus.image.galaxy.Property;
+import org.aoju.bus.core.lang.Normal;
 
 import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class AAssociateRJ extends IOException {
@@ -84,7 +84,7 @@ public class AAssociateRJ extends IOException {
     };
 
     private static final String[][] REASONS = {
-            Property.EMPTY_STRING,
+            Normal.EMPTY_STRING_ARRAY,
             SERVICE_USER_REASONS,
             SERVICE_PROVIDER_ACSE_REASONS,
             SERVICE_PROVIDER_PRES_REASONS

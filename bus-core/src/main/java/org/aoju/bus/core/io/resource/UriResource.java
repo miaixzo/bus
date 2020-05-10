@@ -41,7 +41,7 @@ import java.nio.charset.Charset;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class UriResource implements Resource {
@@ -92,7 +92,6 @@ public class UriResource implements Resource {
      *
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 3.0.1
      */
     @Override
     public BufferedReader getReader(Charset charset) {
