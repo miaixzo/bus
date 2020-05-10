@@ -43,7 +43,7 @@ import java.io.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.8.9
  * @since JDK 1.8+
  */
 public class GifEncoder {
