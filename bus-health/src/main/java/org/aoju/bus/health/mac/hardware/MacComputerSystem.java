@@ -43,7 +43,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @Immutable

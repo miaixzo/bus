@@ -34,7 +34,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {

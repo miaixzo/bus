@@ -28,7 +28,7 @@ package org.aoju.bus.shade.convert;
  * 该类的功能描述
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public interface TypeConvert {

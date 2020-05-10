@@ -36,7 +36,7 @@ import org.aoju.bus.crypto.asymmetric.RSA;
  * RSA 加密解密算法
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class RSAProvider implements Provider {

@@ -40,7 +40,7 @@ import java.util.*;
  * 封装性能计数器查询的信息
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @NotThreadSafe
