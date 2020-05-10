@@ -71,7 +71,6 @@ public class TimeInterval {
      * 重新开始计算时间（重置开始时间）
      *
      * @return this
-     * @since 3.0.1
      */
     public TimeInterval restart() {
         time = DateUtils.timestamp(isNano);

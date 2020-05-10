@@ -138,7 +138,6 @@ public class TaskTable {
      *
      * @param index 位置
      * @return {@link Task}
-     * @since 3.1.1
      */
     public Task getTask(int index) {
         final Lock readLock = lock.readLock();
@@ -155,7 +154,6 @@ public class TaskTable {
      *
      * @param id ID
      * @return {@link Task}
-     * @since 3.1.1
      */
     public Task getTask(String id) {
         final int index = ids.indexOf(id);
@@ -170,7 +168,6 @@ public class TaskTable {
      *
      * @param index 位置
      * @return {@link CronPattern}
-     * @since 3.1.1
      */
     public CronPattern getPattern(int index) {
         final Lock readLock = lock.readLock();
@@ -205,7 +202,6 @@ public class TaskTable {
      *
      * @param id ID
      * @return {@link CronPattern}
-     * @since 3.1.1
      */
     public CronPattern getPattern(String id) {
         final int index = ids.indexOf(id);
@@ -234,7 +230,6 @@ public class TaskTable {
      * 如果时间匹配则执行相应的Task,无锁
      *
      * @param millis 时间毫秒
-     * @since 3.1.1
      */
     protected void executeTaskIfMatchInternal(long millis) {
         for (int i = 0; i < size; i++) {

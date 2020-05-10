@@ -500,7 +500,6 @@ public class NumberUtils {
      * @param v1 被除数
      * @param v2 除数
      * @return 两个参数的商
-     * @since 3.1.9
      */
     public static BigDecimal div(Number v1, Number v2) {
         return div(v1, v2, DEFAUT_DIV_SCALE);
@@ -572,7 +571,6 @@ public class NumberUtils {
      * @param v2    除数
      * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
-     * @since 3.1.9
      */
     public static BigDecimal div(Number v1, Number v2, int scale) {
         return div(v1, v2, scale, RoundingMode.HALF_UP);
@@ -650,7 +648,6 @@ public class NumberUtils {
      * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
-     * @since 3.1.9
      */
     public static BigDecimal div(Number v1, Number v2, int scale, RoundingMode roundingMode) {
         return div(v1.toString(), v2.toString(), scale, roundingMode);
@@ -920,7 +917,6 @@ public class NumberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.1.9
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);
@@ -965,7 +961,6 @@ public class NumberUtils {
      * @param number 值
      * @param scale  保留小数位数
      * @return 百分比
-     * @since 3.2.3
      */
     public static String formatPercent(double number, int scale) {
         final NumberFormat format = NumberFormat.getPercentInstance();
@@ -1207,7 +1202,6 @@ public class NumberUtils {
      *
      * @param stop 结束（包含）
      * @return 整数列表
-     * @since 3.3.1
      */
     public static int[] range(int stop) {
         return range(0, stop);
@@ -1428,7 +1422,6 @@ public class NumberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Character#compare(char, char)
-     * @since 3.0.1
      */
     public static int compare(char x, char y) {
         return x - y;
@@ -1441,7 +1434,6 @@ public class NumberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Double#compare(double, double)
-     * @since 3.0.1
      */
     public static int compare(double x, double y) {
         return Double.compare(x, y);
@@ -1454,7 +1446,6 @@ public class NumberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Integer#compare(int, int)
-     * @since 3.0.1
      */
     public static int compare(int x, int y) {
         if (x == y) {
@@ -1474,7 +1465,6 @@ public class NumberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Long#compare(long, long)
-     * @since 3.0.1
      */
     public static int compare(long x, long y) {
         if (x == y) {
@@ -1494,7 +1484,6 @@ public class NumberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Short#compare(short, short)
-     * @since 3.0.1
      */
     public static int compare(short x, short y) {
         if (x == y) {
@@ -1514,7 +1503,6 @@ public class NumberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Byte#compare(byte, byte)
-     * @since 3.0.1
      */
     public static int compare(byte x, byte y) {
         return x - y;
@@ -1711,7 +1699,6 @@ public class NumberUtils {
      * @param number       A Number
      * @param defaultValue 如果number参数为{@code null},返回此默认值
      * @return A String.
-     * @since 3.1.9
      */
     public static String toStr(Number number, String defaultValue) {
         return (null == number) ? defaultValue : toStr(number);
@@ -1775,7 +1762,6 @@ public class NumberUtils {
      * @param total 总数
      * @param part  每份的个数
      * @return 分成了几份
-     * @since 3.1.9
      */
     public static int count(int total, int part) {
         return (total % part == 0) ? (total / part) : (total / part + 1);
@@ -1786,7 +1772,6 @@ public class NumberUtils {
      *
      * @param decimal {@link BigDecimal},可以为{@code null}
      * @return {@link BigDecimal}参数为空时返回0的值
-     * @since 3.1.9
      */
     public static BigDecimal null2Zero(BigDecimal decimal) {
 
@@ -1798,7 +1783,6 @@ public class NumberUtils {
      *
      * @param value 值
      * @return 1或非0值
-     * @since 3.1.9
      */
     public static int zero2One(int value) {
         return 0 == value ? 1 : value;
@@ -1810,7 +1794,6 @@ public class NumberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.8.9
      */
     public static BigInteger newBigInteger(String str) {
         if (null == str) {

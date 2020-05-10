@@ -60,15 +60,11 @@ public class Context {
 
     /**
      * Stack Overflow Key
-     *
-     * @since 1.9.0
      */
     private String overflowKey;
 
     /**
      * 企业微信,授权方的网页应用ID
-     *
-     * @since 2.0.0
      */
     private String agentId;
 

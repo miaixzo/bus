@@ -67,7 +67,6 @@ public class FileUtils {
      * 是否为Windows环境
      *
      * @return 是否为Windows环境
-     * @since 3.1.9
      */
     public static boolean isWindows() {
         return Symbol.C_BACKSLASH == File.separatorChar;
@@ -212,7 +211,6 @@ public class FileUtils {
      * @param path          {@link Path}
      * @param isFollowLinks 是否追踪到软链对应的真实地址
      * @return 如果为目录true
-     * @since 3.1.9
      */
     public static boolean isDirectory(Path path, boolean isFollowLinks) {
         if (null == path) {
@@ -339,7 +337,6 @@ public class FileUtils {
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象,选择要保留的文件,只对文件有效,不过滤目录
      * @return 文件列表
-     * @since 5.8.9
      */
     public static List<File> loopFiles(String path, FileFilter fileFilter) {
         return loopFiles(file(path), fileFilter);
@@ -424,7 +421,6 @@ public class FileUtils {
      *
      * @param path 当前遍历文件或目录的路径
      * @return 文件列表
-     * @since 5.8.9
      */
     public static List<File> loopFiles(String path) {
         return loopFiles(file(path));
@@ -710,7 +706,6 @@ public class FileUtils {
      * @param directory 文件夹
      * @return 成功与否
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static boolean clean(File directory) throws InstrumentException {
         if (directory == null || directory.exists() == false || false == directory.isDirectory()) {
@@ -1021,7 +1016,6 @@ public class FileUtils {
      * @param isRetainExt 是否保留原文件的扩展名,如果保留,则newName不需要加扩展名
      * @param isOverride  是否覆盖目标文件
      * @return 目标文件
-     * @since 3.1.9
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
@@ -1491,7 +1485,6 @@ public class FileUtils {
      * @param file1 文件1
      * @param file2 文件2
      * @return 文件路径是否相同
-     * @since 3.1.9
      */
     public static boolean pathEquals(File file1, File file2) {
         if (isWindows()) {
@@ -1698,7 +1691,6 @@ public class FileUtils {
      * @param path  路径
      * @param index 路径节点位置,支持负数（负数从后向前计数）
      * @return 获取的子路径
-     * @since 3.1.9
      */
     public static Path getPathEle(Path path, int index) {
         return subPath(path, index, index == -1 ? path.getNameCount() : index + 1);
@@ -1709,7 +1701,6 @@ public class FileUtils {
      *
      * @param path 路径
      * @return 获取的最后一个子路径
-     * @since 3.1.9
      */
     public static Path getLastPathEle(Path path) {
         return getPathEle(path, path.getNameCount() - 1);
@@ -1722,7 +1713,6 @@ public class FileUtils {
      * @param fromIndex 起始路径节点（包括）
      * @param toIndex   结束路径节点（不包括）
      * @return 获取的子路径
-     * @since 3.1.9
      */
     public static Path subPath(Path path, int fromIndex, int toIndex) {
         if (null == path) {
@@ -1922,7 +1912,6 @@ public class FileUtils {
      * @param isFollowLinks 是否跟踪到软链对应的真实路径
      * @return {@link BasicFileAttributes}
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static BasicFileAttributes getAttributes(Path path, boolean isFollowLinks) throws InstrumentException {
         if (null == path) {
@@ -2101,7 +2090,6 @@ public class FileUtils {
      * @param filePath 文件路径
      * @return 字节码
      * @throws InstrumentException 异常
-     * @since 5.8.9
      */
     public static byte[] readBytes(String filePath) throws InstrumentException {
         return readBytes(file(filePath));
@@ -2209,7 +2197,6 @@ public class FileUtils {
      * @param collection 集合
      * @return 文件中的每行内容的集合
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(String path, T collection) throws InstrumentException {
         return readLines(path, org.aoju.bus.core.lang.Charset.UTF_8, collection);
@@ -2251,7 +2238,6 @@ public class FileUtils {
      * @param collection 集合
      * @return 文件中的每行内容的集合
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T extends Collection<String>> T readUtf8Lines(File file, T collection) throws InstrumentException {
         return readLines(file, org.aoju.bus.core.lang.Charset.UTF_8, collection);
@@ -2321,7 +2307,6 @@ public class FileUtils {
      * @param collection 集合
      * @return 文件中的每行内容的集合
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T extends Collection<String>> T readLines(URL url, Charset charset, T collection) throws InstrumentException {
         InputStream in = null;
@@ -2376,7 +2361,6 @@ public class FileUtils {
      * @param path 文件路径
      * @return 文件中的每行内容的集合List
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static List<String> readUtf8Lines(String path) throws InstrumentException {
         return readLines(path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2401,7 +2385,6 @@ public class FileUtils {
      * @param charset 字符集
      * @return 文件中的每行内容的集合List
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static List<String> readLines(String path, Charset charset) throws InstrumentException {
         return readLines(path, charset, new ArrayList<>());
@@ -2413,7 +2396,6 @@ public class FileUtils {
      * @param file 文件
      * @return 文件中的每行内容的集合List
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static List<String> readUtf8Lines(File file) throws InstrumentException {
         return readLines(file, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2528,7 +2510,6 @@ public class FileUtils {
      * @param path          文件的绝对路径
      * @return 从文件中load出的数据
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T> T loadUtf8(String path, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
         return load(path, org.aoju.bus.core.lang.Charset.UTF_8, readerHandler);
@@ -2543,7 +2524,6 @@ public class FileUtils {
      * @param charset       字符集
      * @return 从文件中load出的数据
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T> T load(String path, String charset, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
         return FileReader.create(file(path), CharsetUtils.charset(charset)).read(readerHandler);
@@ -2558,7 +2538,6 @@ public class FileUtils {
      * @param charset       字符集
      * @return 从文件中load出的数据
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T> T load(String path, Charset charset, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
         return FileReader.create(file(path), charset).read(readerHandler);
@@ -2572,7 +2551,6 @@ public class FileUtils {
      * @param file          文件
      * @return 从文件中load出的数据
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T> T loadUtf8(File file, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
         return load(file, org.aoju.bus.core.lang.Charset.UTF_8, readerHandler);
@@ -2587,7 +2565,6 @@ public class FileUtils {
      * @param charset       字符集
      * @return 从文件中load出的数据
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static <T> T load(File file, Charset charset, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
         return FileReader.create(file, charset).read(readerHandler);
@@ -2808,7 +2785,6 @@ public class FileUtils {
      * @param path    文件路径
      * @return 写入的文件
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static File appendUtf8String(String content, String path) throws InstrumentException {
         return appendString(content, path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2847,7 +2823,6 @@ public class FileUtils {
      * @param file    文件
      * @return 写入的文件
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static File appendUtf8String(String content, File file) throws InstrumentException {
         return appendString(content, file, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2887,7 +2862,6 @@ public class FileUtils {
      * @param path 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.8.9
      */
     public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
         return writeLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2901,7 +2875,6 @@ public class FileUtils {
      * @param file 绝对路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 5.8.9
      */
     public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
         return writeLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2971,7 +2944,6 @@ public class FileUtils {
      * @param file 文件
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, File file) throws InstrumentException {
         return appendLines(list, file, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -2985,7 +2957,6 @@ public class FileUtils {
      * @param path 文件路径
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static <T> File appendUtf8Lines(Collection<T> list, String path) throws InstrumentException {
         return appendLines(list, path, org.aoju.bus.core.lang.Charset.UTF_8);
@@ -3014,7 +2985,6 @@ public class FileUtils {
      * @param charset 字符集
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static <T> File appendLines(Collection<T> list, File file, String charset) throws InstrumentException {
         return writeLines(list, file, charset, true);
@@ -3043,7 +3013,6 @@ public class FileUtils {
      * @param charset 字符集
      * @return 目标文件
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static <T> File appendLines(Collection<T> list, File file, Charset charset) throws InstrumentException {
         return writeLines(list, file, charset, true);
@@ -3259,7 +3228,6 @@ public class FileUtils {
      * @param srcCharset  原文件的编码,必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
-     * @since 3.1.9
      */
     public static File convertCharset(File file, Charset srcCharset, Charset destCharset) {
         return CharsetUtils.convert(file, srcCharset, destCharset);
@@ -3273,7 +3241,6 @@ public class FileUtils {
      * @param charset       编码
      * @param lineSeparator 换行符枚举
      * @return 被修改的文件
-     * @since 3.1.9
      */
     public static File convertLineSeparator(File file, Charset charset, LineSeparator lineSeparator) {
         final List<String> lines = readLines(file, charset);
@@ -3285,7 +3252,6 @@ public class FileUtils {
      *
      * @param fileName 文件名（必须不包括路径,否则路径符将被替换）
      * @return 清理后的文件名
-     * @since 3.3.1
      */
     public static String cleanInvalid(String fileName) {
         return StringUtils.isBlank(fileName) ? fileName : PatternUtils.delAll(FILE_NAME_INVALID_PATTERN_WIN, fileName);
@@ -3296,7 +3262,6 @@ public class FileUtils {
      *
      * @param fileName 文件名（必须不包括路径,否则路径符将被替换）
      * @return 是否包含非法字符
-     * @since 3.3.1
      */
     public static boolean containsInvalid(String fileName) {
         return !StringUtils.isBlank(fileName) && PatternUtils.contains(FILE_NAME_INVALID_PATTERN_WIN, fileName);

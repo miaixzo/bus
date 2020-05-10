@@ -572,7 +572,6 @@ abstract class MemberUtils {
      * @param v2    除数
      * @param scale 精确度,如果为负值,取绝对值
      * @return 两个参数的商
-     * @since 3.1.9
      */
     public static BigDecimal div(Number v1, Number v2, int scale) {
         return div(v1, v2, scale, RoundingMode.HALF_UP);
@@ -651,7 +650,6 @@ abstract class MemberUtils {
      * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
-     * @since 3.1.9
      */
     public static BigDecimal div(Number v1, Number v2, int scale, RoundingMode roundingMode) {
         return div(v1.toString(), v2.toString(), scale, roundingMode);
@@ -678,7 +676,6 @@ abstract class MemberUtils {
      * @param scale        精确度,如果为负值,取绝对值
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 两个参数的商
-     * @since 3.1.9
      */
     public static BigDecimal div(BigDecimal v1, BigDecimal v2, int scale, RoundingMode roundingMode) {
         Assert.notNull(v2, "Divisor must be not null !");
@@ -751,7 +748,6 @@ abstract class MemberUtils {
      * @param numberStr 数字值的字符串表现形式
      * @param scale     保留小数位数
      * @return 新值
-     * @since 5.8.9
      */
     public static String roundStr(String numberStr, int scale) {
         return round(numberStr, scale).toString();
@@ -778,7 +774,6 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 5.8.9
      */
     public static String roundStr(double v, int scale, RoundingMode roundingMode) {
         return round(v, scale, roundingMode).toString();
@@ -832,7 +827,6 @@ abstract class MemberUtils {
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 新值
-     * @since 5.8.9
      */
     public static String roundStr(String numberStr, int scale, RoundingMode roundingMode) {
         return round(numberStr, scale, roundingMode).toString();
@@ -945,7 +939,6 @@ abstract class MemberUtils {
      *                </ul>
      * @param value   值
      * @return 格式化后的值
-     * @since 3.1.9
      */
     public static String decimalFormat(String pattern, long value) {
         return new DecimalFormat(pattern).format(value);
@@ -956,7 +949,6 @@ abstract class MemberUtils {
      *
      * @param value 金额
      * @return 格式化后的值
-     * @since 3.1.9
      */
     public static String decimalFormatMoney(double value) {
         return decimalFormat(",##0.00", value);
@@ -968,7 +960,6 @@ abstract class MemberUtils {
      * @param number 值
      * @param scale  保留小数位数
      * @return 百分比
-     * @since 3.2.3
      */
     public static String formatPercent(double number, int scale) {
         final NumberFormat format = NumberFormat.getPercentInstance();
@@ -1214,7 +1205,6 @@ abstract class MemberUtils {
      *
      * @param stop 结束（包含）
      * @return 整数列表
-     * @since 3.3.1
      */
     public static int[] range(int stop) {
         return range(0, stop);
@@ -1435,7 +1425,6 @@ abstract class MemberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Character#compare(char, char)
-     * @since 3.0.1
      */
     public static int compare(char x, char y) {
         return x - y;
@@ -1448,7 +1437,6 @@ abstract class MemberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Double#compare(double, double)
-     * @since 3.0.1
      */
     public static int compare(double x, double y) {
         return Double.compare(x, y);
@@ -1461,7 +1449,6 @@ abstract class MemberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Integer#compare(int, int)
-     * @since 3.0.1
      */
     public static int compare(int x, int y) {
         if (x == y) {
@@ -1481,7 +1468,6 @@ abstract class MemberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Long#compare(long, long)
-     * @since 3.0.1
      */
     public static int compare(long x, long y) {
         if (x == y) {
@@ -1501,7 +1487,6 @@ abstract class MemberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Short#compare(short, short)
-     * @since 3.0.1
      */
     public static int compare(short x, short y) {
         if (x == y) {
@@ -1521,7 +1506,6 @@ abstract class MemberUtils {
      * @param y 第二个值
      * @return x==y返回0,x&lt;y返回-1,x&gt;y返回1
      * @see Byte#compare(byte, byte)
-     * @since 3.0.1
      */
     public static int compare(byte x, byte y) {
         return x - y;
@@ -1533,7 +1517,6 @@ abstract class MemberUtils {
      * @param bigNum1 数字1
      * @param bigNum2 数字2
      * @return 是否大于
-     * @since 3, 0.9
      */
     public static boolean isGreater(BigDecimal bigNum1, BigDecimal bigNum2) {
         Assert.notNull(bigNum1);
@@ -1547,7 +1530,6 @@ abstract class MemberUtils {
      * @param bigNum1 数字1
      * @param bigNum2 数字2
      * @return 是否大于等于
-     * @since 3, 0.9
      */
     public static boolean isGreaterOrEqual(BigDecimal bigNum1, BigDecimal bigNum2) {
         Assert.notNull(bigNum1);
@@ -1561,7 +1543,6 @@ abstract class MemberUtils {
      * @param bigNum1 数字1
      * @param bigNum2 数字2
      * @return 是否小于
-     * @since 3, 0.9
      */
     public static boolean isLess(BigDecimal bigNum1, BigDecimal bigNum2) {
         Assert.notNull(bigNum1);
@@ -1575,7 +1556,6 @@ abstract class MemberUtils {
      * @param bigNum1 数字1
      * @param bigNum2 数字2
      * @return 是否小于等于
-     * @since 3, 0.9
      */
     public static boolean isLessOrEqual(BigDecimal bigNum1, BigDecimal bigNum2) {
         Assert.notNull(bigNum1);
@@ -1606,7 +1586,6 @@ abstract class MemberUtils {
      * @param ignoreCase 是否忽略大小写
      * @return 是否相同
      * @see CharUtils#equals(char, char, boolean)
-     * @since 5.8.9
      */
     public static boolean equals(char c1, char c2, boolean ignoreCase) {
         return CharUtils.equals(c1, c2, ignoreCase);
@@ -1753,7 +1732,6 @@ abstract class MemberUtils {
      * @param number       A Number
      * @param defaultValue 如果number参数为{@code null},返回此默认值
      * @return A String.
-     * @since 3.1.9
      */
     public static String toStr(Number number, String defaultValue) {
         return (null == number) ? defaultValue : toStr(number);
@@ -1817,7 +1795,6 @@ abstract class MemberUtils {
      * @param total 总数
      * @param part  每份的个数
      * @return 分成了几份
-     * @since 3.1.9
      */
     public static int count(int total, int part) {
         return (total % part == 0) ? (total / part) : (total / part + 1);
@@ -1828,7 +1805,6 @@ abstract class MemberUtils {
      *
      * @param decimal {@link BigDecimal},可以为{@code null}
      * @return {@link BigDecimal}参数为空时返回0的值
-     * @since 3.1.9
      */
     public static BigDecimal null2Zero(BigDecimal decimal) {
 
@@ -1840,7 +1816,6 @@ abstract class MemberUtils {
      *
      * @param value 值
      * @return 1或非0值
-     * @since 3.1.9
      */
     public static int zero2One(int value) {
         return 0 == value ? 1 : value;
@@ -1852,7 +1827,6 @@ abstract class MemberUtils {
      *
      * @param str 数字字符串
      * @return {@link BigInteger}
-     * @since 5.8.9
      */
     public static BigInteger newBigInteger(String str) {
         str = StringUtils.trimToNull(str);
@@ -2244,7 +2218,6 @@ abstract class MemberUtils {
      * @param actual the runtime parameter types to match against
      *               {@code left}/{@code right}
      * @return int consistent with {@code compare} semantics
-     * @since 3.5.0
      */
     static int compareConstructorFit(final Constructor<?> left, final Constructor<?> right, final Class<?>[] actual) {
         return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
@@ -2261,7 +2234,6 @@ abstract class MemberUtils {
      * @param actual the runtime parameter types to match against
      *               {@code left}/{@code right}
      * @return int consistent with {@code compare} semantics
-     * @since 3.5.0
      */
     static int compareMethodFit(final Method left, final Method right, final Class<?>[] actual) {
         return compareParameterTypes(Executable.of(left), Executable.of(right), actual);

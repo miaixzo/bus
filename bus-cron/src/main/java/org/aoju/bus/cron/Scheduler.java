@@ -325,7 +325,6 @@ public class Scheduler {
      *
      * @param id ID
      * @return {@link CronPattern}
-     * @since 3.1.1
      */
     public CronPattern getPattern(String id) {
         return this.taskTable.getPattern(id);
@@ -336,7 +335,6 @@ public class Scheduler {
      *
      * @param id ID
      * @return {@link Task}
-     * @since 3.1.1
      */
     public Task getTask(String id) {
         return this.taskTable.getTask(id);

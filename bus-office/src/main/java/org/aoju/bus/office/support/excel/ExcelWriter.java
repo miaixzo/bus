@@ -89,8 +89,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 构造,默认生成xls格式的Excel文件
      * 此构造不传入写出的Excel文件路径,只能调用{@link #flush(OutputStream)}方法写出到流
      * 若写出到文件,还需调用{@link #setDestFile(File)}方法自定义写出的文件,然后调用{@link #flush()}方法写出到文件
-     *
-     * @since 5.8.9
      */
     public ExcelWriter() {
         this(false);
@@ -102,7 +100,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 若写出到文件,需要调用{@link #flush(File)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
-     * @since 5.8.9
      */
     public ExcelWriter(boolean isXlsx) {
         this(BookUtils.createBook(isXlsx), null);
@@ -270,7 +267,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param columnIndex    第几列,从0计数
      * @param useMergedCells 是否适用于合并单元格
      * @return this
-     * @since 3.3.0
      */
     public ExcelWriter autoSizeColumn(int columnIndex, boolean useMergedCells) {
         this.sheet.autoSizeColumn(columnIndex, useMergedCells);
@@ -389,7 +385,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      *
      * @param headerAlias 标题别名
      * @return this
-     * @since 5.8.9
      */
     public ExcelWriter setHeaderAlias(Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;
@@ -659,7 +654,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param data       数据
      * @param comparator 比较器,用于字段名的排序
      * @return this
-     * @since 3.2.3
      */
     public ExcelWriter write(Iterable<?> data, Comparator<String> comparator) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");

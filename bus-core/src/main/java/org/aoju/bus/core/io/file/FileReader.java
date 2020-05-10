@@ -202,7 +202,6 @@ public class FileReader extends FileWrapper {
      *
      * @param lineHandler 行处理器
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public void readLines(LineHandler lineHandler) throws InstrumentException {
         BufferedReader reader = null;

@@ -832,7 +832,6 @@ public class CompareBuilder implements Builder<Integer> {
      *
      * @return 最终的比较结果为整数
      * @see #toComparison()
-     * @since 3.0
      */
     @Override
     public Integer build() {

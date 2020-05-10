@@ -69,7 +69,6 @@ public class CaseInsensitiveMap<K, V> extends CustomKeyMap<K, V> {
      *
      * @param loadFactor 加载因子
      * @param m          Map
-     * @since 3.1.9
      */
     public CaseInsensitiveMap(float loadFactor, Map<? extends K, ? extends V> m) {
         this(m.size(), loadFactor);

@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @author wubenhui
  * @version 5.8.9
- * @since 2020/3/19
+ * @since JDK 1.8+
  */
 public class NeteaseSendProvider extends NeteaseProvider {
 

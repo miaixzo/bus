@@ -53,7 +53,6 @@ public class BookUtils {
      *
      * @param excelFilePath Excel文件路径,绝对路径或相对于ClassPath路径
      * @return {@link Workbook}
-     * @since 3.1.1
      */
     public static Workbook createBook(String excelFilePath) {
         return createBook(FileUtils.file(excelFilePath), null);
@@ -210,7 +209,6 @@ public class BookUtils {
      * @param book {@link Workbook}
      * @param out  输出流
      * @throws InstrumentException IO异常
-     * @since 5.8.9
      */
     public static void writeBook(Workbook book, OutputStream out) throws InstrumentException {
         try {

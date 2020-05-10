@@ -386,7 +386,6 @@ public class CollUtils {
      * @param coll2 集合2
      * @return 其中一个集合在另一个集合中是否至少包含一个元素
      * @see #intersection
-     * @since 2.1.0
      */
     public static boolean containsAny(final Collection<?> coll1, final Collection<?> coll2) {
         if (isEmpty(coll1) || isEmpty(coll2)) {
@@ -416,7 +415,15 @@ public class CollUtils {
      * @return 集合1中是否包含集合2中所有的元素
      */
     public static boolean containsAll(Collection<?> coll1, Collection<?> coll2) {
-        if (isEmpty(coll1) || isEmpty(coll2) || coll1.size() < coll2.size()) {
+        if (isEmpty(coll1)) {
+            return isEmpty(coll2);
+        }
+
+        if (isEmpty(coll2)) {
+            return true;
+        }
+
+        if (coll1.size() < coll2.size()) {
             return false;
         }
 
@@ -569,7 +576,6 @@ public class CollUtils {
      * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
      * @return HashMap对象
      * @see MapUtils#newHashMap(int, boolean)
-     * @since 3.0.4
      */
     public static <K, V> HashMap<K, V> newHashMap(int size, boolean isOrder) {
         return MapUtils.newHashMap(size, isOrder);
@@ -829,7 +835,6 @@ public class CollUtils {
      * @param <T>      集合元素类型
      * @param iterable {@link Iterable}
      * @return ArrayList对象
-     * @since 3.1.9
      */
     public static <T> ArrayList<T> newArrayList(Iterable<T> iterable) {
         return (ArrayList<T>) list(false, iterable);
@@ -889,7 +894,6 @@ public class CollUtils {
      * @param capacity 容量
      * @param isLinked 是否为链表形式
      * @return {@link BlockingQueue}
-     * @since 3.3.0
      */
     public static <T> BlockingQueue<T> newBlockingQueue(int capacity, boolean isLinked) {
         BlockingQueue<T> queue;
@@ -1212,7 +1216,6 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.8.9
      */
     public static <T> Collection<T> removeNull(Collection<T> collection) {
         return filter(collection, Objects::nonNull);
@@ -1237,7 +1240,6 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.8.9
      */
     public static <T extends CharSequence> Collection<T> removeEmpty(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isEmpty(t));
@@ -1249,7 +1251,6 @@ public class CollUtils {
      * @param <T>        对象
      * @param collection 集合
      * @return 处理后的集合
-     * @since 5.8.9
      */
     public static <T extends CharSequence> Collection<T> removeBlank(Collection<T> collection) {
         return filter(collection, (Filter<T>) t -> false == StringUtils.isBlank(t));
@@ -1278,7 +1279,6 @@ public class CollUtils {
      * @param collection Bean集合或Map集合
      * @param fieldName  字段名或map的键
      * @return 字段值列表
-     * @since 3.1.9
      */
     public static List<Object> getFieldValues(Iterable<?> collection, final String fieldName) {
         return extract(collection, bean -> {
@@ -1297,7 +1297,6 @@ public class CollUtils {
      * @param collection 集合
      * @param filter     过滤器,满足过滤条件的第一个元素将被返回
      * @return 满足过滤条件的第一个元素
-     * @since 3.1.9
      */
     public static <T> T findOne(Iterable<T> collection, Filter<T> filter) {
         if (null != collection) {
@@ -1321,7 +1320,6 @@ public class CollUtils {
      * @param fieldName  集合元素对象的字段名或map的键
      * @param fieldValue 集合元素对象的字段值或map的值
      * @return 满足条件的第一个元素
-     * @since 3.1.9
      */
     public static <T> T findOneByField(Iterable<T> collection, final String fieldName, final Object fieldValue) {
         return findOne(collection, new Filter<T>() {
@@ -1375,7 +1373,6 @@ public class CollUtils {
      * @param filter 编辑器接口
      * @return 过滤后的Map
      * @see MapUtils#filter(Map, Filter)
-     * @since 3.1.9
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Entry<K, V>> filter) {
         return MapUtils.filter(map, filter);
@@ -1414,7 +1411,6 @@ public class CollUtils {
      * @param delimiter 分隔符
      * @param isOrder   是否有序
      * @return Map
-     * @since 3.0.4
      */
     public static Map<String, String> zip(String keys, String values, String delimiter, boolean isOrder) {
         return ArrayUtils.zip(StringUtils.split(keys, delimiter), StringUtils.split(values, delimiter), isOrder);
@@ -1570,7 +1566,6 @@ public class CollUtils {
      * @param <E>      集合元素类型
      * @param iterable {@link Iterable}
      * @return {@link Collection} 或者 {@link ArrayList}
-     * @since 3.1.9
      */
     public static <E> Collection<E> toCollection(Iterable<E> iterable) {
         return (iterable instanceof Collection) ? (Collection<E>) iterable : newArrayList(iterable.iterator());
@@ -1885,7 +1880,6 @@ public class CollUtils {
      * @param iterable {@link Iterable}
      * @return 第一个元素
      * @see IterUtils#getFirst(Iterable)
-     * @since 3.0.1
      */
     public static <T> T getFirst(Iterable<T> iterable) {
         return IterUtils.getFirst(iterable);
@@ -1898,7 +1892,6 @@ public class CollUtils {
      * @param iterator {@link Iterator}
      * @return 第一个元素
      * @see IterUtils#getFirst(Iterator)
-     * @since 3.0.1
      */
     public static <T> T getFirst(Iterator<T> iterator) {
         return IterUtils.getFirst(iterator);
@@ -1964,7 +1957,6 @@ public class CollUtils {
      * @param map  {@link Map}
      * @param keys 键列表
      * @return 值列表
-     * @since 3.1.9
      */
     public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterable<K> keys) {
         return valuesOfKeys(map, keys.iterator());
@@ -1979,7 +1971,6 @@ public class CollUtils {
      * @param map  {@link Map}
      * @param keys 键列表
      * @return 值列表
-     * @since 3.1.9
      */
     public static <K, V> ArrayList<V> valuesOfKeys(Map<K, V> map, Iterator<K> keys) {
         final ArrayList<V> values = new ArrayList<>();
@@ -2089,7 +2080,6 @@ public class CollUtils {
      * @param map        Map
      * @param comparator Entry比较器
      * @return {@link TreeMap}
-     * @since 3.1.9
      */
     public static <K, V> TreeMap<K, V> sort(Map<K, V> map, Comparator<? super K> comparator) {
         final TreeMap<K, V> result = new TreeMap<>(comparator);
@@ -2713,7 +2703,6 @@ public class CollUtils {
      * Hash计算接口
      *
      * @param <T> 被计算hash的对象类型
-     * @since 5.8.9
      */
     public interface Hash<T> {
         /**

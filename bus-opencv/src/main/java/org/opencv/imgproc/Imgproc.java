@@ -4772,7 +4772,7 @@ public class Imgproc {
      * @param code Color space conversion code (see the description below).
      *             channels is derived automatically from src and code.
      *             <p>
-     *             nsformations:
+     *             :
      *
      *             <ul>
      *               <li>

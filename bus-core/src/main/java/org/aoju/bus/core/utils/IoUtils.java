@@ -379,7 +379,6 @@ public class IoUtils {
      *
      * @param reader 普通Reader,如果为null返回null
      * @return {@link BufferedReader} or null
-     * @since 3.1.9
      */
     public static BufferedReader getReader(Reader reader) {
         if (null == reader) {
@@ -396,7 +395,6 @@ public class IoUtils {
      * @param reader       普通Reader
      * @param pushBackSize 推后的byte数
      * @return {@link PushbackReader}
-     * @since 3.1.9
      */
     public static PushbackReader getPushBackReader(Reader reader, int pushBackSize) {
         return (reader instanceof PushbackReader) ? (PushbackReader) reader : new PushbackReader(reader, pushBackSize);
@@ -697,7 +695,6 @@ public class IoUtils {
      * @param in          {@link InputStream}
      * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static void readUtf8Lines(InputStream in, LineHandler lineHandler) throws InstrumentException {
         readLines(in, org.aoju.bus.core.lang.Charset.UTF_8, lineHandler);
@@ -710,7 +707,6 @@ public class IoUtils {
      * @param charset     {@link Charset}编码
      * @param lineHandler 行处理接口,实现handle方法用于编辑一行的数据后入到指定地方
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static void readLines(InputStream in, Charset charset, LineHandler lineHandler) throws InstrumentException {
         readLines(getReader(in, charset), lineHandler);
@@ -846,7 +842,6 @@ public class IoUtils {
      * @param in           {@link InputStream}
      * @param pushBackSize 推后的byte数
      * @return {@link PushbackInputStream}
-     * @since 3.1.9
      */
     public static PushbackInputStream toPushbackStream(InputStream in, int pushBackSize) {
         return (in instanceof PushbackInputStream) ? (PushbackInputStream) in : new PushbackInputStream(in, pushBackSize);
@@ -879,7 +874,6 @@ public class IoUtils {
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
      * @throws InstrumentException 异常
-     * @since 3.1.1
      */
     public static void writeUtf8(OutputStream out, boolean isCloseOut, Object... contents) throws InstrumentException {
         write(out, org.aoju.bus.core.lang.Charset.UTF_8, isCloseOut, contents);
@@ -906,7 +900,6 @@ public class IoUtils {
      * @param isCloseOut 写入完毕是否关闭输出流
      * @param contents   写入的内容,调用toString()方法,不包括不会自动换行
      * @throws InstrumentException 异常
-     * @since 3.1.9
      */
     public static void write(OutputStream out, Charset charset, boolean isCloseOut, Object... contents) throws InstrumentException {
         OutputStreamWriter osw = null;

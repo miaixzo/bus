@@ -69,7 +69,6 @@ public class RuntimeUtils {
      * @param cmds    命令列表,每个元素代表一条命令
      * @return 执行结果
      * @throws InstrumentException 内部处理异常
-     * @since 3.1.2
      */
     public static String execForStr(Charset charset, String... cmds) throws InstrumentException {
         return getResult(exec(cmds), charset);
@@ -93,7 +92,6 @@ public class RuntimeUtils {
      * @param cmds    命令列表,每个元素代表一条命令
      * @return 执行结果, 按行区分
      * @throws InstrumentException 内部处理异常
-     * @since 3.1.2
      */
     public static List<String> execForLines(Charset charset, String... cmds) throws InstrumentException {
         return getResultLines(exec(cmds), charset);
@@ -184,7 +182,6 @@ public class RuntimeUtils {
      * @param process {@link Process} 进程
      * @param charset 编码
      * @return 命令执行结果列表
-     * @since 3.1.2
      */
     public static List<String> getResultLines(Process process, Charset charset) {
         InputStream in = null;
@@ -202,7 +199,6 @@ public class RuntimeUtils {
      *
      * @param process {@link Process} 进程
      * @return 命令执行结果列表
-     * @since 3.1.2
      */
     public static String getResult(Process process) {
         return getResult(process, CharsetUtils.systemCharset());
@@ -214,7 +210,6 @@ public class RuntimeUtils {
      * @param process {@link Process} 进程
      * @param charset 编码
      * @return 命令执行结果列表
-     * @since 3.1.2
      */
     public static String getResult(Process process, Charset charset) {
         InputStream in = null;
@@ -259,7 +254,6 @@ public class RuntimeUtils {
      * 销毁进程
      *
      * @param process 进程
-     * @since 3.1.2
      */
     public static void destroy(Process process) {
         if (null != process) {
@@ -321,7 +315,6 @@ public class RuntimeUtils {
      * @param throwable     异常
      * @param wrapThrowable 包装后的异常类
      * @return 包装后的异常
-     * @since 3.3.0
      */
     public static <T extends Throwable> T wrap(Throwable throwable, Class<T> wrapThrowable) {
         if (wrapThrowable.isInstance(throwable)) {

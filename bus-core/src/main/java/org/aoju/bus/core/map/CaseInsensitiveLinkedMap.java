@@ -69,7 +69,6 @@ public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {
      *
      * @param loadFactor 加载因子
      * @param map        Map
-     * @since 3.1.9
      */
     public CaseInsensitiveLinkedMap(float loadFactor, Map<? extends K, ? extends V> map) {
         this(map.size(), loadFactor);

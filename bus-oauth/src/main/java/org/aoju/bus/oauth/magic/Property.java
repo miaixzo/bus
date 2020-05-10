@@ -43,8 +43,6 @@ public class Property {
 
     /**
      * 用户第三方系统的唯一id 在调用方集成改组件时,可以用uuid + source唯一确定一个用户
-     *
-     * @since 1.3.3
      */
     private String uuid;
     /**

@@ -65,7 +65,6 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
      * 获取父节点
      *
      * @return 父节点
-     * @since 5.2.4
      */
     public TreeMap<T> getParent() {
         return parent;

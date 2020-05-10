@@ -92,7 +92,6 @@ public class UriResource implements Resource {
      *
      * @param charset 编码
      * @return {@link BufferedReader}
-     * @since 3.0.1
      */
     @Override
     public BufferedReader getReader(Charset charset) {

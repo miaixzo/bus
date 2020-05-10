@@ -51,7 +51,6 @@ public class ResourceUtils {
      *
      * @param resource 资源路径,使用相对ClassPath的路径
      * @return 资源内容
-     * @since 3.1.1
      */
     public static String readUtf8Str(String resource) {
         return getResourceObj(resource).readStr(org.aoju.bus.core.lang.Charset.UTF_8);
@@ -63,7 +62,6 @@ public class ResourceUtils {
      * @param resource 资源路径,使用相对ClassPath的路径
      * @param charset  编码
      * @return 资源内容
-     * @since 3.1.1
      */
     public static String readStr(String resource, Charset charset) {
         return new ClassPathResource(resource).readStr(charset);
@@ -75,7 +73,6 @@ public class ResourceUtils {
      * @param resurce ClassPath资源
      * @return {@link InputStream}
      * @throws InstrumentException 资源不存在异常
-     * @since 3.1.9
      */
     public static InputStream getStream(String resurce) throws InstrumentException {
         return new ClassPathResource(resurce).getStream();
@@ -102,7 +99,6 @@ public class ResourceUtils {
      * @param resurce ClassPath资源
      * @param charset 编码
      * @return {@link InputStream}
-     * @since 3.1.9
      */
     public static BufferedReader getReader(String resurce, Charset charset) {
         return new ClassPathResource(resurce).getReader(charset);
@@ -186,7 +182,6 @@ public class ResourceUtils {
      *
      * @param path 路径,可以是绝对路径,也可以是相对路径
      * @return {@link Resource} 资源对象
-     * @since 5.8.9
      */
     public static Resource getResourceObj(String path) {
         return FileUtils.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.nimble.codec.BytesWithImageDescriptor;
 import org.aoju.bus.image.nimble.codec.ImageDescriptor;
 import org.opencv.core.CvType;
@@ -101,7 +102,7 @@ public class NativeJ2kImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_J2K_COMPRESSION_FACTOR] = j2kParams.getCompressionRatiofactor(); // JPEG-2000 lossy ratio factor
 
                 dicomParams = new MatOfInt(params);
-                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, "");
+                buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);
                 if (buf.empty()) {
                     throw new IIOException("Native JPEG2000 encoding error: null image");
                 }

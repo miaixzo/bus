@@ -112,7 +112,6 @@ public class BeanUtils {
      * @param bean             Bean对象
      * @param ignoreFiledNames 忽略检查的字段名
      * @return 是否为空，<code>true</code> - 空 / <code>false</code> - 非空
-     * @since 5.0.7
      */
     public static boolean isNotEmpty(Object bean, String... ignoreFiledNames) {
         return false == isEmpty(bean, ignoreFiledNames);
@@ -301,7 +300,6 @@ public class BeanUtils {
      *
      * @param clazz Bean类
      * @return {@link BeanDesc}
-     * @since 3.1.9
      */
     public static BeanDesc getBeanDesc(Class<?> clazz) {
         BeanDesc beanDesc = BeanDescCache.INSTANCE.getBeanDesc(clazz);
@@ -618,7 +616,6 @@ public class BeanUtils {
      * @param isToCamelCase 是否将Map中的下划线风格key转换为驼峰风格
      * @param copyOptions   属性复制选项 {@link CopyOptions}
      * @return Bean
-     * @since 3.3.1
      */
     public static <T> T fillBeanWithMap(Map<?, ?> map, T bean, boolean isToCamelCase, CopyOptions copyOptions) {
         if (MapUtils.isEmpty(map)) {
@@ -660,7 +657,6 @@ public class BeanUtils {
      * @param isToUnderlineCase 是否转换为下划线模式
      * @param ignoreNullValue   是否忽略值为空的字段
      * @return Map
-     * @since 3.2.3
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, final boolean isToUnderlineCase, boolean ignoreNullValue) {
         if (bean == null) {

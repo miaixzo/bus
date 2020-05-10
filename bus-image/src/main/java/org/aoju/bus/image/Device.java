@@ -1241,7 +1241,7 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(512), "").toString();
+        return promptTo(new StringBuilder(512), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

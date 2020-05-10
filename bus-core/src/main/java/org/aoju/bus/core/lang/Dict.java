@@ -297,7 +297,6 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param <T>  Bean类型
      * @param bean Bean
      * @return Bean
-     * @since 3.3.1
      */
     public <T> T toBeanIgnoreCase(T bean) {
         BeanUtils.fillBeanWithMapIgnoreCase(this, bean, false);

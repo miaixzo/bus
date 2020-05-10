@@ -90,7 +90,6 @@ public class MapUtils {
      * @param size    初始大小,由于默认负载因子0.75,传入的size会实际初始大小为size / 0.75
      * @param isOrder Map的Key是否有序,有序返回 {@link LinkedHashMap},否则返回 {@link HashMap}
      * @return HashMap对象
-     * @since 3.0.4
      */
     public static <K, V> HashMap<K, V> newHashMap(int size, boolean isOrder) {
         int initialCapacity = (int) (size / DEFAULT_LOAD_FACTOR);
@@ -128,7 +127,6 @@ public class MapUtils {
      * @param <V>        Value类型
      * @param comparator Key比较器
      * @return TreeMap
-     * @since 3.2.3
      */
     public static <K, V> TreeMap<K, V> newTreeMap(Comparator<? super K> comparator) {
         return new TreeMap<>(comparator);
@@ -142,7 +140,6 @@ public class MapUtils {
      * @param map        Map
      * @param comparator Key比较器
      * @return TreeMap
-     * @since 3.2.3
      */
     public static <K, V> TreeMap<K, V> newTreeMap(Map<K, V> map, Comparator<? super K> comparator) {
         final TreeMap<K, V> treeMap = new TreeMap<>(comparator);
@@ -391,7 +388,6 @@ public class MapUtils {
      * @param <V> Value类型
      * @param map 原Map
      * @return 驼峰风格Map
-     * @since 3.3.1
      */
     public static <K, V> Map<K, V> toCamelCaseMap(Map<K, V> map) {
         return (map instanceof LinkedHashMap) ? new CamelCaseLinkedMap<>(map) : new CamelCaseMap<>(map);
@@ -429,7 +425,6 @@ public class MapUtils {
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @return 连接字符串
-     * @since 3.1.1
      */
     public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator) {
         return join(map, separator, keyValueSeparator, false);
@@ -444,7 +439,6 @@ public class MapUtils {
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @return 连接后的字符串
-     * @since 3.1.1
      */
     public static <K, V> String joinIgnoreNull(Map<K, V> map, String separator, String keyValueSeparator) {
         return join(map, separator, keyValueSeparator, true);
@@ -603,7 +597,6 @@ public class MapUtils {
      * @param map    Map
      * @param filter 编辑器接口
      * @return 过滤后的Map
-     * @since 3.1.9
      */
     public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Entry<K, V>> filter) {
         final Map<K, V> map2 = ObjectUtils.clone(map);

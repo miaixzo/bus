@@ -436,7 +436,7 @@ public class ReflectUtils {
         final Field[] fields = getFields(beanClass);
         if (ArrayUtils.isNotEmpty(fields)) {
             for (Field field : fields) {
-                if ((name.equals(field.getName()))) {
+                if ((name.equals(getFieldName(field)))) {
                     return field;
                 }
             }
@@ -494,7 +494,7 @@ public class ReflectUtils {
      * @param field 字段信息
      * @return 字段名
      */
-    public static String getFieldsName(Field field) {
+    public static String getFieldName(Field field) {
         if (null == field) {
             return null;
         }
@@ -640,7 +640,6 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.8.9
      */
     public static Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
@@ -668,7 +667,6 @@ public class ReflectUtils {
      * @param paramTypes 参数类型,指定参数类型如果是方法的子类也算
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
-     * @since 5.8.9
      */
     public static Method getMethod(Class<?> clazz, boolean ignoreCase, String methodName, Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringUtils.isBlank(methodName)) {

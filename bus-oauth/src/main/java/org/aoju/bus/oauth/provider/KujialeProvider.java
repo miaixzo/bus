@@ -61,7 +61,6 @@ public class KujialeProvider extends DefaultProvider {
      *
      * @param state state 验证授权流程的参数,可以防止csrf
      * @return 返回授权地址
-     * @since 2.0.1
      */
     @Override
     public String authorize(String state) {

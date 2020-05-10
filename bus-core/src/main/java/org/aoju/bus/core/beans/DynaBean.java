@@ -125,7 +125,6 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
      * @param <T>       属性值类型
      * @param fieldName 字段名
      * @return 字段值
-     * @since 3.1.1
      */
     public <T> T safeGet(String fieldName) {
         try {

@@ -113,7 +113,6 @@ public class IterUtils {
      *
      * @param iterable iter 被检查的{@link Iterable}对象,如果为{@code null} 返回true
      * @return 是否全部元素为null
-     * @since 3.3.0
      */
     public static boolean isAllNull(Iterable<?> iterable) {
         return isAllNull(null == iterable ? null : iterable.iterator());
@@ -124,7 +123,6 @@ public class IterUtils {
      *
      * @param iterator iter 被检查的{@link Iterator}对象,如果为{@code null} 返回true
      * @return 是否全部元素为null
-     * @since 3.3.0
      */
     public static boolean isAllNull(Iterator<?> iterator) {
         if (null == iterator) {
@@ -376,7 +374,6 @@ public class IterUtils {
      * @param keys   键列表
      * @param values 值列表
      * @return 标题内容Map
-     * @since 3.1.9
      */
     public static <K, V> Map<K, V> toMap(Iterable<K> keys, Iterable<V> values) {
         return toMap(keys, values, false);
@@ -408,7 +405,6 @@ public class IterUtils {
      * @param keys   键列表
      * @param values 值列表
      * @return 标题内容Map
-     * @since 3.1.9
      */
     public static <K, V> Map<K, V> toMap(Iterator<K> keys, Iterator<V> values) {
         return toMap(keys, values, false);

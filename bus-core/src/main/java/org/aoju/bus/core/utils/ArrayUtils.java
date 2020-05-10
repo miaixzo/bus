@@ -304,7 +304,6 @@ public class ArrayUtils {
      * @param <T>   class 类型
      * @return 如果{@code null}
      * @throws IllegalArgumentException 如果类型参数为空
-     * @since 3.5.0
      */
     public static <T> T[] nullToEmpty(final T[] array, final Class<T[]> type) {
         if (type == null) {
@@ -707,7 +706,6 @@ public class ArrayUtils {
      *
      * @param bytebuffer {@link ByteBuffer}
      * @return byte数组
-     * @since 3.0.1
      */
     public static byte[] toArray(ByteBuffer bytebuffer) {
         if (false == bytebuffer.hasArray()) {
@@ -730,7 +728,6 @@ public class ArrayUtils {
      * @param iterator      {@link Iterator}
      * @param componentType 集合元素类型
      * @return 数组
-     * @since 3.0.9
      */
     public static <T> T[] toArray(Iterator<T> iterator, Class<T> componentType) {
         return toArray(CollUtils.newArrayList(iterator), componentType);
@@ -743,7 +740,6 @@ public class ArrayUtils {
      * @param iterable      {@link Iterable}
      * @param componentType 集合元素类型
      * @return 数组
-     * @since 3.0.9
      */
     public static <T> T[] toArray(Iterable<T> iterable, Class<T> componentType) {
         return toArray(CollUtils.toCollection(iterable), componentType);
@@ -756,7 +752,6 @@ public class ArrayUtils {
      * @param collection    集合
      * @param componentType 集合元素类型
      * @return 数组
-     * @since 3.0.9
      */
     public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
         return collection.toArray(newArray(componentType, 0));
@@ -1617,7 +1612,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap(["1", "2", "3"], 0, 5) -&gt; ["1", "2", "3"]</li>
      *                <li>ArrayUtils.swap(["1", "2", "3"], -1, 1) -&gt; ["2", "1", "3"]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final Object[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1640,7 +1634,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([true, false, true], 0, 5) -&gt; [true, false, true]</li>
      *                <li>ArrayUtils.swap([true, false, true], -1, 1) -&gt; [false, true, true]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final long[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1664,7 +1657,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final int[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1688,7 +1680,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final short[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1712,7 +1703,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final char[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1736,7 +1726,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final byte[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1760,7 +1749,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final double[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1784,7 +1772,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final float[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1808,7 +1795,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
      *                <li>ArrayUtils.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final boolean[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1833,7 +1819,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([true, false, true, false], -3, 2, 2) -&gt; [true, false, true, false]</li>
      *                <li>ArrayUtils.swap([true, false, true, false], 0, 3, 3) -&gt; [false, false, true, true]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final boolean[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1869,7 +1854,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final byte[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1905,7 +1889,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final char[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1941,7 +1924,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final double[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1977,7 +1959,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final float[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -2084,7 +2065,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap(["1", "2", "3", "4"], -3, 2, 2) -&gt; ["3", "4", "1", "2"]</li>
      *                <li>ArrayUtils.swap(["1", "2", "3", "4"], 0, 3, 3) -&gt; ["4", "2", "3", "1"]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final Object[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -2119,7 +2099,6 @@ public class ArrayUtils {
      *                <li>ArrayUtils.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
      *                <li>ArrayUtils.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
      *                </ul>
-     * @since 3.5.0
      */
     public static void swap(final short[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -2152,7 +2131,6 @@ public class ArrayUtils {
      * @param array  the array to shift, may be {@code null}
      * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
      *               rotate, than the effective offset is modulo the number of elements to rotate.
-     * @since 3.5.0
      */
     public static void shift(final Object[] array, final int offset) {
         if (array == null) {
@@ -2170,7 +2148,6 @@ public class ArrayUtils {
      * @param array  the array to shift, may be {@code null}
      * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
      *               rotate, than the effective offset is modulo the number of elements to rotate.
-     * @since 3.5.0
      */
     public static void shift(final long[] array, final int offset) {
         if (array == null) {
@@ -2188,7 +2165,6 @@ public class ArrayUtils {
      * @param array  the array to shift, may be {@code null}
      * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
      *               rotate, than the effective offset is modulo the number of elements to rotate.
-     * @since 3.5.0
      */
     public static void shift(final int[] array, final int offset) {
         if (array == null) {
@@ -3983,7 +3959,6 @@ public class ArrayUtils {
      *
      * @param array 包装器对象的数组
      * @return 对应基元类型的数组，或原始数组
-     * @since 3.5.0
      */
     public static Object toPrimitive(final Object array) {
         if (array == null) {
@@ -7098,7 +7073,6 @@ public class ArrayUtils {
      * @param <T>     数组元素类型
      * @param newSize 大小
      * @return 空数组
-     * @since 3.3.0
      */
 
     public static <T> T[] newArray(int newSize) {
@@ -7139,7 +7113,6 @@ public class ArrayUtils {
      *
      * @param array 数组对象
      * @return 元素类型
-     * @since 5.8.9
      */
     public static Class<?> getComponentType(Object array) {
         return null == array ? null : array.getClass().getComponentType();
@@ -7150,7 +7123,6 @@ public class ArrayUtils {
      *
      * @param arrayClass 数组类
      * @return 元素类型
-     * @since 5.8.9
      */
     public static Class<?> getComponentType(Class<?> arrayClass) {
         return null == arrayClass ? null : arrayClass.getComponentType();
@@ -7162,7 +7134,6 @@ public class ArrayUtils {
      *
      * @param componentType 数组元素类型
      * @return 数组类型
-     * @since 5.8.9
      */
     public static Class<?> getArrayType(Class<?> componentType) {
         return Array.newInstance(componentType, 0).getClass();
@@ -7307,7 +7278,6 @@ public class ArrayUtils {
      * @param destPos 目标数组开始位置
      * @param length  拷贝数组长度
      * @return 目标数组
-     * @since 3.1.9
      */
     public static Object copy(Object src, int srcPos, Object dest, int destPos, int length) {
         System.arraycopy(src, srcPos, dest, destPos, length);
@@ -7322,7 +7292,6 @@ public class ArrayUtils {
      * @param dest   目标数组
      * @param length 拷贝数组长度
      * @return 目标数组
-     * @since 3.1.9
      */
     public static Object copy(Object src, Object dest, int length) {
         System.arraycopy(src, 0, dest, 0, length);
@@ -8475,7 +8444,6 @@ public class ArrayUtils {
      * @param <T>         元素类型
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static <T extends Comparable<? super T>> T min(T[] numberArray) {
         if (isEmpty(numberArray)) {
@@ -8495,7 +8463,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static long min(long... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8515,7 +8482,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static int min(int... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8535,7 +8501,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static short min(short... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8555,7 +8520,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static char min(char... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8575,7 +8539,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static byte min(byte... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8595,7 +8558,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static double min(double... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8615,7 +8577,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最小值
-     * @since 3.1.9
      */
     public static float min(float... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8636,7 +8597,6 @@ public class ArrayUtils {
      * @param <T>         元素类型
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static <T extends Comparable<? super T>> T max(T[] numberArray) {
         if (isEmpty(numberArray)) {
@@ -8656,7 +8616,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static long max(long... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8676,7 +8635,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static int max(int... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8696,7 +8654,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static short max(short... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8716,7 +8673,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static char max(char... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8736,7 +8692,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static byte max(byte... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8756,7 +8711,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static double max(double... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8776,7 +8730,6 @@ public class ArrayUtils {
      *
      * @param numberArray 数字数组
      * @return 最大值
-     * @since 3.1.9
      */
     public static float max(float... numberArray) {
         if (isEmpty(numberArray)) {
@@ -8785,6 +8738,27 @@ public class ArrayUtils {
         float max = numberArray[0];
         for (int i = 0; i < numberArray.length; i++) {
             if (max < numberArray[i]) {
+                max = numberArray[i];
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 取最大值
+     *
+     * @param <T>         元素类型
+     * @param numberArray 数字数组
+     * @param comparator  比较器，null表示默认比较器
+     * @return 最大值
+     */
+    public static <T extends Comparable<? super T>> T max(T[] numberArray, Comparator<T> comparator) {
+        if (isEmpty(numberArray)) {
+            throw new IllegalArgumentException("Number array must not empty !");
+        }
+        T max = numberArray[0];
+        for (int i = 1; i < numberArray.length; i++) {
+            if (ObjectUtils.compare(max, numberArray[i], comparator) < 0) {
                 max = numberArray[i];
             }
         }
@@ -8825,7 +8799,6 @@ public class ArrayUtils {
      * @param array  数组
      * @param filter 过滤器接口,用于定义过滤规则
      * @return 过滤后的数组
-     * @since 5.8.9
      */
     public static <T> T[] filter(T[] array, Filter<T> filter) {
         ArrayList<T> list = new ArrayList<>(array.length);
@@ -8907,7 +8880,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 数组中指定元素所在位置, 未找到返回{@link #INDEX_NOT_FOUND}
-     * @since 3.1.9
      */
     public static int indexOfIgnoreCase(CharSequence[] array, CharSequence value) {
         if (null != array) {
@@ -8942,7 +8914,6 @@ public class ArrayUtils {
      * @param array 数组
      * @param value 被检查的元素
      * @return 是否包含
-     * @since 3.1.9
      */
     public static boolean containsIgnoreCase(CharSequence[] array, CharSequence value) {
         return indexOfIgnoreCase(array, value) > INDEX_NOT_FOUND;
@@ -8992,7 +8963,6 @@ public class ArrayUtils {
      * @return 转换后的数组类型
      * @throws NullPointerException     提供参数为空
      * @throws IllegalArgumentException 参数arrayObj不是数组
-     * @since 3.1.9
      */
     public static Object[] cast(Class<?> type, Object arrayObj) throws NullPointerException, IllegalArgumentException {
         if (null == arrayObj) {

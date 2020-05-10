@@ -543,7 +543,6 @@ public class Image implements Serializable {
      *
      * @param degree 旋转角度
      * @return 旋转后的图片
-     * @since 5.8.9
      */
     public Image rotate(int degree) {
         final java.awt.Image image = getValidSrcImg();

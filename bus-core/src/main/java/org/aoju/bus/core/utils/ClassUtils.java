@@ -762,7 +762,6 @@ public class ClassUtils {
      *
      * @param clazz 类
      * @return 是否为枚举类型
-     * @since 5.8.9
      */
     public static boolean isEnum(Class<?> clazz) {
         return null != clazz && clazz.isEnum();
@@ -863,7 +862,6 @@ public class ClassUtils {
      *
      * @param classes 值类型
      * @return 默认值列表
-     * @since 3.1.9
      */
     public static Object[] getDefaultValues(Class<?>... classes) {
         final Object[] values = new Object[classes.length];
@@ -922,7 +920,6 @@ public class ClassUtils {
      * @param isToUnderlineCase 是否转换为下划线模式
      * @param ignoreNullValue   是否忽略值为空的字段
      * @return Map
-     * @since 3.2.3
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, final boolean isToUnderlineCase, boolean ignoreNullValue) {
         if (bean == null) {
@@ -1452,7 +1449,6 @@ public class ClassUtils {
      * @param cls 要为其获取简单名称的类;可能是零
      * @return 简单的类名
      * @see Class#getSimpleName()
-     * @since 3.0
      */
     public static String getSimpleName(final Class<?> cls) {
         return getSimpleName(cls, Normal.EMPTY);
@@ -1465,7 +1461,6 @@ public class ClassUtils {
      * @param valueIfNull 如果为空，返回的值
      * @return 简单的类名
      * @see Class#getSimpleName()
-     * @since 3.0
      */
     public static String getSimpleName(final Class<?> cls, String valueIfNull) {
         return cls == null ? valueIfNull : cls.getSimpleName();
@@ -1489,7 +1484,6 @@ public class ClassUtils {
      * @param valueIfNull 对象或者null
      * @return 简单的类名
      * @see Class#getSimpleName()
-     * @since 3.0
      */
     public static String getSimpleName(final Object object, final String valueIfNull) {
         return object == null ? valueIfNull : object.getClass().getSimpleName();
@@ -1845,7 +1839,6 @@ public class ClassUtils {
      * @throws NoSuchMethodException     如果没有这样的可访问方法
      * @throws InvocationTargetException 包装由调用的方法引发的异常
      * @throws IllegalAccessException    如果请求的方法不能通过反射访问
-     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object,
                                       final String methodName) throws NoSuchMethodException,
@@ -1866,7 +1859,6 @@ public class ClassUtils {
      * @throws NoSuchMethodException     如果没有这样的可访问方法
      * @throws InvocationTargetException 包装由调用的方法引发的异常
      * @throws IllegalAccessException    如果请求的方法不能通过反射访问
-     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object,
                                       final boolean forceAccess,
@@ -1909,7 +1901,6 @@ public class ClassUtils {
      * @throws NoSuchMethodException     如果没有这样的可访问方法
      * @throws InvocationTargetException 包装由调用的方法引发的异常
      * @throws IllegalAccessException    如果请求的方法不能通过反射访问
-     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object,
                                       final boolean forceAccess,
@@ -1933,7 +1924,6 @@ public class ClassUtils {
      * @throws NoSuchMethodException     如果没有这样的可访问方法
      * @throws InvocationTargetException 包装由调用的方法引发的异常
      * @throws IllegalAccessException    如果请求的方法不能通过反射访问
-     * @since 3.5.0
      */
     public static Object invokeMethod(final Object object,
                                       final boolean forceAccess,
@@ -1999,7 +1989,6 @@ public class ClassUtils {
      * @throws NoSuchMethodException     如果没有这样的可访问方法
      * @throws InvocationTargetException 包装由调用的方法引发的异常
      * @throws IllegalAccessException    如果请求的方法不能通过反射访问
-     * @since 3.5.0
      */
     public static Object invokeExactMethod(final Object object, final String methodName) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
@@ -2151,7 +2140,6 @@ public class ClassUtils {
      * @param args                 传递给varags方法的参数数组
      * @param methodParameterTypes 方法参数类型的声明数组
      * @return 传递给方法的可变参数数组
-     * @since 3.5.0
      */
     static Object[] getVarArgs(final Object[] args, final Class<?>[] methodParameterTypes) {
         if (args.length == methodParameterTypes.length
@@ -2428,7 +2416,6 @@ public class ClassUtils {
      * @param method             方法信息
      * @param interfacesBehavior 接口，{@code null}
      * @return 按从子类到超类的升序设置方法
-     * @since 3.2.0
      */
     public static Set<Method> getOverrideHierarchy(final Method method,
                                                    final Interfaces interfacesBehavior) {
@@ -2474,7 +2461,6 @@ public class ClassUtils {
      * @param cls           要查询的 {@link Class}
      * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
      * @return 方法数组.
-     * @since 3.5.0
      */
     public static Method[] getMethodsWithAnnotation(final Class<?> cls,
                                                     final Class<? extends Annotation> annotationCls) {
@@ -2487,7 +2473,6 @@ public class ClassUtils {
      * @param cls           要查询的 {@link Class}
      * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
      * @return 方法列表
-     * @since 3.5.0
      */
     public static List<Method> getMethodsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         return getMethodsListWithAnnotation(cls, annotationCls, false, false);
@@ -2732,7 +2717,6 @@ public class ClassUtils {
      *
      * @param cls 要查询的 {@link Class}
      * @return 字段数组(可能为空)
-     * @since 3.2.0
      */
     public static Field[] getAllFields(final Class<?> cls) {
         final List<Field> allFieldsList = getAllFieldsList(cls);
@@ -2744,7 +2728,6 @@ public class ClassUtils {
      *
      * @param cls 要查询的 {@link Class}
      * @return 字段数组(可能为空)
-     * @since 3.2.0
      */
     public static List<Field> getAllFieldsList(final Class<?> cls) {
         Assert.isTrue(cls != null, "The class must not be null");
@@ -2764,7 +2747,6 @@ public class ClassUtils {
      * @param cls           要查询的 {@link Class}
      * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
      * @return 字段数组(可能为空)
-     * @since 3.5.0
      */
     public static Field[] getFieldsWithAnnotation(final Class<?> cls,
                                                   final Class<? extends Annotation> annotationCls) {
@@ -2778,7 +2760,6 @@ public class ClassUtils {
      * @param cls           要查询的 {@link Class}
      * @param annotationCls 必须在要匹配的方法上出现的 {@link Annotation}
      * @return 字段列表(可能为空).
-     * @since 3.5.0
      */
     public static List<Field> getFieldsListWithAnnotation(final Class<?> cls, final Class<? extends Annotation> annotationCls) {
         Assert.isTrue(annotationCls != null, "The annotation class must not be null");
@@ -3111,7 +3092,6 @@ public class ClassUtils {
      *
      * @param field 删除最后的修改器
      * @throws IllegalArgumentException 如果字段是{@code null}
-     * @since 3.2.0
      */
     public static void removeFinalModifier(final Field field) {
         removeFinalModifier(field, true);
