@@ -45,7 +45,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * the Operating System sees, which may include hyperthreaded cores.)
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @ThreadSafe

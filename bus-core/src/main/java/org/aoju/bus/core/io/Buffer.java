@@ -46,7 +46,7 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {

@@ -38,7 +38,7 @@ import java.util.List;
  * 当前校验的上下文信息
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @Data

@@ -44,7 +44,7 @@ import java.util.*;
  * Mac Usb Device
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @Immutable

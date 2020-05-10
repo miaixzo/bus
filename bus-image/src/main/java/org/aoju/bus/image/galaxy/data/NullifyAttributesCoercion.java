@@ -28,7 +28,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class NullifyAttributesCoercion implements AttributesCoercion {

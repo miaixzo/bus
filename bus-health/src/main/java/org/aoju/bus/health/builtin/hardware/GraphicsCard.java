@@ -30,7 +30,7 @@ import org.aoju.bus.core.annotation.Immutable;
  * GraphicsCard interface.
  *
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 @Immutable

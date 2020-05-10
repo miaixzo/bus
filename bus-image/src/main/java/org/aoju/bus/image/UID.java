@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.8.9
+ * @version 5.9.0
  * @since JDK 1.8+
  */
 public class UID {
@@ -1887,11 +1887,11 @@ public class UID {
     /**
      * Private Philips MR Cardio Storage (Retired)
      */
-    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.5.8.9";
+    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.5.9.0";
     /**
      * Private Philips MR Cardio Storage
      */
-    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.5.8.9.1";
+    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.5.9.0.1";
     /**
      * Private Philips CT Synthetic Image Storage
      */
