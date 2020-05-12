@@ -33,6 +33,7 @@ import org.aoju.bus.image.galaxy.data.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Kimi Liu
@@ -248,7 +249,7 @@ public class Multiframe {
             }
 
             void setScanningSequence(Attributes sf) {
-                ArrayList<String> list = new ArrayList<String>(3);
+                List<String> list = new ArrayList<>(3);
 
                 String eps = sf.getString(Tag.EchoPulseSequence);
                 if (!"GRADIENT".equals(eps))
@@ -264,7 +265,7 @@ public class Multiframe {
             }
 
             void setSequenceVariant(Attributes sf) {
-                ArrayList<String> list = new ArrayList<String>(5);
+                List<String> list = new ArrayList<>(5);
                 if (!"SINGLE".equals(sf.getString(Tag.SegmentedKSpaceTraversal)))
                     list.add("SK");
                 String mf = sf.getString(Tag.MagnetizationTransfer);
@@ -286,7 +287,7 @@ public class Multiframe {
             }
 
             void setScanOptions(Attributes sf) {
-                ArrayList<String> list = new ArrayList<String>(3);
+                List<String> list = new ArrayList<>(3);
                 String per = sf.getString(Tag.RectilinearPhaseEncodeReordering);
                 if (per != null && !"LINEAR".equals(per))
                     list.add("PER");

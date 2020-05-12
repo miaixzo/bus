@@ -42,6 +42,8 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
+ * UID信息
+ *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+

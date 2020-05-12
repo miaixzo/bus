@@ -27,6 +27,7 @@ package org.aoju.bus.image.galaxy;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Kimi Liu
@@ -35,7 +36,7 @@ import java.util.HashMap;
  */
 public abstract class ConfigurationCache<C, T> {
 
-    private final HashMap<String, CacheEntry<T>> cache = new HashMap<>();
+    private final Map<String, CacheEntry<T>> cache = new HashMap<>();
     private final C conf;
     private long staleTimeout;
 

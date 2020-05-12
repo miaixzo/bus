@@ -413,12 +413,12 @@ public class IOD extends ArrayList<IOD.DataElement> {
     private static class SAXHandler extends DefaultHandler {
 
         private final StringBuilder sb = new StringBuilder();
-        private final List<String> values = new ArrayList<String>();
-        private final List<Code> codes = new ArrayList<Code>();
-        private final LinkedList<IOD> iodStack = new LinkedList<IOD>();
-        private final LinkedList<Condition> conditionStack = new LinkedList<Condition>();
-        private final Map<String, IOD> id2iod = new HashMap<String, IOD>();
-        private final Map<String, Condition> id2cond = new HashMap<String, Condition>();
+        private final List<String> values = new ArrayList<>();
+        private final List<Code> codes = new ArrayList<>();
+        private final LinkedList<IOD> iodStack = new LinkedList<>();
+        private final LinkedList<Condition> conditionStack = new LinkedList<>();
+        private final Map<String, IOD> id2iod = new HashMap<>();
+        private final Map<String, Condition> id2cond = new HashMap<>();
         private boolean processCharacters;
         private boolean elementConditions;
         private boolean itemConditions;

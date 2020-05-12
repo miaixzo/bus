@@ -89,7 +89,7 @@ public final class Executor {
             return new ArrayList<>(0);
         }
 
-        ArrayList<String> sa = new ArrayList<>();
+        List<String> sa = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
             String line;

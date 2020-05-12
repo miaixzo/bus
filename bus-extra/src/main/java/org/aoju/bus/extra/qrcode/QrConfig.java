@@ -33,6 +33,7 @@ import java.awt.*;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 二维码设置
@@ -321,9 +322,9 @@ public class QrConfig {
      *
      * @return 配置
      */
-    public HashMap<EncodeHintType, Object> toHints() {
+    public Map<EncodeHintType, Object> toHints() {
         // 配置
-        final HashMap<EncodeHintType, Object> hints = new HashMap<>();
+        final Map<EncodeHintType, Object> hints = new HashMap<>();
         if (null != this.charset) {
             hints.put(EncodeHintType.CHARACTER_SET, charset.toString());
         }

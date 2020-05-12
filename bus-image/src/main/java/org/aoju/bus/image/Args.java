@@ -38,6 +38,8 @@ import java.security.GeneralSecurityException;
 import java.util.EnumSet;
 
 /**
+ * 请求参数信息
+ *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+

@@ -37,6 +37,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 文件拷贝器
@@ -297,7 +298,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
             dest.getParentFile().mkdirs();
         }
 
-        final ArrayList<CopyOption> optionList = new ArrayList<>(2);
+        final List<CopyOption> optionList = new ArrayList<>(2);
         if (isOverride) {
             optionList.add(StandardCopyOption.REPLACE_EXISTING);
         }

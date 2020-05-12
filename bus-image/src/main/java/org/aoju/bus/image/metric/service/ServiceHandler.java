@@ -39,6 +39,7 @@ import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Kimi Liu
@@ -47,7 +48,7 @@ import java.util.HashMap;
  */
 public class ServiceHandler implements DimseRQHandler {
 
-    private final HashMap<String, DimseRQHandler> services = new HashMap<>();
+    private final Map<String, DimseRQHandler> services = new HashMap<>();
 
     public void addService(ImageService service) {
         addDimseRQHandler(service, service.getSOPClasses());

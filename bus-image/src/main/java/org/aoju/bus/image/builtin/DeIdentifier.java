@@ -483,14 +483,12 @@ public class DeIdentifier {
             attrs.replaceUIDSelected(u);
 
         try {
-            attrs.accept(new Attributes.Visitor() {
-                @Override
-                public boolean visit(Attributes attrs, int tag, VR vr, Object value) throws Exception {
-                    if (value instanceof Sequence)
-                        for (Attributes item : (Sequence) value)
-                            deidentifyItem(item);
-                    return true;
-                }
+            attrs.accept((attrs1, tag, vr, value) -> {
+                if (value instanceof Sequence)
+                    for (Attributes item : (Sequence) value) {
+                        deidentifyItem(item);
+                    }
+                return true;
             }, false);
         } catch (Exception e) {
             throw new RuntimeException(e);

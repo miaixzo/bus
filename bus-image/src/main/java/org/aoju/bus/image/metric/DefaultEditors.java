@@ -31,6 +31,7 @@ import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Kimi Liu
@@ -41,7 +42,7 @@ public class DefaultEditors implements Editors {
 
     private final boolean generateUIDs;
     private final Attributes tagToOverride;
-    private final HashMap<String, String> uidMap;
+    private final Map<String, String> uidMap;
 
     public DefaultEditors(Attributes tagToOverride) {
         this(false, tagToOverride);

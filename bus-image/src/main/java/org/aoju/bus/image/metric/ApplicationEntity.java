@@ -536,7 +536,7 @@ public class ApplicationEntity implements Serializable {
         return scu ? tcscp : tcscu;
     }
 
-    private TransferCapability getTC(HashMap<String, TransferCapability> tcs,
+    private TransferCapability getTC(Map<String, TransferCapability> tcs,
                                      String asuid, AAssociateRQ rq) {
         TransferCapability tc = tcs.get(asuid);
         if (tc != null)

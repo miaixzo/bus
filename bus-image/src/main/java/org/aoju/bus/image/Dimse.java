@@ -28,6 +28,8 @@ import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Attributes;
 
 /**
+ * 复合DIMSE服务
+ *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+

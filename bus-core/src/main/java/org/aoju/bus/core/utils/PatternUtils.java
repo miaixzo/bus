@@ -199,7 +199,7 @@ public class PatternUtils {
             return null;
         }
 
-        ArrayList<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         final Matcher matcher = pattern.matcher(content);
         if (matcher.find()) {
             final int startGroup = withGroup0 ? 0 : 1;

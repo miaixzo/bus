@@ -81,10 +81,10 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 this.mac = Normal.UNKNOWN;
             }
             // Set IP arrays
-            ArrayList<String> ipv4list = new ArrayList<>();
-            ArrayList<Short> subnetMaskList = new ArrayList<>();
-            ArrayList<String> ipv6list = new ArrayList<>();
-            ArrayList<Short> prefixLengthList = new ArrayList<>();
+            List<String> ipv4list = new ArrayList<>();
+            List<Short> subnetMaskList = new ArrayList<>();
+            List<String> ipv6list = new ArrayList<>();
+            List<Short> prefixLengthList = new ArrayList<>();
 
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress address = interfaceAddress.getAddress();

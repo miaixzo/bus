@@ -65,7 +65,7 @@ public class Association {
     private final PDUEncoder encoder;
     private final Capacity<DimseRSPHandler> rspHandlerForMsgId = new Capacity<>();
     private final Capacity<CancelRQHandler> cancelHandlerForMsgId = new Capacity<>();
-    private final HashMap<String, HashMap<String, Presentation>> pcMap = new HashMap<>();
+    private final Map<String, Map<String, Presentation>> pcMap = new HashMap<>();
     private final LinkedList<AssociationListener> listeners = new LinkedList<>();
     private String name;
     private ApplicationEntity ae;
@@ -74,7 +74,7 @@ public class Association {
     private AAssociateRQ rq;
     private AAssociateAC ac;
     private IOException ex;
-    private HashMap<String, Object> properties;
+    private Map<String, Object> properties;
     private int maxOpsInvoked;
     private int maxPDULength;
     private int performing;
@@ -196,7 +196,7 @@ public class Association {
 
     public Object setProperty(String key, Object value) {
         if (properties == null)
-            properties = new HashMap<String, Object>();
+            properties = new HashMap<>();
         return properties.put(key, value);
     }
 
@@ -826,8 +826,8 @@ public class Association {
             }
     }
 
-    private HashMap<String, Presentation> initTSMap(String as) {
-        HashMap<String, Presentation> tsMap = pcMap.get(as);
+    private Map<String, Presentation> initTSMap(String as) {
+        Map<String, Presentation> tsMap = pcMap.get(as);
         if (tsMap == null)
             pcMap.put(as, tsMap = new HashMap<>());
         return tsMap;
@@ -835,7 +835,7 @@ public class Association {
 
     public Presentation pcFor(String cuid, String tsuid)
             throws InstrumentException {
-        HashMap<String, Presentation> tsMap = pcMap.get(cuid);
+        Map<String, Presentation> tsMap = pcMap.get(cuid);
         if (tsMap == null)
             throw new InstrumentException(cuid);
         if (tsuid == null)
@@ -847,7 +847,7 @@ public class Association {
     }
 
     public Set<String> getTransferSyntaxesFor(String cuid) {
-        HashMap<String, Presentation> tsMap = pcMap.get(cuid);
+        Map<String, Presentation> tsMap = pcMap.get(cuid);
         if (tsMap == null)
             return Collections.emptySet();
         return Collections.unmodifiableSet(tsMap.keySet());

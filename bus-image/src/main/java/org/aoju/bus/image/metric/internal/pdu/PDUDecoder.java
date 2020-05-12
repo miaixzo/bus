@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Kimi Liu
@@ -279,7 +280,7 @@ public class PDUDecoder extends PDVInputStream {
         int result = get();
         get(); // skip reserved byte
         String as = null;
-        ArrayList<String> tss = new ArrayList<String>(1);
+        List<String> tss = new ArrayList<>(1);
         int endpos = pos + itemLen - 4;
         while (pos < endpos) {
             int subItemType = get() & 0xff;
@@ -363,7 +364,7 @@ public class PDUDecoder extends PDVInputStream {
         int endPos = pos + itemLen;
         String sopCUID = getString(getUnsignedShort());
         String serviceCUID = getString(getUnsignedShort());
-        ArrayList<String> relSopCUIDs = new ArrayList<String>(1);
+        List<String> relSopCUIDs = new ArrayList<>(1);
         int relSopCUIDsLen = getUnsignedShort();
         int endRelSopCUIDs = pos + relSopCUIDsLen;
         while (pos < endRelSopCUIDs)

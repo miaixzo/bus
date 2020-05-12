@@ -37,10 +37,7 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.MessageFormat;
 import java.text.ParsePosition;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.StringTokenizer;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -68,7 +65,7 @@ public class AttributesFormat extends Format {
     private final MessageFormat format;
 
     public AttributesFormat(String pattern) {
-        ArrayList<String> tokens = tokenize(pattern);
+        List<String> tokens = tokenize(pattern);
         int n = tokens.size() / 2;
         this.pattern = pattern;
         this.tagPaths = new int[n][];
@@ -82,8 +79,8 @@ public class AttributesFormat extends Format {
         return s != null ? new AttributesFormat(s) : null;
     }
 
-    private ArrayList<String> tokenize(String s) {
-        ArrayList<String> result = new ArrayList<String>();
+    private List<String> tokenize(String s) {
+        List<String> result = new ArrayList<>();
         StringTokenizer stk = new StringTokenizer(s, "{}", true);
         String tk;
         char delim;
@@ -119,7 +116,7 @@ public class AttributesFormat extends Format {
         return result;
     }
 
-    private MessageFormat buildMessageFormat(ArrayList<String> tokens) {
+    private MessageFormat buildMessageFormat(List<String> tokens) {
         StringBuilder formatBuilder = new StringBuilder(pattern.length());
         int j = 0;
         for (int i = 0; i < tagPaths.length; i++) {

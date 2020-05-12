@@ -218,7 +218,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
             vendorId = idPair.getLeft();
             productId = idPair.getRight();
         }
-        List<String> pnpDeviceIds = deviceTreeMap.getOrDefault(hubDeviceId, new ArrayList<String>());
+        List<String> pnpDeviceIds = deviceTreeMap.getOrDefault(hubDeviceId, new ArrayList<>());
         List<WindowsUsbDevice> usbDevices = new ArrayList<>();
         for (String pnpDeviceId : pnpDeviceIds) {
             WindowsUsbDevice deviceAndChildren = getDeviceAndChildren(pnpDeviceId, vendorId, productId, deviceTreeMap,

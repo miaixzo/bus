@@ -354,7 +354,7 @@ public class HashID {
     }
 
     private long[] _decode(String hash, String alphabet) {
-        final ArrayList<Long> ret = new ArrayList<>();
+        final List<Long> ret = new ArrayList<>();
         String shuffle = alphabet;
         int i = 0;
         final String regexp = Symbol.BRACKET_LEFT + this.guards + Symbol.BRACKET_RIGHT;

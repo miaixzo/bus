@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 基于Zxing的二维码工具类
@@ -310,7 +311,7 @@ public class QrCodeUtils {
         final Binarizer binarizer = new HybridBinarizer(source);
         final BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
 
-        final HashMap<DecodeHintType, Object> hints = new HashMap<>();
+        final Map<DecodeHintType, Object> hints = new HashMap<>();
         hints.put(DecodeHintType.CHARACTER_SET, Charset.UTF_8);
         // 优化精度
         hints.put(DecodeHintType.TRY_HARDER, isTryHarder);

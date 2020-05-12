@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Kimi Liu
@@ -103,7 +104,7 @@ public class StreamBuffer extends InputStream {
 
     private static class OutputStreamBuffer extends OutputStream {
 
-        private ArrayList<byte[]> bytes = new ArrayList<>();
+        private List<byte[]> bytes = new ArrayList<>();
         private int width = 1024;
         private int index = 0;
         private int cursor = 0;

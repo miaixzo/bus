@@ -451,7 +451,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      */
     private List<String> aliasHeader(List<Object> headerList) {
         final int size = headerList.size();
-        final ArrayList<String> result = new ArrayList<>(size);
+        final List<String> result = new ArrayList<>(size);
         if (CollUtils.isEmpty(headerList)) {
             return result;
         }

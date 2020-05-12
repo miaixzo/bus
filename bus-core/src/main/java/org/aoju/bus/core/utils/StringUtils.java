@@ -2068,7 +2068,7 @@ public class StringUtils extends TextUtils {
             return CollUtils.addAll(new ArrayList<>(1), str, true, true);
         }
 
-        final ArrayList<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         int len = str.length();
         int start = 0;//切分后每个部分的起始
         for (int i = 0; i < len; i++) {
@@ -2212,7 +2212,7 @@ public class StringUtils extends TextUtils {
         }
 
         final Matcher matcher = separator.matcher(str);
-        final ArrayList<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         int len = str.length();
         int start = 0;
         while (matcher.find()) {
@@ -2246,7 +2246,7 @@ public class StringUtils extends TextUtils {
             return CollUtils.addAll(new ArrayList<>(1), str, isTrim, ignoreEmpty);
         }
 
-        final ArrayList<String> list = new ArrayList<>(limit > 0 ? limit : 16);
+        final List<String> list = new ArrayList<>(limit > 0 ? limit : 16);
         int len = str.length();
         int start = 0;//切分后每个部分的起始
         for (int i = 0; i < len; i++) {
@@ -2289,7 +2289,7 @@ public class StringUtils extends TextUtils {
             return split(str, separator.charAt(0), limit, isTrim, ignoreEmpty, ignoreCase);
         }
 
-        final ArrayList<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         int len = str.length();
         int separatorLen = separator.length();
         int start = 0;

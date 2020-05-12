@@ -99,7 +99,7 @@ public class ImageInputStream extends FilterInputStream
     private String blkFilePrefix = "blk";
     private String blkFileSuffix;
     private File blkDirectory;
-    private ArrayList<File> blkFiles;
+    private List<File> blkFiles;
     private String blkURI;
     private FileOutputStream blkOut;
     private long blkOutPos;

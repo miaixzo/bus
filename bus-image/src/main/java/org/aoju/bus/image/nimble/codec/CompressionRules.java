@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -37,7 +38,7 @@ import java.util.Iterator;
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
-    private final ArrayList<CompressionRule> list = new ArrayList<>();
+    private final List<CompressionRule> list = new ArrayList<>();
 
     public void add(CompressionRule rule) {
         if (findByCommonName(rule.getCommonName()) != null)

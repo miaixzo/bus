@@ -40,6 +40,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * 日期格式化等工具
+ *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+
@@ -60,7 +62,7 @@ public class Format extends java.text.Format {
     private final MessageFormat format;
 
     public Format(String pattern) {
-        ArrayList<String> tokens = tokenize(pattern);
+        List<String> tokens = tokenize(pattern);
         int n = tokens.size() / 2;
         this.pattern = pattern;
         this.tagPaths = new int[n][];
@@ -388,8 +390,8 @@ public class Format extends java.text.Format {
         return cal.getTime();
     }
 
-    private ArrayList<String> tokenize(String s) {
-        ArrayList<String> result = new ArrayList<String>();
+    private List<String> tokenize(String s) {
+        List<String> result = new ArrayList<>();
         StringTokenizer stk = new StringTokenizer(s, "{}", true);
         String tk;
         char delim;
@@ -425,7 +427,7 @@ public class Format extends java.text.Format {
         return result;
     }
 
-    private MessageFormat buildMessageFormat(ArrayList<String> tokens) {
+    private MessageFormat buildMessageFormat(List<String> tokens) {
         StringBuilder formatBuilder = new StringBuilder(pattern.length());
         int j = 0;
         for (int i = 0; i < tagPaths.length; i++) {
