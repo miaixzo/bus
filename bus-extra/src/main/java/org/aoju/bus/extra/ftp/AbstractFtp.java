@@ -197,4 +197,12 @@ public abstract class AbstractFtp implements Closeable {
      */
     public abstract void download(String path, File outFile);
 
+    /**
+     * 获取远程文件(文件目录和服务器同步), 服务器上有新文件会覆盖本地文件
+     *
+     * @param sourcePath 服务器目录
+     * @param destPath   本地目录
+     */
+    public abstract void download(String sourcePath, String destPath) throws Exception;
+
 }

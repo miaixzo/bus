@@ -1340,7 +1340,7 @@ public class FileUtils {
      * @return 最后修改时间
      */
     public static Date lastModifiedTime(File file) {
-        if (!exist(file)) {
+        if (false == exist(file)) {
             return null;
         }
 

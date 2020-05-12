@@ -44,6 +44,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -1265,9 +1266,45 @@ public class CollUtils {
      * @return 抽取后的新列表
      */
     public static List<Object> extract(Iterable<?> collection, Editor<Object> editor) {
-        final List<Object> fieldValueList = new ArrayList<>();
-        for (Object bean : collection) {
-            fieldValueList.add(editor.edit(bean));
+        return extract(collection, editor, false);
+    }
+
+    /**
+     * 通过Editor抽取集合元素中的某些值返回为新列表
+     * 例如提供的是一个Bean列表,通过Editor接口实现获取某个字段值,返回这个字段值组成的新列表
+     *
+     * @param collection 原集合
+     * @param editor     编辑器
+     * @param ignoreNull 是否忽略空值
+     * @return 抽取后的新列表
+     * @see #map(Iterable, Function, boolean)
+     */
+    public static List<Object> extract(Iterable<?> collection, Editor<Object> editor, boolean ignoreNull) {
+        return map(collection, editor::edit, ignoreNull);
+    }
+
+    /**
+     * 通过func自定义一个规则,此规则将原集合中的元素转换成新的元素,生成新的列表返回
+     * 例如提供的是一个Bean列表,通过Function接口实现获取某个字段值,返回这个字段值组成的新列表
+     *
+     * @param collection 原集合
+     * @param func       编辑函数
+     * @param ignoreNull 是否忽略空值
+     * @return 抽取后的新列表
+     */
+    public static <T, R> List<R> map(Iterable<T> collection, Function<T, R> func, boolean ignoreNull) {
+        final List<R> fieldValueList = new ArrayList<>();
+        if (null == collection) {
+            return fieldValueList;
+        }
+
+        R value;
+        for (T bean : collection) {
+            value = func.apply(bean);
+            if (null == value && ignoreNull) {
+                continue;
+            }
+            fieldValueList.add(value);
         }
         return fieldValueList;
     }
