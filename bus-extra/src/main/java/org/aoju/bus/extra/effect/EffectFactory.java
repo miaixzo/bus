@@ -24,46 +24,51 @@
  ********************************************************************************/
 package org.aoju.bus.extra.effect;
 
-import org.anarres.lzo.*;
+import org.aoju.bus.core.annotation.SPI;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
 
 /**
- * 基于lzo算法的数据解压缩.
+ * 解压缩服务工厂.
  *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+
  */
-public class LzoProvider implements EffectProvider {
+public enum EffectFactory {
 
-    @Override
-    public byte[] compress(byte[] data) throws IOException {
-        LzoCompressor compressor = LzoLibrary.getInstance().newCompressor(LzoAlgorithm.LZO1X, null);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        LzoOutputStream cs = new LzoOutputStream(os, compressor);
-        cs.write(data);
-        cs.close();
+    CF;
 
-        return os.toByteArray();
+    Map<String, EffectProvider> compressMap = new HashMap<>();
+
+    EffectFactory() {
+        ServiceLoader<EffectProvider> compresses = ServiceLoader.load(EffectProvider.class);
+        for (EffectProvider effectProvider : compresses) {
+            SPI spi = effectProvider.getClass().getAnnotation(SPI.class);
+            if (spi != null) {
+                String name = spi.value();
+                if (compressMap.containsKey(name)) {
+                    throw new RuntimeException("The @SPI value(" + name
+                            + ") repeat, for class(" + effectProvider.getClass()
+                            + ") and class(" + compressMap.get(name).getClass()
+                            + ").");
+                }
+
+                compressMap.put(name, effectProvider);
+            }
+        }
     }
 
-    @Override
-    public byte[] uncompress(byte[] data) throws IOException {
-        LzoDecompressor decompressor = LzoLibrary.getInstance().newDecompressor(LzoAlgorithm.LZO1X, null);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ByteArrayInputStream is = new ByteArrayInputStream(data);
-        LzoInputStream us = new LzoInputStream(is, decompressor);
-
-        int count;
-        byte[] buffer = new byte[2048];
-        while ((count = us.read(buffer)) != -1) {
-            baos.write(buffer, 0, count);
-        }
-
-        return baos.toByteArray();
+    /**
+     * 获取解压缩服务提供者 @SPI 值是{#name} 名称
+     *
+     * @param name 名称
+     * @return 服务提供者
+     */
+    public EffectProvider get(String name) {
+        return compressMap.get(name);
     }
 
 }

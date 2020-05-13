@@ -35,7 +35,7 @@ import org.aoju.bus.extra.captcha.provider.ShearProvider;
  * @version 5.9.0
  * @since JDK 1.8+
  */
-public class Builder {
+public class CaptchaBuilder {
 
     /**
      * 创建线干扰的验证码，默认5位验证码，150条干扰线

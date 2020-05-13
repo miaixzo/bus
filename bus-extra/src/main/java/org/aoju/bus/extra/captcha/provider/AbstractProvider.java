@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.ImageUtils;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.extra.captcha.Provider;
+import org.aoju.bus.extra.captcha.CaptchaProvider;
 import org.aoju.bus.extra.captcha.strategy.CodeStrategy;
 import org.aoju.bus.extra.captcha.strategy.RandomStrategy;
 
@@ -49,7 +49,7 @@ import java.io.OutputStream;
  * @version 5.9.0
  * @since JDK 1.8+
  */
-public abstract class AbstractProvider implements Provider {
+public abstract class AbstractProvider implements CaptchaProvider {
 
     /**
      * 图片的宽度

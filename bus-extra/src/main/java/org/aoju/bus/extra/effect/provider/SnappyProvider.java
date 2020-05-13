@@ -22,53 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.effect.provider;
 
-import org.aoju.bus.core.annotation.SPI;
+import org.aoju.bus.extra.effect.EffectProvider;
+import org.xerial.snappy.Snappy;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.io.IOException;
 
 /**
- * 解压缩服务工厂.
+ * 基于snappy的数据压缩.
  *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+
  */
-public enum Factory {
+public class SnappyProvider implements EffectProvider {
 
-    CF;
-
-    Map<String, EffectProvider> compressMap = new HashMap<>();
-
-    Factory() {
-        ServiceLoader<EffectProvider> compresses = ServiceLoader.load(EffectProvider.class);
-        for (EffectProvider effectProvider : compresses) {
-            SPI spi = effectProvider.getClass().getAnnotation(SPI.class);
-            if (spi != null) {
-                String name = spi.value();
-                if (compressMap.containsKey(name)) {
-                    throw new RuntimeException("The @SPI value(" + name
-                            + ") repeat, for class(" + effectProvider.getClass()
-                            + ") and class(" + compressMap.get(name).getClass()
-                            + ").");
-                }
-
-                compressMap.put(name, effectProvider);
-            }
-        }
+    @Override
+    public byte[] compress(byte[] data) throws IOException {
+        return Snappy.compress(data);
     }
 
-    /**
-     * 获取解压缩服务提供者 @SPI 值是{#name} 名称
-     *
-     * @param name 名称
-     * @return 服务提供者
-     */
-    public EffectProvider get(String name) {
-        return compressMap.get(name);
+    @Override
+    public byte[] uncompress(byte[] data) throws IOException {
+        return Snappy.uncompress(data);
     }
 
 }

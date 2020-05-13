@@ -22,44 +22,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.captcha;
+package org.aoju.bus.extra.effect.provider;
 
-import java.io.OutputStream;
+import org.aoju.bus.extra.effect.EffectProvider;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
- * 验证码接口，提供验证码对象接口定义
+ * 基于gzip算法的数据解压缩.
  *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+
  */
-public interface Provider {
+public class GzipProvider implements EffectProvider {
 
-    /**
-     * 创建验证码，实现类需同时生成随机验证码字符串和验证码图片
-     */
-    void create();
+    @Override
+    public byte[] compress(byte[] data) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gzip;
 
-    /**
-     * 获取验证码的文字内容
-     *
-     * @return 验证码文字内容
-     */
-    String get();
+        try {
+            gzip = new GZIPOutputStream(out);
+            gzip.write(data);
+            gzip.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    /**
-     * 验证验证码是否正确，建议忽略大小写
-     *
-     * @param inputCode 用户输入的验证码
-     * @return 是否与生成的一直
-     */
-    boolean verify(String inputCode);
+        return out.toByteArray();
+    }
 
-    /**
-     * 将验证码写出到目标流中
-     *
-     * @param out 目标流
-     */
-    void write(OutputStream out);
+    @Override
+    public byte[] uncompress(byte[] data) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+
+        try {
+            GZIPInputStream ungzip = new GZIPInputStream(in);
+            byte[] buffer = new byte[2048];
+            int n;
+            while ((n = ungzip.read(buffer)) >= 0) {
+                out.write(buffer, 0, n);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
+    }
 
 }

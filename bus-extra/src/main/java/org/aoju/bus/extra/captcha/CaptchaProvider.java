@@ -22,50 +22,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.captcha;
 
-import net.jpountz.lz4.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * 基于lz4算法的数据解压缩.
+ * 验证码接口，提供验证码对象接口定义
  *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+
  */
-public class Lz4Provider implements EffectProvider {
+public interface CaptchaProvider {
 
-    @Override
-    public byte[] compress(byte[] data) throws IOException {
-        LZ4Factory factory = LZ4Factory.fastestInstance();
-        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-        LZ4Compressor compressor = factory.fastCompressor();
-        LZ4BlockOutputStream compressedOutput = new LZ4BlockOutputStream(byteOutput, 2048, compressor);
-        compressedOutput.write(data);
-        compressedOutput.close();
+    /**
+     * 创建验证码，实现类需同时生成随机验证码字符串和验证码图片
+     */
+    void create();
 
-        return byteOutput.toByteArray();
-    }
+    /**
+     * 获取验证码的文字内容
+     *
+     * @return 验证码文字内容
+     */
+    String get();
 
-    @Override
-    public byte[] uncompress(byte[] data) throws IOException {
-        LZ4Factory factory = LZ4Factory.fastestInstance();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        LZ4FastDecompressor decompresser = factory.fastDecompressor();
-        LZ4BlockInputStream lzis = new LZ4BlockInputStream(new ByteArrayInputStream(data), decompresser);
+    /**
+     * 验证验证码是否正确，建议忽略大小写
+     *
+     * @param inputCode 用户输入的验证码
+     * @return 是否与生成的一直
+     */
+    boolean verify(String inputCode);
 
-        int count;
-        byte[] buffer = new byte[2048];
-        while ((count = lzis.read(buffer)) != -1) {
-            baos.write(buffer, 0, count);
-        }
-        lzis.close();
-
-        return baos.toByteArray();
-    }
+    /**
+     * 将验证码写出到目标流中
+     *
+     * @param out 目标流
+     */
+    void write(OutputStream out);
 
 }

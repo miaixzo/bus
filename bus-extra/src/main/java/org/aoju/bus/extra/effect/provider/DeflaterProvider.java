@@ -22,7 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.effect.provider;
+
+import org.aoju.bus.extra.effect.EffectProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.util.zip.DataFormatException;
