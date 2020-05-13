@@ -1097,7 +1097,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 给定字符串是否与提供的中任一字符串相同（忽略大小写），相同则返回{@code true}，没有相同的返回{@code false}<br>
+     * 给定字符串是否与提供的中任一字符串相同（忽略大小写），相同则返回{@code true}，没有相同的返回{@code false}
      * 如果参与比对的字符串列表为空，返回{@code false}
      *
      * @param stra 给定需要检查的字符串
@@ -1109,7 +1109,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 给定字符串是否与提供的中任一字符串相同，相同则返回{@code true}，没有相同的返回{@code false}<br>
+     * 给定字符串是否与提供的中任一字符串相同，相同则返回{@code true}，没有相同的返回{@code false}
      * 如果参与比对的字符串列表为空，返回{@code false}
      *
      * @param str1 给定需要检查的字符串
@@ -1121,7 +1121,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 给定字符串是否与提供的中任一字符串相同，相同则返回{@code true}，没有相同的返回{@code false}<br>
+     * 给定字符串是否与提供的中任一字符串相同，相同则返回{@code true}，没有相同的返回{@code false}
      * 如果参与比对的字符串列表为空，返回{@code false}
      *
      * @param str1       给定需要检查的字符串
@@ -2939,7 +2939,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为使用符号连接方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。<br>
+     * 将驼峰式命名的字符串转换为使用符号连接方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串
      *
      * @param str    转换前的驼峰式命名的字符串，也可以为符号连接形式
      * @param symbol 连接符
@@ -2990,7 +2990,7 @@ public class StringUtils extends TextUtils {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。<br>
+     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串
      * 例如：hello_world=》helloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串

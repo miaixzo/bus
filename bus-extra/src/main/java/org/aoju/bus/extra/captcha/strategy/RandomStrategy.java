@@ -22,46 +22,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.captcha;
+package org.aoju.bus.extra.captcha.strategy;
 
-import org.aoju.bus.core.lang.Symbol;
-
-import java.util.Random;
+import org.aoju.bus.core.utils.RandomUtils;
+import org.aoju.bus.core.utils.StringUtils;
 
 /**
+ * 随机字符验证码生成器
+ * 可以通过传入的基础集合和长度随机生成验证码字符
+ *
  * @author Kimi Liu
  * @version 5.9.0
  * @since JDK 1.8+
  */
-public abstract class AbstractMathCaptcha extends AbstractCaptcha {
+public class RandomStrategy extends AbstractStrategy {
 
     /**
-     * 生成随机加减验证码
+     * 构造，使用字母+数字做为基础
      *
-     * @return 验证码字符数组
+     * @param count 生成验证码长度
      */
-    @Override
-    protected char[] alphas() {
-        // 生成随机类
-        Random random = new Random();
-        char[] cs = new char[4];
-        int rand0 = random.nextInt(10);
-        if (rand0 == 0) {
-            rand0 = 1;
-        }
-        int rand1 = random.nextInt(10);
-        boolean rand2 = random.nextBoolean();
-        int rand3 = random.nextInt(10);
-        cs[0] = (char) ('0' + rand0);
-        cs[1] = (char) ('0' + rand1);
-        cs[2] = rand2 ? Symbol.C_PLUS : Symbol.C_HYPHEN;
-        cs[3] = (char) ('0' + rand3);
+    public RandomStrategy(int count) {
+        super(count);
+    }
 
-        int num1 = rand0 * 10 + rand1;
-        int num2 = rand3;
-        int result = rand2 ? num1 + num2 : num1 - num2;
-        chars = String.valueOf(result);
-        return cs;
+    /**
+     * 构造
+     *
+     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
+     * @param length  生成验证码长度
+     */
+    public RandomStrategy(String baseStr, int length) {
+        super(baseStr, length);
+    }
+
+    @Override
+    public String generate() {
+        return RandomUtils.randomString(this.baseStr, this.length);
+    }
+
+    @Override
+    public boolean verify(String code, String userInputCode) {
+        if (StringUtils.isNotBlank(userInputCode)) {
+            return StringUtils.equalsIgnoreCase(code, userInputCode);
+        }
+        return false;
     }
 
 }
