@@ -53,7 +53,7 @@ public abstract class AbstractService implements ImageService {
 
     @Override
     public void onClose(Association as) {
-        // NOOP
+
     }
 
     @Override

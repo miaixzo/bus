@@ -130,7 +130,7 @@ public class Capacity<V> implements Cloneable, java.io.Serializable {
         int i = key & mask;
         while (states[i] != FREE) {
             if (keys[i] == key)
-                return states[i] > FREE; // states[i] == FULL
+                return states[i] > FREE;
             i = (i + 1) & mask;
         }
         return false;
@@ -142,7 +142,7 @@ public class Capacity<V> implements Cloneable, java.io.Serializable {
         int mask = keys.length - 1;
         int i = key & mask;
 
-        while (states[i] > FREE) { // states[i] == FULL
+        while (states[i] > FREE) {
             if (keys[i] == key) {
                 V oldValue = (V) values[i];
                 values[i] = value;
@@ -181,7 +181,7 @@ public class Capacity<V> implements Cloneable, java.io.Serializable {
         int mask = newLength - 1;
 
         for (int j = 0; j < oldKeys.length; j++) {
-            if (oldStates[j] > 0) { // states[i] == FULL
+            if (oldStates[j] > 0) {
                 int key = oldKeys[j];
                 int i = key & mask;
                 while (newStates[i] != FREE)
@@ -205,7 +205,7 @@ public class Capacity<V> implements Cloneable, java.io.Serializable {
         int i = key & mask;
         while (states[i] != FREE) {
             if (keys[i] == key) {
-                if (states[i] < FREE) // states[i] == REMOVED
+                if (states[i] < FREE)
                     return null;
 
                 states[i] = REMOVED;
@@ -240,7 +240,7 @@ public class Capacity<V> implements Cloneable, java.io.Serializable {
 
     public boolean accept(Visitor<V> visitor) {
         for (int i = 0; i < states.length; i++)
-            if (states[i] > FREE) // states[i] == FULL
+            if (states[i] > FREE)
                 if (!visitor.visit(keys[i], (V) values[i]))
                     return false;
         return true;

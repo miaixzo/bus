@@ -49,14 +49,14 @@ public class AttributeContext {
     }
 
     /**
-     * Abort status allows to skip the file transfer or abort the DICOM association
+     * 中止状态允许跳过文件传输或中止DICOM关联
      */
     public enum Abort {
-        // Do nothing
+        // 没做什么
         NONE,
-        // Allows to skip the bulk data transfer to go to the next file
+        // 允许跳过批量数据传输以转到下一个文件
         FILE_EXCEPTION,
-        // Stop the DICOM connection. Attention, this will abort other transfers when there are several destinations for one source.
+        // 停止DICOM连接。注意，当一个源有多个目的地时，这将中止其他传输
         CONNECTION_EXCEPTION
     }
 

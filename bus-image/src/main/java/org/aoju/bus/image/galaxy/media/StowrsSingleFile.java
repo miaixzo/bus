@@ -108,7 +108,6 @@ public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile
 
             out.write(bOut.toByteArray());
 
-            // Segment and headers for a part
             out.write(MultipartParser.Separator.BOUNDARY.getType());
             out.writeBytes(MULTIPART_BOUNDARY);
             byte[] fsep = MultipartParser.Separator.FIELD.getType();

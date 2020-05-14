@@ -40,20 +40,20 @@ import java.util.EnumSet;
 @Data
 public class Option {
 
-    // cipherSuites
+    // 密码套件
     public static final String[] TLS =
             {"SSL_RSA_WITH_NULL_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA"};
     public static final String[] TLS_NULL = {"SSL_RSA_WITH_NULL_SHA"};
     public static final String[] TLS_3DES = {"SSL_RSA_WITH_3DES_EDE_CBC_SHA"};
     public static final String[] TLS_AES = {"TLS_RSA_WITH_AES_128_CBC_SHA", "SSL_RSA_WITH_3DES_EDE_CBC_SHA"};
-    // tlsProtocols
+    // TLS协议
     public static final String[] defaultProtocols = {"TLSv1", "SSLv3"};
     public static final String[] tls1 = {"TLSv1"};
     public static final String[] tls11 = {"TLSv1.1"};
     public static final String[] tls12 = {"TLSv1.2"};
     public static final String[] ssl3 = {"SSLv3"};
     public static final String[] ssl2Hello = {"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"};
-    /* Maximum number of operations this AE may perform asynchronously, unlimited is 0 and not asynchronously is 1 */
+    /* 此AE可以异步执行的最大操作数，无限制为0，而非异步为1 */
     private int maxOpsInvoked = Connection.SYNCHRONOUS_MODE;
     private int maxOpsPerformed = Connection.SYNCHRONOUS_MODE;
     private int maxPdulenRcv = Connection.DEF_MAX_PDU_LENGTH;

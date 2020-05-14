@@ -49,8 +49,8 @@ public class DefaultEditors implements Editors {
     }
 
     /**
-     * @param generateUIDs  generate new UIDS for Study, Series and Instance
-     * @param tagToOverride list of DICOM attributes to override
+     * @param generateUIDs  生成用于研究，系列和实例的新UIDS
+     * @param tagToOverride 要覆盖的DICOM属性列表
      */
     public DefaultEditors(boolean generateUIDs, Attributes tagToOverride) {
         this.generateUIDs = generateUIDs;

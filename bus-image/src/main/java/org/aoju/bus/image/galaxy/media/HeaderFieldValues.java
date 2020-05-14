@@ -92,15 +92,15 @@ public class HeaderFieldValues {
     }
 
     private String getValue(boolean quoted) {
-        // Remove leading white spaces
+        // 删除前空格
         while ((start < end) && (Character.isWhitespace(chars[start]))) {
             start++;
         }
-        // Remove trailing white spaces
+        // 删除尾空格
         while ((end > start) && (Character.isWhitespace(chars[end - 1]))) {
             end--;
         }
-        // Remove quotation marks if exists
+        // 删除引号（如果存在）
         if (quoted && ((end - start) >= 2)
                 && (chars[start] == Symbol.C_DOUBLE_QUOTES)
                 && (chars[end - 1] == Symbol.C_DOUBLE_QUOTES)) {
@@ -117,7 +117,7 @@ public class HeaderFieldValues {
     protected List<Map<String, String>> parse(String content) {
         List<Map<String, String>> hvals = new ArrayList<>();
         if (StringUtils.hasText(content)) {
-            // Split except inside double quotes
+            // 除双引号外的拆分
             String[] elements = content.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
             for (String element : elements) {
                 Map<String, String> params = new HashMap<>();
@@ -138,7 +138,7 @@ public class HeaderFieldValues {
                     }
 
                     if (StringUtils.hasText(name)) {
-                        params.put(name.toLowerCase(), value);// NOSONAR hasText(name) already check if name is null
+                        params.put(name.toLowerCase(), value);
                     }
                 }
             }

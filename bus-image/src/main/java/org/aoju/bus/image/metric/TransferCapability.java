@@ -72,10 +72,9 @@ public class TransferCapability implements Serializable {
     }
 
     /**
-     * get the name of the Transfer Capability object. Can be a meaningful name
-     * or any unique sequence of characters.
+     * 获取传输能力对象的名称,可以是有意义的名称或任何唯一的字符序列
      *
-     * @return A String containing the common name.
+     * @return 包含常用名称的字符串
      */
     public String getCommonName() {
         return commonName;
@@ -86,9 +85,9 @@ public class TransferCapability implements Serializable {
     }
 
     /**
-     * Get the role for this TransferCapability instance.
+     * 获取这个TransferCapability实例的角色
      *
-     * @return Role (SCU or SCP) for this TransferCapability instance
+     * @return 角色(SCU或SCP)
      */
     public Role getRole() {
         return role;
@@ -112,9 +111,9 @@ public class TransferCapability implements Serializable {
     }
 
     /**
-     * Get the SOP Class of this Transfer Capability object.
+     * 获取此传输能力对象的SOP类
      *
-     * @return A String containing the SOP Class UID.
+     * @return 包含SOP类UID的字符串
      */
     public String getSopClass() {
         return sopClass;
@@ -138,10 +137,9 @@ public class TransferCapability implements Serializable {
     }
 
     /**
-     * Get the transfer syntax(es) that may be requested as an SCU or that are
-     * offered as an SCP.
+     * 获取可能作为SCU请求或作为SCP提供的传输语法
      *
-     * @return list of transfer syntaxes.
+     * @return 传输语法列表
      */
     public String[] getTransferSyntaxes() {
         return transferSyntaxes;

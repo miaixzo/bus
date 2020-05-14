@@ -53,4 +53,5 @@ public class ImageWriterExtension extends DeviceExtension {
     private void reconfigureImageWriter(ImageWriterExtension from) {
         factory = from.factory;
     }
+
 }

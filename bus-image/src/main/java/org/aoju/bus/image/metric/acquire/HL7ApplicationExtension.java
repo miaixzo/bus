@@ -50,6 +50,7 @@ public class HL7ApplicationExtension implements Serializable {
     }
 
     public void reconfigure(HL7ApplicationExtension from) {
+
     }
 
 }

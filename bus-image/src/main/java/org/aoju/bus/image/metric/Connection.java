@@ -64,7 +64,7 @@ public class Connection implements Serializable {
     public static final int DEF_MAX_PDU_LENGTH = 16378;
     public static final String TLS_RSA_WITH_NULL_SHA = "SSL_RSA_WITH_NULL_SHA";
     public static final String TLS_RSA_WITH_3DES_EDE_CBC_SHA = "SSL_RSA_WITH_3DES_EDE_CBC_SHA";
-    // to fit into SunJSSE TLS Application Data Length 16408
+    // 适应SunJSSE TLS应用程序数据长度16408
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
     public static final String[] DEFAULT_TLS_PROTOCOLS = {"TLSv1.2", "TLSv1.1", "TLSv1"};
     private static final EnumMap<Protocol, TCPHandler> tcpHandlers =
@@ -76,42 +76,150 @@ public class Connection implements Serializable {
         registerTCPProtocolHandler(Protocol.DICOM, AdvancedHandler.INSTANCE);
     }
 
+    /**
+     * 设备信息
+     */
     private Device device;
+    /**
+     * 网络连接对象的任意名称
+     */
     private String commonName;
+    /**
+     * 主机名的字符串
+     */
     private String hostname;
+    /**
+     * 套接字绑定地址
+     */
     private String bindAddress;
+    /**
+     * 客户端套接字绑定地址
+     */
     private String clientBindAddress;
+    /**
+     * HTTP代理
+     */
     private String httpProxy;
+    /**
+     * TCP端口
+     */
     private int port = NOT_LISTENING;
+    /**
+     * 积压日志
+     */
     private int backlog = DEF_BACKLOG;
+    /**
+     * 链接超时时间
+     */
     private int connectTimeout;
+    /**
+     * 请求超时时间
+     */
     private int requestTimeout;
+    /**
+     * 接受超时时间
+     */
     private int acceptTimeout;
+    /**
+     * 释放超时时间
+     */
     private int releaseTimeout;
+    /**
+     * 响应超时时间
+     */
     private int responseTimeout;
+    /**
+     * 回收超时时间
+     */
     private int retrieveTimeout;
+    /**
+     * 检索超时总计
+     */
     private boolean retrieveTimeoutTotal;
+    /**
+     * 空闲超时
+     */
     private int idleTimeout;
+    /**
+     * 套接字关闭的延迟时间
+     */
     private int socketCloseDelay = DEF_SOCKETDELAY;
+    /**
+     * 发送缓冲区大小
+     */
     private int sendBufferSize;
+    /**
+     * 收到缓冲区大小
+     */
     private int receiveBufferSize;
+    /**
+     * 发送PDU长度
+     */
     private int sendPDULength = DEF_MAX_PDU_LENGTH;
+    /**
+     * 接收PDU长度
+     */
     private int receivePDULength = DEF_MAX_PDU_LENGTH;
+    /**
+     * 执行的最大操作数
+     */
     private int maxOpsPerformed = SYNCHRONOUS_MODE;
+    /**
+     * 调用的最大操作数
+     */
     private int maxOpsInvoked = SYNCHRONOUS_MODE;
     private boolean packPDV = true;
+    /**
+     * TCP无延迟
+     */
     private boolean tcpNoDelay = true;
+    /**
+     * TLS是否需要客户端验证
+     */
     private boolean tlsNeedClientAuth = true;
+    /**
+     * TLS 密码套件
+     */
     private String[] tlsCipherSuites = {};
+    /**
+     * TLS 协议信息
+     */
     private String[] tlsProtocols = DEFAULT_TLS_PROTOCOLS;
+    /**
+     * 忽略的IP地址列表
+     */
     private String[] blacklist = {};
+    /**
+     * 是否安装网络连接
+     */
     private Boolean installed;
+    /**
+     * 协议信息
+     */
     private Protocol protocol = Protocol.DICOM;
+    /**
+     * 黑名单地址
+     */
     private transient List<InetAddress> blacklistAddrs;
+    /**
+     * 主机地址
+     */
     private transient InetAddress hostAddr;
+    /**
+     * 绑定地址
+     */
     private transient InetAddress bindAddr;
+    /**
+     * 客户端绑定地址
+     */
     private transient InetAddress clientBindAddr;
+    /**
+     * 监听器
+     */
     private transient volatile SocketListener listener;
+    /**
+     * 重新绑定需要
+     */
     private transient boolean rebindNeeded;
 
     public Connection() {
@@ -165,20 +273,18 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Get the Device object that this Network Connection belongs
-     * to.
+     * 获取此网络连接所属的Device对象
      *
-     * @return Device
+     * @return 设备信息
      */
     public final Device getDevice() {
         return device;
     }
 
     /**
-     * Set the Device object that this Network Connection belongs
-     * to.
+     * 设置此网络连接所属的设备对象
      *
-     * @param device The owning Device object.
+     * @param device 所属设备对象
      */
     public final void setDevice(Device device) {
         if (device != null && this.device != null)
@@ -187,22 +293,22 @@ public class Connection implements Serializable {
     }
 
     /**
-     * This is the DNS name for this particular connection. This is used to
-     * obtain the current IP address for connections. Hostname must be
-     * sufficiently qualified to be unambiguous for any client DNS user.
+     * 这是此特定连接的DNS名称
+     * 用于获取连接的当前IP地址主机名必须具有足够的资格
+     * 对于任何客户端DNS用户而言都是明确的
      *
-     * @return A String containing the host name.
+     * @return 包含主机名的字符串
      */
     public final String getHostname() {
         return hostname;
     }
 
     /**
-     * This is the DNS name for this particular connection. This is used to
-     * obtain the current IP address for connections. Hostname must be
-     * sufficiently qualified to be unambiguous for any client DNS user.
+     * 这是此特定连接的DNS名称
+     * 用于获取连接的当前IP地址，主机名必须具有足够的资格
+     * 对于任何客户端DNS用户而言都是明确的
      *
-     * @param hostname A String containing the host name.
+     * @param hostname 包含主机名的字符串
      */
     public final void setHostname(String hostname) {
         if (hostname != null
@@ -215,20 +321,20 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Bind address of listening socket or {@code null}. If {@code null}, bind
-     * listening socket to {@link #getHostname()}. This is the default.
+     * 监听套接字的绑定地址或{@code null}如果{@code null}，则将
+     * 侦听套接字绑定到{@link #getHostname（）} 这是默认值
      *
-     * @return Bind address of the connection or {@code null}
+     * @return 连接的绑定地址或{@code null}
      */
     public final String getBindAddress() {
         return bindAddress;
     }
 
     /**
-     * Bind address of listening socket or {@code null}. If {@code null}, bind
-     * listening socket to {@link #getHostname()}.
+     * 监听套接字的绑定地址或{@code null} 如果{@code null}，
+     * 则将*侦听套接字绑定到{@link #getHostname（）}
      *
-     * @param bindAddress Bind address of listening socket or {@code null}
+     * @param bindAddress 监听套接字的绑定地址或{@code null}
      */
     public final void setBindAddress(String bindAddress) {
         if (bindAddress != null
@@ -242,24 +348,22 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Bind address of outgoing connections, {@code "0.0.0.0"} or {@code null}.
-     * If {@code "0.0.0.0"} the system pick up any local ip for outgoing
-     * connections. If {@code null}, bind outgoing connections to
-     * {@link #getHostname()}. This is the default.
+     * 传出连接的绑定地址，{@code "0.0.0.0"} 或{@code null}
+     * 如果{@code“ 0.0.0.0"}，系统将选择任何本地IP进行传出连接
+     * 如果{@code null}，则将传出连接绑定到 {@link #getHostname（）}
      *
-     * @return the string
+     * @return 字符串
      */
     public String getClientBindAddress() {
         return clientBindAddress;
     }
 
     /**
-     * Bind address of outgoing connections, {@code "0.0.0.0"}  or {@code null}.
-     * If {@code "0.0.0.0"} the system pick up any local ip for outgoing
-     * connections. If {@code null}, bind outgoing connections to
-     * {@link #getHostname()}.
+     * 传出连接的绑定地址， {@code "0.0.0.0"}或{@code null}
+     * 如果{@code "0.0.0.0"}，系统将选择任何本地IP进行传出*连接
+     * 如果{@code null}，则将传出连接绑定到* {@link #getHostname（）}
      *
-     * @param bindAddress Bind address of outgoing connection or {@code null}
+     * @param bindAddress 传出连接的绑定地址或{@code null}
      */
     public void setClientBindAddress(String bindAddress) {
         if (bindAddress != null
@@ -295,41 +399,37 @@ public class Connection implements Serializable {
     }
 
     /**
-     * An arbitrary name for the Network Connections object. Can be a meaningful
-     * name or any unique sequence of characters.
+     * 网络连接对象的任意名称可以是一个有意义的*名称或任何唯一的字符序列
      *
-     * @return A String containing the name.
+     * @return 包含名称的字符串
      */
     public final String getCommonName() {
         return commonName;
     }
 
     /**
-     * An arbitrary name for the Network Connections object. Can be a meaningful
-     * name or any unique sequence of characters.
+     * 网络连接对象的任意名称可以是一个有意义的*名称或任何唯一的字符序列
      *
-     * @param name A String containing the name.
+     * @param name 包含名称的字符串
      */
     public final void setCommonName(String name) {
         this.commonName = name;
     }
 
     /**
-     * The TCP port that the AE is listening on or -1 for a
-     * network connection that only initiates associations.
+     * AE正在侦听的TCP端口，或-1表示仅启动关联的网络连接
      *
-     * @return An int containing the port number or -1.
+     * @return 包含端口号或-1
      */
     public final int getPort() {
         return port;
     }
 
     /**
-     * The TCP port that the AE is listening on or 0 for a
-     * network connection that only initiates associations.
-     * A valid port value is between 0 and 65535.
+     * AE正在侦听的TCP端口，或仅用于启动关联的网络连接
+     * 有效的端口值在0到65535之间
      *
-     * @param port The port number or -1.
+     * @param port 端口号或-1
      */
     public final void setPort(int port) {
         if (this.port == port)
@@ -384,7 +484,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Timeout in ms for receiving A-ASSOCIATE-RQ, 5000 by default
+     * 接收A-ASSOCIATE-RQ的超时时间，默认为5000
      *
      * @return the int
      */
@@ -393,9 +493,9 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Timeout in ms for receiving A-ASSOCIATE-RQ, 5000 by default
+     * 接收A-ASSOCIATE-RQ的超时时间，默认为5000
      *
-     * @param timeout An int value containing the milliseconds.
+     * @param timeout 一个包含毫秒的int值
      */
     public final void setRequestTimeout(int timeout) {
         if (timeout < 0)
@@ -415,18 +515,18 @@ public class Connection implements Serializable {
 
 
     /**
-     * Timeout in ms for receiving A-RELEASE-RP, 5000 by default.
+     * 接收A-RELEASE-RP的超时时间，默认为5000
      *
-     * @return An int value containing the milliseconds.
+     * @return 一个包含毫秒的int值
      */
     public final int getReleaseTimeout() {
         return releaseTimeout;
     }
 
     /**
-     * Timeout in ms for receiving A-RELEASE-RP, 5000 by default.
+     * 接收A-RELEASE-RP的超时时间，默认为5000
      *
-     * @param timeout An int value containing the milliseconds.
+     * @param timeout 一个包含毫秒的int值
      */
     public final void setReleaseTimeout(int timeout) {
         if (timeout < 0)
@@ -435,18 +535,18 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Delay in ms for Socket close after sending A-ABORT, 50ms by default.
+     * 发送A-ABORT后，套接字关闭的延迟时间（以毫秒为单位），默认为50毫秒
      *
-     * @return An int value containing the milliseconds.
+     * @return 一个包含毫秒的int值
      */
     public final int getSocketCloseDelay() {
         return socketCloseDelay;
     }
 
     /**
-     * Delay in ms for Socket close after sending A-ABORT, 50ms by default.
+     * 发送A-ABORT后，套接字关闭的延迟时间（以毫秒为单位），默认为50毫秒
      *
-     * @param delay An int value containing the milliseconds.
+     * @param delay 一个包含毫秒的int值
      */
     public final void setSocketCloseDelay(int delay) {
         if (delay < 0)
@@ -487,22 +587,22 @@ public class Connection implements Serializable {
     }
 
     /**
-     * The TLS CipherSuites that are supported on this particular connection.
-     * TLS CipherSuites shall be described using an RFC-2246 string
-     * representation (e.g. 'SSL_RSA_WITH_3DES_EDE_CBC_SHA')
+     * 此特定连接上支持的TLS CipherSuite
+     * TLS CipherSuites必须使用RFC-2246字符串
+     * 表示形式进行描述（例如“ SSL_RSA_WITH_3DES_EDE_CBC_SHA"）
      *
-     * @return A String array containing the supported cipher suites
+     * @return 包含受支持的密码套件的String数组
      */
     public String[] getTlsCipherSuites() {
         return tlsCipherSuites;
     }
 
     /**
-     * The TLS CipherSuites that are supported on this particular connection.
-     * TLS CipherSuites shall be described using an RFC-2246 string
-     * representation (e.g. 'SSL_RSA_WITH_3DES_EDE_CBC_SHA')
+     * 此特定连接上支持的TLS CipherSuite
+     * TLS CipherSuites必须使用RFC-2246字符串
+     * 表示形式进行描述（例如"SSL_RSA_WITH_3DES_EDE_CBC_SHA"）
      *
-     * @param tlsCipherSuites A String array containing the supported cipher suites
+     * @param tlsCipherSuites 包含受支持的密码套件的String数组
      */
     public void setTlsCipherSuites(String... tlsCipherSuites) {
         if (Arrays.equals(this.tlsCipherSuites, tlsCipherSuites))
@@ -541,18 +641,18 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Get the SO_RCVBUF socket value in KB.
+     * 获取以KB为单位的SO_RCVBUF套接字值
      *
-     * @return An int value containing the buffer size in KB.
+     * @return 一个包含缓冲区大小（以KB为单位）
      */
     public final int getReceiveBufferSize() {
         return receiveBufferSize;
     }
 
     /**
-     * Set the SO_RCVBUF socket option to specified value in KB.
+     * 将SO_RCVBUF套接字选项设置为以KB为单位的指定值
      *
-     * @param size An int value containing the buffer size in KB.
+     * @param size 一个包含缓冲区大小（以KB为单位）
      */
     public final void setReceiveBufferSize(int size) {
         if (size < 0)
@@ -591,18 +691,18 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Get the SO_SNDBUF socket option value in KB,
+     * 获取以KB为单位的SO_SNDBUF套接字选项值
      *
-     * @return An int value containing the buffer size in KB.
+     * @return 一个包含缓冲区大小（以KB为单位)
      */
     public final int getSendBufferSize() {
         return sendBufferSize;
     }
 
     /**
-     * Set the SO_SNDBUF socket option to specified value in KB,
+     * 将SO_SNDBUF套接字选项设置为以KB为单位的指定值
      *
-     * @param size An int value containing the buffer size in KB.
+     * @param size 一个包含缓冲区大小（以KB为单位）
      */
     public final void setSendBufferSize(int size) {
         if (size < 0)
@@ -651,33 +751,28 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Determine if this network connection is using Nagle's algorithm as part
-     * of its network communication.
+     * 确定此网络连接是否正在将Nagle的算法用作其网络通信的一部分
      *
-     * @return boolean True if TCP no delay (disable Nagle's algorithm) is used.
+     * @return boolean如果使用TCP无延迟（禁用Nagle算法）则为true
      */
     public final boolean isTcpNoDelay() {
         return tcpNoDelay;
     }
 
     /**
-     * Set whether or not this network connection should use Nagle's algorithm
-     * as part of its network communication.
+     * 设置此网络连接是否应将Nagle的算法*作为其网络通信的一部分
      *
-     * @param tcpNoDelay boolean True if TCP no delay (disable Nagle's algorithm)
-     *                   should be used.
+     * @param tcpNoDelay boolean如果应使用TCP无延迟（禁用Nagle算法）则为True
      */
     public final void setTcpNoDelay(boolean tcpNoDelay) {
         this.tcpNoDelay = tcpNoDelay;
     }
 
     /**
-     * True if the Network Connection is installed on the network. If not
-     * present, information about the installed status of the Network Connection
-     * is inherited from the device.
+     * 如果网络上安装了网络连接，则为True如果不存在
+     * 则将从设备继承有关网络连接*的安装状态的信息
      *
-     * @return boolean True if the NetworkConnection is installed on the
-     * network.
+     * @return boolean如果NetworkConnection安装在网络上，则为True
      */
     public boolean isInstalled() {
         return device != null && device.isInstalled()
@@ -689,11 +784,10 @@ public class Connection implements Serializable {
     }
 
     /**
-     * True if the Network Connection is installed on the network. If not
-     * present, information about the installed status of the Network Connection
-     * is inherited from the device.
+     * 如果网络上安装了网络连接，则为True如果不存在
+     * 则将从设备继承有关网络连接*的安装状态的信息
      *
-     * @param installed True if the NetworkConnection is installed on the network.
+     * @param installed 如果网络上安装了NetworkConnection，则为True
      */
     public void setInstalled(Boolean installed) {
         if (this.installed == installed)
@@ -711,24 +805,22 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Get a list of IP addresses from which we should ignore connections.
-     * Useful in an environment that utilizes a load balancer. In the case of a
-     * TCP ping from a load balancing switch, we don't want to spin off a new
-     * thread and try to negotiate an association.
+     * 获取我们应忽略的IP地址列表
+     * 在使用负载均衡器的环境中很有用。对于来自负载平衡交换机的TCP ping
+     * 我们不想剥离新的*线程并尝试协商关联。
      *
-     * @return Returns the list of IP addresses which should be ignored.
+     * @return 返回应忽略的IP地址列表
      */
     public final String[] getBlacklist() {
         return blacklist;
     }
 
     /**
-     * Set a list of IP addresses from which we should ignore connections.
-     * Useful in an environment that utilizes a load balancer. In the case of a
-     * TCP ping from a load balancing switch, we don't want to spin off a new
-     * thread and try to negotiate an association.
+     * 设置一个IP地址列表，我们应从中忽略连接
+     * 在使用负载均衡器的环境中很有用对于来自负载平衡交换机的TCP ping
+     * 我们不想剥离新的*线程并尝试协商关联
      *
-     * @param blacklist the list of IP addresses which should be ignored.
+     * @param blacklist IP地址列表，应将其忽略
      */
     public final void setBlacklist(String[] blacklist) {
         this.blacklist = blacklist;
@@ -827,12 +919,11 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Bind this network connection to a TCP port and start a server socket
-     * accept loop.
+     * 将此网络连接绑定到TCP端口并启动服务器套接字* accept循环
      *
      * @return the boolean
-     * @throws IOException              If there is a problem with the network interaction.
-     * @throws GeneralSecurityException exception
+     * @throws IOException              网络交互是否有问题
+     * @throws GeneralSecurityException 异常
      */
     public synchronized boolean bind() throws IOException, GeneralSecurityException {
         if (!(isInstalled() && isServer())) {
@@ -878,7 +969,8 @@ public class Connection implements Serializable {
         try {
             tmp.close();
         } catch (Throwable e) {
-            // Ignore errors when closing the server socket.
+            Logger.error(e.getMessage());
+            // 关闭服务器套接字时忽略错误.
         }
     }
 

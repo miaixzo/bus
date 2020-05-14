@@ -56,17 +56,53 @@ public class ApplicationEntity implements Serializable {
     private final LinkedHashMap<String, TransferCapability> scuTCs = new LinkedHashMap<>();
     private final LinkedHashMap<String, TransferCapability> scpTCs = new LinkedHashMap<>();
     private final LinkedHashMap<Class<? extends AEExtension>, AEExtension> extensions = new LinkedHashMap<>();
+    /**
+     * 主要设备
+     */
     private Device device;
+    /**
+     * AET信息
+     */
     private String aet;
+    /**
+     * 描述信息
+     */
     private String description;
+    /**
+     * AE供应商
+     */
     private byte[][] vendorData = {};
+    /**
+     * 应用集群
+     */
     private String[] applicationClusters = {};
+    /**
+     * 调用者为AET
+     */
     private String[] prefCalledAETs = {};
+    /**
+     * 被调用者为AET
+     */
     private String[] prefCallingAETs = {};
+    /**
+     * 转换语法信息
+     */
     private String[] prefTransferSyntaxes = {};
+    /**
+     * 网络AE支持的字符集
+     */
     private String[] supportedCharacterSets = {};
+    /**
+     * 是否可以接受关联
+     */
     private boolean acceptor = true;
+    /**
+     * AE是否可以发起关联
+     */
     private boolean initiator = true;
+    /**
+     * AE是否安装在网络上
+     */
     private Boolean installed;
     private Boolean roleSelectionNegotiationLenient;
     private String hl7ApplicationName;
@@ -80,18 +116,18 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Get the device that is identified by this application entity.
+     * 获取此应用程序实体标识的设备
      *
-     * @return The owning Device .
+     * @return 主要设备
      */
     public final Device getDevice() {
         return device;
     }
 
     /**
-     * Set the device that is identified by this application entity.
+     * 设置此应用程序实体标识的设备.
      *
-     * @param device The owning Device.
+     * @param device 主要设备.
      */
     public void setDevice(Device device) {
         if (device != null) {
@@ -107,18 +143,18 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Get the AE title for this Network AE.
+     * 获取此网络AE的AET
      *
-     * @return A String containing the AE title.
+     * @return 包含AE标题的字符串.
      */
     public final String getAETitle() {
         return aet;
     }
 
     /**
-     * Set the AE title for this Network AE.
+     * 设置此网络AE的AE标题
      *
-     * @param aet A String containing the AE title.
+     * @param aet 包含AE标题的字符串
      */
     public void setAETitle(String aet) {
         if (aet.isEmpty())
@@ -132,46 +168,45 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Get the description of this network AE
+     * 获取此网络AE的描述
      *
-     * @return A String containing the description.
+     * @return 包含描述的字符串
      */
     public final String getDescription() {
         return description;
     }
 
     /**
-     * Set a description of this network AE.
+     * 设置此网络AE的描述
      *
-     * @param description A String containing the description.
+     * @param description 包含描述的字符串
      */
     public final void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * Get any vendor information or configuration specific to this network AE.
+     * 获取任何特定于此网络AE的供应商信息或配置
      *
-     * @return An Object of the vendor data.
+     * @return 供应商数据的对象
      */
     public final byte[][] getVendorData() {
         return vendorData;
     }
 
     /**
-     * Set any vendor information or configuration specific to this network AE
+     * 设置任何特定于此网络AE的供应商信息或配置
      *
-     * @param vendorData An Object of the vendor data.
+     * @param vendorData 供应商数据的对象
      */
     public final void setVendorData(byte[]... vendorData) {
         this.vendorData = vendorData;
     }
 
     /**
-     * Get the locally defined names for a subset of related applications. E.g.
-     * neuroradiology.
+     * 获取相关应用程序子集的本地定义名称。例如神经放射学
      *
-     * @return A String[] containing the names.
+     * @return 包含名称的String []
      */
     public String[] getApplicationClusters() {
         return applicationClusters;
@@ -182,10 +217,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Get the AE Title(s) that are preferred for initiating associations
-     * from this network AE.
+     * 从此网络AE获取启动关联,所需的AE标题
      *
-     * @return A String[] of the preferred called AE titles.
+     * @return 首选AE标题的String []
      */
     public String[] getPreferredCalledAETitles() {
         return prefCalledAETs;
@@ -196,10 +230,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Get the AE title(s) that are preferred for accepting associations by
-     * this network AE.
+     * 通过此网络AE获取首选的接受关联的AE标题
      *
-     * @return A String[] containing the preferred calling AE titles.
+     * @return 一个String []包含首选的调用AE标题
      */
     public String[] getPreferredCallingAETitles() {
         return prefCallingAETs;
@@ -288,77 +321,68 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Get the Character Set(s) supported by the Network AE for data sets it
-     * receives. The value shall be selected from the Defined Terms for Specific
-     * Character Set (0008,0005) in PS3.3. If no values are present, this
-     * implies that the Network AE supports only the default character
-     * repertoire (ISO IR 6).
+     * 获取网络AE支持的字符集
+     * 接收的数据集,该值应从PS3.3中的“特定
+     * 字符集定义的条款（0008,0005）”中选择。如果没有值
+     * 则表示网络AE仅支持默认字符*曲目（ISO IR 6）
      *
-     * @return A String array of the supported character sets.
+     * @return 支持的字符集的String数组
      */
     public String[] getSupportedCharacterSets() {
         return supportedCharacterSets;
     }
 
     /**
-     * Set the Character Set(s) supported by the Network AE for data sets it
-     * receives. The value shall be selected from the Defined Terms for Specific
-     * Character Set (0008,0005) in PS3.3. If no values are present, this
-     * implies that the Network AE supports only the default character
-     * repertoire (ISO IR 6).
+     * 设置网络AE支持的字符集接收的数据集
+     * 该值应从PS3.3中的特定字符集定义的条款(0008,0005)中选择，如果没有值
+     * 则表示网络AE仅支持默认字符*曲目（ISO IR 6）
      *
-     * @param characterSets A String array of the supported character sets.
+     * @param characterSets 支持的字符集的String数组
      */
     public void setSupportedCharacterSets(String... characterSets) {
         supportedCharacterSets = characterSets;
     }
 
     /**
-     * Determine whether or not this network AE can accept associations.
+     * 确定此网络AE是否可以接受关联
      *
-     * @return A boolean value. True if the Network AE can accept associations,
-     * false otherwise.
+     * @return 如果网络AE可以接受关联，则为true，否则为false
      */
     public final boolean isAssociationAcceptor() {
         return acceptor;
     }
 
     /**
-     * Set whether or not this network AE can accept associations.
+     * 设置此网络AE是否可以接受关联
      *
-     * @param acceptor A boolean value. True if the Network AE can accept
-     *                 associations, false otherwise.
+     * @param acceptor 如果网络AE可以接受*关联，则为true，否则为false
      */
     public final void setAssociationAcceptor(boolean acceptor) {
         this.acceptor = acceptor;
     }
 
     /**
-     * Determine whether or not this network AE can initiate associations.
+     * 确定此网络AE是否可以发起关联
      *
-     * @return A boolean value. True if the Network AE can accept associations,
-     * false otherwise.
+     * @return 如果网络AE可以接受关联，则为true，否则为false
      */
     public final boolean isAssociationInitiator() {
         return initiator;
     }
 
     /**
-     * Set whether or not this network AE can initiate associations.
+     * 设置此网络AE是否可以发起关联
      *
-     * @param initiator A boolean value. True if the Network AE can accept
-     *                  associations, false otherwise.
+     * @param initiator 如果网络AE可以接受关联，则为true，否则为false
      */
     public final void setAssociationInitiator(boolean initiator) {
         this.initiator = initiator;
     }
 
     /**
-     * Determine whether or not this network AE is installed on a network.
+     * 确定此网络AE是否安装在网络上
      *
-     * @return A Boolean value. True if the AE is installed on a network. If not
-     * present, information about the installed status of the AE is
-     * inherited from the device
+     * @return 布尔值。如果AE安装在网络上，则为True,如果不存在*，则从设备继承有关AE安装状态的信息
      */
     public boolean isInstalled() {
         return device != null && device.isInstalled()
@@ -370,11 +394,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Set whether or not this network AE is installed on a network.
+     * 设置此网络AE是否安装在网络上
      *
-     * @param installed A Boolean value. True if the AE is installed on a network.
-     *                  If not present, information about the installed status of
-     *                  the AE is inherited from the device
+     * @param installed 如果AE安装在网络上，则为True,如果不存在，则AE的安装状态信息将从设备继承
      */
     public void setInstalled(Boolean installed) {
         this.installed = installed;

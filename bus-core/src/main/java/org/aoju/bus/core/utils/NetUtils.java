@@ -43,8 +43,6 @@ import java.util.*;
  */
 public class NetUtils {
 
-    public static final String LOCAL_IP = "127.0.0.1";
-
     /**
      * 默认最小端口,1024
      */
@@ -223,7 +221,7 @@ public class NetUtils {
         long cBegin = NetUtils.ipv4ToLong("192.168.0.0");
         long cEnd = NetUtils.ipv4ToLong("192.168.255.255");
 
-        isInnerIp = isInner(ipNum, aBegin, aEnd) || isInner(ipNum, bBegin, bEnd) || isInner(ipNum, cBegin, cEnd) || ipAddress.equals(LOCAL_IP);
+        isInnerIp = isInner(ipNum, aBegin, aEnd) || isInner(ipNum, bBegin, bEnd) || isInner(ipNum, cBegin, cEnd) || ipAddress.equals(Http.HTTP_HOST_IPV4);
         return isInnerIp;
     }
 
@@ -274,7 +272,7 @@ public class NetUtils {
      */
     public static InetSocketAddress buildInetSocketAddress(String host, int defaultPort) {
         if (StringUtils.isBlank(host)) {
-            host = LOCAL_IP;
+            host = Http.HTTP_HOST_IPV4;
         }
 
         String destHost;

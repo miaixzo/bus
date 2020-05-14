@@ -197,10 +197,10 @@ public class Builder {
 
     public static void prepareToWriteFile(File file) throws IOException {
         if (!file.exists()) {
-            // Check the file that doesn't exist yet.
-            // Create a new file. The file is writable if the creation succeeds.
+            // 检查尚不存在的文件
+            // 创建一个新文件。如果创建成功，则该文件可写
             File outputDir = file.getParentFile();
-            // necessary to check exists otherwise mkdirs() is false when dir exists
+            // 需要检查是否存在，否则当dir存在时mkdirs（）为false
             if (outputDir != null && !outputDir.exists() && !outputDir.mkdirs()) {
                 throw new IOException("Cannot write parent directory of " + file.getPath());
             }

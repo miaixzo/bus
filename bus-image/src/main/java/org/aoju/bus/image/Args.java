@@ -65,9 +65,21 @@ public class Args {
     public static String[] IVR_LE_ONLY = {
             UID.ImplicitVRLittleEndian
     };
+    /**
+     * 绑定调用AET
+     */
     private boolean bindCallingAet;
+    /**
+     * 传输功能文件
+     */
     private URL transferCapabilityFile;
+    /**
+     * 接受的呼叫AET
+     */
     private String[] acceptedCallingAETitles;
+    /**
+     * 信息模型
+     */
     private Object informationModel;
     private EnumSet<Option.Type> types = EnumSet.noneOf(Option.Type.class);
     private String[] tsuidOrder = IVR_LE_FIRST;
@@ -77,11 +89,17 @@ public class Args {
     private Option option;
 
     private boolean extendNegociation;
+    /**
+     * 扩展Sop类URL
+     */
     private URL extendSopClassesURL;
 
     private int tag;
     private String[] values;
     private int[] parentSeqTags;
+    /**
+     * 存储模式
+     */
     private String storagePattern;
 
     private Editors editors;
@@ -190,6 +208,11 @@ public class Args {
         }
     }
 
+    /**
+     * 配置链接相关参数
+     *
+     * @param conn 链接信息
+     */
     public void configure(Connection conn) {
         if (option != null) {
             conn.setBacklog(option.getBacklog());
@@ -212,6 +235,12 @@ public class Args {
         }
     }
 
+    /**
+     * 配置TLS链接相关参数
+     *
+     * @param conn   链接信息
+     * @param remote 远程信息
+     */
     public void configureTLS(Connection conn, Connection remote) throws IOException {
         if (option != null) {
             conn.setTlsCipherSuites(option.getCipherSuites());

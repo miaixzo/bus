@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.provider;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Provider;
@@ -43,7 +44,7 @@ import java.rmi.server.RMIClientSocketFactory;
  */
 public class RmiProvider implements Provider {
 
-    private String host = "localhost";
+    private String host = Http.HTTP_HOST_LOCAL;
     private int port = Registry.REGISTRY_PORT;
     private RMIClientSocketFactory clientSocketFactory;
     private String name;

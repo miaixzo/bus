@@ -48,8 +48,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Common DICOM tags used by the application. The role of these tags is to provide a high level accessibility of common
- * tags (DICOM and non DICOM).
+ * 应用程序使用的通用DICOM标记
+ * 这些标记的作用是提供公共标记(DICOM和non DICOM)的高级可访问性
  *
  * @author Kimi Liu
  * @version 5.9.0
@@ -113,9 +113,6 @@ public class TagCamel implements Serializable {
     public static final TagCamel CurrentFolder =
             new TagCamel("CurrentFolder", "Current Folder", TagType.STRING);
     public static final TagCamel Checked = new TagCamel("Checked", TagType.BOOLEAN);
-    /**
-     * DICOM common tags
-     */
 
     public static final TagCamel SubseriesInstanceUID = new TagCamel("SubseriesInstanceUID", TagType.STRING);
     // One or more Items shall be included in this sequence
@@ -485,8 +482,6 @@ public class TagCamel implements Serializable {
     }
 
     public enum TagType {
-        // Period is 3 digits followed by one of the characters 'D' (Day),'W' (Week), 'M' (Month) or 'Y' (Year)
-
         STRING(String.class), TEXT(String.class), URI(String.class), DATE(LocalDate.class),
         DATETIME(LocalDateTime.class), TIME(LocalTime.class), BOOLEAN(Boolean.class), BYTE(Byte.class),
         INTEGER(Integer.class), FLOAT(Float.class), DOUBLE(Double.class), COLOR(Color.class),

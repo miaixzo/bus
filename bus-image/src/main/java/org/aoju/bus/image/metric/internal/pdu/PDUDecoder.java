@@ -69,7 +69,10 @@ public class PDUDecoder extends PDVInputStream {
     private static final String UNEXPECTED_PDV_PCID =
             "{}: unexpected pcid in PDV in PDU[type={}, len={}]";
 
-    private static final int MAX_PDU_LEN = 0x1000000; // 16MiB
+    /**
+     * 16MiB
+     */
+    private static final int MAX_PDU_LEN = 0x1000000;
 
     private final Association as;
     private final InputStream in;
@@ -276,15 +279,15 @@ public class PDUDecoder extends PDVInputStream {
 
     private Presentation decodePC(int itemLen) {
         int pcid = get();
-        get(); // skip reserved byte
+        get(); // 跳过保留字节
         int result = get();
-        get(); // skip reserved byte
+        get(); // 跳过保留字节
         String as = null;
         List<String> tss = new ArrayList<>(1);
         int endpos = pos + itemLen - 4;
         while (pos < endpos) {
             int subItemType = get() & 0xff;
-            get(); // skip reserved byte
+            get(); // 跳过保留字节
             int subItemLen = getUnsignedShort();
             switch (subItemType) {
                 case Builder.ABSTRACT_SYNTAX:
@@ -309,7 +312,7 @@ public class PDUDecoder extends PDVInputStream {
 
     private void decodeUserInfoSubItem(AAssociateRQAC rqac) throws AAbort {
         int itemType = get();
-        get(); // skip reserved byte
+        get(); // 跳过保留字节
         int itemLen = getUnsignedShort();
         switch (itemType) {
             case Builder.MAX_PDU_LENGTH:
@@ -399,7 +402,7 @@ public class PDUDecoder extends PDVInputStream {
     public void decodeDIMSE() throws IOException {
         checkThread();
         if (pcid != -1)
-            return; // already inside decodeDIMSE
+            return; // 已经在解码器DIMSE中
 
         nextPDV(Builder.COMMAND, -1);
 
@@ -605,4 +608,5 @@ public class PDUDecoder extends PDVInputStream {
             pos = pdvend;
         }
     }
+
 }

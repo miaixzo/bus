@@ -50,9 +50,11 @@ public class DeviceExtension implements Serializable {
     }
 
     public void verifyNotUsed(Connection conn) {
+
     }
 
     public void reconfigure(DeviceExtension from) {
+
     }
 
 }

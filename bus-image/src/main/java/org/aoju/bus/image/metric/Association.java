@@ -306,8 +306,7 @@ public class Association {
         try {
             state.write(this, aa);
         } catch (IOException e) {
-            // already handled by onIOException()
-            // do not bother user about
+            Logger.error(e.getMessage());
         }
     }
 
@@ -329,13 +328,7 @@ public class Association {
         enterState(State.Sta13);
         int delay = conn.getSocketCloseDelay();
         if (delay > 0) {
-            device.schedule(new Runnable() {
-
-                @Override
-                public void run() {
-                    closeSocket();
-                }
-            }, delay, TimeUnit.MILLISECONDS);
+            device.schedule(() -> closeSocket(), delay, TimeUnit.MILLISECONDS);
             Logger.debug("{}: closing {} in {} ms", name, sock, delay);
         } else
             closeSocket();
@@ -495,25 +488,21 @@ public class Association {
     }
 
     private void activate() {
-        device.execute(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    decoder = new PDUDecoder(Association.this, in);
-                    device.addAssociation(Association.this);
-                    while (!(state == State.Sta1 || state == State.Sta13))
-                        decoder.nextPDU();
-                } catch (AAbort aa) {
-                    abort(aa);
-                } catch (IOException e) {
-                    onIOException(e);
-                } catch (Exception e) {
-                    onIOException(new IOException("Unexpected Error", e));
-                } finally {
-                    device.removeAssociation(Association.this);
-                    onClose();
-                }
+        device.execute(() -> {
+            try {
+                decoder = new PDUDecoder(Association.this, in);
+                device.addAssociation(Association.this);
+                while (!(state == State.Sta1 || state == State.Sta13))
+                    decoder.nextPDU();
+            } catch (AAbort aa) {
+                abort(aa);
+            } catch (IOException e) {
+                onIOException(e);
+            } catch (Exception e) {
+                onIOException(new IOException("Unexpected Error", e));
+            } finally {
+                device.removeAssociation(Association.this);
+                onClose();
             }
         });
     }
@@ -522,13 +511,9 @@ public class Association {
         stopTimeout();
         synchronized (rspHandlerForMsgId) {
             Capacity.Visitor<DimseRSPHandler> visitor =
-                    new Capacity.Visitor<DimseRSPHandler>() {
-
-                        @Override
-                        public boolean visit(int key, DimseRSPHandler value) {
-                            value.onClose(Association.this);
-                            return true;
-                        }
+                    (key, value) -> {
+                        value.onClose(Association.this);
+                        return true;
                     };
             rspHandlerForMsgId.accept(visitor);
             rspHandlerForMsgId.clear();
@@ -575,7 +560,7 @@ public class Association {
         state.onAAssociateAC(this, ac);
     }
 
-    void handle(AAssociateAC ac) throws IOException {
+    void handle(AAssociateAC ac) {
         this.ac = ac;
         initPCMap();
         maxOpsInvoked = ac.getMaxOpsInvoked();
@@ -641,7 +626,7 @@ public class Association {
         state.onAReleaseRP(this);
     }
 
-    void handleAReleaseRP() throws IOException {
+    void handleAReleaseRP() {
         closeSocket();
     }
 
@@ -918,23 +903,19 @@ public class Association {
     }
 
     /**
-     * Send C-FIND-RQ returning a {@code DimseRSP} which {@link DimseRSP#next()} blocks until the next C-FIND-RSP is
-     * received.
-     * <p>
-     * Reading C-FIND-RSPs from the association blocks, if the number of received C-FIND-RSP buffered
-     * in the returned {@code DimseRSP} reached the specified {@code capacity}, until a buffered C-FIND-RSP is
-     * removed by a call of {@link DimseRSP#next()}.
+     * 发送C-FIND-RQ返回一个{@link DimseRSP＃next（）}阻塞的{@code DimseRSP}，直到接收到下一个C-FIND-RSP
+     * 如果在返回的{@code DimseRSP}中缓存的接收到的C-FIND-RSP的数量达到指定的{@code capacity}，
+     * 则从关联块中读取C-FIND-RSP，直到缓存的C-FIND-RSP为*通过调用{@link DimseRSP＃next（）}删除
      *
-     * @param cuid       SOP Class UID associated with the operation
-     * @param priority   priority of the C-FIND operation. 0 = MEDIUM, 1 = HIGH, 2 = LOW
-     * @param data       Data Set that encodes the Identifier to be matched
-     * @param tsuid      Transfer Syntax used to encode the Identifier
-     * @param autoCancel Number of pending C-FIND RSP after which a C-CANCEL-RQ will be sent
-     * @param capacity   Buffer size for received pending C-FIND-RSP
-     * @return a {@code DimseRSP} which {@link DimseRSP#next()} blocks until the next C-FIND-RSP is received
-     * @throws IOException          if there is an error sending the C-FIND-RQ
-     * @throws InterruptedException if any thread interrupted the current thread before or while the current
-     *                              thread was waiting for other invoked operations getting completed
+     * @param cuid       与操作关联的SOP类UID
+     * @param priority   C-FIND操作的优先级  0 = MEDIUM, 1 = HIGH, 2 = LOW
+     * @param data       编码要匹配的标识符的数据集
+     * @param tsuid      用于编码标识符的传输语法
+     * @param autoCancel 待发送的C-CINDL-RQ的挂起C-FIND RSP的数量
+     * @param capacity   接收的未决C-FIND-RSP的缓冲区大小
+     * @return a {@code DimseRSP} {@link DimseRSP＃next()}会阻止，直到接收到下一个C-FIND-RSP
+     * @throws IOException          如果发送C-FIND-RQ时出错
+     * @throws InterruptedException 如果任何线程在当前*线程正在等待其他调用的操作完成之前或之时中断了当前线程
      */
     public DimseRSP cfind(String cuid, int priority, Attributes data,
                           String tsuid, int autoCancel, int capacity) throws IOException,

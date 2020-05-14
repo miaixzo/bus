@@ -41,12 +41,10 @@ import java.util.LinkedHashMap;
 public class HL7DeviceExtension extends DeviceExtension {
 
     static {
-        Connection.registerTCPProtocolHandler(
-                Connection.Protocol.HL7, HL7Handler.INSTANCE);
+        Connection.registerTCPProtocolHandler(Connection.Protocol.HL7, HL7Handler.INSTANCE);
     }
 
-    private final LinkedHashMap<String, HL7Application> hl7apps =
-            new LinkedHashMap<String, HL7Application>();
+    private final LinkedHashMap<String, HL7Application> hl7apps = new LinkedHashMap<>();
 
     private transient HL7MessageListener hl7MessageListener;
     private transient HL7ConnectionMonitor hl7ConnectionMonitor;

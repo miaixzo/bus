@@ -136,7 +136,8 @@ public class TCPListener implements SocketListener {
         try {
             ss.close();
         } catch (Throwable e) {
-            // Ignore errors when closing the server socket.
+            Logger.error(e.getMessage());
+            // 关闭服务器套接字时，请忽略错误
         }
     }
 

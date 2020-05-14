@@ -36,36 +36,34 @@ import java.io.IOException;
 public interface DimseRSP {
 
     /**
-     * Send the next response, returning false when complete.
+     * 发送下一个响应，完成后返回false
      *
-     * @return boolean True if there are more responses to send.
-     * @throws IOException          If there was a problem in the network interaction.
-     * @throws InterruptedException If the thread was interrupted.
+     * @return 如果有更多要发送的响应，则为True
+     * @throws IOException          网络交互中是否有问题
+     * @throws InterruptedException 如果线程被中断
      */
     boolean next() throws IOException, InterruptedException;
 
     /**
-     * Get the response command object.
+     * 获取响应命令对象
      *
-     * @return Attributes The command object.
+     * @return 属性命令对象
      */
     Attributes getCommand();
 
     /**
-     * Get the dataset contained within this response, null if there is no
-     * dataset.
+     * 获取此响应中包含的数据集，如果没有数据集，则为null
      *
-     * @return Attributes The dataset contained in this response, if any.
+     * @return 属性此响应中包含的数据集（如果有）
      */
     Attributes getDataset();
 
     /**
-     * Cancel the operation, if this is a DIMSE action that can be cancelled
-     * (such as C-FIND).
+     * 如果这是可以取消*的DIMSE操作（例如C-FIND），请取消操作
      *
-     * @param a Association The active association object.
-     * @throws IOException If there was a problem in the network interaction.
+     * @param association 关联活动的关联对象
+     * @throws IOException 网络交互中是否有问题。
      */
-    void cancel(Association a) throws IOException;
+    void cancel(Association association) throws IOException;
 
 }

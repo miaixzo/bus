@@ -83,8 +83,9 @@ public class UDPListener implements SocketListener {
                 }
             }
         } catch (Throwable e) {
-            if (!ds.isClosed()) // ignore exception caused by close()
+            if (!ds.isClosed()) {
                 Logger.error("Exception on listing on {}:", sockAddr, e);
+            }
         }
         Logger.info("Stop UDP listener on {}", sockAddr);
     }
@@ -100,7 +101,8 @@ public class UDPListener implements SocketListener {
         try {
             ds.close();
         } catch (Throwable e) {
-            // Ignore errors when closing the datagram socket.
+            // 关闭数据报套接字时忽略错误
+            Logger.error(e.getMessage());
         }
     }
 

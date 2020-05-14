@@ -116,8 +116,7 @@ public class StowrsMultiFiles extends AbstractStowrs {
 
     private void uploadFile(File file, DataOutputStream out) throws IOException {
         writeContentMarkers(out);
-
-        // write dicom binary file
+        // 写入dicom二进制文件
         Files.copy(file.toPath(), out);
     }
 

@@ -39,6 +39,7 @@ import java.util.ArrayList;
 public class HL7Message extends ArrayList<HL7Segment> {
 
     public HL7Message() {
+
     }
 
     public HL7Message(int initialCapacity) {

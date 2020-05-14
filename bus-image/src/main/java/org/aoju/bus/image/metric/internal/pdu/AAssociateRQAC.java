@@ -272,10 +272,10 @@ public abstract class AAssociateRQAC {
     }
 
     public int userInfoLength() {
-        int len = 8; // Max Length Sub-Item
+        int len = 8; // 最大长度子项
         len += 4 + implClassUID.length();
         if (isAsyncOps())
-            len += 8; // Asynchronous Operations Window Sub-Item
+            len += 8; // 异步操作窗口子项
         for (RoleSelection rs : roleSelMap.values()) {
             len += 4 + rs.length();
         }

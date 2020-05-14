@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -124,7 +125,7 @@ public abstract class DefaultProvider implements Provider {
         if (StringUtils.isEmpty(url)) {
             return false;
         }
-        return url.startsWith("https://");
+        return url.startsWith(Http.HTTPS_PREFIX);
     }
 
     /**
@@ -134,7 +135,7 @@ public abstract class DefaultProvider implements Provider {
      * @return true: 本地主机（域名）, false: 非本地主机（域名）
      */
     public static boolean isLocalHost(String url) {
-        return StringUtils.isEmpty(url) || url.contains("127.0.0.1") || url.contains("localhost");
+        return StringUtils.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);
     }
 
     /**

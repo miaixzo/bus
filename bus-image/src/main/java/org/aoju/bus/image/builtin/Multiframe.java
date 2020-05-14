@@ -108,12 +108,11 @@ public class Multiframe {
     }
 
     /**
-     * Extract specified frame from Enhanced Multi-frame image and return it
-     * as correponding legacy Single-frame image.
+     * 从增强型多帧图像中提取特定帧，并将其作为对应的旧式单帧图像返回。
      *
-     * @param emf   Enhanced Multi-frame image
-     * @param frame 0 based frame index
-     * @return legacy Single-frame image
+     * @param emf   增强型多帧图像
+     * @param frame 基于0的帧索引
+     * @return 旧式单幅图像
      */
     public Attributes extract(Attributes emf, int frame) {
         return implFor(emf.getString(Tag.SOPClassUID))
