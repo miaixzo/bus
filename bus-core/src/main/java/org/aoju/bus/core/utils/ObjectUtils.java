@@ -1430,19 +1430,9 @@ public class ObjectUtils {
         if (false == (obj instanceof Serializable)) {
             return null;
         }
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream os = null;
-        try {
-            os = new ObjectOutputStream(out);
-            os.writeObject(obj);
-            os.flush();
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        } finally {
-            IoUtils.close(os);
-        }
-        return out.toByteArray();
+        final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        IoUtils.writeObjects(byteOut, false, (Serializable) obj);
+        return byteOut.toByteArray();
     }
 
     /**
@@ -1454,13 +1444,7 @@ public class ObjectUtils {
      * @return 反序列化后的对象
      */
     public static <T> T deserialize(byte[] bytes) {
-        try {
-            ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-            ObjectInputStream out = new ObjectInputStream(in);
-            return (T) out.readObject();
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+        return IoUtils.readObj(new ByteArrayInputStream(bytes));
     }
 
 }

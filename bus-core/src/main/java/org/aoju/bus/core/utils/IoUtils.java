@@ -908,9 +908,9 @@ public class IoUtils {
             for (Object content : contents) {
                 if (content != null) {
                     osw.write(Convert.toString(content, Normal.EMPTY));
-                    osw.flush();
                 }
             }
+            osw.flush();
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {

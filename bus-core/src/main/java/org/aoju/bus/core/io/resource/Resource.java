@@ -25,10 +25,12 @@
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.utils.IoUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -89,5 +91,20 @@ public interface Resource {
      * @throws InstrumentException 包装IOException
      */
     byte[] readBytes() throws InstrumentException;
+
+
+    /**
+     * 将资源内容写出到流，不关闭输出流，但是关闭资源流
+     *
+     * @param out 输出流
+     * @throws InstrumentException IO异常
+     */
+    default void writeTo(OutputStream out) throws InstrumentException {
+        try (InputStream in = getStream()) {
+            IoUtils.copy(in, out);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
 
 }

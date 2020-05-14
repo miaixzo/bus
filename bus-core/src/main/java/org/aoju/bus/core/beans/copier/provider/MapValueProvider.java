@@ -87,10 +87,11 @@ public class MapValueProvider implements ValueProvider<String> {
 
     @Override
     public boolean containsKey(String key) {
-        //检查下划线模式
         if (map.containsKey(key)) {
             return true;
-        } else return map.containsKey(StringUtils.toUnderlineCase(key));
+        } else {
+            return map.containsKey(StringUtils.toUnderlineCase(key));
+        }
     }
 
 }
