@@ -27,6 +27,7 @@ package org.aoju.bus.http.metric;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.bodys.RequestBody;
@@ -423,7 +424,7 @@ public class DnsOverHttps implements DnsX {
         if (post) {
             requestBuilder = requestBuilder.url(url).post(RequestBody.create(DNS_MESSAGE, query));
         } else {
-            String encoded = query.base64Url().replace(Symbol.EQUAL, "");
+            String encoded = query.base64Url().replace(Symbol.EQUAL, Normal.EMPTY);
             UnoUrl requestUrl = url.newBuilder().addQueryParameter("dns", encoded).build();
 
             requestBuilder = requestBuilder.url(requestUrl);

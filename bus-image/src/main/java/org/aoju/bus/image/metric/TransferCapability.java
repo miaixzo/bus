@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Option;
 import org.aoju.bus.image.UID;
@@ -208,7 +209,7 @@ public class TransferCapability implements Serializable {
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(512), "").toString();
+        return promptTo(new StringBuilder(512), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

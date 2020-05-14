@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.cron.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
@@ -38,6 +40,6 @@ import java.lang.annotation.*;
 @Inherited
 public @interface Crontab {
 
-    String value() default "";
+    String value() default Normal.EMPTY;
 
 }

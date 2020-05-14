@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.*;
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"value"})
+@XmlType(propOrder = {"value"})
 @XmlRootElement(name = "RegistryError", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0")
 public class RegistryError {
 

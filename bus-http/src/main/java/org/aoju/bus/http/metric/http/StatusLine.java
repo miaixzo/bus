@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.Response;
@@ -90,7 +91,7 @@ public final class StatusLine {
         }
 
         // 解析一个可选的响应消息，比如"OK"或"Not Modified",如果存在，则用空格将其与响应代码分隔开.
-        String message = "";
+        String message = Normal.EMPTY;
         if (statusLine.length() > codeStart + 3) {
             if (statusLine.charAt(codeStart + 3) != Symbol.C_SPACE) {
                 throw new ProtocolException("Unexpected status line: " + statusLine);

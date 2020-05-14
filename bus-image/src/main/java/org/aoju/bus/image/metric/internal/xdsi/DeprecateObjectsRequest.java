@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.*;
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"adhocQuery", "objectRefList"})
+@XmlType(propOrder = {"adhocQuery", "objectRefList"})
 @XmlRootElement(name = "DeprecateObjectsRequest", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0")
 public class DeprecateObjectsRequest extends RegistryRequestType {
 

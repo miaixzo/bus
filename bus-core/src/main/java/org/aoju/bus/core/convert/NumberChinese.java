@@ -103,7 +103,7 @@ public class NumberChinese {
                 if (i % 2 == 0) {
                     chineseStr = "亿" + chineseStr;
                 } else {
-                    if ("".equals(partChinese) && false == beforeWanIsZero) {
+                    if (Normal.EMPTY.equals(partChinese) && false == beforeWanIsZero) {
                         // 如果“万”对应的 part 为 0,而“万”下面一级不为 0,则不加“万”,而加“零”
                         chineseStr = "零" + chineseStr;
                     } else {
@@ -130,12 +130,12 @@ public class NumberChinese {
         // 小数部分
         if (numFen != 0 || numJiao != 0) {
             if (numFen == 0) {
-                chineseStr += (isMoneyMode ? "元" : "点") + numArray[numJiao] + (isMoneyMode ? "角" : "");
+                chineseStr += (isMoneyMode ? "元" : "点") + numArray[numJiao] + (isMoneyMode ? "角" : Normal.EMPTY);
             } else { // “分”数不为 0
                 if (numJiao == 0) {
-                    chineseStr += (isMoneyMode ? "元零" : "点零") + numArray[numFen] + (isMoneyMode ? "分" : "");
+                    chineseStr += (isMoneyMode ? "元零" : "点零") + numArray[numFen] + (isMoneyMode ? "分" : Normal.EMPTY);
                 } else {
-                    chineseStr += (isMoneyMode ? "元" : "点") + numArray[numJiao] + (isMoneyMode ? "角" : "") + numArray[numFen] + (isMoneyMode ? "分" : "");
+                    chineseStr += (isMoneyMode ? "元" : "点") + numArray[numJiao] + (isMoneyMode ? "角" : Normal.EMPTY) + numArray[numFen] + (isMoneyMode ? "分" : Normal.EMPTY);
                 }
             }
         } else if (isMoneyMode) {
@@ -160,7 +160,7 @@ public class NumberChinese {
 
         int temp = amountPart;
 
-        String chineseStr = "";
+        String chineseStr = Normal.EMPTY;
         boolean lastIsZero = true; // 在从低位往高位循环时,记录上一位数字是不是 0
         for (int i = 0; temp > 0; i++) {
             if (temp == 0) {

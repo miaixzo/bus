@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Condition;
@@ -56,7 +57,7 @@ public @interface Shield {
      *
      * @return the string
      */
-    String key() default "";
+    String key() default Normal.EMPTY;
 
     /**
      * 脱敏类型
@@ -79,7 +80,7 @@ public @interface Shield {
      *
      * @return the string
      */
-    String field() default "";
+    String field() default Normal.EMPTY;
 
     /**
      * 设置遮挡字符

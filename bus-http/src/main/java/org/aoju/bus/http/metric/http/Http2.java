@@ -25,6 +25,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StringUtils;
 
@@ -89,7 +90,7 @@ public final class Http2 {
             BINARY[i] = StringUtils.format("%8s", Integer.toBinaryString(i)).replace(Symbol.C_SPACE, Symbol.C_ZERO);
         }
 
-        FLAGS[FLAG_NONE] = "";
+        FLAGS[FLAG_NONE] = Normal.EMPTY;
         FLAGS[FLAG_END_STREAM] = "END_STREAM";
 
         int[] prefixFlags = new int[]{FLAG_END_STREAM};
@@ -138,7 +139,9 @@ public final class Http2 {
     }
 
     static String formatFlags(byte type, byte flags) {
-        if (flags == 0) return "";
+        if (flags == 0) {
+            return Normal.EMPTY;
+        }
         switch (type) {
             case TYPE_SETTINGS:
             case TYPE_PING:

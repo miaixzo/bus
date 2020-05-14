@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
@@ -86,7 +87,7 @@ public class Association {
         this.serialNo = prevSerialNo.incrementAndGet();
         this.ae = ae;
         this.requestor = ae != null;
-        this.name = "" + sock.getLocalSocketAddress()
+        this.name = Normal.EMPTY + sock.getLocalSocketAddress()
                 + delim() + sock.getRemoteSocketAddress()
                 + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
         this.conn = local;

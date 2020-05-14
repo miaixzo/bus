@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
@@ -57,12 +59,13 @@ public @interface NShield {
      *
      * @return 对象属性
      */
-    String include() default "";
+    String include() default Normal.EMPTY;
 
     /**
      * 过滤属性
      *
      * @return 对象属性
      */
-    String filter() default "";
+    String filter() default Normal.EMPTY;
+
 }

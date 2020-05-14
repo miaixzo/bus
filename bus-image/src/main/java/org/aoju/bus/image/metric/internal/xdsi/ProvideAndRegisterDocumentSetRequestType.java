@@ -61,7 +61,7 @@ public class ProvideAndRegisterDocumentSetRequestType {
 
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {"value"})
+    @XmlType(propOrder = {"value"})
     public static class Document {
 
         @XmlValue

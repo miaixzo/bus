@@ -25,6 +25,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.IoUtils;
@@ -829,7 +830,7 @@ public class Connection implements Serializable {
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(), "").toString();
+        return promptTo(new StringBuilder(), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

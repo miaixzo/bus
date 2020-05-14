@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.builtin;
 
+import org.aoju.bus.core.lang.Normal;
+
 /**
  * @author Kimi Liu
  * @version 5.9.0
@@ -57,7 +59,7 @@ public class Soundex implements FuzzyStr {
     @Override
     public String toFuzzy(String s) {
         if (s == null || s.length() == 0)
-            return "";
+            return Normal.EMPTY;
 
         char[] in = s.toCharArray();
         char[] out = in.length < padLength ? new char[padLength] : in;
@@ -67,7 +69,7 @@ public class Soundex implements FuzzyStr {
         if (!encodeFirst) {
             while (!Character.isLetter(in[i]))
                 if (++i >= in.length)
-                    return "";
+                    return Normal.EMPTY;
             prevout = map(out[j++] = Character.toUpperCase(in[i++]));
         }
 

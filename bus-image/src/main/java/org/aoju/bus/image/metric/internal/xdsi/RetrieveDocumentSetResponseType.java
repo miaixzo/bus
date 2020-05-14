@@ -59,7 +59,7 @@ public class RetrieveDocumentSetResponseType {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {"homeCommunityId", "repositoryUniqueId", "documentUniqueId", "newRepositoryUniqueId", "newDocumentUniqueId", "mimeType", "document"})
+    @XmlType(propOrder = {"homeCommunityId", "repositoryUniqueId", "documentUniqueId", "newRepositoryUniqueId", "newDocumentUniqueId", "mimeType", "document"})
     public static class DocumentResponse {
 
         @XmlElement(name = "HomeCommunityId", namespace = "urn:ihe:iti:xds-b:2007")

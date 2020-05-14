@@ -59,7 +59,7 @@ public class RetrieveRenderedImagingDocumentSetResponseType {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {"homeCommunityId", "repositoryUniqueId", "sourceDocumentUniqueId", "annotation", "rows", "columns", "region", "windowWidth", "windowCenter", "imageQuality", "presentationUID", "presentationSeriesUID", "anonymize", "frameNumber", "mimeType", "document"})
+    @XmlType(propOrder = {"homeCommunityId", "repositoryUniqueId", "sourceDocumentUniqueId", "annotation", "rows", "columns", "region", "windowWidth", "windowCenter", "imageQuality", "presentationUID", "presentationSeriesUID", "anonymize", "frameNumber", "mimeType", "document"})
     public static class RenderedDocumentResponse {
 
         @XmlElement(name = "HomeCommunityId", namespace = "urn:ihe:iti:xds-b:2007")

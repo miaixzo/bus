@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.DatePrecision;
@@ -406,7 +407,7 @@ public class Format extends java.text.Format {
             if (delim == '{') {
                 if (level++ == 0) {
                     if (prevDelim == '}')
-                        result.add("");
+                        result.add(Normal.EMPTY);
                 } else {
                     sb.append(delim);
                 }

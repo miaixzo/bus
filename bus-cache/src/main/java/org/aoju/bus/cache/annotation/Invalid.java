@@ -25,6 +25,8 @@
 package org.aoju.bus.cache.annotation;
 
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
@@ -40,16 +42,16 @@ public @interface Invalid {
     /**
      * @return as {@code @Cached}
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
      * @return as {@code @Cached}
      */
-    String prefix() default "";
+    String prefix() default Normal.EMPTY;
 
     /**
      * @return as {@code @Cached}
      */
-    String condition() default "";
+    String condition() default Normal.EMPTY;
 
 }

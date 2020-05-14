@@ -484,7 +484,7 @@ public class BCrypt {
         int rounds = Integer.parseInt(salt.substring(off, off + 2));
 
         String real_salt = salt.substring(off + 3, off + 25);
-        byte[] passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes(Charset.UTF_8);
+        byte[] passwordb = (password + (minor >= 'a' ? "\000" : Normal.EMPTY)).getBytes(Charset.UTF_8);
         byte[] saltb = decode_base64(real_salt, BCRYPT_SALT_LEN);
 
         BCrypt bcrypt = new BCrypt();

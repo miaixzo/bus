@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
@@ -44,7 +45,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ColumnType {
 
-    String column() default "";
+    String column() default Normal.EMPTY;
 
     JdbcType jdbcType() default JdbcType.UNDEFINED;
 
