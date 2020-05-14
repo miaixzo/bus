@@ -924,7 +924,7 @@ public class Convert {
      * 将阿拉伯数字转为中文表达方式
      *
      * @param number          数字
-     * @param isUseTraditonal 是否使用繁体字（金额形式）
+     * @param isUseTraditonal 是否使用繁体字(金额形式)
      * @return 中文
      */
     public static String numberToChinese(double number, boolean isUseTraditonal) {

@@ -225,7 +225,7 @@ public class BeanDesc implements Serializable {
 
     /**
      * 方法是否为Getter方法
-     * 匹配规则如下（忽略大小写）：
+     * 匹配规则如下(忽略大小写)：
      *
      * <pre>
      * 字段名    -》 方法名
@@ -277,7 +277,7 @@ public class BeanDesc implements Serializable {
 
     /**
      * 方法是否为Setter方法
-     * 匹配规则如下（忽略大小写）：
+     * 匹配规则如下(忽略大小写)：
      *
      * <pre>
      * 字段名    -》 方法名

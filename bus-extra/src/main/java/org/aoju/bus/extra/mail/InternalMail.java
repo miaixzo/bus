@@ -49,7 +49,7 @@ public class InternalMail {
      * 单个字符串地址可以是多个地址合并的字符串
      *
      * @param addrStrs 地址数组
-     * @param charset  编码（主要用于中文用户名的编码）
+     * @param charset  编码(主要用于中文用户名的编码)
      * @return 地址数组
      */
     public static InternetAddress[] parseAddressFromStrs(String[] addrStrs, Charset charset) {

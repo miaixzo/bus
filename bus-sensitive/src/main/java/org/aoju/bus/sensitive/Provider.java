@@ -267,9 +267,9 @@ public class Provider<T> {
      * <p>
      * 1. 为了简化操作,所有的自定义注解使用多个,不生效
      * 2. 生效顺序如下：
-     * （1）Sensitive
-     * （2）系统内置自定义注解
-     * （3）用户自定义注解
+     * (1)Sensitive
+     * (2)系统内置自定义注解
+     * (3)用户自定义注解
      *
      * @param context 上下文
      * @param entry   明细

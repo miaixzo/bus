@@ -29,7 +29,7 @@ import org.aoju.bus.core.utils.IoUtils;
 import java.io.InputStream;
 
 /**
- * MAC（Message Authentication Code）算法引擎
+ * MAC(Message Authentication Code)算法引擎
  *
  * @author Kimi Liu
  * @version 5.9.0

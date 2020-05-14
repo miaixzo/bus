@@ -99,9 +99,9 @@ public class StyleSet implements Serializable {
     }
 
     /**
-     * 获取数字（带小数点）单元格样式,获取后可以定义整体头部样式
+     * 获取数字(带小数点)单元格样式,获取后可以定义整体头部样式
      *
-     * @return 数字（带小数点）单元格样式
+     * @return 数字(带小数点)单元格样式
      */
     public CellStyle getCellStyleForNumber() {
         return cellStyleForNumber;

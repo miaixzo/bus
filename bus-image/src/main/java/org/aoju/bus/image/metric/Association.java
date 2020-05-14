@@ -903,9 +903,9 @@ public class Association {
     }
 
     /**
-     * 发送C-FIND-RQ返回一个{@link DimseRSP＃next（）}阻塞的{@code DimseRSP}，直到接收到下一个C-FIND-RSP
-     * 如果在返回的{@code DimseRSP}中缓存的接收到的C-FIND-RSP的数量达到指定的{@code capacity}，
-     * 则从关联块中读取C-FIND-RSP，直到缓存的C-FIND-RSP为*通过调用{@link DimseRSP＃next（）}删除
+     * 发送C-FIND-RQ返回一个{@link DimseRSP#next()}阻塞的{@code DimseRSP}，直到接收到下一个C-FIND-RSP
+     * 如果在返回的{@code DimseRSP}中缓存的接收到的C-FIND-RSP的数量达到指定的{@code capacity}
+     * 则从关联块中读取C-FIND-RSP，直到缓存的C-FIND-RSP为通过调用{@link DimseRSP#next()}删除
      *
      * @param cuid       与操作关联的SOP类UID
      * @param priority   C-FIND操作的优先级  0 = MEDIUM, 1 = HIGH, 2 = LOW
@@ -913,7 +913,7 @@ public class Association {
      * @param tsuid      用于编码标识符的传输语法
      * @param autoCancel 待发送的C-CINDL-RQ的挂起C-FIND RSP的数量
      * @param capacity   接收的未决C-FIND-RSP的缓冲区大小
-     * @return a {@code DimseRSP} {@link DimseRSP＃next()}会阻止，直到接收到下一个C-FIND-RSP
+     * @return {@link DimseRSP#next()}会阻止，直到接收到下一个C-FIND-RSP
      * @throws IOException          如果发送C-FIND-RQ时出错
      * @throws InterruptedException 如果任何线程在当前*线程正在等待其他调用的操作完成之前或之时中断了当前线程
      */

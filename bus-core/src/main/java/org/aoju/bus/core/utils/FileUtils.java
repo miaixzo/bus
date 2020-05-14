@@ -134,7 +134,7 @@ public class FileUtils {
      * 给定的绝对路径不能是压缩包中的路径
      *
      * @param path 目录绝对路径或者相对路径
-     * @return 文件列表（包含目录）
+     * @return 文件列表(包含目录)
      */
     public static File[] ls(String path) {
         if (path == null) {
@@ -174,7 +174,7 @@ public class FileUtils {
      * 判断是否为文件,如果file为null,则返回false
      *
      * @param path          文件
-     * @param isFollowLinks 是否跟踪软链（快捷方式）
+     * @param isFollowLinks 是否跟踪软链(快捷方式)
      * @return 如果为文件true
      */
     public static boolean isFile(Path path, boolean isFollowLinks) {
@@ -265,7 +265,7 @@ public class FileUtils {
      * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param directory 父目录
-     * @param names     元素名（多层目录名）
+     * @param names     元素名(多层目录名)
      * @return the file 文件
      */
     public static File file(File directory, String... names) {
@@ -286,7 +286,7 @@ public class FileUtils {
     /**
      * 通过多层目录创建文件
      * <p>
-     * 元素名（多层目录名）
+     * 元素名(多层目录名)
      *
      * @param names 文件名
      * @return the file 文件
@@ -772,7 +772,7 @@ public class FileUtils {
      * 创建后的文件名为 prefix[Randon].tmp
      *
      * @param dir       临时文件创建的所在目录
-     * @param isReCreat 是否重新创建文件（删掉原来的,创建新的）
+     * @param isReCreat 是否重新创建文件(删掉原来的,创建新的)
      * @return 临时文件
      * @throws InstrumentException 异常
      */
@@ -787,7 +787,7 @@ public class FileUtils {
      * @param prefix    前缀,至少3个字符
      * @param suffix    后缀,如果null则使用默认.tmp
      * @param dir       临时文件创建的所在目录
-     * @param isReCreat 是否重新创建文件（删掉原来的,创建新的）
+     * @param isReCreat 是否重新创建文件(删掉原来的,创建新的)
      * @return 临时文件
      * @throws InstrumentException 异常
      */
@@ -887,13 +887,13 @@ public class FileUtils {
      * 情况如下：
      *
      * <pre>
-     * 1、src和dest都为目录,则讲src下所有文件（包括子目录）拷贝到dest下
+     * 1、src和dest都为目录,则讲src下所有文件(包括子目录)拷贝到dest下
      * 2、src和dest都为文件,直接复制,名字为dest
      * 3、src为文件,dest为目录,将src拷贝到dest目录下
      * </pre>
      *
      * @param src        源文件
-     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
+     * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -907,7 +907,7 @@ public class FileUtils {
      * 如果目标文件为目录,则将源文件以相同文件名拷贝到目标目录
      *
      * @param srcPath    源文件或目录
-     * @param destPath   目标文件或目录,目标不存在会自动创建（目录、文件都创建）
+     * @param destPath   目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -927,7 +927,7 @@ public class FileUtils {
      * </pre>
      *
      * @param src        源文件
-     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
+     * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -947,7 +947,7 @@ public class FileUtils {
      * </pre>
      *
      * @param src        源文件
-     * @param dest       目标文件或目录,目标不存在会自动创建（目录、文件都创建）
+     * @param dest       目标文件或目录,目标不存在会自动创建(目录、文件都创建)
      * @param isOverride 是否覆盖目标文件
      * @return 目标目录或文件
      * @throws InstrumentException 异常
@@ -1065,7 +1065,7 @@ public class FileUtils {
 
     /**
      * 获取绝对路径
-     * 此方法不会判定给定路径是否有效（文件或目录存在）
+     * 此方法不会判定给定路径是否有效(文件或目录存在)
      *
      * @param path      相对路径
      * @param baseClass 相对路径所相对的类
@@ -1189,7 +1189,7 @@ public class FileUtils {
      * 不会扫描子目录
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
-     * @return 文件路径列表（如果是jar中的文件,则给定类似.jar!/xxx/xxx的路径）
+     * @return 文件路径列表(如果是jar中的文件, 则给定类似.jar ! / xxx / xxx的路径)
      * @throws InstrumentException 异常
      */
     public static List<String> listFileNames(String path) throws InstrumentException {
@@ -1236,7 +1236,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取临时文件路径（绝对路径）
+     * 获取临时文件路径(绝对路径)
      *
      * @return 临时文件路径
      */
@@ -1254,7 +1254,7 @@ public class FileUtils {
     }
 
     /**
-     * 获取用户路径（绝对路径）
+     * 获取用户路径(绝对路径)
      *
      * @return 用户路径
      */
@@ -1550,7 +1550,7 @@ public class FileUtils {
 
     /**
      * 修复路径
-     * 如果原路径尾部有分隔符,则保留为标准分隔符（/）,否则不保留
+     * 如果原路径尾部有分隔符,则保留为标准分隔符(/),否则不保留
      * <ol>
      * <li>1. 统一用 /</li>
      * <li>2. 多个 / 转换为一个 /</li>
@@ -1689,7 +1689,7 @@ public class FileUtils {
      * 获取指定位置的子路径部分,支持负数,例如index为-1表示从后数第一个节点位置
      *
      * @param path  路径
-     * @param index 路径节点位置,支持负数（负数从后向前计数）
+     * @param index 路径节点位置,支持负数(负数从后向前计数)
      * @return 获取的子路径
      */
     public static Path getPathEle(Path path, int index) {
@@ -1710,8 +1710,8 @@ public class FileUtils {
      * 获取指定位置的子路径部分,支持负数,例如起始为-1表示从后数第一个节点位置
      *
      * @param path      路径
-     * @param fromIndex 起始路径节点（包括）
-     * @param toIndex   结束路径节点（不包括）
+     * @param fromIndex 起始路径节点(包括)
+     * @param toIndex   结束路径节点(不包括)
      * @return 获取的子路径
      */
     public static Path subPath(Path path, int fromIndex, int toIndex) {
@@ -1784,7 +1784,7 @@ public class FileUtils {
         for (int i = len - 1; i > -1; i--) {
             c = filePath.charAt(i);
             if (CharUtils.isFileSeparator(c)) {
-                //查找最后一个路径分隔符（/或者\）
+                //查找最后一个路径分隔符(/或者\)
                 begin = i + 1;
                 break;
             }
@@ -1835,7 +1835,7 @@ public class FileUtils {
             }
             if (0 == begin || begin > end) {
                 if (CharUtils.isFileSeparator(c)) {
-                    //查找最后一个路径分隔符（/或者\）,如果这个分隔符在.之后,则继续查找,否则结束
+                    //查找最后一个路径分隔符(/或者\),如果这个分隔符在.之后,则继续查找,否则结束
                     begin = i + 1;
                     break;
                 }
@@ -3250,7 +3250,7 @@ public class FileUtils {
     /**
      * 清除文件名中的在Windows下不支持的非法字符,包括： \ / : * ? " &lt; &gt; |
      *
-     * @param fileName 文件名（必须不包括路径,否则路径符将被替换）
+     * @param fileName 文件名(必须不包括路径,否则路径符将被替换)
      * @return 清理后的文件名
      */
     public static String cleanInvalid(String fileName) {
@@ -3260,7 +3260,7 @@ public class FileUtils {
     /**
      * 文件名中是否包含在Windows下不支持的非法字符,包括： \ / : * ? " &lt; &gt; |
      *
-     * @param fileName 文件名（必须不包括路径,否则路径符将被替换）
+     * @param fileName 文件名(必须不包括路径,否则路径符将被替换)
      * @return 是否包含非法字符
      */
     public static boolean containsInvalid(String fileName) {

@@ -45,8 +45,8 @@ public class BufferUtils {
      * 拷贝到一个新的ByteBuffer
      *
      * @param src   源ByteBuffer
-     * @param start 起始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 起始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的ByteBuffer
      */
     public static ByteBuffer copy(ByteBuffer src, int start, int end) {

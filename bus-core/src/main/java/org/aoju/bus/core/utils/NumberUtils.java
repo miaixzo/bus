@@ -1134,8 +1134,8 @@ public class NumberUtils {
     /**
      * 生成不重复随机数 根据给定的最小数字和最大数字,以及随机数的个数,产生指定的不重复的数组
      *
-     * @param begin 最小数字（包含该数）
-     * @param end   最大数字（不包含该数）
+     * @param begin 最小数字(包含该数)
+     * @param end   最大数字(不包含该数)
      * @param size  指定产生随机数的个数
      * @return 随机int数组
      */
@@ -1172,8 +1172,8 @@ public class NumberUtils {
     /**
      * 生成不重复随机数 根据给定的最小数字和最大数字,以及随机数的个数,产生指定的不重复的数组
      *
-     * @param begin 最小数字（包含该数）
-     * @param end   最大数字（不包含该数）
+     * @param begin 最小数字(包含该数)
+     * @param end   最大数字(不包含该数)
      * @param size  指定产生随机数的个数
      * @return 随机int数组
      */
@@ -1200,7 +1200,7 @@ public class NumberUtils {
     /**
      * 从0开始给定范围内的整数列表,步进为1
      *
-     * @param stop 结束（包含）
+     * @param stop 结束(包含)
      * @return 整数列表
      */
     public static int[] range(int stop) {
@@ -1210,8 +1210,8 @@ public class NumberUtils {
     /**
      * 给定范围内的整数列表,步进为1
      *
-     * @param start 开始（包含）
-     * @param stop  结束（包含）
+     * @param start 开始(包含)
+     * @param stop  结束(包含)
      * @return 整数列表
      */
     public static int[] range(int start, int stop) {
@@ -1221,8 +1221,8 @@ public class NumberUtils {
     /**
      * 给定范围内的整数列表
      *
-     * @param start 开始（包含）
-     * @param stop  结束（包含）
+     * @param start 开始(包含)
+     * @param stop  结束(包含)
      * @param step  步进
      * @return 整数列表
      */
@@ -1248,8 +1248,8 @@ public class NumberUtils {
     /**
      * 将给定范围内的整数添加到已有集合中,步进为1
      *
-     * @param start  开始（包含）
-     * @param stop   结束（包含）
+     * @param start  开始(包含)
+     * @param stop   结束(包含)
      * @param values 集合
      * @return 集合
      */
@@ -1260,8 +1260,8 @@ public class NumberUtils {
     /**
      * 将给定范围内的整数添加到已有集合中
      *
-     * @param start  开始（包含）
-     * @param stop   结束（包含）
+     * @param start  开始(包含)
+     * @param stop   结束(包含)
      * @param step   步进
      * @param values 集合
      * @return 集合

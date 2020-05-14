@@ -246,7 +246,7 @@ public class BeanUtils {
      *
      * @param <T>         Bean类型
      * @param bean        Bean对象
-     * @param ignoreField 不需要trim的Field名称列表（不区分大小写）
+     * @param ignoreField 不需要trim的Field名称列表(不区分大小写)
      * @return the object
      */
     public static <T> T trimStrField(T bean, String... ignoreField) {
@@ -679,7 +679,7 @@ public class BeanUtils {
      * @param bean            bean对象
      * @param targetMap       目标的Map
      * @param ignoreNullValue 是否忽略值为空的字段
-     * @param keyEditor       属性字段（Map的key）编辑器,用于筛选、编辑key
+     * @param keyEditor       属性字段(Map的key)编辑器,用于筛选、编辑key
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
@@ -797,7 +797,7 @@ public class BeanUtils {
      *
      * @param <T>          Bean类型
      * @param bean         Bean对象
-     * @param ignoreFields 不需要trim的Field名称列表（不区分大小写）
+     * @param ignoreFields 不需要trim的Field名称列表(不区分大小写)
      * @return 处理后的Bean对象
      */
     public static <T> T trimStrFields(T bean, String... ignoreFields) {

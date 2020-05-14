@@ -74,7 +74,7 @@ public class Property {
      */
     private String email;
     /**
-     * 用户备注（各平台中的用户个人介绍）
+     * 用户备注(各平台中的用户个人介绍)
      */
     private String remark;
     /**

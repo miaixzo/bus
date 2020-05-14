@@ -425,7 +425,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 查找指定类中的所有字段（包括非public字段）,也包括父类和Object类的字段, 字段不存在则返回null
+     * 查找指定类中的所有字段(包括非public字段),也包括父类和Object类的字段, 字段不存在则返回null
      *
      * @param beanClass 被查找字段的类,不能为null
      * @param name      字段名
@@ -617,7 +617,7 @@ public class ReflectUtils {
     }
 
     /**
-     * 查找指定对象中的所有方法（包括非public方法）,也包括父对象和Object类的方法
+     * 查找指定对象中的所有方法(包括非public方法),也包括父对象和Object类的方法
      *
      * @param obj        被查找的对象,如果为{@code null}返回{@code null}
      * @param methodName 方法名,如果为空字符串返回{@code null}
@@ -892,7 +892,7 @@ public class ReflectUtils {
      * 执行静态方法
      *
      * @param <T>    对象类型
-     * @param method 方法（对象方法或static方法都可）
+     * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
      * @throws InstrumentException 多种异常包装
@@ -912,7 +912,7 @@ public class ReflectUtils {
      *
      * @param <T>    返回对象类型
      * @param obj    对象,如果执行静态方法,此值为null
-     * @param method 方法（对象方法或static方法都可）
+     * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
      * @throws InstrumentException 一些列异常的包装
@@ -939,7 +939,7 @@ public class ReflectUtils {
      *
      * @param <T>    返回对象类型
      * @param obj    对象,如果执行静态方法,此值为null
-     * @param method 方法（对象方法或static方法都可）
+     * @param method 方法(对象方法或static方法都可)
      * @param args   参数对象
      * @return 结果
      */
@@ -1016,7 +1016,7 @@ public class ReflectUtils {
 
 
     /**
-     * 设置方法为可访问（私有方法可以被外部调用）
+     * 设置方法为可访问(私有方法可以被外部调用)
      *
      * @param <T>              AccessibleObject的子类,比如Class、Method、Field等
      * @param accessibleObject 可设置访问权限的对象,比如Class、Method、Field等

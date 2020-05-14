@@ -129,10 +129,10 @@ public abstract class DefaultProvider implements Provider {
     }
 
     /**
-     * 是否为本地主机（域名）
+     * 是否为本地主机(域名)
      *
      * @param url 待验证的url
-     * @return true: 本地主机（域名）, false: 非本地主机（域名）
+     * @return true: 本地主机(域名), false: 非本地主机(域名)
      */
     public static boolean isLocalHost(String url) {
         return StringUtils.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);

@@ -143,7 +143,7 @@ public class RuntimeUtils {
      * 命令带参数时参数可作为其中一个参数,也可以将命令和参数组合为一个字符串传入
      *
      * @param envp 环境变量参数,传入形式为key=value,null表示继承系统环境变量
-     * @param dir  执行命令所在目录（用于相对路径命令执行）,null表示使用当前进程执行的目录
+     * @param dir  执行命令所在目录(用于相对路径命令执行),null表示使用当前进程执行的目录
      * @param cmds 命令
      * @return {@link Process}
      */

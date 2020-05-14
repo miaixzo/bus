@@ -113,7 +113,7 @@ public class ResourceUtils {
      * spring/xml/test.xml
      * </pre>
      *
-     * @param resource 资源（相对Classpath的路径）
+     * @param resource 资源(相对Classpath的路径)
      * @return 资源URL
      */
     public static URL getResource(String resource) throws InstrumentException {

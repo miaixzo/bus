@@ -26,7 +26,7 @@ package org.aoju.bus.crypto;
 
 /**
  * 模式
- * 加密算法模式,是用来描述加密算法（此处特指分组密码,不包括流密码,）
+ * 加密算法模式,是用来描述加密算法(此处特指分组密码,不包括流密码,)
  * 在加密时对明文分组的模式,它代表了不同的分组方式
  *
  * @author Kimi Liu
@@ -39,15 +39,15 @@ public enum Mode {
      */
     NONE,
     /**
-     * 密码分组连接模式（Cipher Block Chaining）
+     * 密码分组连接模式(Cipher Block Chaining)
      */
     CBC,
     /**
-     * 密文反馈模式（Cipher Feedback）
+     * 密文反馈模式(Cipher Feedback)
      */
     CFB,
     /**
-     * 计数器模式（A simplification of OFB）
+     * 计数器模式(A simplification of OFB)
      */
     CTR,
     /**
@@ -55,11 +55,11 @@ public enum Mode {
      */
     CTS,
     /**
-     * 电子密码本模式（Electronic CodeBook）
+     * 电子密码本模式(Electronic CodeBook)
      */
     ECB,
     /**
-     * 输出反馈模式（Output Feedback）
+     * 输出反馈模式(Output Feedback)
      */
     OFB,
     /**

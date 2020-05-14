@@ -322,7 +322,7 @@ public class Connection implements Serializable {
 
     /**
      * 监听套接字的绑定地址或{@code null}如果{@code null}，则将
-     * 侦听套接字绑定到{@link #getHostname（）} 这是默认值
+     * 侦听套接字绑定到{@link #getHostname()} 这是默认值
      *
      * @return 连接的绑定地址或{@code null}
      */
@@ -332,7 +332,7 @@ public class Connection implements Serializable {
 
     /**
      * 监听套接字的绑定地址或{@code null} 如果{@code null}，
-     * 则将*侦听套接字绑定到{@link #getHostname（）}
+     * 则将侦听套接字绑定到{@link #getHostname()}
      *
      * @param bindAddress 监听套接字的绑定地址或{@code null}
      */
@@ -349,8 +349,8 @@ public class Connection implements Serializable {
 
     /**
      * 传出连接的绑定地址，{@code "0.0.0.0"} 或{@code null}
-     * 如果{@code“ 0.0.0.0"}，系统将选择任何本地IP进行传出连接
-     * 如果{@code null}，则将传出连接绑定到 {@link #getHostname（）}
+     * 如果{@code "0.0.0.0"}，系统将选择任何本地IP进行传出连接
+     * 如果{@code null}，则将传出连接绑定到 {@link #getHostname()}
      *
      * @return 字符串
      */
@@ -361,7 +361,7 @@ public class Connection implements Serializable {
     /**
      * 传出连接的绑定地址， {@code "0.0.0.0"}或{@code null}
      * 如果{@code "0.0.0.0"}，系统将选择任何本地IP进行传出*连接
-     * 如果{@code null}，则将传出连接绑定到* {@link #getHostname（）}
+     * 如果{@code null}，则将传出连接绑定到 {@link #getHostname()}
      *
      * @param bindAddress 传出连接的绑定地址或{@code null}
      */
@@ -535,7 +535,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 发送A-ABORT后，套接字关闭的延迟时间（以毫秒为单位），默认为50毫秒
+     * 发送A-ABORT后，套接字关闭的延迟时间(以毫秒为单位)，默认为50毫秒
      *
      * @return 一个包含毫秒的int值
      */
@@ -544,7 +544,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 发送A-ABORT后，套接字关闭的延迟时间（以毫秒为单位），默认为50毫秒
+     * 发送A-ABORT后，套接字关闭的延迟时间(以毫秒为单位)，默认为50毫秒
      *
      * @param delay 一个包含毫秒的int值
      */
@@ -589,7 +589,7 @@ public class Connection implements Serializable {
     /**
      * 此特定连接上支持的TLS CipherSuite
      * TLS CipherSuites必须使用RFC-2246字符串
-     * 表示形式进行描述（例如“ SSL_RSA_WITH_3DES_EDE_CBC_SHA"）
+     * 表示形式进行描述(例如“ SSL_RSA_WITH_3DES_EDE_CBC_SHA")
      *
      * @return 包含受支持的密码套件的String数组
      */
@@ -600,7 +600,7 @@ public class Connection implements Serializable {
     /**
      * 此特定连接上支持的TLS CipherSuite
      * TLS CipherSuites必须使用RFC-2246字符串
-     * 表示形式进行描述（例如"SSL_RSA_WITH_3DES_EDE_CBC_SHA"）
+     * 表示形式进行描述(例如"SSL_RSA_WITH_3DES_EDE_CBC_SHA")
      *
      * @param tlsCipherSuites 包含受支持的密码套件的String数组
      */
@@ -643,7 +643,7 @@ public class Connection implements Serializable {
     /**
      * 获取以KB为单位的SO_RCVBUF套接字值
      *
-     * @return 一个包含缓冲区大小（以KB为单位）
+     * @return 一个包含缓冲区大小(以KB为单位)
      */
     public final int getReceiveBufferSize() {
         return receiveBufferSize;
@@ -652,7 +652,7 @@ public class Connection implements Serializable {
     /**
      * 将SO_RCVBUF套接字选项设置为以KB为单位的指定值
      *
-     * @param size 一个包含缓冲区大小（以KB为单位）
+     * @param size 一个包含缓冲区大小(以KB为单位)
      */
     public final void setReceiveBufferSize(int size) {
         if (size < 0)
@@ -693,7 +693,7 @@ public class Connection implements Serializable {
     /**
      * 获取以KB为单位的SO_SNDBUF套接字选项值
      *
-     * @return 一个包含缓冲区大小（以KB为单位)
+     * @return 一个包含缓冲区大小(以KB为单位)
      */
     public final int getSendBufferSize() {
         return sendBufferSize;
@@ -702,7 +702,7 @@ public class Connection implements Serializable {
     /**
      * 将SO_SNDBUF套接字选项设置为以KB为单位的指定值
      *
-     * @param size 一个包含缓冲区大小（以KB为单位）
+     * @param size 一个包含缓冲区大小(以KB为单位)
      */
     public final void setSendBufferSize(int size) {
         if (size < 0)
@@ -753,7 +753,7 @@ public class Connection implements Serializable {
     /**
      * 确定此网络连接是否正在将Nagle的算法用作其网络通信的一部分
      *
-     * @return boolean如果使用TCP无延迟（禁用Nagle算法）则为true
+     * @return boolean如果使用TCP无延迟(禁用Nagle算法)则为true
      */
     public final boolean isTcpNoDelay() {
         return tcpNoDelay;
@@ -762,7 +762,7 @@ public class Connection implements Serializable {
     /**
      * 设置此网络连接是否应将Nagle的算法*作为其网络通信的一部分
      *
-     * @param tcpNoDelay boolean如果应使用TCP无延迟（禁用Nagle算法）则为True
+     * @param tcpNoDelay boolean如果应使用TCP无延迟(禁用Nagle算法)则为True
      */
     public final void setTcpNoDelay(boolean tcpNoDelay) {
         this.tcpNoDelay = tcpNoDelay;

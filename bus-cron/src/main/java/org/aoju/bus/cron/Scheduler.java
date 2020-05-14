@@ -62,7 +62,7 @@ import java.util.concurrent.ExecutorService;
  * 其中：
  *
  * <pre>
- * <strong>TaskLauncher</strong>：定时器每分钟调用一次（如果{@link Scheduler#isMatchSecond()}为<code>true</code>每秒调用一次）,
+ * <strong>TaskLauncher</strong>：定时器每分钟调用一次(如果{@link Scheduler#isMatchSecond()}为<code>true</code>每秒调用一次),
  * 负责检查<strong>TaskTable</strong>是否有匹配到此时间运行的Task
  * </pre>
  *

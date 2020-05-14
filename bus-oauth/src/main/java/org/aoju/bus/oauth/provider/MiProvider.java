@@ -117,7 +117,7 @@ public class MiProvider extends DefaultProvider {
     }
 
     /**
-     * 刷新access token （续期）
+     * 刷新access token (续期)
      *
      * @param token 登录成功后返回的Token信息
      * @return AuthResponse

@@ -43,7 +43,7 @@ import java.security.spec.RSAPublicKeySpec;
  * RSA公钥/私钥/签名加密解密
  * </p>
  * <p>
- * 罗纳德·李维斯特（Ron [R]ivest）、阿迪·萨莫尔（Adi [S]hamir）和伦纳德·阿德曼（Leonard [A]dleman）
+ * 罗纳德·李维斯特(Ron [R]ivest)、阿迪·萨莫尔(Adi [S]hamir)和伦纳德·阿德曼(Leonard [A]dleman)
  * </p>
  * <p>
  * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，

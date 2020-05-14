@@ -104,7 +104,7 @@ public enum AliMailRegion {
      */
     eucentral1("eu-central-1"),
     /**
-     * 英国（伦敦）
+     * 英国(伦敦)
      */
     euwest1("eu-west-1"),
     /**

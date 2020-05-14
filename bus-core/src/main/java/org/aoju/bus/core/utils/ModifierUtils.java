@@ -39,7 +39,7 @@ import java.lang.reflect.Modifier;
 public class ModifierUtils {
 
     /**
-     * 是否同时存在一个或多个修饰符（可能有多个修饰符,如果有指定的修饰符则返回true）
+     * 是否同时存在一个或多个修饰符(可能有多个修饰符,如果有指定的修饰符则返回true)
      *
      * @param clazz         类
      * @param modifierTypes 修饰符枚举
@@ -53,7 +53,7 @@ public class ModifierUtils {
     }
 
     /**
-     * 是否同时存在一个或多个修饰符（可能有多个修饰符,如果有指定的修饰符则返回true）
+     * 是否同时存在一个或多个修饰符(可能有多个修饰符,如果有指定的修饰符则返回true)
      *
      * @param constructor   构造方法
      * @param modifierTypes 修饰符枚举
@@ -67,7 +67,7 @@ public class ModifierUtils {
     }
 
     /**
-     * 是否同时存在一个或多个修饰符（可能有多个修饰符,如果有指定的修饰符则返回true）
+     * 是否同时存在一个或多个修饰符(可能有多个修饰符,如果有指定的修饰符则返回true)
      *
      * @param method        方法
      * @param modifierTypes 修饰符枚举
@@ -81,7 +81,7 @@ public class ModifierUtils {
     }
 
     /**
-     * 是否同时存在一个或多个修饰符（可能有多个修饰符,如果有指定的修饰符则返回true）
+     * 是否同时存在一个或多个修饰符(可能有多个修饰符,如果有指定的修饰符则返回true)
      *
      * @param field         字段
      * @param modifierTypes 修饰符枚举
@@ -195,7 +195,7 @@ public class ModifierUtils {
          */
         PROTECTED(Modifier.PROTECTED),
         /**
-         * static修饰符,（静态修饰符）指定变量被所有对象共享,即所有实例都可以使用该变量 变量属于这个类
+         * static修饰符,(静态修饰符)指定变量被所有对象共享,即所有实例都可以使用该变量 变量属于这个类
          */
         STATIC(Modifier.STATIC),
         /**
@@ -207,11 +207,11 @@ public class ModifierUtils {
          */
         SYNCHRONIZED(Modifier.SYNCHRONIZED),
         /**
-         * （易失修饰符）指定该变量可以同时被几个线程控制和修改
+         * (易失修饰符)指定该变量可以同时被几个线程控制和修改
          */
         VOLATILE(Modifier.VOLATILE),
         /**
-         * （过度修饰符）指定该变量是系统保留,暂无特别作用的临时性变量,序列化时忽略
+         * (过度修饰符)指定该变量是系统保留,暂无特别作用的临时性变量,序列化时忽略
          */
         TRANSIENT(Modifier.TRANSIENT),
         /**

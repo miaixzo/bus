@@ -290,7 +290,7 @@ public class Platform {
     }
 
     /**
-     * 获得System属性（调用System.getProperty）
+     * 获得System属性(调用System.getProperty)
      *
      * @param key 键
      * @return 属性值

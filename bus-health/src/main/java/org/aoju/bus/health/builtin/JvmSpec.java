@@ -41,39 +41,39 @@ public class JvmSpec implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 取得当前JVM spec.的名称（取自系统属性：<code>java.vm.specification.name</code>）
+     * 取得当前JVM spec.的名称(取自系统属性：<code>java.vm.specification.name</code>)
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"Java Virtual Machine Specification"</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getName() {
         return Platform.get(System.VM_SPECIFICATION_NAME, false);
     }
 
     /**
-     * 取得当前JVM spec.的版本（取自系统属性：<code>java.vm.specification.version</code>）
+     * 取得当前JVM spec.的版本(取自系统属性：<code>java.vm.specification.version</code>)
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"1.0"</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getVersion() {
         return Platform.get(System.VM_SPECIFICATION_VERSION, false);
     }
 
     /**
-     * 取得当前JVM spec.的厂商（取自系统属性：<code>java.vm.specification.vendor</code>）
+     * 取得当前JVM spec.的厂商(取自系统属性：<code>java.vm.specification.vendor</code>)
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getVendor() {
         return Platform.get(System.VM_SPECIFICATION_VENDOR, false);

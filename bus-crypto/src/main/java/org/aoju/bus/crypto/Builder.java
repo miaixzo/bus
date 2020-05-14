@@ -82,9 +82,9 @@ import java.util.Map;
  * 加密解密模块，实现了对JDK中加密解密算法的封装
  * 安全相关工具／密钥工具类
  * 加密分为三种：
- * 1、对称加密（symmetric），例如：AES、DES等
- * 2、非对称加密（asymmetric），例如：RSA、DSA等
- * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
+ * 1、对称加密(symmetric)，例如：AES、DES等
+ * 2、非对称加密(asymmetric)，例如：RSA、DSA等
+ * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
  * @version 5.9.0
@@ -457,7 +457,7 @@ public final class Builder {
      * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
      *
      * @param algorithm 非对称加密算法
-     * @param keySize   密钥模（modulus ）长度
+     * @param keySize   密钥模(modulus )长度
      * @return {@link KeyPair}
      */
     public static KeyPair generateKeyPair(String algorithm, int keySize) {
@@ -469,7 +469,7 @@ public final class Builder {
      * 密钥对生成算法见：https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator
      *
      * @param algorithm 非对称加密算法
-     * @param keySize   密钥模（modulus ）长度
+     * @param keySize   密钥模(modulus )长度
      * @param seed      种子
      * @return {@link KeyPair}
      */
@@ -523,7 +523,7 @@ public final class Builder {
      * </pre>
      *
      * <p>
-     * <b>EC（Elliptic Curve）：</b>
+     * <b>EC(Elliptic Curve)：</b>
      * <pre>
      * EC256：256 bits
      * EC384：384 bits
@@ -531,7 +531,7 @@ public final class Builder {
      * </pre>
      *
      * @param algorithm 非对称加密算法
-     * @param keySize   密钥模（modulus ）长度（单位bit）
+     * @param keySize   密钥模(modulus )长度(单位bit)
      * @param seed      种子
      * @param params    {@link AlgorithmParameterSpec}
      * @return {@link KeyPair}
@@ -556,7 +556,7 @@ public final class Builder {
      * </pre>
      *
      * <p>
-     * <b>EC（Elliptic Curve）：</b>
+     * <b>EC(Elliptic Curve)：</b>
      * <pre>
      * EC256：256 bits
      * EC384：384 bits
@@ -564,7 +564,7 @@ public final class Builder {
      * </pre>
      *
      * @param algorithm 非对称加密算法
-     * @param keySize   密钥模（modulus ）长度（单位bit）
+     * @param keySize   密钥模(modulus )长度(单位bit)
      * @param random    {@link SecureRandom} 对象，创建时可选传入seed
      * @param params    {@link AlgorithmParameterSpec}
      * @return {@link KeyPair}
@@ -573,11 +573,11 @@ public final class Builder {
         algorithm = getAlgorithmAfterWith(algorithm);
         final KeyPairGenerator keyPairGen = getKeyPairGenerator(algorithm);
 
-        // 密钥模（modulus ）长度初始化定义
+        // 密钥模(modulus )长度初始化定义
         if (keySize > 0) {
             // key长度适配修正
             if (Algorithm.EC.equalsIgnoreCase(algorithm) && keySize > 256) {
-                // 对于EC（EllipticCurve）算法，密钥长度有限制，在此使用默认256
+                // 对于EC(EllipticCurve)算法，密钥长度有限制，在此使用默认256
                 keySize = 256;
             }
             if (null != random) {
@@ -1052,7 +1052,7 @@ public final class Builder {
     }
 
     /**
-     * DESede加密（又名3DES、TripleDES），生成随机KEY。注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY
+     * DESede加密(又名3DES、TripleDES)，生成随机KEY。注意解密时必须使用相同 {@link DESede}对象或者使用相同KEY
      * Java中默认实现为：DESede/ECB/PKCS5Padding
      * 例：
      *
@@ -1068,7 +1068,7 @@ public final class Builder {
     }
 
     /**
-     * DESede加密（又名3DES、TripleDES）
+     * DESede加密(又名3DES、TripleDES)
      * Java中默认实现为：DESede/ECB/PKCS5Padding
      * 例：
      *
@@ -1598,7 +1598,7 @@ public final class Builder {
      * 验证密码是否与Bcrypt加密后的密文匹配
      *
      * @param password 明文密码
-     * @param hashed   hash值（加密后的值）
+     * @param hashed   hash值(加密后的值)
      * @return 是否匹配
      */
     public static boolean checkpw(String password, String hashed) {
@@ -1725,7 +1725,7 @@ public final class Builder {
      *
      * @param crypto 对称加密算法
      * @param params 参数
-     * @param other  其它附加参数字符串（例如密钥）
+     * @param other  其它附加参数字符串(例如密钥)
      * @return 签名
      */
     public static String signParams(Symmetric crypto, Map<?, ?> params, String... other) {
@@ -1741,7 +1741,7 @@ public final class Builder {
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @param isIgnoreNull      是否忽略null的键和值
-     * @param other             其它附加参数字符串（例如密钥）
+     * @param other             其它附加参数字符串(例如密钥)
      * @return 签名
      */
     public static String signParams(Symmetric crypto, Map<?, ?> params, String separator,
@@ -1755,7 +1755,7 @@ public final class Builder {
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
-     * @param other  其它附加参数字符串（例如密钥）
+     * @param other  其它附加参数字符串(例如密钥)
      * @return 签名
      */
     public static String signParamsMd5(Map<?, ?> params, String... other) {
@@ -1768,7 +1768,7 @@ public final class Builder {
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
-     * @param other  其它附加参数字符串（例如密钥）
+     * @param other  其它附加参数字符串(例如密钥)
      * @return 签名
      */
     public static String signParamsSha1(Map<?, ?> params, String... other) {
@@ -1781,7 +1781,7 @@ public final class Builder {
      * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params 参数
-     * @param other  其它附加参数字符串（例如密钥）
+     * @param other  其它附加参数字符串(例如密钥)
      * @return 签名
      */
     public static String signParamsSha256(Map<?, ?> params, String... other) {
@@ -1795,7 +1795,7 @@ public final class Builder {
      *
      * @param algorithm   摘要算法
      * @param params      参数
-     * @param otherParams 其它附加参数字符串（例如密钥）
+     * @param otherParams 其它附加参数字符串(例如密钥)
      * @return 签名
      */
     public static String signParams(String algorithm, Map<?, ?> params, String... otherParams) {
@@ -1811,7 +1811,7 @@ public final class Builder {
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @param isIgnoreNull      是否忽略null的键和值
-     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 签名
      */
     public static String signParams(String algorithm, Map<?, ?> params, String separator,
@@ -1836,7 +1836,7 @@ public final class Builder {
      * 解码字符串密钥，可支持的编码如下：
      *
      * <pre>
-     * 1. Hex（16进制）编码
+     * 1. Hex(16进制)编码
      * 1. Base64编码
      * </pre>
      *
@@ -1932,7 +1932,7 @@ public final class Builder {
     }
 
     /**
-     * 编码压缩EC公钥（基于BouncyCastle）
+     * 编码压缩EC公钥(基于BouncyCastle)
      * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
      *
      * @param publicKey {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey
@@ -1943,7 +1943,7 @@ public final class Builder {
     }
 
     /**
-     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle）
+     * 解码恢复EC压缩公钥,支持Base64和Hex编码,(基于BouncyCastle)
      * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
      *
      * @param encode    压缩公钥
@@ -1955,7 +1955,7 @@ public final class Builder {
     }
 
     /**
-     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle）
+     * 解码恢复EC压缩公钥,支持Base64和Hex编码,(基于BouncyCastle)
      * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
      *
      * @param encodeByte 压缩公钥
@@ -2362,9 +2362,9 @@ public final class Builder {
     }
 
     /**
-     * 写出pem密钥（私钥、公钥、证书）
+     * 写出pem密钥(私钥、公钥、证书)
      *
-     * @param type      密钥类型（私钥、公钥、证书）
+     * @param type      密钥类型(私钥、公钥、证书)
      * @param content   密钥内容
      * @param keyStream pem流
      */
@@ -2373,7 +2373,7 @@ public final class Builder {
     }
 
     /**
-     * 写出pem密钥（私钥、公钥、证书）
+     * 写出pem密钥(私钥、公钥、证书)
      *
      * @param pemObject pem对象，包括密钥和密钥类型等信息
      * @param keyStream pem流

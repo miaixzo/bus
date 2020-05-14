@@ -206,7 +206,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
     }
 
     /**
-     * 关闭（停止）监听
+     * 关闭(停止)监听
      */
     @Override
     public void close() {

@@ -39,7 +39,7 @@ public interface ValueParser {
      * 转换包括：
      * <ol>
      * <li>数字字符串转为数字</li>
-     * <li>别名转为对应的数字（如月份和星期）</li>
+     * <li>别名转为对应的数字(如月份和星期)</li>
      * </ol>
      *
      * @param value String值

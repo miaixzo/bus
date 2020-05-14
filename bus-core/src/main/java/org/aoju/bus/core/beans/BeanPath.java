@@ -35,7 +35,7 @@ import java.util.*;
  * Bean路径表达式,用于获取多层嵌套Bean中的字段值或Bean对象
  * 根据给定的表达式,查找Bean中对应的属性值对象  表达式分为两种：
  * <ol>
- * <li>.表达式,可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
+ * <li>.表达式,可以获取Bean对象中的属性(字段)值或者Map中key对应的值</li>
  * <li>[]表达式,可以获取集合等对象中对应index的值</li>
  * </ol>
  * <p>
@@ -78,7 +78,7 @@ public class BeanPath implements Serializable {
      * Bean表达式,用于获取多层嵌套Bean中的字段值或Bean对象
      * 根据给定的表达式,查找Bean中对应的属性值对象  表达式分为两种：
      * <ol>
-     * <li>.表达式,可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
+     * <li>.表达式,可以获取Bean对象中的属性(字段)值或者Map中key对应的值</li>
      * <li>[]表达式,可以获取集合等对象中对应index的值</li>
      * </ol>
      * <p>
@@ -169,7 +169,7 @@ public class BeanPath implements Serializable {
     }
 
     /**
-     * 设置表达式指定位置（或filed对应）的值
+     * 设置表达式指定位置(或filed对应)的值
      * 若表达式指向一个List则设置其坐标对应位置的值,若指向Map则put对应key的值,Bean则设置字段的值
      * 注意：
      *
@@ -186,7 +186,7 @@ public class BeanPath implements Serializable {
     }
 
     /**
-     * 设置表达式指定位置（或filed对应）的值
+     * 设置表达式指定位置(或filed对应)的值
      * 若表达式指向一个List则设置其坐标对应位置的值,若指向Map则put对应key的值,Bean则设置字段的值
      * 注意：
      *
@@ -229,7 +229,7 @@ public class BeanPath implements Serializable {
             patternPart = patternParts.get(i);
             subBean = getFieldValue(subBean, patternPart);
             if (null == subBean) {
-                // 支持表达式的第一个对象为Bean本身（若用户定义表达式$开头,则不做此操作）
+                // 支持表达式的第一个对象为Bean本身(若用户定义表达式$开头,则不做此操作)
                 if (isFirst && false == this.isStartWith$ && BeanUtils.isMatchName(bean, patternPart, true)) {
                     subBean = bean;
                     isFirst = false;
@@ -264,14 +264,14 @@ public class BeanPath implements Serializable {
             if (ArrayUtils.contains(expChars, c)) {
                 // 处理边界符号
                 if (Symbol.C_BRACKET_RIGHT == c) {
-                    // 中括号（数字下标）结束
+                    // 中括号(数字下标)结束
                     if (false == isNumStart) {
                         throw new IllegalArgumentException(StringUtils.format("Bad expression '{}':{}, we find ']' but no '[' !", expression, i));
                     }
                     isNumStart = false;
                 } else {
                     if (isNumStart) {
-                        // 非结束中括号情况下发现起始中括号报错（中括号未关闭）
+                        // 非结束中括号情况下发现起始中括号报错(中括号未关闭)
                         throw new IllegalArgumentException(StringUtils.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, i));
                     } else if (Symbol.C_BRACKET_LEFT == c) {
                         // 数字下标开始

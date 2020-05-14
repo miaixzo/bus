@@ -61,7 +61,7 @@ import java.util.Random;
 public class ImageUtils {
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      * 缩放后默认为jpeg格式
      *
      * @param srcImageFile  源图像文件
@@ -73,7 +73,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像来源流
@@ -85,7 +85,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像来源流
@@ -97,7 +97,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage 源图像来源流
@@ -110,7 +110,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage 源图像来源流
@@ -123,7 +123,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage        源图像来源流
@@ -136,7 +136,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      *
      * @param srcImage 源图像来源流
      * @param scale    缩放比例 比例大于1时为放大,小于1大于0为缩小
@@ -147,7 +147,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按长宽缩放）
+     * 缩放图像(按长宽缩放)
      * 注意：目标长宽与原图不成比例会变形
      *
      * @param srcImage 源图像来源流
@@ -160,7 +160,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
+     * 缩放图像(按高度和宽度缩放)
      * 缩放后默认为jpeg格式
      *
      * @param srcImageFile  源图像文件地址
@@ -175,7 +175,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
+     * 缩放图像(按高度和宽度缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -190,7 +190,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
+     * 缩放图像(按高度和宽度缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcStream  源图像流
@@ -205,7 +205,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
+     * 缩放图像(按高度和宽度缩放)
      * 缩放后默认为jpeg格式,此方法并不关闭流
      *
      * @param srcImage        源图像
@@ -220,7 +220,7 @@ public class ImageUtils {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
+     * 缩放图像(按高度和宽度缩放)
      * 缩放后默认为jpeg格式
      *
      * @param srcImage   源图像
@@ -314,7 +314,7 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割(按指定起点坐标和宽高切割),填充满整个图片（直径取长宽最小值）
+     * 图像切割(按指定起点坐标和宽高切割),填充满整个图片(直径取长宽最小值)
      *
      * @param srcImage 源图像
      * @param x        原图的x坐标起始位置
@@ -331,7 +331,7 @@ public class ImageUtils {
      * @param srcImage 源图像
      * @param x        原图的x坐标起始位置
      * @param y        原图的y坐标起始位置
-     * @param radius   半径,小于0表示填充满整个图片（直径取长宽最小值）
+     * @param radius   半径,小于0表示填充满整个图片(直径取长宽最小值)
      * @return {@link java.awt.Image}
      */
     public static java.awt.Image cut(java.awt.Image srcImage, int x, int y, int radius) {
@@ -339,7 +339,7 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切片（指定切片的宽度和高度）
+     * 图像切片(指定切片的宽度和高度)
      *
      * @param srcImageFile 源图像
      * @param descDir      切片目标文件夹
@@ -351,7 +351,7 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切片（指定切片的宽度和高度）
+     * 图像切片(指定切片的宽度和高度)
      *
      * @param srcImage   源图像
      * @param descDir    切片目标文件夹
@@ -401,7 +401,7 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割（指定切片的行数和列数）
+     * 图像切割(指定切片的行数和列数)
      *
      * @param srcImageFile 源图像文件
      * @param destDir      切片目标文件夹
@@ -417,7 +417,7 @@ public class ImageUtils {
     }
 
     /**
-     * 图像切割（指定切片的行数和列数）
+     * 图像切割(指定切片的行数和列数)
      *
      * @param srcImage 源图像
      * @param destDir  切片目标文件夹
@@ -681,7 +681,7 @@ public class ImageUtils {
      * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
      * @param x         修正值  默认在中间,偏移量相对于中间偏移
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      */
     public static void pressText(File imageFile, File destFile, String pressText, Color color, Font font, int x, int y, float alpha) {
         pressText(read(imageFile), destFile, pressText, color, font, x, y, alpha);
@@ -698,7 +698,7 @@ public class ImageUtils {
      * @param font       {@link Font} 字体相关信息,如果默认则为{@code null}
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      */
     public static void pressText(InputStream srcStream, OutputStream destStream, String pressText, Color color, Font font, int x, int y, float alpha) {
         pressText(read(srcStream), getImageOutputStream(destStream), pressText, color, font, x, y, alpha);
@@ -715,7 +715,7 @@ public class ImageUtils {
      * @param font       {@link Font} 字体相关信息,如果默认则为{@code null}
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      */
     public static void pressText(ImageInputStream srcStream, ImageOutputStream destStream, String pressText, Color color, Font font, int x, int y, float alpha) {
         pressText(read(srcStream), destStream, pressText, color, font, x, y, alpha);
@@ -732,7 +732,7 @@ public class ImageUtils {
      * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
      * @param x         修正值  默认在中间,偏移量相对于中间偏移
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @throws InstrumentException IO异常
      */
     public static void pressText(java.awt.Image srcImage, File destFile, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
@@ -750,7 +750,7 @@ public class ImageUtils {
      * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
      * @param x         修正值  默认在中间,偏移量相对于中间偏移
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @throws InstrumentException IO异常
      */
     public static void pressText(java.awt.Image srcImage, OutputStream to, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
@@ -768,7 +768,7 @@ public class ImageUtils {
      * @param font            {@link Font} 字体相关信息,如果默认则为{@code null}
      * @param x               修正值  默认在中间,偏移量相对于中间偏移
      * @param y               修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @throws InstrumentException IO异常
      */
     public static void pressText(java.awt.Image srcImage, ImageOutputStream destImageStream, String pressText, Color color, Font font, int x, int y, float alpha) throws InstrumentException {
@@ -785,7 +785,7 @@ public class ImageUtils {
      * @param font      {@link Font} 字体相关信息,如果默认则为{@code null}
      * @param x         修正值  默认在中间,偏移量相对于中间偏移
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return 处理后的图像
      */
     public static java.awt.Image pressText(java.awt.Image srcImage, String pressText, Color color, Font font, int x, int y, float alpha) {
@@ -800,7 +800,7 @@ public class ImageUtils {
      * @param pressImage    水印图片
      * @param x             修正值  默认在中间,偏移量相对于中间偏移
      * @param y             修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha         透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha         透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      */
     public static void pressImage(File srcImageFile, File destImageFile, java.awt.Image pressImage, int x, int y, float alpha) {
         pressImage(read(srcImageFile), destImageFile, pressImage, x, y, alpha);
@@ -815,7 +815,7 @@ public class ImageUtils {
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      */
     public static void pressImage(InputStream srcStream, OutputStream destStream, java.awt.Image pressImage, int x, int y, float alpha) {
         pressImage(read(srcStream), getImageOutputStream(destStream), pressImage, x, y, alpha);
@@ -830,7 +830,7 @@ public class ImageUtils {
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @throws InstrumentException IO异常
      */
     public static void pressImage(ImageInputStream srcStream, ImageOutputStream destStream, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
@@ -846,7 +846,7 @@ public class ImageUtils {
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @throws InstrumentException IO异常
      */
     public static void pressImage(java.awt.Image srcImage, File outFile, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
@@ -862,7 +862,7 @@ public class ImageUtils {
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @throws InstrumentException IO异常
      */
     public static void pressImage(java.awt.Image srcImage, OutputStream out, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
@@ -878,7 +878,7 @@ public class ImageUtils {
      * @param pressImage      水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param x               修正值  默认在中间,偏移量相对于中间偏移
      * @param y               修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @throws InstrumentException IO异常
      */
     public static void pressImage(java.awt.Image srcImage, ImageOutputStream destImageStream, java.awt.Image pressImage, int x, int y, float alpha) throws InstrumentException {
@@ -893,7 +893,7 @@ public class ImageUtils {
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return 结果图片
      */
     public static java.awt.Image pressImage(java.awt.Image srcImage, java.awt.Image pressImage, int x, int y, float alpha) {
@@ -907,7 +907,7 @@ public class ImageUtils {
      * @param srcImage   源图像流
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param rectangle  矩形对象,表示矩形区域的x,y,width,height,x,y从背景图片中心计算
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return 结果图片
      */
     public static java.awt.Image pressImage(java.awt.Image srcImage, java.awt.Image pressImage, Rectangle rectangle, float alpha) {
@@ -1129,7 +1129,7 @@ public class ImageUtils {
      *
      * @param image           {@link java.awt.Image}
      * @param imageType       目标图片类型,{@link BufferedImage}中的常量,例如黑白等
-     * @param backgroundColor 背景色,{@code null} 表示默认背景色（黑色或者透明）
+     * @param backgroundColor 背景色,{@code null} 表示默认背景色(黑色或者透明)
      * @return {@link BufferedImage}
      * @see BufferedImage#TYPE_INT_RGB
      * @see BufferedImage#TYPE_INT_ARGB
@@ -1378,7 +1378,7 @@ public class ImageUtils {
      * 写出图像
      *
      * @param image     {@link java.awt.Image}
-     * @param imageType 图片类型（图片扩展名）
+     * @param imageType 图片类型(图片扩展名)
      * @param out       写出到的目标流
      * @throws InstrumentException IO异常
      */
@@ -1390,7 +1390,7 @@ public class ImageUtils {
      * 写出图像为指定格式
      *
      * @param image           {@link java.awt.Image}
-     * @param imageType       图片类型（图片扩展名）
+     * @param imageType       图片类型(图片扩展名)
      * @param destImageStream 写出到的目标流
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
@@ -1403,9 +1403,9 @@ public class ImageUtils {
      * 写出图像为指定格式
      *
      * @param image           {@link java.awt.Image}
-     * @param imageType       图片类型（图片扩展名）
+     * @param imageType       图片类型(图片扩展名)
      * @param destImageStream 写出到的目标流
-     * @param quality         质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
+     * @param quality         质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      * @return 是否成功写出, 如果返回false表示未找到合适的Writer
      * @throws InstrumentException IO异常
      */
@@ -1441,7 +1441,7 @@ public class ImageUtils {
      * @param image   图片
      * @param writer  {@link ImageWriter}
      * @param output  输出的Image流{@link ImageOutputStream}
-     * @param quality 质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
+     * @param quality 质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      * @return 是否成功写出
      */
     public static boolean write(java.awt.Image image, ImageWriter writer, ImageOutputStream output, float quality) {
@@ -1688,7 +1688,7 @@ public class ImageUtils {
      * 将颜色值转换成具体的颜色类型 汇集了常用的颜色集,支持以下几种形式：
      *
      * <pre>
-     * 1. 颜色的英文名（大小写皆可）
+     * 1. 颜色的英文名(大小写皆可)
      * 2. 16进制表示,例如：#fcf6d6或者$fcf6d6
      * 3. RGB形式,例如：13,148,252
      * </pre>

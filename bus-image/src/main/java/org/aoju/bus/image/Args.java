@@ -240,6 +240,7 @@ public class Args {
      *
      * @param conn   链接信息
      * @param remote 远程信息
+     * @throws IOException 异常
      */
     public void configureTLS(Connection conn, Connection remote) throws IOException {
         if (option != null) {

@@ -41,26 +41,26 @@ public class JavaSpec implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 取得当前Java Spec.的名称（取自系统属性：<code>java.specification.name</code>）
+     * 取得当前Java Spec.的名称(取自系统属性：<code>java.specification.name</code>)
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"Java Platform API Specification"</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getName() {
         return Platform.get(System.SPECIFICATION_NAME, false);
     }
 
     /**
-     * 取得当前Java Spec.的版本（取自系统属性：<code>java.specification.version</code>）
+     * 取得当前Java Spec.的版本(取自系统属性：<code>java.specification.version</code>)
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"1.4"</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      * @since Java 1.3
      */
     public final String getVersion() {
@@ -68,13 +68,13 @@ public class JavaSpec implements Serializable {
     }
 
     /**
-     * 取得当前Java Spec.的厂商（取自系统属性：<code>java.specification.vendor</code>）
+     * 取得当前Java Spec.的厂商(取自系统属性：<code>java.specification.vendor</code>)
      *
      * <p>
      * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getVendor() {
         return Platform.get(System.SPECIFICATION_VENDOR, false);

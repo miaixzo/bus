@@ -51,7 +51,7 @@ public class AspectjSimple implements Aspectj, Serializable {
      * @param target 目标对象
      * @param method 目标方法
      * @param args   参数
-     * @return 是否允许返回值（接下来的操作）
+     * @return 是否允许返回值(接下来的操作)
      * @see Aspectj#afterException 返回true,则不会执行此操作
      * 如果
      * @see Aspectj#afterException 返回false,则无论target.method是否抛出异常,均会执行此操作

@@ -31,7 +31,7 @@ package org.aoju.bus.socket.origin.plugins.ssl;
  */
 public class SSLConfig {
     /**
-     * 配置引擎在握手时使用客户端（或服务器）模式
+     * 配置引擎在握手时使用客户端(或服务器)模式
      */
     private boolean clientMode;
     private String keyFile;

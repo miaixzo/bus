@@ -103,14 +103,14 @@ public abstract class AbstractFtp implements Closeable {
     }
 
     /**
-     * 远程当前目录（工作目录）
+     * 远程当前目录(工作目录)
      *
      * @return 远程当前目录
      */
     public abstract String pwd();
 
     /**
-     * 在当前远程目录（工作目录）下创建新的目录
+     * 在当前远程目录(工作目录)下创建新的目录
      *
      * @param dir 目录名
      * @return 是否创建成功

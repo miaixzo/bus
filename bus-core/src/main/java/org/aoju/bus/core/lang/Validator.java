@@ -65,7 +65,7 @@ public class Validator {
      *
      * @param <T>              被检查的对象类型
      * @param value            值
-     * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
+     * @param errorMsgTemplate 错误消息内容模板(变量使用{}表示)
      * @param params           模板中变量替换后的值
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
@@ -137,7 +137,7 @@ public class Validator {
      * 检查指定值是否为<code>true</code>
      *
      * @param value            值
-     * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
+     * @param errorMsgTemplate 错误消息内容模板(变量使用{}表示)
      * @param params           模板中变量替换后的值
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
@@ -153,7 +153,7 @@ public class Validator {
      * 检查指定值是否为<code>false</code>
      *
      * @param value            值
-     * @param errorMsgTemplate 错误消息内容模板（变量使用{}表示）
+     * @param errorMsgTemplate 错误消息内容模板(变量使用{}表示)
      * @param params           模板中变量替换后的值
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
@@ -445,17 +445,17 @@ public class Validator {
     }
 
     /**
-     * 验证该字符串是否是字母（包括大写和小写字母）
+     * 验证该字符串是否是字母(包括大写和小写字母)
      *
      * @param value 字符串内容
-     * @return 是否是字母（包括大写和小写字母）
+     * @return 是否是字母(包括大写和小写字母)
      */
     public static boolean isWord(String value) {
         return isMatchRegex(RegEx.WORD, value);
     }
 
     /**
-     * 验证是否为字母（包括大写和小写字母）
+     * 验证是否为字母(包括大写和小写字母)
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
@@ -491,17 +491,17 @@ public class Validator {
     }
 
     /**
-     * 验证是否为邮政编码（中国）
+     * 验证是否为邮政编码(中国)
      *
      * @param value 值
-     * @return 是否为邮政编码（中国）
+     * @return 是否为邮政编码(中国)
      */
     public static boolean isZipCode(String value) {
         return isMatchRegex(RegEx.ZIP_CODE, value);
     }
 
     /**
-     * 验证是否为邮政编码（中国）
+     * 验证是否为邮政编码(中国)
      *
      * @param value    表单值
      * @param errorMsg 验证错误的信息
@@ -537,27 +537,27 @@ public class Validator {
     }
 
     /**
-     * 验证是否为手机号码（中国）
+     * 验证是否为手机号码(中国)
      *
      * @param value 值
-     * @return 是否为手机号码（中国）
+     * @return 是否为手机号码(中国)
      */
     public static boolean isPhone(String value) {
         return isMatchRegex(RegEx.PHONE, value);
     }
 
     /**
-     * 验证是否为手机号码（中国）
+     * 验证是否为手机号码(中国)
      *
      * @param value 值
-     * @return 是否为手机号码（中国）
+     * @return 是否为手机号码(中国)
      */
     public static boolean isMobile(String value) {
         return isMatchRegex(RegEx.MOBILE, value);
     }
 
     /**
-     * 验证是否为手机号码（中国）
+     * 验证是否为手机号码(中国)
      *
      * @param value    值
      * @param errorMsg 验证错误的信息
@@ -570,18 +570,18 @@ public class Validator {
     }
 
     /**
-     * 验证是否为身份证号码（18位中国）
+     * 验证是否为身份证号码(18位中国)
      * 出生日期只支持到到2999年
      *
      * @param value 值
-     * @return 是否为身份证号码（18位中国）
+     * @return 是否为身份证号码(18位中国)
      */
     public static boolean isCitizenId(String value) {
         return isMatchRegex(RegEx.CITIZEN_ID, value);
     }
 
     /**
-     * 验证是否为身份证号码（18位中国）
+     * 验证是否为身份证号码(18位中国)
      * 出生日期只支持到到2999年
      *
      * @param value    值
@@ -893,8 +893,8 @@ public class Validator {
      * 检查给定的数字是否在指定范围内
      *
      * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param min   最小值(包含)
+     * @param max   最大值(包含)
      * @return 是否满足
      */
     public static boolean isBetween(Number value, Number min, Number max) {
@@ -909,8 +909,8 @@ public class Validator {
      * 检查给定的数字是否在指定范围内
      *
      * @param value    值
-     * @param min      最小值（包含）
-     * @param max      最大值（包含）
+     * @param min      最小值(包含)
+     * @param max      最大值(包含)
      * @param errorMsg 验证错误的信息
      * @throws ValidateException 验证异常
      */
@@ -921,17 +921,17 @@ public class Validator {
     }
 
     /**
-     * 验证是否为Hex（16进制）字符串
+     * 验证是否为Hex(16进制)字符串
      *
      * @param value 值
-     * @return 是否为Hex（16进制）字符串
+     * @return 是否为Hex(16进制)字符串
      */
     public static boolean isHex(CharSequence value) {
         return isMatchRegex(RegEx.HEX, value);
     }
 
     /**
-     * 验证是否为Hex（16进制）字符串
+     * 验证是否为Hex(16进制)字符串
      *
      * @param <T>      字符串类型
      * @param value    值

@@ -101,8 +101,8 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
     /**
      * 构造
      *
-     * @param start  起始对象（包含）
-     * @param end    结束对象（包含）
+     * @param start  起始对象(包含)
+     * @param end    结束对象(包含)
      * @param steper 步进
      */
     public Range(T start, T end, Steper<T> steper) {
@@ -247,7 +247,7 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
          *
          * @param current 上一次增加步进后的基础对象
          * @param end     结束对象
-         * @param index   当前索引（步进到第几个元素），从0开始计数
+         * @param index   当前索引(步进到第几个元素)，从0开始计数
          * @return 增加步进后的对象
          */
         T step(T current, T end, int index);

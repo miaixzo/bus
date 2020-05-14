@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
 
 /**
  * Base64工具类,提供Base64的编码和解码方案
- * base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符,
+ * base64编码是用64(2的6次方)个ASCII字符来表示256(2的8次方)个ASCII字符,
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
@@ -154,7 +154,7 @@ public class Base64 {
     /**
      * base64编码
      *
-     * @param in 被编码base64的流（一般为图片流或者文件流）
+     * @param in 被编码base64的流(一般为图片流或者文件流)
      * @return 被加密后的字符串
      */
     public static String encode(InputStream in) {
@@ -164,7 +164,7 @@ public class Base64 {
     /**
      * base64编码,URL安全的
      *
-     * @param in 被编码base64的流（一般为图片流或者文件流）
+     * @param in 被编码base64的流(一般为图片流或者文件流)
      * @return 被加密后的字符串
      */
     public static String encodeUrlSafe(InputStream in) {

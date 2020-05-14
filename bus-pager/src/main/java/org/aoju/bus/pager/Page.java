@@ -72,7 +72,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     private Boolean reasonable;
     /**
-     * 当设置为true的时候,如果pagesize设置为0（或RowBounds的limit=0）,就不执行分页,返回全部结果
+     * 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
      */
     private Boolean pageSizeZero;
     /**
@@ -310,7 +310,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     /**
-     * 当设置为true的时候,如果pagesize设置为0（或RowBounds的limit=0）,就不执行分页,返回全部结果
+     * 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
      *
      * @param pageSizeZero 分页大小
      * @return 结果

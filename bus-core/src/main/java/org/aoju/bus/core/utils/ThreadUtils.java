@@ -88,7 +88,7 @@ public class ThreadUtils {
     /**
      * 获得一个新的线程池
      * 传入阻塞系数,线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子)
-     * Blocking Coefficient(阻塞系数) = 阻塞时间／（阻塞时间+使用CPU的时间）
+     * Blocking Coefficient(阻塞系数) = 阻塞时间／(阻塞时间+使用CPU的时间)
      * 计算密集型任务的阻塞系数为0,而IO密集型任务的阻塞系数则接近于1
      * <p>
      * see: http://blog.csdn.net/partner4java/article/details/9417663

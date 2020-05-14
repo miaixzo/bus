@@ -46,8 +46,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 此工具用于通过POI将数据写出到Excel,此对象可完成以下两个功能
  *
  * <pre>
- * 1. 编辑已存在的Excel,可写出原Excel文件,也可写出到其它地方（到文件或到流）
- * 2. 新建一个空的Excel工作簿,完成数据填充后写出（到文件或到流）
+ * 1. 编辑已存在的Excel,可写出原Excel文件,也可写出到其它地方(到文件或到流)
+ * 2. 新建一个空的Excel工作簿,完成数据填充后写出(到文件或到流)
  * </pre>
  *
  * @author Kimi Liu
@@ -452,10 +452,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
-     * 设置列宽（单位为一个字符的宽度,例如传入width为10,表示10个字符的宽度）
+     * 设置列宽(单位为一个字符的宽度,例如传入width为10,表示10个字符的宽度)
      *
-     * @param columnIndex 列号（从0开始计数,-1表示所有列的默认宽度）
-     * @param width       宽度（单位1~256个字符宽度）
+     * @param columnIndex 列号(从0开始计数,-1表示所有列的默认宽度)
+     * @param width       宽度(单位1~256个字符宽度)
      * @return this
      */
     public ExcelWriter setColumnWidth(int columnIndex, int width) {
@@ -470,7 +470,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 设置行高,值为一个点的高度
      *
-     * @param rownum 行号（从0开始计数,-1表示所有行的默认高度）
+     * @param rownum 行号(从0开始计数,-1表示所有行的默认高度)
      * @param height 高度
      * @return this
      */
@@ -590,7 +590,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 写出数据,本方法只是将数据写入Workbook中的Sheet,并不写出到文件
      * 写出的起始行为当前行号,可使用{@link #getCurrentRow()}方法调用,根据写出的的行数,当前行号自动增加
      * 样式为默认样式,可使用{@link #getCellStyle()}方法调用后自定义默认样式
-     * 默认的,当当前行号为0时,写出标题（如果为Map或Bean）,否则不写标题
+     * 默认的,当当前行号为0时,写出标题(如果为Map或Bean),否则不写标题
      *
      * <p>
      * data中元素支持的类型有：
@@ -599,7 +599,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 1. Iterable,既元素为一个集合,元素被当作一行,data表示多行
      * 2. Map,既元素为一个Map,第一个Map的keys作为首行,剩下的行为Map的values,data表示多行
      * 3. Bean,既元素为一个Bean,第一个Bean的字段名列表会作为首行,剩下的行为Bean的字段值列表,data表示多行
-     * 4. 其它类型,按照基本类型输出（例如字符串）
+     * 4. 其它类型,按照基本类型输出(例如字符串)
      * </pre>
      *
      * @param data 数据
@@ -621,11 +621,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 1. Iterable,既元素为一个集合,元素被当作一行,data表示多行
      * 2. Map,既元素为一个Map,第一个Map的keys作为首行,剩下的行为Map的values,data表示多行
      * 3. Bean,既元素为一个Bean,第一个Bean的字段名列表会作为首行,剩下的行为Bean的字段值列表,data表示多行
-     * 4. 其它类型,按照基本类型输出（例如字符串）
+     * 4. 其它类型,按照基本类型输出(例如字符串)
      * </pre>
      *
      * @param data             数据
-     * @param isWriteKeyAsHead 是否强制写出标题行（Map或Bean）
+     * @param isWriteKeyAsHead 是否强制写出标题行(Map或Bean)
      * @return this
      */
     public ExcelWriter write(Iterable<?> data, boolean isWriteKeyAsHead) {
@@ -740,9 +740,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     /**
      * 将一个Map写入到Excel,isWriteKeyAsHead为true写出两行,Map的keys做为一行,values做为第二行,否则只写出一行values
-     * 如果rowMap为空（包括null）,则写出空行
+     * 如果rowMap为空(包括null),则写出空行
      *
-     * @param rowMap           写出的Map,为空（包括null）,则写出空行
+     * @param rowMap           写出的Map,为空(包括null),则写出空行
      * @param isWriteKeyAsHead 为true写出两行,Map的keys做为一行,values做为第二行,否则只写出一行values
      * @return this
      */
@@ -1072,7 +1072,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         /**
          * {@code null}安全的对象比较
          *
-         * @param <T>           被比较对象类型（必须实现Comparable接口）
+         * @param <T>           被比较对象类型(必须实现Comparable接口)
          * @param c1            对象1,可以为{@code null}
          * @param c2            对象2,可以为{@code null}
          * @param isNullGreater 当被比较对象为null时是否排在前面

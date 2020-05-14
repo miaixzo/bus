@@ -61,7 +61,7 @@ import java.util.*;
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
     /**
-     * 注释符号（当有此符号在行首,表示此行为注释）
+     * 注释符号(当有此符号在行首,表示此行为注释)
      */
     private static final String COMMENT_FLAG_PRE = Symbol.SHAPE;
     /**
@@ -91,7 +91,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     /**
      * 构造,使用相对于Class文件根目录的相对路径
      *
-     * @param pathBaseClassLoader 相对路径（相对于当前项目的classes路径）
+     * @param pathBaseClassLoader 相对路径(相对于当前项目的classes路径)
      * @param charset             字符集
      */
     public GroupedSet(String pathBaseClassLoader, Charset charset) {
@@ -154,7 +154,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     /**
      * 构造
      *
-     * @param pathBaseClassLoader 相对路径（相对于当前项目的classes路径）
+     * @param pathBaseClassLoader 相对路径(相对于当前项目的classes路径)
      */
     public GroupedSet(String pathBaseClassLoader) {
         this(pathBaseClassLoader, org.aoju.bus.core.lang.Charset.UTF_8);

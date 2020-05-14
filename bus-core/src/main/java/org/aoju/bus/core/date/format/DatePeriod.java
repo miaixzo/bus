@@ -161,7 +161,7 @@ public class DatePeriod {
 
     /**
      * 等级数量是否有效
-     * 有效的定义是：levelMaxCount大于0（被设置）,当前等级数量没有超过这个最大值
+     * 有效的定义是：levelMaxCount大于0(被设置),当前等级数量没有超过这个最大值
      *
      * @param levelCount 登记数量
      * @return 是否有效

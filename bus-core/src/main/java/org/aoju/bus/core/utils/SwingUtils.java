@@ -152,7 +152,7 @@ public class SwingUtils {
     }
 
     /**
-     * 打印输出指定字符串（借助剪贴板）
+     * 打印输出指定字符串(借助剪贴板)
      *
      * @param str 字符串
      */

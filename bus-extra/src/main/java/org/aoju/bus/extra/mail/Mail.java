@@ -57,11 +57,11 @@ public class Mail {
      */
     private String[] tos;
     /**
-     * 抄送人列表（carbon copy）
+     * 抄送人列表(carbon copy)
      */
     private String[] ccs;
     /**
-     * 密送人列表（blind carbon copy）
+     * 密送人列表(blind carbon copy)
      */
     private String[] bccs;
     /**
@@ -144,7 +144,7 @@ public class Mail {
     }
 
     /**
-     * 设置多个抄送人（carbon copy）
+     * 设置多个抄送人(carbon copy)
      *
      * @param ccs 抄送人列表
      * @return this
@@ -155,7 +155,7 @@ public class Mail {
     }
 
     /**
-     * 设置多个密送人（blind carbon copy）
+     * 设置多个密送人(blind carbon copy)
      *
      * @param bccs 密送人列表
      * @return this

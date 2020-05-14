@@ -36,19 +36,19 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 public class SimpleValueParser implements ValueParser {
 
     /**
-     * 最小值（包括）
+     * 最小值(包括)
      */
     protected int min;
     /**
-     * 最大值（包括）
+     * 最大值(包括)
      */
     protected int max;
 
     /**
      * 构造
      *
-     * @param min 最小值（包括）
-     * @param max 最大值（包括）
+     * @param min 最小值(包括)
+     * @param max 最大值(包括)
      */
     public SimpleValueParser(int min, int max) {
         if (min > max) {

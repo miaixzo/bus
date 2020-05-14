@@ -323,8 +323,8 @@ public class ApplicationEntity implements Serializable {
     /**
      * 获取网络AE支持的字符集
      * 接收的数据集,该值应从PS3.3中的“特定
-     * 字符集定义的条款（0008,0005）”中选择。如果没有值
-     * 则表示网络AE仅支持默认字符*曲目（ISO IR 6）
+     * 字符集定义的条款(0008,0005)”中选择。如果没有值
+     * 则表示网络AE仅支持默认字符*曲目(ISO IR 6)
      *
      * @return 支持的字符集的String数组
      */
@@ -335,7 +335,7 @@ public class ApplicationEntity implements Serializable {
     /**
      * 设置网络AE支持的字符集接收的数据集
      * 该值应从PS3.3中的特定字符集定义的条款(0008,0005)中选择，如果没有值
-     * 则表示网络AE仅支持默认字符*曲目（ISO IR 6）
+     * 则表示网络AE仅支持默认字符*曲目(ISO IR 6)
      *
      * @param characterSets 支持的字符集的String数组
      */

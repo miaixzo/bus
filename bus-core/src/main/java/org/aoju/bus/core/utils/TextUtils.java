@@ -269,7 +269,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      * 追加一个字符数组
      *
      * @param src    字符数组
-     * @param srcPos 开始位置（包括）
+     * @param srcPos 开始位置(包括)
      * @param length 长度
      * @return this
      */
@@ -402,8 +402,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      *
      * @param index 位置
      * @param csq   字符串
-     * @param start 字符串开始位置（包括）
-     * @param end   字符串结束位置（不包括）
+     * @param start 字符串开始位置(包括)
+     * @param end   字符串结束位置(不包括)
      * @return this
      */
     public TextUtils insert(int index, CharSequence csq, int start, int end) {
@@ -439,10 +439,10 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     /**
      * 将指定段的字符列表写出到目标字符数组中
      *
-     * @param srcBegin 起始位置（包括）
-     * @param srcEnd   结束位置（不包括）
+     * @param srcBegin 起始位置(包括)
+     * @param srcEnd   结束位置(不包括)
      * @param dst      目标数组
-     * @param dstBegin 目标起始位置（包括）
+     * @param dstBegin 目标起始位置(包括)
      * @return this
      */
     public TextUtils getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) {
@@ -517,8 +517,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     /**
      * 删除指定长度的字符
      *
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return this
      */
     public TextUtils del(int start, int end) {
@@ -598,7 +598,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     /**
      * 返回自定段的字符串
      *
-     * @param start 开始位置（包括）
+     * @param start 开始位置(包括)
      * @return this
      */
     public String subString(int start) {
@@ -608,8 +608,8 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
     /**
      * 返回自定段的字符串
      *
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return this
      */
     public String subString(int start, int end) {

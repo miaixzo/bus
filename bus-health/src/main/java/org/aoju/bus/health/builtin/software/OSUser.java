@@ -90,13 +90,13 @@ public class OSUser {
     }
 
     /**
-     * 取得当前登录用户的home目录（取自系统属性：<code>user.home</code>）
+     * 取得当前登录用户的home目录(取自系统属性：<code>user.home</code>)
      *
      * <p>
      * 例如：<code>"/home/admin"</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      * @since Java 1.1
      */
     public final String getHomeDir() {
@@ -104,13 +104,13 @@ public class OSUser {
     }
 
     /**
-     * 取得当前目录（取自系统属性：<code>user.dir</code>）
+     * 取得当前目录(取自系统属性：<code>user.dir</code>)
      *
      * <p>
      * 例如：<code>"/home/admin/working"</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      * @since Java 1.1
      */
     public final String getCurrentDir() {
@@ -118,39 +118,39 @@ public class OSUser {
     }
 
     /**
-     * 取得临时目录（取自系统属性：<code>java.io.tmpdir</code>）
+     * 取得临时目录(取自系统属性：<code>java.io.tmpdir</code>)
      *
      * <p>
      * 例如：<code>"/tmp"</code>
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getTempDir() {
         return JAVA_IO_TMPDIR;
     }
 
     /**
-     * 取得当前登录用户的语言设置（取自系统属性：<code>user.language</code>）
+     * 取得当前登录用户的语言设置(取自系统属性：<code>user.language</code>)
      *
      * <p>
      * 例如：<code>"zh"</code>、<code>"en"</code>等
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getLanguage() {
         return USER_LANGUAGE;
     }
 
     /**
-     * 取得当前登录用户的国家或区域设置（取自系统属性：JDK1.4 <code>user.country</code>或JDK1.2 <code>user.region</code>）
+     * 取得当前登录用户的国家或区域设置(取自系统属性：JDK1.4 <code>user.country</code>或JDK1.2 <code>user.region</code>)
      *
      * <p>
      * 例如：<code>"CN"</code>、<code>"US"</code>等
      * </p>
      *
-     * @return 属性值, 如果不能取得（因为Java安全限制）或值不存在,则返回<code>null</code>
+     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String getCountry() {
         return USER_COUNTRY;

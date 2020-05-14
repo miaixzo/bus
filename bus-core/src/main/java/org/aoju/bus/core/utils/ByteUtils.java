@@ -371,7 +371,7 @@ public class ByteUtils {
     }
 
     /**
-     * 拆分byte数组为几个等份（最后一份可能小于len）
+     * 拆分byte数组为几个等份(最后一份可能小于len)
      *
      * @param array 数组
      * @param len   每个小节的长度

@@ -147,7 +147,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取注解类的保留时间,可选值 SOURCE（源码时）,CLASS（编译时）,RUNTIME（运行时）,默认为 CLASS
+     * 获取注解类的保留时间,可选值 SOURCE(源码时),CLASS(编译时),RUNTIME(运行时),默认为 CLASS
      *
      * @param annotationType 注解类
      * @return 保留时间枚举

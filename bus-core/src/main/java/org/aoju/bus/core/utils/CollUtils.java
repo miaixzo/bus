@@ -322,7 +322,7 @@ public class CollUtils {
      * @param array   数组要检查的数组
      * @param element 要查找的元素
      * @param <T>     通用标签
-     * @return 如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
+     * @return 如果集合为空(null或者空), 返回{@code false},否则找到元素返回{@code true}
      */
     public static <T> boolean contains(T[] array, final T element) {
         if (array == null) {
@@ -332,11 +332,11 @@ public class CollUtils {
     }
 
     /**
-     * 判断指定集合是否包含指定值,如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
+     * 判断指定集合是否包含指定值,如果集合为空(null或者空),返回{@code false},否则找到元素返回{@code true}
      *
      * @param collection 集合
      * @param value      需要查找的值
-     * @return 如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
+     * @return 如果集合为空(null或者空), 返回{@code false},否则找到元素返回{@code true}
      */
     public static boolean contains(final Collection<?> collection, Object value) {
         return isNotEmpty(collection) && collection.contains(value);
@@ -985,8 +985,8 @@ public class CollUtils {
      *
      * @param <T>   集合元素类型
      * @param list  被截取的数组
-     * @param start 开始位置（包含）
-     * @param end   结束位置（不包含）
+     * @param start 开始位置(包含)
+     * @param end   结束位置(不包含)
      * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
     public static <T> List<T> sub(List<T> list, int start, int end) {
@@ -998,8 +998,8 @@ public class CollUtils {
      *
      * @param <T>   集合元素类型
      * @param list  被截取的数组
-     * @param start 开始位置（包含）
-     * @param end   结束位置（不包含）
+     * @param start 开始位置(包含)
+     * @param end   结束位置(不包含)
      * @param step  步进
      * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
@@ -1050,8 +1050,8 @@ public class CollUtils {
      *
      * @param <T>        集合元素类型
      * @param collection 被截取的数组
-     * @param start      开始位置（包含）
-     * @param end        结束位置（不包含）
+     * @param start      开始位置(包含)
+     * @param end        结束位置(不包含)
      * @return 截取后的数组, 当开始位置超过最大时, 返回null
      */
     public static <T> List<T> sub(Collection<T> collection, int start, int end) {
@@ -1063,8 +1063,8 @@ public class CollUtils {
      *
      * @param <T>   集合元素类型
      * @param list  被截取的数组
-     * @param start 开始位置（包含）
-     * @param end   结束位置（不包含）
+     * @param start 开始位置(包含)
+     * @param end   结束位置(不包含)
      * @param step  步进
      * @return 截取后的数组, 当开始位置超过最大时, 返回空集合
      */
@@ -1287,6 +1287,8 @@ public class CollUtils {
      * 通过func自定义一个规则,此规则将原集合中的元素转换成新的元素,生成新的列表返回
      * 例如提供的是一个Bean列表,通过Function接口实现获取某个字段值,返回这个字段值组成的新列表
      *
+     * @param <T>        输入类型
+     * @param <R>        结果类型
      * @param collection 原集合
      * @param func       编辑函数
      * @param ignoreNull 是否忽略空值
@@ -1436,7 +1438,7 @@ public class CollUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
+     * 映射键值(参考Python的zip()函数)
      * 例如：
      * keys = a,b,c,d
      * values = 1,2,3,4
@@ -1454,7 +1456,7 @@ public class CollUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）,返回Map无序
+     * 映射键值(参考Python的zip()函数),返回Map无序
      * 例如：
      * keys = a,b,c,d
      * values = 1,2,3,4
@@ -1471,7 +1473,7 @@ public class CollUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
+     * 映射键值(参考Python的zip()函数)
      * 例如：
      * keys = [a,b,c,d]
      * values = [1,2,3,4]
@@ -1515,13 +1517,13 @@ public class CollUtils {
     }
 
     /**
-     * 将数组转换为Map（HashMap）,支持数组元素类型为：
+     * 将数组转换为Map(HashMap),支持数组元素类型为：
      *
      * <pre>
      * Map.Entry
-     * 长度大于1的数组（取前两个值）,如果不满足跳过此元素
-     * Iterable 长度也必须大于1（取前两个值）,如果不满足跳过此元素
-     * Iterator 长度也必须大于1（取前两个值）,如果不满足跳过此元素
+     * 长度大于1的数组(取前两个值),如果不满足跳过此元素
+     * Iterable 长度也必须大于1(取前两个值),如果不满足跳过此元素
+     * Iterator 长度也必须大于1(取前两个值),如果不满足跳过此元素
      * </pre>
      *
      * <pre>
@@ -1804,7 +1806,7 @@ public class CollUtils {
      * @param list        列表
      * @param part        被加入的部分
      * @param isTrim      是否去除两端空白符
-     * @param ignoreEmpty 是否略过空字符串（空字符串不做为一个元素）
+     * @param ignoreEmpty 是否略过空字符串(空字符串不做为一个元素)
      * @return 列表
      */
     public static List<String> addAll(List<String> list, String part, boolean isTrim, boolean ignoreEmpty) {
@@ -1946,7 +1948,7 @@ public class CollUtils {
     }
 
     /**
-     * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断）
+     * 获得{@link Iterable}对象的元素类型(通过第一个非空元素判断)
      *
      * @param iterable {@link Iterable}
      * @return 元素类型, 当列表为空或元素全部为null时, 返回null
@@ -1957,7 +1959,7 @@ public class CollUtils {
     }
 
     /**
-     * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断）
+     * 获得{@link Iterator}对象的元素类型(通过第一个非空元素判断)
      *
      * @param iterator {@link Iterator}
      * @return 元素类型, 当列表为空或元素全部为null时, 返回null
@@ -2126,7 +2128,7 @@ public class CollUtils {
 
     /**
      * 对list的元素按照多个属性名称排序,
-     * list元素的属性可以是数字（byte、short、int、long、float、double等,支持正数、负数、0）、char、String、java.util.Date
+     * list元素的属性可以是数字(byte、short、int、long、float、double等,支持正数、负数、0)、char、String、java.util.Date
      *
      * @param <E>  对象
      * @param list 集合
@@ -2179,7 +2181,7 @@ public class CollUtils {
     }
 
     /**
-     * 将多个集合排序并显示不同的段落（分页）
+     * 将多个集合排序并显示不同的段落(分页)
      * 实现分页取局部
      *
      * @param <T>        集合元素类型
@@ -2259,7 +2261,7 @@ public class CollUtils {
     }
 
     /**
-     * 将Set排序（根据Entry的值）
+     * 将Set排序(根据Entry的值)
      *
      * @param <K>        键类型
      * @param <V>        值类型
@@ -2425,7 +2427,7 @@ public class CollUtils {
     }
 
     /**
-     * 获取指定对象的指定属性值（去除private,protected的限制）
+     * 获取指定对象的指定属性值(去除private,protected的限制)
      *
      * @param obj       属性名称所在的对象
      * @param fieldName 属性名称
@@ -2471,7 +2473,7 @@ public class CollUtils {
      * 页码：1,每页10 =》 [0, 10]
      * 页码：2,每页10 =》 [10, 20]
      *
-     * @param pageNo   页码（从1计数）
+     * @param pageNo   页码(从1计数)
      * @param pageSize 每页条目数
      * @return 第一个数为开始位置, 第二个数为结束位置
      */

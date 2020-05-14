@@ -96,8 +96,8 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数
      *
-     * @param min 最小数（包含）
-     * @param max 最大数（不包含）
+     * @param min 最小数(包含)
+     * @param max 最大数(不包含)
      * @return 随机数
      */
     public static int randomInt(int min, int max) {
@@ -126,8 +126,8 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数
      *
-     * @param min 最小数（包含）
-     * @param max 最大数（不包含）
+     * @param min 最小数(包含)
+     * @param max 最大数(不包含)
      * @return 随机数
      */
     public static long randomLong(long min, long max) {
@@ -156,8 +156,8 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数
      *
-     * @param min 最小数（包含）
-     * @param max 最大数（不包含）
+     * @param min 最小数(包含)
+     * @param max 最大数(不包含)
      * @return 随机数
      */
     public static double randomDouble(double min, double max) {
@@ -167,8 +167,8 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数
      *
-     * @param min          最小数（包含）
-     * @param max          最大数（不包含）
+     * @param min          最小数(包含)
+     * @param max          最大数(不包含)
      * @param scale        保留小数位数
      * @param roundingMode 保留小数的模式 {@link RoundingMode}
      * @return 随机数
@@ -231,7 +231,7 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数 [0,limit)
      *
-     * @param limit 最大数（不包含）
+     * @param limit 最大数(不包含)
      * @return 随机数
      */
     public static BigDecimal randomBigDecimal(BigDecimal limit) {
@@ -241,8 +241,8 @@ public class RandomUtils {
     /**
      * 获得指定范围内的随机数
      *
-     * @param min 最小数（包含）
-     * @param max 最大数（不包含）
+     * @param min 最小数(包含)
+     * @param max 最大数(不包含)
      * @return 随机数
      */
     public static BigDecimal randomBigDecimal(BigDecimal min, BigDecimal max) {
@@ -370,7 +370,7 @@ public class RandomUtils {
     }
 
     /**
-     * 获得一个随机的字符串（只包含数字和字符）
+     * 获得一个随机的字符串(只包含数字和字符)
      *
      * @param length 字符串的长度
      * @return 随机字符串
@@ -380,7 +380,7 @@ public class RandomUtils {
     }
 
     /**
-     * 获得一个随机的字符串（只包含数字和大写字符）
+     * 获得一个随机的字符串(只包含数字和大写字符)
      *
      * @param length 字符串的长度
      * @return 随机字符串
@@ -479,9 +479,9 @@ public class RandomUtils {
     /**
      * 以当天为基准，随机产生一个日期
      *
-     * @param min 偏移最小天，可以为负数表示过去的时间（包含）
-     * @param max 偏移最大天，可以为负数表示过去的时间（不包含）
-     * @return 随机日期（随机天，其它时间不变）
+     * @param min 偏移最小天，可以为负数表示过去的时间(包含)
+     * @param max 偏移最大天，可以为负数表示过去的时间(不包含)
+     * @return 随机日期(随机天 ， 其它时间不变)
      */
     public static DateTime randomDay(int min, int max) {
         return randomDate(DateUtils.date(), Fields.DateField.DAY_OF_YEAR, min, max);
@@ -492,8 +492,8 @@ public class RandomUtils {
      *
      * @param baseDate  基准日期
      * @param dateField 偏移的时间字段，例如时、分、秒等
-     * @param min       偏移最小量，可以为负数表示过去的时间（包含）
-     * @param max       偏移最大量，可以为负数表示过去的时间（不包含）
+     * @param min       偏移最小量，可以为负数表示过去的时间(包含)
+     * @param max       偏移最大量，可以为负数表示过去的时间(不包含)
      * @return 随机日期
      */
     public static DateTime randomDate(Date baseDate, Fields.DateField dateField, int min, int max) {

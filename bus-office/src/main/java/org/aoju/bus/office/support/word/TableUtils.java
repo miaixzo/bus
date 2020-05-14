@@ -146,7 +146,7 @@ public class TableUtils {
      * 存在则直接返回,不存在创建新的行
      *
      * @param table {@link XWPFTable}
-     * @param index 索引（行号）,从0开始
+     * @param index 索引(行号),从0开始
      * @return {@link XWPFTableRow}
      */
     public static XWPFTableRow getOrCreateRow(XWPFTable table, int index) {
@@ -163,7 +163,7 @@ public class TableUtils {
      * 存在则直接返回,不存在创建新的单元格
      *
      * @param row   {@link XWPFTableRow} 行
-     * @param index index 索引（列号）,从0开始
+     * @param index index 索引(列号),从0开始
      * @return {@link XWPFTableCell}
      */
     public static XWPFTableCell getOrCreateCell(XWPFTableRow row, int index) {

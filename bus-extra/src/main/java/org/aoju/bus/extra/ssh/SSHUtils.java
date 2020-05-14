@@ -123,7 +123,7 @@ public class SSHUtils {
     }
 
     /**
-     * 新建一个新的SSH会话，此方法并不打开会话（既不调用connect方法）
+     * 新建一个新的SSH会话，此方法并不打开会话(既不调用connect方法)
      *
      * @param sshHost 主机
      * @param sshPort 端口
@@ -143,7 +143,7 @@ public class SSHUtils {
     }
 
     /**
-     * 新建一个新的SSH会话，此方法并不打开会话（既不调用connect方法）
+     * 新建一个新的SSH会话，此方法并不打开会话(既不调用connect方法)
      *
      * @param sshHost        主机
      * @param sshPort        端口
@@ -367,7 +367,7 @@ public class SSHUtils {
     }
 
     /**
-     * 执行Shell命令（使用EXEC方式）
+     * 执行Shell命令(使用EXEC方式)
      *
      * @param session Session会话
      * @param cmd     命令

@@ -198,7 +198,7 @@ public class ZipUtils {
      * @param out        生成的Zip到的目标流，包括文件名。注意：zipPath不能是srcPath路径下的子文件夹
      * @param charset    编码
      * @param withSrcDir 是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
+     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件(过滤掉哪些文件或文件夹不加入压缩)
      * @param srcFiles   要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      */
     public static void zip(OutputStream out, Charset charset, boolean withSrcDir, FileFilter filter, File... srcFiles) {
@@ -210,7 +210,7 @@ public class ZipUtils {
      *
      * @param zipOutputStream 生成的Zip到的目标流，不关闭此流
      * @param withSrcDir      是否包含被打包目录，只针对压缩目录有效。若为false，则只压缩目录下的文件或目录，为true则将本目录也压缩
-     * @param filter          文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
+     * @param filter          文件过滤器，通过实现此接口，自定义要过滤的文件(过滤掉哪些文件或文件夹不加入压缩)
      * @param srcFiles        要压缩的源文件或目录。如果压缩一个文件，则为该文件的全路径；如果压缩一个目录，则为该目录的顶层目录路径
      */
     public static void zip(ZipOutputStream zipOutputStream, boolean withSrcDir, FileFilter filter, File... srcFiles) {
@@ -242,7 +242,7 @@ public class ZipUtils {
      * @param out        压缩文件存储对象
      * @param srcRootDir 被压缩的文件夹根目录
      * @param file       当前递归压缩的文件或目录对象
-     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件（过滤掉哪些文件或文件夹不加入压缩）
+     * @param filter     文件过滤器，通过实现此接口，自定义要过滤的文件(过滤掉哪些文件或文件夹不加入压缩)
      */
     private static void zip(File file, String srcRootDir, ZipOutputStream out, FileFilter filter) {
         if (null == file || (null != filter && false == filter.accept(file))) {
@@ -870,7 +870,7 @@ public class ZipUtils {
      * 获取Zip文件中指定目录下的所有文件，只显示文件，不显示目录
      *
      * @param zipFile Zip文件
-     * @param dir     目录前缀（目录前缀不包含开头的/）
+     * @param dir     目录前缀(目录前缀不包含开头的/)
      * @return 文件列表
      */
     public static List<String> listFileNames(ZipFile zipFile, String dir) {
@@ -1006,7 +1006,7 @@ public class ZipUtils {
     }
 
     /**
-     * 判断压缩文件保存的路径是否为源文件路径的子文件夹,如果是,则抛出异常（防止无限递归压缩的发生）
+     * 判断压缩文件保存的路径是否为源文件路径的子文件夹,如果是,则抛出异常(防止无限递归压缩的发生)
      *
      * @param zipFile  压缩后的产生的文件路径
      * @param srcFiles 被压缩的文件或目录
@@ -1116,7 +1116,7 @@ public class ZipUtils {
                 // 检查文件名中是否包含"/"，不考虑以"/"结尾的情况
                 && fileName.lastIndexOf(Symbol.SLASH, fileName.length() - 2) > 0) {
             // 在Linux下多层目录创建存在问题,/会被当成文件名的一部分,此处做处理
-            // 使用/拆分路径（zip中无\）,级联创建父目录
+            // 使用/拆分路径(zip中无\),级联创建父目录
             final String[] pathParts = StringUtils.splitToArray(fileName, Symbol.C_SLASH);
             for (int i = 0; i < pathParts.length - 1; i++) {
                 //由于路径拆分,slip不检查,在最后一步检查

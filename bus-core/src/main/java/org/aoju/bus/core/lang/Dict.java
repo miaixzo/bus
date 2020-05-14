@@ -271,7 +271,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * 填充Value Object对象
      *
      * @param <T>   Bean类型
-     * @param clazz Value Object（或者POJO）的类
+     * @param clazz Value Object(或者POJO)的类
      * @return vo
      */
     public <T> T toBean(Class<T> clazz) {
@@ -319,7 +319,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * 填充Value Object对象，忽略大小写
      *
      * @param <T>   Bean类型
-     * @param clazz Value Object（或者POJO）的类
+     * @param clazz Value Object(或者POJO)的类
      * @return vo
      */
     public <T> T toBeanIgnoreCase(Class<T> clazz) {

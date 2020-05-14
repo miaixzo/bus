@@ -201,7 +201,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 是否已经被锁定 当开始比较时（调用compare方法）此值为true
+     * 是否已经被锁定 当开始比较时(调用compare方法)此值为true
      *
      * @return true = ComparatorChain cannot be modified; false = ComparatorChain can still be modified.
      */

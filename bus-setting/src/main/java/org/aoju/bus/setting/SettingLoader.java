@@ -52,11 +52,11 @@ import java.util.Set;
 public class SettingLoader {
 
     /**
-     * 注释符号（当有此符号在行首,表示此行为注释）
+     * 注释符号(当有此符号在行首,表示此行为注释)
      */
     private static final char COMMENT_FLAG_PRE = Symbol.C_SHAPE;
     /**
-     * 赋值分隔符（用于分隔键值对）
+     * 赋值分隔符(用于分隔键值对)
      */
     private static final char ASSIGN_FLAG = Symbol.C_EQUAL;
     /**
@@ -159,7 +159,7 @@ public class SettingLoader {
                 }
 
                 String value = keyValue[1].trim();
-                // 替换值中的所有变量变量（变量必须是此行之前定义的变量,否则无法找到）
+                // 替换值中的所有变量变量(变量必须是此行之前定义的变量,否则无法找到)
                 if (this.isUseVariable) {
                     value = replaceVar(group, value);
                 }

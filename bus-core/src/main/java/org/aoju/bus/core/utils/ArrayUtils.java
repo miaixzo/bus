@@ -1394,8 +1394,8 @@ public class ArrayUtils {
 
     /**
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final boolean[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1417,8 +1417,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final byte[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1440,8 +1440,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final char[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1463,8 +1463,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final double[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1486,8 +1486,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final float[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1509,8 +1509,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final int[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1532,8 +1532,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final long[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1555,8 +1555,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final Object[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -1578,8 +1578,8 @@ public class ArrayUtils {
      * 反转数组,会变更原数组
      *
      * @param array      数组,会变更
-     * @param startIndex 其实位置（包含）
-     * @param endIndex   结束位置（不包含）
+     * @param startIndex 其实位置(包含)
+     * @param endIndex   结束位置(不包含)
      */
     public static void reverse(final short[] array, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -7301,7 +7301,7 @@ public class ArrayUtils {
     /**
      * 生成一个从0开始的数字列表
      *
-     * @param excludedEnd 结束的数字（不包含）
+     * @param excludedEnd 结束的数字(不包含)
      * @return 数字列表
      */
     public static int[] range(int excludedEnd) {
@@ -7312,8 +7312,8 @@ public class ArrayUtils {
      * 生成一个数字列表
      * 自动判定正序反序
      *
-     * @param includedStart 开始的数字（包含）
-     * @param excludedEnd   结束的数字（不包含）
+     * @param includedStart 开始的数字(包含)
+     * @param excludedEnd   结束的数字(不包含)
      * @return 数字列表
      */
     public static int[] range(int includedStart, int excludedEnd) {
@@ -7324,8 +7324,8 @@ public class ArrayUtils {
      * 生成一个数字列表
      * 自动判定正序反序
      *
-     * @param includedStart 开始的数字（包含）
-     * @param excludedEnd   结束的数字（不包含）
+     * @param includedStart 开始的数字(包含)
+     * @param excludedEnd   结束的数字(不包含)
      * @param step          步进
      * @return 数字列表
      */
@@ -7760,8 +7760,8 @@ public class ArrayUtils {
      *
      * @param <T>   数组元素类型
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7794,8 +7794,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7828,8 +7828,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7862,8 +7862,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7896,8 +7896,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7930,8 +7930,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7964,8 +7964,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -7998,8 +7998,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -8032,8 +8032,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      * @see Arrays#copyOfRange(Object[], int, int)
      */
@@ -8066,8 +8066,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的数组
      */
     public static Object[] sub(Object array, int start, int end) {
@@ -8078,8 +8078,8 @@ public class ArrayUtils {
      * 获取子数组
      *
      * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 开始位置(包括)
+     * @param end   结束位置(不包括)
      * @param step  步进
      * @return 新的数组
      */
@@ -8813,7 +8813,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数），返回Map无序
+     * 映射键值(参考Python的zip()函数)，返回Map无序
      * 例如：
      * keys = [a,b,c,d]
      * values = [1,2,3,4]
@@ -8831,7 +8831,7 @@ public class ArrayUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
+     * 映射键值(参考Python的zip()函数)
      * 例如：
      * keys = [a,b,c,d]
      * values = [1,2,3,4]

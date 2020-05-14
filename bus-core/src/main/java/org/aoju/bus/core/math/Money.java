@@ -34,7 +34,7 @@ import java.util.Currency;
 /**
  * 单币种货币类,处理货币算术、币种和取整
  * 货币类中封装了货币金额和币种目前金额在内部是long类型表示,
- * 单位是所属币种的最小货币单位（对人民币是分）
+ * 单位是所属币种的最小货币单位(对人民币是分)
  * 目前,货币实现了以下主要功能：
  * <ul>
  *   <li>支持货币对象与double(float)/long(int)/String/BigDecimal之间相互转换
@@ -66,12 +66,12 @@ import java.util.Currency;
 public class Money implements Serializable, Comparable<Money> {
 
     /**
-     * 缺省的币种代码,为CNY（人民币）
+     * 缺省的币种代码,为CNY(人民币)
      */
     public static final String DEFAULT_CURRENCY_CODE = "CNY";
     /**
      * 缺省的取整模式,为<code>BigDecimal.ROUND_HALF_EVEN</code>
-     * （四舍五入,当小数为0.5时,则取最近的偶数）
+     * (四舍五入,当小数为0.5时,则取最近的偶数)
      */
     public static final int DEFAULT_ROUNDING_MODE = BigDecimal.ROUND_HALF_EVEN;
     private static final long serialVersionUID = 1L;
@@ -94,7 +94,7 @@ public class Money implements Serializable, Comparable<Money> {
 
     /**
      * 缺省构造器
-     * 创建一个具有缺省金额（0）和缺省币种的货币对象
+     * 创建一个具有缺省金额(0)和缺省币种的货币对象
      */
     public Money() {
         this(0);
@@ -380,7 +380,7 @@ public class Money implements Serializable, Comparable<Money> {
      * 如果本货币对象的金额大于待比较货币对象,则返回true,否则返回false
      *
      * @param other 另一对象
-     * @return true表示大于, false表示不大于（小于等于）
+     * @return true表示大于, false表示不大于(小于等于)
      * @throws IllegalArgumentException 待比较货币对象与本货币对象的币种不同
      */
     public boolean greaterThan(Money other) {

@@ -206,9 +206,9 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
 
     /**
      * 特殊类型
-     * （1）map
-     * （2）对象
-     * （3）集合/数组
+     * (1)map
+     * (2)对象
+     * (3)集合/数组
      *
      * @param fieldTypeClass 字段类型
      * @return 是否

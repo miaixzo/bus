@@ -84,7 +84,7 @@ public class Combination {
     }
 
     /**
-     * 组合选择（从列表中选择m个组合）
+     * 组合选择(从列表中选择m个组合)
      *
      * @param m 选择个数
      * @return 组合结果
@@ -112,7 +112,7 @@ public class Combination {
      * 组合选择
      *
      * @param dataIndex   待选开始索引
-     * @param resultList  前面（resultIndex-1）个的组合结果
+     * @param resultList  前面(resultIndex-1)个的组合结果
      * @param resultIndex 选择索引,从0开始
      * @param result      待选列表
      */

@@ -190,7 +190,7 @@ public class IterUtils {
      * @param <K>       字段名对应值得类型,不确定请使用Object
      * @param <V>       对象类型
      * @param iterable  对象列表
-     * @param fieldName 字段名（会通过反射获取其值）
+     * @param fieldName 字段名(会通过反射获取其值)
      * @return 某个字段值与对象对应Map
      */
     public static <K, V> Map<K, V> fieldValueMap(Iterable<V> iterable, String fieldName) {
@@ -204,7 +204,7 @@ public class IterUtils {
      * @param <K>       字段名对应值得类型,不确定请使用Object
      * @param <V>       对象类型
      * @param iterator  对象列表
-     * @param fieldName 字段名（会通过反射获取其值）
+     * @param fieldName 字段名(会通过反射获取其值)
      * @return 某个字段值与对象对应Map
      */
     public static <K, V> Map<K, V> fieldValueMap(Iterator<V> iterator, String fieldName) {
@@ -225,8 +225,8 @@ public class IterUtils {
      * @param <K>               字段名对应值得类型,不确定请使用Object
      * @param <V>               值类型,不确定使用Object
      * @param iterator          对象列表
-     * @param fieldNameForKey   做为键的字段名（会通过反射获取其值）
-     * @param fieldNameForValue 做为值的字段名（会通过反射获取其值）
+     * @param fieldNameForKey   做为键的字段名(会通过反射获取其值)
+     * @param fieldNameForValue 做为值的字段名(会通过反射获取其值)
      * @return 某个字段值与对象对应Map
      */
     public static <K, V> Map<K, V> fieldValueAsMap(Iterator<?> iterator, String fieldNameForKey, String fieldNameForValue) {
@@ -246,7 +246,7 @@ public class IterUtils {
      *
      * @param <V>       对象类型
      * @param iterator  对象列表
-     * @param fieldName 字段名（会通过反射获取其值）
+     * @param fieldName 字段名(会通过反射获取其值)
      * @return 某个字段值与对象对应Map
      */
     public static <V> List<Object> fieldValueList(Iterator<V> iterator, String fieldName) {
@@ -500,7 +500,7 @@ public class IterUtils {
     }
 
     /**
-     * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断）
+     * 获得{@link Iterable}对象的元素类型(通过第一个非空元素判断)
      * 注意,此方法至少会调用多次next方法
      *
      * @param iterable {@link Iterable}
@@ -515,7 +515,7 @@ public class IterUtils {
     }
 
     /**
-     * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断）
+     * 获得{@link Iterator}对象的元素类型(通过第一个非空元素判断)
      * 注意,此方法至少会调用多次next方法
      *
      * @param iterator {@link Iterator}

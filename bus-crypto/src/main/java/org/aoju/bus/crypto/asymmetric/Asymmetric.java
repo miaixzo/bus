@@ -241,7 +241,7 @@ public class Asymmetric extends Safety<Asymmetric> {
      * 加密或解密
      *
      * @param data         被加密或解密的内容数据
-     * @param maxBlockSize 最大块（分段）大小
+     * @param maxBlockSize 最大块(分段)大小
      * @return 加密或解密后的数据
      * @throws IllegalBlockSizeException 分段异常
      * @throws BadPaddingException       padding错误异常

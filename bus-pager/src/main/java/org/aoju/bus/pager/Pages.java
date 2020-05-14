@@ -112,7 +112,7 @@ public class Pages<T> extends PageSerializable<T> {
                 this.endRow = 0;
             } else {
                 this.startRow = page.getStartRow() + 1;
-                //计算实际的endRow（最后一页的时候特殊）
+                //计算实际的endRow(最后一页的时候特殊)
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {

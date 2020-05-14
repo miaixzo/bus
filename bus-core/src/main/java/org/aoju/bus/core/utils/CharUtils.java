@@ -79,7 +79,7 @@ public class CharUtils {
     }
 
     /**
-     * 是否为ASCII控制符（不可见字符）,控制符位于0~31和127
+     * 是否为ASCII控制符(不可见字符),控制符位于0~31和127
      *
      * <pre>
      *   CharUtils.isAsciiControl('a')  = false
@@ -98,7 +98,7 @@ public class CharUtils {
     }
 
     /**
-     * 判断是否为字母（包括大写字母和小写字母）
+     * 判断是否为字母(包括大写字母和小写字母)
      * 字母包括A~Z和a~z
      *
      * <pre>
@@ -111,7 +111,7 @@ public class CharUtils {
      * </pre>
      *
      * @param ch 被检查的字符
-     * @return true表示为字母（包括大写字母和小写字母）字母包括A~Z和a~z
+     * @return true表示为字母(包括大写字母和小写字母)字母包括A~Z和a~z
      */
     public static boolean isLetter(char ch) {
         return isLetterUpper(ch) || isLetterLower(ch);
@@ -318,11 +318,11 @@ public class CharUtils {
     }
 
     /**
-     * 是否为Windows或者Linux（Unix）文件分隔符
-     * Windows平台下分隔符为\,Linux（Unix）为/
+     * 是否为Windows或者Linux(Unix)文件分隔符
+     * Windows平台下分隔符为\,Linux(Unix)为/
      *
      * @param c 字符
-     * @return 是否为Windows或者Linux（Unix）文件分隔符
+     * @return 是否为Windows或者Linux(Unix)文件分隔符
      */
     public static boolean isFileSeparator(char c) {
         return Symbol.C_SLASH == c || Symbol.C_BACKSLASH == c;

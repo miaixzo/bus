@@ -149,7 +149,7 @@ public class ValueMatcherBuilder {
 
         // 全部匹配形式
         if (value.length() <= 2) {
-            //根据步进的第一个数字确定起始时间,类似于 12/3则从12（秒、分等）开始
+            //根据步进的第一个数字确定起始时间,类似于 12/3则从12(秒、分等)开始
             int minValue = parser.getMin();
             if (false == isMatchAllStr(value)) {
                 try {

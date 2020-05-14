@@ -100,7 +100,7 @@ public class HeaderFieldValues {
         while ((end > start) && (Character.isWhitespace(chars[end - 1]))) {
             end--;
         }
-        // 删除引号（如果存在）
+        // 删除引号(如果存在)
         if (quoted && ((end - start) >= 2)
                 && (chars[start] == Symbol.C_DOUBLE_QUOTES)
                 && (chars[end - 1] == Symbol.C_DOUBLE_QUOTES)) {

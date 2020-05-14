@@ -40,7 +40,7 @@ public class Algorithm {
     public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding";
     // RSA算法，此算法用了RSA/None/NoPadding
     public static final String RSA_None = "RSA/None/NoPadding";
-    // EC（Elliptic Curve）算法
+    // EC(Elliptic Curve)算法
     public static final String EC = "EC";
     public static final String ECDSA = "ECDSA";
 

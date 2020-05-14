@@ -51,7 +51,7 @@ public class MultipartReader {
     private int tailBuffer = 0;
 
     /**
-     * @param input    多部分交换的<code> InputStream </ code>
+     * @param input    多部分交换的<code>nputStream</code>
      * @param boundary 用于分隔多部分流的各个部分的标记
      */
     public MultipartReader(InputStream input, byte[] boundary) {
@@ -59,9 +59,9 @@ public class MultipartReader {
     }
 
     /**
-     * @param input    多部分交换的<code> InputStream </code>
+     * @param input    多部分交换的<code>InputStream</code>
      * @param boundary 用于分隔多部分流的各个部分的标记
-     * @param bufSize  缓冲区的大小（以字节为单位）默认值为4096
+     * @param bufSize  缓冲区的大小(以字节为单位)默认值为4096
      */
     public MultipartReader(InputStream input, byte[] boundary, int bufSize) {
         this.inputStream = input;

@@ -54,12 +54,12 @@ public interface DimseRSP {
     /**
      * 获取此响应中包含的数据集，如果没有数据集，则为null
      *
-     * @return 属性此响应中包含的数据集（如果有）
+     * @return 属性此响应中包含的数据集(如果有)
      */
     Attributes getDataset();
 
     /**
-     * 如果这是可以取消*的DIMSE操作（例如C-FIND），请取消操作
+     * 如果这是可以取消*的DIMSE操作(例如C-FIND)，请取消操作
      *
      * @param association 关联活动的关联对象
      * @throws IOException 网络交互中是否有问题。

@@ -122,9 +122,9 @@ public class Between {
 
     /**
      * 计算两个日期相差月数
-     * 在非重置情况下,如果起始日期的天小于结束日期的天,月数要少算1（不足1个月）
+     * 在非重置情况下,如果起始日期的天小于结束日期的天,月数要少算1(不足1个月)
      *
-     * @param isReset 是否重置时间为起始时间（重置天时分秒）
+     * @param isReset 是否重置时间为起始时间(重置天时分秒)
      * @return 相差月数
      */
     public long betweenMonth(boolean isReset) {
@@ -148,9 +148,9 @@ public class Between {
 
     /**
      * 计算两个日期相差年数
-     * 在非重置情况下,如果起始日期的月小于结束日期的月,年数要少算1（不足1年）
+     * 在非重置情况下,如果起始日期的月小于结束日期的月,年数要少算1(不足1年)
      *
-     * @param isReset 是否重置时间为起始时间（重置月天时分秒）
+     * @param isReset 是否重置时间为起始时间(重置月天时分秒)
      * @return 相差年数
      */
     public long betweenYear(boolean isReset) {

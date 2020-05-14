@@ -90,7 +90,7 @@ public class Arrangement {
     }
 
     /**
-     * 全排列选择（列表全部参与排列）
+     * 全排列选择(列表全部参与排列)
      *
      * @return 所有排列列表
      */
@@ -99,7 +99,7 @@ public class Arrangement {
     }
 
     /**
-     * 排列选择（从列表中选择m个排列）
+     * 排列选择(从列表中选择m个排列)
      *
      * @param m 选择个数
      * @return 所有排列列表
@@ -126,7 +126,7 @@ public class Arrangement {
     /**
      * 排列选择
      *
-     * @param resultList  前面（resultIndex-1）个的排列结果
+     * @param resultList  前面(resultIndex-1)个的排列结果
      * @param resultIndex 选择索引,从0开始
      * @param result      最终结果
      */

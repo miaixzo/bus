@@ -63,7 +63,7 @@ public class Sign extends Keys<Sign> {
      * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm 算法，见{@link Algorithm}
-     * @param keyPair   密钥对（包括公钥和私钥）
+     * @param keyPair   密钥对(包括公钥和私钥)
      */
     public Sign(String algorithm, KeyPair keyPair) {
         super(algorithm, keyPair.getPrivate(), keyPair.getPublic());

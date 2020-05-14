@@ -200,7 +200,7 @@ public class Builder {
             // 检查尚不存在的文件
             // 创建一个新文件。如果创建成功，则该文件可写
             File outputDir = file.getParentFile();
-            // 需要检查是否存在，否则当dir存在时mkdirs（）为false
+            // 需要检查是否存在，否则当dir存在时mkdirs()为false
             if (outputDir != null && !outputDir.exists() && !outputDir.mkdirs()) {
                 throw new IOException("Cannot write parent directory of " + file.getPath());
             }
@@ -211,7 +211,7 @@ public class Builder {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? Normal.EMPTY : "i");   //$NON-NLS-3$ //$NON-NLS-4$
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? Normal.EMPTY : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 

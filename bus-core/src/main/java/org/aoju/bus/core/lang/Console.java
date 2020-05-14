@@ -30,7 +30,7 @@ import java.lang.System;
 import java.util.Scanner;
 
 /**
- * 命令行（控制台）工具方法类
+ * 命令行(控制台)工具方法类
  * 此类主要针对{@link java.lang.System#out} 和 {@link java.lang.System#err} 做封装
  *
  * @author Kimi Liu
@@ -173,7 +173,7 @@ public class Console {
     }
 
     /**
-     * 读取用户输入的内容（在控制台敲回车前的内容）
+     * 读取用户输入的内容(在控制台敲回车前的内容)
      *
      * @return 用户输入的内容
      */

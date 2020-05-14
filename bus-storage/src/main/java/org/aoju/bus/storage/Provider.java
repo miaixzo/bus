@@ -40,7 +40,7 @@ import java.nio.file.Path;
 public interface Provider {
 
     /**
-     * 文件下载（流式下载）
+     * 文件下载(流式下载)
      *
      * @param fileName 文件名
      * @return 处理结果 {@link Message}
@@ -48,7 +48,7 @@ public interface Provider {
     Message download(String fileName);
 
     /**
-     * 文件下载（流式下载）
+     * 文件下载(流式下载)
      *
      * @param bucket   存储桶名
      * @param fileName 文件名
@@ -57,7 +57,7 @@ public interface Provider {
     Message download(String bucket, String fileName);
 
     /**
-     * 文件下载（文件下载到本地）
+     * 文件下载(文件下载到本地)
      *
      * @param bucket   存储桶名
      * @param fileName 文件名
@@ -67,7 +67,7 @@ public interface Provider {
     Message download(String bucket, String fileName, File file);
 
     /**
-     * 文件下载（文件下载到本地）
+     * 文件下载(文件下载到本地)
      *
      * @param fileName 文件名
      * @param file     保存的本地文件路径

@@ -200,13 +200,13 @@ public class MapUtils {
     }
 
     /**
-     * 将数组转换为Map（HashMap）,支持数组元素类型为：
+     * 将数组转换为Map(HashMap),支持数组元素类型为：
      *
      * <pre>
      * Map.Entry
-     * 长度大于1的数组（取前两个值）,如果不满足跳过此元素
-     * Iterable 长度也必须大于1（取前两个值）,如果不满足跳过此元素
-     * Iterator 长度也必须大于1（取前两个值）,如果不满足跳过此元素
+     * 长度大于1的数组(取前两个值),如果不满足跳过此元素
+     * Iterable 长度也必须大于1(取前两个值),如果不满足跳过此元素
+     * Iterator 长度也必须大于1(取前两个值),如果不满足跳过此元素
      * </pre>
      *
      * <pre>
@@ -366,7 +366,7 @@ public class MapUtils {
                 if (index < vListSize) {
                     map.put(entry.getKey(), vList.get(index));
                     if (index != vListSize - 1) {
-                        // 当值列表中还有更多值（非最后一个）,继续循环
+                        // 当值列表中还有更多值(非最后一个),继续循环
                         isEnd = false;
                     }
                 }
@@ -478,7 +478,7 @@ public class MapUtils {
      * @param map               Map
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
-     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 连接字符串
      */
     public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, String... otherParams) {
@@ -492,7 +492,7 @@ public class MapUtils {
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @param isIgnoreNull      是否忽略null的键和值
-     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 签名字符串
      */
     public static String sortJoin(Map<?, ?> params, String separator, String keyValueSeparator, boolean isIgnoreNull,
@@ -508,7 +508,7 @@ public class MapUtils {
      * @param map               Map
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
-     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 连接后的字符串
      */
     public static <K, V> String joinIgnoreNull(Map<K, V> map, String separator, String keyValueSeparator, String... otherParams) {
@@ -524,7 +524,7 @@ public class MapUtils {
      * @param separator         entry之间的连接符
      * @param keyValueSeparator kv之间的连接符
      * @param isIgnoreNull      是否忽略null的键和值
-     * @param otherParams       其它附加参数字符串（例如密钥）
+     * @param otherParams       其它附加参数字符串(例如密钥)
      * @return 连接后的字符串，map和otherParams为空返回""
      */
     public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, boolean isIgnoreNull, String... otherParams) {
@@ -665,7 +665,7 @@ public class MapUtils {
     }
 
     /**
-     * 排序已有Map,Key有序的Map,使用默认Key排序方式（字母顺序）
+     * 排序已有Map,Key有序的Map,使用默认Key排序方式(字母顺序)
      *
      * @param <K> Key类型
      * @param <V> Value类型

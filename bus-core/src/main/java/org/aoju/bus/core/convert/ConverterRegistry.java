@@ -140,7 +140,7 @@ public class ConverterRegistry {
     /**
      * 获得默认转换器
      *
-     * @param <T>  转换的目标类型（转换器转换到的类型）
+     * @param <T>  转换的目标类型(转换器转换到的类型)
      * @param type 类型
      * @return 转换器
      */
@@ -151,7 +151,7 @@ public class ConverterRegistry {
     /**
      * 获得自定义转换器
      *
-     * @param <T>  转换的目标类型（转换器转换到的类型）
+     * @param <T>  转换的目标类型(转换器转换到的类型)
      * @param type 类型
      * @return 转换器
      */
@@ -162,7 +162,7 @@ public class ConverterRegistry {
     /**
      * 转换值为指定类型
      *
-     * @param <T>           转换的目标类型（转换器转换到的类型）
+     * @param <T>           转换的目标类型(转换器转换到的类型)
      * @param type          类型目标
      * @param value         被转换值
      * @param defaultValue  默认值
@@ -221,7 +221,7 @@ public class ConverterRegistry {
      * 转换值为指定类型
      * 自定义转换器优先
      *
-     * @param <T>          转换的目标类型（转换器转换到的类型）
+     * @param <T>          转换的目标类型(转换器转换到的类型)
      * @param type         类型
      * @param value        值
      * @param defaultValue 默认值
@@ -235,7 +235,7 @@ public class ConverterRegistry {
     /**
      * 转换值为指定类型
      *
-     * @param <T>   转换的目标类型（转换器转换到的类型）
+     * @param <T>   转换的目标类型(转换器转换到的类型)
      * @param type  类型
      * @param value 值
      * @return 转换后的值, 默认为<code>null</code>
@@ -252,11 +252,11 @@ public class ConverterRegistry {
      * <pre>
      * Collection
      * Map
-     * 强转（无需转换）
+     * 强转(无需转换)
      * 数组
      * </pre>
      *
-     * @param <T>          转换的目标类型（转换器转换到的类型）
+     * @param <T>          转换的目标类型(转换器转换到的类型)
      * @param type         类型
      * @param value        值
      * @param defaultValue 默认值
@@ -267,13 +267,13 @@ public class ConverterRegistry {
             return null;
         }
 
-        // 集合转换（不可以默认强转）
+        // 集合转换(不可以默认强转)
         if (Collection.class.isAssignableFrom(rowType)) {
             final CollectionConverter collectionConverter = new CollectionConverter(type);
             return (T) collectionConverter.convert(value, (Collection<?>) defaultValue);
         }
 
-        // Map类型（不可以默认强转）
+        // Map类型(不可以默认强转)
         if (Map.class.isAssignableFrom(rowType)) {
             final MapConverter mapConverter = new MapConverter(type);
             return (T) mapConverter.convert(value, (Map<?, ?>) defaultValue);

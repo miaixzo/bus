@@ -58,7 +58,7 @@ public class Graphics {
     }
 
     /**
-     * 获取文字居中高度的Y坐标（距离上边距距离）
+     * 获取文字居中高度的Y坐标(距离上边距距离)
      * 此方法依赖FontMetrics,如果获取失败,默认为背景高度的1/3
      *
      * @param g                {@link Graphics2D}画笔
@@ -102,7 +102,7 @@ public class Graphics {
      * @param g      {@link java.awt.Graphics}画笔
      * @param str    字符串
      * @param font   字体
-     * @param color  字体颜色,{@code null} 表示使用随机颜色（每个字符单独随机）
+     * @param color  字体颜色,{@code null} 表示使用随机颜色(每个字符单独随机)
      * @param width  字符串背景的宽度
      * @param height 字符串背景的高度
      * @return 画笔对象
@@ -115,7 +115,7 @@ public class Graphics {
         // 创建字体
         g.setFont(font);
 
-        // 文字高度（必须在设置字体后调用）
+        // 文字高度(必须在设置字体后调用)
         int midY = Graphics.getCenterY(g, height);
         if (null != color) {
             g.setColor(color);

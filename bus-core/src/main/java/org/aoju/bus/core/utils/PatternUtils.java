@@ -245,7 +245,7 @@ public class PatternUtils {
 
     /**
      * 从content中匹配出多个值并根据template生成新的字符串
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
+     * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
@@ -265,7 +265,7 @@ public class PatternUtils {
 
     /**
      * 从content中匹配出多个值并根据template生成新的字符串
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
+     * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *

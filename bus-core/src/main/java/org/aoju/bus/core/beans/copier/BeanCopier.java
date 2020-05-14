@@ -58,7 +58,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      */
     private final T dest;
     /**
-     * 目标的类型（用于泛型类注入）
+     * 目标的类型(用于泛型类注入)
      */
     private final Type destType;
     /**
@@ -288,7 +288,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                     }
                 }
             } else if (valueType instanceof TypeVariable) {
-                // 参数为泛型，查找其真实类型（适用于泛型方法定义于泛型父类）
+                // 参数为泛型，查找其真实类型(适用于泛型方法定义于泛型父类)
                 valueType = TypeUtils.getActualType(this.destType, field.getDeclaringClass(), valueType);
             }
 

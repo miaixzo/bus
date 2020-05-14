@@ -64,7 +64,7 @@ public enum NotifyCache implements ExtendCache {
      *
      * @param key     缓存key
      * @param value   缓存内容
-     * @param timeout 指定缓存过期时间（毫秒）
+     * @param timeout 指定缓存过期时间(毫秒)
      */
     @Override
     public void cache(String key, String value, long timeout) {

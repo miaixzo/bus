@@ -56,7 +56,7 @@ public class QrConfig {
      */
     public int height;
     /**
-     * 前景色（二维码颜色）
+     * 前景色(二维码颜色)
      */
     public int foreColor = BLACK;
     /**
