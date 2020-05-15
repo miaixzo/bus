@@ -25,6 +25,7 @@
 package org.aoju.bus.starter;
 
 import org.aoju.bus.core.Version;
+import org.aoju.bus.core.lang.Normal;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
@@ -70,7 +71,7 @@ public class Configurable implements EnvironmentPostProcessor {
         String version = Version.get() == null ? "" : Version.get();
         properties.setProperty(BusXBuilder.BUS_BOOT_VERSION, version);
         properties.setProperty(BusXBuilder.BUS_BOOT_FORMATTED_VERSION,
-                version.isEmpty() ? "" : String.format(" (v%s)", version));
+                version.isEmpty() ? Normal.EMPTY : String.format(" (v%s)", version));
         return properties;
     }
 

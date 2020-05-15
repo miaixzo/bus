@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.UID;
@@ -117,7 +118,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(64), "").toString();
+        return promptTo(new StringBuilder(64), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

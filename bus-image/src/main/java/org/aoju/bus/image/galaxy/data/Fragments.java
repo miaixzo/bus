@@ -60,7 +60,7 @@ public class Fragments extends ArrayList<Object> implements Value {
 
     @Override
     public String toString() {
-        return "" + size() + " Fragments";
+        return size() + " Fragments";
     }
 
     @Override

@@ -1163,7 +1163,7 @@ public class FileUtils {
         try {
             reader = new BufferedReader(new java.io.FileReader(file));
             String tempString;
-            String all = "";
+            String all = Normal.EMPTY;
             // 一次读入一行,直到读入null为文件结束
             while ((tempString = reader.readLine()) != null) {
                 // 显示行号
@@ -1293,7 +1293,7 @@ public class FileUtils {
         }
         int index = indexOfExtension(filename);
         if (index == -1) {
-            return "";
+            return Normal.EMPTY;
         } else {
             return filename.substring(index + 1);
         }
@@ -1591,7 +1591,7 @@ public class FileUtils {
         pathToUse = pathToUse.replaceAll("[/\\\\]{1,}", Symbol.SLASH).trim();
 
         int prefixIndex = pathToUse.indexOf(Symbol.COLON);
-        String prefix = "";
+        String prefix = Normal.EMPTY;
         if (prefixIndex > -1) {
             // 可能Windows风格路径
             prefix = pathToUse.substring(0, prefixIndex + 1);

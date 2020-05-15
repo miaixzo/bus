@@ -26,6 +26,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Holder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 
@@ -325,7 +326,7 @@ public class PatternUtils {
             return content;
         }
 
-        return pattern.matcher(content).replaceFirst("");
+        return pattern.matcher(content).replaceFirst(Normal.EMPTY);
     }
 
     /**
@@ -340,7 +341,7 @@ public class PatternUtils {
             return content;
         }
 
-        return pattern.matcher(content).replaceAll("");
+        return pattern.matcher(content).replaceAll(Normal.EMPTY);
     }
 
     /**
