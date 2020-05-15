@@ -122,7 +122,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
 
     @Override
     public String toString() {
-        return "" + size() + " Items";
+        return size() + " Items";
     }
 
     @Override

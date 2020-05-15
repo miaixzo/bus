@@ -34,7 +34,7 @@ import java.util.List;
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"registryError"})
+@XmlType(propOrder = {"registryError"})
 @XmlRootElement(name = "RegistryErrorList", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0")
 public class RegistryErrorList {
 

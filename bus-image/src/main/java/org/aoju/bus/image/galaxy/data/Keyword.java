@@ -38,10 +38,7 @@ public class Keyword {
             return "GroupLength";
         }
         if ((tag & 0x10000) != 0) {
-            return ((tag & 0xFF00) == 0) && ((tag & 0xF0) != 0) ?
-
-                    "PrivateCreatorID" :
-                    "";
+            return ((tag & 0xFF00) == 0) && ((tag & 0xF0) != 0) ? "PrivateCreatorID" : Normal.EMPTY;
         }
         if ((tag & 0xFF00) == 2109696) {
             return "SourceImageIDs";

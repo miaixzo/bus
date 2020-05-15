@@ -26,6 +26,7 @@ package org.aoju.bus.socket.spring.support;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.SocketException;
 import org.springframework.util.AntPathMatcher;
@@ -61,10 +62,10 @@ public class MessageMatcher {
         }
         String destination = message.getDestination();
         if (pattern == null) {
-            pattern = "";
+            pattern = Normal.EMPTY;
         }
         if (destination == null) {
-            destination = "";
+            destination = Normal.EMPTY;
         }
         return matcher.match(pattern, destination);
     }

@@ -36,7 +36,7 @@ public enum Locale {
     /**
      * 自动匹配
      */
-    AUTO_DETECT("", "自动匹配"),
+    AUTO_DETECT(Normal.EMPTY, "自动匹配"),
     EN("en", " 英文"),
     EN_US("en_US", " 英文 (美国)"),
     AR("ar", " 阿拉伯文"),

@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.tracer;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
@@ -41,22 +43,22 @@ public @interface Tracer {
     /**
      * @return 标题
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
      * @return 模块
      */
-    String module() default "";
+    String module() default Normal.EMPTY;
 
     /**
      * @return 功能
      */
-    String business() default "";
+    String business() default Normal.EMPTY;
 
     /**
      * @return 操作人类别
      */
-    String operator() default "";
+    String operator() default Normal.EMPTY;
 
     /**
      * @return 是否保存请求的参数

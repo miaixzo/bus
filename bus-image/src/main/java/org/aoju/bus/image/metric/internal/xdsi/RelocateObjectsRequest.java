@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.*;
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"adhocQuery", "sourceRegistry", "destinationRegistry", "ownerAtSource", "ownerAtDestination"})
+@XmlType(propOrder = {"adhocQuery", "sourceRegistry", "destinationRegistry", "ownerAtSource", "ownerAtDestination"})
 @XmlRootElement(name = "RelocateObjectsRequest", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0")
 public class RelocateObjectsRequest extends RegistryRequestType {
 

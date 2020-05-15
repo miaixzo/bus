@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.banner;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import javax.imageio.ImageIO;
@@ -223,7 +224,7 @@ public class ImageBanner {
 
     public String printBanner(Integer maxWidth, Double aspectRatio, boolean invert, boolean cie94) {
         String headlessProperty = System.getProperty("java.awt.headless");
-        String banner = "";
+        String banner = Normal.EMPTY;
         try {
             System.setProperty("java.awt.headless", "true");
             BufferedImage sourceImage = ImageIO.read(new FileInputStream(this.image));
