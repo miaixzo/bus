@@ -34,7 +34,7 @@ import java.util.Map.Entry;
  * 基于分组的Map
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {

@@ -25,6 +25,7 @@
 package org.aoju.bus.image;
 
 import lombok.Data;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.logger.Logger;
@@ -34,8 +35,10 @@ import java.net.UnknownHostException;
 import java.util.Objects;
 
 /**
+ * 服务器信息
+ *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Data
@@ -80,7 +83,7 @@ public class Node {
         } catch (UnknownHostException e) {
             Logger.error("Cannot resolve hostname", e);
         }
-        return StringUtils.hasText(hostname) ? hostname : "127.0.0.1";
+        return StringUtils.hasText(hostname) ? hostname : Http.HTTP_HOST_IPV4;
     }
 
     public static Node buildLocalDicomNode(Association as) {

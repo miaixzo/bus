@@ -32,7 +32,7 @@ import org.aoju.bus.cache.metric.MemoryCache;
  * 默认缓存实现
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public enum NotifyCache implements ExtendCache {
@@ -64,7 +64,7 @@ public enum NotifyCache implements ExtendCache {
      *
      * @param key     缓存key
      * @param value   缓存内容
-     * @param timeout 指定缓存过期时间（毫秒）
+     * @param timeout 指定缓存过期时间(毫秒)
      */
     @Override
     public void cache(String key, String value, long timeout) {

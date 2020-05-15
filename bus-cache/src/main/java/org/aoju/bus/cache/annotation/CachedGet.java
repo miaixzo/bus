@@ -25,11 +25,13 @@
 package org.aoju.bus.cache.annotation;
 
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Documented
@@ -41,19 +43,19 @@ public @interface CachedGet {
      * @return Specifies the Used cache implementation,
      * default the first caches config in CacheAspect
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
      * @return Specifies the start keyExp on every key,
      * if the  Method have non param,
      * keyExp is the consts key used by this Method
      */
-    String prefix() default "";
+    String prefix() default Normal.EMPTY;
 
     /**
      * @return the string
      * when this spel is  true, this Method will go through by cache
      */
-    String condition() default "";
+    String condition() default Normal.EMPTY;
 
 }

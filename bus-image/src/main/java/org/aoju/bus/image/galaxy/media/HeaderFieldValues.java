@@ -30,10 +30,11 @@ import org.aoju.bus.core.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class HeaderFieldValues {
@@ -42,7 +43,7 @@ public class HeaderFieldValues {
     private int end = 0;
     private int position = 0;
     private char[] chars = null;
-    private List<HashMap<String, String>> values;
+    private List<Map<String, String>> values;
 
     public HeaderFieldValues(String respContentType) {
         values = parse(respContentType);
@@ -91,15 +92,15 @@ public class HeaderFieldValues {
     }
 
     private String getValue(boolean quoted) {
-        // Remove leading white spaces
+        // 删除前空格
         while ((start < end) && (Character.isWhitespace(chars[start]))) {
             start++;
         }
-        // Remove trailing white spaces
+        // 删除尾空格
         while ((end > start) && (Character.isWhitespace(chars[end - 1]))) {
             end--;
         }
-        // Remove quotation marks if exists
+        // 删除引号(如果存在)
         if (quoted && ((end - start) >= 2)
                 && (chars[start] == Symbol.C_DOUBLE_QUOTES)
                 && (chars[end - 1] == Symbol.C_DOUBLE_QUOTES)) {
@@ -113,13 +114,13 @@ public class HeaderFieldValues {
         return result;
     }
 
-    protected List<HashMap<String, String>> parse(String content) {
-        List<HashMap<String, String>> hvals = new ArrayList<>();
+    protected List<Map<String, String>> parse(String content) {
+        List<Map<String, String>> hvals = new ArrayList<>();
         if (StringUtils.hasText(content)) {
-            // Split except inside double quotes
+            // 除双引号外的拆分
             String[] elements = content.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
             for (String element : elements) {
-                HashMap<String, String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
                 hvals.add(params);
 
                 this.chars = element.toCharArray();
@@ -137,7 +138,7 @@ public class HeaderFieldValues {
                     }
 
                     if (StringUtils.hasText(name)) {
-                        params.put(name.toLowerCase(), value);// NOSONAR hasText(name) already check if name is null
+                        params.put(name.toLowerCase(), value);
                     }
                 }
             }
@@ -145,16 +146,16 @@ public class HeaderFieldValues {
         return hvals;
     }
 
-    public List<HashMap<String, String>> getValues() {
+    public List<Map<String, String>> getValues() {
         return values;
     }
 
-    public void setValues(List<HashMap<String, String>> values) {
+    public void setValues(List<Map<String, String>> values) {
         this.values = values;
     }
 
     public boolean hasKey(String key) {
-        for (HashMap<String, String> map : values) {
+        for (Map<String, String> map : values) {
             if (map.containsKey(key)) {
                 return true;
             }
@@ -163,7 +164,7 @@ public class HeaderFieldValues {
     }
 
     public String getValue(String key) {
-        for (HashMap<String, String> map : values) {
+        for (Map<String, String> map : values) {
             String val = map.get(key);
             if (StringUtils.hasText(val)) {
                 return val;
@@ -174,7 +175,7 @@ public class HeaderFieldValues {
 
     public List<String> getValues(String key) {
         List<String> list = new ArrayList<>();
-        for (HashMap<String, String> map : values) {
+        for (Map<String, String> map : values) {
             String val = map.get(key);
             if (StringUtils.hasText(val)) {
                 list.add(val);

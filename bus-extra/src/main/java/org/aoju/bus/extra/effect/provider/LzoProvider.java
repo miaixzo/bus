@@ -22,56 +22,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.effect.provider;
+
+import org.anarres.lzo.*;
+import org.aoju.bus.extra.effect.EffectProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
- * 基于gzip算法的数据解压缩.
+ * 基于lzo算法的数据解压缩.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public class GzipProvider implements EffectProvider {
+public class LzoProvider implements EffectProvider {
 
     @Override
-    public byte[] compress(byte[] data) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        GZIPOutputStream gzip;
+    public byte[] compress(byte[] data) throws IOException {
+        LzoCompressor compressor = LzoLibrary.getInstance().newCompressor(LzoAlgorithm.LZO1X, null);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        LzoOutputStream cs = new LzoOutputStream(os, compressor);
+        cs.write(data);
+        cs.close();
 
-        try {
-            gzip = new GZIPOutputStream(out);
-            gzip.write(data);
-            gzip.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return out.toByteArray();
+        return os.toByteArray();
     }
 
     @Override
-    public byte[] uncompress(byte[] data) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
+    public byte[] uncompress(byte[] data) throws IOException {
+        LzoDecompressor decompressor = LzoLibrary.getInstance().newDecompressor(LzoAlgorithm.LZO1X, null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayInputStream is = new ByteArrayInputStream(data);
+        LzoInputStream us = new LzoInputStream(is, decompressor);
 
-        try {
-            GZIPInputStream ungzip = new GZIPInputStream(in);
-            byte[] buffer = new byte[2048];
-            int n;
-            while ((n = ungzip.read(buffer)) >= 0) {
-                out.write(buffer, 0, n);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        int count;
+        byte[] buffer = new byte[2048];
+        while ((count = us.read(buffer)) != -1) {
+            baos.write(buffer, 0, count);
         }
 
-        return out.toByteArray();
+        return baos.toByteArray();
     }
 
 }

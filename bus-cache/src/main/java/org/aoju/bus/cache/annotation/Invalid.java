@@ -25,11 +25,13 @@
 package org.aoju.bus.cache.annotation;
 
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Documented
@@ -40,16 +42,16 @@ public @interface Invalid {
     /**
      * @return as {@code @Cached}
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
      * @return as {@code @Cached}
      */
-    String prefix() default "";
+    String prefix() default Normal.EMPTY;
 
     /**
      * @return as {@code @Cached}
      */
-    String condition() default "";
+    String condition() default Normal.EMPTY;
 
 }

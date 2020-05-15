@@ -38,7 +38,7 @@ import java.util.List;
  * 抽象FTP类,用于定义通用的FTP方法
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class AbstractFtp implements Closeable {
@@ -103,14 +103,14 @@ public abstract class AbstractFtp implements Closeable {
     }
 
     /**
-     * 远程当前目录（工作目录）
+     * 远程当前目录(工作目录)
      *
      * @return 远程当前目录
      */
     public abstract String pwd();
 
     /**
-     * 在当前远程目录（工作目录）下创建新的目录
+     * 在当前远程目录(工作目录)下创建新的目录
      *
      * @param dir 目录名
      * @return 是否创建成功
@@ -196,5 +196,13 @@ public abstract class AbstractFtp implements Closeable {
      * @param outFile 输出文件或目录
      */
     public abstract void download(String path, File outFile);
+
+    /**
+     * 获取远程文件(文件目录和服务器同步), 服务器上有新文件会覆盖本地文件
+     *
+     * @param sourcePath 服务器目录
+     * @param destPath   本地目录
+     */
+    public abstract void download(String sourcePath, String destPath);
 
 }

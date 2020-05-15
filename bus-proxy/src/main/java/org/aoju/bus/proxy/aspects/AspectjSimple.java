@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  * 可以继承此类实现自己需要的方法即可
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class AspectjSimple implements Aspectj, Serializable {
@@ -51,7 +51,7 @@ public class AspectjSimple implements Aspectj, Serializable {
      * @param target 目标对象
      * @param method 目标方法
      * @param args   参数
-     * @return 是否允许返回值（接下来的操作）
+     * @return 是否允许返回值(接下来的操作)
      * @see Aspectj#afterException 返回true,则不会执行此操作
      * 如果
      * @see Aspectj#afterException 返回false,则无论target.method是否抛出异常,均会执行此操作

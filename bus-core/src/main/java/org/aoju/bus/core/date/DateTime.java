@@ -51,7 +51,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class DateTime extends Date {
@@ -464,8 +464,8 @@ public class DateTime extends Date {
     /**
      * 获得指定日期是所在年份的第几周
      * 此方法返回值与一周的第一天有关,比如：
-     * 2016年1月3日为周日,如果一周的第一天为周日,那这天是第二周（返回2）
-     * 如果一周的第一天为周一,那这天是第一周（返回1）
+     * 2016年1月3日为周日,如果一周的第一天为周日,那这天是第二周(返回2)
+     * 如果一周的第一天为周一,那这天是第一周(返回1)
      *
      * @return 周
      */
@@ -476,8 +476,8 @@ public class DateTime extends Date {
     /**
      * 获得指定日期是所在月份的第几周
      * 此方法返回值与一周的第一天有关,比如：
-     * 2016年1月3日为周日,如果一周的第一天为周日,那这天是第二周（返回2）
-     * 如果一周的第一天为周一,那这天是第一周（返回1）
+     * 2016年1月3日为周日,如果一周的第一天为周日,那这天是第二周(返回2)
+     * 如果一周的第一天为周一,那这天是第一周(返回1)
      *
      * @return 周
      */
@@ -645,7 +645,7 @@ public class DateTime extends Date {
 
     /**
      * 转换为 {@link Date}
-     * 考虑到很多框架（例如Hibernate）的兼容性,提供此方法返回JDK原生的Date对象
+     * 考虑到很多框架(例如Hibernate)的兼容性,提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
      */

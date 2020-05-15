@@ -35,7 +35,7 @@ import java.util.List;
  * 新增分页的多项属性
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Pages<T> extends PageSerializable<T> {
@@ -112,7 +112,7 @@ public class Pages<T> extends PageSerializable<T> {
                 this.endRow = 0;
             } else {
                 this.startRow = page.getStartRow() + 1;
-                //计算实际的endRow（最后一页的时候特殊）
+                //计算实际的endRow(最后一页的时候特殊)
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {

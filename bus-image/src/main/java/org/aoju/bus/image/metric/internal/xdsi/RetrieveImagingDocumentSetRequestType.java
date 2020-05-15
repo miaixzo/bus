@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -58,7 +58,7 @@ public class RetrieveImagingDocumentSetRequestType {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {"seriesRequest"})
+    @XmlType(propOrder = {"seriesRequest"})
     public static class StudyRequest {
 
         @XmlElement(name = "SeriesRequest", namespace = "urn:ihe:rad:xdsi-b:2009", required = true)
@@ -83,7 +83,7 @@ public class RetrieveImagingDocumentSetRequestType {
         }
 
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "")
+        @XmlType
         public static class SeriesRequest extends RetrieveDocumentSetRequestType {
             @XmlAttribute(name = "seriesInstanceUID", required = true)
             protected String seriesInstanceUID;
@@ -100,7 +100,7 @@ public class RetrieveImagingDocumentSetRequestType {
 
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {"transferSyntaxUID"})
+    @XmlType(propOrder = {"transferSyntaxUID"})
     public static class TransferSyntaxUIDList {
         @XmlElement(name = "TransferSyntaxUID", namespace = "urn:ihe:rad:xdsi-b:2009", required = true)
         protected List<String> transferSyntaxUID;

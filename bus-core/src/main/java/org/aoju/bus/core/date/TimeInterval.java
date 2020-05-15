@@ -32,7 +32,7 @@ import org.aoju.bus.core.utils.DateUtils;
  * 计算某个过程花费的时间,精确到毫秒
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class TimeInterval {
@@ -68,7 +68,7 @@ public class TimeInterval {
     }
 
     /**
-     * 重新开始计算时间（重置开始时间）
+     * 重新开始计算时间(重置开始时间)
      *
      * @return this
      */
@@ -78,19 +78,19 @@ public class TimeInterval {
     }
 
     /**
-     * 从开始到当前的间隔时间（毫秒数）
+     * 从开始到当前的间隔时间(毫秒数)
      * 如果使用纳秒计时,返回纳秒差,否则返回毫秒差
      *
-     * @return 从开始到当前的间隔时间（毫秒数）
+     * @return 从开始到当前的间隔时间(毫秒数)
      */
     public long interval() {
         return DateUtils.timestamp(isNano) - time;
     }
 
     /**
-     * 从开始到当前的间隔时间（毫秒数）
+     * 从开始到当前的间隔时间(毫秒数)
      *
-     * @return 从开始到当前的间隔时间（毫秒数）
+     * @return 从开始到当前的间隔时间(毫秒数)
      */
     public long intervalMs() {
         return isNano ? interval() / 1000000L : interval();

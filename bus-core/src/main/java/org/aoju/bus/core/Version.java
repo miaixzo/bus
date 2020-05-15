@@ -33,7 +33,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Version {
@@ -61,7 +61,7 @@ public class Version {
      */
 
     public static String get() {
-        return "5.9.0.RELEASE";
+        return "5.9.1.RELEASE";
     }
 
     /**

@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -50,7 +50,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
 
     @XmlAccessorType(XmlAccessType.FIELD)
 
-    @XmlType(name = "", propOrder = {"seriesRequest"})
+    @XmlType(propOrder = {"seriesRequest"})
     public static class StudyRequest {
 
         @XmlElement(name = "SeriesRequest", namespace = "urn:dicom:wado:ws:2011", required = true)
@@ -79,7 +79,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
 
         @XmlAccessorType(XmlAccessType.FIELD)
 
-        @XmlType(name = "", propOrder = {"renderedDocumentRequest"})
+        @XmlType(propOrder = {"renderedDocumentRequest"})
         public static class SeriesRequest {
 
             @XmlElement(name = "RenderedDocumentRequest", namespace = "urn:dicom:wado:ws:2011", required = true)
@@ -106,7 +106,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
 
             @XmlAccessorType(XmlAccessType.FIELD)
 
-            @XmlType(name = "", propOrder = {"homeCommunityId", "repositoryUniqueId", "documentUniqueId", "annotation", "rows", "columns", "region", "windowWidth", "windowCenter", "imageQuality", "presentationUID", "presentationSeriesUID", "anonymize", "frameNumber", "contentTypeList", "charsetList", "any"})
+            @XmlType(propOrder = {"homeCommunityId", "repositoryUniqueId", "documentUniqueId", "annotation", "rows", "columns", "region", "windowWidth", "windowCenter", "imageQuality", "presentationUID", "presentationSeriesUID", "anonymize", "frameNumber", "contentTypeList", "charsetList", "any"})
             public static class RenderedDocumentRequest {
 
                 @XmlElement(name = "HomeCommunityId", namespace = "urn:ihe:iti:xds-b:2007")
@@ -296,7 +296,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                 }
 
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {"charset"})
+                @XmlType(propOrder = {"charset"})
                 public static class CharsetList {
 
                     @XmlElement(name = "Charset", namespace = "urn:dicom:wado:ws:2011", required = true)
@@ -311,7 +311,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                 }
 
                 @XmlAccessorType(XmlAccessType.FIELD)
-                @XmlType(name = "", propOrder = {"contentType"})
+                @XmlType(propOrder = {"contentType"})
                 public static class ContentTypeList {
 
                     @XmlElement(name = "ContentType", namespace = "urn:dicom:wado:ws:2011", required = true)

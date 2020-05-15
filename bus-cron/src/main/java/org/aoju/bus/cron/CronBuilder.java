@@ -43,10 +43,10 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public final class CronUtils {
+public final class CronBuilder {
 
     /**
      * Crontab配置文件
@@ -56,7 +56,7 @@ public final class CronUtils {
     private static final Scheduler scheduler = new Scheduler();
     private static Setting crontabSetting;
 
-    private CronUtils() {
+    private CronBuilder() {
     }
 
     /**
@@ -71,7 +71,7 @@ public final class CronUtils {
     /**
      * 自定义定时任务配置文件路径
      *
-     * @param cronSettingPath 定时任务配置文件路径（相对绝对都可）
+     * @param cronSettingPath 定时任务配置文件路径(相对绝对都可)
      */
     public static void setCronSetting(String cronSettingPath) {
         try {
@@ -215,7 +215,7 @@ public final class CronUtils {
     }
 
     /**
-     * 列举指定日期之后（到开始日期对应年年底）内所有匹配表达式的日期
+     * 列举指定日期之后(到开始日期对应年年底)内所有匹配表达式的日期
      *
      * @param patternStr    表达式字符串
      * @param start         起始时间

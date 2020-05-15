@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * 数据库id,将它们用作忘记密码散列、邀请码、存储碎片号
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class HashID {
@@ -354,7 +354,7 @@ public class HashID {
     }
 
     private long[] _decode(String hash, String alphabet) {
-        final ArrayList<Long> ret = new ArrayList<>();
+        final List<Long> ret = new ArrayList<>();
         String shuffle = alphabet;
         int i = 0;
         final String regexp = Symbol.BRACKET_LEFT + this.guards + Symbol.BRACKET_RIGHT;

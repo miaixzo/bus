@@ -48,11 +48,11 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Common DICOM tags used by the application. The role of these tags is to provide a high level accessibility of common
- * tags (DICOM and non DICOM).
+ * 应用程序使用的通用DICOM标记
+ * 这些标记的作用是提供公共标记(DICOM和non DICOM)的高级可访问性
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class TagCamel implements Serializable {
@@ -113,9 +113,6 @@ public class TagCamel implements Serializable {
     public static final TagCamel CurrentFolder =
             new TagCamel("CurrentFolder", "Current Folder", TagType.STRING);
     public static final TagCamel Checked = new TagCamel("Checked", TagType.BOOLEAN);
-    /**
-     * DICOM common tags
-     */
 
     public static final TagCamel SubseriesInstanceUID = new TagCamel("SubseriesInstanceUID", TagType.STRING);
     // One or more Items shall be included in this sequence
@@ -129,7 +126,7 @@ public class TagCamel implements Serializable {
     public static final TagCamel PRLUTsExplanation = new TagCamel("PRLUTsExplanation", TagType.STRING);
     public static final TagCamel PRLUTsData = new TagCamel("PRLUTsData", TagType.OBJECT);
     public static final TagCamel MonoChrome = new TagCamel("MonoChrome", TagType.BOOLEAN);
-    protected static final Map<String, TagCamel> tags = Collections.synchronizedMap(new HashMap<String, TagCamel>());
+    protected static final Map<String, TagCamel> tags = Collections.synchronizedMap(new HashMap<>());
     private static final long serialVersionUID = -7914330824854199622L;
     private static final AtomicInteger idCounter = new AtomicInteger(Integer.MAX_VALUE);
 
@@ -485,8 +482,6 @@ public class TagCamel implements Serializable {
     }
 
     public enum TagType {
-        // Period is 3 digits followed by one of the characters 'D' (Day),'W' (Week), 'M' (Month) or 'Y' (Year)
-
         STRING(String.class), TEXT(String.class), URI(String.class), DATE(LocalDate.class),
         DATETIME(LocalDateTime.class), TIME(LocalTime.class), BOOLEAN(Boolean.class), BYTE(Byte.class),
         INTEGER(Integer.class), FLOAT(Float.class), DOUBLE(Double.class), COLOR(Color.class),

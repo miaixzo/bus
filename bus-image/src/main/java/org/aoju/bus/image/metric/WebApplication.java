@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Device;
 
@@ -34,7 +35,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class WebApplication {
@@ -174,7 +175,7 @@ public class WebApplication {
 
     public StringBuilder getServiceURL(Connection conn) {
         return new StringBuilder(64)
-                .append(conn.isTls() ? "https://" : "http://")
+                .append(conn.isTls() ? Http.HTTPS_PREFIX : Http.HTTP_PREFIX)
                 .append(conn.getHostname())
                 .append(Symbol.C_COLON)
                 .append(conn.getPort())

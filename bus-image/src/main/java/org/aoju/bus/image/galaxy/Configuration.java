@@ -35,7 +35,7 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface Configuration extends Closeable {
@@ -62,24 +62,20 @@ public interface Configuration extends Closeable {
     Device findDevice(String name) throws InstrumentException;
 
     /**
-     * Query for Devices with specified attributes.
+     * 查询具有指定属性的设备
      *
-     * @param keys Device attributes which shall match or null to
-     *             get information for all configured Devices
-     * @return array of DeviceInfo objects for configured Devices
-     * with matching attributes
-     * @throws InstrumentException exception
+     * @param keys 设备属性必须与*匹配或为空，以获取所有已配置设备的信息
+     * @return 具有匹配属性的已配置设备*的DeviceInfo对象数组
+     * @throws InstrumentException 异常
      */
     Device[] listDeviceInfos(Device keys) throws InstrumentException;
 
     /**
-     * Query for Application Entities with specified attributes.
+     * 查询具有指定属性的应用程序实体
      *
-     * @param keys Application Entity attributes which shall match or null to
-     *             get information for all configured Application Entities
-     * @return array of ApplicationEntityInfo objects for configured Application Entity
-     * with matching attributes
-     * @throws InstrumentException exception
+     * @param keys 应与匹配或为空的应用程序实体属性将获取所有已配置的应用程序实体的信息
+     * @return 具有匹配属性的已配置应用程序实体*的ApplicationEntityInfo对象数组
+     * @throws InstrumentException 异常
      */
     ApplicationEntity[] listAETInfos(ApplicationEntity keys) throws InstrumentException;
 

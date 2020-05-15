@@ -36,7 +36,7 @@ import java.util.Map;
  * Map值提供者
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class MapValueProvider implements ValueProvider<String> {
@@ -87,10 +87,11 @@ public class MapValueProvider implements ValueProvider<String> {
 
     @Override
     public boolean containsKey(String key) {
-        //检查下划线模式
         if (map.containsKey(key)) {
             return true;
-        } else return map.containsKey(StringUtils.toUnderlineCase(key));
+        } else {
+            return map.containsKey(StringUtils.toUnderlineCase(key));
+        }
     }
 
 }

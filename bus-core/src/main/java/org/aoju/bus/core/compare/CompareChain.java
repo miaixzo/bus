@@ -35,7 +35,7 @@ import java.util.*;
  * 此类copy from Apache-commons-collections
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, Comparator<E>, Serializable {
@@ -201,7 +201,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
-     * 是否已经被锁定 当开始比较时（调用compare方法）此值为true
+     * 是否已经被锁定 当开始比较时(调用compare方法)此值为true
      *
      * @return true = ComparatorChain cannot be modified; false = ComparatorChain can still be modified.
      */

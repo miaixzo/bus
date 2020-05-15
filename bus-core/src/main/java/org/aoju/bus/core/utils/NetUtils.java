@@ -38,12 +38,10 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class NetUtils {
-
-    public static final String LOCAL_IP = "127.0.0.1";
 
     /**
      * 默认最小端口,1024
@@ -154,7 +152,7 @@ public class NetUtils {
      * 此方法只检测给定范围内的随机一个端口,检测65535-minPort次
      * 来自org.springframework.util.SocketUtils
      *
-     * @param minPort 端口最小值（包含）
+     * @param minPort 端口最小值(包含)
      * @return 可用的端口
      */
     public static int getUsableLocalPort(int minPort) {
@@ -166,8 +164,8 @@ public class NetUtils {
      * 此方法只检测给定范围内的随机一个端口,检测maxPort-minPort次
      * 来自org.springframework.util.SocketUtils
      *
-     * @param minPort 端口最小值（包含）
-     * @param maxPort 端口最大值（包含）
+     * @param minPort 端口最小值(包含)
+     * @param maxPort 端口最大值(包含)
      * @return 可用的端口
      */
     public static int getUsableLocalPort(int minPort, int maxPort) {
@@ -185,8 +183,8 @@ public class NetUtils {
      * 来自org.springframework.util.SocketUtils
      *
      * @param numRequested int
-     * @param minPort      端口最小值（包含）
-     * @param maxPort      端口最大值（包含）
+     * @param minPort      端口最小值(包含)
+     * @param maxPort      端口最大值(包含)
      * @return 可用的端口
      */
     public static TreeSet<Integer> getUsableLocalPorts(int numRequested, int minPort, int maxPort) {
@@ -223,7 +221,7 @@ public class NetUtils {
         long cBegin = NetUtils.ipv4ToLong("192.168.0.0");
         long cEnd = NetUtils.ipv4ToLong("192.168.255.255");
 
-        isInnerIp = isInner(ipNum, aBegin, aEnd) || isInner(ipNum, bBegin, bEnd) || isInner(ipNum, cBegin, cEnd) || ipAddress.equals(LOCAL_IP);
+        isInnerIp = isInner(ipNum, aBegin, aEnd) || isInner(ipNum, bBegin, bEnd) || isInner(ipNum, cBegin, cEnd) || ipAddress.equals(Http.HTTP_HOST_IPV4);
         return isInnerIp;
     }
 
@@ -265,8 +263,8 @@ public class NetUtils {
 
     /**
      * 构建InetSocketAddress
-     * 当host中包含端口时（用“：”隔开）,使用host中的端口,否则使用默认端口
-     * 给定host为空时使用本地host（127.0.0.1）
+     * 当host中包含端口时(用“：”隔开),使用host中的端口,否则使用默认端口
+     * 给定host为空时使用本地host(127.0.0.1)
      *
      * @param host        Host
      * @param defaultPort 默认端口
@@ -274,7 +272,7 @@ public class NetUtils {
      */
     public static InetSocketAddress buildInetSocketAddress(String host, int defaultPort) {
         if (StringUtils.isBlank(host)) {
-            host = LOCAL_IP;
+            host = Http.HTTP_HOST_IPV4;
         }
 
         String destHost;
@@ -362,7 +360,7 @@ public class NetUtils {
     }
 
     /**
-     * 获得本机的IP地址列表（包括Ipv4和Ipv6）
+     * 获得本机的IP地址列表(包括Ipv4和Ipv6)
      * 返回的IP列表有序,按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
@@ -427,7 +425,7 @@ public class NetUtils {
      * 获取本机网卡IP地址,规则如下：
      *
      * <pre>
-     * 1. 查找所有网卡地址,必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址
+     * 1. 查找所有网卡地址,必须非回路(loopback)地址、非局域网地址(siteLocal)、IPv4地址
      * 2. 如果无满足要求的地址,调用 {@link InetAddress#getLocalHost()} 获取地址
      * </pre>
      * <p>
@@ -822,7 +820,7 @@ public class NetUtils {
      * 检测IP地址是否能ping通
      *
      * @param ip      IP地址
-     * @param timeout 检测超时（毫秒）
+     * @param timeout 检测超时(毫秒)
      * @return the true/false 是否ping通
      */
     public static boolean ping(String ip, int timeout) {

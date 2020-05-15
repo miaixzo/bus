@@ -45,11 +45,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 /**
- * 请求请求处理类（目前仅仅对requestbody有效）
+ * 请求请求处理类(目前仅仅对requestbody有效)
  * 对加了@P的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class RequestBodyAdvice extends BaseAdvice

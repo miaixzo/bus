@@ -29,7 +29,7 @@ package org.aoju.bus.cron.pattern.parser;
  * 值处理用于限定表达式中相应位置的值范围,并转换表达式值为int值
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface ValueParser {
@@ -39,7 +39,7 @@ public interface ValueParser {
      * 转换包括：
      * <ol>
      * <li>数字字符串转为数字</li>
-     * <li>别名转为对应的数字（如月份和星期）</li>
+     * <li>别名转为对应的数字(如月份和星期)</li>
      * </ol>
      *
      * @param value String值

@@ -28,16 +28,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CompressionRules implements Iterable<CompressionRule>, Serializable {
 
-    private final ArrayList<CompressionRule> list = new ArrayList<>();
+    private final List<CompressionRule> list = new ArrayList<>();
 
     public void add(CompressionRule rule) {
         if (findByCommonName(rule.getCommonName()) != null)

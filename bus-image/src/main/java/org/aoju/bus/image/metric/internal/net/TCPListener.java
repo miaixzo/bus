@@ -42,7 +42,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class TCPListener implements SocketListener {
@@ -136,7 +136,8 @@ public class TCPListener implements SocketListener {
         try {
             ss.close();
         } catch (Throwable e) {
-            // Ignore errors when closing the server socket.
+            Logger.error(e.getMessage());
+            // 关闭服务器套接字时，请忽略错误
         }
     }
 

@@ -33,7 +33,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class EnumUtils {
@@ -117,7 +117,7 @@ public class EnumUtils {
     }
 
     /**
-     * 模糊匹配转换为枚举，给定一个值，匹配枚举中定义的所有字段名（包括name属性），一旦匹配到返回这个枚举对象，否则返回null
+     * 模糊匹配转换为枚举，给定一个值，匹配枚举中定义的所有字段名(包括name属性)，一旦匹配到返回这个枚举对象，否则返回null
      *
      * @param <E>       枚举类型
      * @param enumClass 枚举类

@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
@@ -72,7 +72,7 @@ public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
 
     @Override
     protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
-        //当链表元素大于容量时,移除最老（最久未被使用）的元素
+        //当链表元素大于容量时,移除最老(最久未被使用)的元素
         return size() > this.capacity;
     }
 

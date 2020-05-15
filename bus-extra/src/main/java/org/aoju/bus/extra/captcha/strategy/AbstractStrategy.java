@@ -22,48 +22,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.captcha.strategy;
 
-import org.anarres.lzo.*;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import org.aoju.bus.core.lang.Normal;
 
 /**
- * 基于lzo算法的数据解压缩.
+ * 随机字符验证码生成器
+ * 可以通过传入的基础集合和长度随机生成验证码字符
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public class LzoProvider implements EffectProvider {
+public abstract class AbstractStrategy implements CodeStrategy {
 
-    @Override
-    public byte[] compress(byte[] data) throws IOException {
-        LzoCompressor compressor = LzoLibrary.getInstance().newCompressor(LzoAlgorithm.LZO1X, null);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        LzoOutputStream cs = new LzoOutputStream(os, compressor);
-        cs.write(data);
-        cs.close();
+    /**
+     * 基础字符集合，用于随机获取字符串的字符集合
+     */
+    protected final String baseStr;
+    /**
+     * 验证码长度
+     */
+    protected final int length;
 
-        return os.toByteArray();
+    /**
+     * 构造，使用字母+数字做为基础
+     *
+     * @param count 生成验证码长度
+     */
+    public AbstractStrategy(int count) {
+        this(Normal.LOWER_NUMBER, count);
     }
 
-    @Override
-    public byte[] uncompress(byte[] data) throws IOException {
-        LzoDecompressor decompressor = LzoLibrary.getInstance().newDecompressor(LzoAlgorithm.LZO1X, null);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ByteArrayInputStream is = new ByteArrayInputStream(data);
-        LzoInputStream us = new LzoInputStream(is, decompressor);
+    /**
+     * 构造
+     *
+     * @param baseStr 基础字符集合，用于随机获取字符串的字符集合
+     * @param length  生成验证码长度
+     */
+    public AbstractStrategy(String baseStr, int length) {
+        this.baseStr = baseStr;
+        this.length = length;
+    }
 
-        int count;
-        byte[] buffer = new byte[2048];
-        while ((count = us.read(buffer)) != -1) {
-            baos.write(buffer, 0, count);
-        }
-
-        return baos.toByteArray();
+    /**
+     * 获取长度验证码
+     *
+     * @return 验证码长度
+     */
+    public int getLength() {
+        return this.length;
     }
 
 }

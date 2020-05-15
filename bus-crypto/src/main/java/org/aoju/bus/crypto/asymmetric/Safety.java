@@ -42,7 +42,7 @@ import java.security.PublicKey;
  *
  * @param <T> 返回自身类型
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class Safety<T extends Safety<T>> extends Keys<T> {
@@ -255,7 +255,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     /**
      * 从Hex或Base64字符串解密，编码为UTF-8格式
      *
-     * @param data    Hex（16进制）或Base64字符串
+     * @param data    Hex(16进制)或Base64字符串
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 解密后的bytes
      */
@@ -264,9 +264,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     * 解密为字符串，密文需为Hex(16进制)或Base64字符串
      *
-     * @param data    数据，Hex（16进制）或Base64字符串
+     * @param data    数据，Hex(16进制)或Base64字符串
      * @param keyType 密钥类型
      * @param charset 加密前编码
      * @return 解密后的密文
@@ -276,9 +276,9 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
     }
 
     /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     * 解密为字符串，密文需为Hex(16进制)或Base64字符串
      *
-     * @param data    数据，Hex（16进制）或Base64字符串
+     * @param data    数据，Hex(16进制)或Base64字符串
      * @param keyType 密钥类型
      * @return 解密后的密文
      */

@@ -33,8 +33,8 @@ import java.util.Date;
 /**
  * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
  * 1位标识,由于long基本类型在Java中是带符号的,最高位是符号位,正数是0,负数是1,所以id一般是正数,最高位是0
- * 41位时间截(毫秒级),注意,41位时间截不是存储当前时间的时间截,而是存储时间截的差值（当前时间截 - 开始时间截)
- * 得到的值）,这里的的开始时间截,一般是我们的id生成器开始使用的时间,由我们程序来指定的
+ * 41位时间截(毫秒级),注意,41位时间截不是存储当前时间的时间截,而是存储时间截的差值(当前时间截 - 开始时间截)
+ * 得到的值),这里的的开始时间截,一般是我们的id生成器开始使用的时间,由我们程序来指定的
  * 41位的时间截,可以使用69年 10位的数据机器位,可以部署在1024个节点,包括5位datacenterId和5位workerId
  * 12位序列,毫秒内的计数,12位的计数顺序号支持每个节点每毫秒(同一机器,同一时间截)产生4096个ID序号
  * 加起来刚好64位,为一个Long型
@@ -42,7 +42,7 @@ import java.util.Date;
  * (由数据中心ID和机器ID作区分),并且效率较高,经测试,SnowFlake每秒能够产生26万ID左右
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Snowflake implements Serializable {
@@ -94,7 +94,7 @@ public class Snowflake implements Serializable {
     }
 
     /**
-     * @param epochDate        初始化时间起点（null表示默认起始日期）,后期修改会导致id重复,如果要修改连workerId dataCenterId，慎用
+     * @param epochDate        初始化时间起点(null表示默认起始日期),后期修改会导致id重复,如果要修改连workerId dataCenterId，慎用
      * @param workerId         工作机器节点id
      * @param dataCenterId     数据中心id
      * @param isUseSystemClock 是否使用{@link SystemClock} 获取当前时间戳
@@ -172,7 +172,7 @@ public class Snowflake implements Serializable {
     }
 
     /**
-     * 下一个ID（字符串形式）
+     * 下一个ID(字符串形式)
      *
      * @return ID 字符串形式
      */

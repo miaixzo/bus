@@ -35,7 +35,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -271,7 +271,7 @@ public class CitizenIdUtils {
                 return false;
             }
 
-            //校验生日（两位年份，补充为19XX）
+            //校验生日(两位年份，补充为19XX)
             return false != Validator.isBirthday("19" + idCard.substring(6, 12));
         } else {
             return false;
@@ -540,8 +540,8 @@ public class CitizenIdUtils {
      * 隐藏指定位置的几个身份证号数字为“*”
      *
      * @param idCard       身份证号
-     * @param startInclude 开始位置（包含）
-     * @param endExclude   结束位置（不包含）
+     * @param startInclude 开始位置(包含)
+     * @param endExclude   结束位置(不包含)
      * @return 隐藏后的身份证号码
      * @see StringUtils#hide(CharSequence, int, int)
      */

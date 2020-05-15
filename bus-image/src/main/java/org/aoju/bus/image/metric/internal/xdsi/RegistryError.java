@@ -28,11 +28,11 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"value"})
+@XmlType(propOrder = {"value"})
 @XmlRootElement(name = "RegistryError", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0")
 public class RegistryError {
 

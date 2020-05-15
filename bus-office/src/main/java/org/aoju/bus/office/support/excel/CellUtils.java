@@ -50,7 +50,7 @@ import java.util.List;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CellUtils {
@@ -332,7 +332,7 @@ public class CellUtils {
 
     /**
      * 获取合并单元格的值
-     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     * 传入的x,y坐标(列行数)可以是合并单元格范围内的任意一个单元格
      *
      * @param sheet       {@link Sheet}
      * @param locationRef 单元格地址标识符，例如A11，B5
@@ -345,7 +345,7 @@ public class CellUtils {
 
     /**
      * 获取合并单元格的值
-     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     * 传入的x,y坐标(列行数)可以是合并单元格范围内的任意一个单元格
      *
      * @param sheet {@link Sheet}
      * @param x     列号，从0开始，可以是合并单元格范围中的任意一列
@@ -358,7 +358,7 @@ public class CellUtils {
 
     /**
      * 获取合并单元格
-     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     * 传入的x,y坐标(列行数)可以是合并单元格范围内的任意一个单元格
      *
      * @param cell {@link Cell}
      * @return 合并单元格
@@ -369,7 +369,7 @@ public class CellUtils {
 
     /**
      * 获取合并单元格
-     * 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     * 传入的x,y坐标(列行数)可以是合并单元格范围内的任意一个单元格
      *
      * @param sheet {@link Sheet}
      * @param x     列号，从0开始，可以是合并单元格范围中的任意一列

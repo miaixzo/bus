@@ -38,21 +38,21 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class MultipartParser {
 
     /**
-     * Carriage return, '\r', 0x0D, 13 in decimal
+     * 回车符，'\ r'，0x0D，十进制13
      */
     public static final byte CR = 0x0D;
     /**
-     * Line Feed, '\n', 0x0D, 10 in decimal
+     * 换行符'\ n'，0x0D，十进制十进制
      */
     public static final byte LF = 0x0A;
     /**
-     * Dash, '-', 0x2D, 45 in decimal
+     * 破折号，'-'，0x2D，十进制45
      */
     public static final byte DASH = 0x2D;
 

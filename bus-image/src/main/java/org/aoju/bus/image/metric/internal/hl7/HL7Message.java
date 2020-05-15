@@ -33,12 +33,13 @@ import java.util.ArrayList;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class HL7Message extends ArrayList<HL7Segment> {
 
     public HL7Message() {
+
     }
 
     public HL7Message(int initialCapacity) {

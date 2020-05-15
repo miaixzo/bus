@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -123,8 +123,8 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之。<br>
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet。
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之
+     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
      *
      * @param sheetName sheet名
      * @return this
@@ -134,7 +134,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）<br>
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之(命名为默认)
      * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
      *
      * @param sheetIndex sheet序号，从0开始计数

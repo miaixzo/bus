@@ -32,7 +32,7 @@ import java.io.Serializable;
  * 样式集合,此样式集合汇集了整个工作簿的样式,用于减少样式的创建和冗余
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class StyleSet implements Serializable {
@@ -99,9 +99,9 @@ public class StyleSet implements Serializable {
     }
 
     /**
-     * 获取数字（带小数点）单元格样式,获取后可以定义整体头部样式
+     * 获取数字(带小数点)单元格样式,获取后可以定义整体头部样式
      *
-     * @return 数字（带小数点）单元格样式
+     * @return 数字(带小数点)单元格样式
      */
     public CellStyle getCellStyleForNumber() {
         return cellStyleForNumber;

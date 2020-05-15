@@ -36,7 +36,7 @@ import java.util.Map;
  * 断言某些对象或值是否符合规定,否则抛出异常 经常用于做变量检查
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Assert {
@@ -212,7 +212,7 @@ public class Assert {
     }
 
     /**
-     * 检查给定字符串是否为空白（null、空串或只包含空白符）,为空抛出 {@link IllegalArgumentException}
+     * 检查给定字符串是否为空白(null、空串或只包含空白符),为空抛出 {@link IllegalArgumentException}
      *
      * <pre class="criteria">
      * Assert.notBlank(name, "Name must not be blank");
@@ -234,7 +234,7 @@ public class Assert {
     }
 
     /**
-     * 检查给定字符串是否为空白（null、空串或只包含空白符）,为空抛出 {@link IllegalArgumentException}
+     * 检查给定字符串是否为空白(null、空串或只包含空白符),为空抛出 {@link IllegalArgumentException}
      *
      * <pre class="criteria">
      * Assert.notBlank(name, "Name must not be blank");
@@ -250,7 +250,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定字符串是否不被另一个字符串包含（既是否为子串）
+     * 断言给定字符串是否不被另一个字符串包含(既是否为子串)
      *
      * <pre class="criteria">
      * Assert.doesNotContain(name, "rod", "Name must not contain 'rod'");
@@ -271,7 +271,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定字符串是否不被另一个字符串包含（既是否为子串）
+     * 断言给定字符串是否不被另一个字符串包含(既是否为子串)
      *
      * <pre class="criteria">
      * Assert.doesNotContain(name, "rod", "Name must not contain 'rod'");
@@ -579,7 +579,7 @@ public class Assert {
     }
 
     /**
-     * 检查下标（数组、集合、字符串）是否符合要求，下标必须满足：
+     * 检查下标(数组、集合、字符串)是否符合要求，下标必须满足：
      *
      * <pre>
      * 0 &le; index &lt; size
@@ -596,7 +596,7 @@ public class Assert {
     }
 
     /**
-     * 检查下标（数组、集合、字符串）是否符合要求，下标必须满足：
+     * 检查下标(数组、集合、字符串)是否符合要求，下标必须满足：
      *
      * <pre>
      * 0 &le; index &lt; size
@@ -621,8 +621,8 @@ public class Assert {
      * 检查值是否在指定范围内
      *
      * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param min   最小值(包含)
+     * @param max   最大值(包含)
      * @return 检查后的长度值
      */
     public static int checkBetween(int value, int min, int max) {
@@ -636,8 +636,8 @@ public class Assert {
      * 检查值是否在指定范围内
      *
      * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param min   最小值(包含)
+     * @param max   最大值(包含)
      * @return 检查后的长度值
      */
     public static long checkBetween(long value, long min, long max) {
@@ -651,8 +651,8 @@ public class Assert {
      * 检查值是否在指定范围内
      *
      * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param min   最小值(包含)
+     * @param max   最大值(包含)
      * @return 检查后的长度值
      */
     public static double checkBetween(double value, double min, double max) {
@@ -666,8 +666,8 @@ public class Assert {
      * 检查值是否在指定范围内
      *
      * @param value 值
-     * @param min   最小值（包含）
-     * @param max   最大值（包含）
+     * @param min   最小值(包含)
+     * @param max   最大值(包含)
      * @return 检查后的长度值
      */
     public static Number checkBetween(Number value, Number min, Number max) {

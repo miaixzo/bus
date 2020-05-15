@@ -42,7 +42,7 @@ import java.util.List;
  * execution.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -89,7 +89,7 @@ public final class Executor {
             return new ArrayList<>(0);
         }
 
-        ArrayList<String> sa = new ArrayList<>();
+        List<String> sa = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
             String line;

@@ -58,7 +58,7 @@ import java.util.function.Supplier;
  * 操作系统信息支持
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Platform {
@@ -290,7 +290,7 @@ public class Platform {
     }
 
     /**
-     * 获得System属性（调用System.getProperty）
+     * 获得System属性(调用System.getProperty)
      *
      * @param key 键
      * @return 属性值

@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
@@ -58,7 +58,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      */
     private final T dest;
     /**
-     * 目标的类型（用于泛型类注入）
+     * 目标的类型(用于泛型类注入)
      */
     private final Type destType;
     /**
@@ -288,7 +288,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                     }
                 }
             } else if (valueType instanceof TypeVariable) {
-                // 参数为泛型，查找其真实类型（适用于泛型方法定义于泛型父类）
+                // 参数为泛型，查找其真实类型(适用于泛型方法定义于泛型父类)
                 valueType = TypeUtils.getActualType(this.destType, field.getDeclaringClass(), valueType);
             }
 
@@ -296,7 +296,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
             if (null == value && copyOptions.ignoreNullValue) {
                 continue;// 当允许跳过空时，跳过
             }
-            if (bean.equals(value)) {
+            if (bean == value) {
                 continue;// 值不能为bean本身，防止循环引用
             }
 

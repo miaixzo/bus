@@ -45,10 +45,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class PDUDecoder extends PDVInputStream {
@@ -68,7 +69,10 @@ public class PDUDecoder extends PDVInputStream {
     private static final String UNEXPECTED_PDV_PCID =
             "{}: unexpected pcid in PDV in PDU[type={}, len={}]";
 
-    private static final int MAX_PDU_LEN = 0x1000000; // 16MiB
+    /**
+     * 16MiB
+     */
+    private static final int MAX_PDU_LEN = 0x1000000;
 
     private final Association as;
     private final InputStream in;
@@ -275,15 +279,15 @@ public class PDUDecoder extends PDVInputStream {
 
     private Presentation decodePC(int itemLen) {
         int pcid = get();
-        get(); // skip reserved byte
+        get(); // 跳过保留字节
         int result = get();
-        get(); // skip reserved byte
+        get(); // 跳过保留字节
         String as = null;
-        ArrayList<String> tss = new ArrayList<String>(1);
+        List<String> tss = new ArrayList<>(1);
         int endpos = pos + itemLen - 4;
         while (pos < endpos) {
             int subItemType = get() & 0xff;
-            get(); // skip reserved byte
+            get(); // 跳过保留字节
             int subItemLen = getUnsignedShort();
             switch (subItemType) {
                 case Builder.ABSTRACT_SYNTAX:
@@ -308,7 +312,7 @@ public class PDUDecoder extends PDVInputStream {
 
     private void decodeUserInfoSubItem(AAssociateRQAC rqac) throws AAbort {
         int itemType = get();
-        get(); // skip reserved byte
+        get(); // 跳过保留字节
         int itemLen = getUnsignedShort();
         switch (itemType) {
             case Builder.MAX_PDU_LENGTH:
@@ -363,7 +367,7 @@ public class PDUDecoder extends PDVInputStream {
         int endPos = pos + itemLen;
         String sopCUID = getString(getUnsignedShort());
         String serviceCUID = getString(getUnsignedShort());
-        ArrayList<String> relSopCUIDs = new ArrayList<String>(1);
+        List<String> relSopCUIDs = new ArrayList<>(1);
         int relSopCUIDsLen = getUnsignedShort();
         int endRelSopCUIDs = pos + relSopCUIDsLen;
         while (pos < endRelSopCUIDs)
@@ -398,7 +402,7 @@ public class PDUDecoder extends PDVInputStream {
     public void decodeDIMSE() throws IOException {
         checkThread();
         if (pcid != -1)
-            return; // already inside decodeDIMSE
+            return; // 已经在解码器DIMSE中
 
         nextPDV(Builder.COMMAND, -1);
 
@@ -604,4 +608,5 @@ public class PDUDecoder extends PDVInputStream {
             pos = pdvend;
         }
     }
+
 }

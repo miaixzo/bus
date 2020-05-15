@@ -57,7 +57,7 @@ import java.util.List;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class StopWatch {
@@ -208,9 +208,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取最后任务的花费时间（纳秒）
+     * 获取最后任务的花费时间(纳秒)
      *
-     * @return 任务的花费时间（纳秒）
+     * @return 任务的花费时间(纳秒)
      * @throws IllegalStateException 无任务
      */
     public long getLastTaskTimeNanos() throws IllegalStateException {
@@ -221,9 +221,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取最后任务的花费时间（毫秒）
+     * 获取最后任务的花费时间(毫秒)
      *
-     * @return 任务的花费时间（毫秒）
+     * @return 任务的花费时间(毫秒)
      * @throws IllegalStateException 无任务
      */
     public long getLastTaskTimeMillis() throws IllegalStateException {
@@ -260,9 +260,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取所有任务的总花费时间（纳秒）
+     * 获取所有任务的总花费时间(纳秒)
      *
-     * @return 所有任务的总花费时间（纳秒）
+     * @return 所有任务的总花费时间(纳秒)
      * @see #getTotalTimeMillis()
      * @see #getTotalTimeSeconds()
      */
@@ -271,9 +271,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取所有任务的总花费时间（毫秒）
+     * 获取所有任务的总花费时间(毫秒)
      *
-     * @return 所有任务的总花费时间（毫秒）
+     * @return 所有任务的总花费时间(毫秒)
      * @see #getTotalTimeNanos()
      * @see #getTotalTimeSeconds()
      */
@@ -282,9 +282,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取所有任务的总花费时间（秒）
+     * 获取所有任务的总花费时间(秒)
      *
-     * @return 所有任务的总花费时间（秒）
+     * @return 所有任务的总花费时间(秒)
      * @see #getTotalTimeNanos()
      * @see #getTotalTimeMillis()
      */
@@ -391,7 +391,7 @@ public class StopWatch {
         }
 
         /**
-         * 获取任务花费时间（单位：纳秒）
+         * 获取任务花费时间(单位：纳秒)
          *
          * @return the long
          * @see #getTimeMillis()
@@ -402,7 +402,7 @@ public class StopWatch {
         }
 
         /**
-         * 获取任务花费时间（单位：毫秒）
+         * 获取任务花费时间(单位：毫秒)
          *
          * @return the long
          * @see #getTimeNanos()
@@ -413,7 +413,7 @@ public class StopWatch {
         }
 
         /**
-         * 获取任务花费时间（单位：秒）
+         * 获取任务花费时间(单位：秒)
          *
          * @return the double
          * @see #getTimeMillis()

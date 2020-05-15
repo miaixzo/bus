@@ -53,7 +53,7 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Intercepts(value = {
@@ -98,7 +98,7 @@ public class NatureSQLHandler implements Interceptor {
                 .replaceAll("\\?", id);
         if (!CollUtils.isEmpty(parameterMappings) && parameterObject != null) {
             // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
-            // 如果根据parameterObject.getClass(）可以找到对应的类型,则替换
+            // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
             if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
                 sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));

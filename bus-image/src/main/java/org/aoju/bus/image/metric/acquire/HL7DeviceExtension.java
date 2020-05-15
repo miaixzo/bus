@@ -35,18 +35,16 @@ import java.util.LinkedHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class HL7DeviceExtension extends DeviceExtension {
 
     static {
-        Connection.registerTCPProtocolHandler(
-                Connection.Protocol.HL7, HL7Handler.INSTANCE);
+        Connection.registerTCPProtocolHandler(Connection.Protocol.HL7, HL7Handler.INSTANCE);
     }
 
-    private final LinkedHashMap<String, HL7Application> hl7apps =
-            new LinkedHashMap<String, HL7Application>();
+    private final LinkedHashMap<String, HL7Application> hl7apps = new LinkedHashMap<>();
 
     private transient HL7MessageListener hl7MessageListener;
     private transient HL7ConnectionMonitor hl7ConnectionMonitor;

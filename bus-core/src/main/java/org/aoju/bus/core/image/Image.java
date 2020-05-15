@@ -50,7 +50,7 @@ import java.nio.file.Path;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -222,9 +222,9 @@ public class Image implements Serializable {
     }
 
     /**
-     * 设置图片输出质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
+     * 设置图片输出质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      *
-     * @param quality 质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
+     * @param quality 质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      * @return the image
      */
     public Image setQuality(double quality) {
@@ -232,9 +232,9 @@ public class Image implements Serializable {
     }
 
     /**
-     * 设置图片输出质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
+     * 设置图片输出质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      *
-     * @param quality 质量,数字为0~1（不包括0和1）表示质量压缩比,除此数字外设置表示不压缩
+     * @param quality 质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      * @return image
      */
     public Image setQuality(float quality) {
@@ -247,7 +247,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 缩放图像（按比例缩放）
+     * 缩放图像(按比例缩放)
      *
      * @param scale 缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @return this
@@ -276,7 +276,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 缩放图像（按长宽缩放）
+     * 缩放图像(按长宽缩放)
      * 注意：目标长宽与原图不成比例会变形
      *
      * @param width  目标宽度
@@ -380,7 +380,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 图像切割为圆形(按指定起点坐标和半径切割),填充满整个图片（直径取长宽最小值）
+     * 图像切割为圆形(按指定起点坐标和半径切割),填充满整个图片(直径取长宽最小值)
      *
      * @param x 原图的x坐标起始位置
      * @param y 原图的y坐标起始位置
@@ -395,7 +395,7 @@ public class Image implements Serializable {
      *
      * @param x      原图的x坐标起始位置
      * @param y      原图的y坐标起始位置
-     * @param radius 半径,小于0表示填充满整个图片（直径取长宽最小值）
+     * @param radius 半径,小于0表示填充满整个图片(直径取长宽最小值)
      * @return this
      */
     public Image cut(int x, int y, int radius) {
@@ -476,7 +476,7 @@ public class Image implements Serializable {
      * @param font      {@link Font} 字体相关信息
      * @param x         修正值  默认在中间,偏移量相对于中间偏移
      * @param y         修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return 处理后的图像
      */
     public Image pressText(String pressText, Color color, Font font, int x, int y, float alpha) {
@@ -511,7 +511,7 @@ public class Image implements Serializable {
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param x          修正值  默认在中间,偏移量相对于中间偏移
      * @param y          修正值  默认在中间,偏移量相对于中间偏移
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return this
      */
     public Image pressImage(java.awt.Image pressImage, int x, int y, float alpha) {
@@ -526,7 +526,7 @@ public class Image implements Serializable {
      *
      * @param pressImage 水印图片,可以使用{@link ImageIO#read(File)}方法读取文件
      * @param rectangle  矩形对象,表示矩形区域的x,y,width,height,x,y从背景图片中心计算
-     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
+     * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return this
      */
     public Image pressImage(java.awt.Image pressImage, Rectangle rectangle, float alpha) {

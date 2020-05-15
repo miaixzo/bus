@@ -45,7 +45,7 @@ import java.util.Map;
  * 微软登录
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class MicrosoftProvider extends DefaultProvider {
@@ -124,7 +124,7 @@ public class MicrosoftProvider extends DefaultProvider {
     }
 
     /**
-     * 刷新access token （续期）
+     * 刷新access token (续期)
      *
      * @param token 登录成功后返回的Token信息
      * @return AuthResponse

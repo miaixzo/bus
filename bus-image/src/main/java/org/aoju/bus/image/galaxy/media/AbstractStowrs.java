@@ -48,7 +48,7 @@ import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class AbstractStowrs implements AutoCloseable {
@@ -62,10 +62,10 @@ public class AbstractStowrs implements AutoCloseable {
     private final Map<String, String> headers;
 
     /**
-     * @param requestURL  the URL of the STOW service
-     * @param contentType the value of the type in the Content-Type HTTP property
-     * @param agentName   the value of the User-Agent HTTP property
-     * @param headers     some additional header properties.
+     * @param requestURL  STOW服务的URL
+     * @param contentType Content-Type HTTP属性中类型的值
+     * @param agentName   User-Agent HTTP属性的值
+     * @param headers     一些其他标题属性
      */
     public AbstractStowrs(String requestURL, String contentType, String agentName,
                           Map<String, String> headers) {
@@ -208,7 +208,6 @@ public class AbstractStowrs implements AutoCloseable {
     }
 
     private void endMarkers(DataOutputStream out) throws IOException {
-        // Final part segment
         out.write(MultipartParser.Separator.BOUNDARY.getType());
         out.writeBytes(MULTIPART_BOUNDARY);
         out.write(MultipartParser.Separator.STREAM.getType());

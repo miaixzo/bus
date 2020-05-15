@@ -22,50 +22,63 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.effect.provider;
 
-import net.jpountz.lz4.*;
+import org.aoju.bus.extra.effect.EffectProvider;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 /**
- * 基于lz4算法的数据解压缩.
+ * 基于deflater算法的数据解压缩.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public class Lz4Provider implements EffectProvider {
+public class DeflaterProvider implements EffectProvider {
 
     @Override
-    public byte[] compress(byte[] data) throws IOException {
-        LZ4Factory factory = LZ4Factory.fastestInstance();
-        ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-        LZ4Compressor compressor = factory.fastCompressor();
-        LZ4BlockOutputStream compressedOutput = new LZ4BlockOutputStream(byteOutput, 2048, compressor);
-        compressedOutput.write(data);
-        compressedOutput.close();
+    public byte[] compress(byte[] data) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Deflater compressor = new Deflater(1);
 
-        return byteOutput.toByteArray();
+        try {
+            compressor.setInput(data);
+            compressor.finish();
+            final byte[] buf = new byte[2048];
+            while (!compressor.finished()) {
+                int count = compressor.deflate(buf);
+                bos.write(buf, 0, count);
+            }
+        } finally {
+            compressor.end();
+        }
+
+        return bos.toByteArray();
     }
 
     @Override
-    public byte[] uncompress(byte[] data) throws IOException {
-        LZ4Factory factory = LZ4Factory.fastestInstance();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        LZ4FastDecompressor decompresser = factory.fastDecompressor();
-        LZ4BlockInputStream lzis = new LZ4BlockInputStream(new ByteArrayInputStream(data), decompresser);
+    public byte[] uncompress(byte[] data) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        Inflater decompressor = new Inflater();
 
-        int count;
-        byte[] buffer = new byte[2048];
-        while ((count = lzis.read(buffer)) != -1) {
-            baos.write(buffer, 0, count);
+        try {
+            decompressor.setInput(data);
+            final byte[] buf = new byte[2048];
+            while (!decompressor.finished()) {
+                int count = decompressor.inflate(buf);
+                bos.write(buf, 0, count);
+            }
+        } catch (DataFormatException e) {
+            e.printStackTrace();
+        } finally {
+            decompressor.end();
         }
-        lzis.close();
 
-        return baos.toByteArray();
+        return bos.toByteArray();
     }
 
 }

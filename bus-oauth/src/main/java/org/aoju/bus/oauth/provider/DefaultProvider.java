@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
@@ -56,7 +57,7 @@ import java.util.*;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {
@@ -124,17 +125,17 @@ public abstract class DefaultProvider implements Provider {
         if (StringUtils.isEmpty(url)) {
             return false;
         }
-        return url.startsWith("https://");
+        return url.startsWith(Http.HTTPS_PREFIX);
     }
 
     /**
-     * 是否为本地主机（域名）
+     * 是否为本地主机(域名)
      *
      * @param url 待验证的url
-     * @return true: 本地主机（域名）, false: 非本地主机（域名）
+     * @return true: 本地主机(域名), false: 非本地主机(域名)
      */
     public static boolean isLocalHost(String url) {
-        return StringUtils.isEmpty(url) || url.contains("127.0.0.1") || url.contains("localhost");
+        return StringUtils.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);
     }
 
     /**

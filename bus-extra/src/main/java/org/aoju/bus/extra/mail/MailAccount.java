@@ -36,7 +36,7 @@ import java.util.Properties;
  * 邮件账户对象
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class MailAccount implements Serializable {
@@ -89,12 +89,12 @@ public class MailAccount implements Serializable {
      */
     private Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
     /**
-     * 对于超长参数是否切分为多份,默认为false（国内邮箱附件不支持切分的附件名）
+     * 对于超长参数是否切分为多份,默认为false(国内邮箱附件不支持切分的附件名)
      */
     private boolean splitlongparameters;
 
     /**
-     * 使用 STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
+     * 使用 STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
      */
     private boolean startttlsEnable = false;
     /**
@@ -308,7 +308,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 对于超长参数是否切分为多份,默认为false（国内邮箱附件不支持切分的附件名）
+     * 对于超长参数是否切分为多份,默认为false(国内邮箱附件不支持切分的附件名)
      *
      * @return 对于超长参数是否切分为多份
      */
@@ -317,7 +317,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置对于超长参数是否切分为多份,默认为false（国内邮箱附件不支持切分的附件名）
+     * 设置对于超长参数是否切分为多份,默认为false(国内邮箱附件不支持切分的附件名)
      *
      * @param splitlongparameters 对于超长参数是否切分为多份
      */
@@ -326,7 +326,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 是否使用 STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
+     * 是否使用 STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
      *
      * @return 是否使用 STARTTLS安全连接
      */
@@ -335,7 +335,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置是否使用STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
+     * 设置是否使用STARTTLS安全连接,STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
      *
      * @param startttlsEnable 是否使用STARTTLS安全连接
      * @return this
@@ -471,7 +471,7 @@ public class MailAccount implements Serializable {
         p.put(MAIL_DEBUG, String.valueOf(this.debug));
 
         if (this.startttlsEnable) {
-            //STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接（TLS或SSL）, 而不是使用一个单独的加密通信端口
+            //STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
             p.put(STARTTTLS_ENABLE, String.valueOf(this.startttlsEnable));
 
             if (null == this.sslEnable) {

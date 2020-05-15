@@ -62,7 +62,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class EqualsBuilder implements Builder<Boolean> {
@@ -165,7 +165,7 @@ public class EqualsBuilder implements Builder<Boolean> {
     }
 
     /**
-     * 反射检查两个对象是否equals,此方法检查对象及其父对象的属性（包括私有属性）是否相等
+     * 反射检查两个对象是否equals,此方法检查对象及其父对象的属性(包括私有属性)是否相等
      *
      * @param lhs           此对象
      * @param rhs           另一个对象
@@ -177,7 +177,7 @@ public class EqualsBuilder implements Builder<Boolean> {
     }
 
     /**
-     * 反射检查两个对象是否equals,此方法检查对象及其父对象的属性（包括私有属性）是否相等
+     * 反射检查两个对象是否equals,此方法检查对象及其父对象的属性(包括私有属性)是否相等
      *
      * @param lhs           此对象
      * @param rhs           另一个对象

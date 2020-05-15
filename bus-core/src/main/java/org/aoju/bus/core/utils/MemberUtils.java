@@ -44,7 +44,7 @@ import java.util.Set;
  * 数字工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 abstract class MemberUtils {
@@ -1118,7 +1118,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * 是否是质数（素数）
+     * 是否是质数(素数)
      * 质数表的质数又称素数 指整数在一个大于1的自然数中,除了1和此整数自身外,没法被其他自然数整除的数
      *
      * @param n 数字
@@ -1137,8 +1137,8 @@ abstract class MemberUtils {
     /**
      * 生成不重复随机数 根据给定的最小数字和最大数字,以及随机数的个数,产生指定的不重复的数组
      *
-     * @param begin 最小数字（包含该数）
-     * @param end   最大数字（不包含该数）
+     * @param begin 最小数字(包含该数)
+     * @param end   最大数字(不包含该数)
      * @param size  指定产生随机数的个数
      * @return 随机int数组
      */
@@ -1175,8 +1175,8 @@ abstract class MemberUtils {
     /**
      * 生成不重复随机数 根据给定的最小数字和最大数字,以及随机数的个数,产生指定的不重复的数组
      *
-     * @param begin 最小数字（包含该数）
-     * @param end   最大数字（不包含该数）
+     * @param begin 最小数字(包含该数)
+     * @param end   最大数字(不包含该数)
      * @param size  指定产生随机数的个数
      * @return 随机int数组
      */
@@ -1203,7 +1203,7 @@ abstract class MemberUtils {
     /**
      * 从0开始给定范围内的整数列表,步进为1
      *
-     * @param stop 结束（包含）
+     * @param stop 结束(包含)
      * @return 整数列表
      */
     public static int[] range(int stop) {
@@ -1213,8 +1213,8 @@ abstract class MemberUtils {
     /**
      * 给定范围内的整数列表,步进为1
      *
-     * @param start 开始（包含）
-     * @param stop  结束（包含）
+     * @param start 开始(包含)
+     * @param stop  结束(包含)
      * @return 整数列表
      */
     public static int[] range(int start, int stop) {
@@ -1224,8 +1224,8 @@ abstract class MemberUtils {
     /**
      * 给定范围内的整数列表
      *
-     * @param start 开始（包含）
-     * @param stop  结束（包含）
+     * @param start 开始(包含)
+     * @param stop  结束(包含)
      * @param step  步进
      * @return 整数列表
      */
@@ -1251,8 +1251,8 @@ abstract class MemberUtils {
     /**
      * 将给定范围内的整数添加到已有集合中,步进为1
      *
-     * @param start  开始（包含）
-     * @param stop   结束（包含）
+     * @param start  开始(包含)
+     * @param stop   结束(包含)
      * @param values 集合
      * @return 集合
      */
@@ -1263,8 +1263,8 @@ abstract class MemberUtils {
     /**
      * 将给定范围内的整数添加到已有集合中
      *
-     * @param start  开始（包含）
-     * @param stop   结束（包含）
+     * @param start  开始(包含)
+     * @param stop   结束(包含)
      * @param step   步进
      * @param values 集合
      * @return 集合
@@ -1950,7 +1950,7 @@ abstract class MemberUtils {
      * 2、0开头的视为8进制数字
      * 3、其它情况按照10进制转换
      * 4、空串返回0
-     * 5、.123形式返回0（按照小于0的小数对待）
+     * 5、.123形式返回0(按照小于0的小数对待)
      * 6、123.56截取小数点之前的数字,忽略小数部分
      * </pre>
      *
@@ -2025,7 +2025,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * int值转byte数组,使用大端字节序（高位字节在前,低位字节在后）
+     * int值转byte数组,使用大端字节序(高位字节在前,低位字节在后)
      *
      * @param value 值
      * @return byte数组
@@ -2042,7 +2042,7 @@ abstract class MemberUtils {
     }
 
     /**
-     * byte数组转int,使用大端字节序（高位字节在前,低位字节在后）
+     * byte数组转int,使用大端字节序(高位字节在前,低位字节在后)
      *
      * @param bytes 字节
      * @return int

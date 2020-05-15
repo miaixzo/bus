@@ -47,7 +47,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * 设置工具类  用于支持设置（配置）文件
+ * 设置工具类  用于支持设置(配置)文件
  * BasicSetting用于替换Properties类,提供功能更加强大的配置文件,同时对Properties文件向下兼容
  *
  * <pre>
@@ -58,7 +58,7 @@ import java.util.function.Consumer;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -528,7 +528,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 默认分组（空分组）中是否包含指定key对应的值
+     * 默认分组(空分组)中是否包含指定key对应的值
      *
      * @param key 键
      * @return 默认分组中是否包含指定key对应的值
@@ -539,7 +539,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 默认分组（空分组）中是否包含指定值
+     * 默认分组(空分组)中是否包含指定值
      *
      * @param value 值
      * @return 默认分组中是否包含指定值
@@ -550,10 +550,10 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获取默认分组（空分组）中指定key对应的值
+     * 获取默认分组(空分组)中指定key对应的值
      *
      * @param key 键
-     * @return 默认分组（空分组）中指定key对应的值
+     * @return 默认分组(空分组)中指定key对应的值
      */
     @Override
     public String get(Object key) {
@@ -561,7 +561,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 将指定键值对加入到默认分组（空分组）中
+     * 将指定键值对加入到默认分组(空分组)中
      *
      * @param key   键
      * @param value 值
@@ -573,7 +573,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 移除默认分组（空分组）中指定值
+     * 移除默认分组(空分组)中指定值
      *
      * @param key 键
      * @return 移除的值
@@ -584,7 +584,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 将键值对Map加入默认分组（空分组）中
+     * 将键值对Map加入默认分组(空分组)中
      *
      * @param m Map
      */
@@ -594,7 +594,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 清空默认分组（空分组）中的所有键值对
+     * 清空默认分组(空分组)中的所有键值对
      */
     @Override
     public void clear() {
@@ -602,9 +602,9 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获取默认分组（空分组）中的所有键列表
+     * 获取默认分组(空分组)中的所有键列表
      *
-     * @return 默认分组（空分组）中的所有键列表
+     * @return 默认分组(空分组)中的所有键列表
      */
     @Override
     public Set<String> keySet() {
@@ -612,9 +612,9 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获取默认分组（空分组）中的所有值列表
+     * 获取默认分组(空分组)中的所有值列表
      *
-     * @return 默认分组（空分组）中的所有值列表
+     * @return 默认分组(空分组)中的所有值列表
      */
     @Override
     public Collection<String> values() {
@@ -622,9 +622,9 @@ public class Setting extends AbsSetting implements Map<String, String> {
     }
 
     /**
-     * 获取默认分组（空分组）中的所有键值对列表
+     * 获取默认分组(空分组)中的所有键值对列表
      *
-     * @return 默认分组（空分组）中的所有键值对列表
+     * @return 默认分组(空分组)中的所有键值对列表
      */
     @Override
     public Set<Entry<String, String>> entrySet() {

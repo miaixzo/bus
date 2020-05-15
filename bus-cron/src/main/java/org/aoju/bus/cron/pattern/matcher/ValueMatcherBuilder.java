@@ -40,7 +40,7 @@ import java.util.List;
  * {@link ValueMatcher} 构建器,用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ValueMatcherBuilder {
@@ -149,7 +149,7 @@ public class ValueMatcherBuilder {
 
         // 全部匹配形式
         if (value.length() <= 2) {
-            //根据步进的第一个数字确定起始时间,类似于 12/3则从12（秒、分等）开始
+            //根据步进的第一个数字确定起始时间,类似于 12/3则从12(秒、分等)开始
             int minValue = parser.getMin();
             if (false == isMatchAllStr(value)) {
                 try {

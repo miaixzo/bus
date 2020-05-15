@@ -33,7 +33,7 @@ import java.util.concurrent.*;
  * {@link ThreadPoolExecutor} 建造者
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
@@ -47,7 +47,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      */
     private int corePoolSize;
     /**
-     * 最大池大小（允许同时执行的最大线程数）
+     * 最大池大小(允许同时执行的最大线程数)
      */
     private int maxPoolSize = Integer.MAX_VALUE;
     /**
@@ -63,7 +63,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
      */
     private ThreadFactory threadFactory;
     /**
-     * 当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
+     * 当线程阻塞(block)时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
      */
     private RejectedExecutionHandler handler;
     /**
@@ -126,9 +126,9 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置最大池大小（允许同时执行的最大线程数）
+     * 设置最大池大小(允许同时执行的最大线程数)
      *
-     * @param maxPoolSize 最大池大小（允许同时执行的最大线程数）
+     * @param maxPoolSize 最大池大小(允许同时执行的最大线程数)
      * @return this
      */
     public ExecutorBuilder setMaxPoolSize(int maxPoolSize) {
@@ -189,7 +189,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 使用{@link SynchronousQueue} 做为等待队列（非公平策略）
+     * 使用{@link SynchronousQueue} 做为等待队列(非公平策略)
      * 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      *
      * @return this
@@ -222,7 +222,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
+     * 设置当线程阻塞(block)时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
      * <p>
      * 此处可以使用JDK预定义的几种策略，见{@link RejectPolicy}枚举
      *

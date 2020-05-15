@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class DateUtils {
@@ -164,7 +164,7 @@ public class DateUtils {
     /**
      * {@link Date}类型时间转为{@link DateTime}
      *
-     * @param date Long类型Date（Unix时间戳）
+     * @param date Long类型Date(Unix时间戳)
      * @return 时间对象
      */
     public static DateTime date(Date date) {
@@ -178,7 +178,7 @@ public class DateUtils {
      * Long类型时间转为{@link DateTime}
      * 同时支持10位秒级别时间戳和13位毫秒级别时间戳
      *
-     * @param date Long类型Date（Unix时间戳）
+     * @param date Long类型Date(Unix时间戳)
      * @return 时间对象
      */
     public static DateTime date(long date) {
@@ -551,8 +551,8 @@ public class DateUtils {
     /**
      * 获得指定日期区间内的年份和季节
      *
-     * @param startDate 起始日期（包含）
-     * @param endDate   结束日期（包含）
+     * @param startDate 起始日期(包含)
+     * @param endDate   结束日期(包含)
      * @return 季度列表 ，元素类似于 20132
      */
     public static LinkedHashSet<String> yearAndQuarter(Date startDate, Date endDate) {
@@ -565,8 +565,8 @@ public class DateUtils {
     /**
      * 获得指定日期区间内的年份和季节
      *
-     * @param startDate 起始日期（包含）
-     * @param endDate   结束日期（包含）
+     * @param startDate 起始日期(包含)
+     * @param endDate   结束日期(包含)
      * @return 季度列表 ，元素类似于 20132
      */
     public static LinkedHashSet<String> yearAndQuarter(long startDate, long endDate) {
@@ -743,7 +743,7 @@ public class DateUtils {
     }
 
     /**
-     * 格式化日期部分（不包括时间）
+     * 格式化日期部分(不包括时间)
      * 格式 yyyy-MM-dd
      *
      * @param date 被格式化的日期
@@ -879,7 +879,7 @@ public class DateUtils {
     /**
      * 构建LocalDateTime对象
      *
-     * @param dateStr 时间字符串（带格式）
+     * @param dateStr 时间字符串(带格式)
      * @param format  使用{@link Fields}定义的格式
      * @return LocalDateTime对象
      */
@@ -990,7 +990,7 @@ public class DateUtils {
     /**
      * 解析CST时间，格式：
      * <ol>
-     * <li>EEE MMM dd HH:mm:ss z yyyy（例如：Wed Aug 01 00:00:00 CST 2020）</li>
+     * <li>EEE MMM dd HH:mm:ss z yyyy(例如：Wed Aug 01 00:00:00 CST 2020)</li>
      * </ol>
      *
      * @param cstString UTC时间
@@ -1223,12 +1223,12 @@ public class DateUtils {
      * 获取给定日期当前周的开始时间
      *
      * @param calendar           日期 {@link Calendar}
-     * @param isMondayAsFirstDay 是否周一做为一周的第一天（false表示周日做为第一天）
+     * @param isMondayAsFirstDay 是否周一做为一周的第一天(false表示周日做为第一天)
      * @return {@link Calendar}
      */
     public static Calendar beginOfWeek(Calendar calendar, boolean isMondayAsFirstDay) {
         calendar.setFirstDayOfWeek(isMondayAsFirstDay ? Calendar.MONDAY : Calendar.SUNDAY);
-        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        // WEEK_OF_MONTH为上限的字段(不包括)，实际调整的为DAY_OF_MONTH
         return truncate(calendar, Fields.DateField.WEEK_OF_MONTH);
     }
 
@@ -1246,12 +1246,12 @@ public class DateUtils {
      * 获取某周的结束时间
      *
      * @param calendar          日期 {@link Calendar}
-     * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
+     * @param isSundayAsLastDay 是否周日做为一周的最后一天(false表示周六做为最后一天)
      * @return {@link Calendar}
      */
     public static Calendar endOfWeek(Calendar calendar, boolean isSundayAsLastDay) {
         calendar.setFirstDayOfWeek(isSundayAsLastDay ? Calendar.MONDAY : Calendar.SUNDAY);
-        // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
+        // WEEK_OF_MONTH为上限的字段(不包括)，实际调整的为DAY_OF_MONTH
         return ceiling(calendar, Fields.DateField.WEEK_OF_MONTH);
     }
 
@@ -1514,7 +1514,7 @@ public class DateUtils {
      * 获取指定日期偏移指定时间后的时间
      *
      * @param date      基准日期
-     * @param dateField 偏移的粒度大小（小时、天、月等）
+     * @param dateField 偏移的粒度大小(小时、天、月等)
      * @param offset    偏移量,正数为向后偏移,负数为向前偏移
      * @return 偏移后的日期
      */
@@ -1583,11 +1583,11 @@ public class DateUtils {
 
     /**
      * 计算两个日期相差月数
-     * 在非重置情况下,如果起始日期的天小于结束日期的天,月数要少算1（不足1个月）
+     * 在非重置情况下,如果起始日期的天小于结束日期的天,月数要少算1(不足1个月)
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
-     * @param isReset   是否重置时间为起始时间（重置天时分秒）
+     * @param isReset   是否重置时间为起始时间(重置天时分秒)
      * @return 相差月数
      */
     public static long betweenMonth(Date beginDate, Date endDate, boolean isReset) {
@@ -1596,11 +1596,11 @@ public class DateUtils {
 
     /**
      * 计算两个日期相差年数
-     * 在非重置情况下,如果起始日期的月小于结束日期的月,年数要少算1（不足1年）
+     * 在非重置情况下,如果起始日期的月小于结束日期的月,年数要少算1(不足1年)
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
-     * @param isReset   是否重置时间为起始时间（重置月天时分秒）
+     * @param isReset   是否重置时间为起始时间(重置月天时分秒)
      * @return 相差年数
      */
     public static long betweenYear(Date beginDate, Date endDate, boolean isReset) {
@@ -1974,7 +1974,7 @@ public class DateUtils {
     }
 
     /**
-     * （季度）获取季度份时间段内的所有季度
+     * (季度)获取季度份时间段内的所有季度
      *
      * @param StartDate 开始日期
      * @param beginQ    开始季度
@@ -2104,7 +2104,7 @@ public class DateUtils {
     }
 
     /**
-     * （周）计算（周） 上期和去年同期的起止日期和起止周 计算上期的起止时间 和去年同期 type 0本期 1上期 2去年同期 起始日期key
+     * (周)计算(周) 上期和去年同期的起止日期和起止周 计算上期的起止时间 和去年同期 type 0本期 1上期 2去年同期 起始日期key
      * beginkey endkey 起始日期的起止周key beginWkey endWkey 本期：begin end 本期起止周
      * beginW、endW
      *
@@ -2177,7 +2177,7 @@ public class DateUtils {
     }
 
     /**
-     * （年）计算本期（年）的上期
+     * (年)计算本期(年)的上期
      *
      * @param beginkey 开始时间key
      * @param endkey   截止时间key
@@ -2245,7 +2245,7 @@ public class DateUtils {
     }
 
     /**
-     * （月）计算本期的上期和去年同期 1 上期 2同期 返回的mapkay beginkey endkey 本期起止：begin end
+     * (月)计算本期的上期和去年同期 1 上期 2同期 返回的mapkay beginkey endkey 本期起止：begin end
      * 计算上期的起止时间 和去年同期 type 0本期 1上期 2去年同期
      *
      * @param type     计算上期
@@ -2297,7 +2297,7 @@ public class DateUtils {
     }
 
     /**
-     * （周）返回起止时间内的所有自然周
+     * (周)返回起止时间内的所有自然周
      *
      * @param begin  时间起
      * @param end    时间止
@@ -2347,7 +2347,7 @@ public class DateUtils {
     /**
      * 返回该年有多少个自然周
      *
-     * @param year 最多53 一般52 如果12月月末今天在本年53周（属于第二年第一周） 那么按照当年52周算
+     * @param year 最多53 一般52 如果12月月末今天在本年53周(属于第二年第一周) 那么按照当年52周算
      * @return the int
      */
     public static int getAllWeeks(String year) {
@@ -2874,7 +2874,7 @@ public class DateUtils {
     /**
      * 通过生日计算生肖,只计算1900年后出生的人
      *
-     * @param date 出生日期（年需农历）
+     * @param date 出生日期(年需农历)
      * @return 星座名
      */
     public static String getChineseZodiac(Date date) {
@@ -2884,7 +2884,7 @@ public class DateUtils {
     /**
      * 通过生日计算生肖,只计算1900年后出生的人
      *
-     * @param calendar 出生日期（年需农历）
+     * @param calendar 出生日期(年需农历)
      * @return 星座名
      */
     public static String getChineseZodiac(Calendar calendar) {
@@ -2962,7 +2962,7 @@ public class DateUtils {
      * </pre>
      *
      * <p>
-     * 当末位是":"时去除之（不存在毫秒时）
+     * 当末位是":"时去除之(不存在毫秒时)
      *
      * @param dateStr 日期时间字符串
      * @return 格式化后的日期字符串
@@ -2982,7 +2982,7 @@ public class DateUtils {
 
         final StringBuilder builder = StringUtils.builder();
 
-        // 日期部分（"\"、"/"、"."、"年"、"月"都替换为"-"）
+        // 日期部分("\"、"/"、"."、"年"、"月"都替换为"-")
         String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.HYPHEN);
         datePart = StringUtils.removeSuffix(datePart, "日");
         builder.append(datePart);
@@ -3040,7 +3040,7 @@ public class DateUtils {
         // 循环处理各级字段，精确到毫秒字段
         for (int i = dateField + 1; i <= Calendar.MILLISECOND; i++) {
             if (ArrayUtils.contains(ignoreFields, i)) {
-                // 忽略无关字段（WEEK_OF_MONTH）始终不做修改
+                // 忽略无关字段(WEEK_OF_MONTH)始终不做修改
                 continue;
             }
 

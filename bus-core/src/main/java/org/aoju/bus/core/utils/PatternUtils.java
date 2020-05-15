@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class PatternUtils {
@@ -199,7 +199,7 @@ public class PatternUtils {
             return null;
         }
 
-        ArrayList<String> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         final Matcher matcher = pattern.matcher(content);
         if (matcher.find()) {
             final int startGroup = withGroup0 ? 0 : 1;
@@ -245,7 +245,7 @@ public class PatternUtils {
 
     /**
      * 从content中匹配出多个值并根据template生成新的字符串
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
+     * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
@@ -265,7 +265,7 @@ public class PatternUtils {
 
     /**
      * 从content中匹配出多个值并根据template生成新的字符串
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
+     * 匹配结束后会删除匹配内容之前的内容(包括匹配内容)
      * 例如：
      * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *

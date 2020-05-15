@@ -38,7 +38,7 @@ import java.util.Map;
  * 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class AnnoUtils {
@@ -147,7 +147,7 @@ public class AnnoUtils {
     }
 
     /**
-     * 获取注解类的保留时间,可选值 SOURCE（源码时）,CLASS（编译时）,RUNTIME（运行时）,默认为 CLASS
+     * 获取注解类的保留时间,可选值 SOURCE(源码时),CLASS(编译时),RUNTIME(运行时),默认为 CLASS
      *
      * @param annotationType 注解类
      * @return 保留时间枚举

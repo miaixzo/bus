@@ -33,7 +33,7 @@ import java.util.EnumSet;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class DeIdentifier {
@@ -483,14 +483,12 @@ public class DeIdentifier {
             attrs.replaceUIDSelected(u);
 
         try {
-            attrs.accept(new Attributes.Visitor() {
-                @Override
-                public boolean visit(Attributes attrs, int tag, VR vr, Object value) throws Exception {
-                    if (value instanceof Sequence)
-                        for (Attributes item : (Sequence) value)
-                            deidentifyItem(item);
-                    return true;
-                }
+            attrs.accept((attrs1, tag, vr, value) -> {
+                if (value instanceof Sequence)
+                    for (Attributes item : (Sequence) value) {
+                        deidentifyItem(item);
+                    }
+                return true;
             }, false);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -24,11 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.cache.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Documented
@@ -37,14 +39,14 @@ import java.lang.annotation.*;
 public @interface CacheKey {
 
     /**
-     * @return use a part of param as a cache key part
+     * @return 使用参数的一部分作为缓存的关键部分
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
-     * @return used multi model(value has `#i` index) and method return {@code Collection},
-     * the {@code field} indicate which of the {@code Collection}'s entity field related with this param
+     * @return 使用多模型(value has ` # i ` index)方法返回{@code Collection}
+     * {@code field} 指示与此参数相关的 {@code Collection} 实体字段中的哪个
      */
-    String field() default "";
+    String field() default Normal.EMPTY;
 
 }

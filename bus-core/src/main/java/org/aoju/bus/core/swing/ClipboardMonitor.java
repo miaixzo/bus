@@ -39,7 +39,7 @@ import java.util.Set;
  * 剪贴板监听
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
@@ -206,7 +206,7 @@ public enum ClipboardMonitor implements ClipboardOwner, Runnable, Closeable {
     }
 
     /**
-     * 关闭（停止）监听
+     * 关闭(停止)监听
      */
     @Override
     public void close() {

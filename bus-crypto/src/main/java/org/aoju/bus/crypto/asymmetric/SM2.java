@@ -52,7 +52,7 @@ import java.security.PublicKey;
  * SM2算法只支持公钥加密，私钥解密
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class SM2 extends Safety<SM2> {
@@ -162,7 +162,7 @@ public class SM2 extends Safety<SM2> {
     /**
      * 初始化
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密(签名)或者解密(校验)
      *
      * @return this
      */

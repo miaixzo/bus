@@ -58,7 +58,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class IoUtils {
@@ -908,9 +908,9 @@ public class IoUtils {
             for (Object content : contents) {
                 if (content != null) {
                     osw.write(Convert.toString(content, Normal.EMPTY));
-                    osw.flush();
                 }
             }
+            osw.flush();
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {

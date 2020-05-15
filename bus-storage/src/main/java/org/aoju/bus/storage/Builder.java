@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 框架内预定义的存储信息
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Builder {

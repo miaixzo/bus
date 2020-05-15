@@ -36,7 +36,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 此枚举为JDK预定义的几种策略枚举表示
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public enum RejectPolicy {
@@ -50,7 +50,7 @@ public enum RejectPolicy {
      */
     DISCARD(new ThreadPoolExecutor.DiscardPolicy()),
     /**
-     * 如果执行程序尚未关闭,则位于工作队列头部的任务将被删除,然后重试执行程序（如果再次失败,则重复此过程）
+     * 如果执行程序尚未关闭,则位于工作队列头部的任务将被删除,然后重试执行程序(如果再次失败,则重复此过程)
      */
     DISCARD_OLDEST(new ThreadPoolExecutor.DiscardOldestPolicy()),
     /**

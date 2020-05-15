@@ -50,7 +50,7 @@ import java.util.List;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> implements ContentHandler {
@@ -74,7 +74,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      */
     private static final String T_ELEMENT = "t";
     /**
-     * SST（SharedStringsTable） 的索引
+     * SST(SharedStringsTable) 的索引
      */
     private static final String S_ATTR_VALUE = "s";
     // 列中属性值

@@ -24,11 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.xdsi;
 
+import org.aoju.bus.core.lang.Charset;
+
 import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -56,7 +58,7 @@ public class LocalizedStringType {
 
     public String getCharset() {
         if (this.charset == null) {
-            return "UTF-8";
+            return Charset.DEFAULT_UTF_8;
         }
         return this.charset;
     }

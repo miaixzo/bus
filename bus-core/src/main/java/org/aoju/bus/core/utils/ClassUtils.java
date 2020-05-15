@@ -51,7 +51,7 @@ import java.util.*;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ClassUtils {
@@ -149,7 +149,7 @@ public class ClassUtils {
      * 指定类是否与给定的类名相同
      *
      * @param clazz      类
-     * @param className  类名,可以是全类名（包含包名）,也可以是简单类名（不包含包名）
+     * @param className  类名,可以是全类名(包含包名),也可以是简单类名(不包含包名)
      * @param ignoreCase 是否忽略大小写
      * @return 指定类是否与给定的类名相同
      */
@@ -281,7 +281,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定对象中的所有方法（包括非public方法）,也包括父对象和Object类的方法
+     * 查找指定对象中的所有方法(包括非public方法),也包括父对象和Object类的方法
      *
      * @param obj        被查找的对象
      * @param methodName 方法名
@@ -294,7 +294,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定类中的所有方法（包括非public方法）,也包括父类和Object类的方法 找不到方法会返回null
+     * 查找指定类中的所有方法(包括非public方法),也包括父类和Object类的方法 找不到方法会返回null
      *
      * @param clazz          被查找的类
      * @param methodName     方法名
@@ -307,7 +307,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定类中的所有字段（包括非public字段)
+     * 查找指定类中的所有字段(包括非public字段)
      *
      * @param clazz 被查找字段的类
      * @return 字段
@@ -463,7 +463,7 @@ public class ClassUtils {
     }
 
     /**
-     * 是否为基本类型（包括包装类和原始类）
+     * 是否为基本类型(包括包装类和原始类)
      *
      * @param clazz 类
      * @return 是否为基本类型
@@ -526,7 +526,7 @@ public class ClassUtils {
      * 转化包括：
      * 1、原类是对象,目标类型是原类型实现的接口
      * 2、目标类型是原类型的父类
-     * 3、两者是原始类型或者包装类型（相互转换）
+     * 3、两者是原始类型或者包装类型(相互转换)
      *
      * @param classArray   目标类型
      * @param toClassArray 原类型
@@ -541,7 +541,7 @@ public class ClassUtils {
      * 转化包括：
      * 1、原类是对象,目标类型是原类型实现的接口
      * 2、目标类型是原类型的父类
-     * 3、两者是原始类型或者包装类型（相互转换）
+     * 3、两者是原始类型或者包装类型(相互转换)
      *
      * @param classArray   目标类型
      * @param toClassArray 原类型
@@ -556,7 +556,7 @@ public class ClassUtils {
      * 转化包括：
      * 1、原类是对象,目标类型是原类型实现的接口
      * 2、目标类型是原类型的父类
-     * 3、两者是原始类型或者包装类型（相互转换）
+     * 3、两者是原始类型或者包装类型(相互转换)
      *
      * @param classArray   目标类型
      * @param toClassArray 原类型
@@ -740,7 +740,7 @@ public class ClassUtils {
      * 3、非Enum枚举
      * 4、非数组
      * 5、非注解
-     * 6、非原始类型（int, long等）
+     * 6、非原始类型(int, long等)
      * </pre>
      *
      * @param clazz 类
@@ -942,7 +942,7 @@ public class ClassUtils {
      * @param bean            bean对象
      * @param targetMap       目标的Map
      * @param ignoreNullValue 是否忽略值为空的字段
-     * @param keyEditor       属性字段（Map的key）编辑器,用于筛选、编辑key
+     * @param keyEditor       属性字段(Map的key)编辑器,用于筛选、编辑key
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
@@ -995,7 +995,7 @@ public class ClassUtils {
      * <pre>
      * 1、获取当前线程的ContextClassLoader
      * 2、获取{@link ClassUtils}类对应的ClassLoader
-     * 3、获取系统ClassLoader（{@link ClassLoader#getSystemClassLoader()}）
+     * 3、获取系统ClassLoader({@link ClassLoader#getSystemClassLoader()})
      * </pre>
      *
      * @return 类加载器
@@ -1051,7 +1051,7 @@ public class ClassUtils {
      * spring/xml/test.xml
      * </pre>
      *
-     * @param resource 资源（相对Classpath的路径）
+     * @param resource 资源(相对Classpath的路径)
      * @return 资源URL
      * @throws InstrumentException 异常
      * @see ResourceUtils#getResource(String)
@@ -1087,7 +1087,7 @@ public class ClassUtils {
     }
 
     /**
-     * 加载类,通过传入类的字符串,返回其对应的类名,使用默认ClassLoader并初始化类（调用static模块内容和初始化static属性）
+     * 加载类,通过传入类的字符串,返回其对应的类名,使用默认ClassLoader并初始化类(调用static模块内容和初始化static属性)
      * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法,支持以下几类类名的加载：
      *
      * <pre>
@@ -1117,7 +1117,7 @@ public class ClassUtils {
      *
      * @param <T>           对象
      * @param name          类名
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     * @param isInitialized 是否初始化类(调用static模块内容和初始化static属性)
      * @return 类名对应的类
      * @throws InstrumentException 没有类名对应的类时抛出此异常
      */
@@ -1139,7 +1139,7 @@ public class ClassUtils {
      *
      * @param name          类名
      * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     * @param isInitialized 是否初始化类(调用static模块内容和初始化static属性)
      * @return 类名对应的类
      * @throws InstrumentException 没有类名对应的类时抛出此异常
      */
@@ -1267,7 +1267,7 @@ public class ClassUtils {
      *
      * @param name          类名
      * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     * @param isInitialized 是否初始化类(调用static模块内容和初始化static属性)
      * @return 类名对应的类
      */
     private static Class<?> tryLoadInnerClass(String name, ClassLoader classLoader, boolean isInitialized) {
@@ -2665,7 +2665,7 @@ public class ClassUtils {
     }
 
     /**
-     * 查找指定类中的所有字段（包括非public字段）, 字段不存在则返回null
+     * 查找指定类中的所有字段(包括非public字段), 字段不存在则返回null
      *
      * @param clazz     被查找字段的类
      * @param fieldName 字段名

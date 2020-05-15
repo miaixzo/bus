@@ -22,46 +22,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.captcha;
+package org.aoju.bus.extra.effect.provider;
 
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.extra.effect.EffectProvider;
 
-import java.util.Random;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
+ * 基于gzip算法的数据解压缩.
+ *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public abstract class AbstractMathCaptcha extends AbstractCaptcha {
+public class GzipProvider implements EffectProvider {
 
-    /**
-     * 生成随机加减验证码
-     *
-     * @return 验证码字符数组
-     */
     @Override
-    protected char[] alphas() {
-        // 生成随机类
-        Random random = new Random();
-        char[] cs = new char[4];
-        int rand0 = random.nextInt(10);
-        if (rand0 == 0) {
-            rand0 = 1;
-        }
-        int rand1 = random.nextInt(10);
-        boolean rand2 = random.nextBoolean();
-        int rand3 = random.nextInt(10);
-        cs[0] = (char) ('0' + rand0);
-        cs[1] = (char) ('0' + rand1);
-        cs[2] = rand2 ? Symbol.C_PLUS : Symbol.C_HYPHEN;
-        cs[3] = (char) ('0' + rand3);
+    public byte[] compress(byte[] data) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gzip;
 
-        int num1 = rand0 * 10 + rand1;
-        int num2 = rand3;
-        int result = rand2 ? num1 + num2 : num1 - num2;
-        chars = String.valueOf(result);
-        return cs;
+        try {
+            gzip = new GZIPOutputStream(out);
+            gzip.write(data);
+            gzip.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
+    }
+
+    @Override
+    public byte[] uncompress(byte[] data) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+
+        try {
+            GZIPInputStream ungzip = new GZIPInputStream(in);
+            byte[] buffer = new byte[2048];
+            int n;
+            while ((n = ungzip.read(buffer)) >= 0) {
+                out.write(buffer, 0, n);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
     }
 
 }

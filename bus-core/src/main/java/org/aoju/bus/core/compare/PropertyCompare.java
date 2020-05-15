@@ -37,7 +37,7 @@ import java.util.Comparator;
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class PropertyCompare<T> implements Comparator<T>, Serializable {
@@ -60,7 +60,7 @@ public class PropertyCompare<T> implements Comparator<T>, Serializable {
      * 构造
      *
      * @param property      属性名
-     * @param isNullGreater null值是否排在后（从小到大排序）
+     * @param isNullGreater null值是否排在后(从小到大排序)
      */
     public PropertyCompare(String property, boolean isNullGreater) {
         this.property = property;

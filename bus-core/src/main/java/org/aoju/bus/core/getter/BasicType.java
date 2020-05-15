@@ -30,10 +30,10 @@ import java.util.Date;
 
 /**
  * 基本类型的getter接口
- * 提供一个统一的接口定义返回不同类型的值（基本类型）
+ * 提供一个统一的接口定义返回不同类型的值(基本类型)
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface BasicType<K> {

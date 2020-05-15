@@ -22,51 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.effect.provider;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.aoju.bus.extra.effect.EffectProvider;
+import org.xerial.snappy.Snappy;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * 基于bzip2算法的数据解压缩.
+ * 基于snappy的数据压缩.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public class Bzip2Provider implements EffectProvider {
+public class SnappyProvider implements EffectProvider {
 
     @Override
     public byte[] compress(byte[] data) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        BZip2CompressorOutputStream bcos = new BZip2CompressorOutputStream(out);
-        bcos.write(data);
-        bcos.close();
-
-        return out.toByteArray();
+        return Snappy.compress(data);
     }
 
     @Override
-    public byte[] uncompress(byte[] data) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteArrayInputStream in = new ByteArrayInputStream(data);
-
-        try {
-            BZip2CompressorInputStream ungzip = new BZip2CompressorInputStream(in);
-            byte[] buffer = new byte[2048];
-            int n;
-            while ((n = ungzip.read(buffer)) >= 0) {
-                out.write(buffer, 0, n);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return out.toByteArray();
+    public byte[] uncompress(byte[] data) throws IOException {
+        return Snappy.uncompress(data);
     }
 
 }

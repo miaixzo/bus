@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -247,9 +247,9 @@ public final class Builder {
     }
 
     /**
-     * 获取CPU（处理器）相关信息，比如CPU负载等
+     * 获取CPU(处理器)相关信息，比如CPU负载等
      *
-     * @return CPU（处理器）相关信息
+     * @return CPU(处理器)相关信息
      */
     public static CentralProcessor getProcessor() {
         return hardware.getProcessor();
@@ -1787,7 +1787,7 @@ public final class Builder {
     }
 
     /**
-     * 获取磁盘相关信息，可能有多个磁盘（包括可移动磁盘等）
+     * 获取磁盘相关信息，可能有多个磁盘(包括可移动磁盘等)
      *
      * @return 磁盘相关信息
      */

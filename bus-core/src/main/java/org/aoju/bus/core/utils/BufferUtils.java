@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
  * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class BufferUtils {
@@ -45,8 +45,8 @@ public class BufferUtils {
      * 拷贝到一个新的ByteBuffer
      *
      * @param src   源ByteBuffer
-     * @param start 起始位置（包括）
-     * @param end   结束位置（不包括）
+     * @param start 起始位置(包括)
+     * @param end   结束位置(不包括)
      * @return 新的ByteBuffer
      */
     public static ByteBuffer copy(ByteBuffer src, int start, int end) {

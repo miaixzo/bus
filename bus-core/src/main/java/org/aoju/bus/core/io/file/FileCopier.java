@@ -37,6 +37,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 文件拷贝器
@@ -47,7 +48,7 @@ import java.util.ArrayList;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class FileCopier extends Duplicate<File, FileCopier> {
@@ -83,8 +84,8 @@ public class FileCopier extends Duplicate<File, FileCopier> {
     /**
      * 新建一个文件复制器
      *
-     * @param srcPath  源文件路径（相对ClassPath路径或绝对路径）
-     * @param destPath 目标文件路径（相对ClassPath路径或绝对路径）
+     * @param srcPath  源文件路径(相对ClassPath路径或绝对路径)
+     * @param destPath 目标文件路径(相对ClassPath路径或绝对路径)
      * @return {@link FileCopier}
      */
     public static FileCopier create(String srcPath, String destPath) {
@@ -187,7 +188,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      * 拷贝规则为：
      * <pre>
      * 1、源为文件,目标为已存在目录,则拷贝到目录下,文件名不变
-     * 2、源为文件,目标为不存在路径,则目标以文件对待（自动创建父级目录）比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
+     * 2、源为文件,目标为不存在路径,则目标以文件对待(自动创建父级目录)比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
      * 3、源为文件,目标是一个已存在的文件,则当{@link #setOverride(boolean)}设为true时会被覆盖,默认不覆盖
      * 4、源为目录,目标为已存在目录,当{@link #setCopyContentIfDir(boolean)}为true时,只拷贝目录中的内容到目标目录中,否则整个源目录连同其目录拷贝到目标目录中
      * 5、源为目录,目标为不存在路径,则自动创建目标为新目录,然后按照规则4复制
@@ -267,7 +268,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      * 拷贝文件,只用于内部,不做任何安全检查
      * 情况如下：
      * <pre>
-     * 1、如果目标是一个不存在的路径,则目标以文件对待（自动创建父级目录）比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
+     * 1、如果目标是一个不存在的路径,则目标以文件对待(自动创建父级目录)比如：/dest/aaa,如果aaa不存在,则aaa被当作文件名
      * 2、如果目标是一个已存在的目录,则文件拷贝到此目录下,文件名与原文件名一致
      * </pre>
      *
@@ -297,7 +298,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
             dest.getParentFile().mkdirs();
         }
 
-        final ArrayList<CopyOption> optionList = new ArrayList<>(2);
+        final List<CopyOption> optionList = new ArrayList<>(2);
         if (isOverride) {
             optionList.add(StandardCopyOption.REPLACE_EXISTING);
         }

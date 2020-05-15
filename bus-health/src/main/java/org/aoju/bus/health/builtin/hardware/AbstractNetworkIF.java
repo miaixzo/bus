@@ -43,7 +43,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Network interfaces implementation.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -81,10 +81,10 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 this.mac = Normal.UNKNOWN;
             }
             // Set IP arrays
-            ArrayList<String> ipv4list = new ArrayList<>();
-            ArrayList<Short> subnetMaskList = new ArrayList<>();
-            ArrayList<String> ipv6list = new ArrayList<>();
-            ArrayList<Short> prefixLengthList = new ArrayList<>();
+            List<String> ipv4list = new ArrayList<>();
+            List<Short> subnetMaskList = new ArrayList<>();
+            List<String> ipv6list = new ArrayList<>();
+            List<Short> prefixLengthList = new ArrayList<>();
 
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress address = interfaceAddress.getAddress();

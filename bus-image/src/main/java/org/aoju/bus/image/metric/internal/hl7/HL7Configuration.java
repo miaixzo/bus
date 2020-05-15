@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface HL7Configuration {
@@ -42,13 +42,11 @@ public interface HL7Configuration {
     String[] listRegisteredHL7ApplicationNames() throws InstrumentException;
 
     /**
-     * Query for HL7 Applications with specified attributes.
+     * 查询具有指定属性的HL7应用程序
      *
-     * @param keys HL7 Application attributes which shall match or null to
-     *             get information for all configured HL7 Applications
-     * @return array of  HL7ApplicationInfo objects for configured HL7 Application
-     * with matching attributes
-     * @throws InstrumentException exception
+     * @param keys HL7应用程序属性，该属性应匹配或为*以获取所有已配置的HL7应用程序的信息
+     * @return 具有匹配属性的已配置HL7 Application *的HL7ApplicationInfo对象的数组
+     * @throws InstrumentException 异常
      */
     HL7ApplicationInfo[] listHL7AppInfos(HL7ApplicationInfo keys) throws InstrumentException;
 

@@ -34,7 +34,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> KEY类型,一般情况下为 {@link String}
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface ValueProvider<T> {
@@ -51,7 +51,7 @@ public interface ValueProvider<T> {
     /**
      * 是否包含指定KEY,如果不包含则忽略注入
      * 此接口方法单独需要实现的意义在于：
-     * 有些值提供者（比如Map）key是存在的,
+     * 有些值提供者比如(Map)key是存在的,
      * 但是value为null,此时如果需要注入null,
      * 需要根据此方法判断
      *

@@ -25,6 +25,7 @@
 package org.aoju.bus.http.cache;
 
 import org.aoju.bus.core.lang.Header;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.metric.http.HttpHeaders;
@@ -36,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * 这些指令设置了哪些响应可以存储，以及哪些请求可以由存储的响应来满足的策略
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class CacheControl {
@@ -295,7 +296,9 @@ public final class CacheControl {
         if (onlyIfCached) result.append("only-if-cached, ");
         if (noTransform) result.append("no-transform, ");
         if (immutable) result.append("immutable, ");
-        if (result.length() == 0) return "";
+        if (result.length() == 0) {
+            return Normal.EMPTY;
+        }
         result.delete(result.length() - 2, result.length());
         return result.toString();
     }

@@ -33,7 +33,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class NumberWord {
@@ -48,7 +48,7 @@ public class NumberWord {
         if (x != null) {
             return format(x.toString());
         } else {
-            return "";
+            return Normal.EMPTY;
         }
     }
 
@@ -80,7 +80,7 @@ public class NumberWord {
                 lstrrev += Symbol.ZERO;
                 break;
         }
-        String lm = ""; // 用来存放转换後的整数部分
+        String lm = Normal.EMPTY; // 用来存放转换後的整数部分
         for (int i = 0; i < lstrrev.length() / 3; i++) {
             a[i] = StringUtils.reverse(lstrrev.substring(3 * i, 3 * i + 3)); // 截取第一个叁位
             if (!ObjectUtils.equal(a[i], "000")) { // 用来避免这种情况：1000000 = first million
@@ -96,7 +96,7 @@ public class NumberWord {
             }
         }
 
-        String xs = ""; // 用来存放转换後小数部分
+        String xs = Normal.EMPTY; // 用来存放转换後小数部分
         if (z > -1) {
             xs = "AND CENTS " + transTwo(rstr) + Symbol.SPACE; // 小数部分存在时转换小数
         }

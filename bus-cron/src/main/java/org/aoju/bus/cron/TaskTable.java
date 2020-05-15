@@ -29,6 +29,7 @@ import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -40,7 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 任务的添加、移除使用读写锁保证线程安全性
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class TaskTable {
@@ -50,9 +51,9 @@ public class TaskTable {
     private Scheduler scheduler;
     private TimeZone timezone;
 
-    private ArrayList<String> ids = new ArrayList<>();
-    private ArrayList<CronPattern> patterns = new ArrayList<>();
-    private ArrayList<Task> tasks = new ArrayList<>();
+    private List<String> ids = new ArrayList<>();
+    private List<CronPattern> patterns = new ArrayList<>();
+    private List<Task> tasks = new ArrayList<>();
     private int size;
 
     /**

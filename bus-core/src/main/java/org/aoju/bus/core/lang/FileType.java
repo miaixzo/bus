@@ -37,10 +37,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 文件类型（扩展名）
+ * 文件类型(扩展名)
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class FileType {
@@ -91,7 +91,7 @@ public class FileType {
      */
     public static final String TYPE_JPEG = "jpeg";
     /**
-     * 英文Bitmap（位图）的简写,它是Windows操作系统中的标准图像文件格式
+     * 英文Bitmap(位图)的简写,它是Windows操作系统中的标准图像文件格式
      */
     public static final String TYPE_BMP = "bmp";
     /**

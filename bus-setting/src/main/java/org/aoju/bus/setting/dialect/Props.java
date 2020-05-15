@@ -58,7 +58,7 @@ import java.util.Properties;
  * Properties文件读取封装类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class Props extends Properties implements BasicType<String>, OptBasicType<String> {
@@ -229,7 +229,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     /**
      * 获得Classpath下的Properties文件
      *
-     * @param resource 资源（相对Classpath的路径）
+     * @param resource 资源(相对Classpath的路径)
      * @return Properties
      */
     public static Properties getProp(String resource) {
@@ -239,7 +239,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     /**
      * 获得Classpath下的Properties文件
      *
-     * @param resource    资源（相对Classpath的路径）
+     * @param resource    资源(相对Classpath的路径)
      * @param charsetName 字符集
      * @return Properties
      */
@@ -250,7 +250,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     /**
      * 获得Classpath下的Properties文件
      *
-     * @param resource 资源（相对Classpath的路径）
+     * @param resource 资源(相对Classpath的路径)
      * @param charset  字符集
      * @return Properties
      */
@@ -543,7 +543,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
             try {
                 BeanUtils.setProperty(bean, StringUtils.subSuf(key, prefix.length()), entry.getValue());
             } catch (Exception e) {
-                // 忽略注入失败的字段（这些字段可能用于其它配置）
+                // 忽略注入失败的字段(这些字段可能用于其它配置)
                 Logger.debug("Ignore property: [{}]", key);
             }
         }

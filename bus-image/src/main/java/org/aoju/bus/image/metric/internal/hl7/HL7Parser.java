@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Normal;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -36,7 +37,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class HL7Parser {
@@ -45,7 +46,7 @@ public class HL7Parser {
     private final ContentHandler ch;
     private final AttributesImpl atts = new AttributesImpl();
     private final EnumSet<Delimiter> open = EnumSet.noneOf(Delimiter.class);
-    private String namespace = "";
+    private String namespace = Normal.EMPTY;
     private String delimiters;
 
     public HL7Parser(ContentHandler ch) {
@@ -57,7 +58,7 @@ public class HL7Parser {
     }
 
     public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
-        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : "";
+        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : Normal.EMPTY;
     }
 
     public void parse(Reader reader) throws IOException, SAXException {

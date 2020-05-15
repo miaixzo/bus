@@ -25,20 +25,21 @@
 package org.aoju.bus.core.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 生成姓名
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class NameUtils {
 
-    private static ArrayList<String> EN_FIRST_LIST = new ArrayList<>();
-    private static ArrayList<String> EN_LAST_LIST = new ArrayList<>();
-    private static ArrayList<String> CN_LAST_NAME = new ArrayList<>();
-    private static ArrayList<String> CN_FIRST_NAME = new ArrayList<>();
+    private static List<String> EN_FIRST_LIST = new ArrayList<>();
+    private static List<String> EN_LAST_LIST = new ArrayList<>();
+    private static List<String> CN_LAST_NAME = new ArrayList<>();
+    private static List<String> CN_FIRST_NAME = new ArrayList<>();
 
     static {
         initEN_FIRST_LIST();

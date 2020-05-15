@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
@@ -37,7 +38,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class TagValue {
@@ -53,7 +54,7 @@ public final class TagValue {
         } else if (date instanceof Instant) {
             return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(locale).format(((Instant) date).atZone(ZoneId.systemDefault()));
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     public static String getTagAttribute(XMLStreamReader xmler, String attribute, String defaultValue) {

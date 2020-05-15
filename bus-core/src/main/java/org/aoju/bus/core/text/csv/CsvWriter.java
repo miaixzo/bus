@@ -36,7 +36,7 @@ import java.util.Collection;
  * CSV数据写出器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class CsvWriter implements Closeable, Flushable {
@@ -55,7 +55,7 @@ public final class CsvWriter implements Closeable, Flushable {
     private boolean newline = true;
 
     /**
-     * 构造,覆盖已有文件（如果存在）,默认编码UTF-8
+     * 构造,覆盖已有文件(如果存在),默认编码UTF-8
      *
      * @param filePath File CSV文件路径
      */
@@ -64,7 +64,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 构造,覆盖已有文件（如果存在）,默认编码UTF-8
+     * 构造,覆盖已有文件(如果存在),默认编码UTF-8
      *
      * @param file File CSV文件
      */
@@ -73,7 +73,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 构造,覆盖已有文件（如果存在）
+     * 构造,覆盖已有文件(如果存在)
      *
      * @param filePath File CSV文件路径
      * @param charset  编码
@@ -83,7 +83,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 构造,覆盖已有文件（如果存在）
+     * 构造,覆盖已有文件(如果存在)
      *
      * @param file    File CSV文件
      * @param charset 编码
@@ -211,7 +211,7 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 追加新行（换行）
+     * 追加新行(换行)
      *
      * @throws InstrumentException IO异常
      */

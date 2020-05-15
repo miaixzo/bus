@@ -30,7 +30,7 @@ import lombok.Getter;
  * 区域信息
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Getter
@@ -104,7 +104,7 @@ public enum AliMailRegion {
      */
     eucentral1("eu-central-1"),
     /**
-     * 英国（伦敦）
+     * 英国(伦敦)
      */
     euwest1("eu-west-1"),
     /**

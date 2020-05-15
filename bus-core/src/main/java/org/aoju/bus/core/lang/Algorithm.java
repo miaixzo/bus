@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang;
  * 加解密算法类型
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Algorithm {
@@ -40,7 +40,7 @@ public class Algorithm {
     public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding";
     // RSA算法，此算法用了RSA/None/NoPadding
     public static final String RSA_None = "RSA/None/NoPadding";
-    // EC（Elliptic Curve）算法
+    // EC(Elliptic Curve)算法
     public static final String EC = "EC";
     public static final String ECDSA = "ECDSA";
 

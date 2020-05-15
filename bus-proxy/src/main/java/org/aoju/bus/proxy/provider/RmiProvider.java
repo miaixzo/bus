@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.provider;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.proxy.Provider;
@@ -38,12 +39,12 @@ import java.rmi.server.RMIClientSocketFactory;
  * 通过在RMI注册表中查找来提供对象
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class RmiProvider implements Provider {
 
-    private String host = "localhost";
+    private String host = Http.HTTP_HOST_LOCAL;
     private int port = Registry.REGISTRY_PORT;
     private RMIClientSocketFactory clientSocketFactory;
     private String name;

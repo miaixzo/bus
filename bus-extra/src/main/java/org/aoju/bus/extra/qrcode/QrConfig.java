@@ -33,12 +33,13 @@ import java.awt.*;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class QrConfig {
@@ -55,7 +56,7 @@ public class QrConfig {
      */
     public int height;
     /**
-     * 前景色（二维码颜色）
+     * 前景色(二维码颜色)
      */
     public int foreColor = BLACK;
     /**
@@ -321,9 +322,9 @@ public class QrConfig {
      *
      * @return 配置
      */
-    public HashMap<EncodeHintType, Object> toHints() {
+    public Map<EncodeHintType, Object> toHints() {
         // 配置
-        final HashMap<EncodeHintType, Object> hints = new HashMap<>();
+        final Map<EncodeHintType, Object> hints = new HashMap<>();
         if (null != this.charset) {
             hints.put(EncodeHintType.CHARACTER_SET, charset.toString());
         }

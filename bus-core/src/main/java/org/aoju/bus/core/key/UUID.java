@@ -38,9 +38,9 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * 提供通用唯一识别码（universally unique identifier）（UUID）实现,UUID表示一个128位的值
+ * 提供通用唯一识别码(universally unique identifier)(UUID)实现,UUID表示一个128位的值
  * 此类拷贝自java.util.UUID,用于生成不带-的UUID字符串
- * 这些通用标识符具有不同的变体 此类的方法用于操作 Leach-Salz 变体,不过构造方法允许创建任何 UUID 变体（将在下面进行描述）
+ * 这些通用标识符具有不同的变体 此类的方法用于操作 Leach-Salz 变体,不过构造方法允许创建任何 UUID 变体(将在下面进行描述)
  * 变体 2 (Leach-Salz) UUID 的布局如下： long 型数据的最高有效位由以下无符号字段组成：
  *
  * <pre>
@@ -56,12 +56,12 @@ import java.util.Random;
  * 0x3FFF000000000000 clock_seq
  * 0x0000FFFFFFFFFFFF node
  * </pre>
- * variant 字段包含一个表示 UUID 布局的值 以上描述的位布局仅在 UUID 的 variant 值为 2（表示 Leach-Salz 变体）时才有效
+ * variant 字段包含一个表示 UUID 布局的值 以上描述的位布局仅在 UUID 的 variant 值为 2(表示 Leach-Salz 变体)时才有效
  * version 字段保存描述此 UUID 类型的值 有 4 种不同的基本 UUID 类型：基于时间的 UUID、DCE 安全 UUID、基于名称的 UUID 和随机生成的 UUID
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -128,8 +128,8 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     /**
      * 根据一个范围,生成一个随机的整数
      *
-     * @param min 最小值（包括）
-     * @param max 最大值（包括）
+     * @param min 最小值(包括)
+     * @param max 最大值(包括)
      * @return 随机数
      */
     public static int random(int min, int max) {
@@ -137,7 +137,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取类型 4（伪随机生成的）UUID 的静态工厂  使用加密的本地线程伪随机数生成器生成该 UUID
+     * 获取类型 4(伪随机生成的)UUID 的静态工厂  使用加密的本地线程伪随机数生成器生成该 UUID
      *
      * @return 随机生成的 {@code UUID}
      */
@@ -146,7 +146,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取类型 4（伪随机生成的）UUID 的静态工厂  使用加密的强伪随机数生成器生成该 UUID
+     * 获取类型 4(伪随机生成的)UUID 的静态工厂  使用加密的强伪随机数生成器生成该 UUID
      *
      * @return 随机生成的 {@code UUID}
      */
@@ -180,7 +180,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取15位的UUID（精度有所损失）
+     * 获取15位的UUID(精度有所损失)
      *
      * @return 随机生成ID
      */
@@ -189,7 +189,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取15位的Long型UUID（精度有所损失）
+     * 获取15位的Long型UUID(精度有所损失)
      *
      * @return 随机生成ID
      */
@@ -209,7 +209,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 获取类型 4（伪随机生成的）UUID 的静态工厂  使用加密的强伪随机数生成器生成该 UUID
+     * 获取类型 4(伪随机生成的)UUID 的静态工厂  使用加密的强伪随机数生成器生成该 UUID
      *
      * @param isSecure 是否使用{@link SecureRandom}如果是可以获得更安全的随机码,否则可以得到更好的性能
      * @return 随机生成的 {@code UUID}
@@ -227,7 +227,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 根据指定的字节数组获取类型 3（基于名称的）UUID 的静态工厂
+     * 根据指定的字节数组获取类型 3(基于名称的)UUID 的静态工厂
      *
      * @param name 用于构造 UUID 的字节数组
      * @return 根据指定数组生成的 {@code UUID}
@@ -409,10 +409,10 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      *
      * <p>
      * 60 位的时间戳值根据此 {@code UUID} 的 time_low、time_mid 和 time_hi 字段构造
-     * 所得到的时间戳以 100 毫微秒为单位,从 UTC（通用协调时间） 1582 年 10 月 15 日零时开始
+     * 所得到的时间戳以 100 毫微秒为单位,从 UTC(通用协调时间) 1582 年 10 月 15 日零时开始
      *
      * <p>
-     * 时间戳值仅在在基于时间的 UUID（其 version 类型为 1）中才有意义
+     * 时间戳值仅在在基于时间的 UUID(其 version 类型为 1)中才有意义
      * 如果此 {@code UUID} 不是基于时间的 UUID,则此方法抛出 UnsupportedOperationException
      *
      * @return the long
@@ -431,7 +431,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * <p>
      * 14 位的时钟序列值根据此 UUID 的 clock_seq 字段构造 clock_seq 字段用于保证在基于时间的 UUID 中的时间唯一性
      * <p>
-     * {@code clockSequence} 值仅在基于时间的 UUID（其 version 类型为 1）中才有意义  如果此 UUID 不是基于时间的 UUID,则此方法抛出 UnsupportedOperationException
+     * {@code clockSequence} 值仅在基于时间的 UUID(其 version 类型为 1)中才有意义  如果此 UUID 不是基于时间的 UUID,则此方法抛出 UnsupportedOperationException
      *
      * @return 此 {@code UUID} 的时钟序列
      * @throws UnsupportedOperationException 如果此 UUID 的 version 不为 1
@@ -447,7 +447,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * <p>
      * 48 位的节点值根据此 UUID 的 node 字段构造 此字段旨在用于保存机器的 IEEE 802 地址,该地址用于生成此 UUID 以保证空间唯一性
      * <p>
-     * 节点值仅在基于时间的 UUID（其 version 类型为 1）中才有意义
+     * 节点值仅在基于时间的 UUID(其 version 类型为 1)中才有意义
      * 如果此 UUID 不是基于时间的 UUID,则此方法抛出 UnsupportedOperationException
      *
      * @return 此 {@code UUID} 的节点值
@@ -548,7 +548,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     /**
      * 将此对象与指定对象比较
      * <p>
-     * 当且仅当参数不为 {@code null}、而是一个 UUID 对象、具有与此 UUID 相同的 varriant、包含相同的值（每一位均相同）时,结果才为 {@code true}
+     * 当且仅当参数不为 {@code null}、而是一个 UUID 对象、具有与此 UUID 相同的 varriant、包含相同的值(每一位均相同)时,结果才为 {@code true}
      *
      * @param obj 要与之比较的对象
      * @return 如果对象相同, 则返回 {@code true}；否则返回 {@code false}
@@ -597,12 +597,12 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         private static volatile int pixFour = 0;
 
         /**
-         * 生成短时间内不会重复的长度为15位的字符串，主要用于模块数据库主键生成使用。<br/>
-         * 生成策略为获取自1970年1月1日零时零分零秒至当前时间的毫秒数的16进制字符串值，该字符串值为11位<br/>
-         * 并追加四位"0-z"的自增字符串.<br/>
-         * 如果系统时间设置为大于<b>2304-6-27 7:00:26<b/>的时间，将会报错！<br/>
-         * 由于系统返回的毫秒数与操作系统关系很大，所以本方法并不准确。<br/>
-         * 本方法可以保证在系统返回的一个毫秒数内生成36的4次方个（1679616）ID不重复。<br/>
+         * 生成短时间内不会重复的长度为15位的字符串，主要用于模块数据库主键生成使用
+         * 生成策略为获取自1970年1月1日零时零分零秒至当前时间的毫秒数的16进制字符串值，该字符串值为11位
+         * 并追加四位"0-z"的自增字符串
+         * 如果系统时间设置为大于<b>2304-6-27 7:00:26<b/>的时间，将会报错！
+         * 由于系统返回的毫秒数与操作系统关系很大，所以本方法并不准确
+         * 本方法可以保证在系统返回的一个毫秒数内生成36的4次方个(1679616)ID不重复
          */
         private synchronized static String generate() {
             String hexString = Long.toHexString(System.currentTimeMillis());

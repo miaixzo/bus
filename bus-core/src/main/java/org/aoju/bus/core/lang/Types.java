@@ -32,13 +32,13 @@ import java.lang.reflect.Type;
  * Type类型参考
  * 通过构建一个类型参考子类，可以获取其泛型参数中的Type类型
  * <p>
- * 此类无法应用于通配符泛型参数（wildcard parameters），
+ * 此类无法应用于通配符泛型参数(wildcard parameters)，
  * 比如：{@code Class<?>} 或者 {@code List? extends CharSequence>}
  * 此类参考FastJSON的TypeReference实现
  *
  * @param <T> 需要自定义的参考类型
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class Types<T> implements Type {

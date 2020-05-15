@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
@@ -37,14 +38,14 @@ import java.lang.annotation.Target;
  * 针对列的复杂属性配置
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ColumnType {
 
-    String column() default "";
+    String column() default Normal.EMPTY;
 
     JdbcType jdbcType() default JdbcType.UNDEFINED;
 

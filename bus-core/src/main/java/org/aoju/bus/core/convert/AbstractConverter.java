@@ -36,7 +36,7 @@ import java.util.Map;
  * 转换器不会抛出转换异常,转换失败时会返回{@code null}
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class AbstractConverter<T> implements Converter<T> {
@@ -56,7 +56,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
 
         if (null == defaultValue || targetType.isInstance(defaultValue)) {
             if (targetType.isInstance(value) && false == Map.class.isAssignableFrom(targetType)) {
-                // 除Map外,已经是目标类型,不需要转换（Map类型涉及参数类型,需要单独转换）
+                // 除Map外,已经是目标类型,不需要转换(Map类型涉及参数类型,需要单独转换)
                 return targetType.cast(value);
             }
             T result;

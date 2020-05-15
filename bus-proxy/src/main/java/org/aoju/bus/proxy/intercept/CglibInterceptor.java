@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
  * Cglib实现的动态代理切面
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CglibInterceptor implements MethodInterceptor {
@@ -67,7 +67,7 @@ public class CglibInterceptor implements MethodInterceptor {
             try {
                 result = proxy.invokeSuper(obj, args);
             } catch (InvocationTargetException e) {
-                // 异常回调（只捕获业务代码导致的异常,而非反射导致的异常）
+                // 异常回调(只捕获业务代码导致的异常,而非反射导致的异常)
                 if (aspectj.afterException(target, method, args, e.getTargetException())) {
                     throw e;
                 }

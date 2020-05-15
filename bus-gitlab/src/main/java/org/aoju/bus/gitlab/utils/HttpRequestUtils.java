@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab.utils;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 
 import javax.servlet.http.Cookie;
@@ -122,7 +123,7 @@ public class HttpRequestUtils {
      */
     public static String getPostDataAsString(HttpServletRequest request) throws IOException {
 
-        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), "UTF-8")) {
+        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), Charset.DEFAULT_UTF_8)) {
             return (getReaderContentAsString(reader));
         }
     }

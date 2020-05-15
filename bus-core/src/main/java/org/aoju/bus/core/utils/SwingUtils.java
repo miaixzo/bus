@@ -43,7 +43,7 @@ import java.net.URI;
  * 显示器等相关工具
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class SwingUtils {
@@ -152,7 +152,7 @@ public class SwingUtils {
     }
 
     /**
-     * 打印输出指定字符串（借助剪贴板）
+     * 打印输出指定字符串(借助剪贴板)
      *
      * @param str 字符串
      */

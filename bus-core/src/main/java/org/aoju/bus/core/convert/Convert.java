@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Convert {
@@ -697,7 +697,7 @@ public class Convert {
     }
 
     /**
-     * 转换值为指定类型，可选是否不抛异常转换<br>
+     * 转换值为指定类型，可选是否不抛异常转换
      * 当转换失败时返回默认值
      *
      * @param <T>          目标类型
@@ -924,7 +924,7 @@ public class Convert {
      * 将阿拉伯数字转为中文表达方式
      *
      * @param number          数字
-     * @param isUseTraditonal 是否使用繁体字（金额形式）
+     * @param isUseTraditonal 是否使用繁体字(金额形式)
      * @return 中文
      */
     public static String numberToChinese(double number, boolean isUseTraditonal) {

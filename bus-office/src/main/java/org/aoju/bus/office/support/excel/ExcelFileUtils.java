@@ -37,17 +37,17 @@ import java.io.PushbackInputStream;
  * Excel文件工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ExcelFileUtils {
 
     /**
-     * 是否为XLS格式的Excel文件（HSSF）
+     * 是否为XLS格式的Excel文件(HSSF)
      * XLS文件主要用于Excel 97~2003创建
      *
      * @param in excel输入流
-     * @return 是否为XLS格式的Excel文件（HSSF）
+     * @return 是否为XLS格式的Excel文件(HSSF)
      */
     public static boolean isXls(InputStream in) {
         final PushbackInputStream pin = IoUtils.toPushbackStream(in, 8);
@@ -59,11 +59,11 @@ public class ExcelFileUtils {
     }
 
     /**
-     * 是否为XLSX格式的Excel文件（XSSF）
+     * 是否为XLSX格式的Excel文件(XSSF)
      * XLSX文件主要用于Excel 2007+创建
      *
      * @param in excel输入流
-     * @return 是否为XLSX格式的Excel文件（XSSF）
+     * @return 是否为XLSX格式的Excel文件(XSSF)
      */
     public static boolean isXlsx(InputStream in) {
         if (false == in.markSupported()) {

@@ -35,7 +35,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class AbstractService implements ImageService {
@@ -53,7 +53,7 @@ public abstract class AbstractService implements ImageService {
 
     @Override
     public void onClose(Association as) {
-        // NOOP
+
     }
 
     @Override

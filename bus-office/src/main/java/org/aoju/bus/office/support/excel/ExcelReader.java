@@ -47,7 +47,7 @@ import java.util.Map;
  * 读取Excel工作簿
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ExcelReader extends ExcelBase<ExcelReader> {
@@ -233,7 +233,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 读取工作簿中指定的Sheet
      *
-     * @param startRowIndex 起始行（包含,从0开始计数）
+     * @param startRowIndex 起始行(包含,从0开始计数)
      * @return 行的集合, 一行使用List表示
      */
     public List<List<Object>> read(int startRowIndex) {
@@ -243,16 +243,16 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     /**
      * 读取工作簿中指定的Sheet
      *
-     * @param startRowIndex 起始行（包含,从0开始计数）
-     * @param endRowIndex   结束行（包含,从0开始计数）
+     * @param startRowIndex 起始行(包含,从0开始计数)
+     * @param endRowIndex   结束行(包含,从0开始计数)
      * @return 行的集合, 一行使用List表示
      */
     public List<List<Object>> read(int startRowIndex, int endRowIndex) {
         checkNotClosed();
         List<List<Object>> resultList = new ArrayList<>();
 
-        startRowIndex = Math.max(startRowIndex, this.sheet.getFirstRowNum());// 读取起始行（包含）
-        endRowIndex = Math.min(endRowIndex, this.sheet.getLastRowNum());// 读取结束行（包含）
+        startRowIndex = Math.max(startRowIndex, this.sheet.getFirstRowNum());// 读取起始行(包含)
+        endRowIndex = Math.min(endRowIndex, this.sheet.getLastRowNum());// 读取结束行(包含)
         boolean isFirstLine = true;
         List rowList;
         for (int i = startRowIndex; i <= endRowIndex; i++) {
@@ -288,8 +288,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * Map表示一行,标题为key,单元格内容为value
      *
      * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略
-     * @param startRowIndex  起始行（包含,从0开始计数）
-     * @param endRowIndex    读取结束行（包含,从0开始计数）
+     * @param startRowIndex  起始行(包含,从0开始计数)
+     * @param endRowIndex    读取结束行(包含,从0开始计数)
      * @return Map的列表
      */
     public List<Map<String, Object>> read(int headerRowIndex, int startRowIndex, int endRowIndex) {
@@ -302,8 +302,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
         } else if (headerRowIndex > lastRowNum) {
             throw new IndexOutOfBoundsException(StringUtils.format("Header row index {} is greater than last row index {}.", headerRowIndex, firstRowNum));
         }
-        startRowIndex = Math.max(startRowIndex, firstRowNum);// 读取起始行（包含）
-        endRowIndex = Math.min(endRowIndex, lastRowNum);// 读取结束行（包含）
+        startRowIndex = Math.max(startRowIndex, firstRowNum);// 读取起始行(包含)
+        endRowIndex = Math.min(endRowIndex, lastRowNum);// 读取结束行(包含)
 
         // 读取header
         List<Object> headerList = readRow(sheet.getRow(headerRowIndex));
@@ -341,7 +341,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @param <T>            Bean类型
      * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略,,从0开始计数
-     * @param startRowIndex  起始行（包含,从0开始计数）
+     * @param startRowIndex  起始行(包含,从0开始计数)
      * @param beanType       每行对应Bean的类型
      * @return Map的列表
      */
@@ -354,8 +354,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @param <T>            Bean类型
      * @param headerRowIndex 标题所在行,如果标题行在读取的内容行中间,这行做为数据将忽略,,从0开始计数
-     * @param startRowIndex  起始行（包含,从0开始计数）
-     * @param endRowIndex    读取结束行（包含,从0开始计数）
+     * @param startRowIndex  起始行(包含,从0开始计数)
+     * @param endRowIndex    读取结束行(包含,从0开始计数)
      * @param beanType       每行对应Bean的类型
      * @return Map的列表
      */
@@ -451,7 +451,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      */
     private List<String> aliasHeader(List<Object> headerList) {
         final int size = headerList.size();
-        final ArrayList<String> result = new ArrayList<>(size);
+        final List<String> result = new ArrayList<>(size);
         if (CollUtils.isEmpty(headerList)) {
             return result;
         }

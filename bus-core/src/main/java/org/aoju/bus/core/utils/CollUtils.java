@@ -44,13 +44,14 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CollUtils {
@@ -226,6 +227,72 @@ public class CollUtils {
     }
 
     /**
+     * 多个集合的非重复并集，类似于SQL中的“UNION DISTINCT”
+     * 针对一个集合中存在多个相同元素的情况，只保留一个
+     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
+     * 结果：[a, b, c]，此结果中只保留了一个c
+     *
+     * @param <T>        集合元素类型
+     * @param coll1      集合1
+     * @param coll2      集合2
+     * @param otherColls 其它集合
+     * @return 并集的集合，返回 {@link LinkedHashSet}
+     */
+    public static <T> Set<T> unionDistinct(Collection<T> coll1, Collection<T> coll2, Collection<T>... otherColls) {
+        final Set<T> result;
+        if (isEmpty(coll1)) {
+            result = new LinkedHashSet<>();
+        } else {
+            result = new LinkedHashSet<>(coll1);
+        }
+
+        if (isNotEmpty(coll2)) {
+            result.addAll(coll2);
+        }
+
+        if (ArrayUtils.isNotEmpty(otherColls)) {
+            for (Collection<T> otherColl : otherColls) {
+                result.addAll(otherColl);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 多个集合的完全并集，类似于SQL中的“UNION ALL”
+     * 针对一个集合中存在多个相同元素的情况，保留全部元素
+     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
+     * 结果：[a, b, c, c, c, a, b, c, c]
+     *
+     * @param <T>        集合元素类型
+     * @param coll1      集合1
+     * @param coll2      集合2
+     * @param otherColls 其它集合
+     * @return 并集的集合，返回 {@link ArrayList}
+     */
+    public static <T> List<T> unionAll(Collection<T> coll1, Collection<T> coll2, Collection<T>... otherColls) {
+        final List<T> result;
+        if (isEmpty(coll1)) {
+            result = new ArrayList<>();
+        } else {
+            result = new ArrayList<>(coll1);
+        }
+
+        if (isNotEmpty(coll2)) {
+            result.addAll(coll2);
+        }
+
+        if (ArrayUtils.isNotEmpty(otherColls)) {
+            for (Collection<T> otherColl : otherColls) {
+                result.addAll(otherColl);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * 两个集合的交集
      * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留最少的个数
      * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
@@ -280,6 +347,24 @@ public class CollUtils {
     }
 
     /**
+     * 计算集合的单差集，即只返回【集合1】中有，但是【集合2】中没有的元素，例如：
+     *
+     * <pre>
+     *     subtract([1,2,3,4],[2,3,4,5]) -》 [1]
+     * </pre>
+     *
+     * @param coll1 集合1
+     * @param coll2 集合2
+     * @param <T>   元素类型
+     * @return 单差集
+     */
+    public static <T> Collection<T> subtract(Collection<T> coll1, Collection<T> coll2) {
+        final Collection<T> result = ObjectUtils.clone(coll1);
+        result.removeAll(coll2);
+        return result;
+    }
+
+    /**
      * 两个集合的差集
      * 针对一个集合中存在多个相同元素的情况,计算两个集合中此元素的个数,保留两个集合中此元素个数差的个数
      * 例如：集合1：[a, b, c, c, c],集合2：[a, b, c, c]
@@ -321,7 +406,7 @@ public class CollUtils {
      * @param array   数组要检查的数组
      * @param element 要查找的元素
      * @param <T>     通用标签
-     * @return 如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
+     * @return 如果集合为空(null或者空), 返回{@code false},否则找到元素返回{@code true}
      */
     public static <T> boolean contains(T[] array, final T element) {
         if (array == null) {
@@ -331,11 +416,11 @@ public class CollUtils {
     }
 
     /**
-     * 判断指定集合是否包含指定值,如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
+     * 判断指定集合是否包含指定值,如果集合为空(null或者空),返回{@code false},否则找到元素返回{@code true}
      *
      * @param collection 集合
      * @param value      需要查找的值
-     * @return 如果集合为空（null或者空）,返回{@code false},否则找到元素返回{@code true}
+     * @return 如果集合为空(null或者空), 返回{@code false},否则找到元素返回{@code true}
      */
     public static boolean contains(final Collection<?> collection, Object value) {
         return isNotEmpty(collection) && collection.contains(value);
@@ -984,8 +1069,8 @@ public class CollUtils {
      *
      * @param <T>   集合元素类型
      * @param list  被截取的数组
-     * @param start 开始位置（包含）
-     * @param end   结束位置（不包含）
+     * @param start 开始位置(包含)
+     * @param end   结束位置(不包含)
      * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
     public static <T> List<T> sub(List<T> list, int start, int end) {
@@ -997,8 +1082,8 @@ public class CollUtils {
      *
      * @param <T>   集合元素类型
      * @param list  被截取的数组
-     * @param start 开始位置（包含）
-     * @param end   结束位置（不包含）
+     * @param start 开始位置(包含)
+     * @param end   结束位置(不包含)
      * @param step  步进
      * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
@@ -1049,8 +1134,8 @@ public class CollUtils {
      *
      * @param <T>        集合元素类型
      * @param collection 被截取的数组
-     * @param start      开始位置（包含）
-     * @param end        结束位置（不包含）
+     * @param start      开始位置(包含)
+     * @param end        结束位置(不包含)
      * @return 截取后的数组, 当开始位置超过最大时, 返回null
      */
     public static <T> List<T> sub(Collection<T> collection, int start, int end) {
@@ -1062,8 +1147,8 @@ public class CollUtils {
      *
      * @param <T>   集合元素类型
      * @param list  被截取的数组
-     * @param start 开始位置（包含）
-     * @param end   结束位置（不包含）
+     * @param start 开始位置(包含)
+     * @param end   结束位置(不包含)
      * @param step  步进
      * @return 截取后的数组, 当开始位置超过最大时, 返回空集合
      */
@@ -1265,9 +1350,47 @@ public class CollUtils {
      * @return 抽取后的新列表
      */
     public static List<Object> extract(Iterable<?> collection, Editor<Object> editor) {
-        final List<Object> fieldValueList = new ArrayList<>();
-        for (Object bean : collection) {
-            fieldValueList.add(editor.edit(bean));
+        return extract(collection, editor, false);
+    }
+
+    /**
+     * 通过Editor抽取集合元素中的某些值返回为新列表
+     * 例如提供的是一个Bean列表,通过Editor接口实现获取某个字段值,返回这个字段值组成的新列表
+     *
+     * @param collection 原集合
+     * @param editor     编辑器
+     * @param ignoreNull 是否忽略空值
+     * @return 抽取后的新列表
+     * @see #map(Iterable, Function, boolean)
+     */
+    public static List<Object> extract(Iterable<?> collection, Editor<Object> editor, boolean ignoreNull) {
+        return map(collection, editor::edit, ignoreNull);
+    }
+
+    /**
+     * 通过func自定义一个规则,此规则将原集合中的元素转换成新的元素,生成新的列表返回
+     * 例如提供的是一个Bean列表,通过Function接口实现获取某个字段值,返回这个字段值组成的新列表
+     *
+     * @param <T>        输入类型
+     * @param <R>        结果类型
+     * @param collection 原集合
+     * @param func       编辑函数
+     * @param ignoreNull 是否忽略空值
+     * @return 抽取后的新列表
+     */
+    public static <T, R> List<R> map(Iterable<T> collection, Function<T, R> func, boolean ignoreNull) {
+        final List<R> fieldValueList = new ArrayList<>();
+        if (null == collection) {
+            return fieldValueList;
+        }
+
+        R value;
+        for (T bean : collection) {
+            value = func.apply(bean);
+            if (null == value && ignoreNull) {
+                continue;
+            }
+            fieldValueList.add(value);
         }
         return fieldValueList;
     }
@@ -1399,7 +1522,7 @@ public class CollUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
+     * 映射键值(参考Python的zip()函数)
      * 例如：
      * keys = a,b,c,d
      * values = 1,2,3,4
@@ -1417,7 +1540,7 @@ public class CollUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）,返回Map无序
+     * 映射键值(参考Python的zip()函数),返回Map无序
      * 例如：
      * keys = a,b,c,d
      * values = 1,2,3,4
@@ -1434,7 +1557,7 @@ public class CollUtils {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
+     * 映射键值(参考Python的zip()函数)
      * 例如：
      * keys = [a,b,c,d]
      * values = [1,2,3,4]
@@ -1478,13 +1601,13 @@ public class CollUtils {
     }
 
     /**
-     * 将数组转换为Map（HashMap）,支持数组元素类型为：
+     * 将数组转换为Map(HashMap),支持数组元素类型为：
      *
      * <pre>
      * Map.Entry
-     * 长度大于1的数组（取前两个值）,如果不满足跳过此元素
-     * Iterable 长度也必须大于1（取前两个值）,如果不满足跳过此元素
-     * Iterator 长度也必须大于1（取前两个值）,如果不满足跳过此元素
+     * 长度大于1的数组(取前两个值),如果不满足跳过此元素
+     * Iterable 长度也必须大于1(取前两个值),如果不满足跳过此元素
+     * Iterator 长度也必须大于1(取前两个值),如果不满足跳过此元素
      * </pre>
      *
      * <pre>
@@ -1767,7 +1890,7 @@ public class CollUtils {
      * @param list        列表
      * @param part        被加入的部分
      * @param isTrim      是否去除两端空白符
-     * @param ignoreEmpty 是否略过空字符串（空字符串不做为一个元素）
+     * @param ignoreEmpty 是否略过空字符串(空字符串不做为一个元素)
      * @return 列表
      */
     public static List<String> addAll(List<String> list, String part, boolean isTrim, boolean ignoreEmpty) {
@@ -1909,7 +2032,7 @@ public class CollUtils {
     }
 
     /**
-     * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断）
+     * 获得{@link Iterable}对象的元素类型(通过第一个非空元素判断)
      *
      * @param iterable {@link Iterable}
      * @return 元素类型, 当列表为空或元素全部为null时, 返回null
@@ -1920,7 +2043,7 @@ public class CollUtils {
     }
 
     /**
-     * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断）
+     * 获得{@link Iterator}对象的元素类型(通过第一个非空元素判断)
      *
      * @param iterator {@link Iterator}
      * @return 元素类型, 当列表为空或元素全部为null时, 返回null
@@ -2089,7 +2212,7 @@ public class CollUtils {
 
     /**
      * 对list的元素按照多个属性名称排序,
-     * list元素的属性可以是数字（byte、short、int、long、float、double等,支持正数、负数、0）、char、String、java.util.Date
+     * list元素的属性可以是数字(byte、short、int、long、float、double等,支持正数、负数、0)、char、String、java.util.Date
      *
      * @param <E>  对象
      * @param list 集合
@@ -2142,7 +2265,7 @@ public class CollUtils {
     }
 
     /**
-     * 将多个集合排序并显示不同的段落（分页）
+     * 将多个集合排序并显示不同的段落(分页)
      * 实现分页取局部
      *
      * @param <T>        集合元素类型
@@ -2222,7 +2345,7 @@ public class CollUtils {
     }
 
     /**
-     * 将Set排序（根据Entry的值）
+     * 将Set排序(根据Entry的值)
      *
      * @param <K>        键类型
      * @param <V>        值类型
@@ -2388,7 +2511,7 @@ public class CollUtils {
     }
 
     /**
-     * 获取指定对象的指定属性值（去除private,protected的限制）
+     * 获取指定对象的指定属性值(去除private,protected的限制)
      *
      * @param obj       属性名称所在的对象
      * @param fieldName 属性名称
@@ -2434,7 +2557,7 @@ public class CollUtils {
      * 页码：1,每页10 =》 [0, 10]
      * 页码：2,每页10 =》 [10, 20]
      *
-     * @param pageNo   页码（从1计数）
+     * @param pageNo   页码(从1计数)
      * @param pageSize 每页条目数
      * @return 第一个数为开始位置, 第二个数为结束位置
      */

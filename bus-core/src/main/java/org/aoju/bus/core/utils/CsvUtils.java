@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * CSV工具
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CsvUtils {
@@ -62,7 +62,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器）,使用默认配置,覆盖已有文件（如果存在）
+     * 获取CSV生成器(写出器),使用默认配置,覆盖已有文件(如果存在)
      *
      * @param filePath File CSV文件路径
      * @param charset  编码
@@ -73,7 +73,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器）,使用默认配置,覆盖已有文件（如果存在）
+     * 获取CSV生成器(写出器),使用默认配置,覆盖已有文件(如果存在)
      *
      * @param file    File CSV文件
      * @param charset 编码
@@ -84,7 +84,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器）,使用默认配置
+     * 获取CSV生成器(写出器),使用默认配置
      *
      * @param filePath File CSV文件路径
      * @param charset  编码
@@ -96,7 +96,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器）,使用默认配置
+     * 获取CSV生成器(写出器),使用默认配置
      *
      * @param file     File CSV文件
      * @param charset  编码
@@ -108,7 +108,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器）
+     * 获取CSV生成器(写出器)
      *
      * @param file     File CSV文件
      * @param charset  编码
@@ -121,7 +121,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器）
+     * 获取CSV生成器(写出器)
      *
      * @param writer Writer
      * @return {@link CsvWriter}
@@ -131,7 +131,7 @@ public class CsvUtils {
     }
 
     /**
-     * 获取CSV生成器（写出器）
+     * 获取CSV生成器(写出器)
      *
      * @param writer Writer
      * @param config 写出配置,null则使用默认配置

@@ -32,12 +32,12 @@ import java.nio.charset.Charset;
 
 /**
  * Base32 - encodes and decodes RFC3548 Base32 (see http://www.faqs.org/rfcs/rfc3548.html )
- * base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码
- * 所以,5个ASCII字符经过base32编码后会变为8个字符（公约数为40）,长度增加3/5.不足8n用“=”补足
+ * base32就是用32(2的5次方)个特定ASCII码来表示256个ASCII码
+ * 所以,5个ASCII字符经过base32编码后会变为8个字符(公约数为40),长度增加3/5.不足8n用“=”补足
  * see http://blog.csdn.net/earbao/article/details/44453937
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class Base32 {

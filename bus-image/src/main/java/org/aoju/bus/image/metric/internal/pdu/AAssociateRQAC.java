@@ -35,7 +35,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class AAssociateRQAC {
@@ -272,10 +272,10 @@ public abstract class AAssociateRQAC {
     }
 
     public int userInfoLength() {
-        int len = 8; // Max Length Sub-Item
+        int len = 8; // 最大长度子项
         len += 4 + implClassUID.length();
         if (isAsyncOps())
-            len += 8; // Asynchronous Operations Window Sub-Item
+            len += 8; // 异步操作窗口子项
         for (RoleSelection rs : roleSelMap.values()) {
             len += 4 + rs.length();
         }

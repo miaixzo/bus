@@ -22,61 +22,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.effect;
+package org.aoju.bus.extra.captcha;
 
-import java.io.ByteArrayOutputStream;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
+import java.io.OutputStream;
 
 /**
- * 基于deflater算法的数据解压缩.
+ * 验证码接口，提供验证码对象接口定义
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public class DeflaterProvider implements EffectProvider {
+public interface CaptchaProvider {
 
-    @Override
-    public byte[] compress(byte[] data) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Deflater compressor = new Deflater(1);
+    /**
+     * 创建验证码，实现类需同时生成随机验证码字符串和验证码图片
+     */
+    void create();
 
-        try {
-            compressor.setInput(data);
-            compressor.finish();
-            final byte[] buf = new byte[2048];
-            while (!compressor.finished()) {
-                int count = compressor.deflate(buf);
-                bos.write(buf, 0, count);
-            }
-        } finally {
-            compressor.end();
-        }
+    /**
+     * 获取验证码的文字内容
+     *
+     * @return 验证码文字内容
+     */
+    String get();
 
-        return bos.toByteArray();
-    }
+    /**
+     * 验证验证码是否正确，建议忽略大小写
+     *
+     * @param inputCode 用户输入的验证码
+     * @return 是否与生成的一直
+     */
+    boolean verify(String inputCode);
 
-    @Override
-    public byte[] uncompress(byte[] data) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        Inflater decompressor = new Inflater();
-
-        try {
-            decompressor.setInput(data);
-            final byte[] buf = new byte[2048];
-            while (!decompressor.finished()) {
-                int count = decompressor.inflate(buf);
-                bos.write(buf, 0, count);
-            }
-        } catch (DataFormatException e) {
-            e.printStackTrace();
-        } finally {
-            decompressor.end();
-        }
-
-        return bos.toByteArray();
-    }
+    /**
+     * 将验证码写出到目标流中
+     *
+     * @param out 目标流
+     */
+    void write(OutputStream out);
 
 }

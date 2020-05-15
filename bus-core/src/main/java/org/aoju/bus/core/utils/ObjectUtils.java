@@ -40,7 +40,7 @@ import java.util.*;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ObjectUtils {
@@ -88,7 +88,7 @@ public class ObjectUtils {
      * ObjectUtils.defaultIfEmpty("abc", *)        = "abc"
      * </pre>
      *
-     * @param <T>          对象类型（必须实现CharSequence接口）
+     * @param <T>          对象类型(必须实现CharSequence接口)
      * @param str          被检查对象，可能为{@code null}
      * @param defaultValue 被检查对象为{@code null}或者 ""返回的默认值，可以为{@code null}或者 ""
      * @return 被检查对象为{@code null}或者 ""返回默认值，否则返回原值
@@ -108,7 +108,7 @@ public class ObjectUtils {
      * ObjectUtils.defaultIfEmpty("abc", *)        = "abc"
      * </pre>
      *
-     * @param <T>          对象类型（必须实现CharSequence接口）
+     * @param <T>          对象类型(必须实现CharSequence接口)
      * @param str          被检查对象，可能为{@code null}
      * @param defaultValue 被检查对象为{@code null}或者 ""或者空白符返回的默认值，可以为{@code null}或者 ""或者空白符
      * @return 被检查对象为{@code null}或者 ""或者空白符返回默认值，否则返回原值
@@ -526,7 +526,7 @@ public class ObjectUtils {
     /**
      * {@code null}安全的对象比较
      *
-     * @param <T>           被比较对象类型（必须实现Comparable接口）
+     * @param <T>           被比较对象类型(必须实现Comparable接口)
      * @param c1            对象1，可以为{@code null}
      * @param c2            对象2，可以为{@code null}
      * @param isNullGreater 当被比较对象为null时是否排在前面，true表示null大于任何对象，false反之
@@ -546,7 +546,7 @@ public class ObjectUtils {
 
     /**
      * 对象比较，比较结果取决于comparator，如果被比较对象为null，传入的comparator对象应处理此情况
-     * 如果传入comparator为null，则使用默认规则比较（此时被比较对象必须实现Comparable接口）
+     * 如果传入comparator为null，则使用默认规则比较(此时被比较对象必须实现Comparable接口)
      * 一般而言，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
      *
      * @param <T>        被比较对象类型
@@ -1430,19 +1430,9 @@ public class ObjectUtils {
         if (false == (obj instanceof Serializable)) {
             return null;
         }
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream os = null;
-        try {
-            os = new ObjectOutputStream(out);
-            os.writeObject(obj);
-            os.flush();
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        } finally {
-            IoUtils.close(os);
-        }
-        return out.toByteArray();
+        final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        IoUtils.writeObjects(byteOut, false, (Serializable) obj);
+        return byteOut.toByteArray();
     }
 
     /**
@@ -1454,13 +1444,7 @@ public class ObjectUtils {
      * @return 反序列化后的对象
      */
     public static <T> T deserialize(byte[] bytes) {
-        try {
-            ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-            ObjectInputStream out = new ObjectInputStream(in);
-            return (T) out.readObject();
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+        return IoUtils.readObj(new ByteArrayInputStream(bytes));
     }
 
 }

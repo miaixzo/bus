@@ -26,17 +26,17 @@ package org.aoju.bus.image.galaxy.media;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class InvokeImageDisplay {
 
-    // Non IID request parameters
+    // 非IID请求参数
     public static final String SERIES_UID = "seriesUID";
     public static final String OBJECT_UID = "objectUID";
 
-    /* IHE Radiology Technical Framework Supplement – Invoke Image Display (IID) */
-    // HTTP Request Parameters – Patient-based
+    /* IHE放射学技术框架补充–调用图像显示(IID) */
+    // HTTP请求参数–基于患者
     public static final String REQUEST_TYPE = "requestType";
     public static final String PATIENT_ID = "patientID";
     public static final String PATIENT_NAME = "patientName";
@@ -48,14 +48,14 @@ public class InvokeImageDisplay {
     public static final String VIEWER_TYPE = "viewerType";
     public static final String DIAGNOSTIC_QUALITY = "diagnosticQuality";
     public static final String KEY_IMAGES_ONLY = "keyImagesOnly";
-    // Additional patient-based parameters (not IID profile)
+    // 其他基于患者的参数(不是IID配置文件)
     public static final String KEYWORDS = "containsInDescription";
 
-    // HTTP Request Parameters – Study-based
+    // HTTP请求参数–基于研究
     public static final String STUDY_UID = "studyUID";
     public static final String ACCESSION_NUMBER = "accessionNumber";
 
-    // Well-Known Values for Viewer Type Parameter
+    // 查看器类型参数的已知值
     public static final String IHE_BIR = "IHE_BIR";
     public static final String PATIENT_LEVEL = "PATIENT";
     public static final String STUDY_LEVEL = "STUDY";

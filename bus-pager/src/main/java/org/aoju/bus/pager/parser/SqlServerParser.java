@@ -51,7 +51,7 @@ import java.util.*;
  * 该类设计为一个独立的工具类,依赖jsqlparser,可以独立使用
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class SqlServerParser {
@@ -475,13 +475,13 @@ public class SqlServerParser {
                 } else { // 查询列不包含别名
                     if (expression instanceof Column) {
                         // 查询列为普通列,这时因为列在嵌套查询外时名称中不包含表名,故去除排序列的表名引用
-                        // 例（仅为解释此处逻辑,不代表最终分页结果）：
+                        // 例(仅为解释此处逻辑,不代表最终分页结果)：
                         // SELECT TEST.A FROM TEST ORDER BY TEST.A
                         // SELECT A FROM (SELECT TEST.A FROM TEST) ORDER BY A
                         ((Column) expression).setTable(null);
 
                     } else {
-                        // 查询列不为普通列时（例如函数列）不支持分页
+                        // 查询列不为普通列时(例如函数列)不支持分页
                         // 此种情况比较难预测,简单的增加新列容易产生不可预料的结果
                         // 而为列增加别名是非常简单的,故此要求排序复杂列必须使用别名
                         throw new PageException("列 \"" + expression + "\" 需要定义别名");

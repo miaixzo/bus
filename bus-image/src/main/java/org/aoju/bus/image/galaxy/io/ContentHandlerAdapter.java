@@ -32,21 +32,22 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ContentHandlerAdapter extends DefaultHandler {
 
     private final boolean bigEndian;
-    private final LinkedList<Attributes> items = new LinkedList<Attributes>();
-    private final LinkedList<Sequence> seqs = new LinkedList<Sequence>();
+    private final LinkedList<Attributes> items = new LinkedList<>();
+    private final LinkedList<Sequence> seqs = new LinkedList<>();
     private final ByteArrayOutputStream bout = new ByteArrayOutputStream(64);
     private final char[] carry = new char[4];
     private final StringBuilder sb = new StringBuilder(64);
-    private final ArrayList<String> values = new ArrayList<String>();
+    private final List<String> values = new ArrayList<>();
     private Attributes fmi;
     private int carryLen;
     private PersonName pn;

@@ -30,25 +30,25 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 简易值转换器 将给定String值转为int
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class SimpleValueParser implements ValueParser {
 
     /**
-     * 最小值（包括）
+     * 最小值(包括)
      */
     protected int min;
     /**
-     * 最大值（包括）
+     * 最大值(包括)
      */
     protected int max;
 
     /**
      * 构造
      *
-     * @param min 最小值（包括）
-     * @param max 最大值（包括）
+     * @param min 最小值(包括)
+     * @param max 最大值(包括)
      */
     public SimpleValueParser(int min, int max) {
         if (min > max) {

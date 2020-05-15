@@ -28,10 +28,10 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 
 /**
- * 观察者（监视器）
+ * 观察者(监视器)
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface Watcher {

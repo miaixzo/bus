@@ -38,7 +38,7 @@ import java.util.Properties;
  * Page 参数信息
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class PageParams {
@@ -47,7 +47,7 @@ public class PageParams {
     protected boolean offsetAsPageNum = false;
     //RowBounds是否进行count查询 - 默认不查询
     protected boolean rowBoundsWithCount = false;
-    //当设置为true的时候,如果pagesize设置为0（或RowBounds的limit=0）,就不执行分页,返回全部结果
+    //当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
     protected boolean pageSizeZero = false;
     //分页合理化
     protected boolean reasonable = false;
@@ -94,7 +94,7 @@ public class PageParams {
         if (page.getReasonable() == null) {
             page.setReasonable(reasonable);
         }
-        //当设置为true的时候,如果pagesize设置为0（或RowBounds的limit=0）,就不执行分页,返回全部结果
+        //当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
         if (page.getPageSizeZero() == null) {
             page.setPageSizeZero(pageSizeZero);
         }
@@ -108,7 +108,7 @@ public class PageParams {
         //RowBounds方式是否做count查询
         String rowBoundsWithCount = properties.getProperty("rowBoundsWithCount");
         this.rowBoundsWithCount = Boolean.parseBoolean(rowBoundsWithCount);
-        //当设置为true的时候,如果pagesize设置为0（或RowBounds的limit=0）,就不执行分页
+        //当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页
         String pageSizeZero = properties.getProperty("pageSizeZero");
         this.pageSizeZero = Boolean.parseBoolean(pageSizeZero);
         //分页合理化,true开启,如果分页参数不合理会自动修正 默认false不启用

@@ -44,7 +44,7 @@ import java.util.Properties;
  * Mybatis - 通用分页拦截器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class PageContext extends PageMethod implements Dialect {
@@ -132,7 +132,7 @@ public class PageContext extends PageMethod implements Dialect {
         autoDialect = new PageAutoDialect();
         pageParams.setProperties(properties);
         autoDialect.setProperties(properties);
-        //20180902新增 aggregateFunctions, 允许手动添加聚合函数（影响行数）
+        //20180902新增 aggregateFunctions, 允许手动添加聚合函数(影响行数)
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
     }
 

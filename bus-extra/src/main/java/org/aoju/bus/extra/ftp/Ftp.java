@@ -50,10 +50,10 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public class FtpUtils extends AbstractFtp {
+public class Ftp extends AbstractFtp {
 
     /**
      * 默认端口
@@ -72,7 +72,7 @@ public class FtpUtils extends AbstractFtp {
      *
      * @param host 域名或IP
      */
-    public FtpUtils(String host) {
+    public Ftp(String host) {
         this(host, DEFAULT_PORT);
     }
 
@@ -82,7 +82,7 @@ public class FtpUtils extends AbstractFtp {
      * @param host 域名或IP
      * @param port 端口
      */
-    public FtpUtils(String host, int port) {
+    public Ftp(String host, int port) {
         this(host, port, "anonymous", Normal.EMPTY);
     }
 
@@ -94,7 +94,7 @@ public class FtpUtils extends AbstractFtp {
      * @param user     用户名
      * @param password 密码
      */
-    public FtpUtils(String host, int port, String user, String password) {
+    public Ftp(String host, int port, String user, String password) {
         this(host, port, user, password, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
@@ -107,7 +107,7 @@ public class FtpUtils extends AbstractFtp {
      * @param password 密码
      * @param charset  编码
      */
-    public FtpUtils(String host, int port, String user, String password, Charset charset) {
+    public Ftp(String host, int port, String user, String password, Charset charset) {
         this(host, port, user, password, charset, null);
     }
 
@@ -121,7 +121,7 @@ public class FtpUtils extends AbstractFtp {
      * @param charset  编码
      * @param mode     模式
      */
-    public FtpUtils(String host, int port, String user, String password, Charset charset, FtpMode mode) {
+    public Ftp(String host, int port, String user, String password, Charset charset, FtpMode mode) {
         this(new FtpConfig(host, port, user, password, charset), mode);
     }
 
@@ -131,7 +131,7 @@ public class FtpUtils extends AbstractFtp {
      * @param config FTP配置
      * @param mode   模式
      */
-    public FtpUtils(FtpConfig config, FtpMode mode) {
+    public Ftp(FtpConfig config, FtpMode mode) {
         super(config);
         this.mode = mode;
         this.init();
@@ -142,7 +142,7 @@ public class FtpUtils extends AbstractFtp {
      *
      * @return this
      */
-    public FtpUtils init() {
+    public Ftp init() {
         return this.init(this.ftpConfig, this.mode);
     }
 
@@ -155,7 +155,7 @@ public class FtpUtils extends AbstractFtp {
      * @param password 密码
      * @return this
      */
-    public FtpUtils init(String host, int port, String user, String password) {
+    public Ftp init(String host, int port, String user, String password) {
         return this.init(host, port, user, password, null);
     }
 
@@ -169,7 +169,7 @@ public class FtpUtils extends AbstractFtp {
      * @param mode     模式
      * @return this
      */
-    public FtpUtils init(String host, int port, String user, String password, FtpMode mode) {
+    public Ftp init(String host, int port, String user, String password, FtpMode mode) {
         return init(new FtpConfig(host, port, user, password, this.ftpConfig.getCharset()), mode);
     }
 
@@ -180,7 +180,7 @@ public class FtpUtils extends AbstractFtp {
      * @param mode   模式
      * @return this
      */
-    public FtpUtils init(FtpConfig config, FtpMode mode) {
+    public Ftp init(FtpConfig config, FtpMode mode) {
         final FTPClient client = new FTPClient();
         client.setControlEncoding(config.getCharset().toString());
         client.setConnectTimeout((int) config.getConnectionTimeout());
@@ -219,7 +219,7 @@ public class FtpUtils extends AbstractFtp {
      * @param mode 模式枚举
      * @return this
      */
-    public FtpUtils setMode(FtpMode mode) {
+    public Ftp setMode(FtpMode mode) {
         this.mode = mode;
         switch (mode) {
             case Active:
@@ -238,7 +238,7 @@ public class FtpUtils extends AbstractFtp {
      * @param backToPwd 执行完操作是否返回当前目录
      * @return this
      */
-    public FtpUtils setBackToPwd(boolean backToPwd) {
+    public Ftp setBackToPwd(boolean backToPwd) {
         this.backToPwd = backToPwd;
         return this;
     }
@@ -249,7 +249,7 @@ public class FtpUtils extends AbstractFtp {
      * @return this
      */
     @Override
-    public FtpUtils reconnectIfTimeout() {
+    public Ftp reconnectIfTimeout() {
         String pwd = null;
         try {
             pwd = pwd();
@@ -548,6 +548,32 @@ public class FtpUtils extends AbstractFtp {
         } finally {
             if (backToPwd) {
                 cd(pwd);
+            }
+        }
+    }
+
+    /**
+     * 递归获取远程文件
+     *
+     * @param sourcePath 服务器目录
+     * @param desPath    本地目录
+     */
+    @Override
+    public void download(String sourcePath, String desPath) {
+        FTPFile[] lsFiles = lsFiles(sourcePath);
+        for (FTPFile ftpFile : lsFiles) {
+            String sourcePathPathFile = sourcePath + Symbol.SLASH + ftpFile.getName();
+            String destinationPathFile = desPath + Symbol.SLASH + ftpFile.getName();
+
+            if (!ftpFile.isDirectory()) {
+                // 本地不存在文件或者ftp上文件有变更则下载
+                if (!FileUtils.exist(destinationPathFile)
+                        || (ftpFile.getTimestamp().getTimeInMillis() > FileUtils.lastModifiedTime(destinationPathFile).getTime())) {
+                    download(sourcePathPathFile, FileUtils.file(destinationPathFile));
+                }
+            } else if (!(Symbol.DOT.equals(ftpFile.getName()) || Symbol.DOUBLE_DOT.equals(ftpFile.getName()))) {
+                FileUtils.mkdir(destinationPathFile);
+                download(sourcePathPathFile, destinationPathFile);
             }
         }
     }

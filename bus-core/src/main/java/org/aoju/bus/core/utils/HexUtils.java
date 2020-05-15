@@ -32,13 +32,13 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 
 /**
- * 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制,一般用数字0到9和字母A到F表示（其中:A~F即10~15）
+ * 十六进制(简写为hex或下标16)在数学中是一种逢16进1的进位制,一般用数字0到9和字母A到F表示(其中:A~F即10~15)
  * 例如十进制数57,在二进制写作111001,在16进制写作39
  * 像java,c这样的语言为了区分十六进制和十进制数值,会在十六进制数的前面加上 0x,比如0x20是十进制的32,而不是十进制的20
  * <p>
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class HexUtils {
@@ -257,7 +257,7 @@ public class HexUtils {
     }
 
     /**
-     * 将指定int值转换为Unicode字符串形式,常用于特殊字符（例如汉字）转Unicode形式
+     * 将指定int值转换为Unicode字符串形式,常用于特殊字符(例如汉字)转Unicode形式
      * 转换的字符串如果u后不足4位,则前面用0填充,例如：
      *
      * <pre>
@@ -282,7 +282,7 @@ public class HexUtils {
     }
 
     /**
-     * 将指定char值转换为Unicode字符串形式,常用于特殊字符（例如汉字）转Unicode形式
+     * 将指定char值转换为Unicode字符串形式,常用于特殊字符(例如汉字)转Unicode形式
      * 转换的字符串如果u后不足4位,则前面用0填充,例如：
      *
      * <pre>
@@ -348,7 +348,7 @@ public class HexUtils {
     }
 
     /**
-     * Hex（16进制）字符串转为BigInteger
+     * Hex(16进制)字符串转为BigInteger
      *
      * @param hexStr Hex(16进制字符串)
      * @return {@link BigInteger}

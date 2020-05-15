@@ -27,12 +27,13 @@ package org.aoju.bus.extra.sms;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 发送短信时请求实体
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Data
@@ -52,6 +53,6 @@ public class AliSmsEntity {
     /**
      * 对应模板内的参数列表
      */
-    private HashMap<String, Object> params = new HashMap<>();
+    private Map<String, Object> params = new HashMap<>();
 
 }

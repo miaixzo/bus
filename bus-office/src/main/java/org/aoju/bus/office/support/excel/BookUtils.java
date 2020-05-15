@@ -43,7 +43,7 @@ import java.io.OutputStream;
  * Excel工作簿{@link Workbook}相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class BookUtils {
@@ -240,7 +240,7 @@ public class BookUtils {
 
     /**
      * 获取或者创建sheet表
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之(命名为默认)
      * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
      *
      * @param book       工作簿{@link Workbook}

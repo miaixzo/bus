@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile {
@@ -108,7 +108,6 @@ public class StowrsSingleFile extends AbstractStowrs implements UploadSingleFile
 
             out.write(bOut.toByteArray());
 
-            // Segment and headers for a part
             out.write(MultipartParser.Separator.BOUNDARY.getType());
             out.writeBytes(MULTIPART_BOUNDARY);
             byte[] fsep = MultipartParser.Separator.FIELD.getType();

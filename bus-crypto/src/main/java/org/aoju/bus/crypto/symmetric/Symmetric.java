@@ -44,12 +44,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 对称加密算法
- * 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
+ * 在对称加密算法中，数据发信方将明文(原始数据)和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
  * 收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。
  * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Symmetric implements Serializable {
@@ -396,7 +396,7 @@ public class Symmetric implements Serializable {
     }
 
     /**
-     * 解密Hex（16进制）或Base64表示的字符串
+     * 解密Hex(16进制)或Base64表示的字符串
      *
      * @param data 被解密的String，必须为16进制字符串或Base64表示形式
      * @return 解密后的bytes
@@ -406,7 +406,7 @@ public class Symmetric implements Serializable {
     }
 
     /**
-     * 解密Hex（16进制）或Base64表示的字符串
+     * 解密Hex(16进制)或Base64表示的字符串
      *
      * @param data    被解密的String
      * @param charset 解密后的charset

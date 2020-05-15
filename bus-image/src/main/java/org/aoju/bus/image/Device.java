@@ -49,8 +49,10 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 设备信息
+ *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Device implements Serializable {
@@ -103,11 +105,29 @@ public class Device implements Serializable {
      * 信任证书类型
      */
     private String trustStoreType;
+    /**
+     * 信任证书PIN
+     */
     private String trustStorePin;
+    /**
+     * 信任证书PIN属性
+     */
     private String trustStorePinProperty;
+    /**
+     * 密钥库URL
+     */
     private String keyStoreURL;
+    /**
+     * 密钥库类型
+     */
     private String keyStoreType;
+    /**
+     * 密钥库PIN
+     */
     private String keyStorePin;
+    /**
+     * 密钥库Pin属性
+     */
     private String keyStorePinProperty;
     private String keyStoreKeyPin;
     private String keyStoreKeyPinProperty;
@@ -123,11 +143,17 @@ public class Device implements Serializable {
      * 软件版本
      */
     private String[] softwareVersions = {};
+    /**
+     * 主要设备类型
+     */
     private String[] primaryDeviceTypes = {};
     /**
      * 设备关联的机构名称
      */
     private String[] institutionNames = {};
+    /**
+     * 设备关联的机构代码
+     */
     private Code[] institutionCodes = {};
     /**
      * 设备的机构的地址
@@ -137,19 +163,28 @@ public class Device implements Serializable {
      * 设备关联的部门名称
      */
     private String[] institutionalDepartmentNames = {};
+    /**
+     * 相关设备参考
+     */
     private String[] relatedDeviceRefs = {};
     /**
      * 设备数据对象
      */
     private byte[][] vendorData = {};
+    /**
+     * 限制开放
+     */
     private int limitOpenAssociations;
     /**
      * 当前是否安装在网络
      */
     private boolean installed = true;
     private boolean roleSelectionNegotiationLenient;
+    /**
+     * 设备的时区
+     */
     private TimeZone timeZoneOfDevice;
-    private transient AssociationHandler associationHandler = new AssociationHandler();
+    private Boolean arcDevExt;
     private transient DimseRQHandler dimseRQHandler;
     private transient Monitoring monitoring;
     private transient AssociationMonitor associationMonitor;
@@ -158,7 +193,7 @@ public class Device implements Serializable {
     private transient volatile SSLContext sslContext;
     private transient volatile KeyManager km;
     private transient volatile TrustManager tm;
-    private Boolean arcDevExt;
+    private transient AssociationHandler associationHandler = new AssociationHandler();
 
     public Device() {
 

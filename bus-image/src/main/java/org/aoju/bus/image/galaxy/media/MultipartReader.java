@@ -34,7 +34,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class MultipartReader {
@@ -51,17 +51,17 @@ public class MultipartReader {
     private int tailBuffer = 0;
 
     /**
-     * @param input    the <code>InputStream</code> of a multipart exchange.
-     * @param boundary the mark to delimit the parts of a multipart stream.
+     * @param input    多部分交换的<code>nputStream</code>
+     * @param boundary 用于分隔多部分流的各个部分的标记
      */
     public MultipartReader(InputStream input, byte[] boundary) {
         this(input, boundary, 4096);
     }
 
     /**
-     * @param input    the <code>InputStream</code> of a multipart exchange.
-     * @param boundary the mark to delimit the parts of a multipart stream.
-     * @param bufSize  the size of the buffer in bytes. Default is 4096.
+     * @param input    多部分交换的<code>InputStream</code>
+     * @param boundary 用于分隔多部分流的各个部分的标记
+     * @param bufSize  缓冲区的大小(以字节为单位)默认值为4096
      */
     public MultipartReader(InputStream input, byte[] boundary, int bufSize) {
         this.inputStream = input;
@@ -154,14 +154,14 @@ public class MultipartReader {
     }
 
     public boolean skipFirstBoundary() throws IOException {
-        // Special case for the first boundary delimiter => remove CRLF
+        // 第一个边界定界符的特殊情况=>删除CRLF
         System.arraycopy(boundary, 2, boundary, 0, boundary.length - 2);
         currentBoundaryLength = boundary.length - 2;
         try {
             discardDataBeforeDelimiter();
             return readBoundary();
         } finally {
-            // Restore the original boundary
+            // 恢复原始边界
             System.arraycopy(boundary, 0, boundary, 2, boundary.length - 2);
             currentBoundaryLength = boundary.length;
             boundary[0] = MultipartParser.CR;
@@ -340,7 +340,7 @@ public class MultipartReader {
                         break;
                     }
                 }
-                skip(k); // NOSONAR no need return value when closing
+                skip(k);
             }
             closed = true;
         }

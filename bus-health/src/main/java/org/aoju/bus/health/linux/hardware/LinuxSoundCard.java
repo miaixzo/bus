@@ -41,7 +41,7 @@ import java.util.Map;
  * Sound card data obtained via /proc/asound directory
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Immutable
@@ -99,8 +99,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
 
     /**
      * Retrieves the codec of the sound card contained in the <b>codec</b> file. The
-     * name of the codec is always the first line of that file. <br>
-     * <b>Working</b> <br>
+     * name of the codec is always the first line of that file.
+     * <b>Working</b>
      * This converts the codec file into key value pairs using the {@link Builder}
      * class and then returns the value of the <b>Codec</b> key.
      *

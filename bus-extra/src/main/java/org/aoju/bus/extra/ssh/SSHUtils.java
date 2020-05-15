@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class SSHUtils {
@@ -123,7 +123,7 @@ public class SSHUtils {
     }
 
     /**
-     * 新建一个新的SSH会话，此方法并不打开会话（既不调用connect方法）
+     * 新建一个新的SSH会话，此方法并不打开会话(既不调用connect方法)
      *
      * @param sshHost 主机
      * @param sshPort 端口
@@ -143,7 +143,7 @@ public class SSHUtils {
     }
 
     /**
-     * 新建一个新的SSH会话，此方法并不打开会话（既不调用connect方法）
+     * 新建一个新的SSH会话，此方法并不打开会话(既不调用connect方法)
      *
      * @param sshHost        主机
      * @param sshPort        端口
@@ -367,7 +367,7 @@ public class SSHUtils {
     }
 
     /**
-     * 执行Shell命令（使用EXEC方式）
+     * 执行Shell命令(使用EXEC方式)
      *
      * @param session Session会话
      * @param cmd     命令

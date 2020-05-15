@@ -26,6 +26,7 @@ package org.aoju.bus.http.cache;
 
 import org.aoju.bus.core.io.FileSystem;
 import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.http.Builder;
@@ -46,7 +47,7 @@ import java.util.regex.Pattern;
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class DiskLruCache implements Closeable, Flushable {
@@ -215,7 +216,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                     || !VERSION_1.equals(version)
                     || !Integer.toString(appVersion).equals(appVersionString)
                     || !Integer.toString(valueCount).equals(valueCountString)
-                    || !"".equals(blank)) {
+                    || !Normal.EMPTY.equals(blank)) {
                 throw new IOException("unexpected journal header: [" + magic + ", " + version + ", "
                         + valueCountString + ", " + blank + "]");
             }

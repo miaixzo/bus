@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
 import java.io.EOFException;
@@ -37,7 +38,7 @@ import java.util.TreeMap;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class MultipartInputStream extends FilterInputStream {
@@ -178,7 +179,7 @@ public class MultipartInputStream extends FilterInputStream {
         Field field = new Field();
         while (readHeaderParam(field)) {
             String name = field.toString();
-            String value = "";
+            String value = Normal.EMPTY;
             int endName = name.indexOf(Symbol.C_COLON);
             if (endName != -1) {
                 value = unquote(name.substring(endName + 1)).trim();

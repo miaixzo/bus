@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-validate</artifactId>
-    <version>5.9.0</version>
+    <version>5.9.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

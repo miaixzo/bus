@@ -31,25 +31,26 @@ import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class DefaultEditors implements Editors {
 
     private final boolean generateUIDs;
     private final Attributes tagToOverride;
-    private final HashMap<String, String> uidMap;
+    private final Map<String, String> uidMap;
 
     public DefaultEditors(Attributes tagToOverride) {
         this(false, tagToOverride);
     }
 
     /**
-     * @param generateUIDs  generate new UIDS for Study, Series and Instance
-     * @param tagToOverride list of DICOM attributes to override
+     * @param generateUIDs  生成用于研究，系列和实例的新UIDS
+     * @param tagToOverride 要覆盖的DICOM属性列表
      */
     public DefaultEditors(boolean generateUIDs, Attributes tagToOverride) {
         this.generateUIDs = generateUIDs;

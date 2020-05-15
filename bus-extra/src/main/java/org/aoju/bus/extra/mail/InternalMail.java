@@ -39,7 +39,7 @@ import java.util.List;
  * 邮件内部工具类
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class InternalMail {
@@ -49,7 +49,7 @@ public class InternalMail {
      * 单个字符串地址可以是多个地址合并的字符串
      *
      * @param addrStrs 地址数组
-     * @param charset  编码（主要用于中文用户名的编码）
+     * @param charset  编码(主要用于中文用户名的编码)
      * @return 地址数组
      */
     public static InternetAddress[] parseAddressFromStrs(String[] addrStrs, Charset charset) {

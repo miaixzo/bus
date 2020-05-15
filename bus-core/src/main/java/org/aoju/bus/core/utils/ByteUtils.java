@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ByteUtils {
@@ -371,7 +371,7 @@ public class ByteUtils {
     }
 
     /**
-     * 拆分byte数组为几个等份（最后一份可能小于len）
+     * 拆分byte数组为几个等份(最后一份可能小于len)
      *
      * @param array 数组
      * @param len   每个小节的长度

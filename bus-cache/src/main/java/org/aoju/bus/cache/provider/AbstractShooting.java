@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class AbstractShooting implements Shooting {
@@ -88,8 +88,8 @@ public abstract class AbstractShooting implements Shooting {
         ));
     }
 
-    public static HashMap<String, Object> newHashMap(Object... keyValues) {
-        HashMap<String, Object> map = new HashMap<>(keyValues.length / 2);
+    public static Map<String, Object> newHashMap(Object... keyValues) {
+        Map<String, Object> map = new HashMap<>(keyValues.length / 2);
         for (int i = 0; i < keyValues.length; i += 2) {
             String key = (String) keyValues[i];
             Object value = keyValues[i + 1];

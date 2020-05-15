@@ -74,7 +74,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>https://gaoxianglong.github.io/shark</p>
  * <p>SQL尽量单表执行的好处</p>
  * <p>2.1 查询条件简单、易于开理解和维护；</p>
- * <p>2.2 扩展性极强；（可为分库分表做准备）</p>
+ * <p>2.2 扩展性极强；(可为分库分表做准备)</p>
  * <p>2.3 缓存利用率高；</p>
  * <p>2.在字段上使用函数</p>
  * <p>3.where条件为空</p>
@@ -84,7 +84,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>7.where条件使用了 使用子查询</p>
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})

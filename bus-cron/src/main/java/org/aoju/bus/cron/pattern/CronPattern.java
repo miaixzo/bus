@@ -66,7 +66,7 @@ import java.util.*;
  * 对于每一个子表达式,同样支持以下形式：
  * <ul>
  * <li><strong>*</strong>：表示匹配这个位置所有的时间</li>
- * <li><strong>?</strong>：表示匹配这个位置任意的时间（与"*"作用一致）</li>
+ * <li><strong>?</strong>：表示匹配这个位置任意的时间(与"*"作用一致)</li>
  * <li><strong>*&#47;2</strong>：表示间隔时间,例如在分上,表示每两分钟,同样*可以使用数字列表代替,逗号分隔</li>
  * <li><strong>2-8</strong>：表示连续区间,例如在分上,表示2,3,4,5,6,7,8分</li>
  * <li><strong>2,3,5,8</strong>：表示列表</li>
@@ -75,7 +75,7 @@ import java.util.*;
  * 注意：在每一个子表达式中优先级：
  *
  * <pre>
- * 间隔（/） &gt; 区间（-） &gt; 列表（,）
+ * 间隔(/) &gt; 区间(-) &gt; 列表(,)
  * </pre>
  * <p>
  * 例如 2,3,6/3中,由于“/”优先级高,因此相当于2,3,(6/3),结果与 2,3,6等价
@@ -92,7 +92,7 @@ import java.util.*;
  * </ul>
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CronPattern {
@@ -152,7 +152,7 @@ public class CronPattern {
     }
 
     /**
-     * 是否匹配日（指定月份的第几天）
+     * 是否匹配日(指定月份的第几天)
      *
      * @param matcher    {@link ValueMatcher}
      * @param dayOfMonth 日
@@ -221,7 +221,7 @@ public class CronPattern {
 
         boolean eval;
         for (int i = 0; i < matcherSize; i++) {
-            eval = (isMatchSecond ? secondMatchers.get(i).match(second) : true) // 匹配秒（非秒匹配模式下始终返回true）
+            eval = (isMatchSecond ? secondMatchers.get(i).match(second) : true) // 匹配秒(非秒匹配模式下始终返回true)
                     && minuteMatchers.get(i).match(minute)// 匹配分
                     && hourMatchers.get(i).match(hour)// 匹配时
                     && isMatchDayOfMonth(dayOfMonthMatchers.get(i), dayOfMonth, month, calendar.isLeapYear(year))// 匹配日

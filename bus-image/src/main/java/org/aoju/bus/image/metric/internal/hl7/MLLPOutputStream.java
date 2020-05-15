@@ -30,13 +30,19 @@ import java.io.OutputStream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class MLLPOutputStream extends FilterOutputStream {
 
-    private static final int SOM = 0x0b; // Start of Message 
-    private static final byte[] EOM = {0x1c, 0x0d}; // End of Message
+    /**
+     * 消息开始
+     */
+    private static final int SOM = 0x0b;
+    /**
+     * 消息结束
+     */
+    private static final byte[] EOM = {0x1c, 0x0d};
 
     private boolean somWritten;
 

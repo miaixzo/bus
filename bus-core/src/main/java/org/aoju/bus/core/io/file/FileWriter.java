@@ -41,7 +41,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class FileWriter extends FileWrapper {
@@ -214,7 +214,7 @@ public class FileWriter extends FileWrapper {
      *
      * @param <T>           集合元素类型
      * @param list          列表
-     * @param lineSeparator 换行符枚举（Windows、Mac或Linux换行符）
+     * @param lineSeparator 换行符枚举(Windows、Mac或Linux换行符)
      * @param isAppend      是否追加
      * @return 目标文件
      * @throws InstrumentException IO异常
@@ -249,7 +249,7 @@ public class FileWriter extends FileWrapper {
      * 将Map写入文件,每个键值对为一行,一行中键与值之间使用kvSeparator分隔
      *
      * @param map           Map
-     * @param lineSeparator 换行符枚举（Windows、Mac或Linux换行符）
+     * @param lineSeparator 换行符枚举(Windows、Mac或Linux换行符)
      * @param kvSeparator   键和值之间的分隔符,如果传入null使用默认分隔符" = "
      * @param isAppend      是否追加
      * @return 目标文件

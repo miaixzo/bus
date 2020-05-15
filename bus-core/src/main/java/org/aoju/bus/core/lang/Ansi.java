@@ -41,7 +41,7 @@ import java.util.List;
  * 注意:同时出现多种组合FG颜色或BG颜色,只有最后一个会显示
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Ansi {
@@ -79,7 +79,6 @@ public class Ansi {
     public static final Ansi HighIntensity = new Ansi(HIGH_INTENSITY);
     public static final Ansi Bold = HighIntensity;
     public static final Ansi LowIntensity = new Ansi(LOW_INTENSITY);
-    public static final Ansi Normal = LowIntensity;
 
     public static final Ansi Italic = new Ansi(ITALIC);
     public static final Ansi Underline = new Ansi(UNDERLINE);
@@ -114,7 +113,7 @@ public class Ansi {
 
     public Ansi(String... codes) {
         this.codes = codes;
-        String _codes_str = "";
+        String _codes_str = Normal.EMPTY;
         for (String code : codes) {
             _codes_str += code;
         }

@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
  * URL相关工具
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class UriUtils {
@@ -242,7 +242,7 @@ public class UriUtils {
     /**
      * 获得URL
      *
-     * @param pathBaseClassLoader 相对路径（相对于classes）
+     * @param pathBaseClassLoader 相对路径(相对于classes)
      * @return URL
      * @see ResourceUtils#getResource(String)
      */
@@ -334,7 +334,7 @@ public class UriUtils {
 
     /**
      * 编码URL,默认使用UTF-8编码
-     * 将需要转换的内容（ASCII码形式之外的内容）,用十六进制表示法转换出来,并在之前加上%开头
+     * 将需要转换的内容(ASCII码形式之外的内容),用十六进制表示法转换出来,并在之前加上%开头
      *
      * @param url URL
      * @return 编码后的URL
@@ -346,7 +346,7 @@ public class UriUtils {
 
     /**
      * 编码URL,默认使用UTF-8编码
-     * 将需要转换的内容（ASCII码形式之外的内容）,用十六进制表示法转换出来,并在之前加上%开头
+     * 将需要转换的内容(ASCII码形式之外的内容),用十六进制表示法转换出来,并在之前加上%开头
      *
      * @param url URL
      * @return 编码后的URL
@@ -357,7 +357,7 @@ public class UriUtils {
 
     /**
      * 编码URL
-     * 将需要转换的内容（ASCII码形式之外的内容）,用十六进制表示法转换出来,并在之前加上%开头
+     * 将需要转换的内容(ASCII码形式之外的内容),用十六进制表示法转换出来,并在之前加上%开头
      *
      * @param url     URL
      * @param charset 编码
@@ -546,7 +546,7 @@ public class UriUtils {
      * </pre>
      *
      * @param url      URL字符串
-     * @param isEncode 是否对URL中path部分的中文和特殊字符做转义（不包括 http:, /和域名部分）
+     * @param isEncode 是否对URL中path部分的中文和特殊字符做转义(不包括 http:, /和域名部分)
      * @return 标准化后的URL字符串
      */
     public static String normalize(String url, boolean isEncode) {
@@ -748,7 +748,7 @@ public class UriUtils {
 
     /**
      * 编码URL，默认使用UTF-8编码
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
+     * 将需要转换的内容(ASCII码形式之外的内容)，用十六进制表示法转换出来，并在之前加上%开头。
      * 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
      *
      * @param url URL
@@ -1146,7 +1146,7 @@ public class UriUtils {
 
     /**
      * 将Map形式的Form表单数据转换为Url参数形式
-     * paramMap中如果key为空（null和""）会被忽略,如果value为null,会被做为空白符（""）
+     * paramMap中如果key为空(null和"")会被忽略,如果value为null,会被做为空白符("")
      * 会自动url编码键和值
      *
      * <pre>
@@ -1195,9 +1195,9 @@ public class UriUtils {
     }
 
     /**
-     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     * 将URL参数解析为Map(也可以解析Post中的键值对参数)
      *
-     * @param params  参数字符串（或者带参数的Path）
+     * @param params  参数字符串(或者带参数的Path)
      * @param charset 字符集
      * @return 参数Map
      */
@@ -1213,9 +1213,9 @@ public class UriUtils {
     }
 
     /**
-     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     * 将URL参数解析为Map(也可以解析Post中的键值对参数)
      *
-     * @param params  参数字符串（或者带参数的Path）
+     * @param params  参数字符串(或者带参数的Path)
      * @param charset 字符集
      * @return 参数Map
      */
@@ -1271,7 +1271,7 @@ public class UriUtils {
     }
 
     /**
-     * 将表单数据加到URL中（用于GET表单提交）
+     * 将表单数据加到URL中(用于GET表单提交)
      * 表单的键值对会被url编码,但是url中原参数不会被编码
      *
      * @param url            URL
@@ -1289,7 +1289,7 @@ public class UriUtils {
     }
 
     /**
-     * 将表单数据字符串加到URL中（用于GET表单提交）
+     * 将表单数据字符串加到URL中(用于GET表单提交)
      *
      * @param url         URL
      * @param queryString 表单数据字符串
@@ -1342,7 +1342,7 @@ public class UriUtils {
     }
 
     /**
-     * 获取URL中域名部分，只保留URL中的协议（Protocol）、Host，其它为null。
+     * 获取URL中域名部分，只保留URL中的协议(Protocol)、Host，其它为null。
      *
      * @param url URL
      * @return 域名的URI

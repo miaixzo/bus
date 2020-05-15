@@ -46,7 +46,7 @@ import java.util.zip.InflaterInputStream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class ImageInputStream extends FilterInputStream
@@ -99,7 +99,7 @@ public class ImageInputStream extends FilterInputStream
     private String blkFilePrefix = "blk";
     private String blkFileSuffix;
     private File blkDirectory;
-    private ArrayList<File> blkFiles;
+    private List<File> blkFiles;
     private String blkURI;
     private FileOutputStream blkOut;
     private long blkOutPos;

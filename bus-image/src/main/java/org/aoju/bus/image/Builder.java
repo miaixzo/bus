@@ -48,8 +48,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * 方法参数等构建器
+ *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Builder {
@@ -195,10 +197,10 @@ public class Builder {
 
     public static void prepareToWriteFile(File file) throws IOException {
         if (!file.exists()) {
-            // Check the file that doesn't exist yet.
-            // Create a new file. The file is writable if the creation succeeds.
+            // 检查尚不存在的文件
+            // 创建一个新文件。如果创建成功，则该文件可写
             File outputDir = file.getParentFile();
-            // necessary to check exists otherwise mkdirs() is false when dir exists
+            // 需要检查是否存在，否则当dir存在时mkdirs()为false
             if (outputDir != null && !outputDir.exists() && !outputDir.mkdirs()) {
                 throw new IOException("Cannot write parent directory of " + file.getPath());
             }
@@ -209,7 +211,7 @@ public class Builder {
         int unit = si ? 1000 : 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? Normal.EMPTY : "i");   //$NON-NLS-3$ //$NON-NLS-4$
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? Normal.EMPTY : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 

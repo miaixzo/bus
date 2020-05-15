@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.Response;
@@ -35,7 +36,7 @@ import java.net.ProtocolException;
  * HTTP响应“HTTP/ 1.1200 OK”这样的在线状态.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class StatusLine {
@@ -90,7 +91,7 @@ public final class StatusLine {
         }
 
         // 解析一个可选的响应消息，比如"OK"或"Not Modified",如果存在，则用空格将其与响应代码分隔开.
-        String message = "";
+        String message = Normal.EMPTY;
         if (statusLine.length() > codeStart + 3) {
             if (statusLine.charAt(codeStart + 3) != Symbol.C_SPACE) {
                 throw new ProtocolException("Unexpected status line: " + statusLine);

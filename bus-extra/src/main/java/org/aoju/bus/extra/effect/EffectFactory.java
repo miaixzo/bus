@@ -34,16 +34,16 @@ import java.util.ServiceLoader;
  * 解压缩服务工厂.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
-public enum Factory {
+public enum EffectFactory {
 
     CF;
 
     Map<String, EffectProvider> compressMap = new HashMap<>();
 
-    Factory() {
+    EffectFactory() {
         ServiceLoader<EffectProvider> compresses = ServiceLoader.load(EffectProvider.class);
         for (EffectProvider effectProvider : compresses) {
             SPI spi = effectProvider.getClass().getAnnotation(SPI.class);
