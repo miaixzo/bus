@@ -36,7 +36,7 @@ import java.util.List;
  * 代理选择器,总是返回{@link Proxy#NO_PROXY}
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class NullProxySelector extends ProxySelector {

@@ -31,7 +31,7 @@ import org.aoju.bus.office.metric.OfficeManagerEntryBuilder;
  * 当不需要office实例来执行转换时，该类保存{@link OnlineOfficeEntryManager}的配置.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class OnlineOfficeEntryBuilder implements OfficeManagerEntryBuilder {

@@ -24,9 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Charset;
+
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public abstract class HL7Charset {
@@ -40,7 +42,7 @@ public abstract class HL7Charset {
                     break;
                 case '1':
                     if (code.equals("8859/1"))
-                        return "ISO-8859-1";
+                        return Charset.DEFAULT_ISO_8859_1;
                     if (code.equals("KS X 1001"))
                         return "EUC-KR";
                     break;
@@ -78,7 +80,7 @@ public abstract class HL7Charset {
                     if (code.equals("8859/8"))
                         return "ISO-8859-8";
                     if (code.equals("UNICODE UTF-8"))
-                        return "UTF-8";
+                        return Charset.DEFAULT_UTF_8;
                     break;
                 case '9':
                     if (code.equals("8859/9"))
@@ -88,10 +90,10 @@ public abstract class HL7Charset {
                     break;
                 case 'E':
                     if (code.equals("UNICODE"))
-                        return "UTF-8";
+                        return Charset.DEFAULT_UTF_8;
                     break;
             }
-        return "US-ASCII";
+        return Charset.DEFAULT_US_ASCII;
     }
 
     public static String toCharacterSetCode(String code) {

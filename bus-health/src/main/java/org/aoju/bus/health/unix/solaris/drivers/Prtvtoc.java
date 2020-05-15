@@ -38,7 +38,7 @@ import java.util.List;
  * Utility to query iostat
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @ThreadSafe

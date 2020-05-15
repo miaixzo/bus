@@ -2,6 +2,7 @@ package org.aoju.bus.gitlab.utils;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
@@ -693,7 +694,7 @@ public final class AccessTokenUtils {
         formData.append(name);
         formData.append(Symbol.EQUAL);
         try {
-            formData.append(URLEncoder.encode(value, "UTF-8"));
+            formData.append(URLEncoder.encode(value, Charset.DEFAULT_UTF_8));
             return (formData);
         } catch (Exception e) {
             throw new GitLabApiException(e);

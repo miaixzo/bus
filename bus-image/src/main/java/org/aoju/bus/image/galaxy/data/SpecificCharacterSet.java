@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class SpecificCharacterSet {
@@ -149,8 +149,8 @@ public class SpecificCharacterSet {
     }
 
     private enum Codec {
-        ISO_646("US-ASCII", true, 0x2842, 0, 1),
-        ISO_8859_1("ISO-8859-1", true, 0x2842, 0x2d41, 1),
+        ISO_646(org.aoju.bus.core.lang.Charset.DEFAULT_US_ASCII, true, 0x2842, 0, 1),
+        ISO_8859_1(org.aoju.bus.core.lang.Charset.DEFAULT_ISO_8859_1, true, 0x2842, 0x2d41, 1),
         ISO_8859_2("ISO-8859-2", true, 0x2842, 0x2d42, 1),
         ISO_8859_3("ISO-8859-3", true, 0x2842, 0x2d43, 1),
         ISO_8859_4("ISO-8859-4", true, 0x2842, 0x2d44, 1),
@@ -170,7 +170,7 @@ public class SpecificCharacterSet {
         JIS_X_212("JIS_X0212-1990", false, 0x242844, 0, 2),
         KS_X_1001("EUC-KR", false, 0x2842, 0x242943, -1),
         GB2312("GB2312", false, 0x2842, 0x242941, -1),
-        UTF_8("UTF-8", true, 0, 0, -1),
+        UTF_8(org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8, true, 0, 0, -1),
         GB18030("GB18030", false, 0, 0, -1);
 
         private final String charsetName;
@@ -229,7 +229,7 @@ public class SpecificCharacterSet {
                         return Codec.GB18030;
                     break;
                 case 31:
-                    if (code.equals("GBK"))
+                    if (code.equals(org.aoju.bus.core.lang.Charset.DEFAULT_GBK))
                         return Codec.GB18030;
                     break;
                 case 38:

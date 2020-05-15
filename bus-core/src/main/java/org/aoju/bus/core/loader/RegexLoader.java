@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.Normal;
  * 正则表达式资源加载器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class RegexLoader extends PatternLoader implements Loader {

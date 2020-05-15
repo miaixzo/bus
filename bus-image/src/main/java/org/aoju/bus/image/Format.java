@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -44,7 +45,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 日期格式化等工具
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Format extends java.text.Format {
@@ -578,7 +579,7 @@ public class Format extends java.text.Format {
             Object toArg(Attributes attrs, int tag, int index) {
                 String s = attrs.getString(tag, index);
                 try {
-                    return s != null ? URLEncoder.encode(s, "UTF-8") : null;
+                    return s != null ? URLEncoder.encode(s, Charset.DEFAULT_UTF_8) : null;
                 } catch (UnsupportedEncodingException e) {
                     throw new AssertionError(e);
                 }

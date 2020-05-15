@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * 时长格式化器
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class DatePeriod {

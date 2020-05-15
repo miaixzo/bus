@@ -36,7 +36,7 @@ import org.aoju.bus.logger.Logger;
 
 /**
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class SocketServer implements Runnable {

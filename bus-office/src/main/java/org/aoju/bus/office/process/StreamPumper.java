@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.office.process;
 
+import org.aoju.bus.core.lang.Charset;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +36,7 @@ import java.util.Objects;
  * 从输入流中读取所有行.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class StreamPumper extends Thread {
@@ -71,7 +73,7 @@ public class StreamPumper extends Thread {
     @Override
     public void run() {
         try (BufferedReader bufferedReader =
-                     new BufferedReader(Channels.newReader(Channels.newChannel(stream), "UTF-8"))) {
+                     new BufferedReader(Channels.newReader(Channels.newChannel(stream), Charset.DEFAULT_UTF_8))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 consumer.consume(line);

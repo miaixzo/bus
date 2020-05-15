@@ -28,7 +28,7 @@ package org.aoju.bus.storage;
  * 平台类型
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public enum Registry {

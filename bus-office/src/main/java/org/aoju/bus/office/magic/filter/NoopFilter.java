@@ -32,7 +32,7 @@ import org.aoju.bus.office.Context;
  * 这个过滤器除了调用链中的下一个过滤器外什么也不做.
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class NoopFilter implements Filter {

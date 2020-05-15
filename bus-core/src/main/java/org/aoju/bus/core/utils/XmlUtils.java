@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.9.0
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class XmlUtils {
@@ -1086,7 +1086,7 @@ public class XmlUtils {
         JAXBContext jaxbContext = JAXBContext.newInstance(esbEntry.getClass());
         Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, Charset.DEFAULT_UTF_8);
         marshaller.marshal(esbEntry, byteArrayOutputStream);
         String xmlContent = new String(byteArrayOutputStream.toByteArray(), StandardCharsets.UTF_8);
         return xmlContent.replace(Symbol.HTML_LT, Symbol.LT).replace(Symbol.HTML_GT, Symbol.GT).replace(Symbol.HTML_QUOTE, Symbol.DOUBLE_QUOTES);
