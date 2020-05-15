@@ -203,6 +203,6 @@ public abstract class AbstractFtp implements Closeable {
      * @param sourcePath 服务器目录
      * @param destPath   本地目录
      */
-    public abstract void download(String sourcePath, String destPath) throws Exception;
+    public abstract void download(String sourcePath, String destPath);
 
 }

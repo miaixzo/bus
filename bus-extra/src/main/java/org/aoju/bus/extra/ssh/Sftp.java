@@ -437,22 +437,26 @@ public class Sftp extends AbstractFtp {
      * @param destPath   本地目录
      */
     @Override
-    public void download(String sourcePath, String destPath) throws Exception {
-        Vector<ChannelSftp.LsEntry> fileAndFolderList = channel.ls(sourcePath);
-        for (ChannelSftp.LsEntry item : fileAndFolderList) {
-            String sourcePathPathFile = sourcePath + Symbol.SLASH + item.getFilename();
-            String destinationPathFile = destPath + Symbol.SLASH + item.getFilename();
-            if (!item.getAttrs().isDir()) {
-                // 本地不存在文件或者ftp上文件有修改则下载
-                if (!FileUtils.exist(destinationPathFile)
-                        || (item.getAttrs().getMTime() > (FileUtils.lastModifiedTime(destinationPathFile).getTime() / 1000))) {
-                    // Download file from source (source filename, destination filename).
-                    channel.get(sourcePathPathFile, destinationPathFile);
+    public void download(String sourcePath, String destPath) {
+        try {
+            Vector<LsEntry> fileAndFolderList = channel.ls(sourcePath);
+            for (ChannelSftp.LsEntry item : fileAndFolderList) {
+                String sourcePathPathFile = sourcePath + Symbol.SLASH + item.getFilename();
+                String destinationPathFile = destPath + Symbol.SLASH + item.getFilename();
+                if (!item.getAttrs().isDir()) {
+                    // 本地不存在文件或者ftp上文件有修改则下载
+                    if (!FileUtils.exist(destinationPathFile)
+                            || (item.getAttrs().getMTime() > (FileUtils.lastModifiedTime(destinationPathFile).getTime() / 1000))) {
+                        // Download file from source (source filename, destination filename).
+                        channel.get(sourcePathPathFile, destinationPathFile);
+                    }
+                } else if (!(Symbol.DOT.equals(item.getFilename()) || Symbol.DOUBLE_DOT.equals(item.getFilename()))) {
+                    FileUtils.mkdir(destinationPathFile);
+                    download(sourcePathPathFile, destinationPathFile);
                 }
-            } else if (!(Symbol.DOT.equals(item.getFilename()) || Symbol.DOUBLE_DOT.equals(item.getFilename()))) {
-                FileUtils.mkdir(destinationPathFile);
-                download(sourcePathPathFile, destinationPathFile);
             }
+        } catch (SftpException e) {
+            e.printStackTrace();
         }
     }
 
