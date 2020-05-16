@@ -144,7 +144,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                     store.partitionList.add(new HWPartition(name, Udev.INSTANCE.udev_device_get_sysname(device),
                             Udev.INSTANCE.udev_device_get_property_value(device, "ID_FS_TYPE") == null ? "partition"
                                     : Udev.INSTANCE.udev_device_get_property_value(device, "ID_FS_TYPE"),
-                            Udev.INSTANCE.udev_device_get_property_value(device, "ID_FS_UUID") == null ? ""
+                            Udev.INSTANCE.udev_device_get_property_value(device, "ID_FS_UUID") == null ? Normal.EMPTY
                                     : Udev.INSTANCE.udev_device_get_property_value(device, "ID_FS_UUID"),
                             Builder.parseLongOrDefault(Udev.INSTANCE.udev_device_get_sysattr_value(device, "size"),
                                     0L) * SECTORSIZE,
@@ -152,7 +152,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                     0),
                             Builder.parseIntOrDefault(Udev.INSTANCE.udev_device_get_property_value(device, "MINOR"),
                                     0),
-                            mountsMap.getOrDefault(name, "")));
+                            mountsMap.getOrDefault(name, Normal.EMPTY)));
                 }
             }
             Udev.INSTANCE.udev_device_unref(device);

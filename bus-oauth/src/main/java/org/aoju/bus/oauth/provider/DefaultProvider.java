@@ -223,6 +223,10 @@ public abstract class DefaultProvider implements Provider {
      * @param callback 从第三方授权回调回来时传入的参数集合
      */
     public static void checkCode(Complex complex, Callback callback) {
+        // 推特平台不支持回调 code 和 state
+        if (complex == Registry.TWITTER) {
+            return;
+        }
         String code = callback.getCode();
         if (complex == Registry.ALIPAY) {
             code = callback.getAuth_code();
@@ -489,6 +493,10 @@ public abstract class DefaultProvider implements Provider {
      * @param state {@code state}一定不为空
      */
     protected void checkState(String state) {
+        // 推特平台不支持回调 code 和 state
+        if (source == Registry.TWITTER) {
+            return;
+        }
         if (StringUtils.isEmpty(state) || ObjectUtils.isEmpty(extendCache.get(state))) {
             throw new AuthorizedException(Normal.EMPTY + Builder.ErrorCode.ILLEGAL_REQUEST);
         }

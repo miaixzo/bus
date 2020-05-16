@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.*;
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"registryObjectList"})
+@XmlType(propOrder = {"registryObjectList"})
 @XmlRootElement(name = "SubmitObjectsRequest", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0")
 public class SubmitObjectsRequest extends RegistryRequestType {
 

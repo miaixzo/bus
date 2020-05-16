@@ -214,8 +214,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         // If we've gotten this far with no match, use the distrib-release
         // filename (defaults will eventually give "Unknown")
-        String family = filenameToFamily(etcDistribRelease.replace("/etc/", "").replace("release", "")
-                .replace("version", "").replace(Symbol.HYPHEN, "").replace(Symbol.UNDERLINE, ""));
+        String family = filenameToFamily(etcDistribRelease.replace("/etc/", Normal.EMPTY).replace("release", Normal.EMPTY)
+                .replace("version", Normal.EMPTY).replace(Symbol.HYPHEN, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY));
         return Triple.of(family, Normal.UNKNOWN, Normal.UNKNOWN);
     }
 
@@ -237,7 +237,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 // remove beginning and ending '"' characters, etc from
                 // VERSION="14.04.4 LTS, Trusty Tahr" (Ubuntu style)
                 // or VERSION="17 (Beefy Miracle)" (os-release doc style)
-                line = line.replace("VERSION=", "").replaceAll(DOUBLE_QUOTES, "").trim();
+                line = line.replace("VERSION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
                 String[] split = line.split("[()]");
                 if (split.length <= 1) {
                     // If no parentheses, check for Ubuntu's comma format
@@ -253,12 +253,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 Logger.debug(OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // NAME="Ubuntu"
-                family = line.replace("NAME=", "").replaceAll(DOUBLE_QUOTES, "").trim();
+                family = line.replace("NAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("VERSION_ID=") && versionId.equals(Normal.UNKNOWN)) {
                 Logger.debug(OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // VERSION_ID="14.04"
-                versionId = line.replace("VERSION_ID=", "").replaceAll(DOUBLE_QUOTES, "").trim();
+                versionId = line.replace("VERSION_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             }
         }
         return family == null ? null : Triple.of(family, versionId, codeName);
@@ -281,7 +281,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         for (String line : Executor.runNative("lsb_release -a")) {
             if (line.startsWith("Description:")) {
                 Logger.debug(LSB_RELEASE_A_LOG, line);
-                line = line.replace("Description:", "").trim();
+                line = line.replace("Description:", Normal.EMPTY).trim();
                 if (line.contains(RELEASE_DELIM)) {
                     Triple<String, String, String> Triple = parseRelease(line, RELEASE_DELIM);
                     family = Triple.getLeft();

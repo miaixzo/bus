@@ -24,8 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.magic;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 统一授权响应类
@@ -36,6 +38,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Message {
 
     /**

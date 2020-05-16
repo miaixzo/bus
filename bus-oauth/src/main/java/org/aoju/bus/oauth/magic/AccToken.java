@@ -24,9 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.magic;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * 授权所需的token
@@ -38,6 +36,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccToken {
 
     private int expireIn;
