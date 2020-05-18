@@ -25,11 +25,15 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.utils.BooleanUtils;
+import org.aoju.bus.core.utils.DateUtils;
 import org.aoju.bus.core.utils.NumberUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -68,9 +72,11 @@ public class NumberConverter extends AbstractConverter<Number> {
         this.targetType = (null == clazz) ? Number.class : clazz;
     }
 
-    @Override
     protected Number convertInternal(Object value) {
-        final Class<?> targetType = this.targetType;
+        return convertInternal(value, this.targetType);
+    }
+
+    private Number convertInternal(Object value, Class<?> targetType) {
         if (Byte.class == targetType) {
             if (value instanceof Number) {
                 return ((Number) value).byteValue();
@@ -94,46 +100,47 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return ((Number) value).intValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toInteger((Boolean) value);
+            } else if (value instanceof Date) {
+                return (int) ((Date) value).getTime();
+            } else if (value instanceof Calendar) {
+                return (int) ((Calendar) value).getTimeInMillis();
+            } else if (value instanceof TemporalAccessor) {
+                return (int) DateUtils.toInstant((TemporalAccessor) value).toEpochMilli();
             }
             final String valueStr = convertToStr(value);
             return StringUtils.isBlank(valueStr) ? null : NumberUtils.parseInt(valueStr);
 
         } else if (AtomicInteger.class == targetType) {
-            final AtomicInteger intValue = new AtomicInteger();
-            if (value instanceof Number) {
-                intValue.set(((Number) value).intValue());
-            } else if (value instanceof Boolean) {
-                intValue.set(BooleanUtils.toInt((Boolean) value));
+            final Number number = convertInternal(value, Integer.class);
+            if (null != number) {
+                final AtomicInteger intValue = new AtomicInteger();
+                intValue.set(number.intValue());
+                return intValue;
             }
-            final String valueStr = convertToStr(value);
-            if (StringUtils.isBlank(valueStr)) {
-                return null;
-            }
-            intValue.set(NumberUtils.parseInt(valueStr));
-            return intValue;
+            return null;
         } else if (Long.class == targetType) {
             if (value instanceof Number) {
                 return ((Number) value).longValue();
             } else if (value instanceof Boolean) {
                 return BooleanUtils.toLongObj((Boolean) value);
+            } else if (value instanceof Date) {
+                return ((Date) value).getTime();
+            } else if (value instanceof Calendar) {
+                return ((Calendar) value).getTimeInMillis();
+            } else if (value instanceof TemporalAccessor) {
+                return DateUtils.toInstant((TemporalAccessor) value).toEpochMilli();
             }
             final String valueStr = convertToStr(value);
             return StringUtils.isBlank(valueStr) ? null : NumberUtils.parseLong(valueStr);
 
         } else if (AtomicLong.class == targetType) {
-            final AtomicLong longValue = new AtomicLong();
-            if (value instanceof Number) {
-                longValue.set(((Number) value).longValue());
-            } else if (value instanceof Boolean) {
-                longValue.set(BooleanUtils.toLong((Boolean) value));
+            final Number number = convertInternal(value, Long.class);
+            if (null != number) {
+                final AtomicLong longValue = new AtomicLong();
+                longValue.set(number.longValue());
+                return longValue;
             }
-            final String valueStr = convertToStr(value);
-            if (StringUtils.isBlank(valueStr)) {
-                return null;
-            }
-            longValue.set(NumberUtils.parseLong(valueStr));
-            return longValue;
-
+            return null;
         } else if (Float.class == targetType) {
             if (value instanceof Number) {
                 return ((Number) value).floatValue();

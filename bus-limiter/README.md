@@ -317,7 +317,7 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
 
 #### 3. @HPeak 注解
 
-  如果你对Java中的信号量（`Semaphore`）熟悉，则你会很容易理解这个注解。该注解的含义是限制一个资源的并发数量。
+  如果你对Java中的信号量(`Semaphore`)熟悉，则你会很容易理解这个注解。该注解的含义是限制一个资源的并发数量。
 
 - **max** ： 最多的并发数量，默认值为10.
 

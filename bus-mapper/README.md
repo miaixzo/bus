@@ -8,7 +8,7 @@ bus-mapper 是一个 mybatis 的增强工具，在 MyBatis 的基础上只做增
 - **损耗小**：启动即会自动注入基本 CURD，性能基本无损耗，直接面向对象操作
 - **强大的 CRUD 操作**：内置通用 Mapper、通用 Service，仅仅通过少量配置即可实现单表大部分 CRUD 操作，更有强大的条件构造器，满足各类使用需求
 - **支持主键自动生成**：支持多达 4 种主键策略，可自由配置，完美解决主键问题
-- **支持自定义全局通用操作**：支持全局通用方法注入（ Write once, use anywhere ）
+- **支持自定义全局通用操作**：支持全局通用方法注入( Write once, use anywhere )
 - **内置代码生成器**：采用代码或者 Maven 插件可快速生成 Mapper 、 Model 、 Service 、 Controller 层代码，支持模板引擎，更有超多自定义配置等您来使用
 - **内置分页插件**：基于 MyBatis 物理分页，开发者无需关心具体操作，配置好插件之后，写分页等同于普通 List 查询
 - **分页插件支持多种数据库**：支持 MySQL、MariaDB、Oracle、DB2、H2、HSQL、SQLite、Postgre、SQLServer2005、SQLServer 等多种数据库

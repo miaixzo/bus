@@ -27,7 +27,7 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 
 /**
- * An abstract Sound Card
+ * 抽象声卡
  *
  * @author Kimi Liu
  * @version 5.9.1
@@ -41,11 +41,11 @@ public abstract class AbstractSoundCard implements SoundCard {
     private String codec;
 
     /**
-     * Abstract Sound Card Constructor
+     * 抽象声卡构造函数
      *
-     * @param kernelVersion The version
-     * @param name          The name
-     * @param codec         The codec
+     * @param kernelVersion 版本
+     * @param name          名称
+     * @param codec         编解码器
      */
     public AbstractSoundCard(String kernelVersion, String name, String codec) {
         this.kernelVersion = kernelVersion;

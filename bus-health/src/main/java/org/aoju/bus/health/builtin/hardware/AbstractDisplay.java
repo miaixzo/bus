@@ -30,7 +30,7 @@ import org.aoju.bus.health.Builder;
 import java.util.Arrays;
 
 /**
- * A Display
+ * 显示器
  *
  * @author Kimi Liu
  * @version 5.9.1
@@ -42,9 +42,9 @@ public abstract class AbstractDisplay implements Display {
     private final byte[] edid;
 
     /**
-     * Constructor for AbstractDisplay.
+     * 显示器的构造方法
      *
-     * @param edid a byte array representing a display EDID
+     * @param edid 表示显示EDID的字节数组
      */
     protected AbstractDisplay(byte[] edid) {
         this.edid = Arrays.copyOf(edid, edid.length);

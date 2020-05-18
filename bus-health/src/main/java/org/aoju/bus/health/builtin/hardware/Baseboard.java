@@ -27,8 +27,7 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 
 /**
- * The Baseboard represents the system board, also called motherboard, logic
- * board, etc.
+ * 主板信息数据
  *
  * @author Kimi Liu
  * @version 5.9.1
@@ -36,31 +35,32 @@ import org.aoju.bus.core.annotation.Immutable;
  */
 @Immutable
 public interface Baseboard {
+
     /**
-     * Get the baseboard manufacturer.
+     * 主板制造商
      *
-     * @return The manufacturer.
+     * @return 生产厂家
      */
     String getManufacturer();
 
     /**
-     * Get the baseboard model.
+     * 获取主板模型
      *
-     * @return The model.
+     * @return 模型数据
      */
     String getModel();
 
     /**
-     * Get the baseboard version.
+     * 获取主板版本
      *
-     * @return The version.
+     * @return 版本信息
      */
     String getVersion();
 
     /**
-     * Get the baseboard serial number.
+     * 获取主板的序列号
      *
-     * @return The serial number.
+     * @return 序列号
      */
     String getSerialNumber();
 

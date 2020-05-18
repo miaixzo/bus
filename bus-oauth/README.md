@@ -4,8 +4,8 @@
 
 废话不多说，就俩字：
 
-1. **全**：已集成十多家第三方平台（国内外常用的基本都已包含），仍然还在持续扩展中！
-2. **简**：API就是奔着最简单去设计的（见后面`快速开始`），尽量让您用起来没有障碍感！
+1. **全**：已集成十多家第三方平台(国内外常用的基本都已包含)，仍然还在持续扩展中！
+2. **简**：API就是奔着最简单去设计的(见后面`快速开始`)，尽量让您用起来没有障碍感！
 
 ## 快速开始
 
@@ -27,7 +27,7 @@ Provider shooting = new GiteeProvider(Context.builder()
         .build());
 // 生成授权页面
 shooting.authorize("state");
-// 授权登录后会返回code（auth_code（仅限支付宝））、state，1.8.0版本后，可以用Callback类作为回调接口的参数
+// 授权登录后会返回code(auth_code(仅限支付宝))、state，1.8.0版本后，可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
 shooting.login(callback);
 ```
@@ -48,7 +48,7 @@ String authorizeUrl = shooting.authorize("state");
 shooting.login(callback);
 ```
 
-授权登录后会返回code（auth_code（仅限支付宝）、authorization_code（仅限华为））、state，1.8.0版本后，用`AuthCallback`类作为回调接口的入参
+授权登录后会返回code(auth_code(仅限支付宝)、authorization_code(仅限华为))、state，1.8.0版本后，用`AuthCallback`类作为回调接口的入参
 
 **注：第三方平台中配置的授权回调地址，以本文为例，在创建授权应用时的回调地址应为：`[host]/callback/gitee`**
 
@@ -118,7 +118,7 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
 
 ### 参与的角色
 
-- `Resource Owner` 资源所有者，即代表授权客户端访问本身资源信息的用户（User），也就是应用场景中的“**开发者A**”
+- `Resource Owner` 资源所有者，即代表授权客户端访问本身资源信息的用户(User)，也就是应用场景中的“**开发者A**”
 - `Resource Server` 资源服务器，托管受保护的**用户账号信息**，比如Github
 - `Authorization Server` 授权服务器，**验证用户身份**然后为客户端派发资源访问令牌，比如Github
 - `Resource Server`和`Authorization Server` 可以是同一台服务器，也可以是不同的服务器，视具体的授权平台而有所差异
@@ -163,7 +163,7 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
 - Resource Owner Password Credentials
   - 适用于受信任客户端应用，例如同个组织的内部或外部应用
 - Client Credentials
-  - 适用于客户端调用主服务API型应用（比如百度API Store）
+  - 适用于客户端调用主服务API型应用(比如百度API Store)
   
 ## 致谢
 

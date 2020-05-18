@@ -31,8 +31,7 @@ import java.util.function.Supplier;
 import static org.aoju.bus.health.Memoize.memoize;
 
 /**
- * Common fields or methods used by platform-specific implementations of
- * HardwareAbstractionLayer
+ * 硬件信息特定于平台的实现所使用的公共字段或方法
  *
  * @author Kimi Liu
  * @version 5.9.1
@@ -55,9 +54,9 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     }
 
     /**
-     * Instantiates the platform-specific {@link ComputerSystem} object
+     * 实例化特定于平台的{@link ComputerSystem}对象
      *
-     * @return platform-specific {@link ComputerSystem} object
+     * @return 特定于平台的 {@link ComputerSystem} 对象
      */
     protected abstract ComputerSystem createComputerSystem();
 
@@ -67,9 +66,9 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     }
 
     /**
-     * Instantiates the platform-specific {@link CentralProcessor} object
+     * 实例化特定于平台的{@link CentralProcessor}对象
      *
-     * @return platform-specific {@link CentralProcessor} object
+     * @return 特定于平台的 {@link CentralProcessor} 对象
      */
     protected abstract CentralProcessor createProcessor();
 
@@ -79,9 +78,9 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     }
 
     /**
-     * Instantiates the platform-specific {@link GlobalMemory} object
+     * 实例化特定于平台的{@link GlobalMemory}对象
      *
-     * @return platform-specific {@link GlobalMemory} object
+     * @return 特定于平台的 {@link GlobalMemory} 对象
      */
     protected abstract GlobalMemory createMemory();
 
@@ -91,9 +90,9 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     }
 
     /**
-     * Instantiates the platform-specific {@link Sensors} object
+     * 实例化特定于平台的{@link Sensors}对象
      *
-     * @return platform-specific {@link Sensors} object
+     * @return 特定于平台的 {@link Sensors} 对象
      */
     protected abstract Sensors createSensors();
 

@@ -27,7 +27,7 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 
 /**
- * An abstract Sound Card
+ * 抽象声卡
  *
  * @author Kimi Liu
  * @version 5.9.1
@@ -43,12 +43,12 @@ public abstract class AbstractGraphicsCard implements GraphicsCard {
     private long vram;
 
     /**
-     * Constructor for AbstractGraphicsCard
+     * 构造声卡信息
      *
-     * @param name        The name
-     * @param deviceId    The device ID
-     * @param vendor      The vendor
-     * @param versionInfo The version info
+     * @param name        名称
+     * @param deviceId    设备Id
+     * @param vendor      设备制造商
+     * @param versionInfo 设备版本
      * @param vram        The VRAM
      */
     protected AbstractGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram) {

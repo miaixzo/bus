@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
 import java.util.Arrays;
 
 /**
- * A USB device
+ * USB设备
  *
  * @author Kimi Liu
  * @version 5.9.1
@@ -55,9 +55,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     protected UsbDevice[] connectedDevices;
 
     /**
-     * <p>
-     * Constructor for AbstractUsbDevice.
-     * </p>
+     * 构造USB设备
      *
      * @param name             a {@link java.lang.String} object.
      * @param vendor           a {@link java.lang.String} object.
@@ -79,10 +77,10 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     }
 
     /**
-     * Helper method for indenting chained USB devices
+     * 缩进链接的USB设备的辅助方法
      *
-     * @param usbDevice A USB device to print
-     * @param indent    number of spaces to indent
+     * @param usbDevice USB设备进行打印
+     * @param indent    缩进的空格数
      */
     private static String indentUsb(UsbDevice usbDevice, int indent) {
         String indentFmt = indent > 2 ? String.format("%%%ds|-- ", indent - 4) : String.format("%%%ds", indent);
@@ -137,7 +135,6 @@ public abstract class AbstractUsbDevice implements UsbDevice {
 
     @Override
     public int compareTo(UsbDevice usb) {
-        // Naturally sort by device name
         return getName().compareTo(usb.getName());
     }
 

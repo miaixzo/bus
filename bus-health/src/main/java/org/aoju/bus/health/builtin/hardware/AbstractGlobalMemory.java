@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Memory info.
+ * 内存信息
  *
  * @author Kimi Liu
  * @version 5.9.1
@@ -45,8 +45,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
 
     @Override
     public PhysicalMemory[] getPhysicalMemory() {
-        // dmidecode requires sudo permission but is the only option on Linux
-        // and Unix
+        // dmidecode需要sudo权限，但在Linux和Unix上是唯一的选择
         List<PhysicalMemory> pmList = new ArrayList<>();
         List<String> dmi = Executor.runNative("dmidecode --type 17");
         int bank = 0;
@@ -58,7 +57,6 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
         String memoryType = Normal.UNKNOWN;
         for (String line : dmi) {
             if (line.trim().contains("DMI type 17")) {
-                // Save previous bank
                 if (bank++ > 0) {
                     if (capacity > 0) {
                         pmList.add(new PhysicalMemory(bankLabel + locator, capacity, speed, manufacturer, memoryType));
