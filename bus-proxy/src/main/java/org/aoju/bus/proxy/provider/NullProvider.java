@@ -28,7 +28,7 @@ package org.aoju.bus.proxy.provider;
  * 总是返回null
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class NullProvider extends AlwaysProvider {

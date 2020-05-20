@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 判断是否为IP地址
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Documented
