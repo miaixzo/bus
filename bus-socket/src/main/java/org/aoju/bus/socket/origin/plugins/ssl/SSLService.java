@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.origin.plugins.ssl;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.*;
@@ -90,7 +91,7 @@ public class SSLService {
                     }
                 }};
             }
-            sslContext = SSLContext.getInstance("TLS");
+            sslContext = SSLContext.getInstance(Http.TLS);
             sslContext.init(keyManagers, trustManagers, new SecureRandom());
 
         } catch (Exception e) {

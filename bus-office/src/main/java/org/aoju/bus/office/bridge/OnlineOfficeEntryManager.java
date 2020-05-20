@@ -25,6 +25,7 @@
 package org.aoju.bus.office.bridge;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ClassUtils;
@@ -113,7 +114,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
      */
     private static SSLSocketFactory createTrustAllSSLFactory(X509TrustManager X509TrustManager) {
         try {
-            SSLContext sc = SSLContext.getInstance("TLS");
+            SSLContext sc = SSLContext.getInstance(Http.TLS);
             sc.init(null, new TrustManager[]{X509TrustManager}, new SecureRandom());
             return sc.getSocketFactory();
         } catch (Exception ignored) {

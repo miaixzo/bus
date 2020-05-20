@@ -71,7 +71,7 @@ public class NumberConverter extends AbstractConverter<Number> {
     public NumberConverter(Class<? extends Number> clazz) {
         this.targetType = (null == clazz) ? Number.class : clazz;
     }
-    
+
     @Override
     protected Number convertInternal(Object value) {
         return convertInternal(value, this.targetType);

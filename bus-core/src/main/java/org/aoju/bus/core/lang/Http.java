@@ -114,6 +114,14 @@ public class Http {
      */
     public static final String ALL = "ALL";
     /**
+     * HTTP TLS
+     */
+    public static final String TLS = "TLS";
+    /**
+     * HTTP SSL
+     */
+    public static final String SSL = "SSL";
+    /**
      * The use status
      */
     public static final String RESPONSE_STATUS_UTF8 = ":status";

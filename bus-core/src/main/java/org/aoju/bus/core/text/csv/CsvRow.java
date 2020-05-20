@@ -25,6 +25,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.utils.BeanUtils;
 
 import java.util.*;
 
@@ -127,6 +128,17 @@ public final class CsvRow implements List<String> {
      */
     public int getFieldCount() {
         return fields.size();
+    }
+
+    /**
+     * 数据转换为Bean对象
+     *
+     * @param <T>   Bean类型
+     * @param clazz bean类
+     * @return Bean
+     */
+    public <T> T toBean(Class<T> clazz) {
+        return BeanUtils.mapToBean(getFieldMap(), clazz, true);
     }
 
     @Override

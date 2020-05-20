@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -1222,7 +1223,7 @@ public class Device implements Serializable {
         if (ctx != null)
             return ctx;
 
-        ctx = SSLContext.getInstance("TLS");
+        ctx = SSLContext.getInstance(Http.TLS);
         ctx.init(keyManagers(), trustManagers(), null);
         sslContext = ctx;
         return ctx;
