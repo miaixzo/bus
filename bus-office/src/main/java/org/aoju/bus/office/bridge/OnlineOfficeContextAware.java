@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.office.bridge;
 
-import org.aoju.bus.http.Httpx;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.metric.RequestBuilder;
 
@@ -36,13 +35,6 @@ import org.aoju.bus.office.metric.RequestBuilder;
  * @since JDK 1.8+
  */
 public interface OnlineOfficeContextAware extends Context {
-
-    /**
-     * 获取负责向office服务器执行请求的HTTP客户端.
-     *
-     * @return 将发送转换请求的客户端.
-     */
-    Httpx getHttp();
 
     /**
      * 获取请求配置.

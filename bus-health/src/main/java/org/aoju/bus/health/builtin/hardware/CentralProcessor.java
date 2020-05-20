@@ -96,7 +96,7 @@ public interface CentralProcessor {
     /**
      * 获取系统范围的CPU负载滴答计数器。返回具有七个元素的数组
      * 表示在User(0)，Nice(1)，System(2)，Idle(3)IOwait(4)，IOwait(IRQ)(5)
-     * 软件中断/DPC中花费的毫秒数(SoftIRQ(6)或Steal(7)状态。使用 {@link CentralProcessor.TickType＃getIndex()}
+     * 软件中断/DPC中花费的毫秒数(SoftIRQ(6)或Steal(7)状态。使用 {@link CentralProcessor.TickType#getIndex()}
      * 来检索适当的索引。通过测量一个时间间隔内的滴答之间的差异，可以计算该间隔内的CPU负载。
      * <p> 请注意，虽然滴答计数器以毫秒为单位，但它们可能会与(取决于平台的)时钟滴答一起以更大的增量前进
      * 。例如，默认情况下，Windows时钟滴答是1/64秒(约15或16 *毫秒)，而Linux滴答则取决于发行和配置

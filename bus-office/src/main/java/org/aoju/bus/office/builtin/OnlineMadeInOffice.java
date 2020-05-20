@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.http.Request;
+import org.aoju.bus.http.Httpz;
 import org.aoju.bus.http.bodys.MultipartBody;
 import org.aoju.bus.http.bodys.RequestBody;
 import org.aoju.bus.logger.Logger;
@@ -130,8 +130,12 @@ public class OnlineMadeInOffice extends AbstractOnlineOffice {
                         target.getFormat().getStoreProperties(source.getFormat().getInputFamily()),
                         Builder.STORE_PROPERTIES_PREFIX_PARAM);
 
-                Request request = new Request.Builder().url(urlBuilder.toString()).post(requestBody.build()).tag(context).build();
-                ((OnlineOfficeContextAware) context).getHttp().newCall(request).execute();
+                Httpz.post()
+                        .url(urlBuilder.toString())
+                        .multipartBody(requestBody.build())
+                        .tag(context)
+                        .build().execute();
+
                 // onComplete on target将把临时文件复制到/ OutputStream中，如果输出是OutputStream，则删除临时文件
                 target.onComplete(targetFile);
 

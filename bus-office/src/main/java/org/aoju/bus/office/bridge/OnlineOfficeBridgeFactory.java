@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.office.bridge;
 
-import org.aoju.bus.http.Httpx;
 import org.aoju.bus.office.metric.RequestBuilder;
 
 /**
@@ -36,24 +35,15 @@ import org.aoju.bus.office.metric.RequestBuilder;
  */
 public class OnlineOfficeBridgeFactory implements OnlineOfficeContextAware {
 
-    private final Httpx httpx;
     private final RequestBuilder requestBuilder;
 
     /**
      * 使用指定的客户端和URL构造新连接.
      *
-     * @param httpx          用于与LibreOffice在线服务器通信的HTTP客户机(已初始化).
      * @param requestBuilder 转换的请求配置.
      */
-    public OnlineOfficeBridgeFactory(final Httpx httpx,
-                                     final RequestBuilder requestBuilder) {
-        this.httpx = httpx;
+    public OnlineOfficeBridgeFactory(final RequestBuilder requestBuilder) {
         this.requestBuilder = requestBuilder;
-    }
-
-    @Override
-    public Httpx getHttp() {
-        return httpx;
     }
 
     @Override
