@@ -1199,6 +1199,17 @@ public class ImageUtils {
     }
 
     /**
+     * 将图片对象转换为Base64的Data URI形式，格式为：data:image/[imageType];base64,[data]
+     *
+     * @param image     图片对象
+     * @param imageType 图片类型
+     * @return Base64的字符串表现形式
+     */
+    public static String toBase64Uri(java.awt.Image image, String imageType) {
+        return UriUtils.toURL("image/" + imageType, "base64", toBase64(image, imageType));
+    }
+
+    /**
      * 将图片对象转换为bytes形式
      *
      * @param image     图片对象

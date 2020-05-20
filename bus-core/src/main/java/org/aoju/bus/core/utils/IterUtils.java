@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Filter;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 /**
  * {@link Iterable} 和 {@link Iterator} 相关工具类
@@ -430,6 +431,99 @@ public class IterUtils {
             }
         }
         return resultMap;
+    }
+
+    /**
+     * 将列表转成HashMap
+     *
+     * @param iterable    值列表
+     * @param keyMapper   Map的键映射
+     * @param valueMapper Map的值映射
+     * @param <T>         列表值类型
+     * @param <K>         键类型
+     * @param <V>         值类型
+     * @return HashMap
+     */
+    public static <T, K, V> Map<K, V> toMap(Iterable<T> iterable, Function<T, K> keyMapper, Function<T, V> valueMapper) {
+        final HashMap<K, V> resultMap = MapUtils.newHashMap();
+
+        if (ObjectUtils.isNull(iterable)) {
+            return resultMap;
+        }
+
+        for (T value : iterable) {
+            resultMap.put(keyMapper.apply(value), valueMapper.apply(value));
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * 将列表转成值为List的HashMap
+     *
+     * @param iterable  值列表
+     * @param keyMapper Map的键映射
+     * @param <K>       键类型
+     * @param <V>       值类型
+     * @return HashMap
+     */
+    public static <K, V> Map<K, List<V>> toListMap(Iterable<V> iterable, Function<V, K> keyMapper) {
+        return toListMap(iterable, keyMapper, v -> v);
+    }
+
+    /**
+     * 将列表转成值为List的HashMap
+     *
+     * @param iterable    值列表
+     * @param keyMapper   Map的键映射
+     * @param valueMapper Map中List的值映射
+     * @param <T>         列表值类型
+     * @param <K>         键类型
+     * @param <V>         值类型
+     * @return HashMap
+     */
+    public static <T, K, V> Map<K, List<V>> toListMap(Iterable<T> iterable, Function<T, K> keyMapper, Function<T, V> valueMapper) {
+        return toListMap(MapUtils.newHashMap(), iterable, keyMapper, valueMapper);
+    }
+
+    /**
+     * 将列表转成值为List的HashMap
+     *
+     * @param resultMap   结果Map，可自定义结果Map类型
+     * @param iterable    值列表
+     * @param keyMapper   Map的键映射
+     * @param valueMapper Map中List的值映射
+     * @param <T>         列表值类型
+     * @param <K>         键类型
+     * @param <V>         值类型
+     * @return HashMap
+     */
+    public static <T, K, V> Map<K, List<V>> toListMap(Map<K, List<V>> resultMap, Iterable<T> iterable, Function<T, K> keyMapper, Function<T, V> valueMapper) {
+        if (null == resultMap) {
+            resultMap = MapUtils.newHashMap();
+        }
+        if (ObjectUtils.isNull(iterable)) {
+            return resultMap;
+        }
+
+        for (T value : iterable) {
+            resultMap.computeIfAbsent(keyMapper.apply(value), k -> new ArrayList<>()).add(valueMapper.apply(value));
+        }
+
+        return resultMap;
+    }
+
+    /**
+     * 将列表转成HashMap
+     *
+     * @param iterable  值列表
+     * @param keyMapper Map的键映射
+     * @param <K>       键类型
+     * @param <V>       值类型
+     * @return HashMap
+     */
+    public static <K, V> Map<K, V> toMap(Iterable<V> iterable, Function<V, K> keyMapper) {
+        return toMap(iterable, keyMapper, v -> v);
     }
 
     /**

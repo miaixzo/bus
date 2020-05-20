@@ -32,12 +32,12 @@ import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.ImageUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.text.MessageFormat;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +49,60 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 public class QrCodeUtils {
+
+    /**
+     * 生成代 logo 图片的 Base64 编码格式的二维码，以 String 形式表示
+     *
+     * @param content    内容
+     * @param qrConfig   二维码配置，包括长、宽、边距、颜色等
+     * @param imageType  图片类型（图片扩展名）
+     * @param logoBase64 logo 图片的 base64 编码
+     * @return 图片 Base64 编码字符串
+     */
+    public static String generate(String content, QrConfig qrConfig, String imageType, String logoBase64) {
+        byte[] decode;
+        try {
+            decode = Base64.getDecoder().decode(logoBase64);
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+        return generate(content, qrConfig, imageType, decode);
+    }
+
+    /**
+     * 生成代 logo 图片的 Base64 编码格式的二维码，以 String 形式表示
+     *
+     * @param content   内容
+     * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
+     * @param imageType 图片类型（图片扩展名）
+     * @param logo      logo 图片的byte[]
+     * @return 图片 Base64 编码字符串
+     */
+    public static String generate(String content, QrConfig qrConfig, String imageType, byte[] logo) {
+        BufferedImage img;
+        try {
+            img = ImageIO.read(new ByteArrayInputStream(logo));
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        qrConfig.setImg(img);
+        return generate(content, qrConfig, imageType);
+    }
+
+    /**
+     * 生成 Base64 编码格式的二维码，以 String 形式表示
+     *
+     * @param content   内容
+     * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
+     * @param imageType 图片类型（图片扩展名）
+     * @return 图片 Base64 编码字符串
+     */
+    public static String generate(String content, QrConfig qrConfig, String imageType) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        generate(content, qrConfig, imageType, bos);
+        byte[] encode = Base64.getEncoder().encode(bos.toByteArray());
+        return MessageFormat.format("data:image/{0};base64,{1}", imageType, new String(encode));
+    }
 
     /**
      * 生成PNG格式的二维码图片,以byte[]形式表示
