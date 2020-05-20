@@ -33,7 +33,7 @@ import java.io.File;
  * 即: 后续业务处理流程
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public interface Rollers {

@@ -32,7 +32,7 @@ import org.aoju.bus.office.Builder;
  * 实用程序函数，使office文本文档(Writer)更容易使用.
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public final class Write {

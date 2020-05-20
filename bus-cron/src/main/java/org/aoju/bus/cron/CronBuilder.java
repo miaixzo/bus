@@ -43,7 +43,7 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public final class CronBuilder {

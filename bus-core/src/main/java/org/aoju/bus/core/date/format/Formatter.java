@@ -31,7 +31,7 @@ import java.util.TimeZone;
  * 日期基本信息获取接口
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public interface Formatter {
