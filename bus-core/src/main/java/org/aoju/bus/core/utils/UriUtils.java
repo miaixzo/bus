@@ -1391,9 +1391,9 @@ public class UriUtils {
             builder.append(";charset=").append(charset.name());
         }
         if (StringUtils.isNotBlank(encoding)) {
-            builder.append(';').append(encoding);
+            builder.append(Symbol.C_SEMICOLON).append(encoding);
         }
-        builder.append(',').append(data);
+        builder.append(Symbol.C_COMMA).append(data);
 
         return builder.toString();
     }

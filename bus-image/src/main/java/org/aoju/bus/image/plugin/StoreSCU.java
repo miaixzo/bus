@@ -457,7 +457,7 @@ public class StoreSCU implements AutoCloseable {
         public void init(Properties props) {
             for (String cuid : props.stringPropertyNames()) {
                 commonExtNegs.put(cuid, new CommonExtended(cuid, UID.StorageServiceClass,
-                        (String[]) StringUtils.split(props.getProperty(cuid), ',').toArray()));
+                        (String[]) StringUtils.split(props.getProperty(cuid), Symbol.C_COMMA).toArray()));
             }
         }
 
