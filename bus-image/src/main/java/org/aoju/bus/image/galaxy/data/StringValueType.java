@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 
@@ -32,7 +33,7 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public enum StringValueType implements ValueType {
@@ -133,7 +134,7 @@ public enum StringValueType implements ValueType {
 
             String[] ss = new String[ds.length];
             for (int i = 0; i < ds.length; i++)
-                ss[i] = !Double.isNaN(ds[i]) ? Property.formatDS(ds[i]) : "";
+                ss[i] = !Double.isNaN(ds[i]) ? Property.formatDS(ds[i]) : Normal.EMPTY;
 
             return ss;
         }
@@ -243,7 +244,7 @@ public enum StringValueType implements ValueType {
 
             String[] ss = new String[is.length];
             for (int i = 0; i < is.length; i++)
-                ss[i] = is[i] != Integer.MIN_VALUE ? Integer.toString(is[i]) : "";
+                ss[i] = is[i] != Integer.MIN_VALUE ? Integer.toString(is[i]) : Normal.EMPTY;
 
             return ss;
         }

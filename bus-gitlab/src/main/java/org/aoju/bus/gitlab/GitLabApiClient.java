@@ -1,5 +1,6 @@
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.TokenType;
@@ -832,14 +833,10 @@ public class GitLabApiClient {
         }};
 
         // Ignore differences between given hostname and certificate hostname
-        HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
+        HostnameVerifier hostnameVerifier = (hostname, session) -> true;
 
         try {
-            SSLContext sslContext = SSLContext.getInstance("TLS");
+            SSLContext sslContext = SSLContext.getInstance(Http.TLS);
             sslContext.init(null, trustAllCerts, new SecureRandom());
             openSslContext = sslContext;
             openHostnameVerifier = hostnameVerifier;
@@ -851,4 +848,5 @@ public class GitLabApiClient {
 
         return (true);
     }
+
 }

@@ -55,7 +55,7 @@ import java.util.Random;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class ImageUtils {
@@ -1196,6 +1196,17 @@ public class ImageUtils {
      */
     public static String toBase64(java.awt.Image image, String imageType) {
         return Base64.encode(toBytes(image, imageType));
+    }
+
+    /**
+     * 将图片对象转换为Base64的Data URI形式，格式为：data:image/[imageType];base64,[data]
+     *
+     * @param image     图片对象
+     * @param imageType 图片类型
+     * @return Base64的字符串表现形式
+     */
+    public static String toBase64Uri(java.awt.Image image, String imageType) {
+        return UriUtils.toURL("image/" + imageType, "base64", toBase64(image, imageType));
     }
 
     /**

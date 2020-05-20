@@ -47,7 +47,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  * 异常信息拦截处理
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ControllerAdvice

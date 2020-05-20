@@ -12,7 +12,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>5.9.1</version>
+    <version>5.9.2</version>
 </dependency>
 ```
 # 数据表结构样式
@@ -32,7 +32,7 @@ CREATE TABLE `hi_user` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB;
 ```
-要求必须有表注释，要求必须有主键为id,所有字段必须有注释（便于生成java注释swagger等）。
+要求必须有表注释，要求必须有主键为id,所有字段必须有注释(便于生成java注释swagger等)。
 
 #
 ``` 
@@ -45,7 +45,7 @@ CREATE TABLE `hi_user` (
         public static final String NAME = "root";
         public static final String PASS = "root";
         public static final String DATABASE = "hi_test";
-        // 类信息：类名、对象名（一般是【类名】的首字母小些）、类说明、时间
+        // 类信息：类名、对象名(一般是【类名】的首字母小些)、类说明、时间
     
         public static final String TABLE = "hi_user";
         public static final String CLASSCOMMENT = "用户信息";

@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
  * URL相关工具
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class UriUtils {
@@ -1357,6 +1357,45 @@ public class UriUtils {
         } catch (URISyntaxException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
+     * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
+     *
+     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param encoding 数据编码方式(US-ASCII，BASE64等)
+     * @param data     编码后的数据
+     * @return Data URI字符串
+     */
+    public static String toURL(String mimeType, String encoding, String data) {
+        return toURL(mimeType, null, encoding, data);
+    }
+
+    /**
+     * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
+     * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页
+     *
+     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param charset  可选项(null表示无)，源文本的字符集编码方式
+     * @param encoding 数据编码方式(US-ASCII，BASE64等)
+     * @param data     编码后的数据
+     * @return Data URI字符串
+     */
+    public static String toURL(String mimeType, Charset charset, String encoding, String data) {
+        final StringBuilder builder = StringUtils.builder("data:");
+        if (StringUtils.isNotBlank(mimeType)) {
+            builder.append(mimeType);
+        }
+        if (null != charset) {
+            builder.append(";charset=").append(charset.name());
+        }
+        if (StringUtils.isNotBlank(encoding)) {
+            builder.append(Symbol.C_SEMICOLON).append(encoding);
+        }
+        builder.append(Symbol.C_COMMA).append(data);
+
+        return builder.toString();
     }
 
     /**

@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -52,7 +52,7 @@ public class RetrieveDocumentSetRequestType {
 
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {"homeCommunityId", "repositoryUniqueId", "documentUniqueId"})
+    @XmlType(propOrder = {"homeCommunityId", "repositoryUniqueId", "documentUniqueId"})
     public static class DocumentRequest {
 
         @XmlElement(name = "HomeCommunityId", namespace = "urn:ihe:iti:xds-b:2007")

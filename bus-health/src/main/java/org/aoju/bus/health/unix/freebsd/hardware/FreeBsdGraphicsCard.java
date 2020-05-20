@@ -39,7 +39,7 @@ import java.util.List;
  * Graphics Card info obtained from pciconf
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -116,7 +116,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                     String key = split[0].trim();
                     if (key.equals("vendor")) {
                         vendorId = Builder.getSingleQuoteStringValue(line)
-                                + (vendorId.equals(Normal.UNKNOWN) ? "" : " (" + vendorId + ")");
+                                + (vendorId.equals(Normal.UNKNOWN) ? Normal.EMPTY : " (" + vendorId + ")");
                     } else if (key.equals("device")) {
                         name = Builder.getSingleQuoteStringValue(line);
                     }

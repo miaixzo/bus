@@ -35,7 +35,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class CitizenIdUtils {
@@ -292,7 +292,7 @@ public class CitizenIdUtils {
             return null;
         }
         String[] info = new String[3];
-        String card = idCard.replaceAll("[\\(|\\)]", "");
+        String card = idCard.replaceAll("[\\(|\\)]", Normal.EMPTY);
         if (card.length() != 8 && card.length() != 9 && idCard.length() != 10) {
             return null;
         }
@@ -363,7 +363,7 @@ public class CitizenIdUtils {
      * @return 验证码是否符合
      */
     public static boolean isValidHKCard(String idCard) {
-        String card = idCard.replaceAll("[\\(|\\)]", "");
+        String card = idCard.replaceAll("[\\(|\\)]", Normal.EMPTY);
         Integer sum = 0;
         if (card.length() == 9) {
             sum = (Integer.valueOf(card.substring(0, 1).toUpperCase().toCharArray()[0]) - 55) * 9 + (Integer.valueOf(card.substring(1, 2).toUpperCase().toCharArray()[0]) - 55) * 8;

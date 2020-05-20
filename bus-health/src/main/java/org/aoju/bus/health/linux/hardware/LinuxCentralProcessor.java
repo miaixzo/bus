@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
@@ -42,7 +43,7 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -99,8 +100,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         marker = "eax=";
         for (String checkLine : Executor.runNative("cpuid -1r")) {
             if (checkLine.contains(marker) && checkLine.trim().startsWith("0x00000001")) {
-                String eax = "";
-                String edx = "";
+                String eax = Normal.EMPTY;
+                String edx = Normal.EMPTY;
                 for (String register : Builder.whitespaces.split(checkLine)) {
                     if (register.startsWith("eax=")) {
                         eax = Builder.removeMatchingString(register, "eax=0x");
@@ -149,11 +150,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = "";
-        String cpuName = "";
-        String cpuFamily = "";
-        String cpuModel = "";
-        String cpuStepping = "";
+        String cpuVendor = Normal.EMPTY;
+        String cpuName = Normal.EMPTY;
+        String cpuFamily = Normal.EMPTY;
+        String cpuModel = Normal.EMPTY;
+        String cpuStepping = Normal.EMPTY;
         String processorID;
         boolean cpu64bit = false;
 
@@ -211,7 +212,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             List<String> lscpu = Executor.runNative("lscpu");
             for (String line : lscpu) {
                 if (line.startsWith("Architecture:")) {
-                    cpuVendor = line.replace("Architecture:", "").trim();
+                    cpuVendor = line.replace("Architecture:", Normal.EMPTY).trim();
                 }
             }
         }
@@ -263,7 +264,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[] queryCurrentFreq() {
-        String cpuFreqPath = Config.get(CPUFREQ_PATH, "");
+        String cpuFreqPath = Config.get(CPUFREQ_PATH, Normal.EMPTY);
         long[] freqs = new long[getLogicalProcessorCount()];
         // Attempt to fill array from cpu-freq source
         long max = 0L;
@@ -300,7 +301,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long queryMaxFreq() {
-        String cpuFreqPath = Config.get(CPUFREQ_PATH, "");
+        String cpuFreqPath = Config.get(CPUFREQ_PATH, Normal.EMPTY);
         long max = 0L;
         for (int i = 0; i < getLogicalProcessorCount(); i++) {
             long freq = Builder.getLongFromFile(cpuFreqPath + i + "/cpufreq/scaling_max_freq");

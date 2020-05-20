@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 业务异常
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class BusinessException extends UncheckedException {

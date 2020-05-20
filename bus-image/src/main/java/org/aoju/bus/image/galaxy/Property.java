@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class Property implements Serializable {
@@ -106,11 +106,11 @@ public class Property implements Serializable {
     public static String concat(String[] ss, char delim) {
         int n = ss.length;
         if (n == 0)
-            return "";
+            return Normal.EMPTY;
 
         if (n == 1) {
             String s = ss[0];
-            return s != null ? s : "";
+            return s != null ? s : Normal.EMPTY;
         }
         int len = n - 1;
         for (String s : ss)
@@ -135,11 +135,11 @@ public class Property implements Serializable {
     public static String concat(Collection<String> ss, char delim) {
         int n = ss.size();
         if (n == 0)
-            return "";
+            return Normal.EMPTY;
 
         if (n == 1) {
             String s = ss.iterator().next();
-            return s != null ? s : "";
+            return s != null ? s : Normal.EMPTY;
         }
         int len = n - 1;
         for (String s : ss)
@@ -211,7 +211,7 @@ public class Property implements Serializable {
                 return s.substring(begin, end);
             begin = end + 1;
         }
-        return i == index ? s.substring(begin) : "";
+        return i == index ? s.substring(begin) : Normal.EMPTY;
     }
 
     private static String substring(String s, int beginIndex, int endIndex) {
@@ -219,7 +219,7 @@ public class Property implements Serializable {
             beginIndex++;
         while (beginIndex < endIndex && s.charAt(endIndex - 1) <= Symbol.C_SPACE)
             endIndex--;
-        return beginIndex < endIndex ? s.substring(beginIndex, endIndex) : "";
+        return beginIndex < endIndex ? s.substring(beginIndex, endIndex) : Normal.EMPTY;
     }
 
     public static String trimTrailing(String s) {

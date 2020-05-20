@@ -50,7 +50,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
  * after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -147,7 +147,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     private List<OSProcess> getProcessListFromPS(String psCommand, int pid, boolean slowFields) {
         Map<Integer, String> cwdMap = Builder.getCwdMap(pid);
         List<OSProcess> procs = new ArrayList<>();
-        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? "" : pid));
+        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
         if (procList.isEmpty() || procList.size() < 2) {
             return procs;
         }

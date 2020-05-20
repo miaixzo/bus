@@ -36,7 +36,7 @@ import java.util.ListIterator;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class Fragments extends ArrayList<Object> implements Value {
@@ -60,7 +60,7 @@ public class Fragments extends ArrayList<Object> implements Value {
 
     @Override
     public String toString() {
-        return "" + size() + " Fragments";
+        return size() + " Fragments";
     }
 
     @Override

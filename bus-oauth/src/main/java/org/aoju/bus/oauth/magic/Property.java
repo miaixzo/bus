@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
  * 授权成功后的用户信息,根据授权平台的不同,获取的数据完整性也不同
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Getter

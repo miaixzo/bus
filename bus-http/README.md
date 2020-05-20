@@ -323,7 +323,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
             .build();
     Response response = client.newCall(request).execute();
  ```
- 2. 每一个Call（其实现是RealCall）只能执行一次，否则会报异常，具体参见 RealCall#execute()
+ 2. 每一个Call(其实现是RealCall)只能执行一次，否则会报异常，具体参见 RealCall#execute()
   
   
 ### Httpx 使用

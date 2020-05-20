@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -37,7 +38,7 @@ import java.util.*;
  * FreeBsd Usb Device
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -90,7 +91,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
             return new FreeBsdUsbDevice[0];
         }
         // For each item enumerated, store information in the maps
-        String key = "";
+        String key = Normal.EMPTY;
         List<String> usBuses = new ArrayList<>();
         for (String line : devices) {
             // udi = ... identifies start of a new tree
@@ -108,7 +109,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
                     } else if (line.contains(".parent =")) {
                         String parent = Builder.getSingleQuoteStringValue(line);
                         // If this is interface of parent, skip
-                        if (key.replace(parent, "").startsWith("_if")) {
+                        if (key.replace(parent, Normal.EMPTY).startsWith("_if")) {
                             continue;
                         }
                         // Store parent for later usbus-skipping
@@ -122,7 +123,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
                     } else if (line.contains(".serial =")) {
                         String serial = Builder.getSingleQuoteStringValue(line);
                         serialMap.put(key,
-                                serial.startsWith("0x") ? Builder.hexStringToString(serial.replace("0x", ""))
+                                serial.startsWith("0x") ? Builder.hexStringToString(serial.replace("0x", Normal.EMPTY))
                                         : serial);
                     } else if (line.contains(".vendor_id =")) {
                         vendorIdMap.put(key, String.format("%04x", Builder.getFirstIntValue(line)));
@@ -180,7 +181,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
         }
         Collections.sort(usbDevices);
         return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
+                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
                 usbDevices.toArray(new UsbDevice[0]));
     }
 

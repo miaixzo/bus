@@ -25,6 +25,7 @@
 package org.aoju.bus.starter;
 
 import org.aoju.bus.core.Version;
+import org.aoju.bus.core.lang.Normal;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
@@ -39,7 +40,7 @@ import java.util.Properties;
  * 将作为一个名为PropertiesPropertySource的属性源添加
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 100)
@@ -67,10 +68,10 @@ public class Configurable implements EnvironmentPostProcessor {
      */
     protected Properties getProperties() {
         Properties properties = new Properties();
-        String version = Version.get() == null ? "" : Version.get();
+        String version = Version.get() == null ? Normal.EMPTY : Version.get();
         properties.setProperty(BusXBuilder.BUS_BOOT_VERSION, version);
         properties.setProperty(BusXBuilder.BUS_BOOT_FORMATTED_VERSION,
-                version.isEmpty() ? "" : String.format(" (v%s)", version));
+                version.isEmpty() ? Normal.EMPTY : String.format(" (v%s)", version));
         return properties;
     }
 

@@ -34,7 +34,7 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class Sequence extends ArrayList<Attributes> implements Value {
@@ -122,7 +122,7 @@ public class Sequence extends ArrayList<Attributes> implements Value {
 
     @Override
     public String toString() {
-        return "" + size() + " Items";
+        return size() + " Items";
     }
 
     @Override

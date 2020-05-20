@@ -42,7 +42,7 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
  * Hardware data obtained from sysfs.
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable

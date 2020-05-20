@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.StreamUtils;
 import org.aoju.bus.image.galaxy.Property;
@@ -37,7 +38,7 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class BulkData implements Value {
@@ -210,8 +211,8 @@ public class BulkData implements Value {
     }
 
     public void serializeTo(ObjectOutputStream oos) throws IOException {
-        oos.writeUTF(Property.maskNull(uuid, ""));
-        oos.writeUTF(Property.maskNull(uri, ""));
+        oos.writeUTF(Property.maskNull(uuid, Normal.EMPTY));
+        oos.writeUTF(Property.maskNull(uri, Normal.EMPTY));
         oos.writeBoolean(bigEndian);
     }
 

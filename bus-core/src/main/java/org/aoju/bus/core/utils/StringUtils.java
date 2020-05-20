@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class StringUtils extends TextUtils {
@@ -5855,7 +5855,7 @@ public class StringUtils extends TextUtils {
      * StringUtils.padAfter("123", 2, '0');//"23"
      * </pre>
      *
-     * @param str       字符串，如果为<code>null</code>，按照空串处理
+     * @param str       字符串，如果为<code>null</code>，直接返回null
      * @param minLength 最小长度
      * @param padChar   补充的字符
      * @return 补充后的字符串
@@ -5883,7 +5883,7 @@ public class StringUtils extends TextUtils {
      * StringUtils.padAfter("123", 2, "ABC");//"23"
      * </pre>
      *
-     * @param str       字符串，如果为<code>null</code>，按照空串处理
+     * @param str       字符串，如果为<code>null</code>，直接返回null
      * @param minLength 最小长度
      * @param padStr    补充的字符
      * @return 补充后的字符串

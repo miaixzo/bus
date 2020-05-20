@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
@@ -41,7 +42,7 @@ import java.util.Map;
  * Sound card data obtained via /proc/asound directory
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -108,7 +109,7 @@ final class LinuxSoundCard extends AbstractSoundCard {
      * @return The name of the codec
      */
     private static String getCardCodec(File cardDir) {
-        String cardCodec = "";
+        String cardCodec = Normal.EMPTY;
         File[] cardFiles = cardDir.listFiles();
         if (cardFiles != null) {
             for (File file : cardFiles) {

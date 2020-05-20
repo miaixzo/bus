@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.UID;
@@ -34,7 +35,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class AttributeCoercion implements Serializable, Comparable<AttributeCoercion> {
@@ -117,7 +118,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(64), "").toString();
+        return promptTo(new StringBuilder(64), Normal.EMPTY).toString();
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {

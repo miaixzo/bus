@@ -44,7 +44,7 @@ import java.util.stream.StreamSupport;
  * 启动监听器，初始化相关配置
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class GenieBuilder implements
@@ -128,8 +128,10 @@ public class GenieBuilder implements
      */
     private void setRequireProperties(ConfigurableEnvironment environment) {
         if (StringUtils.hasText(environment.getProperty(BusXBuilder.BUS_NAME))) {
-            HIGH_PRIORITY_CONFIG.getSource().put(BusXBuilder.BUS_NAME,
-                    environment.getProperty(BusXBuilder.BUS_NAME));
+            HIGH_PRIORITY_CONFIG.getSource().put(
+                    BusXBuilder.BUS_NAME,
+                    environment.getProperty(BusXBuilder.BUS_NAME)
+            );
         }
     }
 
@@ -140,7 +142,8 @@ public class GenieBuilder implements
      */
     private void setEnvironment(ConfigurableEnvironment environment) {
         environment.getPropertySources().addFirst(
-                new MapPropertySource(BusXBuilder.BUS_BOOTSTRAP, new HashMap<>()));
+                new MapPropertySource(BusXBuilder.BUS_BOOTSTRAP, new HashMap<>())
+        );
     }
 
 }

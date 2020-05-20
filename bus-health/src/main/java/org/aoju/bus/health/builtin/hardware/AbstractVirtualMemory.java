@@ -29,10 +29,10 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 
 /**
- * Virtual Memory info.
+ * 虚拟内存信息
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe

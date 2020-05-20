@@ -31,10 +31,10 @@ import java.util.function.Supplier;
 import static org.aoju.bus.health.Memoize.memoize;
 
 /**
- * Computer System data.
+ * 计算机系统数据
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -50,9 +50,9 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
     }
 
     /**
-     * Instantiates the platform-specific {@link Firmware} object
+     * 实例化特定于平台的{@link Firmware}对象
      *
-     * @return platform-specific {@link Firmware} object
+     * @return 特定于平台的{@link Firmware}对象
      */
     protected abstract Firmware createFirmware();
 
@@ -62,9 +62,9 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
     }
 
     /**
-     * Instantiates the platform-specific {@link Baseboard} object
+     * 实例化特定于平台的{@link Baseboard}对象
      *
-     * @return platform-specific {@link Baseboard} object
+     * @return 特定于平台的{@link Baseboard}对象
      */
     protected abstract Baseboard createBaseboard();
 

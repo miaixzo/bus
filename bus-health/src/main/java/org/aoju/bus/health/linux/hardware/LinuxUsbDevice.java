@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
@@ -40,7 +41,7 @@ import java.util.*;
  * Linux Usb Device
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -199,7 +200,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         }
         Collections.sort(usbDevices);
         return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
+                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
                 usbDevices.toArray(new UsbDevice[usbDevices.size()]));
     }
 

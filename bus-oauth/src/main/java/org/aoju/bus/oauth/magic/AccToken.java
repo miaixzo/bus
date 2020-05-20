@@ -24,20 +24,20 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.magic;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * 授权所需的token
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8++
  */
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccToken {
 
     private int expireIn;

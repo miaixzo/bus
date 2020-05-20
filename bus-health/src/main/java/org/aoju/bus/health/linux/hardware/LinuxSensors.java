@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
@@ -42,7 +43,7 @@ import java.util.Map;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -91,7 +92,7 @@ final class LinuxSensors extends AbstractSensors {
         String tempStr = Executor.getFirstAnswer("vcgencmd measure_temp");
         // temp=50.8'C
         if (tempStr.startsWith("temp=") && tempStr.endsWith("'C")) {
-            return Builder.parseDoubleOrDefault(tempStr.replaceAll("\\^[0-9]+(\\.[0-9]{1,4})?$", ""), 0d);
+            return Builder.parseDoubleOrDefault(tempStr.replaceAll("\\^[0-9]+(\\.[0-9]{1,4})?$", Normal.EMPTY), 0d);
         }
         return 0d;
     }
@@ -106,7 +107,7 @@ final class LinuxSensors extends AbstractSensors {
         String voltageStr = Executor.getFirstAnswer("vcgencmd measure_volts core");
         // volt=1.20V
         if (voltageStr.startsWith("volt=") && voltageStr.endsWith("V")) {
-            return Builder.parseDoubleOrDefault(voltageStr.replaceAll("\\^[0-9]+(\\.[0-9]{1,4})?$", ""), 0d);
+            return Builder.parseDoubleOrDefault(voltageStr.replaceAll("\\^[0-9]+(\\.[0-9]{1,4})?$", Normal.EMPTY), 0d);
         }
         return 0d;
     }

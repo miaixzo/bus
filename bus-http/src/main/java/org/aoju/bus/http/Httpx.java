@@ -53,10 +53,10 @@ import java.util.stream.Collectors;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
-public class Httpx extends Httpd {
+public class Httpx {
 
     /**
      * 懒汉安全加同步
@@ -67,7 +67,7 @@ public class Httpx extends Httpd {
     private static Httpd httpd;
 
     static {
-        httpd = new Httpx(new X509TrustManager());
+        new Httpx(new X509TrustManager());
     }
 
     /**

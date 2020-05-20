@@ -27,10 +27,10 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 
 /**
- * Baseboard data
+ * 主板数据
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable

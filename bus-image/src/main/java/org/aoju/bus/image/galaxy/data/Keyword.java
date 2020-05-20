@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class Keyword {
@@ -38,10 +38,7 @@ public class Keyword {
             return "GroupLength";
         }
         if ((tag & 0x10000) != 0) {
-            return ((tag & 0xFF00) == 0) && ((tag & 0xF0) != 0) ?
-
-                    "PrivateCreatorID" :
-                    "";
+            return ((tag & 0xFF00) == 0) && ((tag & 0xF0) != 0) ? "PrivateCreatorID" : Normal.EMPTY;
         }
         if ((tag & 0xFF00) == 2109696) {
             return "SourceImageIDs";

@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class DateUtils {
@@ -661,7 +661,7 @@ public class DateUtils {
             SimpleDateFormat dstSdf = new SimpleDateFormat(destPattern);
             return dstSdf.format(srcSdf.parse(srcDate));
         } catch (ParseException e) {
-            return "";
+            return Normal.EMPTY;
         }
     }
 
@@ -2325,13 +2325,13 @@ public class DateUtils {
             int beginY = calBegin.get(Calendar.YEAR);
             int endY = calEnd.get(Calendar.YEAR);
 
-            int weekall = getAllWeeks(beginY + "");
+            int weekall = getAllWeeks(beginY + Normal.EMPTY);
             do {
                 lDate.add(beginY + "年第" + beginww + "周");
                 if (beginww == weekall) {
                     beginww = 0;
                     beginY++;
-                    weekall = getAllWeeks(beginY + "");
+                    weekall = getAllWeeks(beginY + Normal.EMPTY);
                 }
                 if (beginY == endY && beginww == endww) {
                     break;
@@ -2793,7 +2793,7 @@ public class DateUtils {
      * @return true/false
      */
     public static boolean isShortDate(String date) {
-        if (date == null || "".equals(date))
+        if (date == null || Normal.EMPTY.equals(date))
             return false;
         String regex = "^([\\d]{4}(((0[13578]|1[02])((0[1-9])|([12][0-9])|(3[01])))|(((0[469])|11)((0[1-9])|([12][1-9])|30))|(02((0[1-9])|(1[0-9])|(2[1-8])))))|((((([02468][048])|([13579][26]))00)|([0-9]{2}(([02468][048])|([13579][26]))))(((0[13578]|1[02])((0[1-9])|([12][0-9])|(3[01])))|(((0[469])|11)((0[1-9])|([12][1-9])|30))|(02((0[1-9])|(1[0-9])|(2[1-9])))))$";
         Pattern pattern = Pattern.compile(regex);
@@ -3410,7 +3410,7 @@ public class DateUtils {
      */
     public static String getTraditionalYearName(int y) {
         y = y - 1804;
-        return ("" + Fields.CN_GAN[y % 10] + Fields.CN_ZHI[y % 12] + "年");
+        return (Normal.EMPTY + Fields.CN_GAN[y % 10] + Fields.CN_ZHI[y % 12] + "年");
     }
 
     /**
@@ -3493,7 +3493,7 @@ public class DateUtils {
             throw new InstrumentException("Wrong lunar ldate: " + lmonth + Symbol.SPACE + ldate);
         }
         if (showLeap) {
-            return (this.isLeapMonth ? "闰" : "") + getMonthName(this.lmonth) + "月"
+            return (this.isLeapMonth ? "闰" : Normal.EMPTY) + getMonthName(this.lmonth) + "月"
                     + getDayName(this.ldate);
         } else {
             return getMonthName(this.lmonth) + "月" + getDayName(this.ldate);
@@ -3638,7 +3638,7 @@ public class DateUtils {
                 || this.ldate > 30) {
             return "Wrong lunar date: " + lyear + Symbol.SPACE + lmonth + Symbol.SPACE + ldate;
         }
-        return getYearName(this.lyear) + "年" + (this.isLeapMonth ? "闰" : "") + getMonthName(this.lmonth) + "月"
+        return getYearName(this.lyear) + "年" + (this.isLeapMonth ? "闰" : Normal.EMPTY) + getMonthName(this.lmonth) + "月"
                 + getDayName(this.ldate);
     }
 

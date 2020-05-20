@@ -198,7 +198,7 @@ mvn clean install -Dxjar.password=forest -Dxjar.targetDir=/directory/to/save/tar
 | algorithm | -Dxjar.algorithm | 加密算法名称 | String | AES | JDK内置加密算法，如：AES / DES |
 | keySize | -Dxjar.keySize | 密钥长度 | int | 128 | 根据加密算法而定，56，128，256 |
 | ivSize | -Dxjar.ivSize | 密钥向量长度 | int | 128 | 根据加密算法而定，128 |
-| mode | -Dxjar.mode | 加密模式 | int | 0 | 0：普通模式 1：危险模式（免密码启动）|
+| mode | -Dxjar.mode | 加密模式 | int | 0 | 0：普通模式 1：危险模式(免密码启动)|
 | sourceDir | -Dxjar.sourceDir | 源jar所在目录 | File | ${project.build.directory} | 文件目录 |
 | sourceJar | -Dxjar.sourceJar | 源jar名称 | String | ${project.build.finalName}.jar | 文件名称 |
 | targetDir | -Dxjar.targetDir | 目标jar存放目录 | File | ${project.build.directory} | 文件目录 |

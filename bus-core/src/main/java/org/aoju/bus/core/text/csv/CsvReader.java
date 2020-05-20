@@ -37,13 +37,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public final class CsvReader {
@@ -203,6 +204,41 @@ public final class CsvReader {
         } finally {
             IoUtils.close(csvParser);
         }
+    }
+
+    /**
+     * 从Reader中读取CSV数据，结果为Map，读取后关闭Reader
+     * 此方法默认识别首行为标题行
+     *
+     * @param reader Reader
+     * @return {@link CsvData}，包含数据列表和行信息
+     * @throws InstrumentException IO异常
+     */
+    public List<Map<String, String>> readMapList(Reader reader) throws InstrumentException {
+        // 此方法必须包含标题
+        this.config.setContainsHeader(true);
+
+        final List<Map<String, String>> result = new ArrayList<>();
+        read(reader, (row) -> result.add(row.getFieldMap()));
+        return result;
+    }
+
+    /**
+     * 从Reader中读取CSV数据并转换为Bean列表，读取后关闭Reader
+     * 此方法默认识别首行为标题行
+     *
+     * @param <T>    Bean类型
+     * @param reader Reader
+     * @param clazz  Bean类型
+     * @return Bean列表
+     */
+    public <T> List<T> read(Reader reader, Class<T> clazz) {
+        // 此方法必须包含标题
+        this.config.setContainsHeader(true);
+
+        final List<T> result = new ArrayList<>();
+        read(reader, (row) -> result.add(row.toBean(clazz)));
+        return result;
     }
 
     /**

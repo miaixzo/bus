@@ -28,11 +28,11 @@ import javax.xml.bind.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {"adhocQuery", "objectRefList"})
+@XmlType(propOrder = {"adhocQuery", "objectRefList"})
 @XmlRootElement(name = "RemoveObjectsRequest", namespace = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0")
 public class RemoveObjectsRequest extends RegistryRequestType {
 

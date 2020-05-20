@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 处理性能计数器查询
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe

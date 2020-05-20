@@ -24,11 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.socket.netty.annotation;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Target(ElementType.TYPE)
@@ -41,6 +43,6 @@ public @interface WebSocket {
      *
      * @return the string
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
 }

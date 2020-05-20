@@ -26,6 +26,7 @@ package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Holder;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 
@@ -38,7 +39,7 @@ import java.util.regex.Pattern;
  * 常用正则表达式集合
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class PatternUtils {
@@ -325,7 +326,7 @@ public class PatternUtils {
             return content;
         }
 
-        return pattern.matcher(content).replaceFirst("");
+        return pattern.matcher(content).replaceFirst(Normal.EMPTY);
     }
 
     /**
@@ -340,7 +341,7 @@ public class PatternUtils {
             return content;
         }
 
-        return pattern.matcher(content).replaceAll("");
+        return pattern.matcher(content).replaceAll(Normal.EMPTY);
     }
 
     /**

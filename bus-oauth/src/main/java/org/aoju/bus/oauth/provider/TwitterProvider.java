@@ -50,7 +50,7 @@ import java.util.TreeMap;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class TwitterProvider extends DefaultProvider {
@@ -66,10 +66,10 @@ public class TwitterProvider extends DefaultProvider {
     }
 
     /**
-     * Generate nonce with given length
+     * 生成给定长度的随机数
      *
-     * @param len length
-     * @return nonce string
+     * @param len 长度
+     * @return 随机数字符串
      */
     private static String generateNonce(int len) {
         String s = "0123456789QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm";
@@ -104,6 +104,20 @@ public class TwitterProvider extends DefaultProvider {
         byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1);
 
         return new String(Base64.encode(signature, false));
+    }
+
+    /**
+     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     *
+     * @param state state 验证授权流程的参数，可以防止csrf
+     * @return 返回授权地址
+     */
+    @Override
+    public String authorize(String state) {
+        AccToken token = this.getRequestToken();
+        return Builder.fromUrl(source.authorize())
+                .queryParam("oauth_token", token.getOauthToken())
+                .build();
     }
 
     @Override
@@ -193,18 +207,13 @@ public class TwitterProvider extends DefaultProvider {
     }
 
     private String buildHeader(Map<String, String> oauthParams) {
-        final StringBuilder sb = new StringBuilder(PREAMBLE);
+        final StringBuilder sb = new StringBuilder(PREAMBLE + " ");
 
         for (Map.Entry<String, String> param : oauthParams.entrySet()) {
-            if (sb.length() > PREAMBLE.length()) {
-                sb.append(", ");
-            }
-            sb.append(param.getKey()).append("=\"")
-                    .append(urlEncode(param.getValue()))
-                    .append(Symbol.C_DOUBLE_QUOTES);
+            sb.append(param.getKey()).append("=\"").append(urlEncode(param.getValue())).append(Symbol.C_DOUBLE_QUOTES).append(", ");
         }
 
-        return sb.toString();
+        return sb.deleteCharAt(sb.length() - 2).toString();
     }
 
     /**

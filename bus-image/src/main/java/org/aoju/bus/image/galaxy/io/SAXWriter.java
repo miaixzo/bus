@@ -25,6 +25,7 @@
 package org.aoju.bus.image.galaxy.io;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.*;
 import org.xml.sax.ContentHandler;
@@ -39,7 +40,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class SAXWriter implements ImageInputHandler {
@@ -51,7 +52,7 @@ public class SAXWriter implements ImageInputHandler {
     private final AttributesImpl atts = new AttributesImpl();
     private final char[] buffer = new char[BUFFER_LENGTH];
     private boolean includeKeyword = true;
-    private String namespace = "";
+    private String namespace = Normal.EMPTY;
 
     public SAXWriter(ContentHandler ch) {
         this.ch = ch;
@@ -79,7 +80,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     public final void setIncludeNamespaceDeclaration(boolean includeNameSpaceDeclaration) {
-        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : "";
+        this.namespace = includeNameSpaceDeclaration ? NAMESPACE : Normal.EMPTY;
     }
 
     public void write(Attributes attrs) throws SAXException {

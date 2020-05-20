@@ -33,10 +33,10 @@ import static org.aoju.bus.health.Memoize.defaultExpiration;
 import static org.aoju.bus.health.Memoize.memoize;
 
 /**
- * Sensors from WMI or Open Hardware Monitor
+ * 来自WMI或Open Hardware Monitor的传感器
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe

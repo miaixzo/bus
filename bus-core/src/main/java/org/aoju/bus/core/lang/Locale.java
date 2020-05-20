@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang;
  * 翻译语言枚举
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public enum Locale {
@@ -36,7 +36,7 @@ public enum Locale {
     /**
      * 自动匹配
      */
-    AUTO_DETECT("", "自动匹配"),
+    AUTO_DETECT(Normal.EMPTY, "自动匹配"),
     EN("en", " 英文"),
     EN_US("en_US", " 英文 (美国)"),
     AR("ar", " 阿拉伯文"),

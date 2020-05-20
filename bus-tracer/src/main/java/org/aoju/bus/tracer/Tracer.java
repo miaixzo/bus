@@ -24,13 +24,15 @@
  ********************************************************************************/
 package org.aoju.bus.tracer;
 
+import org.aoju.bus.core.lang.Normal;
+
 import java.lang.annotation.*;
 
 /**
  * 操作日志记录注解
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})
@@ -41,22 +43,22 @@ public @interface Tracer {
     /**
      * @return 标题
      */
-    String value() default "";
+    String value() default Normal.EMPTY;
 
     /**
      * @return 模块
      */
-    String module() default "";
+    String module() default Normal.EMPTY;
 
     /**
      * @return 功能
      */
-    String business() default "";
+    String business() default Normal.EMPTY;
 
     /**
      * @return 操作人类别
      */
-    String operator() default "";
+    String operator() default Normal.EMPTY;
 
     /**
      * @return 是否保存请求的参数

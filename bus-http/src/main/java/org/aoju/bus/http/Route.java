@@ -33,7 +33,7 @@ import java.net.Proxy;
  * 每个路由都是这些选项的特定选择
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public final class Route {

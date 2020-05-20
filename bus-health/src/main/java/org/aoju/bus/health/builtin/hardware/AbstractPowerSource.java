@@ -37,10 +37,10 @@ import org.aoju.bus.health.windows.hardware.WindowsPowerSource;
 import java.time.LocalDate;
 
 /**
- * A Power Source
+ * 电源支持
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe

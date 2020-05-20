@@ -55,7 +55,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class StoreSCU implements AutoCloseable {
@@ -457,7 +457,7 @@ public class StoreSCU implements AutoCloseable {
         public void init(Properties props) {
             for (String cuid : props.stringPropertyNames()) {
                 commonExtNegs.put(cuid, new CommonExtended(cuid, UID.StorageServiceClass,
-                        (String[]) StringUtils.split(props.getProperty(cuid), ',').toArray()));
+                        (String[]) StringUtils.split(props.getProperty(cuid), Symbol.C_COMMA).toArray()));
             }
         }
 

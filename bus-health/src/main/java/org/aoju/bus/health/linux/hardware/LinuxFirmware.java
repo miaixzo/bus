@@ -44,7 +44,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Firmware data obtained by sysfs.
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -162,7 +162,7 @@ final class LinuxFirmware extends AbstractFirmware {
         final String biosVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_version").trim();
         if (!biosVersion.isEmpty()) {
             String biosRevision = this.bios.get().biosRevision;
-            return biosVersion + (StringUtils.isBlank(biosRevision) ? "" : " (revision " + biosRevision + ")");
+            return biosVersion + (StringUtils.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + ")");
         }
         return null;
     }
@@ -245,7 +245,7 @@ final class LinuxFirmware extends AbstractFirmware {
             String[] copyright = Builder.whitespaces.split(vcgencmd.get(1));
             vcManufacturer = copyright[copyright.length - 1];
             // Third line is version
-            vcVersion = vcgencmd.get(2).replace("version ", "");
+            vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);
             return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
         }
         return new VcGenCmdStrings(null, null, null, null, null);

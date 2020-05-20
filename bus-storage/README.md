@@ -104,7 +104,7 @@
 #### 工厂模式
 ##### 配置文件,xx.yml
 
-# 服务提供者可选值（qiniu，aliyun）
+# 服务提供者可选值(qiniu，aliyun)
 ```
 extend:
   storage:

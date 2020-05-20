@@ -40,7 +40,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * A CPU.
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -56,21 +56,21 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     private final Supplier<long[][]> processorCpuLoadTicks = memoize(this::queryProcessorCpuLoadTicks,
             defaultExpiration());
 
-    // Logical and Physical Processor Counts
+    // 逻辑和物理处理器计数
     private final int physicalPackageCount;
     private final int physicalProcessorCount;
     private final int logicalProcessorCount;
 
-    // Processor info, initialized in constructor
+    // 处理器信息，在构造函数中初始化
     private final LogicalProcessor[] logicalProcessors;
 
     /**
-     * Create a Processor
+     * 创建一个处理器
      */
     public AbstractCentralProcessor() {
-        // Populate logical processor array
+        // 填充逻辑处理器阵列
         this.logicalProcessors = initProcessorCounts();
-        // Init processor counts
+        // 初始化处理器数
         Set<String> physProcPkgs = new HashSet<>();
         Set<Integer> physPkgs = new HashSet<>();
         for (LogicalProcessor logProc : this.logicalProcessors) {
@@ -84,14 +84,13 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Creates a Processor ID by encoding the stepping, model, family, and feature
-     * flags.
+     * 通过编码步进，型号，系列和功能*标志来创建处理器ID
      *
-     * @param stepping The CPU stepping
-     * @param model    The CPU model
-     * @param family   The CPU family
-     * @param flags    A space-delimited list of CPU feature flags
-     * @return The Processor ID string
+     * @param stepping CPU步进
+     * @param model    CPU型号
+     * @param family   CPU系列
+     * @param flags    以空格分隔的CPU功能标志列表
+     * @return 处理器ID字符串
      */
     protected static String createProcessorID(String stepping, String model, String family, String[] flags) {
         long processorIdBytes = 0L;
@@ -207,16 +206,16 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Updates logical and physical processor counts and arrays
+     * 更新逻辑和物理处理器的数量和阵列
      *
-     * @return An array of initialized Logical Processors
+     * @return 初始化的逻辑处理器数组
      */
     protected abstract LogicalProcessor[] initProcessorCounts();
 
     /**
-     * Updates logical and physical processor counts and arrays
+     * 更新逻辑和物理处理器的数量和阵列
      *
-     * @return An array of initialized Logical Processors
+     * @return 初始化的逻辑处理器数组
      */
     protected abstract ProcessorIdentifier queryProcessorId();
 
@@ -231,9 +230,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Get processor max frequency.
+     * 获得处理器最大频率
      *
-     * @return The max frequency.
+     * @return 最大频率.
      */
     protected abstract long queryMaxFreq();
 
@@ -243,9 +242,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Get processor current frequency.
+     * 获取处理器当前频率
      *
-     * @return The current frequency.
+     * @return 当前的频率
      */
     protected abstract long[] queryCurrentFreq();
 
@@ -255,9 +254,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Get number of context switches
+     * 获取上下文切换的次数
      *
-     * @return The context switches
+     * @return 上下文切换次数
      */
     protected abstract long queryContextSwitches();
 
@@ -267,9 +266,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Get number of interrupts
+     * 获取中断的数量
      *
-     * @return The interrupts
+     * @return 中断数量
      */
     protected abstract long queryInterrupts();
 
@@ -284,9 +283,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Get the system CPU load ticks
+     * 获取系统CPU负载嘀嗒声
      *
-     * @return The system CPU load ticks
+     * @return 系统CPU负载滴答作响
      */
     protected abstract long[] querySystemCpuLoadTicks();
 
@@ -296,9 +295,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
-     * Get the processor CPU load ticks
+     * 获取处理器CPU负载嘀嗒声
      *
-     * @return The processor CPU load ticks
+     * @return 处理器CPU负载滴答作响
      */
     protected abstract long[][] queryProcessorCpuLoadTicks();
 
@@ -309,12 +308,11 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
                     "Tick array " + oldTicks.length + " should have " + TickType.values().length + " elements");
         }
         long[] ticks = getSystemCpuLoadTicks();
-        // Calculate total
         long total = 0;
         for (int i = 0; i < ticks.length; i++) {
             total += ticks[i] - oldTicks[i];
         }
-        // Calculate idle from difference in idle and IOwait
+        // 根据idle和IOwait的差异计算idle
         long idle = ticks[TickType.IDLE.getIndex()] + ticks[TickType.IOWAIT.getIndex()]
                 - oldTicks[TickType.IDLE.getIndex()] - oldTicks[TickType.IOWAIT.getIndex()];
         Logger.trace("Total ticks: {}  Idle ticks: {}", total, idle);
@@ -336,11 +334,10 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
             for (int i = 0; i < ticks[cpu].length; i++) {
                 total += ticks[cpu][i] - oldTicks[cpu][i];
             }
-            // Calculate idle from difference in idle and IOwait
+            // 根据idle和IOwait的差异计算idle
             long idle = ticks[cpu][TickType.IDLE.getIndex()] + ticks[cpu][TickType.IOWAIT.getIndex()]
                     - oldTicks[cpu][TickType.IDLE.getIndex()] - oldTicks[cpu][TickType.IOWAIT.getIndex()];
             Logger.trace("CPU: {}  Total ticks: {}  Idle ticks: {}", cpu, total, idle);
-            // update
             load[cpu] = total > 0 && idle >= 0 ? (double) (total - idle) / total : 0d;
         }
         return load;

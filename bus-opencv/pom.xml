@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-opencv</artifactId>
-    <version>5.9.1</version>
+    <version>5.9.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

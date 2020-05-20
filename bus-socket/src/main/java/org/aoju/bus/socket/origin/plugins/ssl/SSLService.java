@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.socket.origin.plugins.ssl;
 
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.logger.Logger;
 
 import javax.net.ssl.*;
@@ -39,7 +40,7 @@ import java.security.cert.X509Certificate;
  * TLS/SSL服务
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class SSLService {
@@ -90,7 +91,7 @@ public class SSLService {
                     }
                 }};
             }
-            sslContext = SSLContext.getInstance("TLS");
+            sslContext = SSLContext.getInstance(Http.TLS);
             sslContext.init(keyManagers, trustManagers, new SecureRandom());
 
         } catch (Exception e) {
@@ -251,22 +252,16 @@ public class SSLService {
                         throw new IllegalStateException("Invalid SSL status: " + handshakeStatus);
                 }
             }
-            Logger.debug("握手完毕");
             handshakeModel.getHandshakeCallback().callback();
-
         } catch (Exception e) {
             try {
                 handshakeModel.getSslEngine().closeInbound();
-            } catch (SSLException e1) {
-                e1.printStackTrace();
-            }
-            handshakeModel.getSslEngine().closeOutbound();
-            try {
+                handshakeModel.getSslEngine().closeOutbound();
                 handshakeModel.getSocketChannel().close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            Logger.error("", e);
+            Logger.error(e);
         }
     }
 

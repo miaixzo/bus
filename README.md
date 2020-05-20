@@ -1,6 +1,6 @@
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v5.9.1-blue.svg?label=Maven%20Central" />
+		<img src="https://img.shields.io/badge/maven--central-v5.9.2-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -64,7 +64,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ × ]|bus-limiter|请求限流,根据不同业务设置不同限流策略|
 |[ √ ]|bus-logger|日志信息及功能，动态检测日志实现的方式，使日志使用个更加便利灵活简单|
 |[ √ ]|bus-mapper|数据操作,在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生|
-|[ √ ]|bus-oauth|第三方登录,已集成十多家第三方平台（国内外常用的基本都已包含）|
+|[ √ ]|bus-oauth|第三方登录,已集成十多家第三方平台(国内外常用的基本都已包含)|
 |[ √ ]|bus-pager|数据分页,mybatis|
 |[ √ ]|bus-office|office等相关转换及处理,POI封装实现，使Java操作Excel等文件变得更加简单|
 |[ √ ]|bus-opencv|图像识别及分析，提供丰富的徒刑图像处理算法,跨平台支持等|
@@ -95,7 +95,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>5.9.1</version>
+    <version>5.9.2</version>
 </dependency>
 ```
 或者单独使用某个组建
@@ -109,7 +109,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:5.9.1'
+implementation 'org.aoju:bus-all:5.9.2'
 ```
 
 ### Downlad

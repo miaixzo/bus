@@ -40,10 +40,10 @@ import java.util.function.Supplier;
 import static org.aoju.bus.health.Memoize.memoize;
 
 /**
- * Network interfaces implementation.
+ * 网络接口信息
  *
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -59,10 +59,9 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private Short[] prefixLengths;
 
     /**
-     * Construct a {@link NetworkIF} object backed by the specified
-     * {@link NetworkInterface}.
+     * 构造一个由指定的{@link NetworkInterface}支持的{@link NetworkIF}对象
      *
-     * @param netint The core java {@link NetworkInterface} backing this object.
+     * @param netint 支持此对象的核心java {@link NetworkInterface}
      */
     protected AbstractNetworkIF(NetworkInterface netint) {
         this.networkInterface = netint;
@@ -80,7 +79,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             } else {
                 this.mac = Normal.UNKNOWN;
             }
-            // Set IP arrays
+            // 设置IP阵列
             List<String> ipv4list = new ArrayList<>();
             List<Short> subnetMaskList = new ArrayList<>();
             List<String> ipv6list = new ArrayList<>();
@@ -109,17 +108,16 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     }
 
     /**
-     * Returns network interfaces that are not Loopback, and have a hardware
-     * address.
+     * 返回不是环回且具有硬件地址的网络接口
      *
-     * @return A list of network interfaces
+     * @return 网络接口的列表
      */
     protected static List<NetworkInterface> getNetworkInterfaces() {
         List<NetworkInterface> result = new ArrayList<>();
         Enumeration<NetworkInterface> interfaces = null;
 
         try {
-            interfaces = NetworkInterface.getNetworkInterfaces(); // can return null
+            interfaces = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException ex) {
             Logger.error("Socket exception when retrieving interfaces: {}", ex.getMessage());
         }
@@ -196,19 +194,16 @@ public abstract class AbstractNetworkIF implements NetworkIF {
 
     @Override
     public int getIfType() {
-        // default
         return 0;
     }
 
     @Override
     public int getNdisPhysicalMediumType() {
-        // default
         return 0;
     }
 
     @Override
     public boolean isConnectorPresent() {
-        // default
         return false;
     }
 

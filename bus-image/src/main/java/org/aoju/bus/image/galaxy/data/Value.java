@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
 
@@ -31,7 +32,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public interface Value {
@@ -59,7 +60,7 @@ public interface Value {
 
         @Override
         public String toString() {
-            return "";
+            return Normal.EMPTY;
         }
 
         @Override

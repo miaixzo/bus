@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.9.1
+ * @version 5.9.2
  * @since JDK 1.8+
  */
 public class Attributes implements Serializable {
@@ -158,11 +158,11 @@ public class Attributes implements Serializable {
         String start = range.getStartDate() != null
                 ? (String) vr.toValue(new Date[]{range.getStartDate()}, tz,
                 precision)
-                : "";
+                : Normal.EMPTY;
         String end = range.getEndDate() != null
                 ? (String) vr.toValue(new Date[]{range.getEndDate()}, tz,
                 precision)
-                : "";
+                : Normal.EMPTY;
         return toDateRangeString(start, end);
     }
 
@@ -1712,7 +1712,7 @@ public class Attributes implements Serializable {
                         if (tmRange != null) {
                             String[] daRange = splitRange((String) da);
                             if (daRange[0] == null) {
-                                daRange[0] = "";
+                                daRange[0] = Normal.EMPTY;
                                 tmRange[0] = updateTimeZoneTM(from, to, tmRange[0]);
                             } else {
                                 String dt = updateTimeZoneDT(
@@ -1721,7 +1721,7 @@ public class Attributes implements Serializable {
                                 tmRange[0] = dt.substring(8);
                             }
                             if (daRange[1] == null) {
-                                daRange[1] = "";
+                                daRange[1] = Normal.EMPTY;
                                 tmRange[1] = updateTimeZoneTM(from, to, tmRange[1]);
                             } else {
                                 String dt = updateTimeZoneDT(
@@ -2488,7 +2488,7 @@ public class Attributes implements Serializable {
     }
 
     public StringBuilder toStringBuilder(int limit, int maxWidth, StringBuilder sb) {
-        if (appendAttributes(limit, maxWidth, sb, "") > limit)
+        if (appendAttributes(limit, maxWidth, sb, Normal.EMPTY) > limit)
             sb.append("...\n");
         return sb;
     }
