@@ -1360,17 +1360,11 @@ public class UriUtils {
     }
 
     /**
-     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据
+     * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
      * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
      *
-     * <p>
-     * Data URI的格式规范：
-     * <pre>
-     *     data:[<mime type>][;charset=<charset>][;<encoding>],<encoded data>
-     * </pre>
-     *
-     * @param mimeType 可选项（null表示无），数据类型（image/png、text/plain等）
-     * @param encoding 数据编码方式（US-ASCII，BASE64等）
+     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param encoding 数据编码方式(US-ASCII，BASE64等)
      * @param data     编码后的数据
      * @return Data URI字符串
      */
@@ -1379,18 +1373,12 @@ public class UriUtils {
     }
 
     /**
-     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据
+     * Data URI Scheme封装。data URI scheme 允许我们使用内联(inline-code)的方式在网页中包含数据
      * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页
      *
-     * <p>
-     * Data URI的格式规范：
-     * <pre>
-     *     data:[<mime type>][;charset=<charset>][;<encoding>],<encoded data>
-     * </pre>
-     *
-     * @param mimeType 可选项（null表示无），数据类型（image/png、text/plain等）
-     * @param charset  可选项（null表示无），源文本的字符集编码方式
-     * @param encoding 数据编码方式（US-ASCII，BASE64等）
+     * @param mimeType 可选项(null表示无)，数据类型(image/png、text/plain等)
+     * @param charset  可选项(null表示无)，源文本的字符集编码方式
+     * @param encoding 数据编码方式(US-ASCII，BASE64等)
      * @param data     编码后的数据
      * @return Data URI字符串
      */

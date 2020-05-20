@@ -55,7 +55,7 @@ public class QrCodeUtils {
      *
      * @param content    内容
      * @param qrConfig   二维码配置，包括长、宽、边距、颜色等
-     * @param imageType  图片类型（图片扩展名）
+     * @param imageType  图片类型(图片扩展名)
      * @param logoBase64 logo 图片的 base64 编码
      * @return 图片 Base64 编码字符串
      */
@@ -74,7 +74,7 @@ public class QrCodeUtils {
      *
      * @param content   内容
      * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
-     * @param imageType 图片类型（图片扩展名）
+     * @param imageType 图片类型(图片扩展名)
      * @param logo      logo 图片的byte[]
      * @return 图片 Base64 编码字符串
      */
@@ -94,7 +94,7 @@ public class QrCodeUtils {
      *
      * @param content   内容
      * @param qrConfig  二维码配置，包括长、宽、边距、颜色等
-     * @param imageType 图片类型（图片扩展名）
+     * @param imageType 图片类型(图片扩展名)
      * @return 图片 Base64 编码字符串
      */
     public static String generate(String content, QrConfig qrConfig, String imageType) {
