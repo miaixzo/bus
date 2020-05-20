@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * 将调用转发给另一个调用的 {@link Timeout}.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Delegate extends Timeout {

@@ -31,7 +31,7 @@ import org.aoju.bus.core.utils.NumberUtils;
  * 可变 <code>byte</code> 类型
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @see Byte
  * @since JDK 1.8+
  */

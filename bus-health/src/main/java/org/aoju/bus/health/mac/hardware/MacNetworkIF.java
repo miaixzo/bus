@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * MacNetworks class.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @ThreadSafe

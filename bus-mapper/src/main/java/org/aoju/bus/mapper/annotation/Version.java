@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
  * 版本信息
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD})

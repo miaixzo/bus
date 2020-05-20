@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * 如果您提供自己的执行程序，它应该能够并发地运行{@linkplain #getMaxRequests 配置的最大调用数}
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class Dispatcher {

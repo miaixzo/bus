@@ -36,7 +36,7 @@ import java.util.Date;
  * 在不提供默认值的情况下, 如果值不存在或获取错误,返回null
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface OptNullObject<K> extends OptNullType<K> {

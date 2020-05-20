@@ -31,7 +31,7 @@ import org.aoju.bus.image.nimble.Photometric;
 
 /**
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public final class ImageDescriptor {

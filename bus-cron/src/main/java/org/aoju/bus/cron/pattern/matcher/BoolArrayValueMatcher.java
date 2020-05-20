@@ -33,7 +33,7 @@ import java.util.List;
  * 将表达式中的数字值列表转换为Boolean数组,匹配时匹配相应数组位
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class BoolArrayValueMatcher implements ValueMatcher {

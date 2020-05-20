@@ -35,7 +35,7 @@ import java.nio.charset.Charset;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class CharUtils {

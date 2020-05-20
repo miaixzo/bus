@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * Apache Log4J log.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class Log4jLog extends AbstractAware {

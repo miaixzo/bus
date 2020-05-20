@@ -29,7 +29,7 @@ import java.util.Calendar;
 
 /**
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public class RetentionPeriod implements Comparable<RetentionPeriod> {

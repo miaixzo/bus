@@ -33,7 +33,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query Open Hardware Monitor WMI data for Sensors
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 @ThreadSafe

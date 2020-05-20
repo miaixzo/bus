@@ -28,7 +28,7 @@ package org.aoju.bus.cron.factory;
  * 定时作业接口,通过实现execute方法执行具体的任务
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.1
  * @since JDK 1.8+
  */
 public interface Task {
