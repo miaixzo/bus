@@ -84,11 +84,11 @@ public class BytesResource implements Resource {
 
     @Override
     public BufferedReader getReader(Charset charset) {
-        return new BufferedReader(new StringReader(readStr(charset)));
+        return new BufferedReader(new StringReader(readString(charset)));
     }
 
     @Override
-    public String readStr(Charset charset) throws InstrumentException {
+    public String readString(Charset charset) throws InstrumentException {
         return StringUtils.toString(this.bytes, charset);
     }
 

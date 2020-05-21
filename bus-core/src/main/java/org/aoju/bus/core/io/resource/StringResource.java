@@ -100,7 +100,7 @@ public class StringResource implements Resource {
     }
 
     @Override
-    public String readStr(Charset charset) throws InstrumentException {
+    public String readString(Charset charset) throws InstrumentException {
         return this.data;
     }
 

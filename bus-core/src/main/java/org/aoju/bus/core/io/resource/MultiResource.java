@@ -92,8 +92,8 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     @Override
-    public String readStr(Charset charset) throws InstrumentException {
-        return resources.get(cursor).readStr(charset);
+    public String readString(Charset charset) throws InstrumentException {
+        return resources.get(cursor).readString(charset);
     }
 
     @Override

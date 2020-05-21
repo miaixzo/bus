@@ -52,8 +52,8 @@ public class ResourceUtils {
      * @param resource 资源路径,使用相对ClassPath的路径
      * @return 资源内容
      */
-    public static String readUtf8Str(String resource) {
-        return getResourceObj(resource).readStr(org.aoju.bus.core.lang.Charset.UTF_8);
+    public static String readString(String resource) {
+        return getResourceObj(resource).readString(org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -63,8 +63,8 @@ public class ResourceUtils {
      * @param charset  编码
      * @return 资源内容
      */
-    public static String readStr(String resource, Charset charset) {
-        return new ClassPathResource(resource).readStr(charset);
+    public static String readString(String resource, Charset charset) {
+        return new ClassPathResource(resource).readString(charset);
     }
 
     /**

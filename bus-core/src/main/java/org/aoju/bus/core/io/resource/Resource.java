@@ -81,7 +81,7 @@ public interface Resource {
      * @return 读取资源内容
      * @throws InstrumentException 包装{@link IOException}
      */
-    String readStr(Charset charset) throws InstrumentException;
+    String readString(Charset charset) throws InstrumentException;
 
     /**
      * 读取资源内容,读取完毕后会关闭流
