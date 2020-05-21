@@ -2129,7 +2129,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static String readString(File file, String charsetName) throws InstrumentException {
-        return readString(file, org.aoju.bus.core.lang.Charset.charset(charsetName));
+        return readString(file, CharsetUtils.charset(charsetName));
     }
 
     /**
@@ -2257,7 +2257,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static <T extends Collection<String>> T readLines(File file, String charset, T collection) throws InstrumentException {
-        return FileReader.create(file, org.aoju.bus.core.lang.Charset.charset(charset)).readLines(collection);
+        return FileReader.create(file, CharsetUtils.charset(charset)).readLines(collection);
     }
 
     /**
