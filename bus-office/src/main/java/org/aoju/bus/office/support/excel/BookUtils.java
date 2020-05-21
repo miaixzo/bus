@@ -28,6 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
 import org.aoju.bus.core.utils.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -66,6 +67,30 @@ public class BookUtils {
      */
     public static Workbook createBook(File excelFile) {
         return createBook(excelFile, null);
+    }
+
+    /**
+     * 创建工作簿，用于Excel写出
+     *
+     * <pre>
+     * 1. excelFile为null时直接返回一个空的工作簿，默认xlsx格式
+     * 2. 文件已存在则通过流的方式读取到这个工作簿
+     * 3. 文件不存在则检查传入文件路径是否以xlsx为扩展名，是则创建xlsx工作簿，否则创建xls工作簿
+     * </pre>
+     *
+     * @param excelFile Excel文件
+     * @return {@link Workbook}
+     */
+    public static Workbook createBookForWriter(File excelFile) {
+        if (null == excelFile) {
+            return createBook(true);
+        }
+
+        if (excelFile.exists()) {
+            return createBook(FileUtils.getInputStream(excelFile), true);
+        }
+
+        return createBook(StringUtils.endWithIgnoreCase(excelFile.getName(), ".xlsx"));
     }
 
     /**
@@ -125,7 +150,7 @@ public class BookUtils {
         if (isXlsx) {
             workbook = new XSSFWorkbook();
         } else {
-            workbook = new org.apache.poi.hssf.usermodel.HSSFWorkbook();
+            workbook = new HSSFWorkbook();
         }
         return workbook;
     }

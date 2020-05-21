@@ -140,4 +140,5 @@ public class CsvUtils {
     public static CsvWriter getWriter(Writer writer, CsvWriteConfig config) {
         return new CsvWriter(writer, config);
     }
+
 }
