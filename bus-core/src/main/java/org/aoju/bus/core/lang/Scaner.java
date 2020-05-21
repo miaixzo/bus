@@ -181,7 +181,7 @@ public class Scaner {
      * @return 类集合
      */
     public Set<Class<?>> scan() {
-        for (URL url : ResourceUtils.getResourceIter(this.packagePath)) {
+        for (URL url : FileUtils.getResourceIter(this.packagePath)) {
             switch (url.getProtocol()) {
                 case "file":
                     scanFile(new File(UriUtils.decode(url.getFile(), this.charset.name())), null);

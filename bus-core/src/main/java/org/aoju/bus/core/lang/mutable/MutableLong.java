@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang.mutable;
 
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 
 /**
  * 可变 <code>long</code> 类型
@@ -214,7 +214,7 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      */
     @Override
     public int compareTo(final MutableLong other) {
-        return NumberUtils.compare(this.value, other.value);
+        return MathUtils.compare(this.value, other.value);
     }
 
     @Override

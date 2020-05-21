@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.image;
 
-import org.aoju.bus.core.utils.ResourceUtils;
+import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.image.Args;
 import org.aoju.bus.image.Centre;
@@ -58,10 +58,10 @@ public class ImageConfiguration {
         StoreSCPCentre store = StoreSCPCentre.Builder();
         Args args = new Args(true);
         if (StringUtils.isNotEmpty(properties.relClass)) {
-            args.setExtendSopClassesURL(ResourceUtils.getResource(properties.relClass, ImageConfiguration.class));
+            args.setExtendSopClassesURL(FileUtils.getResource(properties.relClass, ImageConfiguration.class));
         }
         if (StringUtils.isNotEmpty(properties.sopClass)) {
-            args.setTransferCapabilityFile(ResourceUtils.getResource(properties.sopClass, ImageConfiguration.class));
+            args.setTransferCapabilityFile(FileUtils.getResource(properties.sopClass, ImageConfiguration.class));
         }
         store.setArgs(args);
         store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.port)));

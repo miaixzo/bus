@@ -153,7 +153,6 @@ public class Ftp extends AbstractFtp {
      * @param port     端口
      * @param user     用户名
      * @param password 密码
-     *
      * @return this
      */
     public Ftp init(String host, int port, String user, String password) {
@@ -168,7 +167,6 @@ public class Ftp extends AbstractFtp {
      * @param user     用户名
      * @param password 密码
      * @param mode     模式
-     *
      * @return this
      */
     public Ftp init(String host, int port, String user, String password, FtpMode mode) {
@@ -180,7 +178,6 @@ public class Ftp extends AbstractFtp {
      *
      * @param config FTP配置
      * @param mode   模式
-     *
      * @return this
      */
     public Ftp init(FtpConfig config, FtpMode mode) {
@@ -222,7 +219,6 @@ public class Ftp extends AbstractFtp {
      * 设置FTP连接模式，可选主动和被动模式
      *
      * @param mode 模式枚举
-     *
      * @return this
      */
     public Ftp setMode(FtpMode mode) {
@@ -242,7 +238,6 @@ public class Ftp extends AbstractFtp {
      * 设置执行完操作是否返回当前目录
      *
      * @param backToPwd 执行完操作是否返回当前目录
-     *
      * @return this
      */
     public Ftp setBackToPwd(boolean backToPwd) {
@@ -274,7 +269,6 @@ public class Ftp extends AbstractFtp {
      * 改变目录
      *
      * @param directory 目录
-     *
      * @return 是否成功
      */
     @Override
@@ -319,7 +313,6 @@ public class Ftp extends AbstractFtp {
      * 遍历某个目录下所有文件和目录,不会递归遍历
      *
      * @param path 目录
-     *
      * @return 文件或目录列表
      */
     public FTPFile[] lsFiles(String path) {
@@ -354,7 +347,6 @@ public class Ftp extends AbstractFtp {
      * 判断ftp服务器文件是否存在
      *
      * @param path 文件路径
-     *
      * @return 是否存在
      */
     public boolean existFile(String path) {
@@ -427,7 +419,6 @@ public class Ftp extends AbstractFtp {
      *
      * @param destPath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
      * @param file     文件
-     *
      * @return 是否上传成功
      */
     @Override
@@ -448,7 +439,6 @@ public class Ftp extends AbstractFtp {
      * @param file     文件
      * @param path     服务端路径,可以为{@code null} 或者相对路径或绝对路径
      * @param fileName 自定义在服务端保存的文件名
-     *
      * @return 是否上传成功
      */
     public boolean upload(String path, String fileName, File file) {
@@ -471,7 +461,6 @@ public class Ftp extends AbstractFtp {
      * @param path       服务端路径,可以为{@code null} 或者相对路径或绝对路径
      * @param fileName   文件名
      * @param fileStream 文件流
-     *
      * @return 是否上传成功
      */
     public boolean upload(String path, String fileName, InputStream fileStream) {

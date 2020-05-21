@@ -118,7 +118,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     public Setting(String path, Charset charset, boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
-        this.init(ResourceUtils.getResourceObj(path), charset, isUseVariable);
+        this.init(FileUtils.getResourceObj(path), charset, isUseVariable);
     }
 
     /**

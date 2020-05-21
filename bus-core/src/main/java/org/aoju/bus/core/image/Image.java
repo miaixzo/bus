@@ -267,9 +267,9 @@ public class Image implements Serializable {
         } else {
             final String scaleStr = Float.toString(scale);
             // 缩放后的图片宽
-            int width = NumberUtils.mul(Integer.toString(srcImage.getWidth(null)), scaleStr).intValue();
+            int width = MathUtils.mul(Integer.toString(srcImage.getWidth(null)), scaleStr).intValue();
             // 缩放后的图片高
-            int height = NumberUtils.mul(Integer.toString(srcImage.getHeight(null)), scaleStr).intValue();
+            int height = MathUtils.mul(Integer.toString(srcImage.getHeight(null)), scaleStr).intValue();
             scale(width, height);
         }
         return this;
@@ -300,8 +300,8 @@ public class Image implements Serializable {
             scaleType = java.awt.Image.SCALE_DEFAULT;
         }
 
-        double sx = NumberUtils.div(width, srcWidth);
-        double sy = NumberUtils.div(height, srcHeight);
+        double sx = MathUtils.div(width, srcWidth);
+        double sy = MathUtils.div(height, srcHeight);
 
         if (FileType.TYPE_PNG.equals(this.targetImageType)) {
             final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(sx, sy), null);
@@ -326,8 +326,8 @@ public class Image implements Serializable {
         java.awt.Image srcImage = getValidSrcImg();
         int srcHeight = srcImage.getHeight(null);
         int srcWidth = srcImage.getWidth(null);
-        double heightRatio = NumberUtils.div(height, srcHeight);
-        double widthRatio = NumberUtils.div(width, srcWidth);
+        double heightRatio = MathUtils.div(height, srcHeight);
+        double widthRatio = MathUtils.div(width, srcWidth);
 
         if (widthRatio == heightRatio) {
             // 长宽都按照相同比例缩放时,返回缩放后的图片
@@ -431,7 +431,7 @@ public class Image implements Serializable {
         final int height = srcImage.getHeight(null);
 
         // 通过弧度占比计算弧度
-        arc = NumberUtils.mul(arc, Math.min(width, height));
+        arc = MathUtils.mul(arc, Math.min(width, height));
 
         final BufferedImage targetImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g2 = targetImage.createGraphics();

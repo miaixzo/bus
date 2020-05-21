@@ -2152,14 +2152,14 @@ public class CollUtils {
         String str2 = value2.toString();
         if (value1 instanceof Number && value2 instanceof Number) {
             int maxlen = Math.max(str1.length(), str2.length());
-            str1 = NumberUtils.addZero((Number) value1, maxlen);
-            str2 = NumberUtils.addZero((Number) value2, maxlen);
+            str1 = MathUtils.addZero((Number) value1, maxlen);
+            str2 = MathUtils.addZero((Number) value2, maxlen);
         } else if (value1 instanceof Date && value2 instanceof Date) {
             long time1 = ((Date) value1).getTime();
             long time2 = ((Date) value2).getTime();
             int maxlen = Long.toString(Math.max(time1, time2)).length();
-            str1 = NumberUtils.addZero(time1, maxlen);
-            str2 = NumberUtils.addZero(time2, maxlen);
+            str1 = MathUtils.addZero(time1, maxlen);
+            str2 = MathUtils.addZero(time2, maxlen);
         }
         if (asc) {
             return str1.compareTo(str2);

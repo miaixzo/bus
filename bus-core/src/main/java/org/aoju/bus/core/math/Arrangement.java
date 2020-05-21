@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.math;
 
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,9 +70,9 @@ public class Arrangement {
      */
     public static long count(int n, int m) {
         if (n == m) {
-            return NumberUtils.factorial(n);
+            return MathUtils.factorial(n);
         }
-        return (n > m) ? NumberUtils.factorial(n, n - m) : 0;
+        return (n > m) ? MathUtils.factorial(n, n - m) : 0;
     }
 
     /**

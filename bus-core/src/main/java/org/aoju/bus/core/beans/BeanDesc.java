@@ -165,7 +165,7 @@ public class BeanDesc implements Serializable {
      */
     private BeanDesc init() {
         for (Field field : ReflectUtils.getFields(this.beanClass)) {
-            if (false == ModifierUtils.isStatic(field)) {
+            if (false == BeanUtils.isStatic(field)) {
                 //只针对非static属性
                 this.propMap.put(ReflectUtils.getFieldName(field), createProp(field));
             }
@@ -419,7 +419,7 @@ public class BeanDesc implements Serializable {
         public Object getValue(Object bean) {
             if (null != this.getter) {
                 return ReflectUtils.invoke(bean, this.getter);
-            } else if (ModifierUtils.isPublic(this.field)) {
+            } else if (BeanUtils.isPublic(this.field)) {
                 return ReflectUtils.getFieldValue(bean, this.field);
             }
             return null;
@@ -436,7 +436,7 @@ public class BeanDesc implements Serializable {
         public PropDesc setValue(Object bean, Object value) {
             if (null != this.setter) {
                 ReflectUtils.invoke(bean, this.setter, value);
-            } else if (ModifierUtils.isPublic(this.field)) {
+            } else if (BeanUtils.isPublic(this.field)) {
                 ReflectUtils.setFieldValue(bean, this.field, value);
             }
             return this;

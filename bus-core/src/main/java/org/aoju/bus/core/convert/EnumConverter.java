@@ -99,7 +99,7 @@ public class EnumConverter extends AbstractConverter<Object> {
         Map<Class<?>, Method> valueOfMethods = VALUE_OF_METHOD_CACHE.get(enumClass);
         if (null == valueOfMethods) {
             valueOfMethods = Arrays.stream(enumClass.getMethods())
-                    .filter(ModifierUtils::isStatic)
+                    .filter(BeanUtils::isStatic)
                     .filter(m -> m.getReturnType() == enumClass)
                     .filter(m -> m.getParameterCount() == 1)
                     .filter(m -> false == "valueOf".equals(m.getName()))

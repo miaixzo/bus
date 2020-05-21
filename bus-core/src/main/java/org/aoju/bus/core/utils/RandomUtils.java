@@ -174,7 +174,7 @@ public class RandomUtils {
      * @return 随机数
      */
     public static double randomDouble(double min, double max, int scale, RoundingMode roundingMode) {
-        return NumberUtils.round(randomDouble(min, max), scale, roundingMode).doubleValue();
+        return MathUtils.round(randomDouble(min, max), scale, roundingMode).doubleValue();
     }
 
     /**
@@ -194,7 +194,7 @@ public class RandomUtils {
      * @return 随机数
      */
     public static double randomDouble(int scale, RoundingMode roundingMode) {
-        return NumberUtils.round(randomDouble(), scale, roundingMode).doubleValue();
+        return MathUtils.round(randomDouble(), scale, roundingMode).doubleValue();
     }
 
     /**
@@ -216,7 +216,7 @@ public class RandomUtils {
      * @return 随机数
      */
     public static double randomDouble(double limit, int scale, RoundingMode roundingMode) {
-        return NumberUtils.round(randomDouble(limit), scale, roundingMode).doubleValue();
+        return MathUtils.round(randomDouble(limit), scale, roundingMode).doubleValue();
     }
 
     /**
@@ -225,7 +225,7 @@ public class RandomUtils {
      * @return 随机数
      */
     public static BigDecimal randomBigDecimal() {
-        return NumberUtils.toBigDecimal(getRandom().nextDouble());
+        return MathUtils.toBigDecimal(getRandom().nextDouble());
     }
 
     /**
@@ -235,7 +235,7 @@ public class RandomUtils {
      * @return 随机数
      */
     public static BigDecimal randomBigDecimal(BigDecimal limit) {
-        return NumberUtils.toBigDecimal(getRandom().nextDouble(limit.doubleValue()));
+        return MathUtils.toBigDecimal(getRandom().nextDouble(limit.doubleValue()));
     }
 
     /**
@@ -246,7 +246,7 @@ public class RandomUtils {
      * @return 随机数
      */
     public static BigDecimal randomBigDecimal(BigDecimal min, BigDecimal max) {
-        return NumberUtils.toBigDecimal(getRandom().nextDouble(min.doubleValue(), max.doubleValue()));
+        return MathUtils.toBigDecimal(getRandom().nextDouble(min.doubleValue(), max.doubleValue()));
     }
 
     /**

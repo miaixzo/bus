@@ -61,6 +61,15 @@ public class ClassUtils {
      */
     private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
     private static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new HashMap<>();
+    private static final int ACCESS_TEST =
+            Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
+    /**
+     * Array of primitive number types ordered by "promotability"
+     */
+    private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = {
+            Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE,
+            Long.TYPE, Float.TYPE, Double.TYPE
+    };
     private static SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
 
     static {
@@ -1054,10 +1063,10 @@ public class ClassUtils {
      * @param resource 资源(相对Classpath的路径)
      * @return 资源URL
      * @throws InstrumentException 异常
-     * @see ResourceUtils#getResource(String)
+     * @see FileUtils#getResource(String)
      */
     public static URL getResourceURL(String resource) throws InstrumentException {
-        return ResourceUtils.getResource(resource);
+        return FileUtils.getResource(resource);
     }
 
     /**
@@ -2209,7 +2218,7 @@ public class ClassUtils {
      * @return 访问方法
      */
     public static Method getAccessibleMethod(Method method) {
-        if (!MemberUtils.isAccessible(method)) {
+        if (!isAccessible(method)) {
             return null;
         }
         final Class<?> cls = method.getDeclaringClass();
@@ -2304,7 +2313,7 @@ public class ClassUtils {
                                                      final Class<?>... parameterTypes) {
         try {
             final Method method = cls.getMethod(methodName, parameterTypes);
-            MemberUtils.setAccessibleWorkaround(method);
+            setAccessibleWorkaround(method);
             return method;
         } catch (final NoSuchMethodException e) {
         }
@@ -2312,9 +2321,9 @@ public class ClassUtils {
         final Method[] methods = cls.getMethods();
         for (final Method method : methods) {
             if (method.getName().equals(methodName) &&
-                    MemberUtils.isMatchingMethod(method, parameterTypes)) {
+                    isMatchingMethod(method, parameterTypes)) {
                 final Method accessibleMethod = getAccessibleMethod(method);
-                if (accessibleMethod != null && (bestMatch == null || MemberUtils.compareMethodFit(
+                if (accessibleMethod != null && (bestMatch == null || compareMethodFit(
                         accessibleMethod,
                         bestMatch,
                         parameterTypes) < 0)) {
@@ -2323,7 +2332,7 @@ public class ClassUtils {
             }
         }
         if (bestMatch != null) {
-            MemberUtils.setAccessibleWorkaround(bestMatch);
+            setAccessibleWorkaround(bestMatch);
         }
 
         if (bestMatch != null && bestMatch.isVarArgs() && bestMatch.getParameterTypes().length > 0 && parameterTypes.length > 0) {
@@ -2542,7 +2551,7 @@ public class ClassUtils {
 
         Assert.isTrue(method != null, "The method must not be null");
         Assert.isTrue(annotationCls != null, "The annotation class must not be null");
-        if (!ignoreAccess && !MemberUtils.isAccessible(method)) {
+        if (!ignoreAccess && !isAccessible(method)) {
             return null;
         }
 
@@ -2614,7 +2623,7 @@ public class ClassUtils {
      */
     public static Field getField(final Class<?> cls, final String fieldName) {
         final Field field = getField(cls, fieldName, false);
-        MemberUtils.setAccessibleWorkaround(field);
+        setAccessibleWorkaround(field);
         return field;
     }
 
@@ -2699,7 +2708,7 @@ public class ClassUtils {
         try {
             // 使用getDeclaredField()只考虑指定的类
             final Field field = clazz.getDeclaredField(fieldName);
-            if (!MemberUtils.isAccessible(field)) {
+            if (!isAccessible(field)) {
                 if (forceAccess) {
                     field.setAccessible(true);
                 } else {
@@ -2882,7 +2891,7 @@ public class ClassUtils {
         if (forceAccess && !field.isAccessible()) {
             field.setAccessible(true);
         } else {
-            MemberUtils.setAccessibleWorkaround(field);
+            setAccessibleWorkaround(field);
         }
         return field.get(target);
     }
@@ -3082,7 +3091,7 @@ public class ClassUtils {
         if (forceAccess && !field.isAccessible()) {
             field.setAccessible(true);
         } else {
-            MemberUtils.setAccessibleWorkaround(field);
+            setAccessibleWorkaround(field);
         }
         field.set(target, value);
     }
@@ -3246,8 +3255,275 @@ public class ClassUtils {
         return false;
     }
 
+    /**
+     * XXX Default access superclass workaround.
+     * <p>
+     * When a {@code public} class has a default access superclass with {@code public} members,
+     * these members are accessible. Calling them from compiled code works fine.
+     * Unfortunately, on some JVMs, using reflection to invoke these members
+     * seems to (wrongly) prevent access even when the modifier is {@code public}.
+     * Calling {@code setAccessible(true)} solves the problem but will only work from
+     * sufficiently privileged code. Better workarounds would be gratefully
+     * accepted.
+     *
+     * @param o the AccessibleObject to set as accessible
+     * @return a boolean indicating whether the accessibility of the object was set to true.
+     */
+    static boolean setAccessibleWorkaround(final AccessibleObject o) {
+        if (o == null || o.isAccessible()) {
+            return false;
+        }
+        final Member m = (Member) o;
+        if (!o.isAccessible() && Modifier.isPublic(m.getModifiers()) && isPackageAccess(m.getDeclaringClass().getModifiers())) {
+            try {
+                o.setAccessible(true);
+                return true;
+            } catch (final SecurityException e) { // NOPMD
+                // ignore in favor of subsequent IllegalAccessException
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether a given set of modifiers implies package access.
+     *
+     * @param modifiers to test
+     * @return {@code true} unless {@code package}/{@code protected}/{@code private} modifier detected
+     */
+    static boolean isPackageAccess(final int modifiers) {
+        return (modifiers & ACCESS_TEST) == 0;
+    }
+
+    /**
+     * Returns whether a {@link Member} is accessible.
+     *
+     * @param m Member to check
+     * @return {@code true} if <code>m</code> is accessible
+     */
+    static boolean isAccessible(final Member m) {
+        return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
+    }
+
+    /**
+     * Compares the relative fitness of two Constructors in terms of how well they
+     * match a set of runtime parameter types, such that a list ordered
+     * by the results of the comparison would return the best match first
+     * (least).
+     *
+     * @param left   the "left" Constructor
+     * @param right  the "right" Constructor
+     * @param actual the runtime parameter types to match against
+     *               {@code left}/{@code right}
+     * @return int consistent with {@code compare} semantics
+     */
+    static int compareConstructorFit(final Constructor<?> left, final Constructor<?> right, final Class<?>[] actual) {
+        return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
+    }
+
+    /**
+     * Compares the relative fitness of two Methods in terms of how well they
+     * match a set of runtime parameter types, such that a list ordered
+     * by the results of the comparison would return the best match first
+     * (least).
+     *
+     * @param left   the "left" Method
+     * @param right  the "right" Method
+     * @param actual the runtime parameter types to match against
+     *               {@code left}/{@code right}
+     * @return int consistent with {@code compare} semantics
+     */
+    static int compareMethodFit(final Method left, final Method right, final Class<?>[] actual) {
+        return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
+    }
+
+    /**
+     * Compares the relative fitness of two Executables in terms of how well they
+     * match a set of runtime parameter types, such that a list ordered
+     * by the results of the comparison would return the best match first
+     * (least).
+     *
+     * @param left   the "left" Executable
+     * @param right  the "right" Executable
+     * @param actual the runtime parameter types to match against
+     *               {@code left}/{@code right}
+     * @return int consistent with {@code compare} semantics
+     */
+    private static int compareParameterTypes(final Executable left, final Executable right, final Class<?>[] actual) {
+        final float leftCost = getTotalTransformationCost(actual, left);
+        final float rightCost = getTotalTransformationCost(actual, right);
+        return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
+    }
+
+    /**
+     * Returns the sum of the object transformation cost for each class in the
+     * source argument list.
+     *
+     * @param srcArgs    The source arguments
+     * @param executable The executable to calculate transformation costs for
+     * @return The total transformation cost
+     */
+    private static float getTotalTransformationCost(final Class<?>[] srcArgs, final Executable executable) {
+        final Class<?>[] destArgs = executable.getParameterTypes();
+        final boolean isVarArgs = executable.isVarArgs();
+
+        // "source" and "destination" are the actual and declared args respectively.
+        float totalCost = 0.0f;
+        final long normalArgsLen = isVarArgs ? destArgs.length - 1 : destArgs.length;
+        if (srcArgs.length < normalArgsLen) {
+            return Float.MAX_VALUE;
+        }
+        for (int i = 0; i < normalArgsLen; i++) {
+            totalCost += getObjectTransformationCost(srcArgs[i], destArgs[i]);
+        }
+        if (isVarArgs) {
+            // When isVarArgs is true, srcArgs and dstArgs may differ in length.
+            // There are two special cases to consider:
+            final boolean noVarArgsPassed = srcArgs.length < destArgs.length;
+            final boolean explicitArrayForVarags = srcArgs.length == destArgs.length && srcArgs[srcArgs.length - 1].isArray();
+
+            final float varArgsCost = 0.001f;
+            final Class<?> destClass = destArgs[destArgs.length - 1].getComponentType();
+            if (noVarArgsPassed) {
+                // When no varargs passed, the best match is the most generic matching type, not the most specific.
+                totalCost += getObjectTransformationCost(destClass, Object.class) + varArgsCost;
+            } else if (explicitArrayForVarags) {
+                final Class<?> sourceClass = srcArgs[srcArgs.length - 1].getComponentType();
+                totalCost += getObjectTransformationCost(sourceClass, destClass) + varArgsCost;
+            } else {
+                // This is typical varargs case.
+                for (int i = destArgs.length - 1; i < srcArgs.length; i++) {
+                    final Class<?> srcClass = srcArgs[i];
+                    totalCost += getObjectTransformationCost(srcClass, destClass) + varArgsCost;
+                }
+            }
+        }
+        return totalCost;
+    }
+
+    /**
+     * Gets the number of steps required needed to turn the source class into
+     * the destination class. This represents the number of steps in the object
+     * hierarchy graph.
+     *
+     * @param srcClass  The source class
+     * @param destClass The destination class
+     * @return The cost of transforming an object
+     */
+    private static float getObjectTransformationCost(Class<?> srcClass, final Class<?> destClass) {
+        if (destClass.isPrimitive()) {
+            return getPrimitivePromotionCost(srcClass, destClass);
+        }
+        float cost = 0.0f;
+        while (srcClass != null && !destClass.equals(srcClass)) {
+            if (destClass.isInterface() && ClassUtils.isAssignable(srcClass, destClass)) {
+                cost += 0.25f;
+                break;
+            }
+            cost++;
+            srcClass = srcClass.getSuperclass();
+        }
+        if (srcClass == null) {
+            cost += 1.5f;
+        }
+        return cost;
+    }
+
+    /**
+     * 获取将原始数字提升为另一种类型所需的步骤数
+     *
+     * @param srcClass  （原始）源类
+     * @param destClass （原始）目标类
+     * @return 原始的成本
+     */
+    private static float getPrimitivePromotionCost(final Class<?> srcClass, final Class<?> destClass) {
+        float cost = 0.0f;
+        Class<?> cls = srcClass;
+        if (!cls.isPrimitive()) {
+            cost += 0.1f;
+            cls = ClassUtils.wrapperToPrimitive(cls);
+        }
+        for (int i = 0; cls != destClass && i < ORDERED_PRIMITIVE_TYPES.length; i++) {
+            if (cls == ORDERED_PRIMITIVE_TYPES[i]) {
+                cost += 0.1f;
+                if (i < ORDERED_PRIMITIVE_TYPES.length - 1) {
+                    cls = ORDERED_PRIMITIVE_TYPES[i + 1];
+                }
+            }
+        }
+        return cost;
+    }
+
+    static boolean isMatchingMethod(final Method method, final Class<?>[] parameterTypes) {
+        return isMatchingExecutable(Executable.of(method), parameterTypes);
+    }
+
+    static boolean isMatchingConstructor(final Constructor<?> method, final Class<?>[] parameterTypes) {
+        return isMatchingExecutable(Executable.of(method), parameterTypes);
+    }
+
+    private static boolean isMatchingExecutable(final Executable method, final Class<?>[] parameterTypes) {
+        final Class<?>[] methodParameterTypes = method.getParameterTypes();
+        if (ClassUtils.isAssignable(parameterTypes, methodParameterTypes, true)) {
+            return true;
+        }
+
+        if (method.isVarArgs()) {
+            int i;
+            for (i = 0; i < methodParameterTypes.length - 1 && i < parameterTypes.length; i++) {
+                if (!ClassUtils.isAssignable(parameterTypes[i], methodParameterTypes[i], true)) {
+                    return false;
+                }
+            }
+            final Class<?> varArgParameterType = methodParameterTypes[methodParameterTypes.length - 1].getComponentType();
+            for (; i < parameterTypes.length; i++) {
+                if (!ClassUtils.isAssignable(parameterTypes[i], varArgParameterType, true)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     public enum Interfaces {
         INCLUDE, EXCLUDE
+    }
+
+    /**
+     * 提供Java 1.8中java.lang.reflect.Executable API
+     * 的子集的类，为构造函数和方法的函数签名提供通用表示
+     */
+    private static final class Executable {
+        private final Class<?>[] parameterTypes;
+        private final boolean isVarArgs;
+
+        private Executable(final Method method) {
+            parameterTypes = method.getParameterTypes();
+            isVarArgs = method.isVarArgs();
+        }
+
+        private Executable(final Constructor<?> constructor) {
+            parameterTypes = constructor.getParameterTypes();
+            isVarArgs = constructor.isVarArgs();
+        }
+
+        private static Executable of(final Method method) {
+            return new Executable(method);
+        }
+
+        private static Executable of(final Constructor<?> constructor) {
+            return new Executable(constructor);
+        }
+
+        public Class<?>[] getParameterTypes() {
+            return parameterTypes;
+        }
+
+        public boolean isVarArgs() {
+            return isVarArgs;
+        }
     }
 
 }

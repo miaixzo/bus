@@ -26,7 +26,7 @@ package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.utils.BooleanUtils;
 import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.math.BigDecimal;
@@ -109,7 +109,7 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return (int) DateUtils.toInstant((TemporalAccessor) value).toEpochMilli();
             }
             final String valueStr = convertToStr(value);
-            return StringUtils.isBlank(valueStr) ? null : NumberUtils.parseInt(valueStr);
+            return StringUtils.isBlank(valueStr) ? null : MathUtils.parseInt(valueStr);
 
         } else if (AtomicInteger.class == targetType) {
             final Number number = convertInternal(value, Integer.class);
@@ -132,7 +132,7 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return DateUtils.toInstant((TemporalAccessor) value).toEpochMilli();
             }
             final String valueStr = convertToStr(value);
-            return StringUtils.isBlank(valueStr) ? null : NumberUtils.parseLong(valueStr);
+            return StringUtils.isBlank(valueStr) ? null : MathUtils.parseLong(valueStr);
 
         } else if (AtomicLong.class == targetType) {
             final Number number = convertInternal(value, Long.class);
@@ -173,7 +173,7 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return BooleanUtils.toInteger((Boolean) value);
             }
             final String valueStr = convertToStr(value);
-            return StringUtils.isBlank(valueStr) ? null : NumberUtils.parseNumber(valueStr);
+            return StringUtils.isBlank(valueStr) ? null : MathUtils.parseNumber(valueStr);
         }
 
         throw new UnsupportedOperationException(StringUtils.format("Unsupport Number type: {}", this.targetType.getName()));

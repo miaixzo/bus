@@ -25,40 +25,43 @@
 package org.aoju.bus.core.utils;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.math.Arrangement;
+import org.aoju.bus.core.math.Combination;
 
-import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
- * 数字工具类
+ * 数学计算
+ * 对于精确值计算应该使用 {@link BigDecimal}
+ * JDK7中<strong>BigDecimal(double val)</strong>构造方法
+ * 的结果有一定的不可预知性,例如：
+ *
+ * <pre>
+ * new BigDecimal(0.1)
+ * </pre>
+ * <p>
+ * <p>
+ * 表示的不是<strong>0.1</strong>而是
+ * <strong>0.1000000000000000055511151231257827021181583404541015625</strong>
+ *
+ * <p>
+ * 这是因为0.1无法准确的表示为double因此应该使用<strong>new BigDecimal(String)</strong>
+ * </p>
  *
  * @author Kimi Liu
  * @version 5.9.2
  * @since JDK 1.8+
  */
-abstract class MemberUtils {
-
-    private static final int ACCESS_TEST =
-            Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
-
-    /**
-     * Array of primitive number types ordered by "promotability"
-     */
-    private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = {
-            Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE,
-            Long.TYPE, Float.TYPE, Double.TYPE
-    };
+public class MathUtils {
 
     /**
      * 默认除法运算精度
@@ -2158,281 +2161,501 @@ abstract class MemberUtils {
     }
 
     /**
-     * XXX Default access superclass workaround.
+     * 给数字对象按照指定长度在左侧补0.
      * <p>
-     * When a {@code public} class has a default access superclass with {@code public} members,
-     * these members are accessible. Calling them from compiled code works fine.
-     * Unfortunately, on some JVMs, using reflection to invoke these members
-     * seems to (wrongly) prevent access even when the modifier is {@code public}.
-     * Calling {@code setAccessible(true)} solves the problem but will only work from
-     * sufficiently privileged code. Better workarounds would be gratefully
-     * accepted.
+     * 使用案例: addZero2Str(11,4) 返回 "0011", addZero2Str(-18,6)返回 "-000018"
      *
-     * @param o the AccessibleObject to set as accessible
-     * @return a boolean indicating whether the accessibility of the object was set to true.
+     * @param numObj 数字对象
+     * @param length 指定的长度
+     * @return the string
      */
-    static boolean setAccessibleWorkaround(final AccessibleObject o) {
-        if (o == null || o.isAccessible()) {
-            return false;
-        }
-        final Member m = (Member) o;
-        if (!o.isAccessible() && Modifier.isPublic(m.getModifiers()) && isPackageAccess(m.getDeclaringClass().getModifiers())) {
-            try {
-                o.setAccessible(true);
-                return true;
-            } catch (final SecurityException e) { // NOPMD
-                // ignore in favor of subsequent IllegalAccessException
-            }
-        }
-        return false;
+    public static String addZero(Number numObj, int length) {
+        NumberFormat nf = NumberFormat.getInstance();
+        // 设置是否使用分组
+        nf.setGroupingUsed(false);
+        // 设置最大整数位数
+        nf.setMaximumIntegerDigits(length);
+        // 设置最小整数位数
+        nf.setMinimumIntegerDigits(length);
+        return nf.format(numObj);
     }
 
     /**
-     * Returns whether a given set of modifiers implies package access.
+     * 将字符串转换为int类型
      *
-     * @param modifiers to test
-     * @return {@code true} unless {@code package}/{@code protected}/{@code private} modifier detected
+     * <pre>
+     *   MathUtils.toInt(null) = 0
+     *   MathUtils.toInt("")   = 0
+     *   MathUtils.toInt("1")  = 1
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的整型数，如果转换失败则默认值
      */
-    static boolean isPackageAccess(final int modifiers) {
-        return (modifiers & ACCESS_TEST) == 0;
+    public static int toInt(final String str) {
+        return toInt(str, 0);
     }
 
     /**
-     * Returns whether a {@link Member} is accessible.
+     * 将字符串转换为int类型，如果转换失败则返回默认值
      *
-     * @param m Member to check
-     * @return {@code true} if <code>m</code> is accessible
+     * <pre>
+     *   MathUtils.toInt(null, 1) = 1
+     *   MathUtils.toInt("", 1)   = 1
+     *   MathUtils.toInt("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的int，如果转换失败则默认值
      */
-    static boolean isAccessible(final Member m) {
-        return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
+    public static int toInt(final String str, final int defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
     }
 
     /**
-     * Compares the relative fitness of two Constructors in terms of how well they
-     * match a set of runtime parameter types, such that a list ordered
-     * by the results of the comparison would return the best match first
-     * (least).
+     * 将字符串转换为long类型
      *
-     * @param left   the "left" Constructor
-     * @param right  the "right" Constructor
-     * @param actual the runtime parameter types to match against
-     *               {@code left}/{@code right}
-     * @return int consistent with {@code compare} semantics
+     * <pre>
+     *   MathUtils.toLong(null) = 0L
+     *   MathUtils.toLong("")   = 0L
+     *   MathUtils.toLong("1")  = 1L
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的long，如果转换失败则默认值
      */
-    static int compareConstructorFit(final Constructor<?> left, final Constructor<?> right, final Class<?>[] actual) {
-        return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
+    public static long toLong(final String str) {
+        return toLong(str, 0L);
     }
 
     /**
-     * Compares the relative fitness of two Methods in terms of how well they
-     * match a set of runtime parameter types, such that a list ordered
-     * by the results of the comparison would return the best match first
-     * (least).
+     * 将字符串转换为long类型，如果转换失败则返回默认值
      *
-     * @param left   the "left" Method
-     * @param right  the "right" Method
-     * @param actual the runtime parameter types to match against
-     *               {@code left}/{@code right}
-     * @return int consistent with {@code compare} semantics
+     * <pre>
+     *   MathUtils.toInt(null, 1) = 1
+     *   MathUtils.toInt("", 1)   = 1
+     *   MathUtils.toInt("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的long，如果转换失败则默认值
      */
-    static int compareMethodFit(final Method left, final Method right, final Class<?>[] actual) {
-        return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
+    public static long toLong(final String str, final long defaultValue) {
+        if (str == null) {
+            return defaultValue;
+        }
+        try {
+            return Long.parseLong(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
     }
 
     /**
-     * Compares the relative fitness of two Executables in terms of how well they
-     * match a set of runtime parameter types, such that a list ordered
-     * by the results of the comparison would return the best match first
-     * (least).
+     * 将字符串转换为float类型
      *
-     * @param left   the "left" Executable
-     * @param right  the "right" Executable
-     * @param actual the runtime parameter types to match against
-     *               {@code left}/{@code right}
-     * @return int consistent with {@code compare} semantics
+     * <pre>
+     *   MathUtils.toFloat(null)   = 0.0f
+     *   MathUtils.toFloat("")     = 0.0f
+     *   MathUtils.toFloat("1.5")  = 1.5f
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的float，如果转换失败则默认值
      */
-    private static int compareParameterTypes(final Executable left, final Executable right, final Class<?>[] actual) {
-        final float leftCost = getTotalTransformationCost(actual, left);
-        final float rightCost = getTotalTransformationCost(actual, right);
-        return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
+    public static float toFloat(final String str) {
+        return toFloat(str, 0.0f);
     }
 
     /**
-     * Returns the sum of the object transformation cost for each class in the
-     * source argument list.
+     * 将字符串转换为float类型，如果转换失败则返回默认值
      *
-     * @param srcArgs    The source arguments
-     * @param executable The executable to calculate transformation costs for
-     * @return The total transformation cost
+     * <pre>
+     *   MathUtils.toFloat(null, 1.1f)   = 1.0f
+     *   MathUtils.toFloat("", 1.1f)     = 1.1f
+     *   MathUtils.toFloat("1.5", 0.0f)  = 1.5f
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的float，如果转换失败则默认值
      */
-    private static float getTotalTransformationCost(final Class<?>[] srcArgs, final Executable executable) {
-        final Class<?>[] destArgs = executable.getParameterTypes();
-        final boolean isVarArgs = executable.isVarArgs();
-
-        // "source" and "destination" are the actual and declared args respectively.
-        float totalCost = 0.0f;
-        final long normalArgsLen = isVarArgs ? destArgs.length - 1 : destArgs.length;
-        if (srcArgs.length < normalArgsLen) {
-            return Float.MAX_VALUE;
+    public static float toFloat(final String str, final float defaultValue) {
+        if (str == null) {
+            return defaultValue;
         }
-        for (int i = 0; i < normalArgsLen; i++) {
-            totalCost += getObjectTransformationCost(srcArgs[i], destArgs[i]);
+        try {
+            return Float.parseFloat(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
         }
-        if (isVarArgs) {
-            // When isVarArgs is true, srcArgs and dstArgs may differ in length.
-            // There are two special cases to consider:
-            final boolean noVarArgsPassed = srcArgs.length < destArgs.length;
-            final boolean explicitArrayForVarags = srcArgs.length == destArgs.length && srcArgs[srcArgs.length - 1].isArray();
-
-            final float varArgsCost = 0.001f;
-            final Class<?> destClass = destArgs[destArgs.length - 1].getComponentType();
-            if (noVarArgsPassed) {
-                // When no varargs passed, the best match is the most generic matching type, not the most specific.
-                totalCost += getObjectTransformationCost(destClass, Object.class) + varArgsCost;
-            } else if (explicitArrayForVarags) {
-                final Class<?> sourceClass = srcArgs[srcArgs.length - 1].getComponentType();
-                totalCost += getObjectTransformationCost(sourceClass, destClass) + varArgsCost;
-            } else {
-                // This is typical varargs case.
-                for (int i = destArgs.length - 1; i < srcArgs.length; i++) {
-                    final Class<?> srcClass = srcArgs[i];
-                    totalCost += getObjectTransformationCost(srcClass, destClass) + varArgsCost;
-                }
-            }
-        }
-        return totalCost;
     }
 
     /**
-     * Gets the number of steps required needed to turn the source class into
-     * the destination class. This represents the number of steps in the object
-     * hierarchy graph.
+     * 将字符串转换为double类型
      *
-     * @param srcClass  The source class
-     * @param destClass The destination class
-     * @return The cost of transforming an object
+     * <pre>
+     *   MathUtils.toDouble(null)   = 0.0d
+     *   MathUtils.toDouble("")     = 0.0d
+     *   MathUtils.toDouble("1.5")  = 1.5d
+     * </pre>
+     *
+     * @param str 要转换的字符串可以为空
+     * @return 字符串表示的double，如果转换失败则默认值
      */
-    private static float getObjectTransformationCost(Class<?> srcClass, final Class<?> destClass) {
-        if (destClass.isPrimitive()) {
-            return getPrimitivePromotionCost(srcClass, destClass);
-        }
-        float cost = 0.0f;
-        while (srcClass != null && !destClass.equals(srcClass)) {
-            if (destClass.isInterface() && ClassUtils.isAssignable(srcClass, destClass)) {
-                // slight penalty for interface match.
-                // we still want an exact match to override an interface match,
-                // but
-                // an interface match should override anything where we have to
-                // get a superclass.
-                cost += 0.25f;
-                break;
-            }
-            cost++;
-            srcClass = srcClass.getSuperclass();
-        }
-        /*
-         * If the destination class is null, we've traveled all the way up to
-         * an Object match. We'll penalize this by adding 1.5 to the cost.
-         */
-        if (srcClass == null) {
-            cost += 1.5f;
-        }
-        return cost;
+    public static double toDouble(final String str) {
+        return toDouble(str, 0.0d);
     }
 
     /**
-     * Gets the number of steps required to promote a primitive number to another
-     * type.
+     * 将字符串转换为double类型
      *
-     * @param srcClass  the (primitive) source class
-     * @param destClass the (primitive) destination class
-     * @return The cost of promoting the primitive
+     * <pre>
+     *   MathUtils.toDouble(null, 1.1d)   = 1.1d
+     *   MathUtils.toDouble("", 1.1d)     = 1.1d
+     *   MathUtils.toDouble("1.5", 0.0d)  = 1.5d
+     * </pre>
+     *
+     * @param str          要转换的字符串可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的double，如果转换失败则默认值
      */
-    private static float getPrimitivePromotionCost(final Class<?> srcClass, final Class<?> destClass) {
-        float cost = 0.0f;
-        Class<?> cls = srcClass;
-        if (!cls.isPrimitive()) {
-            // slight unwrapping penalty
-            cost += 0.1f;
-            cls = ClassUtils.wrapperToPrimitive(cls);
+    public static double toDouble(final String str, final double defaultValue) {
+        if (str == null) {
+            return defaultValue;
         }
-        for (int i = 0; cls != destClass && i < ORDERED_PRIMITIVE_TYPES.length; i++) {
-            if (cls == ORDERED_PRIMITIVE_TYPES[i]) {
-                cost += 0.1f;
-                if (i < ORDERED_PRIMITIVE_TYPES.length - 1) {
-                    cls = ORDERED_PRIMITIVE_TYPES[i + 1];
-                }
-            }
+        try {
+            return Double.parseDouble(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
         }
-        return cost;
-    }
-
-    static boolean isMatchingMethod(final Method method, final Class<?>[] parameterTypes) {
-        return isMatchingExecutable(Executable.of(method), parameterTypes);
-    }
-
-    static boolean isMatchingConstructor(final Constructor<?> method, final Class<?>[] parameterTypes) {
-        return isMatchingExecutable(Executable.of(method), parameterTypes);
-    }
-
-    private static boolean isMatchingExecutable(final Executable method, final Class<?>[] parameterTypes) {
-        final Class<?>[] methodParameterTypes = method.getParameterTypes();
-        if (ClassUtils.isAssignable(parameterTypes, methodParameterTypes, true)) {
-            return true;
-        }
-
-        if (method.isVarArgs()) {
-            int i;
-            for (i = 0; i < methodParameterTypes.length - 1 && i < parameterTypes.length; i++) {
-                if (!ClassUtils.isAssignable(parameterTypes[i], methodParameterTypes[i], true)) {
-                    return false;
-                }
-            }
-            final Class<?> varArgParameterType = methodParameterTypes[methodParameterTypes.length - 1].getComponentType();
-            for (; i < parameterTypes.length; i++) {
-                if (!ClassUtils.isAssignable(parameterTypes[i], varArgParameterType, true)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        return false;
     }
 
     /**
-     * <p> A class providing a subset of the API of java.lang.reflect.Executable in Java 1.8,
-     * providing a common representation for function signatures for Constructors and Methods.</p>
+     * 将BigDecimal转换为double类型
+     *
+     * <pre>
+     *   MathUtils.toDouble(null)                     = 0.0d
+     *   MathUtils.toDouble(BigDecimal.valudOf(8.5d)) = 8.5d
+     * </pre>
+     *
+     * @param value 要转换的字符可以为空
+     * @return 字符串表示的double，如果转换失败则默认值
      */
-    private static final class Executable {
-        private final Class<?>[] parameterTypes;
-        private final boolean isVarArgs;
+    public static double toDouble(final BigDecimal value) {
+        return toDouble(value, 0.0d);
+    }
 
-        private Executable(final Method method) {
-            parameterTypes = method.getParameterTypes();
-            isVarArgs = method.isVarArgs();
-        }
+    /**
+     * 将BigDecimal转换为double类型
+     *
+     * <pre>
+     *   MathUtils.toDouble(null, 1.1d)                     = 1.1d
+     *   MathUtils.toDouble(BigDecimal.valudOf(8.5d), 1.1d) = 8.5d
+     * </pre>
+     *
+     * @param value        要转换的字符可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的double，如果转换失败则默认值
+     */
+    public static double toDouble(final BigDecimal value, final double defaultValue) {
+        return value == null ? defaultValue : value.doubleValue();
+    }
 
-        private Executable(final Constructor<?> constructor) {
-            parameterTypes = constructor.getParameterTypes();
-            isVarArgs = constructor.isVarArgs();
-        }
+    /**
+     * 将字符转换为byte类型
+     *
+     * <pre>
+     *   MathUtils.toByte(null) = 0
+     *   MathUtils.toByte("")   = 0
+     *   MathUtils.toByte("1")  = 1
+     * </pre>
+     *
+     * @param str 要转换的字符可以为空
+     * @return 字符串表示的byte，如果转换失败则默认值
+     */
+    public static byte toByte(final String str) {
+        return toByte(str, (byte) 0);
+    }
 
-        private static Executable of(final Method method) {
-            return new Executable(method);
+    /**
+     * 将字符转换为byte类型
+     *
+     * <pre>
+     *   MathUtils.toByte(null, 1) = 1
+     *   MathUtils.toByte("", 1)   = 1
+     *   MathUtils.toByte("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的byte，如果转换失败则默认值
+     */
+    public static byte toByte(final String str, final byte defaultValue) {
+        if (str == null) {
+            return defaultValue;
         }
+        try {
+            return Byte.parseByte(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
 
-        private static Executable of(final Constructor<?> constructor) {
-            return new Executable(constructor);
-        }
+    /**
+     * 将字符转换为short类型
+     *
+     * <pre>
+     *   MathUtils.toShort(null) = 0
+     *   MathUtils.toShort("")   = 0
+     *   MathUtils.toShort("1")  = 1
+     * </pre>
+     *
+     * @param str 要转换的字符可以为空
+     * @return 字符串表示的short，如果转换失败则默认值
+     */
+    public static short toShort(final String str) {
+        return toShort(str, (short) 0);
+    }
 
-        public Class<?>[] getParameterTypes() {
-            return parameterTypes;
+    /**
+     * 将字符转换为short类型
+     *
+     * <pre>
+     *   MathUtils.toShort(null, 1) = 1
+     *   MathUtils.toShort("", 1)   = 1
+     *   MathUtils.toShort("1", 0)  = 1
+     * </pre>
+     *
+     * @param str          要转换的字符可以为空
+     * @param defaultValue 默认值
+     * @return 字符串表示的short，如果转换失败则默认值
+     */
+    public static short toShort(final String str, final short defaultValue) {
+        if (str == null) {
+            return defaultValue;
         }
+        try {
+            return Short.parseShort(str);
+        } catch (final NumberFormatException nfe) {
+            return defaultValue;
+        }
+    }
 
-        public boolean isVarArgs() {
-            return isVarArgs;
+    /**
+     * 将一个BigDecimal转换为一个BigDecimal，两个刻度已经使用RoundingMode.HALF_EVEN 四舍五入.
+     * 如果提供的值为null，则BigDecimal返回0
+     *
+     * @param value 要转换的字符可以为空
+     * @return 字符串表示的BigDecimal，如果转换失败则默认值
+     */
+    public static BigDecimal toScaledBigDecimal(final BigDecimal value) {
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个BigDecimal转换为一个BigDecimal，两个刻度已经使用RoundingMode.HALF_EVEN 四舍五入.
+     * * 如果提供的值为null，则BigDecimal返回0.
+     *
+     * @param value        要转换的BigDecimal，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final BigDecimal value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
         }
+        return value.setScale(
+                scale,
+                (roundingMode == null) ? RoundingMode.HALF_EVEN : roundingMode
+        );
+    }
+
+    /**
+     * 将一个Float转换为一个BigDecimal，两个刻度已经用RoundingMode.HALF_EVEN四舍五入了.
+     * 如果提供的值为null，则BigDecimal 返回0.
+     *
+     * @param value 要转换的Float，可以为null.
+     * @return 按比例取适当的四舍五入
+     */
+    public static BigDecimal toScaledBigDecimal(final Float value) {
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个Float转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value        要转换的Float，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final Float value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return toScaledBigDecimal(
+                BigDecimal.valueOf(value),
+                scale,
+                roundingMode
+        );
+    }
+
+    /**
+     * 将一个Double转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value 要转换的Double，可以为null.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final Double value) {
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个Double转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO..
+     *
+     * @param value        转换的Double，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final Double value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return toScaledBigDecimal(
+                BigDecimal.valueOf(value),
+                scale,
+                roundingMode
+        );
+    }
+
+    /**
+     * 将一个String转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value 转换的String，可以为null.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final String value) {
+        return toScaledBigDecimal(value, Normal.INTEGER_TWO, RoundingMode.HALF_EVEN);
+    }
+
+    /**
+     * 将一个String转换为一个BigDecimal，其比例尺为指定值，并应用RoundingMode.
+     * 如果输入值是null，我们只需返回BigDecimal.ZERO.
+     *
+     * @param value        转换的String，可以为null.
+     * @param scale        小数点右边的位数.
+     * @param roundingMode 能够放弃精度的数值运算的舍入行为.
+     * @return 按比例取适当的四舍五入.
+     */
+    public static BigDecimal toScaledBigDecimal(final String value, final int scale, final RoundingMode roundingMode) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return toScaledBigDecimal(
+                createBigDecimal(value),
+                scale,
+                roundingMode
+        );
+    }
+
+    /**
+     * 将一个String转换为一个BigDecimal
+     *
+     * @param str a <code>String</code> to convert, may be null
+     * @return 转换后的BigDecimal(如果输入为null ， 则为null)
+     * @throws NumberFormatException 如果值不能被转换
+     */
+    public static BigDecimal createBigDecimal(final String str) {
+        if (str == null) {
+            return null;
+        }
+        if (StringUtils.isBlank(str)) {
+            throw new NumberFormatException("A blank string is not a valid number");
+        }
+        if (str.trim().startsWith("--")) {
+            throw new NumberFormatException(str + " is not a valid number.");
+        }
+        return new BigDecimal(str);
+    }
+
+    /**
+     * 计算排列数，即A(n, m) = n!/(n-m)!
+     *
+     * @param n 总数
+     * @param m 选择的个数
+     * @return 排列数
+     */
+    public static long arrangementCount(int n, int m) {
+        return Arrangement.count(n, m);
+    }
+
+    /**
+     * 计算排列数，即A(n, n) = n!
+     *
+     * @param n 总数
+     * @return 排列数
+     */
+    public static long arrangementCount(int n) {
+        return Arrangement.count(n);
+    }
+
+    /**
+     * 排列选择（从列表中选择n个排列）
+     *
+     * @param datas 待选列表
+     * @param m     选择个数
+     * @return 所有排列列表
+     */
+    public static List<String[]> arrangementSelect(String[] datas, int m) {
+        return new Arrangement(datas).select(m);
+    }
+
+    /**
+     * 全排列选择（列表全部参与排列）
+     *
+     * @param datas 待选列表
+     * @return 所有排列列表
+     */
+    public static List<String[]> arrangementSelect(String[] datas) {
+        return new Arrangement(datas).select();
+    }
+
+    /**
+     * 计算组合数，即C(n, m) = n!/((n-m)! * m!)
+     *
+     * @param n 总数
+     * @param m 选择的个数
+     * @return 组合数
+     */
+    public static long combinationCount(int n, int m) {
+        return Combination.count(n, m);
+    }
+
+    /**
+     * 组合选择（从列表中选择n个组合）
+     *
+     * @param datas 待选列表
+     * @param m     选择个数
+     * @return 所有组合列表
+     */
+    public static List<String[]> combinationSelect(String[] datas, int m) {
+        return new Combination(datas).select(m);
     }
 
 }

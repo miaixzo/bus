@@ -6006,7 +6006,7 @@ public class ArrayUtils {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final int current = array[i];
-            if (NumberUtils.compare(previous, current) > 0) {
+            if (MathUtils.compare(previous, current) > 0) {
                 return false;
             }
 
@@ -6030,7 +6030,7 @@ public class ArrayUtils {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final long current = array[i];
-            if (NumberUtils.compare(previous, current) > 0) {
+            if (MathUtils.compare(previous, current) > 0) {
                 return false;
             }
 
@@ -6054,7 +6054,7 @@ public class ArrayUtils {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final short current = array[i];
-            if (NumberUtils.compare(previous, current) > 0) {
+            if (MathUtils.compare(previous, current) > 0) {
                 return false;
             }
 
@@ -6126,7 +6126,7 @@ public class ArrayUtils {
         final int n = array.length;
         for (int i = 1; i < n; i++) {
             final byte current = array[i];
-            if (NumberUtils.compare(previous, current) > 0) {
+            if (MathUtils.compare(previous, current) > 0) {
                 return false;
             }
 

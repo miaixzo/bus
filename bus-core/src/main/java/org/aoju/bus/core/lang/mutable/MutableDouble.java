@@ -25,7 +25,7 @@
 package org.aoju.bus.core.lang.mutable;
 
 
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 
 /**
  * 可变 <code>double</code> 类型
@@ -214,7 +214,7 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
      */
     @Override
     public int compareTo(final MutableDouble other) {
-        return NumberUtils.compare(this.value, other.value);
+        return MathUtils.compare(this.value, other.value);
     }
 
     @Override

@@ -428,7 +428,7 @@ public class Validator {
      * @return 是否是数字
      */
     public static boolean isNumber(String value) {
-        return NumberUtils.isNumber(value);
+        return MathUtils.isNumber(value);
     }
 
     /**

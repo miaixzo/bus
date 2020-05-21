@@ -112,7 +112,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
         if (null != charset) {
             this.charset = charset;
         }
-        this.load(ResourceUtils.getResourceObj(path));
+        this.load(FileUtils.getResourceObj(path));
     }
 
     /**

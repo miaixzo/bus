@@ -144,7 +144,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
         // 用较大的字符串长度作为分母,相似子串作为分子计算出字串相似度
         int temp = Math.max(newStrA.length(), newStrB.length());
         int temp2 = longestCommonSubstring(newStrA, newStrB).length();
-        return NumberUtils.div(temp2, temp);
+        return MathUtils.div(temp2, temp);
     }
 
     /**
@@ -156,7 +156,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      * @return 百分比
      */
     public static String similar(String strA, String strB, int scale) {
-        return NumberUtils.formatPercent(similar(strA, strB), scale);
+        return MathUtils.formatPercent(similar(strA, strB), scale);
     }
 
     /**

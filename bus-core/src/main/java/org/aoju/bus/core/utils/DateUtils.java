@@ -834,7 +834,7 @@ public class DateUtils {
         dateStr = StringUtils.removeAll(dateStr.trim(), '日', '秒');
         int length = dateStr.length();
 
-        if (NumberUtils.isNumber(dateStr)) {
+        if (MathUtils.isNumber(dateStr)) {
             // 纯数字形式
             if (length == Fields.PURE_DATETIME_PATTERN.length()) {
                 return parse(dateStr, Fields.PURE_DATETIME_FORMAT);

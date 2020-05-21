@@ -26,7 +26,7 @@ package org.aoju.bus.starter.office;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 import org.aoju.bus.core.utils.StringUtils;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.bridge.LocalOfficePoolManager;
@@ -74,7 +74,7 @@ public class OfficeConfiguration {
             builder.portNumbers(
                     ArrayUtils.toPrimitive(
                             Stream.of(StringUtils.split(properties.getPortNumbers(), Symbol.COMMA))
-                                    .map(str -> NumberUtils.toInt(str, Builder.DEFAULT_PORT_NUMBER))
+                                    .map(str -> MathUtils.toInt(str, Builder.DEFAULT_PORT_NUMBER))
                                     .toArray(Integer[]::new)));
         }
 

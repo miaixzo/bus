@@ -28,6 +28,9 @@ import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
 import org.aoju.bus.core.io.file.*;
+import org.aoju.bus.core.io.resource.ClassPathResource;
+import org.aoju.bus.core.io.resource.FileResource;
+import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.streams.BOMInputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
@@ -1082,7 +1085,7 @@ public class FileUtils {
             }
         }
 
-        final URL url = ResourceUtils.getResource(normalPath, baseClass);
+        final URL url = getResource(normalPath, baseClass);
         if (null != url) {
             return FileUtils.normalize(UriUtils.getDecodedPath(url));
         }
@@ -2126,7 +2129,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static String readString(File file, String charsetName) throws InstrumentException {
-        return readString(file, CharsetUtils.charset(charsetName));
+        return readString(file, org.aoju.bus.core.lang.Charset.charset(charsetName));
     }
 
     /**
@@ -2254,7 +2257,7 @@ public class FileUtils {
      * @throws InstrumentException 异常
      */
     public static <T extends Collection<String>> T readLines(File file, String charset, T collection) throws InstrumentException {
-        return FileReader.create(file, CharsetUtils.charset(charset)).readLines(collection);
+        return FileReader.create(file, org.aoju.bus.core.lang.Charset.charset(charset)).readLines(collection);
     }
 
     /**
@@ -3519,6 +3522,147 @@ public class FileUtils {
         } catch (FileNotFoundException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 读取Classpath下的资源为字符串,使用UTF-8编码
+     *
+     * @param resource 资源路径,使用相对ClassPath的路径
+     * @return 资源内容
+     */
+    public static String readers(String resource) {
+        return getResourceObj(resource).readString(org.aoju.bus.core.lang.Charset.UTF_8);
+    }
+
+    /**
+     * 读取Classpath下的资源为字符串
+     *
+     * @param resource 资源路径,使用相对ClassPath的路径
+     * @param charset  编码
+     * @return 资源内容
+     */
+    public static String readers(String resource, Charset charset) {
+        return new ClassPathResource(resource).readString(charset);
+    }
+
+    /**
+     * 从ClassPath资源中获取{@link BufferedReader}
+     *
+     * @param resurce ClassPath资源
+     * @param charset 编码
+     * @return {@link InputStream}
+     */
+    public static BufferedReader getReaders(String resurce, Charset charset) {
+        return new ClassPathResource(resurce).getReader(charset);
+    }
+
+    /**
+     * 从ClassPath资源中获取{@link InputStream}
+     *
+     * @param resurce ClassPath资源
+     * @return {@link InputStream}
+     * @throws InstrumentException 资源不存在异常
+     */
+    public static InputStream getStream(String resurce) {
+        return new ClassPathResource(resurce).getStream();
+    }
+
+    /**
+     * 从ClassPath资源中获取{@link InputStream},当资源不存在时返回null
+     *
+     * @param resurce ClassPath资源
+     * @return {@link InputStream}
+     */
+    public static InputStream getStreamSafe(String resurce) {
+        try {
+            return new ClassPathResource(resurce).getStream();
+        } catch (InstrumentException e) {
+            // ignore
+        }
+        return null;
+    }
+
+    /**
+     * 获得资源的URL
+     * 路径用/分隔,例如:
+     *
+     * <pre>
+     * config/a/db.config
+     * spring/xml/test.xml
+     * </pre>
+     *
+     * @param resource 资源(相对Classpath的路径)
+     * @return 资源URL
+     */
+    public static URL getResource(String resource) {
+        return getResource(resource, null);
+    }
+
+    /**
+     * 获取指定路径下的资源列表
+     * 路径格式必须为目录格式,用/分隔,例如:
+     *
+     * <pre>
+     * config/a
+     * spring/xml
+     * </pre>
+     *
+     * @param resource 资源路径
+     * @return 资源列表
+     */
+    public static List<URL> getResources(String resource) {
+        final Enumeration<URL> resources;
+        try {
+            resources = ClassUtils.getClassLoader().getResources(resource);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        return CollUtils.newArrayList(resources);
+    }
+
+    /**
+     * 获取指定路径下的资源Iterator
+     * 路径格式必须为目录格式,用/分隔,例如:
+     *
+     * <pre>
+     * config/a
+     * spring/xml
+     * </pre>
+     *
+     * @param resource 资源路径
+     * @return 资源列表
+     */
+    public static IterUtils.EnumerationIter<URL> getResourceIter(String resource) {
+        final Enumeration<URL> resources;
+        try {
+            resources = ClassUtils.getClassLoader().getResources(resource);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        return new IterUtils.EnumerationIter<>(resources);
+    }
+
+    /**
+     * 获得资源相对路径对应的URL
+     *
+     * @param resource  资源相对路径
+     * @param baseClass 基准Class,获得的相对路径相对于此Class所在路径,如果为{@code null}则相对ClassPath
+     * @return {@link URL}
+     */
+    public static URL getResource(String resource, Class<?> baseClass) {
+        URL url = (null != baseClass) ? baseClass.getResource(resource) : ClassUtils.getClassLoader().getResource(resource);
+        return url != null ? url : baseClass.getClassLoader().getResource(resource);
+    }
+
+    /**
+     * 获取{@link Resource} 资源对象
+     * 如果提供路径为绝对路径,返回{@link FileResource},否则返回{@link ClassPathResource}
+     *
+     * @param path 路径,可以是绝对路径,也可以是相对路径
+     * @return {@link Resource} 资源对象
+     */
+    public static Resource getResourceObj(String path) {
+        return FileUtils.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);
     }
 
 }

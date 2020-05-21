@@ -25,7 +25,7 @@
 package org.aoju.bus.core.text;
 
 import org.aoju.bus.core.lang.Murmur;
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 import java.math.BigInteger;
@@ -108,7 +108,7 @@ public class Similarity {
         }
 
         int temp2 = longestCommonSubstring(newStrA, newStrB).length();
-        return NumberUtils.div(temp2, temp);
+        return MathUtils.div(temp2, temp);
     }
 
     /**
@@ -120,7 +120,7 @@ public class Similarity {
      * @return 百分比
      */
     public static String similar(String strA, String strB, int scale) {
-        return NumberUtils.formatPercent(similar(strA, strB), scale);
+        return MathUtils.formatPercent(similar(strA, strB), scale);
     }
 
     /**

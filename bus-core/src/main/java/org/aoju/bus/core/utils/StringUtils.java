@@ -2250,7 +2250,7 @@ public class StringUtils extends TextUtils {
         int len = str.length();
         int start = 0;//切分后每个部分的起始
         for (int i = 0; i < len; i++) {
-            if (NumberUtils.equals(separator, str.charAt(i), ignoreCase)) {
+            if (MathUtils.equals(separator, str.charAt(i), ignoreCase)) {
                 CollUtils.addAll(list, str.substring(start, i), isTrim, ignoreEmpty);
                 start = i + 1;//i+1同时将start与i保持一致
 
@@ -5214,7 +5214,7 @@ public class StringUtils extends TextUtils {
         if (len < partLength) {
             return new String[]{str.toString()};
         }
-        int part = NumberUtils.count(len, partLength);
+        int part = MathUtils.count(len, partLength);
         final String[] array = new String[part];
 
         final String str2 = str.toString();
