@@ -28,13 +28,8 @@ import org.aoju.bus.http.magic.GetBuilder;
 import org.aoju.bus.http.magic.HttpBuilder;
 import org.aoju.bus.http.magic.PostBuilder;
 import org.aoju.bus.http.magic.PutBuilder;
-import org.aoju.bus.logger.Logger;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.SecureRandom;
+import org.aoju.bus.http.secure.SSLSocketFactory;
+import org.aoju.bus.http.secure.X509TrustManager;
 
 /**
  * 发送HTTP请求辅助类
@@ -45,21 +40,7 @@ import java.security.SecureRandom;
  */
 public class Httpz {
 
-    private static Client client = new Client(geHtttpd());
-
-    private static Httpd geHtttpd() {
-        Httpd.Builder builder = new Httpd().newBuilder();
-        final X509TrustManager trustManager = new org.aoju.bus.http.secure.X509TrustManager();
-        SSLSocketFactory sslSocketFactory = null;
-        try {
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, new TrustManager[]{trustManager}, new SecureRandom());
-            sslSocketFactory = sslContext.getSocketFactory();
-        } catch (Exception e) {
-            Logger.error(e.getMessage(), e);
-        }
-        return builder.sslSocketFactory(sslSocketFactory, trustManager).hostnameVerifier((hostname, session) -> true).build();
-    }
+    private static Client client = new Client();
 
     public static HttpBuilder newBuilder() {
         return new HttpBuilder(client.getHttpd());
@@ -92,6 +73,13 @@ public class Httpz {
     public static class Client {
 
         private Httpd httpd;
+
+        public Client() {
+            final X509TrustManager trustManager = new X509TrustManager();
+            this.httpd = new Httpd().newBuilder()
+                    .sslSocketFactory(SSLSocketFactory.createTrustAllSSLFactory(trustManager), trustManager)
+                    .hostnameVerifier((hostname, session) -> true).build();
+        }
 
         public Client(Httpd httpd) {
             this.httpd = httpd;

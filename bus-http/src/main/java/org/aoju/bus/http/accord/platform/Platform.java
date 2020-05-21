@@ -25,6 +25,7 @@
 package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.secure.BasicCertificateChainCleaner;
 import org.aoju.bus.http.secure.BasicTrustRootIndex;
@@ -268,9 +269,9 @@ public class Platform {
         try {
             if ("1.7".equals(jvmVersion)) {
                 // JDK 1.7(公共版本)只支持带命名协议的> TLSv1
-                return SSLContext.getInstance("TLSv1.2");
+                return SSLContext.getInstance(Http.TLS_12);
             }
-            return SSLContext.getInstance("TLS");
+            return SSLContext.getInstance(Http.TLS);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("No TLS provider", e);
         }

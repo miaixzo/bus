@@ -26,7 +26,6 @@ import java.net.Socket;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
@@ -808,27 +807,27 @@ public class GitLabApiClient {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
             }
         }};
 

@@ -26,6 +26,7 @@ package org.aoju.bus.http.accord.platform;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Protocol;
@@ -275,13 +276,13 @@ public class AndroidPlatform extends Platform {
     @Override
     public SSLContext getSSLContext() {
         try {
-            return SSLContext.getInstance("TLSv1.2");
+            return SSLContext.getInstance(Http.TLS_12);
         } catch (NoSuchAlgorithmException e) {
             // fallback to TLS
         }
 
         try {
-            return SSLContext.getInstance("TLS");
+            return SSLContext.getInstance(Http.TLS);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException("No TLS provider", e);
         }

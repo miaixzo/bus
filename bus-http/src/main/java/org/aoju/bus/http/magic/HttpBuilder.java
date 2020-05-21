@@ -204,8 +204,8 @@ public class HttpBuilder {
         } catch (Exception e) {
             Logger.error(e.getMessage(), e);
         }
-        builder.sslSocketFactory(sslSocketFactory, trustManager).
-                hostnameVerifier((hostname, session) -> true);
+        builder.sslSocketFactory(sslSocketFactory, trustManager)
+                .hostnameVerifier((hostname, session) -> true);
         return this;
     }
 
