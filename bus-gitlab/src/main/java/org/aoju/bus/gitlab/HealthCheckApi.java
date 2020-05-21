@@ -112,4 +112,5 @@ public class HealthCheckApi extends AbstractApi {
             throw (new GitLabApiException(ioe));
         }
     }
+
 }

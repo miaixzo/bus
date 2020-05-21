@@ -566,4 +566,5 @@ public class JobApi extends AbstractApi implements Constants {
     public void deleteArtifacts(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
         delete(Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts");
     }
+
 }

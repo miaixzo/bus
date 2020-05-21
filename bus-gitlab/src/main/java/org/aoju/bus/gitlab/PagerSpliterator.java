@@ -79,4 +79,5 @@ class PagerSpliterator<T> implements Spliterator<T> {
     public int characteristics() {
         return SIZED | NONNULL;
     }
+
 }

@@ -912,11 +912,7 @@ public class GitLabApiClient implements AutoCloseable {
         }};
 
         // Ignore differences between given hostname and certificate hostname
-        HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
+        HostnameVerifier hostnameVerifier = (hostname, session) -> true;
 
         try {
             SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -931,4 +927,5 @@ public class GitLabApiClient implements AutoCloseable {
 
         return (true);
     }
+
 }

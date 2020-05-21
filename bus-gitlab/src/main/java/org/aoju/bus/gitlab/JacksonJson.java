@@ -85,7 +85,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     /**
      * Gets a the supplied object output as a formatted JSON string.  Null properties will
      * result in the value of the property being null.  This is meant to be used for
-     * toString() implementations of GitLab4J classes.
+     * toString() implementations of GitLab classes.
      *
      * @param <T>    the generics type for the provided object
      * @param object the object to output as a JSON string
@@ -309,7 +309,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     public static class JsonDateSerializer extends JsonSerializer<Date> {
 
         @Override
-        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException, JsonProcessingException {
+        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException {
             String iso8601String = ISO8601.toString(date);
             gen.writeString(iso8601String);
         }
@@ -321,7 +321,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
     public static class JsonDateDeserializer extends JsonDeserializer<Date> {
 
         @Override
-        public Date deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException, JsonProcessingException {
+        public Date deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
 
             try {
                 return (ISO8601.toDate(jsonparser.getText()));
@@ -338,8 +338,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
 
         @Override
         public void serialize(List<User> value, JsonGenerator jgen,
-                              SerializerProvider provider) throws IOException,
-                JsonProcessingException {
+                              SerializerProvider provider) throws IOException {
 
             jgen.writeStartArray();
             for (User user : value) {
@@ -360,7 +359,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
 
         @Override
         public List<User> deserialize(JsonParser jsonParser, DeserializationContext context)
-                throws IOException, JsonProcessingException {
+                throws IOException {
 
             JsonNode tree = jsonParser.readValueAsTree();
             int numUsers = tree.size();
@@ -388,4 +387,5 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
             JACKSON_JSON.objectMapper.setSerializationInclusion(Include.ALWAYS);
         }
     }
+
 }

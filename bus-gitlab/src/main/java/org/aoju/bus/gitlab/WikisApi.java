@@ -284,4 +284,5 @@ public class WikisApi extends AbstractApi {
         Response response = upload(Response.Status.CREATED, "file", fileToUpload, null, formData, url);
         return (response.readEntity(WikiAttachment.class));
     }
+
 }

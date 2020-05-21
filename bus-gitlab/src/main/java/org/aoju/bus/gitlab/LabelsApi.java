@@ -102,9 +102,8 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Integer(ID), String(name), or Label instance
      * @return a Optional instance with a Label instance as its value
-     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Label> getOptionalProjectLabel(Object projectIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Optional<Label> getOptionalProjectLabel(Object projectIdOrPath, Object labelIdOrName) {
         try {
             return (Optional.ofNullable(getProjectLabel(projectIdOrPath, labelIdOrName)));
         } catch (GitLabApiException glae) {
@@ -224,7 +223,7 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Label> getGroupLabels(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Label>(this, Label.class, itemsPerPage, null,
+        return (new Pager<>(this, Label.class, itemsPerPage, null,
                 "groups", getGroupIdOrPath(groupIdOrPath), "labels"));
     }
 
@@ -259,9 +258,8 @@ public class LabelsApi extends AbstractApi {
      * @param groupIdOrPath the group in the form of an Integer(ID), String(path), or Group instance
      * @param labelIdOrName the label in the form of an Integer(ID), String(name), or Label instance
      * @return a Optional instance with a Label instance as its value
-     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Label> getOptionalGroupLabel(Object groupIdOrPath, Object labelIdOrName) throws GitLabApiException {
+    public Optional<Label> getOptionalGroupLabel(Object groupIdOrPath, Object labelIdOrName) {
         try {
             return (Optional.ofNullable(getGroupLabel(groupIdOrPath, labelIdOrName)));
         } catch (GitLabApiException glae) {
@@ -402,7 +400,7 @@ public class LabelsApi extends AbstractApi {
      */
     @Deprecated
     public Pager<Label> getLabels(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Label>(this, Label.class, itemsPerPage, null,
+        return (new Pager<>(this, Label.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "labels"));
     }
 
@@ -589,4 +587,5 @@ public class LabelsApi extends AbstractApi {
     public Label unsubscribeLabel(Object projectIdOrPath, Integer labelId) throws GitLabApiException {
         return (unsubscribeProjectLabel(projectIdOrPath, labelId));
     }
+
 }

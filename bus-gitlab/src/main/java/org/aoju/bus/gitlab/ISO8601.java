@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -149,9 +148,8 @@ public class ISO8601 {
      *
      * @param dateTimeString the org.aoju.bus.gitlab.ISO8601 formatted string
      * @return an Instant instance for the org.aoju.bus.gitlab.ISO8601 formatted string
-     * @throws ParseException if the provided string is not in the proper format
      */
-    public static Instant toInstant(String dateTimeString) throws ParseException {
+    public static Instant toInstant(String dateTimeString) {
 
         if (dateTimeString == null) {
             return (null);
@@ -181,9 +179,8 @@ public class ISO8601 {
      *
      * @param dateTimeString the org.aoju.bus.gitlab.ISO8601 formatted string
      * @return a Date instance for the org.aoju.bus.gitlab.ISO8601 formatted string
-     * @throws ParseException if the provided string is not in the proper format
      */
-    public static Date toDate(String dateTimeString) throws ParseException {
+    public static Date toDate(String dateTimeString) {
         Instant instant = toInstant(dateTimeString);
         return (instant != null ? Date.from(instant) : null);
     }
@@ -193,9 +190,8 @@ public class ISO8601 {
      *
      * @param dateTimeString the org.aoju.bus.gitlab.ISO8601 formatted string
      * @return a Calendar instance for the org.aoju.bus.gitlab.ISO8601 formatted string
-     * @throws ParseException if the provided string is not in the proper format
      */
-    public static Calendar toCalendar(String dateTimeString) throws ParseException {
+    public static Calendar toCalendar(String dateTimeString) {
 
         Date date = toDate(dateTimeString);
         if (date == null) {
@@ -226,4 +222,5 @@ public class ISO8601 {
             return (format);
         }
     }
+
 }

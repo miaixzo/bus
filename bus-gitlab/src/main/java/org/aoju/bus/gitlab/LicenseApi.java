@@ -139,4 +139,5 @@ public class LicenseApi extends AbstractApi {
         Response response = delete(Response.Status.OK, null, "license", licenseId);
         return (response.readEntity(License.class));
     }
+
 }

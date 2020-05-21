@@ -116,4 +116,5 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
     public String toString(E e) {
         return (namesMap.get(e));
     }
+
 }

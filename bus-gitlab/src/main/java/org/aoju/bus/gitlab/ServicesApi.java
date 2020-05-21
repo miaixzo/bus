@@ -515,4 +515,5 @@ public class ServicesApi extends AbstractApi {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "custom-issue-tracker");
 
     }
+
 }

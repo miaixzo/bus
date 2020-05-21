@@ -1609,4 +1609,5 @@ public class GroupApi extends AbstractApi {
                 "avatar", avatarFile, "groups", getGroupIdOrPath(groupIdOrPath));
         return (response.readEntity(Group.class));
     }
+
 }

@@ -205,12 +205,12 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
                 .append(note)
                 .append(" on thread ").append(Thread.currentThread().getName()).append('\n');
         appendId(sb, id).append(RESPONSE_PREFIX)
-                .append(Integer.toString(status))
+                .append(status)
                 .append('\n');
     }
 
     protected Set<Entry<String, List<String>>> getSortedHeaders(final Set<Entry<String, List<String>>> headers) {
-        final TreeSet<Entry<String, List<String>>> sortedHeaders = new TreeSet<Entry<String, List<String>>>(
+        final TreeSet<Entry<String, List<String>>> sortedHeaders = new TreeSet<>(
                 (Entry<String, List<String>> o1, Entry<String, List<String>> o2) -> o1.getKey().compareToIgnoreCase(o2.getKey()));
         sortedHeaders.addAll(headers);
         return sortedHeaders;
@@ -284,7 +284,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     }
 
     @Override
-    public void filter(ClientRequestContext requestContext) throws IOException {
+    public void filter(ClientRequestContext requestContext) {
 
         if (!logger.isLoggable(level)) {
             return;
@@ -375,4 +375,5 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             out.write(i);
         }
     }
+
 }

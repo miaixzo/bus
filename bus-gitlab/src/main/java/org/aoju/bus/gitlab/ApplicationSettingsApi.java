@@ -29,7 +29,6 @@ import org.aoju.bus.gitlab.models.ApplicationSettings;
 import org.aoju.bus.gitlab.models.Setting;
 
 import javax.ws.rs.core.Response;
-import java.text.ParseException;
 import java.util.Iterator;
 
 /**
@@ -67,25 +66,14 @@ public class ApplicationSettingsApi extends AbstractApi {
                     break;
 
                 case "created_at":
-                    try {
-                        String value = root.path(fieldName).asText();
-                        appSettings.setCreatedAt(ISO8601.toDate(value));
-                    } catch (ParseException pe) {
-                        throw new GitLabApiException(pe);
-                    }
+                    appSettings.setCreatedAt(ISO8601.toDate(root.path(fieldName).asText()));
                     break;
 
                 case "updated_at":
-                    try {
-                        String value = root.path(fieldName).asText();
-                        appSettings.setUpdatedAt(ISO8601.toDate(value));
-                    } catch (ParseException pe) {
-                        throw new GitLabApiException(pe);
-                    }
+                    appSettings.setUpdatedAt(ISO8601.toDate(root.path(fieldName).asText()));
                     break;
 
                 default:
-
                     Setting setting = Setting.forValue(fieldName);
                     if (setting != null) {
                         appSettings.addSetting(setting, root.path(fieldName));
@@ -94,7 +82,6 @@ public class ApplicationSettingsApi extends AbstractApi {
                                 fieldName, root.path(fieldName).getClass().getSimpleName()));
                         appSettings.addSetting(fieldName, root.path(fieldName));
                     }
-
                     break;
             }
         }
@@ -180,4 +167,5 @@ public class ApplicationSettingsApi extends AbstractApi {
         JsonNode root = response.readEntity(JsonNode.class);
         return (parseApplicationSettings(root));
     }
+
 }

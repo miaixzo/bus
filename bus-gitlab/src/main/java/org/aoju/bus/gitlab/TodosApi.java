@@ -208,4 +208,5 @@ public class TodosApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm();
         post(Response.Status.NO_CONTENT, formData, "todos", "mark_as_done");
     }
+
 }

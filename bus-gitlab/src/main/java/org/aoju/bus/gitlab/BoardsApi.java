@@ -92,7 +92,7 @@ public class BoardsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Board> getBoards(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Board>(this, Board.class, itemsPerPage, null,
+        return (new Pager<>(this, Board.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "boards"));
     }
 
@@ -354,4 +354,5 @@ public class BoardsApi extends AbstractApi {
     public void deleteBoardList(Object projectIdOrPath, Integer boardId, Integer listId) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "boards", boardId, "lists", listId);
     }
+
 }

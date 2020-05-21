@@ -260,4 +260,5 @@ public class ProtectedBranchesApi extends AbstractApi {
                 "projects", getProjectIdOrPath(projectIdOrPath), "protected_branches");
         return (response.readEntity(ProtectedBranch.class));
     }
+
 }

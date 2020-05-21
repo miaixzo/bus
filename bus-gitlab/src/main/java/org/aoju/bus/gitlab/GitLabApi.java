@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 public class GitLabApi implements AutoCloseable {
 
     /**
-     * GitLab4J default per page.  GitLab will ignore anything over 100.
+     * GitLab default per page.  GitLab will ignore anything over 100.
      */
     public static final int DEFAULT_PER_PAGE = 96;
     private final static Logger LOGGER = Logger.getLogger(GitLabApi.class.getName());
@@ -263,9 +263,9 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Get the GitLab4J shared Logger instance.
+     * Get the GitLab shared Logger instance.
      *
-     * @return the GitLab4J shared Logger instance
+     * @return the GitLab shared Logger instance
      */
     public static final Logger getLogger() {
         return (LOGGER);
@@ -546,7 +546,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance and Level.FINE as the level.
+     * using the GitLab shared Logger instance and Level.FINE as the level.
      *
      * @return this GitLabApi instance
      */
@@ -557,7 +557,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance.
+     * using the GitLab shared Logger instance.
      *
      * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @return this GitLabApi instance
@@ -581,7 +581,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance and Level.FINE as the level.
+     * using the GitLab shared Logger instance and Level.FINE as the level.
      */
     public void enableRequestResponseLogging() {
         enableRequestResponseLogging(LOGGER, Level.FINE);
@@ -589,7 +589,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance. Logging will NOT include entity logging and
+     * using the GitLab shared Logger instance. Logging will NOT include entity logging and
      * will mask PRIVATE-TOKEN and Authorization headers.
      *
      * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
@@ -612,7 +612,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * GitLab4J shared Logger instance. Logging will mask PRIVATE-TOKEN and Authorization headers.
+     * GitLab shared Logger instance. Logging will mask PRIVATE-TOKEN and Authorization headers.
      *
      * @param level         the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
@@ -639,7 +639,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * GitLab4J shared Logger instance.
+     * GitLab shared Logger instance.
      *
      * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @param maskedHeaderNames a list of header names that should have the values masked
@@ -662,7 +662,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * GitLab4J shared Logger instance.
+     * GitLab shared Logger instance.
      *
      * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @param maxEntitySize     maximum number of entity bytes to be logged.  When logging if the maxEntitySize
@@ -1676,4 +1676,5 @@ public class GitLabApi implements AutoCloseable {
             return ("/api/" + name().toLowerCase());
         }
     }
+
 }

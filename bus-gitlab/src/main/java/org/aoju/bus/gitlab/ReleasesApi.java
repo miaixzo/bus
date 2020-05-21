@@ -170,4 +170,5 @@ public class ReleasesApi extends AbstractApi {
     public void deleteRelease(Object projectIdOrPath, String tagName) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "releases", urlEncode(tagName));
     }
+
 }

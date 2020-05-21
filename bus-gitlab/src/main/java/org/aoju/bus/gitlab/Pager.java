@@ -58,7 +58,7 @@ import java.util.stream.StreamSupport;
  *   }
  * </pre>
  *
- * @param <T> the GitLab4J type contained in the List.
+ * @param <T> the GitLab type contained in the List.
  * @author Kimi Liu
  * @version 5.9.2
  * @since JDK 1.8+
@@ -72,7 +72,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private int totalItems;
     private int currentPage;
     private int kaminariNextPage;
-    private List<String> pageParam = new ArrayList<>(1);
+    private List<String> pageParam;
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
     private AbstractApi api;
@@ -84,7 +84,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Creates a Pager instance to access the API through the specified path and query parameters.
      *
      * @param api          the AbstractApi implementation to communicate through
-     * @param type         the GitLab4J type that will be contained in the List
+     * @param type         the GitLab type that will be contained in the List
      * @param itemsPerPage items per page
      * @param queryParams  HTTP query params
      * @param pathArgs     HTTP path arguments
@@ -159,9 +159,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param response the Response instance to get the value from
      * @param key      the HTTP header key to get the value for
      * @return the specified header value from the Response instance, or null if the header is not present
-     * @throws GitLabApiException if any error occurs
      */
-    private String getHeaderValue(Response response, String key) throws GitLabApiException {
+    private String getHeaderValue(Response response, String key) {
 
         String value = response.getHeaderString(key);
         value = (value != null ? value.trim() : null);
@@ -276,9 +275,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the first page of List. Will rewind the iterator.
      *
      * @return the first page of List
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> first() throws GitLabApiException {
+    public List<T> first() {
         return (page(1));
     }
 
@@ -301,9 +299,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the previous page of List. Will set the iterator to the previous page.
      *
      * @return the previous page of List
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> previous() throws GitLabApiException {
+    public List<T> previous() {
         return (page(currentPage - 1));
     }
 
@@ -311,9 +308,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the current page of List.
      *
      * @return the current page of List
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> current() throws GitLabApiException {
+    public List<T> current() {
         return (page(currentPage));
     }
 

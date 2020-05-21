@@ -461,4 +461,5 @@ public class NotesApi extends AbstractApi {
         delete(expectedStatus, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "notes", noteId);
     }
+
 }

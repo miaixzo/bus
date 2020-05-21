@@ -560,4 +560,5 @@ public class RunnersApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("token", token, true);
         delete(Response.Status.NO_CONTENT, formData.asMap(), "runners");
     }
+
 }

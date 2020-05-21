@@ -241,4 +241,5 @@ public class SnippetsApi extends AbstractApi {
 
         delete(Response.Status.NO_CONTENT, null, "snippets", snippetId);
     }
+
 }

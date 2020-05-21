@@ -649,4 +649,5 @@ public class MilestonesApi extends AbstractApi {
     public void deleteMilestone(Object projectIdOrPath, Integer milestoneId) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "milestones", milestoneId);
     }
+
 }

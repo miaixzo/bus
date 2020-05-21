@@ -81,4 +81,5 @@ public class ProjectLicense {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

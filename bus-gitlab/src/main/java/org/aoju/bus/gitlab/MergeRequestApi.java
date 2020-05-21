@@ -1332,4 +1332,5 @@ public class MergeRequestApi extends AbstractApi {
                 "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "pipelines");
         return (response.readEntity(Pipeline.class));
     }
+
 }

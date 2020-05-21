@@ -144,7 +144,7 @@ public class NamespaceApi extends AbstractApi {
      */
     public Pager<Namespace> findNamespaces(String query, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true);
-        return (new Pager<Namespace>(this, Namespace.class, itemsPerPage, formData.asMap(), "namespaces"));
+        return (new Pager<>(this, Namespace.class, itemsPerPage, formData.asMap(), "namespaces"));
     }
 
     /**
@@ -159,4 +159,5 @@ public class NamespaceApi extends AbstractApi {
     public Stream<Namespace> findNamespacesStream(String query) throws GitLabApiException {
         return (findNamespaces(query, getDefaultPerPage()).stream());
     }
+
 }

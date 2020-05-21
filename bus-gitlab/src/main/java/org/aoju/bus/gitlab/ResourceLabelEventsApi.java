@@ -116,10 +116,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @param issueIid             the IID of the issue
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
-     * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalIssueLabelEvent(Object projectIdOrPath,
-                                                           Integer issueIid, Integer resourceLabelEventId) throws GitLabApiException {
+                                                           Integer issueIid, Integer resourceLabelEventId) {
 
         try {
             return (Optional.ofNullable(getIssueLabelEvent(projectIdOrPath, issueIid, resourceLabelEventId)));
@@ -198,10 +197,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @param epicId               the ID of the epic
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
-     * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalEpicLabelEvent(Object projectIdOrPath,
-                                                          Integer epicId, Integer resourceLabelEventId) throws GitLabApiException {
+                                                          Integer epicId, Integer resourceLabelEventId) {
 
         try {
             return (Optional.ofNullable(getEpicLabelEvent(projectIdOrPath, epicId, resourceLabelEventId)));
@@ -291,4 +289,5 @@ public class ResourceLabelEventsApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
+
 }

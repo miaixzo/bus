@@ -3359,4 +3359,5 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "approval_rules", approvalRuleId);
     }
+
 }

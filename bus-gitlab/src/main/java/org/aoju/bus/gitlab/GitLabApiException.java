@@ -271,4 +271,5 @@ public class GitLabApiException extends Exception {
 
         return true;
     }
+
 }

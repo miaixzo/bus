@@ -150,4 +150,5 @@ public class LicenseTemplatesApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
+
 }

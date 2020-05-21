@@ -69,4 +69,5 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
     public void setRequestSecretToken(String requestSecretToken) {
         this.requestSecretToken = requestSecretToken;
     }
+
 }

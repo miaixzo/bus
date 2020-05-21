@@ -5,7 +5,7 @@ GitLab API (bus-gitlab) provides a full featured and easy to consume Java librar
 ---
 ## Table of Contents
   * [GitLab Server Version Support](#gitLab-server-version-support)<br/>
-  * [Using GitLab4J-API](#using-gitlab4j-api)<br/>
+  * [Using GitLab-API](#using-gitlab4j-api)<br/>
   * [Java 8 Requirement](#java-8-requirement)<br/>
   * [Javadocs](#javadocs)<br/>
   * [Project Set Up](#project-set-up)<br/>
@@ -34,22 +34,19 @@ GitLab released GitLab Version 11.0 in June of 2018 which included many major ch
 As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab server (see https://about.gitlab.com/2018/06/01/api-v3-removal-impending/). Support for GitLab API v3 will be removed from this library sometime in 2019. If you are utilizing the v3 support, please update your code to use GitLab API v4.
 
 ---
-## Using GitLab4J-API
-
-### **Java 8 Requirement**
-As of GitLab4J-API 4.8.0, Java 8+ is now required to use GitLab4J-API.
-
+## Using GitLab-API
+ 
 ### **Javadocs**
 Javadocs are available here: [![javadoc.io](https://javadoc.io/badge2/org.gitlab4j/gitlab4j-api/javadoc.io.svg)](https://javadoc.io/doc/org.gitlab4j/gitlab4j-api)
 
 
 ### **Project Set Up**
-To utilize GitLab4J&trade; API in your Java project, simply add the following dependency to your project's build file:<br /> 
+To utilize GitLab&trade; API in your Java project, simply add the following dependency to your project's build file:<br /> 
 **Gradle: build.gradle**
 ```java
 dependencies {
     ...
-    compile group: 'org.gitlab4j', name: 'gitlab4j-api', version: '4.14.30'
+    compile group: 'org.aoju', name: 'bus-gitlab', version: '5.9.2'
 }
 ```
 
@@ -64,7 +61,7 @@ dependencies {
 
 ### **Usage Examples**
 
-GitLab4J-API is quite simple to use, all you need is the URL to your GitLab server and the Personal Access Token from your GitLab Account Settings page.  Once you have that info it is as simple as:
+GitLab-API is quite simple to use, all you need is the URL to your GitLab server and the Personal Access Token from your GitLab Account Settings page.  Once you have that info it is as simple as:
 ```java
 // Create a GitLabApi instance to communicate with your GitLab server
 GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PERSONAL_ACCESS_TOKEN");
@@ -78,7 +75,7 @@ You can also login to your GitLab server with username, and password:
 // Log in to the GitLab server using a username and password
 GitLabApi gitLabApi = GitLabApi.oauth2Login("http://your.gitlab.server.com", "username", "password");
 ```
-As of GitLab4J-API 4.6.6, all API requests support performing the API call as if you were another user, provided you are authenticated as an administrator:
+As of GitLab-API 4.6.6, all API requests support performing the API call as if you were another user, provided you are authenticated as an administrator:
 ```java
 // Create a GitLabApi instance to communicate with your GitLab server (must be an administrator)
 GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PERSONAL_ACCESS_TOKEN");
@@ -92,7 +89,7 @@ gitLabApi.unsudo();
 
 ---
 ### **Setting Request Timeouts**
-As of GitLab4J-API 4.14.21 support has been added for setting the conect and read timeouts for the API client:
+As of GitLab-API 4.14.21 support has been added for setting the conect and read timeouts for the API client:
 ```java
 GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_PERSONAL_ACCESS_TOKEN", proxyConfig);
 
@@ -102,7 +99,7 @@ gitLabApi.setRequestTimeout(1000, 5000);
 
 ---
 ### **Connecting Through a Proxy Server**
-As of GitLab4J-API 4.8.2 support has been added for connecting to the GitLab server using an HTTP proxy server:
+As of GitLab-API 4.8.2 support has been added for connecting to the GitLab server using an HTTP proxy server:
 ```java
 // Log in to the GitLab server using a proxy server (with basic auth on proxy)
 Map<String, Object> proxyConfig = ProxyClientConfig.createProxyClientConfig(
@@ -122,8 +119,8 @@ See the Javadoc on the GitLabApi class for a complete list of methods accepting 
 
 ---
 ### **GitLab API V3 and V4 Support**
-As of GitLab4J-API 4.2.0 support has been added for GitLab API V4. If your application requires GitLab API V3,
-you can still use GitLab4J-API by creating your GitLabApi instance as follows:
+As of GitLab-API 4.2.0 support has been added for GitLab API V4. If your application requires GitLab API V3,
+you can still use GitLab-API by creating your GitLabApi instance as follows:
 ```java
 // Create a GitLabApi instance to communicate with your GitLab server using GitLab API V3
 GitLabApi gitLabApi = new GitLabApi(ApiVersion.V3, "http://your.gitlab.server.com", "YOUR_PRIVATE_TOKEN");
@@ -134,7 +131,7 @@ As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab
 
 ---
 ### **Logging of API Requests and Responses**
-As of GitLab4J-API 4.8.39 support has been added to log the requests to and the responses from the
+As of GitLab-API 4.8.39 support has been added to log the requests to and the responses from the
 GitLab API.  Enable logging using one of the following methods on the GitLabApi instance:
 ```java
 GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PERSONAL_ACCESS_TOKEN");
@@ -157,7 +154,7 @@ gitLabApi.enableRequestResponseLogging(yourLoggerInstance, java.util.logging.Lev
 
 ---
 ### **Results Paging**
-GitLab4J-API provides an easy to use paging mechanism to page through lists of results from the GitLab API.
+GitLab-API provides an easy to use paging mechanism to page through lists of results from the GitLab API.
 Here are a couple of examples on how to use the Pager:
 ```java
 // Get a Pager instance that will page through the projects with 10 projects per page
@@ -171,7 +168,7 @@ while (projectsPager.hasNext())) {
 }
 ```
 
-As of GitLab4J-API 4.9.2, you can also fetch all the items as a single list using a Pager instance:
+As of GitLab-API 4.9.2, you can also fetch all the items as a single list using a Pager instance:
 ```java
 // Get a Pager instance so we can load all the projects into a single list, 10 items at a time:
 Pager<Project> projectPager = gitlabApi.getProjectsApi().getProjects(10);
@@ -180,13 +177,13 @@ List<Project> allProjects = projectPager.all();
 
 ---
 ### **Java 8 Stream Support**
-As of GitLab4J-API 4.9.2, all GitLabJ-API methods that return a List result have a similarlly named method that returns a Java 8 Stream.  The Stream returning methods use the following naming convention:  ```getXxxxxStream()```.
+As of GitLab-API 4.9.2, all GitLabJ-API methods that return a List result have a similarlly named method that returns a Java 8 Stream.  The Stream returning methods use the following naming convention:  ```getXxxxxStream()```.
   
 
 **IMPORTANT**  
 The built-in methods that return a Stream do so using ___eager evaluation___, meaning all items are pre-fetched from the GitLab server and a Stream is returned which will stream those items.  **Eager evaluation does NOT support parallel reading of data from ther server, it does however allow for parallel processing of the Stream post data fetch.**
 
-To stream using ___lazy evaluation___, use the GitLab4J-API methods that return a ```Pager``` instance, and then call the ```lazyStream()``` method on the ```Pager``` instance to create a lazy evaluation Stream. The Stream utilizes the ```Pager``` instance to page through the available items. **A lazy Stream does NOT support parallel operations or skipping.** 
+To stream using ___lazy evaluation___, use the GitLab-API methods that return a ```Pager``` instance, and then call the ```lazyStream()``` method on the ```Pager``` instance to create a lazy evaluation Stream. The Stream utilizes the ```Pager``` instance to page through the available items. **A lazy Stream does NOT support parallel operations or skipping.** 
 
 
 #### **Eager evaluation example usage:**
@@ -217,7 +214,7 @@ projectPager.lazyStream().limit(5).map(Project::getName).forEach(name -> System.
 
 ---
 ### **Java 8 Optional Support**
-GitLab4J-API supports Java 8 Optional&lt;T&gt; for API calls that result in the return of a single item. Here is an example on how to use the Java 8 Optional&lt;T&gt; API calls:
+GitLab-API supports Java 8 Optional&lt;T&gt; for API calls that result in the return of a single item. Here is an example on how to use the Java 8 Optional&lt;T&gt; API calls:
 ```java
 Optional<Group> optionalGroup =  gitlabApi.getGroupApi().getOptionalGroup("my-group-path");
 if (optionalGroup.isPresent())
@@ -240,7 +237,7 @@ Conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
 ---
 ## Making API Calls
-The API has been broken up into sub API classes to make it easier to consume and to separate concerns. The GitLab4J sub API classes typically have a one-to-one relationship with the API documentation at [GitLab API](https://docs.gitlab.com/ce/api/). Following is a sample of the GitLab4J sub API class mapping to the GitLab API documentation:
+The API has been broken up into sub API classes to make it easier to consume and to separate concerns. The GitLab sub API classes typically have a one-to-one relationship with the API documentation at [GitLab API](https://docs.gitlab.com/ce/api/). Following is a sample of the GitLab sub API class mapping to the GitLab API documentation:
 
 ```org.gitlab4j.api.GroupApi``` -> https://docs.gitlab.com/ce/api/groups.html<br/>
 ```org.gitlab4j.api.MergeRequestApi``` -> https://docs.gitlab.com/ce/api/merge_requests.html<br/>
@@ -536,7 +533,7 @@ List<?> projects = gitLabApi.getSearchApi().globalSearch(SearchScope.PROJECTS, "
 SlackService slackService =  new SlackService()
         .withMergeRequestsEvents(true)
         .withWebhook("https://hooks.slack.com/services/ABCDEFGHI/KJLMNOPQR/wetrewq7897HKLH8998wfjjj")
-        .withUsername("GitLab4J");
+        .withUsername("GitLab");
 gitLabApi.getServicesApi().updateSlackService("project-path", slackService);
 ```
 

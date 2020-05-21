@@ -454,7 +454,7 @@ public class CommitsApi extends AbstractApi {
      */
     public Pager<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, CommitRef.RefType refType, int itemsPerPage) throws GitLabApiException {
         Form form = new GitLabApiForm().withParam("type", refType);
-        return (new Pager<CommitRef>(this, CommitRef.class, itemsPerPage, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "refs"));
+        return (new Pager<>(this, CommitRef.class, itemsPerPage, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "refs"));
     }
 
     /**
@@ -544,7 +544,7 @@ public class CommitsApi extends AbstractApi {
         }
 
         MultivaluedMap<String, String> queryParams = (filter != null ? filter.getQueryParams().asMap() : null);
-        return (new Pager<CommitStatus>(this, CommitStatus.class, itemsPerPage, queryParams,
+        return (new Pager<>(this, CommitStatus.class, itemsPerPage, queryParams,
                 "projects", this.getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "statuses"));
     }
 
@@ -641,7 +641,7 @@ public class CommitsApi extends AbstractApi {
             throw new RuntimeException("sha cannot be null");
         }
 
-        return (new Pager<Diff>(this, Diff.class, itemsPerPage, null,
+        return (new Pager<>(this, Diff.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "diff"));
     }
 
@@ -900,7 +900,7 @@ public class CommitsApi extends AbstractApi {
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
     public Pager<MergeRequest> getMergeRequests(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, null,
+        return (new Pager<>(this, MergeRequest.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "merge_requests"));
     }
 
@@ -950,4 +950,5 @@ public class CommitsApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
+
 }

@@ -262,4 +262,5 @@ public class ContainerRegistryApi extends AbstractApi {
 
         delete(Response.Status.NO_CONTENT, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "registry", "repositories", repositoryId, "tags");
     }
+
 }

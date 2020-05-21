@@ -186,4 +186,5 @@ public class NotificationSettingsApi extends AbstractApi {
         Response response = put(Response.Status.OK, formData.asMap(), "projects", projectId, "notification_settings");
         return (response.readEntity(NotificationSettings.class));
     }
+
 }

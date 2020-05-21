@@ -523,7 +523,7 @@ public class RepositoryFileApi extends AbstractApi {
      */
     public Pager<Blame> getBlame(Object projectIdOrPath, String filePath, String ref, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("ref", ref, true);
-        return (new Pager<Blame>(this, Blame.class, itemsPerPage, formData.asMap(),
+        return (new Pager<>(this, Blame.class, itemsPerPage, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath), "blame"));
     }
 
@@ -542,4 +542,5 @@ public class RepositoryFileApi extends AbstractApi {
     public Stream<Blame> getBlameStream(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
         return (getBlame(projectIdOrPath, filePath, ref, getDefaultPerPage()).stream());
     }
+
 }

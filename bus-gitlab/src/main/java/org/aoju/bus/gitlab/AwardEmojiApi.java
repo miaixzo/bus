@@ -316,4 +316,5 @@ public class AwardEmojiApi extends AbstractApi {
         delete(Response.Status.NO_CONTENT, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "notes", noteId, "award_emoji", awardId);
     }
+
 }

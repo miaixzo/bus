@@ -869,4 +869,5 @@ public class PipelineApi extends AbstractApi implements Constants {
     public Stream<Variable> getPipelineVariablesStream(Object projectIdOrPath, Integer pipelineId) throws GitLabApiException {
         return (getPipelineVariables(projectIdOrPath, pipelineId, getDefaultPerPage()).stream());
     }
+
 }

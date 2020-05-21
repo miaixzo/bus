@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  */
 public final class AccessToken {
 
-    protected static final String USER_AGENT = "GitLab4J Client";
+    protected static final String USER_AGENT = "GitLab Client";
     protected static final String COOKIES_HEADER = "Set-Cookie";
     protected static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
     protected static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
@@ -802,4 +802,5 @@ public final class AccessToken {
             return (enumHelper.toString(this));
         }
     }
+
 }

@@ -218,7 +218,7 @@ public class EventsApi extends AbstractApi {
                 .withParam("after", after)
                 .withParam("sort", sortOrder);
 
-        return (new Pager<Event>(this, Event.class, itemsPerPage, formData.asMap(),
+        return (new Pager<>(this, Event.class, itemsPerPage, formData.asMap(),
                 "users", getUserIdOrUsername(userIdOrUsername), "events"));
     }
 
@@ -319,7 +319,7 @@ public class EventsApi extends AbstractApi {
                 .withParam("after", after)
                 .withParam("sort", sortOrder);
 
-        return (new Pager<Event>(this, Event.class, itemsPerPage, formData.asMap(),
+        return (new Pager<>(this, Event.class, itemsPerPage, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "events"));
     }
 
@@ -341,4 +341,5 @@ public class EventsApi extends AbstractApi {
                                                 Date before, Date after, SortOrder sortOrder) throws GitLabApiException {
         return (getProjectEvents(projectIdOrPath, action, targetType, before, after, sortOrder, getDefaultPerPage()).stream());
     }
+
 }

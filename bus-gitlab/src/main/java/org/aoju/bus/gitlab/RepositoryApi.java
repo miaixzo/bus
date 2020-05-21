@@ -200,9 +200,8 @@ public class RepositoryApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param branchName      the name of the branch to get
      * @return an Optional instance with the info for the specified project ID/branch name pair as the value
-     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Branch> getOptionalBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
+    public Optional<Branch> getOptionalBranch(Object projectIdOrPath, String branchName) {
         try {
             return (Optional.ofNullable(getBranch(projectIdOrPath, branchName)));
         } catch (GitLabApiException glae) {
@@ -759,9 +758,8 @@ public class RepositoryApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param refs            a List of 2 or more refs (commit SHAs, branch names or tags)
      * @return an Optional instance with the Commit instance containing the common ancestor as the value
-     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Commit> getOptionalMergeBase(Object projectIdOrPath, List<String> refs) throws GitLabApiException {
+    public Optional<Commit> getOptionalMergeBase(Object projectIdOrPath, List<String> refs) {
         try {
             return (Optional.ofNullable(getMergeBase(projectIdOrPath, refs)));
         } catch (GitLabApiException glae) {

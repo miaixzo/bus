@@ -207,4 +207,5 @@ public class PackagesApi extends AbstractApi {
 
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "packages", packageId);
     }
+
 }

@@ -146,7 +146,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Issue> getIssues(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Issue>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
+        return (new Pager<>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
     }
 
     /**
@@ -208,7 +208,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public Pager<Issue> getIssues(Object projectIdOrPath, IssueFilter filter, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = filter.getQueryParams();
-        return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
+        return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "issues"));
     }
 
     /**
@@ -1030,4 +1030,5 @@ public class IssuesApi extends AbstractApi implements Constants {
                 "projects", this.getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "move");
         return (response.readEntity(Issue.class));
     }
+
 }

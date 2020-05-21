@@ -82,7 +82,7 @@ public class EnvironmentsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Environment> getEnvironments(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Environment>(this, Environment.class, itemsPerPage, null,
+        return (new Pager<>(this, Environment.class, itemsPerPage, null,
                 "projects", getProjectIdOrPath(projectIdOrPath), "environments"));
     }
 
@@ -186,4 +186,5 @@ public class EnvironmentsApi extends AbstractApi {
                 "projects", getProjectIdOrPath(projectIdOrPath), "environments", environmentId, "stop");
         return (response.readEntity(Environment.class));
     }
+
 }
