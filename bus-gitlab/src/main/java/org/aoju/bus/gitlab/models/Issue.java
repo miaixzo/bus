@@ -1,23 +1,62 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import org.aoju.bus.gitlab.Constants.IssueState;
-import org.aoju.bus.gitlab.utils.JacksonJson;
+import org.aoju.bus.gitlab.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public class Issue {
 
     private Assignee assignee;
     private List<Assignee> assignees;
-    private org.aoju.bus.gitlab.models.Author author;
+    private Author author;
     private Boolean confidential;
     private Date createdAt;
     private Date updatedAt;
     private Date closedAt;
-    private org.aoju.bus.gitlab.models.User closedBy;
+    private User closedBy;
     private String description;
     private Date dueDate;
+    @JsonProperty("id")
+    private ValueNode actualId;
+    @JsonIgnore
+    private String externalId;
+    @JsonIgnore
     private Integer id;
     private Integer iid;
     private Integer issueLinkId;
@@ -32,6 +71,12 @@ public class Issue {
     private Integer weight;
     private Boolean discussionLocked;
     private TimeStats timeStats;
+    private Integer upvotes;
+    private Integer downvotes;
+    private Integer mergeRequestsCount;
+    private Boolean hasTasks;
+    private String taskStatus;
+    private TaskCompletionStatus taskCompletionStatus;
 
     public Assignee getAssignee() {
         return assignee;
@@ -49,7 +94,7 @@ public class Issue {
         this.assignees = assignees;
     }
 
-    public org.aoju.bus.gitlab.models.Author getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
@@ -89,12 +134,41 @@ public class Issue {
         this.dueDate = dueDate;
     }
 
+    public ValueNode getActualId() {
+        return actualId;
+    }
+
+    public void setActualId(ValueNode id) {
+        actualId = id;
+        if (actualId instanceof TextNode) {
+            externalId = actualId.asText();
+        } else if (actualId instanceof IntNode) {
+            this.id = actualId.asInt();
+        }
+    }
+
     public Integer getId() {
-        return id;
+        return (id);
     }
 
     public void setId(Integer id) {
         this.id = id;
+        if (id != null) {
+            actualId = new IntNode(id);
+            externalId = null;
+        }
+    }
+
+    public String getExternalId() {
+        return (externalId);
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+        if (externalId != null) {
+            actualId = new TextNode(externalId);
+            id = null;
+        }
     }
 
     public Integer getIid() {
@@ -177,7 +251,7 @@ public class Issue {
         this.closedAt = closedAt;
     }
 
-    public org.aoju.bus.gitlab.models.User getClosedBy() {
+    public User getClosedBy() {
         return closedBy;
     }
 
@@ -225,8 +299,83 @@ public class Issue {
         this.timeStats = timeStats;
     }
 
+    public Integer getUpvotes() {
+        return upvotes;
+    }
+
+    public void setUpvotes(Integer upvotes) {
+        this.upvotes = upvotes;
+    }
+
+    public Integer getDownvotes() {
+        return downvotes;
+    }
+
+    public void setDownvotes(Integer downvotes) {
+        this.downvotes = downvotes;
+    }
+
+    public Integer getMergeRequestsCount() {
+        return mergeRequestsCount;
+    }
+
+    public void setMergeRequestsCount(Integer mergeRequestsCount) {
+        this.mergeRequestsCount = mergeRequestsCount;
+    }
+
+    public Boolean getHasTasks() {
+        return hasTasks;
+    }
+
+    public void setHasTasks(Boolean hasTasks) {
+        this.hasTasks = hasTasks;
+    }
+
+    public String getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
+    public TaskCompletionStatus getTaskCompletionStatus() {
+        return taskCompletionStatus;
+    }
+
+    public void setTaskCompletionStatus(TaskCompletionStatus taskCompletionStatus) {
+        this.taskCompletionStatus = taskCompletionStatus;
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public static class TaskCompletionStatus {
+
+        private Integer count;
+        private Integer completedCount;
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+
+        public Integer getCompletedCount() {
+            return completedCount;
+        }
+
+        public void setCompletedCount(Integer completedCount) {
+            this.completedCount = completedCount;
+        }
+
+        @Override
+        public String toString() {
+            return (JacksonJson.toJsonString(this));
+        }
     }
 }

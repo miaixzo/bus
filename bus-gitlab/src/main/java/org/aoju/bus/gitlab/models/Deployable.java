@@ -1,11 +1,40 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
 import org.aoju.bus.gitlab.Constants.DeploymentStatus;
-import org.aoju.bus.gitlab.utils.JacksonJson;
+import org.aoju.bus.gitlab.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public class Deployable {
 
     private Integer id;
@@ -19,12 +48,12 @@ public class Deployable {
     private Date startedAt;
     private Date finishedAt;
     private Double duration;
-    private org.aoju.bus.gitlab.models.User user;
-    private org.aoju.bus.gitlab.models.Commit commit;
-    private org.aoju.bus.gitlab.models.Pipeline pipeline;
+    private User user;
+    private Commit commit;
+    private Pipeline pipeline;
     private String webUrl;
-    private List<org.aoju.bus.gitlab.models.Artifact> artifacts;
-    private org.aoju.bus.gitlab.models.Runner runner;
+    private List<Artifact> artifacts;
+    private Runner runner;
     private Date artifactsExpireAt;
 
     public Integer getId() {
@@ -115,7 +144,7 @@ public class Deployable {
         this.duration = duration;
     }
 
-    public org.aoju.bus.gitlab.models.User getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -123,7 +152,7 @@ public class Deployable {
         this.user = user;
     }
 
-    public org.aoju.bus.gitlab.models.Commit getCommit() {
+    public Commit getCommit() {
         return commit;
     }
 
@@ -131,7 +160,7 @@ public class Deployable {
         this.commit = commit;
     }
 
-    public org.aoju.bus.gitlab.models.Pipeline getPipeline() {
+    public Pipeline getPipeline() {
         return pipeline;
     }
 
@@ -147,7 +176,7 @@ public class Deployable {
         this.webUrl = webUrl;
     }
 
-    public List<org.aoju.bus.gitlab.models.Artifact> getArtifacts() {
+    public List<Artifact> getArtifacts() {
         return artifacts;
     }
 
@@ -155,7 +184,7 @@ public class Deployable {
         this.artifacts = artifacts;
     }
 
-    public org.aoju.bus.gitlab.models.Runner getRunner() {
+    public Runner getRunner() {
         return runner;
     }
 

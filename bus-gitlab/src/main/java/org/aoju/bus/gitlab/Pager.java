@@ -1,9 +1,31 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.gitlab.utils.JacksonJson;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -37,6 +59,9 @@ import java.util.stream.StreamSupport;
  * </pre>
  *
  * @param <T> the GitLab4J type contained in the List.
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
 
@@ -50,7 +75,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private List<String> pageParam = new ArrayList<>(1);
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
-    private org.aoju.bus.gitlab.AbstractApi api;
+    private AbstractApi api;
     private MultivaluedMap<String, String> queryParams;
     private Object[] pathArgs;
     private JavaType javaType;
@@ -69,6 +94,10 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         javaType = mapper.getTypeFactory().constructCollectionType(List.class, type);
 
+        if (itemsPerPage < 1) {
+            itemsPerPage = api.getDefaultPerPage();
+        }
+
         // Make sure the per_page parameter is present
         if (queryParams == null) {
             queryParams = new GitLabApiForm().withParam(PER_PAGE_PARAM, itemsPerPage).asMap();
@@ -79,7 +108,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         // Set the page param to 1
         pageParam = new ArrayList<>();
-        pageParam.add(Symbol.ONE);
+        pageParam.add("1");
         queryParams.put(PAGE_PARAM, pageParam);
         Response response = api.get(Response.Status.OK, queryParams, pathArgs);
 
@@ -335,9 +364,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Gets all the items from each page as a single List instance.
      *
      * @return all the items from each page as a single List instance
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> all() throws GitLabApiException {
+    public List<T> all() {
 
         // Make sure that current page is 0, this will ensure the whole list is fetched
         // regardless of what page the instance is currently on.
@@ -357,9 +385,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return a Stream instance which is pre-populated with all items from all pages
      * @throws IllegalStateException if Stream has already been issued
-     * @throws GitLabApiException    if any other error occurs
      */
-    public Stream<T> stream() throws GitLabApiException, IllegalStateException {
+    public Stream<T> stream() throws IllegalStateException {
 
         if (pagerStream == null) {
             synchronized (this) {
@@ -403,7 +430,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     // regardless of what page the instance is currently on.
                     currentPage = 0;
 
-                    pagerStream = StreamSupport.stream(new PagerSpliterator<T>(this), false);
+                    pagerStream = StreamSupport.stream(new PagerSpliterator<>(this), false);
                     return (pagerStream);
                 }
             }

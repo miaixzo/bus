@@ -1,6 +1,31 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
+import org.aoju.bus.gitlab.models.Blame;
 import org.aoju.bus.gitlab.models.RepositoryFile;
 
 import javax.ws.rs.core.Form;
@@ -11,11 +36,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API repository files calls.
  * See <a href="https://docs.gitlab.com/ce/api/repository_files.html">Repository Files API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class RepositoryFileApi extends AbstractApi {
 
@@ -60,7 +91,7 @@ public class RepositoryFileApi extends AbstractApi {
     public RepositoryFile getFileInfo(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
 
         Form form = new Form();
-        addFormParam(form, "ref", ref, true);
+        addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
         Response response = head(Response.Status.OK, form.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath));
 
@@ -69,7 +100,7 @@ public class RepositoryFileApi extends AbstractApi {
         file.setCommitId(response.getHeaderString("X-Gitlab-Commit-Id"));
 
         String encoding = response.getHeaderString("X-Gitlab-Encoding");
-        file.setEncoding(Encoding.forValue(encoding));
+        file.setEncoding(Constants.Encoding.forValue(encoding));
 
         file.setFileName(response.getHeaderString("X-Gitlab-File-Name"));
         file.setFilePath(response.getHeaderString("X-Gitlab-File-Path"));
@@ -119,6 +150,29 @@ public class RepositoryFileApi extends AbstractApi {
     }
 
     /**
+     * Get file from repository. Allows you to receive information about file in repository like name, size, content.
+     * Note that file content is Base64 encoded.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files</code></pre>
+     *
+     * @param filePath  (required) - Full path to the file. Ex. lib/class.rb
+     * @param projectId (required) - the project ID
+     * @param ref       (required) - The name of branch, tag or commit
+     * @return a RepositoryFile instance with the file info and file content
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 5.0, replaced by {@link #getFile(Object, String, String)}
+     */
+    @Deprecated
+    public RepositoryFile getFile(String filePath, Integer projectId, String ref) throws GitLabApiException {
+
+        if (isApiVersion(ApiVersion.V3)) {
+            return (getFileV3(filePath, projectId, ref));
+        } else {
+            return (getFile(projectId, filePath, ref, true));
+        }
+    }
+
+    /**
      * Get file from repository. Allows you to receive information about file in repository like name, size, and optionally content.
      * Note that file content is Base64 encoded.
      *
@@ -138,8 +192,30 @@ public class RepositoryFileApi extends AbstractApi {
         }
 
         Form form = new Form();
-        addFormParam(form, "ref", ref, true);
+        addFormParam(form, "ref", (ref != null ? urlEncode(ref) : null), true);
         Response response = get(Response.Status.OK, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath));
+        return (response.readEntity(RepositoryFile.class));
+    }
+
+    /**
+     * Get file from repository. Allows you to receive information about file in repository like name, size, content.
+     * Note that file content is Base64 encoded.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files</code></pre>
+     *
+     * @param filePath  (required) - Full path to new file. Ex. lib/class.rb
+     * @param projectId (required) - the project ID
+     * @param ref       (required) - The name of branch, tag or commit
+     * @return a RepositoryFile instance with the file info
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 5.0
+     */
+    @Deprecated
+    protected RepositoryFile getFileV3(String filePath, Integer projectId, String ref) throws GitLabApiException {
+        Form form = new Form();
+        addFormParam(form, "file_path", filePath, true);
+        addFormParam(form, "ref", ref, true);
+        Response response = get(Response.Status.OK, form.asMap(), "projects", projectId, "repository", "files");
         return (response.readEntity(RepositoryFile.class));
     }
 
@@ -177,6 +253,30 @@ public class RepositoryFileApi extends AbstractApi {
     }
 
     /**
+     * Create new file in repository
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/repository/files</code></pre>
+     * <p>
+     * file_path (required) - Full path to new file. Ex. lib/class.rb
+     * branch_name (required) - The name of branch
+     * encoding (optional) - 'text' or 'base64'. Text is default.
+     * content (required) - File content
+     * commit_message (required) - Commit message
+     *
+     * @param file          a ReposityoryFile instance with info for the file to create
+     * @param projectId     the project ID
+     * @param branchName    the name of branch
+     * @param commitMessage the commit message
+     * @return a RepositoryFile instance with the created file info
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 5.0, replaced by {@link #createFile(Object, RepositoryFile, String, String)}
+     */
+    @Deprecated
+    public RepositoryFile createFile(RepositoryFile file, Integer projectId, String branchName, String commitMessage) throws GitLabApiException {
+        return (createFile(projectId, file, branchName, commitMessage));
+    }
+
+    /**
      * Update existing file in repository
      *
      * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/files</code></pre>
@@ -210,6 +310,30 @@ public class RepositoryFileApi extends AbstractApi {
     }
 
     /**
+     * Update existing file in repository
+     *
+     * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/files</code></pre>
+     * <p>
+     * file_path (required) - Full path to new file. Ex. lib/class.rb
+     * branch_name (required) - The name of branch
+     * encoding (optional) - 'text' or 'base64'. Text is default.
+     * content (required) - File content
+     * commit_message (required) - Commit message
+     *
+     * @param file          a ReposityoryFile instance with info for the file to update
+     * @param projectId     the project ID
+     * @param branchName    the name of branch
+     * @param commitMessage the commit message
+     * @return a RepositoryFile instance with the updated file info
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 5.0, replaced by {@link #updateFile(Object, RepositoryFile, String, String)}
+     */
+    @Deprecated
+    public RepositoryFile updateFile(RepositoryFile file, Integer projectId, String branchName, String commitMessage) throws GitLabApiException {
+        return (updateFile(projectId, file, branchName, commitMessage));
+    }
+
+    /**
      * Delete existing file in repository
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/repository/files</code></pre>
@@ -231,7 +355,8 @@ public class RepositoryFileApi extends AbstractApi {
         }
 
         Form form = new Form();
-        addFormParam(form, isApiVersion(ApiVersion.V3) ? "branch_name" : "branch", branchName, true);
+        addFormParam(form, isApiVersion(ApiVersion.V3) ? "branch_name" : "branch",
+                (branchName != null ? urlEncode(branchName) : null), true);
         addFormParam(form, "commit_message", commitMessage, true);
         Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
 
@@ -241,6 +366,27 @@ public class RepositoryFileApi extends AbstractApi {
         } else {
             delete(expectedStatus, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath));
         }
+    }
+
+    /**
+     * Delete existing file in repository
+     *
+     * <pre><code>GitLab Endpoint: DELETE /projects/:id/repository/files</code></pre>
+     * <p>
+     * file_path (required) - Full path to file. Ex. lib/class.rb
+     * branch_name (required) - The name of branch
+     * commit_message (required) - Commit message
+     *
+     * @param filePath      full path to new file. Ex. lib/class.rb
+     * @param projectId     the project ID
+     * @param branchName    the name of branch
+     * @param commitMessage the commit message
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 5.0, replaced by {@link #deleteFile(Object, String, String, String)}
+     */
+    @Deprecated
+    public void deleteFile(String filePath, Integer projectId, String branchName, String commitMessage) throws GitLabApiException {
+        deleteFile(projectId, filePath, branchName, commitMessage);
     }
 
     /**
@@ -295,21 +441,20 @@ public class RepositoryFileApi extends AbstractApi {
      * V4:
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:filepath</code></pre>
      *
-     * @param projectIdOrPath    the project in the form of an Integer(ID), String(path), or Project instance
-     * @param commitOrBranchName the commit or branch name to get the file contents for
-     * @param filepath           the path of the file to get
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param ref             the commit or branch name to get the file contents for
+     * @param filepath        the path of the file to get
      * @return an InputStream to read the raw file from
      * @throws GitLabApiException if any exception occurs
      */
-    public InputStream getRawFile(Object projectIdOrPath, String commitOrBranchName, String filepath) throws GitLabApiException {
+    public InputStream getRawFile(Object projectIdOrPath, String ref, String filepath) throws GitLabApiException {
 
+        Form formData = new GitLabApiForm().withParam("ref", (ref != null ? ref : null), true);
         if (isApiVersion(ApiVersion.V3)) {
-            Form formData = new GitLabApiForm().withParam("file_path", filepath, true);
             Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
-                    "projects", getProjectIdOrPath(projectIdOrPath), "repository", "blobs", commitOrBranchName);
+                    "projects", getProjectIdOrPath(projectIdOrPath), "repository", "blobs", ref);
             return (response.readEntity(InputStream.class));
         } else {
-            Form formData = new GitLabApiForm().withParam("ref", commitOrBranchName, true);
             Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
                     "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filepath), "raw");
             return (response.readEntity(InputStream.class));
@@ -345,5 +490,56 @@ public class RepositoryFileApi extends AbstractApi {
 
         addFormParam(form, "commit_message", commitMessage, true);
         return (form);
+    }
+
+    /**
+     * Get a List of file blame from repository.  Allows you to receive blame information.
+     * Each blame range contains lines and corresponding commit information.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:file_path/blame</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param filePath        the path of the file to get the blame for
+     * @param ref             the name of branch, tag or commit
+     * @return a List of Blame instances for the specified filePath and ref
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Blame> getBlame(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
+        return (getBlame(projectIdOrPath, filePath, ref, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Get a Pager of file blame from repository.  Allows you to receive blame information.
+     * Each blame range contains lines and corresponding commit information.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:file_path/blame</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param filePath        the path of the file to get the blame for
+     * @param ref             the name of branch, tag or commit
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
+     * @return a Pager of Blame instances for the specified filePath and ref
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<Blame> getBlame(Object projectIdOrPath, String filePath, String ref, int itemsPerPage) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm().withParam("ref", ref, true);
+        return (new Pager<Blame>(this, Blame.class, itemsPerPage, formData.asMap(),
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath), "blame"));
+    }
+
+    /**
+     * Get a Stream of file blame from repository.  Allows you to receive blame information.
+     * Each blame range contains lines and corresponding commit information.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/files/:file_path/blame</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param filePath        the path of the file to get the blame for
+     * @param ref             the name of branch, tag or commit
+     * @return a Stream of Blame instances for the specified filePath and ref
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Stream<Blame> getBlameStream(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
+        return (getBlame(projectIdOrPath, filePath, ref, getDefaultPerPage()).stream());
     }
 }

@@ -1,3 +1,27 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.DeployKey;
@@ -11,6 +35,10 @@ import java.util.stream.Stream;
 
 /**
  * This class implements the client side API for the GitLab Deploy Keys API calls.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class DeployKeysApi extends AbstractApi {
 
@@ -190,6 +218,33 @@ public class DeployKeysApi extends AbstractApi {
                 .withParam("can_push", canPush);
         Response response = post(Response.Status.CREATED, formData,
                 "projects", getProjectIdOrPath(projectIdOrPath), "deploy_keys");
+        return (response.readEntity(DeployKey.class));
+    }
+
+    /**
+     * Updates an existing project deploy key.
+     *
+     * <pre><code>GitLab Endpoint: PUT /projects/:id/deploy_keys/:key_id</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param deployKeyId     the ID of the deploy key to update, required
+     * @param title           the title for the deploy key, optional
+     * @param canPush         can deploy key push to the project's repository, optional
+     * @return an updated DeployKey instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public DeployKey updateDeployKey(Object projectIdOrPath, Integer deployKeyId, String title, Boolean canPush) throws GitLabApiException {
+
+        if (deployKeyId == null) {
+            throw new RuntimeException("deployKeyId cannot be null");
+        }
+
+        final DeployKey key = new DeployKey();
+        key.setCanPush(canPush);
+        key.setTitle(title);
+        final Response response = put(Response.Status.OK, key,
+                "projects", getProjectIdOrPath(projectIdOrPath), "deploy_keys", deployKeyId);
+
         return (response.readEntity(DeployKey.class));
     }
 

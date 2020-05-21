@@ -1,7 +1,31 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
-import org.aoju.bus.gitlab.utils.DurationUtils;
 
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -14,9 +38,12 @@ import java.util.stream.Stream;
 /**
  * This class provides an entry point to all the GitLab API Issue calls.
  *
+ * @author Kimi Liu
+ * @version 5.9.2
  * @see <a href="https://docs.gitlab.com/ce/api/issues.html">Issues API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issue_links.html">Issue Links API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issues_statistics.html">Issues Statistics API at GitLab</a>
+ * @since JDK 1.8+
  */
 public class IssuesApi extends AbstractApi implements Constants {
 
@@ -531,7 +558,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, getDefaultPerPageParam(), "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid);
     }
 
@@ -582,7 +609,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        String durationString = (duration != null ? DurationUtils.toString(duration.getSeconds(), false) : null);
+        String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
         Response response = post(Response.Status.OK, formData.asMap(),
@@ -658,7 +685,7 @@ public class IssuesApi extends AbstractApi implements Constants {
             throw new RuntimeException("issue IID cannot be null");
         }
 
-        String durationString = (duration != null ? DurationUtils.toString(duration.getSeconds(), false) : null);
+        String durationString = (duration != null ? Duration.toString(duration.getSeconds(), false) : null);
         GitLabApiForm formData = new GitLabApiForm().withParam("duration", durationString, true);
 
         Response response = post(Response.Status.CREATED, formData.asMap(),
@@ -982,18 +1009,25 @@ public class IssuesApi extends AbstractApi implements Constants {
     }
 
     /**
-     * Gets issues count statistics for given group.
+     * <p>Moves an issue to a different project. If the target project equals the source project or
+     * the user has insufficient permissions to move an issue, error 400 together with an
+     * explaining error message is returned.</p>
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:projectId/issues_statistics</code></pre>
+     * <p>If a given label and/or milestone with the same name also exists in the target project,
+     * it will then be assigned to the issue that is being moved.</p>
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:projectId/issues/:issue_iid/move</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance, required
-     * @param filter          {@link IssuesStatisticsFilter} a IssuesStatisticsFilter instance with the filter settings.
-     * @return an IssuesStatistics instance with the statistics for the matched issues
+     * @param issueIid        the IID of the issue to move
+     * @param toProjectId     the ID of the project to move the issue to
+     * @return an Issue instance for the moved issue
      * @throws GitLabApiException if any exception occurs
      */
-    public IssuesStatistics geProjectIssuesStatistics(Object projectIdOrPath, IssuesStatisticsFilter filter) throws GitLabApiException {
-        GitLabApiForm formData = filter.getQueryParams();
-        Response response = get(Response.Status.OK, formData.asMap(), "projects", this.getProjectIdOrPath(projectIdOrPath), "issues_statistics");
-        return (response.readEntity(IssuesStatistics.class));
+    public Issue moveIssue(Object projectIdOrPath, Integer issueIid, Object toProjectId) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm().withParam("to_project_id", toProjectId, true);
+        Response response = post(Response.Status.OK, formData,
+                "projects", this.getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "move");
+        return (response.readEntity(Issue.class));
     }
 }

@@ -1,9 +1,31 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
-import org.aoju.bus.gitlab.models.ImpersonationToken.Scope;
-import org.aoju.bus.gitlab.utils.EmailChecker;
-import org.aoju.bus.logger.Logger;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -13,19 +35,43 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API users calls.
  *
+ * @author Kimi Liu
+ * @version 5.9.2
  * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
+ * @since JDK 1.8+
  */
 public class UserApi extends AbstractApi {
+
+    /**
+     * Java regular expression for validating an email address.
+     */
+    public static final String EMAIL_REGEX =
+            "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
+                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" +
+                    "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:" +
+                    "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:" +
+                    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
     private boolean customAttributesEnabled = false;
 
     public UserApi(GitLabApi gitLabApi) {
         super(gitLabApi);
+    }
+
+    /**
+     * Returns true if the provided String is a valid email address.
+     *
+     * @param email the email address to check for validity
+     * @return true if the provided String is a valid email address, otherwise return false
+     */
+    public static final boolean isValidEmail(final String email) {
+        return (email == null ? false : Pattern.compile(EMAIL_REGEX).matcher(email).matches());
     }
 
     /**
@@ -58,7 +104,7 @@ public class UserApi extends AbstractApi {
 
         String url = this.gitLabApi.getGitLabServerUrl();
         if (url.startsWith("https://gitlab.com")) {
-            Logger.warn("Fetching all users from " + url +
+            GitLabApi.getLogger().warning("Fetching all users from " + url +
                     " may take many minutes to complete, use Pager<User> getUsers(int) instead.");
         }
 
@@ -177,7 +223,7 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("userId cannot be null");
         }
 
-        if (isApiVersion(GitLabApi.ApiVersion.V3)) {
+        if (isApiVersion(ApiVersion.V3)) {
             put(Response.Status.CREATED, null, "users", userId, "block");
         } else {
             post(Response.Status.CREATED, (Form) null, "users", userId, "block");
@@ -198,7 +244,7 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("userId cannot be null");
         }
 
-        if (isApiVersion(GitLabApi.ApiVersion.V3)) {
+        if (isApiVersion(ApiVersion.V3)) {
             put(Response.Status.CREATED, null, "users", userId, "unblock");
         } else {
             post(Response.Status.CREATED, (Form) null, "users", userId, "unblock");
@@ -346,7 +392,7 @@ public class UserApi extends AbstractApi {
      */
     public User getUserByEmail(String email) throws GitLabApiException {
 
-        if (!EmailChecker.isValidEmail(email)) {
+        if (!isValidEmail(email)) {
             throw new IllegalArgumentException("email is not valid");
         }
 
@@ -509,6 +555,7 @@ public class UserApi extends AbstractApi {
      * @param projectsLimit the maximum number of project
      * @return created User instance
      * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 5.0, replaced by {@link #createUser(User, CharSequence, boolean)}
      */
     public User createUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
         Form formData = userToForm(user, projectsLimit, password, null, true);
@@ -591,6 +638,45 @@ public class UserApi extends AbstractApi {
     }
 
     /**
+     * Modifies an existing user. Only administrators can change attributes of a user.
+     *
+     * <pre><code>GitLab Endpoint: PUT /users/:id</code></pre>
+     *
+     * <p>The following properties of the provided User instance can be set during update:<pre><code> email (required) - Email
+     * username (required) - Username
+     * name (required) - Name
+     * skype (optional) - Skype ID
+     * linkedin (optional) - LinkedIn
+     * twitter (optional) - Twitter account
+     * websiteUrl (optional) - Website URL
+     * organization (optional) - Organization name
+     * projectsLimit (optional) - Number of projects user can create
+     * externUid (optional) - External UID
+     * provider (optional) - External provider name
+     * bio (optional) - User's biography
+     * location (optional) - User's location
+     * admin (optional) - User is admin - true or false (default)
+     * canCreateGroup (optional) - User can create groups - true or false
+     * skipConfirmation (optional) - Skip confirmation - true or false (default)
+     * external (optional) - Flags the user as external - true or false(default)
+     * sharedRunnersMinutesLimit (optional) - Pipeline minutes quota for this user
+     * </code></pre>
+     *
+     * @param user          the User instance with the user info to modify
+     * @param password      the new password for the user
+     * @param projectsLimit the maximum number of project
+     * @return the modified User instance
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in version 5.0, replaced by {@link #updateUser(User, CharSequence)}
+     */
+    @Deprecated
+    public User modifyUser(User user, CharSequence password, Integer projectsLimit) throws GitLabApiException {
+        Form form = userToForm(user, projectsLimit, password, false, false);
+        Response response = put(Response.Status.OK, form.asMap(), "users", user.getId());
+        return (response.readEntity(User.class));
+    }
+
+    /**
      * Deletes a user. Available only for administrators.
      *
      * <pre><code>GitLab Endpoint: DELETE /users/:id</code></pre>
@@ -614,7 +700,7 @@ public class UserApi extends AbstractApi {
      */
     public void deleteUser(Object userIdOrUsername, Boolean hardDelete) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("hard_delete ", hardDelete);
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, formData.asMap(), "users", getUserIdOrUsername(userIdOrUsername));
     }
 
@@ -759,7 +845,7 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("keyId cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "user", "keys", keyId);
     }
 
@@ -778,7 +864,7 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("keyId cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "users", getUserIdOrUsername(userIdOrUsername), "keys", keyId);
     }
 
@@ -863,7 +949,7 @@ public class UserApi extends AbstractApi {
      * @return the created ImpersonationToken instance
      * @throws GitLabApiException if any exception occurs
      */
-    public ImpersonationToken createImpersonationToken(Object userIdOrUsername, String name, Date expiresAt, Scope[] scopes) throws GitLabApiException {
+    public ImpersonationToken createImpersonationToken(Object userIdOrUsername, String name, Date expiresAt, ImpersonationToken.Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -873,7 +959,7 @@ public class UserApi extends AbstractApi {
                 .withParam("name", name, true)
                 .withParam("expires_at", expiresAt);
 
-        for (Scope scope : scopes) {
+        for (ImpersonationToken.Scope scope : scopes) {
             formData.withParam("scopes[]", scope.toString());
         }
 
@@ -896,7 +982,7 @@ public class UserApi extends AbstractApi {
             throw new RuntimeException("tokenId cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "users", getUserIdOrUsername(userIdOrUsername), "impersonation_tokens", tokenId);
     }
 
@@ -1174,4 +1260,5 @@ public class UserApi extends AbstractApi {
     public void deleteEmail(final Object userIdOrUsername, final Long emailId) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "users", getUserIdOrUsername(userIdOrUsername), "emails", emailId);
     }
+
 }

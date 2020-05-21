@@ -1,12 +1,31 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.TokenType;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
-import org.aoju.bus.gitlab.utils.JacksonJson;
-import org.aoju.bus.gitlab.utils.MaskingLoggingFilter;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -29,11 +48,17 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
-public class GitLabApiClient {
+public class GitLabApiClient implements AutoCloseable {
 
     protected static final String PRIVATE_TOKEN_HEADER = "PRIVATE-TOKEN";
     protected static final String SUDO_HEADER = "Sudo";
@@ -44,13 +69,15 @@ public class GitLabApiClient {
     private Client apiClient;
     private String baseUrl;
     private String hostUrl;
-    private TokenType tokenType = TokenType.PRIVATE;
+    private TokenType tokenType;
     private String authToken;
     private String secretToken;
     private boolean ignoreCertificateErrors;
     private SSLContext openSslContext;
     private HostnameVerifier openHostnameVerifier;
     private Integer sudoAsId;
+    private Integer connectTimeout;
+    private Integer readTimeout;
 
     /**
      * Construct an instance to communicate with a GitLab API server using the specified GitLab API version,
@@ -191,7 +218,9 @@ public class GitLabApiClient {
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
     public GitLabApiClient(ApiVersion apiVersion, String hostUrl, TokenType tokenType, String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
-        this.hostUrl = (hostUrl.endsWith(Symbol.SLASH) ? hostUrl.replaceAll("/$", Normal.EMPTY) : hostUrl);
+
+        // Remove the trailing "/" from the hostUrl if present
+        this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", "") : hostUrl);
         this.baseUrl = this.hostUrl;
         this.hostUrl += apiVersion.getApiNamespace();
 
@@ -227,22 +256,45 @@ public class GitLabApiClient {
     }
 
     /**
+     * Close the underlying {@link Client} and its associated resources.
+     */
+    @Override
+    public void close() {
+        if (apiClient != null) {
+            apiClient.close();
+        }
+    }
+
+    /**
      * Enable the logging of the requests to and the responses from the GitLab server API.
      *
-     * @param maxEntityLength   maximum number of entity bytes to be logged.  When logging if the maxEntitySize
+     * @param logger            the Logger instance to log to
+     * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param maxEntitySize     maximum number of entity bytes to be logged.  When logging if the maxEntitySize
      *                          is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
      *                          the end of the log entry. If maxEntitySize is <= 0, entity logging will be disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    void enableRequestResponseLogging(int maxEntityLength, List<String> maskedHeaderNames) {
+    void enableRequestResponseLogging(Logger logger, Level level, int maxEntitySize, List<String> maskedHeaderNames) {
 
-        MaskingLoggingFilter loggingFilter = new MaskingLoggingFilter(maxEntityLength, maskedHeaderNames);
+        MaskingLoggingFilter loggingFilter = new MaskingLoggingFilter(logger, level, maxEntitySize, maskedHeaderNames);
         clientConfig.register(loggingFilter);
 
         // Recreate the Client instance if already created.
         if (apiClient != null) {
             createApiClient();
         }
+    }
+
+    /**
+     * Sets the per request connect and read timeout.
+     *
+     * @param connectTimeout the per request connect timeout in milliseconds, can be null to use default
+     * @param readTimeout    the per request read timeout in milliseconds, can be null to use default
+     */
+    void setRequestTimeout(Integer connectTimeout, Integer readTimeout) {
+        this.connectTimeout = connectTimeout;
+        this.readTimeout = readTimeout;
     }
 
     /**
@@ -317,7 +369,7 @@ public class GitLabApiClient {
         StringBuilder urlBuilder = new StringBuilder(url);
         for (Object pathArg : pathArgs) {
             if (pathArg != null) {
-                urlBuilder.append(Symbol.SLASH);
+                urlBuilder.append("/");
                 urlBuilder.append(pathArg.toString());
             }
         }
@@ -460,10 +512,13 @@ public class GitLabApiClient {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response post(Form formData, URL url) {
-        if (formData instanceof GitLabApiForm)
+        if (formData instanceof GitLabApiForm) {
             return (invocation(url, null).post(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
-        else
+        } else if (formData != null) {
             return (invocation(url, null).post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+        } else {
+            return (invocation(url, null).post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+        }
     }
 
     /**
@@ -475,7 +530,7 @@ public class GitLabApiClient {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response post(MultivaluedMap<String, String> queryParams, URL url) {
-        return (invocation(url, queryParams).post(null));
+        return (invocation(url, queryParams).post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
     }
 
     /**
@@ -671,6 +726,21 @@ public class GitLabApiClient {
     }
 
     /**
+     * Perform an HTTP PUT call with the specified payload object and URL, returning
+     * a ClientResponse instance with the data returned from the endpoint.
+     *
+     * @param payload  the object instance that will be serialized to JSON and used as the PUT data
+     * @param pathArgs variable list of arguments used to build the URI
+     * @return a ClientResponse instance with the data returned from the endpoint
+     * @throws IOException if an error occurs while constructing the URL
+     */
+    protected Response put(Object payload, Object... pathArgs) throws IOException {
+        URL url = getApiUrl(pathArgs);
+        Entity<?> entity = Entity.entity(payload, MediaType.APPLICATION_JSON);
+        return (invocation(url, null).put(entity));
+    }
+
+    /**
      * Perform an HTTP DELETE call with the specified form data and path objects, returning
      * a Response instance with the data returned from the endpoint.
      *
@@ -741,6 +811,16 @@ public class GitLabApiClient {
         // If sudo as ID is set add the Sudo header
         if (sudoAsId != null && sudoAsId.intValue() > 0)
             builder = builder.header(SUDO_HEADER, sudoAsId);
+
+        // Set the per request connect timeout
+        if (connectTimeout != null) {
+            builder.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
+        }
+
+        // Set the per request read timeout
+        if (readTimeout != null) {
+            builder.property(ClientProperties.READ_TIMEOUT, readTimeout);
+        }
 
         return (builder);
     }
@@ -832,10 +912,14 @@ public class GitLabApiClient {
         }};
 
         // Ignore differences between given hostname and certificate hostname
-        HostnameVerifier hostnameVerifier = (hostname, session) -> true;
+        HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        };
 
         try {
-            SSLContext sslContext = SSLContext.getInstance(Http.TLS);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, trustAllCerts, new SecureRandom());
             openSslContext = sslContext;
             openHostnameVerifier = hostnameVerifier;
@@ -847,5 +931,4 @@ public class GitLabApiClient {
 
         return (true);
     }
-
 }

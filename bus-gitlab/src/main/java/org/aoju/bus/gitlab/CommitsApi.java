@@ -1,9 +1,30 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.*;
-import org.aoju.bus.gitlab.models.CommitAction.Action;
-import org.aoju.bus.gitlab.models.CommitRef.RefType;
-import org.aoju.bus.gitlab.utils.ISO8601;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -18,6 +39,10 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab commits calls.
  * See <a href="https://docs.gitlab.com/ce/api/commits.html">Commits API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class CommitsApi extends AbstractApi {
 
@@ -36,6 +61,23 @@ public class CommitsApi extends AbstractApi {
      */
     public List<Commit> getCommits(Object projectIdOrPath) throws GitLabApiException {
         return (getCommits(projectIdOrPath, null, null, null, null, true, null, null, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Get a list of repository commits in a project.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param page            the page to get
+     * @param perPage         the number of commits per page
+     * @return a list containing the commits for the specified project ID
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @deprecated
+     */
+    @Deprecated
+    public List<Commit> getCommits(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
+        return (getCommits(projectIdOrPath, null, null, null, page, perPage));
     }
 
     /**
@@ -114,6 +156,26 @@ public class CommitsApi extends AbstractApi {
     }
 
     /**
+     * Get a list of repository commits in a project.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param ref             the name of a repository branch or tag or if not given the default branch
+     * @param since           only commits after or on this date will be returned
+     * @param until           only commits before or on this date will be returned
+     * @param page            the page to get
+     * @param perPage         the number of commits per page
+     * @return a list containing the commits for the specified project ID
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @deprecated
+     */
+    @Deprecated
+    public List<Commit> getCommits(Object projectIdOrPath, String ref, Date since, Date until, int page, int perPage) throws GitLabApiException {
+        return (getCommits(projectIdOrPath, ref, since, until, null, page, perPage));
+    }
+
+    /**
      * Get a Stream of repository commits in a project.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
@@ -144,6 +206,36 @@ public class CommitsApi extends AbstractApi {
      */
     public Stream<Commit> getCommitsStream(Object projectIdOrPath, String ref, Date since, Date until, String path) throws GitLabApiException {
         return (getCommits(projectIdOrPath, ref, since, until, path, null, null, null, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Get a list of repository commits in a project.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param ref             the name of a repository branch or tag or if not given the default branch
+     * @param since           only commits after or on this date will be returned
+     * @param until           only commits before or on this date will be returned
+     * @param path            the path to file of a project
+     * @param page            the page to get
+     * @param perPage         the number of commits per page
+     * @return a list containing the commits for the specified project ID
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @deprecated
+     */
+    @Deprecated
+    public List<Commit> getCommits(Object projectIdOrPath, String ref, Date since, Date until, String path, int page, int perPage) throws GitLabApiException {
+        Form formData = new GitLabApiForm()
+                .withParam("ref_name", ref)
+                .withParam("since", ISO8601.toString(since, false))
+                .withParam("until", ISO8601.toString(until, false))
+                .withParam("path", (path == null ? null : urlEncode(path)))
+                .withParam(PAGE_PARAM, page)
+                .withParam(PER_PAGE_PARAM, perPage);
+        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits");
+        return (response.readEntity(new GenericType<List<Commit>>() {
+        }));
     }
 
     /**
@@ -286,39 +378,99 @@ public class CommitsApi extends AbstractApi {
     }
 
     /**
-     * Get a specific commit identified by the commit hash or name of a branch or tag as an Optional instance
+     * Get a List of all references (from branches or tags) a commit is pushed to.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/refs</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
-     * @return Get all references (from branches or tags) a commit is pushed to
+     * @return a List of all references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      * @since Gitlab 10.6
      */
     public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha) throws GitLabApiException {
-        return (getCommitRefs(projectIdOrPath, sha, RefType.ALL));
+        return (getCommitRefs(projectIdOrPath, sha, CommitRef.RefType.ALL, getDefaultPerPage()).all());
     }
 
     /**
-     * Get a specific commit identified by the commit hash or name of a branch or tag as an Optional instance
+     * Get a Pager of references (from branches or tags) a commit is pushed to.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/refs?type=:refType</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @param itemsPerPage    the number of Commit instances that will be fetched per page
+     * @return a Pager of references (from branches or tags) a commit is pushed to
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @since Gitlab 10.6
+     */
+    public Pager<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
+        return (getCommitRefs(projectIdOrPath, sha, CommitRef.RefType.ALL, itemsPerPage));
+    }
+
+    /**
+     * Get a Stream of all references (from branches or tags) a commit is pushed to.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/refs</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @return a Stream of all references (from branches or tags) a commit is pushed to
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @since Gitlab 10.6
+     */
+    public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha) throws GitLabApiException {
+        return (getCommitRefs(projectIdOrPath, sha, CommitRef.RefType.ALL, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Get a List of all references (from branches or tags) a commit is pushed to.
      *
      * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/refs?type=:refType</code></pre>
      *
      * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param sha             a commit hash or name of a branch or tag
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
-     * @return Get all references (from branches or tags) a commit is pushed to
+     * @return a List of all references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      * @since Gitlab 10.6
      */
-    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, RefType refType) throws GitLabApiException {
-        Form form = new GitLabApiForm()
-                .withParam("type", refType)
-                .withParam(PER_PAGE_PARAM, getDefaultPerPage());
-        Response response = get(Response.Status.OK, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "refs");
-        return (response.readEntity(new GenericType<List<CommitRef>>() {
-        }));
+    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, CommitRef.RefType refType) throws GitLabApiException {
+        return (getCommitRefs(projectIdOrPath, sha, refType, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Get a Pager of references (from branches or tags) a commit is pushed to.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/refs?type=:refType</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
+     * @param itemsPerPage    the number of Commit instances that will be fetched per page
+     * @return a Pager of references (from branches or tags) a commit is pushed to
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @since Gitlab 10.6
+     */
+    public Pager<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, CommitRef.RefType refType, int itemsPerPage) throws GitLabApiException {
+        Form form = new GitLabApiForm().withParam("type", refType);
+        return (new Pager<CommitRef>(this, CommitRef.class, itemsPerPage, form.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "refs"));
+    }
+
+    /**
+     * Get a Stream of all references (from branches or tags) a commit is pushed to.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/refs?type=:refType</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
+     * @return a Stream of all references (from branches or tags) a commit is pushed to
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     * @since Gitlab 10.6
+     */
+    public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha, CommitRef.RefType refType) throws GitLabApiException {
+        return (getCommitRefs(projectIdOrPath, sha, refType, getDefaultPerPage()).stream());
     }
 
     /**
@@ -465,9 +617,46 @@ public class CommitsApi extends AbstractApi {
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
     public List<Diff> getDiff(Object projectIdOrPath, String sha) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "diff");
-        return (response.readEntity(new GenericType<List<Diff>>() {
-        }));
+        return (getDiff(projectIdOrPath, sha, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Get the Pager of diffs of a commit in a project.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/diff</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @param itemsPerPage    the number of Diff instances that will be fetched per page
+     * @return a Pager of Diff instances for the specified project ID/sha pair
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     */
+    public Pager<Diff> getDiff(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
+
+        if (projectIdOrPath == null) {
+            throw new RuntimeException("projectIdOrPath cannot be null");
+        }
+
+        if (sha == null || sha.trim().isEmpty()) {
+            throw new RuntimeException("sha cannot be null");
+        }
+
+        return (new Pager<Diff>(this, Diff.class, itemsPerPage, null,
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "diff"));
+    }
+
+    /**
+     * Get the Diff of diffs of a commit in a project.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/diff</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @return a Stream of Diff instances for the specified project ID/sha pair
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     */
+    public Stream<Diff> getDiffStream(Object projectIdOrPath, String sha) throws GitLabApiException {
+        return (getDiff(projectIdOrPath, sha, getDefaultPerPage()).stream());
     }
 
     /**
@@ -629,8 +818,8 @@ public class CommitsApi extends AbstractApi {
         for (CommitAction action : actions) {
 
             // File content is required for create and update
-            Action actionType = action.getAction();
-            if (actionType == Action.CREATE || actionType == Action.UPDATE) {
+            CommitAction.Action actionType = action.getAction();
+            if (actionType == CommitAction.Action.CREATE || actionType == CommitAction.Action.UPDATE) {
                 String content = action.getContent();
                 if (content == null) {
                     throw new GitLabApiException("Content cannot be null for create or update actions.");
@@ -683,5 +872,82 @@ public class CommitsApi extends AbstractApi {
         Response response = post(Response.Status.CREATED, formData,
                 "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "cherry_pick");
         return (response.readEntity(Commit.class));
+    }
+
+    /**
+     * Get a list of Merge Requests related to the specified commit.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/merge_requests</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             the commit SHA to get merge requests for
+     * @return a list containing the MergeRequest instances for the specified project/SHA
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     */
+    public List<MergeRequest> getMergeRequests(Object projectIdOrPath, String sha) throws GitLabApiException {
+        return (getMergeRequests(projectIdOrPath, sha, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Get a Pager of Merge Requests related to the specified commit.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/merge_requests</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             the commit SHA to get merge requests for
+     * @param itemsPerPage    the number of Commit instances that will be fetched per page
+     * @return a Pager containing the MergeRequest instances for the specified project/SHA
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     */
+    public Pager<MergeRequest> getMergeRequests(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
+        return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, null,
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "merge_requests"));
+    }
+
+    /**
+     * Get a Stream of Merge Requests related to the specified commit.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/merge_requests</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             the commit SHA to get merge requests for
+     * @return a Stream containing the MergeRequest instances for the specified project/SHA
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     */
+    public Stream<MergeRequest> getMergeRequestsStream(Object projectIdOrPath, String sha) throws GitLabApiException {
+        return (getMergeRequests(projectIdOrPath, sha, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Get the GPG signature from a commit, if it is signed. For unsigned commits, it results in a 404 response.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/signature</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @return the GpgSignature instance for the specified project ID/sha pair
+     * @throws GitLabApiException GitLabApiException if any exception occurs during execution
+     */
+    public GpgSignature getGpgSignature(Object projectIdOrPath, String sha) throws GitLabApiException {
+        Response response = get(Response.Status.OK, getDefaultPerPageParam(),
+                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "signature");
+        return (response.readEntity(GpgSignature.class));
+    }
+
+    /**
+     * Get the GPG signature from a commit as an Optional instance
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/commits/:sha/signature</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param sha             a commit hash or name of a branch or tag
+     * @return the GpgSignature for the specified project ID/sha pair as an Optional instance
+     */
+    public Optional<GpgSignature> getOptionalGpgSignature(Object projectIdOrPath, String sha) {
+        try {
+            return (Optional.ofNullable(getGpgSignature(projectIdOrPath, sha)));
+        } catch (GitLabApiException glae) {
+            return (GitLabApi.createOptionalFromException(glae));
+        }
     }
 }

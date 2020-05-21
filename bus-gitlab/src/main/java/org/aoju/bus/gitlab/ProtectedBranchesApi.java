@@ -1,17 +1,46 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.AccessLevel;
+import org.aoju.bus.gitlab.models.AllowedTo;
 import org.aoju.bus.gitlab.models.ProtectedBranch;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the Protected Branches API calls.
  *
+ * @author Kimi Liu
+ * @version 5.9.2
  * @see <a href="https://docs.gitlab.com/ee/api/protected_branches.html">Protected branches API at GitLab</a>
+ * @since JDK 1.8+
  */
 public class ProtectedBranchesApi extends AbstractApi {
 
@@ -61,6 +90,39 @@ public class ProtectedBranchesApi extends AbstractApi {
     }
 
     /**
+     * Get a single protected branch or wildcard protected branch.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/protected_branches/:branch_name</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param branchName      the name of the branch or wildcard
+     * @return a ProtectedBranch instance with info on the protected branch
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ProtectedBranch getProtectedBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
+        Response response = get(Response.Status.OK, null,
+                "projects", this.getProjectIdOrPath(projectIdOrPath), "protected_branches", urlEncode(branchName));
+        return (response.readEntity(ProtectedBranch.class));
+    }
+
+    /**
+     * Get an Optional instance with the value for the specific protected branch.
+     *
+     * <pre><code>GitLab Endpoint: GET /projects/:id/protected_branches/:branch_name</code></pre>
+     *
+     * @param projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param branchName      the name of the branch or wildcard
+     * @return an Optional instance with the specified protected branch as a value
+     */
+    public Optional<ProtectedBranch> getOptionalProtectedBranch(Object projectIdOrPath, String branchName) {
+        try {
+            return (Optional.ofNullable(getProtectedBranch(projectIdOrPath, branchName)));
+        } catch (GitLabApiException glae) {
+            return (GitLabApi.createOptionalFromException(glae));
+        }
+    }
+
+    /**
      * Unprotects the given protected branch or wildcard protected branch.
      *
      * <pre><code>GitLab Endpoint: DELETE /projects/:id/protected_branches/:name</code></pre>
@@ -74,7 +136,8 @@ public class ProtectedBranchesApi extends AbstractApi {
     }
 
     /**
-     * Protects a single repository branch or several project repository branches using a wildcard protected branch.
+     * Protects a single repository branch or several project repository branches
+     * using a wildcard protected branch.
      *
      * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
      *
@@ -100,10 +163,99 @@ public class ProtectedBranchesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName, AccessLevel pushAccessLevel, AccessLevel mergeAccessLevel) throws GitLabApiException {
+        return (protectBranch(projectIdOrPath, branchName, pushAccessLevel, mergeAccessLevel, null, null));
+    }
+
+    /**
+     * Protects a single repository branch or several project repository branches using a wildcard protected branch.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
+     *
+     * @param projectIdOrPath           the project in the form of an Integer(ID), String(path), or Project instance
+     * @param branchName                the name of the branch to protect, can be a wildcard
+     * @param pushAccessLevel           access levels allowed to push (defaults: 40, maintainer access level)
+     * @param mergeAccessLevel          access levels allowed to merge (defaults: 40, maintainer access level)
+     * @param unprotectAccessLevel      access levels allowed to unprotect (defaults: 40, maintainer access level)
+     * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
+     * @return the branch info for the protected branch
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName,
+                                         AccessLevel pushAccessLevel, AccessLevel mergeAccessLevel, AccessLevel unprotectAccessLevel,
+                                         Boolean codeOwnerApprovalRequired) throws GitLabApiException {
         Form formData = new GitLabApiForm()
                 .withParam("name", branchName, true)
-                .withParam("push_access_level", pushAccessLevel.toValue(), false)
-                .withParam("merge_access_level", mergeAccessLevel.toValue(), false);
+                .withParam("push_access_level", pushAccessLevel)
+                .withParam("merge_access_level", mergeAccessLevel)
+                .withParam("unprotect_access_level", unprotectAccessLevel)
+                .withParam("code_owner_approval_required", codeOwnerApprovalRequired);
+        Response response = post(Response.Status.CREATED, formData.asMap(),
+                "projects", getProjectIdOrPath(projectIdOrPath), "protected_branches");
+        return (response.readEntity(ProtectedBranch.class));
+    }
+
+    /**
+     * Protects a single repository branch or several project repository branches using a wildcard protected branch.
+     *
+     * <p>NOTE: This method is only available to GitLab Starter, Bronze, or higher.</p>
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
+     *
+     * @param projectIdOrPath           the project in the form of an Integer(ID), String(path), or Project instance
+     * @param branchName                the name of the branch to protect, can be a wildcard
+     * @param allowedToPushUserId       user ID allowed to push, can be null
+     * @param allowedToMergeUserId      user ID allowed to merge, can be null
+     * @param allowedToUnprotectUserId  user ID allowed to unprotect, can be null
+     * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
+     * @return the branch info for the protected branch
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName,
+                                         Integer allowedToPushUserId, Integer allowedToMergeUserId, Integer allowedToUnprotectUserId,
+                                         Boolean codeOwnerApprovalRequired) throws GitLabApiException {
+
+        Form formData = new GitLabApiForm()
+                .withParam("name", branchName, true)
+                .withParam("allowed_to_push[][user_id]", allowedToPushUserId)
+                .withParam("allowed_to_merge[][user_id]", allowedToMergeUserId)
+                .withParam("allowed_to_unprotect[][user_id]", allowedToUnprotectUserId)
+                .withParam("code_owner_approval_required", codeOwnerApprovalRequired);
+        Response response = post(Response.Status.CREATED, formData.asMap(),
+                "projects", getProjectIdOrPath(projectIdOrPath), "protected_branches");
+        return (response.readEntity(ProtectedBranch.class));
+    }
+
+    /**
+     * Protects a single repository branch or several project repository branches using a wildcard protected branch.
+     *
+     * <p>NOTE: This method is only available to GitLab Starter, Bronze, or higher.</p>
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/protected_branches</code></pre>
+     *
+     * @param projectIdOrPath           the project in the form of an Integer(ID), String(path), or Project instance
+     * @param branchName                the name of the branch to protect, can be a wildcard
+     * @param allowedToPush             an AllowedTo instance holding the configuration for "allowed_to_push"
+     * @param allowedToMerge            an AllowedTo instance holding the configuration for "allowed_to_merge"
+     * @param allowedToUnprotect        an AllowedTo instance holding the configuration for "allowed_to_unprotect" be null
+     * @param codeOwnerApprovalRequired prevent pushes to this branch if it matches an item in the CODEOWNERS file. (defaults: false)
+     * @return the branch info for the protected branch
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ProtectedBranch protectBranch(Object projectIdOrPath, String branchName,
+                                         AllowedTo allowedToPush, AllowedTo allowedToMerge, AllowedTo allowedToUnprotect,
+                                         Boolean codeOwnerApprovalRequired) throws GitLabApiException {
+
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("name", branchName, true)
+                .withParam("code_owner_approval_required", codeOwnerApprovalRequired);
+
+        if (allowedToPush != null)
+            allowedToPush.getForm(formData, "allowed_to_push");
+        if (allowedToMerge != null)
+            allowedToMerge.getForm(formData, "allowed_to_merge");
+        if (allowedToUnprotect != null)
+            allowedToUnprotect.getForm(formData, "allowed_to_unprotect");
+
         Response response = post(Response.Status.CREATED, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "protected_branches");
         return (response.readEntity(ProtectedBranch.class));

@@ -1,7 +1,30 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.Constants.*;
 import org.aoju.bus.gitlab.GitLabApiForm;
@@ -9,8 +32,15 @@ import org.aoju.bus.gitlab.GitLabApiForm;
 import java.util.Date;
 import java.util.List;
 
+import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ALL;
+import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
+
 /**
  * This class is used to filter merge requests when getting lists of them.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class MergeRequestFilter {
 
@@ -27,6 +57,10 @@ public class MergeRequestFilter {
     private Date updatedAfter;
     private Date updatedBefore;
     private MergeRequestScope scope;
+
+    /**
+     * Filter MR by created by the given user id. Combine with scope=all or scope=assigned_to_me
+     */
     private Integer authorId;
     private Integer assigneeId;
     private String myReactionEmoji;
@@ -318,14 +352,14 @@ public class MergeRequestFilter {
 
     @JsonIgnore
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
+        GitLabApiForm params = new GitLabApiForm()
                 .withParam("iids", iids)
                 .withParam("state", state)
                 .withParam("order_by", orderBy)
                 .withParam("sort", sort)
                 .withParam("milestone", milestone)
                 .withParam("view", (simpleView != null && simpleView ? "simple" : null))
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("created_after", createdAfter)
                 .withParam("created_before", createdBefore)
                 .withParam("updated_after", updatedAfter)
@@ -337,6 +371,11 @@ public class MergeRequestFilter {
                 .withParam("target_branch", targetBranch)
                 .withParam("search", search)
                 .withParam("in", in)
-                .withParam("wip", (wip == null ? null : wip ? "yes" : "no")));
+                .withParam("wip", (wip == null ? null : wip ? "yes" : "no"));
+
+        if (authorId != null && (scope == ALL || scope == ASSIGNED_TO_ME)) {
+            params.withParam("author_id", authorId);
+        }
+        return params;
     }
 }

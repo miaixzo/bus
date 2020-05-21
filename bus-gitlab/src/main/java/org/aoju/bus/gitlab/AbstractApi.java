@@ -1,10 +1,34 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
+import org.aoju.bus.core.utils.UriUtils;
 import org.aoju.bus.gitlab.models.Group;
+import org.aoju.bus.gitlab.models.Label;
 import org.aoju.bus.gitlab.models.Project;
 import org.aoju.bus.gitlab.models.User;
-import org.aoju.bus.gitlab.utils.UrlEncoder;
 
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.core.Form;
@@ -17,6 +41,10 @@ import java.net.URL;
 /**
  * This class is the base class for all the sub API classes. It provides implementations of
  * delete(), get(), post() and put() that are re-used by all the sub-classes.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public abstract class AbstractApi implements Constants {
 
@@ -56,7 +84,6 @@ public abstract class AbstractApi implements Constants {
             throw (new RuntimeException("Cannot determine ID or path from provided Project instance"));
 
         } else {
-
             throw (new RuntimeException("Cannot determine ID or path from provided " + obj.getClass().getSimpleName() +
                     " instance, must be Integer, String, or a Project instance"));
         }
@@ -92,7 +119,6 @@ public abstract class AbstractApi implements Constants {
             throw (new RuntimeException("Cannot determine ID or path from provided Group instance"));
 
         } else {
-
             throw (new RuntimeException("Cannot determine ID or path from provided " + obj.getClass().getSimpleName() +
                     " instance, must be Integer, String, or a Group instance"));
         }
@@ -128,17 +154,51 @@ public abstract class AbstractApi implements Constants {
             throw (new RuntimeException("Cannot determine ID or username from provided User instance"));
 
         } else {
-
             throw (new RuntimeException("Cannot determine ID or username from provided " + obj.getClass().getSimpleName() +
                     " instance, must be Integer, String, or a User instance"));
         }
     }
 
-    protected ApiVersion getApiVersion() {
+    /**
+     * Returns the label ID or name from the provided Integer, String, or Label instance.
+     *
+     * @param obj the object to determine the ID or name from
+     * @return the user ID or name from the provided Integer, String, or Label instance
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Object getLabelIdOrName(Object obj) throws GitLabApiException {
+
+        if (obj == null) {
+            throw (new RuntimeException("Cannot determine ID or name from null object"));
+        } else if (obj instanceof Integer) {
+            return (obj);
+        } else if (obj instanceof String) {
+            return (urlEncode(((String) obj).trim()));
+        } else if (obj instanceof Label) {
+
+            Integer id = ((Label) obj).getId();
+            if (id != null && id.intValue() > 0) {
+                return (id);
+            }
+
+            String name = ((User) obj).getName();
+            if (name != null && name.trim().length() > 0) {
+                return (urlEncode(name.trim()));
+            }
+
+            throw (new RuntimeException("Cannot determine ID or name from provided Label instance"));
+
+        } else {
+            throw (new RuntimeException("Cannot determine ID or name from provided " + obj.getClass().getSimpleName() +
+                    " instance, must be Integer, String, or a Label instance"));
+        }
+    }
+
+    protected GitLabApi.ApiVersion getApiVersion() {
         return (gitLabApi.getApiVersion());
     }
 
-    protected boolean isApiVersion(ApiVersion apiVersion) {
+    protected boolean isApiVersion(GitLabApi.ApiVersion apiVersion) {
         return (gitLabApi.getApiVersion() == apiVersion);
     }
 
@@ -161,7 +221,7 @@ public abstract class AbstractApi implements Constants {
      * @throws GitLabApiException if encoding throws an exception
      */
     protected String urlEncode(String s) throws GitLabApiException {
-        return (UrlEncoder.urlEncode(s));
+        return (UriUtils.encode(s));
     }
 
     /**
@@ -427,6 +487,24 @@ public abstract class AbstractApi implements Constants {
     }
 
     /**
+     * Perform an HTTP PUT call with the specified payload object and path objects, returning
+     * a ClientResponse instance with the data returned from the endpoint.
+     *
+     * @param expectedStatus the HTTP status that should be returned from the server
+     * @param payload        the object instance that will be serialized to JSON and used as the PUT data
+     * @param pathArgs       variable list of arguments used to build the URI
+     * @return a ClientResponse instance with the data returned from the endpoint
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    protected Response put(Response.Status expectedStatus, Object payload, Object... pathArgs) throws GitLabApiException {
+        try {
+            return validate(getApiClient().put(payload, pathArgs), expectedStatus);
+        } catch (Exception e) {
+            throw handle(e);
+        }
+    }
+
+    /**
      * Perform an HTTP PUT call with the specified form data and path objects, returning
      * a ClientResponse instance with the data returned from the endpoint.
      *
@@ -664,4 +742,5 @@ public abstract class AbstractApi implements Constants {
 
         return (form.asMap());
     }
+
 }

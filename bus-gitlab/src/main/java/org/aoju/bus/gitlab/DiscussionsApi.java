@@ -1,3 +1,27 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.gitlab.models.Discussion;
@@ -14,6 +38,10 @@ import java.util.stream.Stream;
 /**
  * This class implements the client side API for the GitLab Discussions API.
  * See <a href="https://docs.gitlab.com/ee/api/discussions.html">Discussions API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class DiscussionsApi extends AbstractApi {
 
@@ -340,7 +368,7 @@ public class DiscussionsApi extends AbstractApi {
     /**
      * Resolve or unresolve whole discussion of a merge request.
      *
-     * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/discussions</code></pre>
+     * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id</code></pre>
      *
      * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
@@ -353,7 +381,7 @@ public class DiscussionsApi extends AbstractApi {
                                                     String discussionId, Boolean resolved) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("resolved", resolved, true);
         Response response = put(Response.Status.OK, formData.asMap(),
-                "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "discussions");
+                "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "discussions", discussionId);
         return (response.readEntity(Discussion.class));
     }
 
@@ -555,7 +583,7 @@ public class DiscussionsApi extends AbstractApi {
      * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param commitSha       the commit SHA to delete the discussion from
      * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to delete
+     * @param noteId          the note ID to modify
      * @param body            the content of a discussion
      * @return a Note instance containing the updated discussion note
      * @throws GitLabApiException if any exception occurs during execution
@@ -578,7 +606,7 @@ public class DiscussionsApi extends AbstractApi {
      * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
      * @param commitSha       the commit SHA to delete the discussion from
      * @param discussionId    the ID of a discussion
-     * @param noteId          the note ID to delete
+     * @param noteId          the note ID to resolve or unresolve
      * @param resolved        if true will resolve the note, false will unresolve the note
      * @return a Note instance containing the updated discussion note
      * @throws GitLabApiException if any exception occurs during execution
@@ -609,4 +637,153 @@ public class DiscussionsApi extends AbstractApi {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "repository", commitSha, "discussions", discussionId, "notes", noteId);
     }
+
+    /**
+     * Adds a new note to the thread. This can also create a thread from a single comment.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes</code></pre>
+     *
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
+     * @param discussionId    the ID of a discussion
+     * @param body            the content of a discussion
+     * @param createdAt       date the discussion was created (requires admin or project/group owner rights)
+     * @return a Note instance containing the newly created discussion note
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Note addMergeRequestThreadNote(Object projectIdOrPath, Integer mergeRequestIid,
+                                          String discussionId, String body, Date createdAt) throws GitLabApiException {
+
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("body", body, true)
+                .withParam("created_at", createdAt);
+        Response response = post(Response.Status.CREATED, formData,
+                "projects", getProjectIdOrPath(projectIdOrPath),
+                "merge_requests", mergeRequestIid, "discussions", discussionId, "notes");
+        return (response.readEntity(Note.class));
+    }
+
+    /**
+     * Modify or resolve an existing thread note of a merge request.
+     *
+     * <pre><code>GitLab Endpoint: PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes/:note_id</code></pre>
+     *
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
+     * @param discussionId    the ID of a discussion
+     * @param noteId          the note ID to modify
+     * @param body            the content of a discussion
+     * @param resolved        if true will resolve the note, false will unresolve the note
+     * @return a Note instance containing the updated discussion note
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Note modifyMergeRequestThreadNote(Object projectIdOrPath, Integer mergeRequestIid,
+                                             String discussionId, Integer noteId, String body, Boolean resolved) throws GitLabApiException {
+
+        GitLabApiForm formData = new GitLabApiForm().withParam("body", body).withParam("resolved", resolved);
+        Response response = this.putWithFormData(Response.Status.OK, formData,
+                "projects", getProjectIdOrPath(projectIdOrPath),
+                "merge_requests", mergeRequestIid, "discussions", discussionId, "notes", noteId);
+        return (response.readEntity(Note.class));
+    }
+
+    /**
+     * Deletes an existing thread note of a merge request.
+     *
+     * <pre><code>GitLab Endpoint: DELETE /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes/:note_id</code></pre>
+     *
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param mergeRequestIid mergeRequestIid the internal ID of the merge request
+     * @param discussionId    the ID of a discussion
+     * @param noteId          the note ID to delete
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public void deleteMergeRequestThreadNote(Object projectIdOrPath, Integer mergeRequestIid,
+                                             String discussionId, Integer noteId) throws GitLabApiException {
+        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "merge_requests", mergeRequestIid, "discussions", discussionId, "notes", noteId);
+    }
+
+    /**
+     * Creates a new thread to a single project issue. This is similar to creating a note but other comments (replies) can be added to it later.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/discussions</code></pre>
+     *
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param issueIid        The IID of an issue
+     * @param body            the content of the discussion
+     * @param createdAt       (optional) date the discussion was created (requires admin or project/group owner rights)
+     * @return a Discussion instance containing the newly created discussion
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Discussion createIssueDiscussion(Object projectIdOrPath, Integer issueIid, String body, Date createdAt) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("body", body, true)
+                .withParam("created_at", createdAt);
+        Response response = post(Response.Status.CREATED, formData,
+                "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "discussions");
+        return (response.readEntity(Discussion.class));
+    }
+
+    /**
+     * Adds a new note to the thread.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes</code></pre>
+     *
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param issueIid        The IID of an issue
+     * @param discussionId    the id of discussion
+     * @param body            the content of the note
+     * @param createdAt       (optional) date the discussion was created (requires admin or project/group owner rights)
+     * @return a Note instance containing the newly created note
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Note addIssueThreadNote(Object projectIdOrPath, Integer issueIid,
+                                   String discussionId, String body, Date createdAt) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("body", body, true)
+                .withParam("created_at", createdAt);
+        Response response = post(Response.Status.CREATED, formData,
+                "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "discussions", discussionId, "notes");
+        return (response.readEntity(Note.class));
+    }
+
+    /**
+     * Modify existing thread note of an issue.
+     *
+     * <pre><code>GitLab Endpoint: PUT /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id</code></pre>
+     *
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param issueIid        The IID of an issue
+     * @param discussionId    the id of discussion
+     * @param noteId          the id of the note
+     * @param body            the content of the note
+     * @return a Note instance containing the modified note
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Note modifyIssueThreadNote(Object projectIdOrPath, Integer issueIid,
+                                      String discussionId, Integer noteId, String body) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("body", body, true);
+        Response response = putWithFormData(Response.Status.OK, formData,
+                "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "discussions", discussionId, "notes", noteId);
+        return (response.readEntity(Note.class));
+    }
+
+    /**
+     * Deletes an existing thread note of an issue.
+     *
+     * <pre><code>GitLab Endpoint: DELETE /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id</code></pre>
+     *
+     * @param projectIdOrPath projectIdOrPath the project in the form of an Integer(ID), String(path), or Project instance
+     * @param issueIid        The IID of an issue
+     * @param discussionId    the id of discussion
+     * @param noteId          the id of the note
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public void deleteIssueThreadNote(Object projectIdOrPath, Integer issueIid,
+                                      String discussionId, Integer noteId) throws GitLabApiException {
+        delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "discussions", discussionId, "notes", noteId);
+    }
+
 }

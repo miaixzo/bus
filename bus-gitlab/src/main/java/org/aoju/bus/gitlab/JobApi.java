@@ -1,6 +1,29 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.models.ArtifactsFile;
 import org.aoju.bus.gitlab.models.Job;
 
@@ -21,6 +44,10 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API job calls.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class JobApi extends AbstractApi implements Constants {
 
@@ -53,7 +80,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public List<Job> getJobs(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Status.OK, getPageQueryParams(page, perPage), "projects", getProjectIdOrPath(projectIdOrPath), "jobs");
+        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects", getProjectIdOrPath(projectIdOrPath), "jobs");
         return (response.readEntity(new GenericType<List<Job>>() {
         }));
     }
@@ -141,7 +168,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public List<Job> getJobsForPipeline(Object projectIdOrPath, int pipelineId) throws GitLabApiException {
-        Response response = get(Status.OK, getDefaultPerPageParam(),
+        Response response = get(Response.Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "pipelines", pipelineId, "jobs");
         return (response.readEntity(new GenericType<List<Job>>() {
         }));
@@ -160,7 +187,7 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public List<Job> getJobsForPipeline(Object projectIdOrPath, int pipelineId, JobScope scope) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("scope", scope).withParam(PER_PAGE_PARAM, getDefaultPerPage());
-        Response response = get(Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "pipelines", pipelineId, "jobs");
+        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "pipelines", pipelineId, "jobs");
         return (response.readEntity(new GenericType<List<Job>>() {
         }));
     }
@@ -175,8 +202,8 @@ public class JobApi extends AbstractApi implements Constants {
      * @return a single job for the specified project ID
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Job getJob(Object projectIdOrPath, int jobId) throws GitLabApiException {
-        Response response = get(Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId);
+    public Job getJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
+        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId);
         return (response.readEntity(Job.class));
     }
 
@@ -189,7 +216,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @param jobId           the job ID to get
      * @return a single job for the specified project ID as an Optional intance
      */
-    public Optional<Job> getOptionalJob(Object projectIdOrPath, int jobId) {
+    public Optional<Job> getOptionalJob(Object projectIdOrPath, Integer jobId) {
         try {
             return (Optional.ofNullable(getJob(projectIdOrPath, jobId)));
         } catch (GitLabApiException glae) {
@@ -214,8 +241,8 @@ public class JobApi extends AbstractApi implements Constants {
     public File downloadArtifactsFile(Object projectIdOrPath, String ref, String jobName, File directory) throws GitLabApiException {
 
         Form formData = new GitLabApiForm().withParam("job", jobName, true);
-        Response response = getWithAccepts(Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", "artifacts", ref, "download");
+        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
+                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", "artifacts", urlEncode(ref), "download");
 
         try {
 
@@ -249,8 +276,8 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public InputStream downloadArtifactsFile(Object projectIdOrPath, String ref, String jobName) throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("job", jobName, true);
-        Response response = getWithAccepts(Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", "artifacts", ref, "download");
+        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
+                "projects", getProjectIdOrPath(projectIdOrPath), "jobs", "artifacts", urlEncode(ref), "download");
         return (response.readEntity(InputStream.class));
     }
 
@@ -269,7 +296,7 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public File downloadArtifactsFile(Object projectIdOrPath, Integer jobId, File directory) throws GitLabApiException {
 
-        Response response = getWithAccepts(Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD,
+        Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD,
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts");
         try {
 
@@ -299,7 +326,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public InputStream downloadArtifactsFile(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
-        Response response = getWithAccepts(Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD,
+        Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD,
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts");
         return (response.readEntity(InputStream.class));
     }
@@ -320,7 +347,7 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public File downloadArtifactsFile(Object projectIdOrPath, Integer jobId, ArtifactsFile artifactsFile, File directory) throws GitLabApiException {
 
-        Response response = get(Status.OK, getDefaultPerPageParam(),
+        Response response = get(Response.Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", artifactsFile.getFilename());
         try {
 
@@ -353,7 +380,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public InputStream downloadArtifactsFile(Object projectIdOrPath, Integer jobId, ArtifactsFile artifactsFile) throws GitLabApiException {
-        Response response = get(Status.OK, getDefaultPerPageParam(),
+        Response response = get(Response.Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", artifactsFile.getFilename());
         return (response.readEntity(InputStream.class));
     }
@@ -374,8 +401,8 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public File downloadSingleArtifactsFile(Object projectIdOrPath, Integer jobId, Path artifactPath, File directory) throws GitLabApiException {
 
-        String path = artifactPath.toString().replace(Symbol.BACKSLASH, Symbol.SLASH);
-        Response response = get(Status.OK, getDefaultPerPageParam(),
+        String path = artifactPath.toString().replace("\\", "/");
+        Response response = get(Response.Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", path);
         try {
 
@@ -408,8 +435,8 @@ public class JobApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public InputStream downloadSingleArtifactsFile(Object projectIdOrPath, Integer jobId, Path artifactPath) throws GitLabApiException {
-        String path = artifactPath.toString().replace(Symbol.BACKSLASH, Symbol.SLASH);
-        Response response = get(Status.OK, getDefaultPerPageParam(),
+        String path = artifactPath.toString().replace("\\", "/");
+        Response response = get(Response.Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", path);
         return (response.readEntity(InputStream.class));
     }
@@ -425,8 +452,8 @@ public class JobApi extends AbstractApi implements Constants {
      * @return a String containing the specified job's trace
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public String getTrace(Object projectIdOrPath, int jobId) throws GitLabApiException {
-        Response response = get(Status.OK, getDefaultPerPageParam(),
+    public String getTrace(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
+        Response response = get(Response.Status.OK, getDefaultPerPageParam(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "trace");
         return (response.readEntity(String.class));
     }
@@ -440,10 +467,26 @@ public class JobApi extends AbstractApi implements Constants {
      * @param jobId           the ID to cancel job
      * @return job instance which just canceled
      * @throws GitLabApiException if any exception occurs during execution
+     * @deprecated replaced by {@link #cancelJob(Object, Integer)}
      */
-    public Job cancleJob(Object projectIdOrPath, int jobId) throws GitLabApiException {
+    @Deprecated
+    public Job cancleJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
+        return (cancelJob(projectIdOrPath, jobId));
+    }
+
+    /**
+     * Cancel specified job in a project.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/cancel</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param jobId           the ID to cancel job
+     * @return job instance which just canceled
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Job cancelJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
         GitLabApiForm formData = null;
-        Response response = post(Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "cancel");
+        Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "cancel");
         return (response.readEntity(Job.class));
     }
 
@@ -457,7 +500,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @return job instance which just retried
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Job retryJob(Object projectIdOrPath, int jobId) throws GitLabApiException {
+    public Job retryJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
         GitLabApiForm formData = null;
         Response response = post(Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "retry");
         return (response.readEntity(Job.class));
@@ -473,7 +516,7 @@ public class JobApi extends AbstractApi implements Constants {
      * @return job instance which just erased
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Job eraseJob(Object projectIdOrPath, int jobId) throws GitLabApiException {
+    public Job eraseJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
         GitLabApiForm formData = null;
         Response response = post(Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "erase");
         return (response.readEntity(Job.class));
@@ -489,9 +532,38 @@ public class JobApi extends AbstractApi implements Constants {
      * @return job instance which just played
      * @throws GitLabApiException if any exception occurs during execution
      */
-    public Job playJob(Object projectIdOrPath, int jobId) throws GitLabApiException {
+    public Job playJob(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
         GitLabApiForm formData = null;
         Response response = post(Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "play");
         return (response.readEntity(Job.class));
+    }
+
+    /**
+     * Prevents artifacts from being deleted when expiration is set.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/jobs/:job_id/keep</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param jobId           the ID to keep artifacts for
+     * @return the Job instance that was just modified
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public Job keepArtifacts(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
+        GitLabApiForm formData = null;
+        Response response = post(Status.OK, formData, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "keep");
+        return (response.readEntity(Job.class));
+    }
+
+    /**
+     * Delete artifacts of a job.
+     *
+     * <pre><code>GitLab Endpoint: DELETE /projects/:id/jobs/:job_id/artifacts</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param jobId           the ID to delete artifacts for
+     * @throws GitLabApiException if any exception occurs during execution
+     */
+    public void deleteArtifacts(Object projectIdOrPath, Integer jobId) throws GitLabApiException {
+        delete(Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts");
     }
 }

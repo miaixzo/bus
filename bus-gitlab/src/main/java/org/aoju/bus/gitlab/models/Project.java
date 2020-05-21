@@ -1,14 +1,44 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.gitlab.utils.JacksonJson;
-import org.aoju.bus.gitlab.utils.JacksonJsonEnumHelper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.aoju.bus.gitlab.JacksonJson;
+import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
+import org.aoju.bus.gitlab.ProjectLicense;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public class Project {
 
     private Integer approvalsBeforeMerge;
@@ -36,7 +66,7 @@ public class Project {
     private Boolean onlyAllowMergeIfPipelineSucceeds;
     private Boolean onlyAllowMergeIfAllDiscussionsAreResolved;
     private Integer openIssuesCount;
-    private org.aoju.bus.gitlab.models.Owner owner;
+    private Owner owner;
     private String path;
     private String pathWithNamespace;
     private Permissions permissions;
@@ -61,6 +91,11 @@ public class Project {
     private Boolean initializeWithReadme;
     private Boolean packagesEnabled;
     private Boolean emptyRepo;
+    private String licenseUrl;
+    private ProjectLicense license;
+    private List<CustomAttribute> customAttributes;
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
+    private Date markedForDeletionOn;
 
     public static final boolean isValid(Project project) {
         return (project != null && project.getId() != null);
@@ -74,7 +109,7 @@ public class Project {
      * @return a fully qualified project path based on the provided namespace and project path
      */
     public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + Symbol.SLASH + path.trim());
+        return (namespace.trim() + "/" + path.trim());
     }
 
     public Integer getApprovalsBeforeMerge() {
@@ -345,7 +380,7 @@ public class Project {
         this.openIssuesCount = openIssuesCount;
     }
 
-    public org.aoju.bus.gitlab.models.Owner getOwner() {
+    public Owner getOwner() {
         return owner;
     }
 
@@ -636,6 +671,38 @@ public class Project {
 
     public void setEmptyRepo(Boolean emptyRepo) {
         this.emptyRepo = emptyRepo;
+    }
+
+    public Date getMarkedForDeletionOn() {
+        return markedForDeletionOn;
+    }
+
+    public void setMarkedForDeletionOn(Date markedForDeletionOn) {
+        this.markedForDeletionOn = markedForDeletionOn;
+    }
+
+    public String getLicenseUrl() {
+        return licenseUrl;
+    }
+
+    public void setLicenseUrl(String licenseUrl) {
+        this.licenseUrl = licenseUrl;
+    }
+
+    public ProjectLicense getLicense() {
+        return license;
+    }
+
+    public void setLicense(ProjectLicense license) {
+        this.license = license;
+    }
+
+    public List<CustomAttribute> getCustomAttributes() {
+        return customAttributes;
+    }
+
+    public void setCustomAttributes(List<CustomAttribute> customAttributes) {
+        this.customAttributes = customAttributes;
     }
 
     @Override

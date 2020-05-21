@@ -1,10 +1,34 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.AccessLevel;
 import org.aoju.bus.gitlab.models.ProtectedTag;
 import org.aoju.bus.gitlab.models.Release;
 import org.aoju.bus.gitlab.models.Tag;
-import org.aoju.bus.gitlab.utils.FileUtils;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
@@ -13,18 +37,37 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
  *
+ * @author Kimi Liu
+ * @version 5.9.2
  * @see <a href="https://docs.gitlab.com/ce/api/tags.html">Tags API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/protected_tags.html">Protected Tags API at GitLab</a>
+ * @since JDK 1.8+
  */
 public class TagsApi extends AbstractApi {
 
     public TagsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
+    }
+
+    /**
+     * Reads the contents of a File to a String.
+     *
+     * @param file the File instance to read the contents from
+     * @return the contents of file as a String
+     * @throws IOException if any errors occur while opening or reading the file
+     */
+    public static String readFileContents(File file) throws IOException {
+
+        try (Scanner in = new Scanner(file)) {
+            in.useDelimiter("\\Z");
+            return (in.next());
+        }
     }
 
     /**
@@ -262,7 +305,7 @@ public class TagsApi extends AbstractApi {
         String releaseNotes;
         if (releaseNotesFile != null) {
             try {
-                releaseNotes = FileUtils.readFileContents(releaseNotesFile);
+                releaseNotes = readFileContents(releaseNotesFile);
             } catch (IOException ioe) {
                 throw (new GitLabApiException(ioe));
             }
@@ -283,7 +326,7 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteTag(Object projectIdOrPath, String tagName) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "tags", urlEncode(tagName));
     }
 
@@ -443,4 +486,5 @@ public class TagsApi extends AbstractApi {
     public void unprotectTag(Object projectIdOrPath, String name) throws GitLabApiException {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "protected_tags", urlEncode(name));
     }
+
 }

@@ -1,34 +1,32 @@
-# GitlLab4J&trade; API (gitlab4j-api)<br />Java Client Library for the GitLab REST API
+# GitLab API (bus-gitlab)<br />Java Client Library for the GitLab REST API
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.gitlab4j/gitlab4j-api.svg)](http://mvnrepository.com/artifact/org.gitlab4j/gitlab4j-api)
-[![Build Status](https://travis-ci.org/gitlab4j/gitlab4j-api.svg?branch=master)](https://travis-ci.org/gitlab4j/gitlab4j-api)
-
-GitLab4J&trade; API (gitlab4j-api) provides a full featured and easy to consume Java library for working with GitLab repositories via the GitLab REST API.  Additionally, full support for working with GitLab webhooks and system hooks is also provided.
+GitLab API (bus-gitlab) provides a full featured and easy to consume Java library for working with GitLab repositories via the GitLab REST API.  Additionally, full support for working with GitLab webhooks and system hooks is also provided.
 
 ---
 ## Table of Contents
-* [GitLab Server Version Support](#gitLab-server-version-support)<br/>
-* [Using GitLab4J-API](#using-gitlab4j-api)<br/>
+  * [GitLab Server Version Support](#gitLab-server-version-support)<br/>
+  * [Using GitLab4J-API](#using-gitlab4j-api)<br/>
   * [Java 8 Requirement](#java-8-requirement)<br/>
   * [Javadocs](#javadocs)<br/>
   * [Project Set Up](#project-set-up)<br/>
   * [Usage Examples](#usage-examples)<br/>
+  * [Setting Request Timeouts](#setting-request-timeouts)<br/>
   * [Connecting Through a Proxy Server](#connecting-through-a-proxy-server)<br/>
   * [GitLab API V3 and V4 Support](#gitLab-api-v3-and-v4-support)<br/>
   * [Logging of API Requests and Responses](#logging-of-api-requests-and-responses)<br/>
   * [Results Paging](#results-paging)<br/>
   * [Java 8 Stream Support](#java-8-stream-support)<br/>
-    * [Eager evaluation example usage](#eager-evaluation-example-usage)<br/>
-    * [Lazy evaluation example usage](#lazy%20evaluation-example-usage)<br/>
+  * [Eager evaluation example usage](#eager-evaluation-example-usage)<br/>
+  * [Lazy evaluation example usage](#lazy%20evaluation-example-usage)<br/>
   * [Java 8 Optional&lt;T&gt; Support](#java-8-optional-support)<br/>
   * [Issue Time Estimates](#issue-time-estimates)<br/>
-* [Making API Calls](#making-api-calls)<br/>
+  * [Making API Calls](#making-api-calls)<br/>
   * [Available Sub APIs](#available-sub-apis)
 
 ---
 ## GitLab Server Version Support
 
-GitLab4J-API supports version 11.0+ of GitLab Community Edition [(gitlab-ce)](https://gitlab.com/gitlab-org/gitlab-ce/) and GitLab Enterprise Edition [(gitlab-ee)](https://gitlab.com/gitlab-org/gitlab-ee/). 
+GitLab-API supports version 11.0+ of GitLab Community Edition [(gitlab-ce)](https://gitlab.com/gitlab-org/gitlab-ce/) and GitLab Enterprise Edition [(gitlab-ee)](https://gitlab.com/gitlab-org/gitlab-ee/). 
 
 GitLab released GitLab Version 11.0 in June of 2018 which included many major changes to GitLab.  If you are using GitLab server earlier than version 11.0, it is highly recommended that you either update your GitLab install or use a version of this library that was released around the same time as the version of GitLab you are using. 
 
@@ -42,7 +40,8 @@ As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab
 As of GitLab4J-API 4.8.0, Java 8+ is now required to use GitLab4J-API.
 
 ### **Javadocs**
-Javadocs are available here: <a href="http://www.messners.com/gitlab4j-api/javadocs/index.html?overview-summary.html"  target="_top">Javadocs</a>
+Javadocs are available here: [![javadoc.io](https://javadoc.io/badge2/org.gitlab4j/gitlab4j-api/javadoc.io.svg)](https://javadoc.io/doc/org.gitlab4j/gitlab4j-api)
+
 
 ### **Project Set Up**
 To utilize GitLab4J&trade; API in your Java project, simply add the following dependency to your project's build file:<br /> 
@@ -50,34 +49,25 @@ To utilize GitLab4J&trade; API in your Java project, simply add the following de
 ```java
 dependencies {
     ...
-    compile group: 'org.gitlab4j', name: 'gitlab4j-api', version: '4.12.18'
+    compile group: 'org.gitlab4j', name: 'gitlab4j-api', version: '4.14.30'
 }
 ```
-
-**NOTE:** Pulling dependencies may fail when using Gradle prior to 4.5. See [Gradle issue 3065](https://github.com/gradle/gradle/issues/3065#issuecomment-364092456)
 
 **Maven: pom.xml**
 ```xml
 <dependency>
-    <groupId>org.gitlab4j</groupId>
-    <artifactId>gitlab4j-api</artifactId>
-    <version>4.12.18</version>
+    <groupId>org.aoju</groupId>
+    <artifactId>bus-gitlab</artifactId>
+    <version>5.9.2</version>
 </dependency>
 ```
-
-**Ivy and SBT**<br/>
-There have been reports of problems resolving some dependencies when using Ivy or SBT, for help resolving those issues see:<br/>
-<a href="https://github.com/eclipse-ee4j/jaxrs-api/issues/571">JAX-RS API Issue #571</a><br/>
-<a href="https://github.com/eclipse-ee4j/jaxrs-api/issues/572">JAX-RS API Issue #572</a>
-
----
 
 ### **Usage Examples**
 
 GitLab4J-API is quite simple to use, all you need is the URL to your GitLab server and the Personal Access Token from your GitLab Account Settings page.  Once you have that info it is as simple as:
 ```java
 // Create a GitLabApi instance to communicate with your GitLab server
-GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_ACCESS_TOKEN");
+GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PERSONAL_ACCESS_TOKEN");
 
 // Get the list of projects your account has access to
 List<Project> projects = gitLabApi.getProjectApi().getProjects();
@@ -86,12 +76,12 @@ List<Project> projects = gitLabApi.getProjectApi().getProjects();
 You can also login to your GitLab server with username, and password:
 ```java
 // Log in to the GitLab server using a username and password
-GitLabApi gitLabApi = GitLabApi.login("http://your.gitlab.server.com", "your-username", "your-password");
+GitLabApi gitLabApi = GitLabApi.oauth2Login("http://your.gitlab.server.com", "username", "password");
 ```
 As of GitLab4J-API 4.6.6, all API requests support performing the API call as if you were another user, provided you are authenticated as an administrator:
 ```java
 // Create a GitLabApi instance to communicate with your GitLab server (must be an administrator)
-GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_ACCESS_TOKEN");
+GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PERSONAL_ACCESS_TOKEN");
 
 // sudo as as a different user, in this case the user named "johndoe", all future calls will be done as "johndoe"
 gitLabApi.sudo("johndoe")
@@ -101,22 +91,32 @@ gitLabApi.unsudo();
 ```
 
 ---
+### **Setting Request Timeouts**
+As of GitLab4J-API 4.14.21 support has been added for setting the conect and read timeouts for the API client:
+```java
+GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_PERSONAL_ACCESS_TOKEN", proxyConfig);
+
+// Set the connect timeout to 1 second and the read timeout to 5 seconds
+gitLabApi.setRequestTimeout(1000, 5000);
+```
+
+---
 ### **Connecting Through a Proxy Server**
 As of GitLab4J-API 4.8.2 support has been added for connecting to the GitLab server using an HTTP proxy server:
 ```java
 // Log in to the GitLab server using a proxy server (with basic auth on proxy)
 Map<String, Object> proxyConfig = ProxyClientConfig.createProxyClientConfig(
         "http://your-proxy-server", "proxy-username", "proxy-password");
-GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_ACCESS_TOKEN", null, proxyConfig);
+GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_PERSONAL_ACCESS_TOKEN", null, proxyConfig);
 
 // Log in to the GitLab server using a proxy server (no auth on proxy)
 Map<String, Object> proxyConfig = ProxyClientConfig.createProxyClientConfig("http://your-proxy-server");
-GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_ACCESS_TOKEN", null, proxyConfig);
+GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_PERSONAL_ACCESS_TOKEN", null, proxyConfig);
 
 // Log in to the GitLab server using an NTLM (Windows DC) proxy
 Map<String, Object> ntlmProxyConfig = ProxyClientConfig.createNtlmProxyClientConfig(
         "http://your-proxy-server", "windows-username", "windows-password", "windows-workstation", "windows-domain");
-GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_ACCESS_TOKEN", null, ntlmProxyConfig);
+GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.com", "YOUR_PERSONAL_ACCESS_TOKEN", null, ntlmProxyConfig);
 ```
 See the Javadoc on the GitLabApi class for a complete list of methods accepting the proxy configuration (clientConfiguration parameter)
 
@@ -126,7 +126,7 @@ As of GitLab4J-API 4.2.0 support has been added for GitLab API V4. If your appli
 you can still use GitLab4J-API by creating your GitLabApi instance as follows:
 ```java
 // Create a GitLabApi instance to communicate with your GitLab server using GitLab API V3
-GitLabApi gitLabApi = new GitLabApi(ApiVersion.V3, "http://your.gitlab.server.com", "YOUR_ACCESS_TOKEN");
+GitLabApi gitLabApi = new GitLabApi(ApiVersion.V3, "http://your.gitlab.server.com", "YOUR_PRIVATE_TOKEN");
 ```
 
 **NOTICE**:  
@@ -137,7 +137,7 @@ As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab
 As of GitLab4J-API 4.8.39 support has been added to log the requests to and the responses from the
 GitLab API.  Enable logging using one of the following methods on the GitLabApi instance:
 ```java
-GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PRIVATE_TOKEN");
+GitLabApi gitLabApi = new GitLabApi("http://your.gitlab.server.com", "YOUR_PERSONAL_ACCESS_TOKEN");
 
 // Log using the shared logger and default level of FINE
 gitLabApi.enableRequestResponseLogging();
@@ -146,13 +146,13 @@ gitLabApi.enableRequestResponseLogging();
 gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO);
 
 // Log using the specified logger and the INFO level
-gitLabApi.enableRequestResponseLogging(youtLoggerInstance, java.util.logging.Level.INFO);
+gitLabApi.enableRequestResponseLogging(yourLoggerInstance, java.util.logging.Level.INFO);
 
 // Log using the shared logger, at the INFO level, and include up to 1024 bytes of entity logging
 gitLabApi.enableRequestResponseLogging(java.util.logging.Level.INFO, 1024);
 
 // Log using the specified logger, at the INFO level, and up to 1024 bytes of entity logging
-gitLabApi.enableRequestResponseLogging(youtLoggerInstance, java.util.logging.Level.INFO, 1024);
+gitLabApi.enableRequestResponseLogging(yourLoggerInstance, java.util.logging.Level.INFO, 1024);
 ```
 
 ---
@@ -184,7 +184,7 @@ As of GitLab4J-API 4.9.2, all GitLabJ-API methods that return a List result have
   
 
 **IMPORTANT**  
-The built-in methods that return a Stream do so using ___eager evaluation___, meaning all items are pre-fetched from the GitLab server and a Stream is returned which will stream those items.  **Eager evaluation does NOT support paralell reading of data from ther server, it does however allow for paralell processing of the Stream post data fetch.**
+The built-in methods that return a Stream do so using ___eager evaluation___, meaning all items are pre-fetched from the GitLab server and a Stream is returned which will stream those items.  **Eager evaluation does NOT support parallel reading of data from ther server, it does however allow for parallel processing of the Stream post data fetch.**
 
 To stream using ___lazy evaluation___, use the GitLab4J-API methods that return a ```Pager``` instance, and then call the ```lazyStream()``` method on the ```Pager``` instance to create a lazy evaluation Stream. The Stream utilizes the ```Pager``` instance to page through the available items. **A lazy Stream does NOT support parallel operations or skipping.** 
 
@@ -197,8 +197,8 @@ Stream<Project> projectStream = gitlabApi.getProjectApi().getProjectsStream();
 projectStream.map(Project::getName).forEach(name -> System.out.println(name));
 
 // Operate on the stream in parallel, this example sorts User instances by username
-// NOTE: Fetching of the users is not done in paralell,
-// only the sorting of the users is a paralell operation.
+// NOTE: Fetching of the users is not done in parallel,
+// only the sorting of the users is a parallel operation.
 Stream<User> stream = gitlabApi.getUserApi().getUsersStream();
 List<User> users = stream.parallel().sorted(comparing(User::getUsername)).collect(toList());
 ```
@@ -242,14 +242,14 @@ Conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 ## Making API Calls
 The API has been broken up into sub API classes to make it easier to consume and to separate concerns. The GitLab4J sub API classes typically have a one-to-one relationship with the API documentation at [GitLab API](https://docs.gitlab.com/ce/api/). Following is a sample of the GitLab4J sub API class mapping to the GitLab API documentation:
 
-```GroupApi``` -> https://docs.gitlab.com/ce/api/groups.html<br/>
-```MergeRequestApi``` -> https://docs.gitlab.com/ce/api/merge_requests.html<br/>
-```ProjectApi``` -> https://docs.gitlab.com/ce/api/projects.html<br/>
-```UserApi``` -> https://docs.gitlab.com/ce/api/users.html<br/>
+```org.gitlab4j.api.GroupApi``` -> https://docs.gitlab.com/ce/api/groups.html<br/>
+```org.gitlab4j.api.MergeRequestApi``` -> https://docs.gitlab.com/ce/api/merge_requests.html<br/>
+```org.gitlab4j.api.ProjectApi``` -> https://docs.gitlab.com/ce/api/projects.html<br/>
+```org.gitlab4j.api.UserApi``` -> https://docs.gitlab.com/ce/api/users.html<br/>
 
 ### **Available Sub APIs**
 
-The following is a list of the available sub APIs along with a sample use of each API. See the <a href="http://www.messners.com/gitlab4j-api/javadocs/index.html?org/gitlab4j/api/package-summary.html" target="_top">Javadocs</a> for a complete list of available methods for each sub API.
+The following is a list of the available sub APIs along with a sample use of each API. See the <a href="https://javadoc.io/doc/org.gitlab4j/gitlab4j-api" target="_top">Javadocs</a> for a complete list of available methods for each sub API.
 
 ---
 &nbsp;&nbsp;[ApplicationsApi](#applicationsapi)<br/>
@@ -280,15 +280,18 @@ The following is a list of the available sub APIs along with a sample use of eac
 &nbsp;&nbsp;[PackagesApi](#packagesapi)<br/>
 &nbsp;&nbsp;[PipelineApi](#pipelineapi)<br/>
 &nbsp;&nbsp;[ProjectApi](#projectapi)<br/>
-&nbsp;&nbsp;[ProtectedBranchesApi](#protectedbranchesapi) <br/>
+&nbsp;&nbsp;[ProtectedBranchesApi](#protectedbranchesapi)<br/>
+&nbsp;&nbsp;[ReleasesApi](#releasesapi)<br/>
 &nbsp;&nbsp;[RepositoryApi](#repositoryapi)<br/>
 &nbsp;&nbsp;[RepositoryFileApi](#repositoryfileapi)<br/>
-&nbsp;&nbsp;[RunnersApi](#runnersapi) <br/>
+&nbsp;&nbsp;[ReourceLabelEventsApi](#resourcelabeleventsapi)<br/>
+&nbsp;&nbsp;[RunnersApi](#runnersapi)<br/>
 &nbsp;&nbsp;[SearchApi](#searchapi)<br/>
 &nbsp;&nbsp;[ServicesApi](#servicesapi)<br/>
 &nbsp;&nbsp;[SessionApi](#sessionapi)<br/>
 &nbsp;&nbsp;[SnippetsApi](#snippetsapi)<br/>
 &nbsp;&nbsp;[SystemHooksApi](#systemhooksapi)<br/>
+&nbsp;&nbsp;[TagsApi](#tagsapi)<br/>
 &nbsp;&nbsp;[TodosApi](#todosapi)<br/>
 &nbsp;&nbsp;[UserApi](#userapi)<br/>
 &nbsp;&nbsp;[WikisApi](#wikisapi)
@@ -324,7 +327,7 @@ List<Board> boards = gitLabApi.getBoardsApi().getBoards(projectId);
 #### CommitsApi
 ```java
 // Get a list of commits associated with the specified branch that fall within the specified time window
-// This uses the ISO8601 date utilities the in ISO8601 class
+// This uses the ISO8601 date utilities the in org.gitlab4j.api.utils.ISO8601 class
 Date since = ISO8601.toDate("2017-01-01T00:00:00Z");
 Date until = new Date(); // now
 List<Commit> commits = gitLabApi.getCommitsApi().getCommits(1234, "new-feature", since, until);
@@ -342,7 +345,6 @@ List<RegistryRepository> registryRepos = gitLabApi.ContainerRegistryApi().getRep
 List<DeployKey> deployKeys = gitLabApi.getDeployKeysApi().getDeployKeys();
 ```
 
-A
 #### DiscussionsApi
 ```java
 // Get a list of Discussions for the specified merge request
@@ -487,16 +489,33 @@ Project newProject = gitLabApi.getProjectApi().createProject(projectSpec);
 List<ProtectedBranch> branches = gitLabApi.getProtectedBranchesApi().getProtectedBranches(project.getId());
 ```
 
+#### ReleasesApi
+```java
+// Get a list of releases for the specified project
+List<Release> releases = gitLabApi.getReleasesApi().getReleases(projectId);
+```
+
 #### RepositoryApi
 ```java
 // Get a list of repository branches from a project, sorted by name alphabetically
-List<Branch> branches = gitLabApi.getRepositoryApi().getBranches();
+List<Branch> branches = gitLabApi.getRepositoryApi().getBranches(projectId);
+```
+```java
+// Search repository branches from a project, by name
+List<Branch> branches = gitLabApi.getRepositoryApi().getBranches(projectId, searchTerm);
 ```
 
 #### RepositoryFileApi
 ```java
 // Get info (name, size, ...) and the content from a file in repository
 RepositoryFile file = gitLabApi.getRepositoryFileApi().getFile("file-path", 1234, "ref");   
+```
+
+#### ResourceLabelEventsApi
+```java
+// Get the label events for the specified merge request
+List<LabelEvent> labelEvents = gitLabApi.getResourceLabelEventsApi()
+        .getMergeRequestLabelEvents(projectId, mergeRequestIid);
 ```
 
 #### RunnersApi
@@ -537,6 +556,12 @@ List<Snippet> snippets = gitLabApi.getSnippetsApi().getSnippets();
 ```java
 // Get a list of installed system hooks
 List<SystemHook> hooks = gitLabApi.getSystemHooksApi().getSystemHooks();
+```
+
+#### TagsApi
+```java
+// Get a list of tags for the specified project ID
+List<Tag> tags = gitLabApi.getTagsApi().getTags(projectId);
 ```
 
 #### TodosApi
