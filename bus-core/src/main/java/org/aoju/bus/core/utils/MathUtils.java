@@ -41,21 +41,6 @@ import java.util.*;
 
 /**
  * 数学计算
- * 对于精确值计算应该使用 {@link BigDecimal}
- * JDK7中<strong>BigDecimal(double val)</strong>构造方法
- * 的结果有一定的不可预知性,例如：
- *
- * <pre>
- * new BigDecimal(0.1)
- * </pre>
- * <p>
- * <p>
- * 表示的不是<strong>0.1</strong>而是
- * <strong>0.1000000000000000055511151231257827021181583404541015625</strong>
- *
- * <p>
- * 这是因为0.1无法准确的表示为double因此应该使用<strong>new BigDecimal(String)</strong>
- * </p>
  *
  * @author Kimi Liu
  * @version 5.9.2
@@ -1602,7 +1587,7 @@ public class MathUtils {
      * @return 最小值
      * @see ArrayUtils#min(Comparable[])
      */
-    public static <T extends Comparable<? super T>> T min(T... numberArray) {
+    public static <T extends Comparable<? super T>> T min(T[] numberArray) {
         return ArrayUtils.min(numberArray);
     }
 
@@ -1669,7 +1654,7 @@ public class MathUtils {
      * @return 最大值
      * @see ArrayUtils#max(Comparable[])
      */
-    public static <T extends Comparable<? super T>> T max(T... numberArray) {
+    public static <T extends Comparable<? super T>> T max(T[] numberArray) {
         return ArrayUtils.max(numberArray);
     }
 
