@@ -1,6 +1,6 @@
 /*********************************************************************************
  *                                                                               *
- * The MIT License                                                               *
+ * The MIT License (MIT)                                                         *
  *                                                                               *
  * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
@@ -114,13 +114,17 @@ public class Http {
      */
     public static final String ALL = "ALL";
     /**
+     * HTTP SSL
+     */
+    public static final String SSL = "SSL";
+    /**
      * HTTP TLS
      */
     public static final String TLS = "TLS";
     /**
-     * HTTP SSL
+     * HTTP TLS v1.2
      */
-    public static final String SSL = "SSL";
+    public static final String TLS_12 = "TLSv1.2";
     /**
      * The use status
      */

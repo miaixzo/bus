@@ -1,18 +1,43 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.aoju.bus.gitlab.models.ApplicationSettings;
 import org.aoju.bus.gitlab.models.Setting;
-import org.aoju.bus.gitlab.utils.ISO8601;
-import org.aoju.bus.logger.Logger;
 
 import javax.ws.rs.core.Response;
-import java.text.ParseException;
 import java.util.Iterator;
 
 /**
  * This class implements the client side API for the GitLab Application Settings API.
  * See <a href="https://docs.gitlab.com/ee/api/settings.html">Application Settings API at GitLab</a> for more information.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class ApplicationSettingsApi extends AbstractApi {
 
@@ -41,34 +66,22 @@ public class ApplicationSettingsApi extends AbstractApi {
                     break;
 
                 case "created_at":
-                    try {
-                        String value = root.path(fieldName).asText();
-                        appSettings.setCreatedAt(ISO8601.toDate(value));
-                    } catch (ParseException pe) {
-                        throw new GitLabApiException(pe);
-                    }
+                    appSettings.setCreatedAt(ISO8601.toDate(root.path(fieldName).asText()));
                     break;
 
                 case "updated_at":
-                    try {
-                        String value = root.path(fieldName).asText();
-                        appSettings.setUpdatedAt(ISO8601.toDate(value));
-                    } catch (ParseException pe) {
-                        throw new GitLabApiException(pe);
-                    }
+                    appSettings.setUpdatedAt(ISO8601.toDate(root.path(fieldName).asText()));
                     break;
 
                 default:
-
                     Setting setting = Setting.forValue(fieldName);
                     if (setting != null) {
                         appSettings.addSetting(setting, root.path(fieldName));
                     } else {
-                        Logger.warn(String.format("Unknown setting: %s, type: %s",
+                        GitLabApi.getLogger().warning(String.format("Unknown setting: %s, type: %s",
                                 fieldName, root.path(fieldName).getClass().getSimpleName()));
                         appSettings.addSetting(fieldName, root.path(fieldName));
                     }
-
                     break;
             }
         }
@@ -154,4 +167,5 @@ public class ApplicationSettingsApi extends AbstractApi {
         JsonNode root = response.readEntity(JsonNode.class);
         return (parseApplicationSettings(root));
     }
+
 }

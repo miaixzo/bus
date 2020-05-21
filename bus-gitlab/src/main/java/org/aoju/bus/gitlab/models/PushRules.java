@@ -1,14 +1,44 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.utils.JacksonJson;
+import org.aoju.bus.gitlab.JacksonJson;
 
 import java.util.Date;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public class PushRules {
 
     private Integer id;
     private Integer projectId;
     private String commitMessageRegex;
+    private String commitMessageNegativeRegex;
     private String branchNameRegex;
     private Boolean denyDeleteTag;
     private Date createdAt;
@@ -17,6 +47,8 @@ public class PushRules {
     private String authorEmailRegex;
     private String fileNameRegex;
     private Integer maxFileSize;
+    private Boolean commitCommitterCheck;
+    private Boolean rejectUnsignedCommits;
 
     public Integer getId() {
         return id;
@@ -49,6 +81,19 @@ public class PushRules {
 
     public PushRules withCommitMessageRegex(String commitMessageRegex) {
         this.commitMessageRegex = commitMessageRegex;
+        return (this);
+    }
+
+    public String getCommitMessageNegativeRegex() {
+        return commitMessageNegativeRegex;
+    }
+
+    public void setCommitMessageNegativeRegex(String commitMessageNegativeRegex) {
+        this.commitMessageNegativeRegex = commitMessageNegativeRegex;
+    }
+
+    public PushRules withCommitMessageNegativeRegex(String commitMessageNegativeRegex) {
+        this.commitMessageNegativeRegex = commitMessageNegativeRegex;
         return (this);
     }
 
@@ -148,6 +193,32 @@ public class PushRules {
 
     public PushRules withMaxFileSize(Integer maxFileSize) {
         this.maxFileSize = maxFileSize;
+        return (this);
+    }
+
+    public Boolean getCommitCommitterCheck() {
+        return commitCommitterCheck;
+    }
+
+    public void setCommitCommitterCheck(Boolean commitCommitterCheck) {
+        this.commitCommitterCheck = commitCommitterCheck;
+    }
+
+    public PushRules withCommitCommitterCheck(Boolean commitCommitterCheck) {
+        this.commitCommitterCheck = commitCommitterCheck;
+        return (this);
+    }
+
+    public Boolean getRejectUnsignedCommits() {
+        return rejectUnsignedCommits;
+    }
+
+    public void setRejectUnsignedCommits(Boolean rejectUnsignedCommits) {
+        this.rejectUnsignedCommits = rejectUnsignedCommits;
+    }
+
+    public PushRules withRejectUnsignedCommits(Boolean rejectUnsignedCommits) {
+        this.rejectUnsignedCommits = rejectUnsignedCommits;
         return (this);
     }
 

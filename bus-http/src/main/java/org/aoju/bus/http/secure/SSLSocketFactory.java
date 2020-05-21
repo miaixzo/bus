@@ -1,6 +1,6 @@
 /*********************************************************************************
  *                                                                               *
- * The MIT License                                                               *
+ * The MIT License (MIT)                                                         *
  *                                                                               *
  * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.http.secure;
 
+import org.aoju.bus.core.lang.Http;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import java.security.SecureRandom;
@@ -45,7 +47,7 @@ public class SSLSocketFactory {
      */
     public static javax.net.ssl.SSLSocketFactory createTrustAllSSLFactory(X509TrustManager X509TrustManager) {
         try {
-            SSLContext sc = SSLContext.getInstance("TLS");
+            SSLContext sc = SSLContext.getInstance(Http.TLS);
             sc.init(null, new TrustManager[]{X509TrustManager}, new SecureRandom());
             return sc.getSocketFactory();
         } catch (Exception ignored) {

@@ -1,15 +1,44 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.logger.Logger;
+import org.aoju.bus.gitlab.GitLabApi;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public enum AccessLevel {
 
-    INVALID(-1), NONE(0), GUEST(10), REPORTER(20), DEVELOPER(30), MAINTAINER(40), OWNER(50), ADMIN(60);
+    INVALID(-1), NONE(0), GUEST(10), REPORTER(20), DEVELOPER(30), @Deprecated MASTER(40), MAINTAINER(40), OWNER(50), ADMIN(60);
 
     private static Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
 
@@ -17,6 +46,7 @@ public enum AccessLevel {
         for (AccessLevel accessLevel : AccessLevel.values())
             valuesMap.put(accessLevel.value, accessLevel);
 
+        // Make sure MAINTAINER is mapped to 40 and not MASTER (MASTER is deprecated)
         valuesMap.put(MAINTAINER.value, MAINTAINER);
     }
 
@@ -34,7 +64,7 @@ public enum AccessLevel {
             return (level);
         }
 
-        Logger.warn(String.format("[%d] is not a valid GitLab access level.", value));
+        GitLabApi.getLogger().warning(String.format("[%d] is not a valid GitLab access level.", value));
         return (value == null ? null : INVALID);
     }
 

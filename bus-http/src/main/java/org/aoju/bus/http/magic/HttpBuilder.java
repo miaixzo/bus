@@ -1,6 +1,6 @@
 /*********************************************************************************
  *                                                                               *
- * The MIT License                                                               *
+ * The MIT License (MIT)                                                         *
  *                                                                               *
  * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
@@ -204,8 +204,8 @@ public class HttpBuilder {
         } catch (Exception e) {
             Logger.error(e.getMessage(), e);
         }
-        builder.sslSocketFactory(sslSocketFactory, trustManager).
-                hostnameVerifier((hostname, session) -> true);
+        builder.sslSocketFactory(sslSocketFactory, trustManager)
+                .hostnameVerifier((hostname, session) -> true);
         return this;
     }
 

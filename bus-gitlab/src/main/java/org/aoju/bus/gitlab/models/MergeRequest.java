@@ -1,37 +1,73 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.aoju.bus.gitlab.utils.JacksonJson;
+import org.aoju.bus.gitlab.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public class MergeRequest {
 
     private Boolean allowCollaboration;
     private Boolean allowMaintainerToPush;
     private Integer approvalsBeforeMerge;
-    private org.aoju.bus.gitlab.models.Assignee assignee;
-    private org.aoju.bus.gitlab.models.Author author;
-    private List<org.aoju.bus.gitlab.models.Diff> changes;
+    private Assignee assignee;
+    private List<Assignee> assignees;
+    private Author author;
+    private Boolean blockingDiscussionsResolved;
+    private List<Diff> changes;
     private Date closedAt;
-    private org.aoju.bus.gitlab.models.Participant closedBy;
+    private Participant closedBy;
     private Date createdAt;
     private String description;
     private Boolean discussionLocked;
+    private Integer divergedCommitsCount;
     private Integer downvotes;
     private Boolean forceRemoveSourceBranch;
+    private Boolean hasConflicts;
     private Integer id;
     private Integer iid;
     private List<String> labels;
+    private Date latestBuildFinishedAt;
+    private Date latestBuildStartedAt;
     private String mergeCommitSha;
+    private String squashCommitSha;
     private String mergeStatus;
     private Date mergedAt;
-    private org.aoju.bus.gitlab.models.Participant mergedBy;
+    private Participant mergedBy;
     private Boolean mergeWhenPipelineSucceeds;
     private String mergeError;
-    private org.aoju.bus.gitlab.models.Milestone milestone;
+    private Milestone milestone;
     private Integer projectId;
     private String sha;
     private Boolean shouldRemoveSourceBranch;
@@ -43,14 +79,16 @@ public class MergeRequest {
     private String targetBranch;
     private Integer targetProjectId;
     private TaskCompletionStatus taskCompletionStatus;
-    private org.aoju.bus.gitlab.models.TimeStats timeStats;
+    private References references;
+    private TimeStats timeStats;
     private String title;
     private Date updatedAt;
     private Integer upvotes;
     private Integer userNotesCount;
     private String webUrl;
     private Boolean workInProgress;
-    private org.aoju.bus.gitlab.models.DiffRef diffRefs;
+    private DiffRef diffRefs;
+    private Boolean rebaseInProgress;
 
     // The approval fields will only be available when listing approvals, approving  or unapproving a merge reuest.
     private Integer approvalsRequired;
@@ -58,7 +96,7 @@ public class MergeRequest {
 
     @JsonSerialize(using = JacksonJson.UserListSerializer.class)
     @JsonDeserialize(using = JacksonJson.UserListDeserializer.class)
-    private List<org.aoju.bus.gitlab.models.User> approvedBy;
+    private List<User> approvedBy;
 
     public static final boolean isValid(MergeRequest mergeRequest) {
         return (mergeRequest != null && mergeRequest.getId() != null);
@@ -88,7 +126,7 @@ public class MergeRequest {
         this.approvalsBeforeMerge = approvalsBeforeMerge;
     }
 
-    public org.aoju.bus.gitlab.models.Assignee getAssignee() {
+    public Assignee getAssignee() {
         return assignee;
     }
 
@@ -96,7 +134,15 @@ public class MergeRequest {
         this.assignee = assignee;
     }
 
-    public org.aoju.bus.gitlab.models.Author getAuthor() {
+    public List<Assignee> getAssignees() {
+        return assignees;
+    }
+
+    public void setAssignees(List<Assignee> assignees) {
+        this.assignees = assignees;
+    }
+
+    public Author getAuthor() {
         return author;
     }
 
@@ -104,7 +150,15 @@ public class MergeRequest {
         this.author = author;
     }
 
-    public List<org.aoju.bus.gitlab.models.Diff> getChanges() {
+    public Boolean getBlockingDiscussionsResolved() {
+        return blockingDiscussionsResolved;
+    }
+
+    public void setBlockingDiscussionsResolved(Boolean blockingDiscussionsResolved) {
+        this.blockingDiscussionsResolved = blockingDiscussionsResolved;
+    }
+
+    public List<Diff> getChanges() {
         return changes;
     }
 
@@ -120,11 +174,11 @@ public class MergeRequest {
         this.closedAt = closedAt;
     }
 
-    public org.aoju.bus.gitlab.models.Participant getClosedBy() {
+    public Participant getClosedBy() {
         return closedBy;
     }
 
-    public void setClosedBy(org.aoju.bus.gitlab.models.Participant closedBy) {
+    public void setClosedBy(Participant closedBy) {
         this.closedBy = closedBy;
     }
 
@@ -152,6 +206,14 @@ public class MergeRequest {
         this.discussionLocked = discussionLocked;
     }
 
+    public Integer getDivergedCommitsCount() {
+        return divergedCommitsCount;
+    }
+
+    public void setDivergedCommitsCount(Integer divergedCommitsCount) {
+        this.divergedCommitsCount = divergedCommitsCount;
+    }
+
     public Integer getDownvotes() {
         return downvotes;
     }
@@ -166,6 +228,14 @@ public class MergeRequest {
 
     public void setForceRemoveSourceBranch(Boolean forceRemoveSourceBranch) {
         this.forceRemoveSourceBranch = forceRemoveSourceBranch;
+    }
+
+    public Boolean getHasConflicts() {
+        return hasConflicts;
+    }
+
+    public void setHasConflicts(Boolean hasConflicts) {
+        this.hasConflicts = hasConflicts;
     }
 
     public Integer getId() {
@@ -192,12 +262,36 @@ public class MergeRequest {
         this.labels = labels;
     }
 
+    public Date getLatestBuildFinishedAt() {
+        return latestBuildFinishedAt;
+    }
+
+    public void setLatestBuildFinishedAt(Date latestBuildFinishedAt) {
+        this.latestBuildFinishedAt = latestBuildFinishedAt;
+    }
+
+    public Date getLatestBuildStartedAt() {
+        return latestBuildStartedAt;
+    }
+
+    public void setLatestBuildStartedAt(Date latestBuildStartedAt) {
+        this.latestBuildStartedAt = latestBuildStartedAt;
+    }
+
     public String getMergeCommitSha() {
         return mergeCommitSha;
     }
 
     public void setMergeCommitSha(String mergeCommitSha) {
         this.mergeCommitSha = mergeCommitSha;
+    }
+
+    public String getSquashCommitSha() {
+        return squashCommitSha;
+    }
+
+    public void setSquashCommitSha(String squashCommitSha) {
+        this.squashCommitSha = squashCommitSha;
     }
 
     public String getMergeStatus() {
@@ -216,7 +310,7 @@ public class MergeRequest {
         this.mergedAt = mergedAt;
     }
 
-    public org.aoju.bus.gitlab.models.Participant getMergedBy() {
+    public Participant getMergedBy() {
         return mergedBy;
     }
 
@@ -240,7 +334,7 @@ public class MergeRequest {
         this.mergeError = mergeError;
     }
 
-    public org.aoju.bus.gitlab.models.Milestone getMilestone() {
+    public Milestone getMilestone() {
         return milestone;
     }
 
@@ -336,7 +430,15 @@ public class MergeRequest {
         this.taskCompletionStatus = taskCompletionStatus;
     }
 
-    public org.aoju.bus.gitlab.models.TimeStats getTimeStats() {
+    public References getReferences() {
+        return references;
+    }
+
+    public void setReferences(References references) {
+        this.references = references;
+    }
+
+    public TimeStats getTimeStats() {
         return timeStats;
     }
 
@@ -443,7 +545,7 @@ public class MergeRequest {
      *
      * @return the list of users that have approved the merge request
      */
-    public List<org.aoju.bus.gitlab.models.User> getApprovedBy() {
+    public List<User> getApprovedBy() {
         return approvedBy;
     }
 
@@ -458,12 +560,20 @@ public class MergeRequest {
         this.approvedBy = approvedBy;
     }
 
-    public org.aoju.bus.gitlab.models.DiffRef getDiffRefs() {
+    public DiffRef getDiffRefs() {
         return diffRefs;
     }
 
     public void setDiffRefs(final DiffRef diffRefs) {
         this.diffRefs = diffRefs;
+    }
+
+    public Boolean getRebaseInProgress() {
+        return rebaseInProgress;
+    }
+
+    public void setRebaseInProgress(Boolean rebaseInProgress) {
+        this.rebaseInProgress = rebaseInProgress;
     }
 
     @Override

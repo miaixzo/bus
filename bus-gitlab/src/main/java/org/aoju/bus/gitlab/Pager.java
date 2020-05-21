@@ -1,9 +1,31 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.gitlab.utils.JacksonJson;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -36,7 +58,10 @@ import java.util.stream.StreamSupport;
  *   }
  * </pre>
  *
- * @param <T> the GitLab4J type contained in the List.
+ * @param <T> the GitLab type contained in the List.
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
 
@@ -47,10 +72,10 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private int totalItems;
     private int currentPage;
     private int kaminariNextPage;
-    private List<String> pageParam = new ArrayList<>(1);
+    private List<String> pageParam;
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
-    private org.aoju.bus.gitlab.AbstractApi api;
+    private AbstractApi api;
     private MultivaluedMap<String, String> queryParams;
     private Object[] pathArgs;
     private JavaType javaType;
@@ -59,7 +84,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Creates a Pager instance to access the API through the specified path and query parameters.
      *
      * @param api          the AbstractApi implementation to communicate through
-     * @param type         the GitLab4J type that will be contained in the List
+     * @param type         the GitLab type that will be contained in the List
      * @param itemsPerPage items per page
      * @param queryParams  HTTP query params
      * @param pathArgs     HTTP path arguments
@@ -68,6 +93,10 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     Pager(AbstractApi api, Class<T> type, int itemsPerPage, MultivaluedMap<String, String> queryParams, Object... pathArgs) throws GitLabApiException {
 
         javaType = mapper.getTypeFactory().constructCollectionType(List.class, type);
+
+        if (itemsPerPage < 1) {
+            itemsPerPage = api.getDefaultPerPage();
+        }
 
         // Make sure the per_page parameter is present
         if (queryParams == null) {
@@ -79,7 +108,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
 
         // Set the page param to 1
         pageParam = new ArrayList<>();
-        pageParam.add(Symbol.ONE);
+        pageParam.add("1");
         queryParams.put(PAGE_PARAM, pageParam);
         Response response = api.get(Response.Status.OK, queryParams, pathArgs);
 
@@ -130,9 +159,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param response the Response instance to get the value from
      * @param key      the HTTP header key to get the value for
      * @return the specified header value from the Response instance, or null if the header is not present
-     * @throws GitLabApiException if any error occurs
      */
-    private String getHeaderValue(Response response, String key) throws GitLabApiException {
+    private String getHeaderValue(Response response, String key) {
 
         String value = response.getHeaderString(key);
         value = (value != null ? value.trim() : null);
@@ -247,9 +275,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the first page of List. Will rewind the iterator.
      *
      * @return the first page of List
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> first() throws GitLabApiException {
+    public List<T> first() {
         return (page(1));
     }
 
@@ -272,9 +299,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the previous page of List. Will set the iterator to the previous page.
      *
      * @return the previous page of List
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> previous() throws GitLabApiException {
+    public List<T> previous() {
         return (page(currentPage - 1));
     }
 
@@ -282,9 +308,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Returns the current page of List.
      *
      * @return the current page of List
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> current() throws GitLabApiException {
+    public List<T> current() {
         return (page(currentPage));
     }
 
@@ -335,9 +360,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Gets all the items from each page as a single List instance.
      *
      * @return all the items from each page as a single List instance
-     * @throws GitLabApiException if any error occurs
      */
-    public List<T> all() throws GitLabApiException {
+    public List<T> all() {
 
         // Make sure that current page is 0, this will ensure the whole list is fetched
         // regardless of what page the instance is currently on.
@@ -357,9 +381,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return a Stream instance which is pre-populated with all items from all pages
      * @throws IllegalStateException if Stream has already been issued
-     * @throws GitLabApiException    if any other error occurs
      */
-    public Stream<T> stream() throws GitLabApiException, IllegalStateException {
+    public Stream<T> stream() throws IllegalStateException {
 
         if (pagerStream == null) {
             synchronized (this) {
@@ -403,7 +426,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
                     // regardless of what page the instance is currently on.
                     currentPage = 0;
 
-                    pagerStream = StreamSupport.stream(new PagerSpliterator<T>(this), false);
+                    pagerStream = StreamSupport.stream(new PagerSpliterator<>(this), false);
                     return (pagerStream);
                 }
             }

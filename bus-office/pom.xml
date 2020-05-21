@@ -75,12 +75,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>${poi.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>${xerces.version}</version>
@@ -90,8 +84,8 @@
 
     <licenses>
         <license>
-            <name>The MIT License</name>
-            <url>https://www.mit-license.org</url>
+            <name>The MIT License (MIT)</name>
+            <url>https://opensource.org/licenses/MIT</url>
         </license>
     </licenses>
 

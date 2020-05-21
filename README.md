@@ -23,7 +23,7 @@
 	<a target="_blank" href="http://poi.apache.org">
 		<img src="https://img.shields.io/badge/poi-4.1.2-blue.svg">
 	</a>
-	<a target="_blank" href="https://www.mit-license.org">
+	<a target="_blank" href="https://opensource.org/licenses/MIT">
 		<img src="https://img.shields.io/badge/license-MIT-green.svg">
 	</a>
 </p>
@@ -152,7 +152,7 @@ Open sourced under the MIT license.
 
 ### JetBrains 
 
-Thanks JetBrains for the free license.
+Thanks JetBrains for the OpenSource license.
 
 感谢JetBrains提供IDEA免费license
 

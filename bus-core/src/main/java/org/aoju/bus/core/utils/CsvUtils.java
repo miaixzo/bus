@@ -1,6 +1,6 @@
 /*********************************************************************************
  *                                                                               *
- * The MIT License                                                               *
+ * The MIT License (MIT)                                                         *
  *                                                                               *
  * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
@@ -140,4 +140,5 @@ public class CsvUtils {
     public static CsvWriter getWriter(Writer writer, CsvWriteConfig config) {
         return new CsvWriter(writer, config);
     }
+
 }

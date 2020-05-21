@@ -1,10 +1,39 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.gitlab.utils.JacksonJson;
+import org.aoju.bus.gitlab.JacksonJson;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public class Job {
 
     private Integer id;
@@ -27,6 +56,9 @@ public class Job {
     private JobStatus status;
     private String when;
     private Boolean manual;
+    private Boolean allowFailure;
+    private Float duration;
+    private Project project;
 
     public Integer getId() {
         return id;
@@ -188,6 +220,30 @@ public class Job {
         this.manual = manual;
     }
 
+    public Boolean getAllowFailure() {
+        return allowFailure;
+    }
+
+    public void setAllowFailure(Boolean allowFailure) {
+        this.allowFailure = allowFailure;
+    }
+
+    public Float getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Float duration) {
+        this.duration = duration;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public Job withId(Integer id) {
         this.id = id;
         return this;
@@ -270,6 +326,21 @@ public class Job {
 
     public Job withManual(Boolean manual) {
         this.manual = manual;
+        return this;
+    }
+
+    public Job withAllowFailure(Boolean allowFailure) {
+        this.allowFailure = allowFailure;
+        return this;
+    }
+
+    public Job withDuration(Float duration) {
+        this.duration = duration;
+        return this;
+    }
+
+    public Job withProject(Project project) {
+        this.project = project;
         return this;
     }
 

@@ -1,20 +1,47 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.Constants.IssueOrderBy;
 import org.aoju.bus.gitlab.Constants.IssueScope;
 import org.aoju.bus.gitlab.Constants.IssueState;
 import org.aoju.bus.gitlab.Constants.SortOrder;
 import org.aoju.bus.gitlab.GitLabApiForm;
-import org.aoju.bus.gitlab.utils.ISO8601;
+import org.aoju.bus.gitlab.ISO8601;
 
 import java.util.Date;
 import java.util.List;
 
 /**
  * This class is used to filter issues when getting lists of them.
+ *
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
  */
 public class IssueFilter {
 
@@ -24,7 +51,7 @@ public class IssueFilter {
     private List<String> iids;
 
     /**
-     * {@link IssueState} Return all issues or just those that are opened or closed.
+     * {@link Constants.IssueState} Return all issues or just those that are opened or closed.
      */
     private IssueState state;
 
@@ -39,7 +66,7 @@ public class IssueFilter {
     private String milestone;
 
     /**
-     * {@link IssueScope} Return issues for the given scope: created_by_me, assigned_to_me or all. For versions before 11.0, use the now deprecated created-by-me or assigned-to-me scopes instead.
+     * {@link Constants.IssueScope} Return issues for the given scope: created_by_me, assigned_to_me or all. For versions before 11.0, use the now deprecated created-by-me or assigned-to-me scopes instead.
      */
     private IssueScope scope;
 
@@ -59,12 +86,12 @@ public class IssueFilter {
     private String myReactionEmoji;
 
     /**
-     * {@link IssueOrderBy} Return issues ordered by created_at or updated_at fields. Default is created_at.
+     * {@link Constants.IssueOrderBy} Return issues ordered by created_at or updated_at fields. Default is created_at.
      */
     private IssueOrderBy orderBy;
 
     /**
-     * {@link SortOrder} Return issues sorted in asc or desc order. Default is desc.
+     * {@link Constants.SortOrder} Return issues sorted in asc or desc order. Default is desc.
      */
     private SortOrder sort;
 
@@ -304,7 +331,7 @@ public class IssueFilter {
         return (new GitLabApiForm()
                 .withParam("iids", iids)
                 .withParam("state", state)
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)
                 .withParam("author_id", authorId)

@@ -1,6 +1,6 @@
 /*********************************************************************************
  *                                                                               *
- * The MIT License                                                               *
+ * The MIT License (MIT)                                                         *
  *                                                                               *
  * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
@@ -50,7 +50,7 @@ public class OfficeProviderService {
         Registry.getInstance().register(Registry.ONLINE, onlineProvider);
     }
 
-    public Provider get(String type) {
+    public Provider require(String type) {
         if (Registry.getInstance().contains(type)) {
             if (Registry.LOCAL.equals(type)) {
                 return (LocalOfficeProvider) Registry.getInstance().require(Registry.LOCAL);

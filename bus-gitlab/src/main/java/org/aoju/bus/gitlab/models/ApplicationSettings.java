@@ -1,15 +1,44 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import org.aoju.bus.gitlab.GitLabApiException;
-import org.aoju.bus.gitlab.utils.JacksonJson;
+import org.aoju.bus.gitlab.JacksonJson;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Kimi Liu
+ * @version 5.9.2
+ * @since JDK 1.8+
+ */
 public class ApplicationSettings {
 
     private Integer id;
@@ -50,7 +79,7 @@ public class ApplicationSettings {
     }
 
     @JsonIgnore
-    public Object getSetting(org.aoju.bus.gitlab.models.Setting setting) {
+    public Object getSetting(Setting setting) {
 
         if (setting == null) {
             return (null);
@@ -72,7 +101,7 @@ public class ApplicationSettings {
 
     public Object addSetting(String setting, Object value) throws GitLabApiException {
 
-        org.aoju.bus.gitlab.models.Setting appSetting = org.aoju.bus.gitlab.models.Setting.forValue(setting);
+        Setting appSetting = Setting.forValue(setting);
         if (appSetting != null) {
             return (addSetting(appSetting, value));
         }
@@ -81,7 +110,7 @@ public class ApplicationSettings {
         return (value);
     }
 
-    public Object addSetting(org.aoju.bus.gitlab.models.Setting setting, Object value) throws GitLabApiException {
+    public Object addSetting(Setting setting, Object value) throws GitLabApiException {
 
         if (value instanceof JsonNode) {
             value = jsonNodeToValue((JsonNode) value);
