@@ -66,7 +66,7 @@ public class BeanValueProvider implements ValueProvider<String> {
     public Object value(String key, Type valueType) {
         BeanDesc.PropDesc sourcePd = sourcePdMap.get(key);
         if (null == sourcePd && (Boolean.class == valueType || boolean.class == valueType)) {
-            //boolean类型字段字段名支持两种方式
+            // boolean类型字段字段名支持两种方式
             sourcePd = sourcePdMap.get(StringUtils.upperFirstAndAddPre(key, Normal.IS));
         }
 
@@ -81,8 +81,8 @@ public class BeanValueProvider implements ValueProvider<String> {
                         throw new InstrumentException("Inject [{}] error!", key);
                     }
                 }
-
-                result = Convert.convertWithCheck(valueType, result, null, ignoreError);
+                // 尝试转换为目标类型，失败将返回原类型
+                result = Convert.convertWithCheck(valueType, result, result, ignoreError);
             }
         }
         return result;
