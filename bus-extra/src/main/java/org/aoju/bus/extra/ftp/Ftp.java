@@ -32,6 +32,7 @@ import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.logger.Logger;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
@@ -40,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -181,36 +181,27 @@ public class Ftp extends AbstractFtp {
      * @return this
      */
     public Ftp init(FtpConfig config, FtpMode mode) {
-        final FTPClient client = new FTPClient();
-        client.setControlEncoding(config.getCharset().toString());
-        client.setConnectTimeout((int) config.getConnectionTimeout());
         try {
+            final FTPClient client = new FTPClient();
+            client.setControlEncoding(config.getCharset().toString());
+            client.setConnectTimeout((int) config.getConnectionTimeout());
             // 连接ftp服务器
             client.connect(config.getHost(), config.getPort());
+            client.setSoTimeout((int) config.getSoTimeout());
             // 登录ftp服务器
             client.login(config.getUser(), config.getPassword());
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-        final int replyCode = client.getReplyCode(); // 是否成功登录服务器
-        if (false == FTPReply.isPositiveCompletion(replyCode)) {
-            try {
+            final int replyCode = client.getReplyCode();
+            // 是否成功登录服务器
+            if (false == FTPReply.isPositiveCompletion(replyCode)) {
                 client.disconnect();
-            } catch (IOException e) {
-                // ignore
+                Logger.error("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
             }
-            throw new InstrumentException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
-        }
-        //call setSoTimeout after a connection has been opened
-        try {
-            client.setSoTimeout((int) config.getSoTimeout());
-        } catch (SocketException e) {
-            //ignore
-        }
-        this.client = client;
-
-        if (mode != null) {
-            setMode(mode);
+            this.client = client;
+            if (mode != null) {
+                setMode(mode);
+            }
+        } catch (IOException e) {
+            Logger.error("Login to FTP server failed");
         }
         return this;
     }
