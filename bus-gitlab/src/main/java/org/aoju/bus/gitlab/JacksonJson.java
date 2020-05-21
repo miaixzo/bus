@@ -38,7 +38,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.ContextResolver;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -322,12 +321,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
 
         @Override
         public Date deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
-
-            try {
-                return (ISO8601.toDate(jsonparser.getText()));
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
+            return ISO8601.toDate(jsonparser.getText());
         }
     }
 
