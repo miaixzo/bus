@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * for more information.</p>
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class ContainerRegistryApi extends AbstractApi {

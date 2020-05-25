@@ -28,7 +28,7 @@ package org.aoju.bus.starter;
  * 返回值信息处理.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public interface PlaceBinder {

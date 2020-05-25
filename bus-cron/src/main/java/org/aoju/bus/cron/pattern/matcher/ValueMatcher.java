@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Matcher;
  * 用于匹配日期位中对应数字是否匹配
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public interface ValueMatcher extends Matcher<Integer> {

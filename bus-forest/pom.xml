@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-forest</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -16,6 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
         <project.compiler.version>1.8</project.compiler.version>
         <project.compiler.version>1.8</project.compiler.version>
         <compress.version>1.19</compress.version>
@@ -36,7 +37,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-loader</artifactId>
-            <version>2.2.5.RELEASE</version>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

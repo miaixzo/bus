@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  * such a way that it could be sub-classed and have its behavior modified.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 @Priority(Integer.MIN_VALUE)

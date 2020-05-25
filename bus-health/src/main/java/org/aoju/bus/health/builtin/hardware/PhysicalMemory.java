@@ -32,7 +32,7 @@ import org.aoju.bus.health.Builder;
  * computer system and available to the operating system.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 @Immutable

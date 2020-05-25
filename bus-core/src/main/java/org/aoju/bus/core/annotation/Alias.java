@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * 用于字段、方法、参数等提供别名
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

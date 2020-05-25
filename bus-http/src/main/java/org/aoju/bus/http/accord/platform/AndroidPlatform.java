@@ -53,7 +53,7 @@ import java.util.List;
  * 安卓2.3或更高.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class AndroidPlatform extends Platform {

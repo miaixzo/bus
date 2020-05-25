@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-proxy</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -17,8 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <javassist.version>3.26.0-GA</javassist.version>
-        <hession.version>4.0.38</hession.version>
+        <javassist.version>3.27.0-GA</javassist.version>
+        <hession.version>4.0.63</hession.version>
         <cglib.version>3.3.0</cglib.version>
         <aspectj.version>1.9.5</aspectj.version>
     </properties>

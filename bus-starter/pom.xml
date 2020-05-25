@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -17,18 +17,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
+        <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
         <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.67</fastjson.version>
+        <fastjson.version>1.2.68</fastjson.version>
         <aspectj.version>1.9.5</aspectj.version>
         <persistence.version>2.2</persistence.version>
-        <guava.version>28.0-jre</guava.version>
-        <guice.version>4.2.0</guice.version>
+        <guava.version>29.0-jre</guava.version>
+        <guice.version>4.2.3</guice.version>
         <mybatis.version>3.5.3</mybatis.version>
         <mybatis.spring.version>2.0.3</mybatis.spring.version>
+        <validation.version>2.0.1.Final</validation.version>
         <jsqlparser.version>3.1</jsqlparser.version>
-        <mysql.version>8.0.19</mysql.version>
-        <druid.version>1.1.20</druid.version>
-        <dubbo.version>2.7.5</dubbo.version>
+        <mysql.version>8.0.20</mysql.version>
+        <druid.version>1.1.22</druid.version>
+        <dubbo.version>2.7.7</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
         <swagger.version>2.9.2</swagger.version>
     </properties>
@@ -185,6 +187,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${validation.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
@@ -305,19 +313,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <version>2.2.5.RELEASE</version>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.2.5.RELEASE</version>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
-            <version>2.2.5.RELEASE</version>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
