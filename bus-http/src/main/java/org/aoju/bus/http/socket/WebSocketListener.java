@@ -31,7 +31,7 @@ import org.aoju.bus.http.Response;
  * web socket 监听器
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public abstract class WebSocketListener {

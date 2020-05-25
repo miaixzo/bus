@@ -25,7 +25,7 @@
 package org.aoju.bus.logger;
 
 import org.aoju.bus.core.utils.CallerUtils;
-import org.aoju.bus.core.utils.ResourceUtils;
+import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.logger.dialect.console.ConsoleLogFactory;
 import org.aoju.bus.logger.dialect.jdk.JdkLogFactory;
 
@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日志工厂类
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public abstract class LogFactory {
@@ -95,7 +95,7 @@ public abstract class LogFactory {
         }
 
         // 未找到任何可支持的日志库时判断依据：当JDK Logging的配置文件位于classpath中，使用JDK Logging，否则使用Console
-        final URL url = ResourceUtils.getResource("logging.properties");
+        final URL url = FileUtils.getResource("logging.properties");
         return (null != url) ? new JdkLogFactory() : new ConsoleLogFactory();
     }
 

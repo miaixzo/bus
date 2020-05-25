@@ -25,13 +25,13 @@
 package org.aoju.bus.core.lang.mutable;
 
 
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 
 /**
  * 可变 <code>int</code> 类型
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @see Integer
  * @since JDK 1.8+
  */
@@ -215,7 +215,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      */
     @Override
     public int compareTo(final MutableInt other) {
-        return NumberUtils.compare(this.value, other.value);
+        return MathUtils.compare(this.value, other.value);
     }
 
     @Override

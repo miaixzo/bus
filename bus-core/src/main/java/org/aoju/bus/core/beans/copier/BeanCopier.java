@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @param <T> 目标对象类型
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
@@ -268,7 +268,7 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                 continue;
             }
             setterMethod = prop.getSetter();
-            if (null == setterMethod && false == ModifierUtils.isPublic(field)) {
+            if (null == setterMethod && false == BeanUtils.isPublic(field)) {
                 // Setter方法不存在或者字段为非public跳过
                 //5.1.0新增支持public字段注入支持
                 continue;

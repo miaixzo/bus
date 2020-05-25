@@ -49,7 +49,7 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  * 此筛选器用于将图形插入到文档中.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class LinkedImagesEmbedderFilter implements Filter {

@@ -26,7 +26,7 @@ package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.utils.BooleanUtils;
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 import org.aoju.bus.core.utils.StringUtils;
 
 /**
@@ -44,7 +44,7 @@ import org.aoju.bus.core.utils.StringUtils;
  * </ul>
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {
@@ -103,7 +103,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 if (StringUtils.isBlank(valueStr)) {
                     return 0;
                 }
-                return NumberUtils.parseInt(valueStr);
+                return MathUtils.parseInt(valueStr);
 
             } else if (long.class == this.targetType) {
                 if (value instanceof Number) {
@@ -115,7 +115,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 if (StringUtils.isBlank(valueStr)) {
                     return 0;
                 }
-                return NumberUtils.parseLong(valueStr);
+                return MathUtils.parseLong(valueStr);
 
             } else if (float.class == this.targetType) {
                 if (value instanceof Number) {

@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 2. 设备服务进程
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public interface Centre {

@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class EnumConverter extends AbstractConverter<Object> {
@@ -99,7 +99,7 @@ public class EnumConverter extends AbstractConverter<Object> {
         Map<Class<?>, Method> valueOfMethods = VALUE_OF_METHOD_CACHE.get(enumClass);
         if (null == valueOfMethods) {
             valueOfMethods = Arrays.stream(enumClass.getMethods())
-                    .filter(ModifierUtils::isStatic)
+                    .filter(BeanUtils::isStatic)
                     .filter(m -> m.getReturnType() == enumClass)
                     .filter(m -> m.getParameterCount() == 1)
                     .filter(m -> false == "valueOf".equals(m.getName()))

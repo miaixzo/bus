@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class provides utility methods for parsing and formatting org.aoju.bus.gitlab.ISO8601 formatted dates.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class ISO8601 {

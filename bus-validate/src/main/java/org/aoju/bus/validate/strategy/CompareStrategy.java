@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.ReflectUtils;
 import org.aoju.bus.core.utils.StringUtils;
@@ -38,7 +38,7 @@ import java.math.BigDecimal;
  * 数据长度校验
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class CompareStrategy implements Matcher<Object, Compare> {
@@ -52,7 +52,7 @@ public class CompareStrategy implements Matcher<Object, Compare> {
         Object obj = ReflectUtils.getFieldValue(object, annotation.with());
 
         if (obj instanceof String) {
-            if (NumberUtils.isNumber(obj.toString())) {
+            if (MathUtils.isNumber(obj.toString())) {
                 int _compValue = new BigDecimal(obj.toString()).compareTo(new BigDecimal(object.toString()));
                 switch (annotation.cond()) {
                     case EQ:

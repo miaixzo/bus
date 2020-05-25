@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.math;
 
-import org.aoju.bus.core.utils.NumberUtils;
+import org.aoju.bus.core.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ import java.util.List;
  * 排列组合相关类
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class Combination {
@@ -64,9 +64,9 @@ public class Combination {
             return 1;
         }
         if (n == m) {
-            return NumberUtils.factorial(n) / NumberUtils.factorial(m);
+            return MathUtils.factorial(n) / MathUtils.factorial(m);
         }
-        return (n > m) ? NumberUtils.factorial(n, n - m) / NumberUtils.factorial(m) : 0;
+        return (n > m) ? MathUtils.factorial(n, n - m) / MathUtils.factorial(m) : 0;
     }
 
     /**

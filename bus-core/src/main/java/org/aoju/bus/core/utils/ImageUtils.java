@@ -55,7 +55,7 @@ import java.util.Random;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class ImageUtils {
@@ -443,8 +443,8 @@ public class ImageUtils {
             int srcWidth = bi.getWidth(null); // 源图宽度
             int srcHeight = bi.getHeight(null); // 源图高度
 
-            int destWidth = NumberUtils.partValue(srcWidth, cols); // 每张切片的宽度
-            int destHeight = NumberUtils.partValue(srcHeight, rows); // 每张切片的高度
+            int destWidth = MathUtils.partValue(srcWidth, cols); // 每张切片的宽度
+            int destHeight = MathUtils.partValue(srcHeight, rows); // 每张切片的高度
 
             // 循环建立切片
             java.awt.Image tag;

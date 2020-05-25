@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class DateUtils {
@@ -834,7 +834,7 @@ public class DateUtils {
         dateStr = StringUtils.removeAll(dateStr.trim(), '日', '秒');
         int length = dateStr.length();
 
-        if (NumberUtils.isNumber(dateStr)) {
+        if (MathUtils.isNumber(dateStr)) {
             // 纯数字形式
             if (length == Fields.PURE_DATETIME_PATTERN.length()) {
                 return parse(dateStr, Fields.PURE_DATETIME_FORMAT);

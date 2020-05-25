@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-limiter</artifactId>
-    <version>5.9.2</version>
+    <version>5.9.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -17,9 +17,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <curator.version>4.2.0</curator.version>
+        <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
+        <curator.version>4.3.0</curator.version>
         <redisson.version>3.11.2</redisson.version>
-        <guava.version>28.0-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -89,7 +90,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.2.5.RELEASE</version>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

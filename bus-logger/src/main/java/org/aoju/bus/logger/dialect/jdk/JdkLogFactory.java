@@ -25,8 +25,8 @@
 package org.aoju.bus.logger.dialect.jdk;
 
 import org.aoju.bus.core.lang.Console;
+import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ResourceUtils;
 import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 
@@ -38,7 +38,7 @@ import java.util.logging.LogManager;
  * <a href="http://java.sun.com/javase/6/docs/technotes/guides/logging/index.html">java.util.logging</a> log.
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class JdkLogFactory extends LogFactory {
@@ -62,7 +62,7 @@ public class JdkLogFactory extends LogFactory {
      * 读取ClassPath下的logging.properties配置文件
      */
     private void readConfig() {
-        InputStream in = ResourceUtils.getStreamSafe("logging.properties");
+        InputStream in = FileUtils.getStreamSafe("logging.properties");
         if (null == in) {
             System.err.println("[WARN] Can not find [logging.properties], use [%JRE_HOME%/lib/logging.properties] as default!");
             return;

@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang.tree;
  * 树配置属性相关
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class TreeEntity {

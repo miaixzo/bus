@@ -32,6 +32,7 @@ import org.aoju.bus.core.utils.ArrayUtils;
 import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.core.utils.ObjectUtils;
 import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.logger.Logger;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
@@ -40,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class Ftp extends AbstractFtp {
@@ -153,7 +153,6 @@ public class Ftp extends AbstractFtp {
      * @param port     端口
      * @param user     用户名
      * @param password 密码
-     *
      * @return this
      */
     public Ftp init(String host, int port, String user, String password) {
@@ -168,7 +167,6 @@ public class Ftp extends AbstractFtp {
      * @param user     用户名
      * @param password 密码
      * @param mode     模式
-     *
      * @return this
      */
     public Ftp init(String host, int port, String user, String password, FtpMode mode) {
@@ -180,40 +178,30 @@ public class Ftp extends AbstractFtp {
      *
      * @param config FTP配置
      * @param mode   模式
-     *
      * @return this
      */
     public Ftp init(FtpConfig config, FtpMode mode) {
-        final FTPClient client = new FTPClient();
-        client.setControlEncoding(config.getCharset().toString());
-        client.setConnectTimeout((int) config.getConnectionTimeout());
         try {
+            final FTPClient client = new FTPClient();
+            client.setControlEncoding(config.getCharset().toString());
+            client.setConnectTimeout((int) config.getConnectionTimeout());
             // 连接ftp服务器
             client.connect(config.getHost(), config.getPort());
+            client.setSoTimeout((int) config.getSoTimeout());
             // 登录ftp服务器
             client.login(config.getUser(), config.getPassword());
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-        final int replyCode = client.getReplyCode(); // 是否成功登录服务器
-        if (false == FTPReply.isPositiveCompletion(replyCode)) {
-            try {
+            final int replyCode = client.getReplyCode();
+            // 是否成功登录服务器
+            if (false == FTPReply.isPositiveCompletion(replyCode)) {
                 client.disconnect();
-            } catch (IOException e) {
-                // ignore
+                Logger.error("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
             }
-            throw new InstrumentException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
-        }
-        //call setSoTimeout after a connection has been opened
-        try {
-            client.setSoTimeout((int) config.getSoTimeout());
-        } catch (SocketException e) {
-            //ignore
-        }
-        this.client = client;
-
-        if (mode != null) {
-            setMode(mode);
+            this.client = client;
+            if (mode != null) {
+                setMode(mode);
+            }
+        } catch (IOException e) {
+            Logger.error("Login to FTP server failed");
         }
         return this;
     }
@@ -222,7 +210,6 @@ public class Ftp extends AbstractFtp {
      * 设置FTP连接模式，可选主动和被动模式
      *
      * @param mode 模式枚举
-     *
      * @return this
      */
     public Ftp setMode(FtpMode mode) {
@@ -242,7 +229,6 @@ public class Ftp extends AbstractFtp {
      * 设置执行完操作是否返回当前目录
      *
      * @param backToPwd 执行完操作是否返回当前目录
-     *
      * @return this
      */
     public Ftp setBackToPwd(boolean backToPwd) {
@@ -274,7 +260,6 @@ public class Ftp extends AbstractFtp {
      * 改变目录
      *
      * @param directory 目录
-     *
      * @return 是否成功
      */
     @Override
@@ -319,7 +304,6 @@ public class Ftp extends AbstractFtp {
      * 遍历某个目录下所有文件和目录,不会递归遍历
      *
      * @param path 目录
-     *
      * @return 文件或目录列表
      */
     public FTPFile[] lsFiles(String path) {
@@ -354,7 +338,6 @@ public class Ftp extends AbstractFtp {
      * 判断ftp服务器文件是否存在
      *
      * @param path 文件路径
-     *
      * @return 是否存在
      */
     public boolean existFile(String path) {
@@ -427,7 +410,6 @@ public class Ftp extends AbstractFtp {
      *
      * @param destPath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
      * @param file     文件
-     *
      * @return 是否上传成功
      */
     @Override
@@ -448,7 +430,6 @@ public class Ftp extends AbstractFtp {
      * @param file     文件
      * @param path     服务端路径,可以为{@code null} 或者相对路径或绝对路径
      * @param fileName 自定义在服务端保存的文件名
-     *
      * @return 是否上传成功
      */
     public boolean upload(String path, String fileName, File file) {
@@ -471,7 +452,6 @@ public class Ftp extends AbstractFtp {
      * @param path       服务端路径,可以为{@code null} 或者相对路径或绝对路径
      * @param fileName   文件名
      * @param fileStream 文件流
-     *
      * @return 是否上传成功
      */
     public boolean upload(String path, String fileName, InputStream fileStream) {

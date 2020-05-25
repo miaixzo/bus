@@ -42,7 +42,7 @@ import java.util.stream.Stream;
  * <a href="https://docs.gitlab.com/ee/api/pipeline_triggers.html">Pipeline Triggers API</a>
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class PipelineApi extends AbstractApi implements Constants {

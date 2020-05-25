@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
-import org.aoju.bus.core.utils.ResourceUtils;
+import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
@@ -43,7 +43,7 @@ import java.util.HashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class RecordFactory {
@@ -65,7 +65,7 @@ public class RecordFactory {
 
     public void loadDefaultConfiguration() {
         try {
-            loadConfiguration(ResourceUtils.getResource("RecordFactory.xml", RecordFactory.class).toString());
+            loadConfiguration(FileUtils.getResource("RecordFactory.xml", RecordFactory.class).toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

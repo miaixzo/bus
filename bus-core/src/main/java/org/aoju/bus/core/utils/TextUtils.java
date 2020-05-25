@@ -35,7 +35,7 @@ import java.util.Arrays;
  * 可复用的字符串生成器,非线程安全
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class TextUtils implements CharSequence, Appendable, Serializable {
@@ -144,7 +144,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
         // 用较大的字符串长度作为分母,相似子串作为分子计算出字串相似度
         int temp = Math.max(newStrA.length(), newStrB.length());
         int temp2 = longestCommonSubstring(newStrA, newStrB).length();
-        return NumberUtils.div(temp2, temp);
+        return MathUtils.div(temp2, temp);
     }
 
     /**
@@ -156,7 +156,7 @@ public class TextUtils implements CharSequence, Appendable, Serializable {
      * @return 百分比
      */
     public static String similar(String strA, String strB, int scale) {
-        return NumberUtils.formatPercent(similar(strA, strB), scale);
+        return MathUtils.formatPercent(similar(strA, strB), scale);
     }
 
     /**

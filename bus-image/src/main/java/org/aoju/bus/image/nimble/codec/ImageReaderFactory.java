@@ -26,7 +26,7 @@ package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ResourceUtils;
+import org.aoju.bus.core.utils.FileUtils;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.aoju.bus.logger.Logger;
@@ -43,7 +43,7 @@ import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public class ImageReaderFactory implements Serializable {
@@ -75,7 +75,7 @@ public class ImageReaderFactory implements Serializable {
 
     private static ImageReaderFactory initDefault() {
         ImageReaderFactory factory = new ImageReaderFactory();
-        URL url = ResourceUtils.getResource("ImageReaderFactory.properties", ImageReaderFactory.class);
+        URL url = FileUtils.getResource("ImageReaderFactory.properties", ImageReaderFactory.class);
         try {
             factory.load(url.openStream());
         } catch (Exception e) {

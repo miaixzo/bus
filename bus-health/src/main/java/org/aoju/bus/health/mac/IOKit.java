@@ -33,7 +33,7 @@ import com.sun.jna.ptr.NativeLongByReference;
  * I/O Kit框架通过设备接口机制实现对I/O Kit对象(驱动程序和nub)的非内核访问
  *
  * @author Kimi Liu
- * @version 5.9.2
+ * @version 5.9.3
  * @since JDK 1.8+
  */
 public interface IOKit extends com.sun.jna.platform.mac.IOKit {
