@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * @version 5.9.3
  * @since JDK 1.8+
  */
-public class StringKit extends TextKit {
+public class StringKit {
 
     private static final int INDEX_NOT_FOUND = -1;
     private static final int PAD_LIMIT = 8192;
@@ -955,7 +955,7 @@ public class StringKit extends TextKit {
         }
 
         final int len = str.length();
-        final TextKit unicode = create(str.length() * 6);
+        final TextKit unicode = TextKit.create(str.length() * 6);
         char c;
         for (int i = 0; i < len; i++) {
             c = str.charAt(i);
@@ -1002,7 +1002,7 @@ public class StringKit extends TextKit {
 
         if (isSkipAscii) {
             final int len = unicode.length();
-            final TextKit sb = create(len);
+            final TextKit sb = TextKit.create(len);
             int i = -1;
             int pos = 0;
             while ((i = indexOfIgnoreCase(unicode, "\\u", pos)) != -1) {
@@ -3741,7 +3741,7 @@ public class StringKit extends TextKit {
             fromIndex = 0;
         }
 
-        final TextKit result = create(strLength + 16);
+        final TextKit result = TextKit.create(strLength + 16);
         if (0 != fromIndex) {
             result.append(str.subSequence(0, fromIndex));
         }
