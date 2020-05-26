@@ -156,7 +156,7 @@ public class RealResult implements Results {
     @Override
     public String toString() {
         Body body = getBody();
-        String str = "HttpResult [\n  state: " + state + ",\n  status: " + getStatus()
+        String str = "RealResult [\n  state: " + state + ",\n  status: " + getStatus()
                 + ",\n  headers: " + getHeaders();
         if (body != null) {
             str += ",\n  contentType: " + body.getType();
