@@ -2789,6 +2789,19 @@ public class CollUtils {
     }
 
     /**
+     * 清除一个或多个集合内的元素，每个集合调用clear()方法
+     *
+     * @param collections 一个或多个集合
+     */
+    public static void clear(Collection<?>... collections) {
+        for (Collection<?> collection : collections) {
+            if (isNotEmpty(collection)) {
+                collection.clear();
+            }
+        }
+    }
+
+    /**
      * 针对一个参数做相应的操作
      *
      * @param <T> 处理参数类型

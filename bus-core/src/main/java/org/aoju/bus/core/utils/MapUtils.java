@@ -921,4 +921,17 @@ public class MapUtils {
         return map;
     }
 
+    /**
+     * 清除一个或多个Map集合内的元素，每个Map调用clear()方法
+     *
+     * @param maps 一个或多个Map
+     */
+    public static void clear(Map<?, ?>... maps) {
+        for (Map<?, ?> map : maps) {
+            if (isNotEmpty(map)) {
+                map.clear();
+            }
+        }
+    }
+
 }

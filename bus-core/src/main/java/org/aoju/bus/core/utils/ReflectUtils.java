@@ -30,10 +30,7 @@ import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 反射工具类.
@@ -838,7 +835,7 @@ public class ReflectUtils {
         if (ArrayUtils.isEmpty(params)) {
             try {
                 return clazz.newInstance();
-            } catch (Exception e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 throw new InstrumentException(StringUtils.format("Instance class [{}] error!", clazz), e);
             }
         }
@@ -864,10 +861,18 @@ public class ReflectUtils {
      */
     public static <T> T newInstanceIfPossible(Class<T> beanClass) {
         Assert.notNull(beanClass);
+
+        if (beanClass.isAssignableFrom(AbstractMap.class)) {
+            beanClass = (Class<T>) HashMap.class;
+        } else if (beanClass.isAssignableFrom(List.class)) {
+            beanClass = (Class<T>) ArrayList.class;
+        } else if (beanClass.isAssignableFrom(Set.class)) {
+            beanClass = (Class<T>) HashSet.class;
+        }
+
         try {
             return newInstance(beanClass);
-        } catch (Exception e) {
-            // ignore
+        } catch (InstrumentException e) {
             // 默认构造不存在的情况下查找其它构造
         }
 

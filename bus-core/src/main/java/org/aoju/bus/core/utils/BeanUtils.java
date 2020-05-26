@@ -481,7 +481,7 @@ public class BeanUtils {
      * @return Bean对象
      */
     public static <T> T toBean(Object source, Class<T> clazz, CopyOptions options) {
-        final T target = ReflectUtils.newInstance(clazz);
+        final T target = ReflectUtils.newInstanceIfPossible(clazz);
         copyProperties(source, target, options);
         return target;
     }
