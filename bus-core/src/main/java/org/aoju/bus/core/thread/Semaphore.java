@@ -59,16 +59,27 @@ public class Semaphore implements Runnable {
         this.semaphore = semaphore;
     }
 
+    /**
+     * 获得信号量
+     *
+     * @return {@link java.util.concurrent.Semaphore}
+     */
+    public java.util.concurrent.Semaphore getSemaphore() {
+        return this.semaphore;
+    }
+
     @Override
     public void run() {
         if (null != this.semaphore) {
             try {
                 semaphore.acquire();
-                this.runnable.run();
+                try {
+                    this.runnable.run();
+                } finally {
+                    semaphore.release();
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-            } finally {
-                semaphore.release();
             }
         }
     }
