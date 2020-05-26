@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 /**
- * 解压缩服务工厂.
+ * 解压缩服务工厂
  *
  * @author Kimi Liu
  * @version 5.9.3

@@ -666,12 +666,7 @@ public class ArrayKit {
         } else if (obj instanceof double[]) {
             return Arrays.toString((double[]) obj);
         } else if (ArrayKit.isArray(obj)) {
-            // 对象数组
-            try {
-                return Arrays.deepToString((Object[]) obj);
-            } catch (Exception ignore) {
-                //ignore
-            }
+            return Arrays.deepToString((Object[]) obj);
         }
 
         return obj.toString();
@@ -1604,14 +1599,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap(["1", "2", "3"], 0, 2) -&gt; ["3", "2", "1"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3"], 0, 0) -&gt; ["1", "2", "3"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3"], 1, 0) -&gt; ["2", "1", "3"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3"], 0, 5) -&gt; ["1", "2", "3"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3"], -1, 1) -&gt; ["2", "1", "3"]</li>
-     *                </ul>
      */
     public static void swap(final Object[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1626,14 +1613,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([true, false, true], 0, 2) -&gt; [true, false, true]</li>
-     *                <li>ArrayKit.swap([true, false, true], 0, 0) -&gt; [true, false, true]</li>
-     *                <li>ArrayKit.swap([true, false, true], 1, 0) -&gt; [false, true, true]</li>
-     *                <li>ArrayKit.swap([true, false, true], 0, 5) -&gt; [true, false, true]</li>
-     *                <li>ArrayKit.swap([true, false, true], -1, 1) -&gt; [false, true, true]</li>
-     *                </ul>
      */
     public static void swap(final long[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1648,15 +1627,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     *                </ul>
      */
     public static void swap(final int[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1671,15 +1641,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     *                </ul>
      */
     public static void swap(final short[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1694,15 +1655,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     *                </ul>
      */
     public static void swap(final char[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1717,15 +1669,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     *                </ul>
      */
     public static void swap(final byte[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1740,15 +1683,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     *                </ul>
      */
     public static void swap(final double[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1763,15 +1697,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     *                </ul>
      */
     public static void swap(final float[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1786,15 +1711,6 @@ public class ArrayKit {
      * @param array   数组
      * @param offset1 位置1
      * @param offset2 位置2
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 2) -&gt; [3, 2, 1]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 0) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 1, 0) -&gt; [2, 1, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], 0, 5) -&gt; [1, 2, 3]</li>
-     *                <li>ArrayKit.swap([1, 2, 3], -1, 1) -&gt; [2, 1, 3]</li>
-     *                </ul>
      */
     public static void swap(final boolean[] array, final int offset1, final int offset2) {
         if (array == null || array.length == 0) {
@@ -1810,15 +1726,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([true, false, true, false], 0, 2, 1) -&gt; [true, false, true, false]</li>
-     *                <li>ArrayKit.swap([true, false, true, false], 0, 0, 1) -&gt; [true, false, true, false]</li>
-     *                <li>ArrayKit.swap([true, false, true, false], 0, 2, 2) -&gt; [true, false, true, false]</li>
-     *                <li>ArrayKit.swap([true, false, true, false], -3, 2, 2) -&gt; [true, false, true, false]</li>
-     *                <li>ArrayKit.swap([true, false, true, false], 0, 3, 3) -&gt; [false, false, true, true]</li>
-     *                </ul>
      */
     public static void swap(final boolean[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1845,15 +1752,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     *                </ul>
      */
     public static void swap(final byte[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1880,15 +1778,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     *                </ul>
      */
     public static void swap(final char[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1915,15 +1804,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     *                </ul>
      */
     public static void swap(final double[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1950,15 +1830,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     *                </ul>
      */
     public static void swap(final float[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -1986,15 +1857,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     *                </ul>
      */
     public static void swap(final int[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -2021,15 +1883,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     *                </ul>
      */
     public static void swap(final long[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -2056,15 +1909,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                <p>
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap(["1", "2", "3", "4"], 0, 2, 1) -&gt; ["3", "2", "1", "4"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3", "4"], 0, 0, 1) -&gt; ["1", "2", "3", "4"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3", "4"], 2, 0, 2) -&gt; ["3", "4", "1", "2"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3", "4"], -3, 2, 2) -&gt; ["3", "4", "1", "2"]</li>
-     *                <li>ArrayKit.swap(["1", "2", "3", "4"], 0, 3, 3) -&gt; ["4", "2", "3", "1"]</li>
-     *                </ul>
      */
     public static void swap(final Object[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -2091,14 +1935,6 @@ public class ArrayKit {
      * @param offset1 位置1
      * @param offset2 位置2
      * @param len     从给定索引开始交换的元素数量
-     *                Examples:
-     *                <ul>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 2, 1) -&gt; [3, 2, 1, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 0, 1) -&gt; [1, 2, 3, 4]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 2, 0, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], -3, 2, 2) -&gt; [3, 4, 1, 2]</li>
-     *                <li>ArrayKit.swap([1, 2, 3, 4], 0, 3, 3) -&gt; [4, 2, 3, 1]</li>
-     *                </ul>
      */
     public static void swap(final short[] array, int offset1, int offset2, int len) {
         if (array == null || array.length == 0 || offset1 >= array.length || offset2 >= array.length) {
@@ -2121,16 +1957,11 @@ public class ArrayKit {
         }
     }
 
-
     /**
-     * Shifts the order of the given array.
+     * 移位给定数组的顺序
      *
-     * <p>There is no special handling for multi-dimensional arrays. This method
-     * does nothing for {@code null} or empty input arrays.</p>
-     *
-     * @param array  the array to shift, may be {@code null}
-     * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
-     *               rotate, than the effective offset is modulo the number of elements to rotate.
+     * @param array  要移动的数组，可以为{@code null}
+     * @param offset 旋转元素的位置数。如果偏移量大于*旋转的元素数，则有效偏移量将等于旋转的元素数
      */
     public static void shift(final Object[] array, final int offset) {
         if (array == null) {
@@ -2140,14 +1971,10 @@ public class ArrayKit {
     }
 
     /**
-     * Shifts the order of the given long array.
+     * 移位给定长数组的顺序
      *
-     * <p>There is no special handling for multi-dimensional arrays. This method
-     * does nothing for {@code null} or empty input arrays.</p>
-     *
-     * @param array  the array to shift, may be {@code null}
-     * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
-     *               rotate, than the effective offset is modulo the number of elements to rotate.
+     * @param array  要移动的数组，可以为{@code null}
+     * @param offset 旋转元素的位置数。如果偏移量大于*旋转的元素数，则有效偏移量将等于旋转的元素数
      */
     public static void shift(final long[] array, final int offset) {
         if (array == null) {
@@ -2157,14 +1984,10 @@ public class ArrayKit {
     }
 
     /**
-     * Shifts the order of the given int array.
+     * 移位给定int数组的顺序
      *
-     * <p>There is no special handling for multi-dimensional arrays. This method
-     * does nothing for {@code null} or empty input arrays.</p>
-     *
-     * @param array  the array to shift, may be {@code null}
-     * @param offset The number of positions to rotate the elements.  If the offset is larger than the number of elements to
-     *               rotate, than the effective offset is modulo the number of elements to rotate.
+     * @param array  要移动的数组，可以为{@code null}
+     * @param offset 旋转元素的位置数。如果偏移量大于*旋转的元素数，则有效偏移量将等于旋转的元素数
      */
     public static void shift(final int[] array, final int offset) {
         if (array == null) {
@@ -2327,8 +2150,7 @@ public class ArrayKit {
         if (offset < 0) {
             offset += n;
         }
-        // For algorithm explanations and proof of O(n) time complexity and O(1) space complexity
-        // see https://beradrian.wordpress.com/2015/04/07/shift-an-array-in-on-in-place/
+
         while (n > 1 && offset > 0) {
             final int n_offset = n - offset;
 

@@ -32,7 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * 基于lzo算法的数据解压缩.
+ * 基于lzo算法的数据解压缩
  *
  * @author Kimi Liu
  * @version 5.9.3

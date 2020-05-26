@@ -44,7 +44,7 @@ import java.util.*;
 
 /**
  * Bean工具类
- * 把一个拥有对属性进行set和get方法的类,我们就可以称之为JavaBean
+ * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
  * @version 5.9.3
