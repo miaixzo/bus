@@ -42,7 +42,7 @@ import java.util.List;
 public interface CookieJar {
 
     /**
-     * A cookie jar that never accepts any cookies.
+     * 从不接受任何cookie的设置。
      */
     CookieJar NO_COOKIES = new CookieJar() {
         @Override

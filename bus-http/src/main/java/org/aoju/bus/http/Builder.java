@@ -111,6 +111,10 @@ public abstract class Builder {
      * 快速和正则模式区分IP地址从主机名，这是Android私有的InetAddress#isNumeric API的近似值
      */
     public static final Pattern VERIFY_AS_IP_ADDRESS = Pattern.compile("([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)");
+    public static final String FORM = "form";
+    public static final String JSON = "json";
+    public static final String XML = "xml";
+    public static final String PROTOBUF = "protobuf";
     public static Builder instance;
 
     static {

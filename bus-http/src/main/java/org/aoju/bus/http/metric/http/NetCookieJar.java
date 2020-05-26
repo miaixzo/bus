@@ -101,7 +101,7 @@ public final class NetCookieJar implements CookieJar {
     }
 
     /**
-     * Convert a request header to OkHttp's cookies via {@link HttpCookie}. That extra step handles
+     * Convert a request header to Httpd's cookies via {@link HttpCookie}. That extra step handles
      * multiple cookies in a single request header, which  doesn't support.
      */
     private List<Cookie> decodeHeaderAsJavaNetCookies(UnoUrl url, String header) {

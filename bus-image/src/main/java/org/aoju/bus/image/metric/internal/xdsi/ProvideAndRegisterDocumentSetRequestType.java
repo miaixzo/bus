@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.xdsi;
 
+import org.aoju.bus.core.lang.MediaType;
+
 import javax.activation.DataHandler;
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -65,7 +67,7 @@ public class ProvideAndRegisterDocumentSetRequestType {
     public static class Document {
 
         @XmlValue
-        @XmlMimeType("application/octet-stream")
+        @XmlMimeType(MediaType.APPLICATION_OCTET_STREAM)
         protected DataHandler value;
 
         @XmlAttribute(name = "id", required = true)
