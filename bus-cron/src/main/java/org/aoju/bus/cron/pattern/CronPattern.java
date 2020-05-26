@@ -26,8 +26,8 @@ package org.aoju.bus.cron.pattern;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.DateKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.cron.pattern.matcher.AlwaysTrueValueMatcher;
 import org.aoju.bus.cron.pattern.matcher.DayOfMonthValueMatcher;
 import org.aoju.bus.cron.pattern.matcher.ValueMatcher;
@@ -246,7 +246,7 @@ public class CronPattern {
      * @param groupPattern 复合表达式
      */
     private void parseGroupPattern(String groupPattern) {
-        List<String> patternList = StringUtils.split(groupPattern, Symbol.C_OR);
+        List<String> patternList = StringKit.split(groupPattern, Symbol.C_OR);
         for (String pattern : patternList) {
             parseSinglePattern(pattern);
         }
@@ -275,7 +275,7 @@ public class CronPattern {
                 throw new InstrumentException("Invalid pattern [{}], parsing 'second' field error!", pattern);
             }
         } else {// 不支持秒的表达式,则第一位按照表达式生成时间的秒数赋值,表示整分匹配
-            this.secondMatchers.add(ValueMatcherBuilder.build(String.valueOf(DateUtils.date().second()), SECOND_VALUE_PARSER));
+            this.secondMatchers.add(ValueMatcherBuilder.build(String.valueOf(DateKit.date().second()), SECOND_VALUE_PARSER));
         }
         // 分
         try {

@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
@@ -202,7 +202,7 @@ public class FindSCU extends Device implements AutoCloseable {
             as.waitForOutstandingRSP();
             as.release();
         }
-        IoUtils.close(out);
+        IoKit.close(out);
         out = null;
     }
 
@@ -289,11 +289,11 @@ public class FindSCU extends Device implements AutoCloseable {
             out.flush();
         } catch (Exception e) {
             Logger.error("Building response", e);
-            IoUtils.close(out);
+            IoKit.close(out);
             out = null;
         } finally {
             if (!catOut) {
-                IoUtils.close(out);
+                IoKit.close(out);
                 out = null;
             }
         }

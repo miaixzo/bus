@@ -25,7 +25,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * @author Kimi Liu
@@ -67,7 +67,7 @@ public class TagView {
         for (TagCamel t : this.tag) {
             if (!anonymize || t.getAnonymizationType() != 1) {
                 String str = t.getFormattedTagValue(TagValue.getTagValue(t, tagable), format);
-                if (StringUtils.hasText(str)) {
+                if (StringKit.hasText(str)) {
                     return str;
                 }
             }

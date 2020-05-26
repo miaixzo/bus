@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -42,17 +42,17 @@ public class MobileStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
         String value = object.toString();
-        return StringUtils.left(value, 3).concat(
-                StringUtils.removeStart(
-                        StringUtils.leftPad(StringUtils.right(value, 4),
-                                StringUtils.length(value),
+        return StringKit.left(value, 3).concat(
+                StringKit.removeStart(
+                        StringKit.leftPad(StringKit.right(value, 4),
+                                StringKit.length(value),
                                 shield.shadow()),
-                        StringUtils.fill(3, shield.shadow())));
+                        StringKit.fill(3, shield.shadow())));
     }
 
 }

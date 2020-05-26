@@ -26,7 +26,7 @@ package org.aoju.bus.http.magic;
 
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -91,7 +91,7 @@ public class HttpxStat {
                 errorMsgs.removeFirst();
             }
             StringBuilder errorMsg = new StringBuilder();
-            errorMsg.append(DateUtils.format(new Date(), Fields.NORM_DATETIME_PATTERN))
+            errorMsg.append(DateKit.format(new Date(), Fields.NORM_DATETIME_PATTERN))
                     .append(Symbol.HT)
                     .append(url)
                     .append(Symbol.HT)

@@ -26,7 +26,7 @@ package org.aoju.bus.base.spring;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.Message;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 基础输出封装
@@ -66,7 +66,7 @@ public class Controller {
      */
     public static Object write(String errcode, Object data) {
         String errmsg = ErrorCode.require(errcode);
-        if (StringUtils.isNotEmpty(errmsg)) {
+        if (StringKit.isNotEmpty(errmsg)) {
             return Message.builder()
                     .errcode(errcode)
                     .errmsg(errmsg)
@@ -88,7 +88,7 @@ public class Controller {
      */
     public static Object write(String errcode, String errmsg) {
         String error = ErrorCode.require(errcode);
-        if (StringUtils.isNotEmpty(error)) {
+        if (StringKit.isNotEmpty(error)) {
             return Message.builder()
                     .errcode(errcode)
                     .errmsg(errmsg)

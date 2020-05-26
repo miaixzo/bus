@@ -27,9 +27,9 @@ package org.aoju.bus.office.support.excel.sax;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.*;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
@@ -146,7 +146,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(fs);
+            IoKit.close(fs);
         }
         return this;
     }
@@ -256,7 +256,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
                         value = formatListener.formatNumberDateCell(formulaRec);
                     }
                 } else {
-                    value = StringUtils.wrap(HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression()), "\"");
+                    value = StringKit.wrap(HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression()), "\"");
                 }
                 addToRowCellList(formulaRec.getColumn(), value);
                 break;
@@ -277,7 +277,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
                 if (null != sstRecord) {
                     value = sstRecord.getString(lsrec.getSSTIndex()).toString();
                 }
-                addToRowCellList(lsrec.getColumn(), ObjectUtils.defaultIfNull(value, Normal.EMPTY));
+                addToRowCellList(lsrec.getColumn(), ObjectKit.defaultIfNull(value, Normal.EMPTY));
                 break;
             case NumberRecord.sid: // 数字类型
                 final NumberRecord numrec = (NumberRecord) record;

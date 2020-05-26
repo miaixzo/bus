@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -68,7 +68,7 @@ public class Typed implements ParameterizedType, Serializable {
      * @return {@code buf}
      */
     private static StringBuilder appendAllTo(final StringBuilder buf, final String sep, final Type... types) {
-        if (ArrayUtils.isNotEmpty(types)) {
+        if (ArrayKit.isNotEmpty(types)) {
             boolean isFirst = true;
             for (Type type : types) {
                 if (isFirst) {
@@ -81,7 +81,7 @@ public class Typed implements ParameterizedType, Serializable {
                 if (type instanceof Class) {
                     typeStr = ((Class<?>) type).getName();
                 } else {
-                    typeStr = StringUtils.toString(type);
+                    typeStr = StringKit.toString(type);
                 }
 
                 buf.append(typeStr);

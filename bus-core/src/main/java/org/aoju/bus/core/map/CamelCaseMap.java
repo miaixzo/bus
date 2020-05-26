@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class CamelCaseMap<K, V> extends CustomKeyMap<K, V> {
     @Override
     protected Object customKey(Object key) {
         if (null != key && key instanceof CharSequence) {
-            key = StringUtils.toCamelCase(key.toString());
+            key = StringKit.toCamelCase(key.toString());
         }
         return key;
     }

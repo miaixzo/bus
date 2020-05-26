@@ -27,7 +27,7 @@ package org.aoju.bus.http.secure;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.http.UnoUrl;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -79,7 +79,7 @@ public final class CertificatePinner {
     public boolean equals(Object other) {
         if (other == this) return true;
         return other instanceof CertificatePinner
-                && (ObjectUtils.equal(certificateChainCleaner, ((CertificatePinner) other).certificateChainCleaner)
+                && (ObjectKit.equal(certificateChainCleaner, ((CertificatePinner) other).certificateChainCleaner)
                 && pins.equals(((CertificatePinner) other).pins));
     }
 
@@ -156,7 +156,7 @@ public final class CertificatePinner {
 
     public CertificatePinner withCertificateChainCleaner(
             CertificateChainCleaner certificateChainCleaner) {
-        return ObjectUtils.equal(this.certificateChainCleaner, certificateChainCleaner)
+        return ObjectKit.equal(this.certificateChainCleaner, certificateChainCleaner)
                 ? this
                 : new CertificatePinner(pins, certificateChainCleaner);
     }

@@ -26,7 +26,7 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.http.accord.Connection;
 import org.aoju.bus.http.accord.ConnectionSuite;
 import org.aoju.bus.http.secure.Authenticator;
@@ -202,10 +202,10 @@ public final class Address {
                 && this.protocols.equals(that.protocols)
                 && this.connectionSuites.equals(that.connectionSuites)
                 && this.proxySelector.equals(that.proxySelector)
-                && ObjectUtils.equal(this.proxy, that.proxy)
-                && ObjectUtils.equal(this.sslSocketFactory, that.sslSocketFactory)
-                && ObjectUtils.equal(this.hostnameVerifier, that.hostnameVerifier)
-                && ObjectUtils.equal(this.certificatePinner, that.certificatePinner)
+                && ObjectKit.equal(this.proxy, that.proxy)
+                && ObjectKit.equal(this.sslSocketFactory, that.sslSocketFactory)
+                && ObjectKit.equal(this.hostnameVerifier, that.hostnameVerifier)
+                && ObjectKit.equal(this.certificatePinner, that.certificatePinner)
                 && this.url().port() == that.url().port();
     }
 

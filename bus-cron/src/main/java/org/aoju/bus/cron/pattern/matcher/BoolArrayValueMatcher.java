@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +57,6 @@ public class BoolArrayValueMatcher implements ValueMatcher {
 
     @Override
     public String toString() {
-        return StringUtils.format("Matcher:{}", this.bValues);
+        return StringKit.format("Matcher:{}", this.bValues);
     }
 }

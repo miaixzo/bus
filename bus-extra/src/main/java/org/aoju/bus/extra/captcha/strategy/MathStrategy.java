@@ -25,8 +25,8 @@
 package org.aoju.bus.extra.captcha.strategy;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.RandomUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.RandomKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 数字计算验证码生成器
@@ -61,14 +61,14 @@ public class MathStrategy implements CodeStrategy {
     @Override
     public String generate() {
         final int limit = getLimit();
-        String number1 = Integer.toString(RandomUtils.randomInt(limit));
-        String number2 = Integer.toString(RandomUtils.randomInt(limit));
-        number1 = StringUtils.padAfter(number1, this.numberLength, Symbol.C_SPACE);
-        number2 = StringUtils.padAfter(number2, this.numberLength, Symbol.C_SPACE);
+        String number1 = Integer.toString(RandomKit.randomInt(limit));
+        String number2 = Integer.toString(RandomKit.randomInt(limit));
+        number1 = StringKit.padAfter(number1, this.numberLength, Symbol.C_SPACE);
+        number2 = StringKit.padAfter(number2, this.numberLength, Symbol.C_SPACE);
 
-        return StringUtils.builder()
+        return StringKit.builder()
                 .append(number1)
-                .append(RandomUtils.randomChar(Symbol.PLUS + Symbol.HYPHEN + Symbol.STAR))
+                .append(RandomKit.randomChar(Symbol.PLUS + Symbol.HYPHEN + Symbol.STAR))
                 .append(number2)
                 .append('=').toString();
     }
@@ -82,9 +82,9 @@ public class MathStrategy implements CodeStrategy {
             return false;
         }
 
-        final int a = Integer.parseInt(StringUtils.sub(code, 0, this.numberLength).trim());
+        final int a = Integer.parseInt(StringKit.sub(code, 0, this.numberLength).trim());
         final char operator = code.charAt(this.numberLength);
-        final int b = Integer.parseInt(StringUtils.sub(code, this.numberLength + 1, this.numberLength + 1 + this.numberLength).trim());
+        final int b = Integer.parseInt(StringKit.sub(code, this.numberLength + 1, this.numberLength + 1 + this.numberLength).trim());
 
         switch (operator) {
             case Symbol.C_PLUS:
@@ -113,7 +113,7 @@ public class MathStrategy implements CodeStrategy {
      * @return 最大值
      */
     private int getLimit() {
-        return Integer.parseInt(Symbol.C_ONE + StringUtils.repeat(Symbol.C_ZERO, this.numberLength));
+        return Integer.parseInt(Symbol.C_ONE + StringKit.repeat(Symbol.C_ZERO, this.numberLength));
     }
 
 }

@@ -27,7 +27,7 @@ package org.aoju.bus.core.loader;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.utils.UriUtils;
+import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class FileLoader extends ResourceLoader implements Loader {
     }
 
     public FileLoader(URL fileURL) {
-        this(fileURL, new File(UriUtils.decode(fileURL.getPath(), Charset.UTF_8)));
+        this(fileURL, new File(UriKit.decode(fileURL.getPath(), Charset.UTF_8)));
     }
 
     public FileLoader(URL context, File root) {

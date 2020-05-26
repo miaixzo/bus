@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.DelegateSource;
 import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Response;
 import org.aoju.bus.http.bodys.ResponseBody;
 import org.aoju.bus.http.metric.Interceptor;
@@ -79,7 +79,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
         @Override
         public BufferSource source() {
             if (bufferedSource == null) {
-                bufferedSource = IoUtils.buffer(source(body.source()));
+                bufferedSource = IoKit.buffer(source(body.source()));
             }
             return bufferedSource;
         }

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.socket;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.starter.annotation.EnableSocket;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
@@ -55,12 +55,12 @@ public class SocketScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
 
         List<String> basePackages = new ArrayList<>();
         for (String pkg : attributes.getStringArray("basePackages")) {
-            if (StringUtils.hasText(pkg)) {
+            if (StringKit.hasText(pkg)) {
                 basePackages.add(pkg);
             }
         }
         scanner.registerFilters();
-        scanner.doScan(StringUtils.toStringArray(basePackages));
+        scanner.doScan(StringKit.toStringArray(basePackages));
     }
 
     @Override

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.ArrayUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
 
 /**
  * byte 类型数组转换器
@@ -38,7 +38,7 @@ public class ByteArrayConverter extends AbstractConverter<byte[]> {
     @Override
     protected byte[] convertInternal(Object value) {
         final Byte[] result = ConverterRegistry.getInstance().convert(Byte[].class, value);
-        return ArrayUtils.unWrap(result);
+        return ArrayKit.unWrap(result);
     }
 
 }

@@ -55,7 +55,7 @@ yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm_langpack_zh-CN/RPMS/*.rpm
             return write(ErrorCode.EM_100506);
         }
 
-        if (StringUtils.isBlank(convertToFormat)) {
+        if (StringKit.isBlank(convertToFormat)) {
             return write(ErrorCode.EM_100506);
         }
 
@@ -69,7 +69,7 @@ yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm_langpack_zh-CN/RPMS/*.rpm
 
             Provider effectProvider = previewProviderService.get(Registry.LOCAL);
             effectProvider.convert(inputStream)
-                    .as(DefaultFormatRegistry.getFormatByExtension(FileUtils.getExtension(filename)))
+                    .as(DefaultFormatRegistry.getFormatByExtension(FileKit.getExtension(filename)))
                     .to(outputStream)
                     .as(targetFormat)
                     .execute();

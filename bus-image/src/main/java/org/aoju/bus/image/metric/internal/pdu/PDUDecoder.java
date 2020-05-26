@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
-import org.aoju.bus.core.utils.ByteUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.Tag;
@@ -119,13 +119,13 @@ public class PDUDecoder extends PDVInputStream {
     }
 
     private int getUnsignedShort() {
-        int val = ByteUtils.bytesToUShortBE(buf, pos);
+        int val = ByteKit.bytesToUShortBE(buf, pos);
         pos += 2;
         return val;
     }
 
     private int getInt() {
-        int val = ByteUtils.bytesToIntBE(buf, pos);
+        int val = ByteKit.bytesToIntBE(buf, pos);
         pos += 4;
         return val;
     }
@@ -209,7 +209,7 @@ public class PDUDecoder extends PDVInputStream {
 
     private void readFully(int off, int len) throws IOException {
         try {
-            StreamUtils.readFully(in, buf, off, len);
+            StreamKit.readFully(in, buf, off, len);
         } catch (IOException e) {
             throw e;
         }
@@ -472,7 +472,7 @@ public class PDUDecoder extends PDVInputStream {
         try {
             return in.readCommand();
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
@@ -482,7 +482,7 @@ public class PDUDecoder extends PDVInputStream {
         try {
             return in.readDataset(-1, -1);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 

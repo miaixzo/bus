@@ -27,7 +27,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
@@ -96,13 +96,13 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
             }
         }
         // If we get to end and haven't assigned, use fallback
-        if (StringUtils.isBlank(serialNumber)) {
+        if (StringKit.isBlank(serialNumber)) {
             serialNumber = querySystemSerialNumber();
         }
-        return new Quartet<>(StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringUtils.isBlank(model) ? Normal.UNKNOWN : model,
-                StringUtils.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber,
-                StringUtils.isBlank(version) ? Normal.UNKNOWN : version);
+        return new Quartet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model,
+                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version);
     }
 
     private static String querySystemSerialNumber() {

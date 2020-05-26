@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.annotation;
 
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
@@ -46,7 +46,7 @@ public class Element implements AnnotatedElement {
     /**
      * 元注解
      */
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = CollUtils.newHashSet(Target.class, //
+    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = CollKit.newHashSet(Target.class, //
             Retention.class,
             Inherited.class,
             Documented.class,

@@ -24,9 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.CharsetUtils;
-
-import java.nio.charset.Charset;
+import org.aoju.bus.core.lang.Charset;
 
 /**
  * 编码对象转换器
@@ -35,11 +33,11 @@ import java.nio.charset.Charset;
  * @version 5.9.3
  * @since JDK 1.8+
  */
-public class CharsetConverter extends AbstractConverter<Charset> {
+public class CharsetConverter extends AbstractConverter<java.nio.charset.Charset> {
 
     @Override
-    protected Charset convertInternal(Object value) {
-        return CharsetUtils.charset(convertToStr(value));
+    protected java.nio.charset.Charset convertInternal(Object value) {
+        return Charset.charset(convertToStr(value));
     }
 
 }

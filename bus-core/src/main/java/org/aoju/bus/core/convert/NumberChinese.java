@@ -25,7 +25,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 数字转中文类
@@ -96,7 +96,7 @@ public class NumberChinese {
         for (int i = 0; i < numParts; i++) {
             String partChinese = toChinese(parts[i], isUseTraditional);
             if (i % 2 == 0) {
-                beforeWanIsZero = StringUtils.isEmpty(partChinese);
+                beforeWanIsZero = StringKit.isEmpty(partChinese);
             }
 
             if (i != 0) {

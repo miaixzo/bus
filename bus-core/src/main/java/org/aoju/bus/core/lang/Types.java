@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.utils.TypeUtils;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
 
@@ -52,7 +52,7 @@ public abstract class Types<T> implements Type {
      * 构造
      */
     public Types() {
-        this.type = TypeUtils.getTypeArgument(getClass());
+        this.type = TypeKit.getTypeArgument(getClass());
     }
 
     /**

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.lang.mutable;
 
 
-import org.aoju.bus.core.utils.MathUtils;
+import org.aoju.bus.core.toolkit.MathKit;
 
 /**
  * 可变 <code>short</code> 类型
@@ -220,7 +220,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      */
     @Override
     public int compareTo(final MutableShort other) {
-        return MathUtils.compare(this.value, other.value);
+        return MathKit.compare(this.value, other.value);
     }
 
     @Override

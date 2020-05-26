@@ -28,7 +28,7 @@ import org.aoju.bus.core.io.FileSystem;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.logger.Logger;
 
@@ -114,7 +114,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                     }
                 } catch (IOException e) {
                     mostRecentRebuildFailed = true;
-                    journalWriter = IoUtils.buffer(IoUtils.blackhole());
+                    journalWriter = IoKit.buffer(IoKit.blackhole());
                 }
             }
         }
@@ -205,7 +205,7 @@ public final class DiskLruCache implements Closeable, Flushable {
     }
 
     private void readJournal() throws IOException {
-        BufferSource source = IoUtils.buffer(fileSystem.source(journalFile));
+        BufferSource source = IoKit.buffer(fileSystem.source(journalFile));
         try {
             String magic = source.readUtf8LineStrict();
             String version = source.readUtf8LineStrict();
@@ -239,7 +239,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                 journalWriter = newJournalWriter();
             }
         } finally {
-            IoUtils.close(source);
+            IoKit.close(source);
         }
     }
 
@@ -252,7 +252,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                 hasJournalErrors = true;
             }
         };
-        return IoUtils.buffer(faultHidingSink);
+        return IoKit.buffer(faultHidingSink);
     }
 
     private void readJournalLine(String line) throws IOException {
@@ -328,7 +328,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             journalWriter.close();
         }
 
-        BufferSink writer = IoUtils.buffer(fileSystem.sink(journalFileTmp));
+        BufferSink writer = IoKit.buffer(fileSystem.sink(journalFileTmp));
         try {
             writer.writeUtf8(MAGIC).writeByte(Symbol.C_LF);
             writer.writeUtf8(VERSION_1).writeByte(Symbol.C_LF);
@@ -755,7 +755,7 @@ public final class DiskLruCache implements Closeable, Flushable {
 
         public void close() {
             for (Source in : sources) {
-                IoUtils.close(in);
+                IoKit.close(in);
             }
         }
     }
@@ -805,7 +805,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                     throw new IllegalStateException();
                 }
                 if (entry.currentEditor != this) {
-                    return IoUtils.blackhole();
+                    return IoKit.blackhole();
                 }
                 if (!entry.readable) {
                     written[index] = true;
@@ -815,7 +815,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                 try {
                     sink = fileSystem.sink(dirtyFile);
                 } catch (FileNotFoundException e) {
-                    return IoUtils.blackhole();
+                    return IoKit.blackhole();
                 }
                 return new FaultHideSink(sink) {
                     @Override
@@ -940,7 +940,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             } catch (FileNotFoundException e) {
                 for (int i = 0; i < valueCount; i++) {
                     if (sources[i] != null) {
-                        IoUtils.close(sources[i]);
+                        IoKit.close(sources[i]);
                     } else {
                         break;
                     }

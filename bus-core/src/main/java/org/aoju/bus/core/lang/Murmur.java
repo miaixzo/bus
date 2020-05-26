@@ -24,10 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 
 /**
  * Murmur3 32bit、64bit、128bit 哈希算法实现
@@ -59,7 +58,7 @@ public class Murmur implements Serializable {
     private static final int N2 = 0x38495ab5;
 
     private static final int DEFAULT_SEED = 0;
-    private static final Charset DEFAULT_CHARSET = org.aoju.bus.core.lang.Charset.UTF_8;
+    private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     /**
      * Murmur3 32-bit Hash值计算
@@ -68,7 +67,7 @@ public class Murmur implements Serializable {
      * @return Hash值
      */
     public static int hash32(CharSequence data) {
-        return hash32(StringUtils.bytes(data, DEFAULT_CHARSET));
+        return hash32(StringKit.bytes(data, DEFAULT_CHARSET));
     }
 
     /**
@@ -145,7 +144,7 @@ public class Murmur implements Serializable {
      * @return Hash值
      */
     public static long hash64(CharSequence data) {
-        return hash64(StringUtils.bytes(data, DEFAULT_CHARSET));
+        return hash64(StringKit.bytes(data, DEFAULT_CHARSET));
     }
 
     /**
@@ -230,7 +229,7 @@ public class Murmur implements Serializable {
      * @return Hash值 (2 longs)
      */
     public static long[] hash128(CharSequence data) {
-        return hash128(StringUtils.bytes(data, DEFAULT_CHARSET));
+        return hash128(StringKit.bytes(data, DEFAULT_CHARSET));
     }
 
     /**

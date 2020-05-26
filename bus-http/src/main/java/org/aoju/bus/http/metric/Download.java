@@ -25,7 +25,7 @@
 package org.aoju.bus.http.metric;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Process;
 
@@ -167,7 +167,7 @@ public class Download {
             return new RandomAccessFile(file, "rw");
         } catch (FileNotFoundException e) {
             status = Ctrl.STATUS__ERROR;
-            IoUtils.close(input);
+            IoKit.close(input);
             throw new InstrumentException("Can't get file [" + file.getAbsolutePath() + "] Input stream", e);
         }
     }
@@ -215,8 +215,8 @@ public class Download {
                 throw new InstrumentException("Streaming failed!", e);
             }
         } finally {
-            IoUtils.close(raFile);
-            IoUtils.close(input);
+            IoKit.close(raFile);
+            IoKit.close(input);
             if (status == Ctrl.STATUS__CANCELED) {
                 file.delete();
             }

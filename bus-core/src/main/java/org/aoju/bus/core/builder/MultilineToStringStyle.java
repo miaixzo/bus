@@ -26,7 +26,7 @@ package org.aoju.bus.core.builder;
 
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
 
 /**
  * 使用{@link ToStringBuilder}创建一个“deep”toString。
@@ -104,7 +104,7 @@ public class MultilineToStringStyle extends RecursiveToStringStyle {
 
     @Override
     public void appendDetail(final StringBuffer buffer, final String fieldName, final Object value) {
-        if (!ClassUtils.isPrimitiveWrapper(value.getClass()) && !String.class.equals(value.getClass())
+        if (!ClassKit.isPrimitiveWrapper(value.getClass()) && !String.class.equals(value.getClass())
                 && accept(value.getClass())) {
             spaces += INDENT;
             resetIndent();

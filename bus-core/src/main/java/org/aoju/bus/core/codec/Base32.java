@@ -24,11 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
-
-import java.nio.charset.Charset;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * Base32 - encodes and decodes RFC3548 Base32 (see http://www.faqs.org/rfcs/rfc3548.html )
@@ -91,7 +90,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String encode(String source) {
-        return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
+        return encode(source, Charset.UTF_8);
     }
 
     /**
@@ -102,7 +101,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String encode(String source, String charset) {
-        return encode(StringUtils.bytes(source, charset));
+        return encode(StringKit.bytes(source, charset));
     }
 
     /**
@@ -112,8 +111,8 @@ public final class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(String source, Charset charset) {
-        return encode(StringUtils.bytes(source, charset));
+    public static String encode(String source, java.nio.charset.Charset charset) {
+        return encode(StringKit.bytes(source, charset));
     }
 
     /**
@@ -173,7 +172,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String decodeStr(String source) {
-        return decodeStr(source, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decodeStr(source, Charset.UTF_8);
     }
 
     /**
@@ -184,7 +183,7 @@ public final class Base32 {
      * @return 被加密后的字符串
      */
     public static String decodeStr(String source, String charset) {
-        return StringUtils.toString(decode(source), charset);
+        return StringKit.toString(decode(source), charset);
     }
 
     /**
@@ -194,8 +193,8 @@ public final class Base32 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeStr(String source, Charset charset) {
-        return StringUtils.toString(decode(source), charset);
+    public static String decodeStr(String source, java.nio.charset.Charset charset) {
+        return StringKit.toString(decode(source), charset);
     }
 
 }

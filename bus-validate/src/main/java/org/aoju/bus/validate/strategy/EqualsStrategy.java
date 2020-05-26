@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Equals;
 import org.aoju.bus.validate.validators.Matcher;
@@ -42,7 +42,7 @@ public class EqualsStrategy implements Matcher<String, Equals> {
 
     @Override
     public boolean on(String object, Equals annotation, Context context) {
-        return ObjectUtils.isEmpty(object) || Objects.equals(object, annotation.value());
+        return ObjectKit.isEmpty(object) || Objects.equals(object, annotation.value());
     }
 
 }

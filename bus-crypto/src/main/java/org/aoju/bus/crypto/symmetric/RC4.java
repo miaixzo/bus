@@ -25,12 +25,12 @@
 package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.HexUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.HexKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
@@ -72,8 +72,8 @@ public class RC4 implements Serializable {
      * @return 密文
      * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
-    public byte[] encrypt(String message, Charset charset) throws InstrumentException {
-        return crypt(StringUtils.bytes(message, charset));
+    public byte[] encrypt(String message, java.nio.charset.Charset charset) throws InstrumentException {
+        return crypt(StringKit.bytes(message, charset));
     }
 
     /**
@@ -84,7 +84,7 @@ public class RC4 implements Serializable {
      * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
     public byte[] encrypt(String message) throws InstrumentException {
-        return encrypt(message, org.aoju.bus.core.lang.Charset.UTF_8);
+        return encrypt(message, Charset.UTF_8);
     }
 
     /**
@@ -94,7 +94,7 @@ public class RC4 implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(byte[] data) {
-        return HexUtils.encodeHexStr(crypt(data));
+        return HexKit.encodeHexStr(crypt(data));
     }
 
     /**
@@ -114,8 +114,8 @@ public class RC4 implements Serializable {
      * @param charset 编码
      * @return 加密后的Hex
      */
-    public String encryptHex(String data, Charset charset) {
-        return HexUtils.encodeHexStr(encrypt(data, charset));
+    public String encryptHex(String data, java.nio.charset.Charset charset) {
+        return HexKit.encodeHexStr(encrypt(data, charset));
     }
 
     /**
@@ -125,7 +125,7 @@ public class RC4 implements Serializable {
      * @param charset 编码
      * @return 加密后的Base64
      */
-    public String encryptBase64(String data, Charset charset) {
+    public String encryptBase64(String data, java.nio.charset.Charset charset) {
         return Base64.encode(encrypt(data, charset));
     }
 
@@ -137,8 +137,8 @@ public class RC4 implements Serializable {
      * @return 明文
      * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
-    public String decrypt(byte[] message, Charset charset) throws InstrumentException {
-        return StringUtils.toString(crypt(message), charset);
+    public String decrypt(byte[] message, java.nio.charset.Charset charset) throws InstrumentException {
+        return StringKit.toString(crypt(message), charset);
     }
 
     /**
@@ -149,7 +149,7 @@ public class RC4 implements Serializable {
      * @throws InstrumentException key长度小于5或者大于255抛出此异常
      */
     public String decrypt(byte[] message) throws InstrumentException {
-        return decrypt(message, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decrypt(message, Charset.UTF_8);
     }
 
     /**
@@ -195,7 +195,7 @@ public class RC4 implements Serializable {
         final WriteLock writeLock = this.lock.writeLock();
         writeLock.lock();
         try {
-            this.sbox = initSBox(StringUtils.bytes(key));
+            this.sbox = initSBox(StringKit.bytes(key));
         } finally {
             writeLock.unlock();
         }

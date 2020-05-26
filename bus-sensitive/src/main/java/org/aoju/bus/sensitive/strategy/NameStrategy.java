@@ -25,8 +25,8 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -51,7 +51,7 @@ public class NameStrategy extends AbstractProvider {
      * @return 脱敏后的结果
      */
     private static String name(final String chineseName, final String shadow) {
-        if (StringUtils.isEmpty(chineseName)) {
+        if (StringKit.isEmpty(chineseName)) {
             return chineseName;
         }
 
@@ -75,11 +75,11 @@ public class NameStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
-        return this.name(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
+        return this.name(ObjectKit.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

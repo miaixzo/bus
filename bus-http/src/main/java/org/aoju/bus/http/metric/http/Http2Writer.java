@@ -26,7 +26,7 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.logger.level.Level;
@@ -72,7 +72,7 @@ final class Http2Writer implements Closeable {
         if (closed) throw new IOException("closed");
         if (!client) return; // Nothing to write; servers don't send connection headers!
         if (Logger.get().isEnabled(Level.DEBUG)) {
-            Logger.warn(StringUtils.format(">> CONNECTION %s", Http2.CONNECTION_PREFACE.hex()));
+            Logger.warn(StringKit.format(">> CONNECTION %s", Http2.CONNECTION_PREFACE.hex()));
         }
         sink.write(Http2.CONNECTION_PREFACE.toByteArray());
         sink.flush();

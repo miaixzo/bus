@@ -28,7 +28,7 @@ import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.logger.Logger;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -96,7 +96,7 @@ public class NatureSQLHandler implements Interceptor {
         String sql = boundSql.getSql()
                 .replaceAll("[\\s]+", Symbol.SPACE)
                 .replaceAll("\\?", id);
-        if (!CollUtils.isEmpty(parameterMappings) && parameterObject != null) {
+        if (!CollKit.isEmpty(parameterMappings) && parameterObject != null) {
             // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
             // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();

@@ -26,10 +26,10 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.MapUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.accord.ConnectionPool;
 import org.aoju.bus.http.bodys.FormBody;
 import org.aoju.bus.http.bodys.MultipartBody;
@@ -189,7 +189,7 @@ public class Httpx {
                 Request request = chain.request();
                 return chain.proceed(request);
             });
-            if (ObjectUtils.isNotEmpty(dns)) {
+            if (ObjectKit.isNotEmpty(dns)) {
                 builder.dns(hostname -> {
                     try {
                         return dns.lookup(hostname);
@@ -199,7 +199,7 @@ public class Httpx {
                     return DnsX.SYSTEM.lookup(hostname);
                 });
             }
-            if (ObjectUtils.isNotEmpty(httpProxy)) {
+            if (ObjectKit.isNotEmpty(httpProxy)) {
                 builder.proxy(httpProxy.proxy());
                 if (httpProxy.user != null && httpProxy.password != null) {
                     builder.proxyAuthenticator(httpProxy.authenticator());
@@ -208,10 +208,10 @@ public class Httpx {
             builder.connectTimeout(connTimeout, TimeUnit.SECONDS);
             builder.readTimeout(readTimeout, TimeUnit.SECONDS);
             builder.writeTimeout(writeTimeout, TimeUnit.SECONDS);
-            if (ObjectUtils.isNotEmpty(sslSocketFactory)) {
+            if (ObjectKit.isNotEmpty(sslSocketFactory)) {
                 builder.sslSocketFactory(sslSocketFactory, x509TrustManager);
             }
-            if (ObjectUtils.isNotEmpty(hostnameVerifier)) {
+            if (ObjectKit.isNotEmpty(hostnameVerifier)) {
                 builder.hostnameVerifier(hostnameVerifier);
             }
             httpd = builder.build();
@@ -312,7 +312,7 @@ public class Httpx {
      */
     public static void post(String url, Map<String, Object> queryMap, Callback callback) {
         StringBuilder data = new StringBuilder();
-        if (ObjectUtils.isNotEmpty(queryMap)) {
+        if (ObjectKit.isNotEmpty(queryMap)) {
             Set<String> keys = queryMap.keySet();
             for (String key : keys) {
                 data.append(key).append(Symbol.EQUAL).append(queryMap.get(key)).append(Symbol.AND);
@@ -344,7 +344,7 @@ public class Httpx {
      */
     public static String post(final String url, final Map<String, Object> formMap) {
         String data = Normal.EMPTY;
-        if (MapUtils.isNotEmpty(formMap)) {
+        if (MapKit.isNotEmpty(formMap)) {
             data = formMap.entrySet().stream()
                     .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
                     .collect(Collectors.joining(Symbol.AND));
@@ -495,16 +495,16 @@ public class Httpx {
      * @return Request 信息
      */
     private static Request.Builder builder(final Builder builder) {
-        if (StringUtils.isBlank(builder.requestCharset)) {
+        if (StringKit.isBlank(builder.requestCharset)) {
             builder.requestCharset = Charset.DEFAULT_UTF_8;
         }
-        if (StringUtils.isBlank(builder.responseCharset)) {
+        if (StringKit.isBlank(builder.responseCharset)) {
             builder.responseCharset = Charset.DEFAULT_UTF_8;
         }
-        if (StringUtils.isBlank(builder.method)) {
+        if (StringKit.isBlank(builder.method)) {
             builder.method = Http.GET;
         }
-        if (StringUtils.isBlank(builder.mediaType)) {
+        if (StringKit.isBlank(builder.mediaType)) {
             builder.mediaType = MediaType.APPLICATION_FORM_URLENCODED;
         }
         if (builder.tracer) {
@@ -513,27 +513,27 @@ public class Httpx {
 
         Request.Builder request = new Request.Builder();
 
-        if (MapUtils.isNotEmpty(builder.headerMap)) {
+        if (MapKit.isNotEmpty(builder.headerMap)) {
             builder.headerMap.forEach(request::addHeader);
         }
         String method = builder.method.toUpperCase();
         String mediaType = String.format("%s;charset=%s", builder.mediaType, builder.requestCharset);
-        if (StringUtils.equals(method, Http.GET)) {
-            if (MapUtils.isNotEmpty(builder.queryMap)) {
+        if (StringKit.equals(method, Http.GET)) {
+            if (MapKit.isNotEmpty(builder.queryMap)) {
                 String queryParams = builder.queryMap.entrySet().stream()
                         .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
                         .collect(Collectors.joining(Symbol.AND));
                 builder.url = String.format("%s%s%s", builder.url, builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, queryParams);
             }
             request.get();
-        } else if (ArrayUtils.contains(new String[]{Http.POST, Http.PUT, Http.DELETE, Http.PATCH}, method)) {
-            if (StringUtils.isNotEmpty(builder.data)) {
+        } else if (ArrayKit.contains(new String[]{Http.POST, Http.PUT, Http.DELETE, Http.PATCH}, method)) {
+            if (StringKit.isNotEmpty(builder.data)) {
                 RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
                 request.method(method, requestBody);
             }
-            if (MapUtils.isNotEmpty(builder.queryMap)) {
+            if (MapKit.isNotEmpty(builder.queryMap)) {
                 FormBody.Builder form = new FormBody.Builder(Charset.UTF_8);
-                builder.queryMap.forEach((key, value) -> form.add(key, StringUtils.toString(value)));
+                builder.queryMap.forEach((key, value) -> form.add(key, StringKit.toString(value)));
                 request.method(method, form.build());
             }
         } else {

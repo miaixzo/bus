@@ -25,10 +25,10 @@
 package org.aoju.bus.core.compare;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -56,9 +56,9 @@ public class FieldCompare<T> implements Comparator<T>, Serializable {
      * @param fieldName 字段名
      */
     public FieldCompare(Class<T> beanClass, String fieldName) {
-        this.field = ClassUtils.getDeclaredField(beanClass, fieldName);
+        this.field = ClassKit.getDeclaredField(beanClass, fieldName);
         if (this.field == null) {
-            throw new IllegalArgumentException(StringUtils.format("Field [{}] not found in Class [{}]", fieldName, beanClass.getName()));
+            throw new IllegalArgumentException(StringKit.format("Field [{}] not found in Class [{}]", fieldName, beanClass.getName()));
         }
     }
 
@@ -75,8 +75,8 @@ public class FieldCompare<T> implements Comparator<T>, Serializable {
         java.lang.Comparable<?> v1;
         java.lang.Comparable<?> v2;
         try {
-            v1 = (java.lang.Comparable<?>) ReflectUtils.getFieldValue(o1, this.field);
-            v2 = (java.lang.Comparable<?>) ReflectUtils.getFieldValue(o2, this.field);
+            v1 = (java.lang.Comparable<?>) ReflectKit.getFieldValue(o1, this.field);
+            v2 = (java.lang.Comparable<?>) ReflectKit.getFieldValue(o2, this.field);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -85,10 +85,10 @@ public class FieldCompare<T> implements Comparator<T>, Serializable {
     }
 
     private int compare(T o1, T o2, java.lang.Comparable fieldValue1, java.lang.Comparable fieldValue2) {
-        int result = ObjectUtils.compare(fieldValue1, fieldValue2);
+        int result = ObjectKit.compare(fieldValue1, fieldValue2);
         if (0 == result) {
             //避免TreeSet / TreeMap 过滤掉排序字段相同但是对象不相同的情况
-            result = ObjectUtils.compare(o1, o2, true);
+            result = ObjectKit.compare(o1, o2, true);
         }
         return result;
     }

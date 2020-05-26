@@ -30,7 +30,7 @@ import com.obs.services.model.DownloadFileRequest;
 import com.obs.services.model.ListObjectsRequest;
 import com.obs.services.model.ObjectListing;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
@@ -101,7 +101,7 @@ public class HuaweiObsProvider extends AbstractProvider {
                     storageItem.setName(item.getObjectKey());
                     storageItem.setOwner(item.getOwner().getId());
                     storageItem.setType(item.getMetadata().getContentType());
-                    storageItem.setSize(StringUtils.toString(item.getMetadata().getContentLength()));
+                    storageItem.setSize(StringKit.toString(item.getMetadata().getContentLength()));
                     Map<String, Object> extended = Maps.newHashMap();
                     extended.put("tag", item.getMetadata().getEtag());
                     extended.put("storageClass", item.getMetadata().getObjectStorageClass());

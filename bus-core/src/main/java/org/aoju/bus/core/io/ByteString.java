@@ -26,16 +26,16 @@ package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,7 +66,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
 
     public static ByteString of(byte[] data, int offset, int byteCount) {
         if (data == null) throw new IllegalArgumentException("data == null");
-        IoUtils.checkOffsetAndCount(data.length, offset, byteCount);
+        IoKit.checkOffsetAndCount(data.length, offset, byteCount);
 
         byte[] copy = new byte[byteCount];
         System.arraycopy(data, offset, copy, 0, byteCount);
@@ -83,12 +83,12 @@ public class ByteString implements Serializable, Comparable<ByteString> {
 
     public static ByteString encodeUtf8(String s) {
         if (s == null) throw new IllegalArgumentException("s == null");
-        ByteString byteString = new ByteString(s.getBytes(org.aoju.bus.core.lang.Charset.UTF_8));
+        ByteString byteString = new ByteString(s.getBytes(Charset.UTF_8));
         byteString.utf8 = s;
         return byteString;
     }
 
-    public static ByteString encodeString(String s, Charset charset) {
+    public static ByteString encodeString(String s, java.nio.charset.Charset charset) {
         if (s == null) throw new IllegalArgumentException("s == null");
         if (charset == null) throw new IllegalArgumentException("charset == null");
         return new ByteString(s.getBytes(charset));
@@ -150,10 +150,10 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public String utf8() {
         String result = utf8;
         // We don't care if we double-allocate in racy code.
-        return result != null ? result : (utf8 = new String(data, org.aoju.bus.core.lang.Charset.UTF_8));
+        return result != null ? result : (utf8 = new String(data, Charset.UTF_8));
     }
 
-    public String string(Charset charset) {
+    public String string(java.nio.charset.Charset charset) {
         if (charset == null) throw new IllegalArgumentException("charset == null");
         return new String(data, charset);
     }
@@ -322,7 +322,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public boolean rangeEquals(int offset, byte[] other, int otherOffset, int byteCount) {
         return offset >= 0 && offset <= data.length - byteCount
                 && otherOffset >= 0 && otherOffset <= other.length - byteCount
-                && IoUtils.arrayRangeEquals(data, offset, other, otherOffset, byteCount);
+                && IoKit.arrayRangeEquals(data, offset, other, otherOffset, byteCount);
     }
 
     public final boolean startsWith(ByteString prefix) {
@@ -356,7 +356,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public int indexOf(byte[] other, int fromIndex) {
         fromIndex = Math.max(fromIndex, 0);
         for (int i = fromIndex, limit = data.length - other.length; i <= limit; i++) {
-            if (IoUtils.arrayRangeEquals(data, i, other, 0, other.length)) {
+            if (IoKit.arrayRangeEquals(data, i, other, 0, other.length)) {
                 return i;
             }
         }
@@ -378,7 +378,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     public int lastIndexOf(byte[] other, int fromIndex) {
         fromIndex = Math.min(fromIndex, data.length - other.length);
         for (int i = fromIndex; i >= 0; i--) {
-            if (IoUtils.arrayRangeEquals(data, i, other, 0, other.length)) {
+            if (IoKit.arrayRangeEquals(data, i, other, 0, other.length)) {
                 return i;
             }
         }

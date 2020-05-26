@@ -25,7 +25,7 @@
 package org.aoju.bus.core.lang.mutable;
 
 
-import org.aoju.bus.core.utils.MathUtils;
+import org.aoju.bus.core.toolkit.MathKit;
 
 /**
  * 可变 <code>int</code> 类型
@@ -215,7 +215,7 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      */
     @Override
     public int compareTo(final MutableInt other) {
-        return MathUtils.compare(this.value, other.value);
+        return MathKit.compare(this.value, other.value);
     }
 
     @Override

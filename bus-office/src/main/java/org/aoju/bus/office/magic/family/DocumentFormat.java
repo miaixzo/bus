@@ -25,8 +25,8 @@
 package org.aoju.bus.office.magic.family;
 
 import org.aoju.bus.core.builder.ToStringBuilder;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -257,7 +257,7 @@ public class DocumentFormat {
          * @return 当前构造器实例.
          */
         public Builder extension(final String extension) {
-            if (CollUtils.isEmpty(this.extensions)) {
+            if (CollKit.isEmpty(this.extensions)) {
                 this.extensions = new LinkedHashSet<>();
             }
             this.extensions.add(extension);
@@ -283,10 +283,10 @@ public class DocumentFormat {
          * @return 当前构造器实例.
          */
         public Builder loadProperty(final String name, final Object value) {
-            if (ObjectUtils.isEmpty(value)) {
+            if (ObjectKit.isEmpty(value)) {
                 Optional.ofNullable(loadProperties).ifPresent(propMap -> propMap.remove(name));
             } else {
-                if (ObjectUtils.isEmpty(this.loadProperties)) {
+                if (ObjectKit.isEmpty(this.loadProperties)) {
                     this.loadProperties = new HashMap<>();
                 }
                 this.loadProperties.put(name, value);

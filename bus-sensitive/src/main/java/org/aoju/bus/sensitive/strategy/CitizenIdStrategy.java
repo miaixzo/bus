@@ -25,8 +25,8 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -52,17 +52,17 @@ public class CitizenIdStrategy extends AbstractProvider {
      */
     private static String cardId(final String cardId, final String shadow) {
         final int prefixLength = 6;
-        final String middle = StringUtils.fill(10, shadow);
-        return StringUtils.buildString(cardId, middle, prefixLength);
+        final String middle = StringKit.fill(10, shadow);
+        return StringKit.buildString(cardId, middle, prefixLength);
     }
 
     @Override
     public Object build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
-        return this.cardId(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
+        return this.cardId(ObjectKit.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

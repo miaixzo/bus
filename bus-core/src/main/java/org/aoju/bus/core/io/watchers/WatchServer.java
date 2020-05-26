@@ -26,8 +26,8 @@ package org.aoju.bus.core.io.watchers;
 
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -112,7 +112,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
     public void registerPath(Path path, int maxDepth) {
         try {
             final WatchKey key;
-            if (ArrayUtils.isEmpty(this.modifiers)) {
+            if (ArrayKit.isEmpty(this.modifiers)) {
                 key = path.register(this.watchService, this.events);
             } else {
                 key = path.register(this.watchService, this.events, this.modifiers);
@@ -183,7 +183,7 @@ public class WatchServer extends Thread implements Closeable, Serializable {
     @Override
     public void close() {
         isClosed = true;
-        IoUtils.close(watchService);
+        IoKit.close(watchService);
     }
 
 }

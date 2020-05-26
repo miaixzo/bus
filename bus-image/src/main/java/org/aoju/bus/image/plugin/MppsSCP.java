@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Status;
 import org.aoju.bus.image.Tag;
@@ -132,7 +132,7 @@ public class MppsSCP {
             Logger.warn(as + ": Failed to store MPPS:", e);
             throw new ImageException(Status.ProcessingFailure, e);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
         return null;
     }
@@ -162,7 +162,7 @@ public class MppsSCP {
             Logger.warn(as + ": Failed to read MPPS:", e);
             throw new ImageException(Status.ProcessingFailure, e);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
         if (!"IN PROGRESS".equals(data.getString(Tag.PerformedProcedureStepStatus)))
             BasicMPPSSCP.mayNoLongerBeUpdated();
@@ -178,7 +178,7 @@ public class MppsSCP {
             Logger.warn(as + ": Failed to update MPPS:", e);
             throw new ImageException(Status.ProcessingFailure, e);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
         return null;
     }

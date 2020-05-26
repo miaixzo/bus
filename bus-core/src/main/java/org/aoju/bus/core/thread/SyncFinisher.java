@@ -25,7 +25,7 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -66,7 +66,7 @@ public class SyncFinisher {
     public SyncFinisher(int threadSize) {
         this.beginLatch = new CountDownLatch(1);
         this.threadSize = threadSize;
-        this.executorService = ThreadUtils.newExecutor(threadSize);
+        this.executorService = ThreadKit.newExecutor(threadSize);
         this.workers = new LinkedHashSet<>();
     }
 

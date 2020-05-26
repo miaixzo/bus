@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble;
 
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -184,10 +184,10 @@ public class LookupTableFactory {
                 short[] ss = new short[len];
                 if (bigEndian)
                     for (int i = 0; i < ss.length; i++)
-                        ss[i] = (short) ByteUtils.bytesToShortBE(data, i << 1);
+                        ss[i] = (short) ByteKit.bytesToShortBE(data, i << 1);
                 else
                     for (int i = 0; i < ss.length; i++)
-                        ss[i] = (short) ByteUtils.bytesToShortLE(data, i << 1);
+                        ss[i] = (short) ByteKit.bytesToShortLE(data, i << 1);
 
                 return new ShortLookupTable(inBits, outBits, offset, ss);
             }

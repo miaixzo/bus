@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.BooleanUtils;
+import org.aoju.bus.core.toolkit.BooleanKit;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -46,7 +46,7 @@ public class AtomicBooleanConverter extends AbstractConverter<AtomicBoolean> {
             return new AtomicBoolean((Boolean) value);
         }
         final String valueStr = convertToStr(value);
-        return new AtomicBoolean(BooleanUtils.toBoolean(valueStr));
+        return new AtomicBoolean(BooleanKit.toBoolean(valueStr));
     }
 
 }

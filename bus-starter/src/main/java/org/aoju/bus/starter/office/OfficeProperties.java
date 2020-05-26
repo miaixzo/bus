@@ -25,7 +25,7 @@
 package org.aoju.bus.starter.office;
 
 import lombok.Data;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.magic.family.FormatProperties;
 import org.aoju.bus.starter.BusXExtend;
@@ -56,7 +56,7 @@ public class OfficeProperties {
      * office实例的数量等于端口的数量，
      * 因为每个端口号将启动一个office进程.
      */
-    private String portNumbers = StringUtils.toString(Builder.DEFAULT_PORT_NUMBER);
+    private String portNumbers = StringKit.toString(Builder.DEFAULT_PORT_NUMBER);
 
     /**
      * 将创建临时office配置文件的目录。如果未设置，

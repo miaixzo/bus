@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.BooleanUtils;
+import org.aoju.bus.core.toolkit.BooleanKit;
 
 /**
  * 波尔转换器
@@ -37,7 +37,7 @@ public class BooleanConverter extends AbstractConverter<Boolean> {
 
     @Override
     protected Boolean convertInternal(Object value) {
-        return BooleanUtils.toBoolean(convertToStr(value));
+        return BooleanKit.toBoolean(convertToStr(value));
     }
 
 }

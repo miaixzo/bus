@@ -25,8 +25,8 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.DateKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
@@ -95,15 +95,15 @@ public class DateConverter extends AbstractConverter<Date> {
             // Handle Number
             mills = ((Number) value).longValue();
         } else if (value instanceof TemporalAccessor) {
-            return DateUtils.date((TemporalAccessor) value);
+            return DateKit.date((TemporalAccessor) value);
         } else {
             // 统一按照字符串处理
             final String valueStr = convertToStr(value);
             Date date = null;
             try {
-                date = StringUtils.isBlank(this.format)
-                        ? DateUtils.parse(valueStr)
-                        : DateUtils.parse(valueStr, this.format);
+                date = StringKit.isBlank(this.format)
+                        ? DateKit.parse(valueStr)
+                        : DateKit.parse(valueStr, this.format);
             } catch (Exception e) {
                 // Ignore Exception
             }
@@ -130,7 +130,7 @@ public class DateConverter extends AbstractConverter<Date> {
             return new java.sql.Timestamp(mills);
         }
 
-        throw new UnsupportedOperationException(StringUtils.format("Unsupport Date type: {}", this.targetType.getName()));
+        throw new UnsupportedOperationException(StringKit.format("Unsupport Date type: {}", this.targetType.getName()));
     }
 
 }

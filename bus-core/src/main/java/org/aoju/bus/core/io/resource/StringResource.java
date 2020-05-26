@@ -24,15 +24,15 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 /**
  * 字符串资源,字符串做为资源
@@ -45,7 +45,7 @@ public class StringResource implements Resource {
 
     private final String data;
     private final String name;
-    private final Charset charset;
+    private final java.nio.charset.Charset charset;
 
     /**
      * 构造,使用UTF8编码
@@ -63,7 +63,7 @@ public class StringResource implements Resource {
      * @param name 资源名称
      */
     public StringResource(String data, String name) {
-        this(data, name, org.aoju.bus.core.lang.Charset.UTF_8);
+        this(data, name, Charset.UTF_8);
     }
 
     /**
@@ -73,7 +73,7 @@ public class StringResource implements Resource {
      * @param name    资源名称
      * @param charset 编码
      */
-    public StringResource(String data, String name, Charset charset) {
+    public StringResource(String data, String name, java.nio.charset.Charset charset) {
         this.data = data;
         this.name = name;
         this.charset = charset;
@@ -95,12 +95,12 @@ public class StringResource implements Resource {
     }
 
     @Override
-    public BufferedReader getReader(Charset charset) {
-        return IoUtils.getReader(new StringReader(this.data));
+    public BufferedReader getReader(java.nio.charset.Charset charset) {
+        return IoKit.getReader(new StringReader(this.data));
     }
 
     @Override
-    public String readString(Charset charset) throws InstrumentException {
+    public String readString(java.nio.charset.Charset charset) throws InstrumentException {
         return this.data;
     }
 

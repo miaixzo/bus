@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.invoker;
 
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -93,7 +93,7 @@ public class InvocationInvoker implements ProxyChain {
      */
     @Override
     public Method getMethod() {
-        if (ObjectUtils.isEmpty(method)) {
+        if (ObjectKit.isEmpty(method)) {
             Signature signature = joinPoint.getSignature();
             MethodSignature methodSignature = (MethodSignature) signature;
             this.method = methodSignature.getMethod();

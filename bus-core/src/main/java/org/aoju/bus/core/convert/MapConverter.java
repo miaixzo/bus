@@ -24,10 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.MapUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.TypeUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -62,7 +62,7 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
      * @param mapType Map类型
      */
     public MapConverter(Type mapType) {
-        this(mapType, TypeUtils.getTypeArgument(mapType, 0), TypeUtils.getTypeArgument(mapType, 1));
+        this(mapType, TypeKit.getTypeArgument(mapType, 0), TypeKit.getTypeArgument(mapType, 1));
     }
 
     /**
@@ -82,7 +82,7 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
     protected Map<?, ?> convertInternal(Object value) {
         Map map;
         if (value instanceof Map) {
-            final Type[] typeArguments = TypeUtils.getTypeArguments(value.getClass());
+            final Type[] typeArguments = TypeKit.getTypeArguments(value.getClass());
             if (null != typeArguments
                     && 2 == typeArguments.length
                     && Objects.equals(this.keyType, typeArguments[0])
@@ -90,14 +90,14 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
                 //对于键值对类型一致的Map对象，不再做转换，直接返回原对象
                 return (Map) value;
             }
-            map = MapUtils.createMap(TypeUtils.getClass(this.mapType));
+            map = MapKit.createMap(TypeKit.getClass(this.mapType));
             convertMapToMap((Map) value, map);
-        } else if (BeanUtils.isBean(value.getClass())) {
-            map = BeanUtils.beanToMap(value);
+        } else if (BeanKit.isBean(value.getClass())) {
+            map = BeanKit.beanToMap(value);
             // 二次转换，转换键值类型
             map = convertInternal(map);
         } else {
-            throw new UnsupportedOperationException(StringUtils.format("Unsupport toMap value type: {}", value.getClass().getName()));
+            throw new UnsupportedOperationException(StringKit.format("Unsupport toMap value type: {}", value.getClass().getName()));
         }
         return map;
     }
@@ -113,15 +113,15 @@ public class MapConverter extends AbstractConverter<Map<?, ?>> {
         Object key;
         Object value;
         for (Entry<?, ?> entry : srcMap.entrySet()) {
-            key = TypeUtils.isUnknow(this.keyType) ? entry.getKey() : convert.convert(this.keyType, entry.getKey());
-            value = TypeUtils.isUnknow(this.valueType) ? entry.getValue() : convert.convert(this.valueType, entry.getValue());
+            key = TypeKit.isUnknow(this.keyType) ? entry.getKey() : convert.convert(this.keyType, entry.getKey());
+            value = TypeKit.isUnknow(this.valueType) ? entry.getValue() : convert.convert(this.valueType, entry.getValue());
             targetMap.put(key, value);
         }
     }
 
     @Override
     public Class<Map<?, ?>> getTargetType() {
-        return (Class<Map<?, ?>>) TypeUtils.getClass(this.mapType);
+        return (Class<Map<?, ?>>) TypeKit.getClass(this.mapType);
     }
 
 }

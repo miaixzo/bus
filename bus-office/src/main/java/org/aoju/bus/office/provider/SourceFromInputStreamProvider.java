@@ -25,8 +25,8 @@
 package org.aoju.bus.office.provider;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.office.metric.TemporaryFileMaker;
 
 import java.io.File;
@@ -70,7 +70,7 @@ public class SourceFromInputStreamProvider extends AbstractSourceProvider
             final FileOutputStream outputStream = new FileOutputStream(tempFile);
             outputStream.getChannel().lock();
             try {
-                IoUtils.copy(inputStream, outputStream);
+                IoKit.copy(inputStream, outputStream);
                 return tempFile;
             } finally {
                 outputStream.close();
@@ -82,7 +82,7 @@ public class SourceFromInputStreamProvider extends AbstractSourceProvider
 
     @Override
     public void onConsumed(final File tempFile) {
-        FileUtils.delete(tempFile);
+        FileKit.delete(tempFile);
         if (closeStream) {
             try {
                 inputStream.close();

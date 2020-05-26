@@ -25,7 +25,7 @@
 package org.aoju.bus.core.compare;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -85,8 +85,8 @@ public class VersionCompare implements Comparator<String>, Serializable {
             return 1;
         }
 
-        final List<String> v1s = StringUtils.split(version1, Symbol.C_DOT);
-        final List<String> v2s = StringUtils.split(version2, Symbol.C_DOT);
+        final List<String> v1s = StringKit.split(version1, Symbol.C_DOT);
+        final List<String> v2s = StringKit.split(version2, Symbol.C_DOT);
 
         int diff = 0;
         int minLength = Math.min(v1s.size(), v2s.size());// 取最小长度值

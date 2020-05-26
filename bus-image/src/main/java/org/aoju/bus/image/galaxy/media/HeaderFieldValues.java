@@ -25,7 +25,7 @@
 package org.aoju.bus.image.galaxy.media;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,7 +116,7 @@ public class HeaderFieldValues {
 
     protected List<Map<String, String>> parse(String content) {
         List<Map<String, String>> hvals = new ArrayList<>();
-        if (StringUtils.hasText(content)) {
+        if (StringKit.hasText(content)) {
             // 除双引号外的拆分
             String[] elements = content.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
             for (String element : elements) {
@@ -137,7 +137,7 @@ public class HeaderFieldValues {
                         position++;
                     }
 
-                    if (StringUtils.hasText(name)) {
+                    if (StringKit.hasText(name)) {
                         params.put(name.toLowerCase(), value);
                     }
                 }
@@ -166,7 +166,7 @@ public class HeaderFieldValues {
     public String getValue(String key) {
         for (Map<String, String> map : values) {
             String val = map.get(key);
-            if (StringUtils.hasText(val)) {
+            if (StringKit.hasText(val)) {
                 return val;
             }
         }
@@ -177,7 +177,7 @@ public class HeaderFieldValues {
         List<String> list = new ArrayList<>();
         for (Map<String, String> map : values) {
             String val = map.get(key);
-            if (StringUtils.hasText(val)) {
+            if (StringKit.hasText(val)) {
                 list.add(val);
             }
         }

@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.PinyinUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.PinyinKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Chinese;
 import org.aoju.bus.validate.validators.Matcher;
@@ -41,10 +41,10 @@ public class ChineseStrategy implements Matcher<String, Chinese> {
 
     @Override
     public boolean on(String object, Chinese annotation, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return !PinyinUtils.isChinese(object);
+        return !PinyinKit.isChinese(object);
     }
 
 }

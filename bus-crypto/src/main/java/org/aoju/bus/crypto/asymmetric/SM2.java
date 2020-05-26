@@ -27,7 +27,7 @@ package org.aoju.bus.crypto.asymmetric;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.HexUtils;
+import org.aoju.bus.core.toolkit.HexKit;
 import org.aoju.bus.crypto.Builder;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.CryptoException;
@@ -267,7 +267,7 @@ public class SM2 extends Safety<SM2> {
      * @return 签名
      */
     public String sign(String dataHex, String idHex) {
-        return HexUtils.encodeHexStr(sign(HexUtils.decodeHex(dataHex), HexUtils.decodeHex(idHex)));
+        return HexKit.encodeHexStr(sign(HexKit.decodeHex(dataHex), HexKit.decodeHex(idHex)));
     }
 
     /**
@@ -326,7 +326,7 @@ public class SM2 extends Safety<SM2> {
      * @return 是否验证通过
      */
     public boolean verify(String dataHex, String signHex, String idHex) {
-        return verify(HexUtils.decodeHex(dataHex), HexUtils.decodeHex(signHex), HexUtils.decodeHex(idHex));
+        return verify(HexKit.decodeHex(dataHex), HexKit.decodeHex(signHex), HexKit.decodeHex(idHex));
     }
 
     /**

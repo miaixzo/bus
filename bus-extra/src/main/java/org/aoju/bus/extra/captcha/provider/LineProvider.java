@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.extra.captcha.provider;
 
-import org.aoju.bus.core.utils.ImageUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.RandomUtils;
+import org.aoju.bus.core.toolkit.ImageKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.RandomKit;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -68,7 +68,7 @@ public class LineProvider extends AbstractProvider {
     public Image createImage(String code) {
         // 图像buffer
         final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g = org.aoju.bus.core.image.Graphics.createGraphics(image, ObjectUtils.defaultIfNull(this.background, Color.WHITE));
+        final Graphics2D g = org.aoju.bus.core.image.Graphics.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
 
         // 干扰线
         drawInterfere(g);
@@ -99,14 +99,14 @@ public class LineProvider extends AbstractProvider {
      * @param g {@link Graphics2D}画笔
      */
     private void drawInterfere(Graphics2D g) {
-        final ThreadLocalRandom random = RandomUtils.getRandom();
+        final ThreadLocalRandom random = RandomKit.getRandom();
         // 干扰线
         for (int i = 0; i < this.interfereCount; i++) {
             int xs = random.nextInt(width);
             int ys = random.nextInt(height);
             int xe = xs + random.nextInt(width / 8);
             int ye = ys + random.nextInt(height / 8);
-            g.setColor(ImageUtils.randomColor(random));
+            g.setColor(ImageKit.randomColor(random));
             g.drawLine(xs, ys, xe, ye);
         }
     }

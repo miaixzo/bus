@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.watchers;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -123,8 +123,8 @@ public class DelayWatcher implements Watcher {
      * @param currentPath 事件发生的当前Path路径
      */
     private void startHandleModifyThread(final WatchEvent<?> event, final Path currentPath) {
-        ThreadUtils.execute(() -> {
-            ThreadUtils.sleep(delay);
+        ThreadKit.execute(() -> {
+            ThreadKit.sleep(delay);
             eventSet.remove(Paths.get(currentPath.toString(), event.context().toString()));
             watcher.onModify(event, currentPath);
         });

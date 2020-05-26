@@ -25,7 +25,7 @@
 package org.aoju.bus.image;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -2518,8 +2518,8 @@ public class UID {
 
     private static String toUID(String root, UUID uuid) {
         byte[] b17 = new byte[17];
-        ByteUtils.longToBytesBE(uuid.getMostSignificantBits(), b17, 1);
-        ByteUtils.longToBytesBE(uuid.getLeastSignificantBits(), b17, 9);
+        ByteKit.longToBytesBE(uuid.getMostSignificantBits(), b17, 1);
+        ByteKit.longToBytesBE(uuid.getLeastSignificantBits(), b17, 9);
         String uuidStr = new BigInteger(b17).toString();
         int rootlen = root.length();
         int uuidlen = uuidStr.length();

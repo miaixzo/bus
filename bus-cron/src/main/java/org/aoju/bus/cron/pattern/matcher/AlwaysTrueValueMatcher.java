@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 值匹配,始终返回<code>true</code>
@@ -42,7 +42,7 @@ public class AlwaysTrueValueMatcher implements ValueMatcher {
 
     @Override
     public String toString() {
-        return StringUtils.format("[Matcher]: always true.");
+        return StringKit.format("[Matcher]: always true.");
     }
 
 }

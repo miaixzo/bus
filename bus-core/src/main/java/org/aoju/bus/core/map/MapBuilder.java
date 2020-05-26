@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.utils.MapUtils;
+import org.aoju.bus.core.toolkit.MapKit;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class MapBuilder<K, V> implements Serializable {
      * @return MapBuilder
      */
     public static <K, V> MapBuilder<K, V> create(boolean isLinked) {
-        return create(MapUtils.newHashMap(isLinked));
+        return create(MapKit.newHashMap(isLinked));
     }
 
     /**
@@ -135,7 +135,7 @@ public class MapBuilder<K, V> implements Serializable {
      * @return 连接字符串
      */
     public String join(String separator, final String keyValueSeparator) {
-        return MapUtils.join(this.map, separator, keyValueSeparator);
+        return MapKit.join(this.map, separator, keyValueSeparator);
     }
 
     /**
@@ -146,7 +146,7 @@ public class MapBuilder<K, V> implements Serializable {
      * @return 连接后的字符串
      */
     public String joinIgnoreNull(String separator, final String keyValueSeparator) {
-        return MapUtils.joinIgnoreNull(this.map, separator, keyValueSeparator);
+        return MapKit.joinIgnoreNull(this.map, separator, keyValueSeparator);
     }
 
     /**
@@ -158,7 +158,7 @@ public class MapBuilder<K, V> implements Serializable {
      * @return 连接后的字符串
      */
     public String join(String separator, final String keyValueSeparator, boolean isIgnoreNull) {
-        return MapUtils.join(this.map, separator, keyValueSeparator, isIgnoreNull);
+        return MapKit.join(this.map, separator, keyValueSeparator, isIgnoreNull);
     }
 
 }

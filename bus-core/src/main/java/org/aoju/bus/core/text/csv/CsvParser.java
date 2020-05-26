@@ -26,10 +26,10 @@ package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.TextUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.TextKit;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -50,11 +50,11 @@ public final class CsvParser implements Closeable {
     private final Reader reader;
     private final CsvReadConfig config;
 
-    private final char[] buf = new char[IoUtils.DEFAULT_LARGE_BUFFER_SIZE];
+    private final char[] buf = new char[IoKit.DEFAULT_LARGE_BUFFER_SIZE];
     /**
      * 当前读取字段
      */
-    private final TextUtils currentField = new TextUtils(512);
+    private final TextKit currentField = new TextKit(512);
     /**
      * 当前位置
      */
@@ -104,7 +104,7 @@ public final class CsvParser implements Closeable {
      */
     public CsvParser(final Reader reader, CsvReadConfig config) {
         this.reader = Objects.requireNonNull(reader, "reader must not be null");
-        this.config = ObjectUtils.defaultIfNull(config, CsvReadConfig.defaultConfig());
+        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig.defaultConfig());
     }
 
     /**
@@ -186,7 +186,7 @@ public final class CsvParser implements Closeable {
         final Map<String, Integer> localHeaderMap = new LinkedHashMap<>(currentFields.size());
         for (int i = 0; i < currentFields.size(); i++) {
             final String field = currentFields.get(i);
-            if (StringUtils.isNotEmpty(field) && false == localHeaderMap.containsKey(field)) {
+            if (StringKit.isNotEmpty(field) && false == localHeaderMap.containsKey(field)) {
                 localHeaderMap.put(field, i);
             }
         }
@@ -203,7 +203,7 @@ public final class CsvParser implements Closeable {
     private List<String> readLine() throws InstrumentException {
         final List<String> currentFields = new ArrayList<>(maxFieldCount > 0 ? maxFieldCount : DEFAULT_ROW_CAPACITY);
 
-        final TextUtils localCurrentField = currentField;
+        final TextKit localCurrentField = currentField;
         final char[] localBuf = this.buf;
         int localBufPos = bufPos;//当前位置
         int localPreChar = preChar;//前一个特殊分界字符
@@ -258,7 +258,7 @@ public final class CsvParser implements Closeable {
                         localCurrentField.append(localBuf, localCopyStart, copyLen);
                         copyLen = 0;
                     }
-                    currentFields.add(StringUtils.unWrap(localCurrentField.toStringAndReset(), config.textDelimiter));
+                    currentFields.add(StringKit.unWrap(localCurrentField.toStringAndReset(), config.textDelimiter));
                     localCopyStart = localBufPos;
                 } else if (c == config.textDelimiter) {
                     // 引号开始
@@ -268,7 +268,7 @@ public final class CsvParser implements Closeable {
                     if (copyLen > 0) {
                         localCurrentField.append(localBuf, localCopyStart, copyLen);
                     }
-                    currentFields.add(StringUtils.unWrap(localCurrentField.toStringAndReset(), config.textDelimiter));
+                    currentFields.add(StringKit.unWrap(localCurrentField.toStringAndReset(), config.textDelimiter));
                     localPreChar = c;
                     localCopyStart = localBufPos;
                     break;
@@ -277,7 +277,7 @@ public final class CsvParser implements Closeable {
                         if (copyLen > 0) {
                             localCurrentField.append(localBuf, localCopyStart, copyLen);
                         }
-                        currentFields.add(StringUtils.unWrap(localCurrentField.toStringAndReset(), config.textDelimiter));
+                        currentFields.add(StringKit.unWrap(localCurrentField.toStringAndReset(), config.textDelimiter));
                         localPreChar = c;
                         localCopyStart = localBufPos;
                         break;

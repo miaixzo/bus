@@ -25,7 +25,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.BeanUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
 
 import java.util.*;
 
@@ -138,7 +138,7 @@ public final class CsvRow implements List<String> {
      * @return Bean
      */
     public <T> T toBean(Class<T> clazz) {
-        return BeanUtils.mapToBean(getFieldMap(), clazz, true);
+        return BeanKit.mapToBean(getFieldMap(), clazz, true);
     }
 
     @Override

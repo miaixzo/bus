@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.setting.Setting;
@@ -224,7 +224,7 @@ public final class CronBuilder {
      * @return 日期列表
      */
     public static List<Date> matchedDates(String patternStr, Date start, int count, boolean isMatchSecond) {
-        return matchedDates(patternStr, start, DateUtils.endOfYear(start), count, isMatchSecond);
+        return matchedDates(patternStr, start, DateKit.endOfYear(start), count, isMatchSecond);
     }
 
     /**
@@ -272,7 +272,7 @@ public final class CronBuilder {
         long step = isMatchSecond ? Fields.Unit.SECOND.getMillis() : Fields.Unit.MINUTE.getMillis();
         for (long i = start; i < end; i += step) {
             if (pattern.match(i, isMatchSecond)) {
-                result.add(DateUtils.date(i));
+                result.add(DateKit.date(i));
                 if (result.size() >= count) {
                     break;
                 }

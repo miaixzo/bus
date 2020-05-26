@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Null;
 import org.aoju.bus.validate.validators.Matcher;
@@ -41,7 +41,7 @@ public class NullStrategy implements Validator<Object>, Matcher<Object, Null> {
 
     @Override
     public boolean on(Object object, Context context) {
-        return ObjectUtils.isEmpty(object);
+        return ObjectKit.isEmpty(object);
     }
 
     @Override

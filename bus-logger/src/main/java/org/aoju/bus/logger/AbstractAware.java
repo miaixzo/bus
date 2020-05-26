@@ -25,7 +25,7 @@
 package org.aoju.bus.logger;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.level.Level;
 
 import java.io.Serializable;
@@ -56,7 +56,7 @@ public abstract class AbstractAware implements Log, Serializable {
             case ERROR:
                 return isError();
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 

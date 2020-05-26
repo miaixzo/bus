@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.MathUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.IntRange;
 import org.aoju.bus.validate.validators.Matcher;
@@ -61,15 +61,15 @@ public class IntRangeStrategy implements Matcher<Object, IntRange> {
 
     @Override
     public boolean on(Object object, IntRange annotation, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return true;
         }
         BigDecimal num;
         if (object instanceof String) {
-            num = MathUtils.add((String) object);
+            num = MathKit.add((String) object);
         } else if (NumberTypes.contains(object.getClass())) {
             String numString = String.valueOf(object);
-            num = MathUtils.add(numString);
+            num = MathKit.add(numString);
         } else {
             throw new IllegalArgumentException("不支持的数字格式:" + object.toString());
         }

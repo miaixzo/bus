@@ -25,7 +25,7 @@
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -98,11 +98,11 @@ public class ReflectionBuilder implements Builder<DifferentResult> {
     }
 
     private void appendFields(final Class<?> clazz) {
-        for (final Field field : ClassUtils.getAllFields(clazz)) {
+        for (final Field field : ClassKit.getAllFields(clazz)) {
             if (accept(field)) {
                 try {
-                    differentBuilder.append(field.getName(), ClassUtils.readField(field, left, true),
-                            ClassUtils.readField(field, right, true));
+                    differentBuilder.append(field.getName(), ClassKit.readField(field, left, true),
+                            ClassKit.readField(field, right, true));
                 } catch (final IllegalAccessException ex) {
                     throw new InternalError("Unexpected IllegalAccessException: " + ex.getMessage());
                 }

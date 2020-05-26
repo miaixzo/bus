@@ -26,7 +26,7 @@ package org.aoju.bus.crypto;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.crypto.provider.*;
 
 import java.util.Map;
@@ -81,7 +81,7 @@ public final class Registry {
      */
     public static Provider require(String name) {
         Provider object = ALGORITHM_CACHE.get(name);
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             throw new IllegalArgumentException("none provider be found!, type:" + name);
         }
         return object;

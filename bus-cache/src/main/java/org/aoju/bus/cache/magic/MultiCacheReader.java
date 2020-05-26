@@ -166,7 +166,7 @@ public class MultiCacheReader extends AbstractReader {
                 // 为了兼容@CachedGet注解, 客户端缓存
                 if (needWrite) {
                     // 将方法调用返回的map转换成key_value_map写入Cache
-                    Map<String, Object> keyValueMap = KeyValueUtils.mapToKeyValue(proceedEntryValueMap, missKeys, multiEntry2Key, config.getPrevent());
+                    Map<String, Object> keyValueMap = KeyValue.mapToKeyValue(proceedEntryValueMap, missKeys, multiEntry2Key, config.getPrevent());
                     cacheManager.writeBatch(annoHolder.getCache(), keyValueMap, annoHolder.getExpire());
                 }
                 // 将方法调用返回的map与从Cache中读取的key_value_map合并返回
@@ -177,7 +177,7 @@ public class MultiCacheReader extends AbstractReader {
                 // 为了兼容@CachedGet注解, 客户端缓存
                 if (needWrite) {
                     // 将方法调用返回的collection转换成key_value_map写入Cache
-                    Map<String, Object> keyValueMap = KeyValueUtils.collectionToKeyValue(proceedCollection, annoHolder.getId(), missKeys, multiEntry2Key, config.getPrevent());
+                    Map<String, Object> keyValueMap = KeyValue.collectionToKeyValue(proceedCollection, annoHolder.getId(), missKeys, multiEntry2Key, config.getPrevent());
                     cacheManager.writeBatch(annoHolder.getCache(), keyValueMap, annoHolder.getExpire());
                 }
                 // 将方法调用返回的collection与从Cache中读取的key_value_map合并返回

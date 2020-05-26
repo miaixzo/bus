@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -152,7 +152,7 @@ public class Jpg2Dcm {
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
                     dos.write(buffer, 0, headerLength);
                 }
-                StreamUtils.copy(bis, dos, buffer);
+                StreamKit.copy(bis, dos, buffer);
                 if ((itemLen & 1) != 0)
                     dos.write(0);
                 dos.writeHeader(Tag.SequenceDelimitationItem, null, 0);
@@ -164,7 +164,7 @@ public class Jpg2Dcm {
         int grow = INIT_BUFFER_SIZE;
         while (headerLength == buffer.length && headerLength < MAX_BUFFER_SIZE) {
             buffer = Arrays.copyOf(buffer, grow += headerLength);
-            headerLength += StreamUtils.readAvailable(in, buffer, headerLength, buffer.length - headerLength);
+            headerLength += StreamKit.readAvailable(in, buffer, headerLength, buffer.length - headerLength);
             if (fileType.parseHeader(this)) {
                 supplementMissingValue(metadata, Tag.SOPClassUID, fileType.getSOPClassUID());
                 return true;

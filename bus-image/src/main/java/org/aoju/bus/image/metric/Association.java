@@ -27,7 +27,7 @@ package org.aoju.bus.image.metric;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.Capacity;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -317,7 +317,7 @@ public class Association {
 
     void doCloseSocket() {
         Logger.info("{}: close {}", name, sock);
-        IoUtils.close(sock);
+        IoKit.close(sock);
         enterState(State.Sta1);
     }
 

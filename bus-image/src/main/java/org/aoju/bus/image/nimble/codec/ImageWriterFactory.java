@@ -25,7 +25,7 @@
 package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.aoju.bus.logger.Logger;
@@ -75,7 +75,7 @@ public class ImageWriterFactory implements Serializable {
 
     private static ImageWriterFactory initDefault() {
         ImageWriterFactory factory = new ImageWriterFactory();
-        URL url = FileUtils.getResource("ImageWriterFactory.properties", ImageWriterFactory.class);
+        URL url = FileKit.getResource("ImageWriterFactory.properties", ImageWriterFactory.class);
         try {
             factory.load(url.openStream());
         } catch (Exception e) {

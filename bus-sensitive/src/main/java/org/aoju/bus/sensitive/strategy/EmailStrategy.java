@@ -26,8 +26,8 @@ package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -50,29 +50,29 @@ public class EmailStrategy extends AbstractProvider {
      * @return 结果
      */
     private static String email(final String email, final String shadow) {
-        if (StringUtils.isEmpty(email)) {
+        if (StringKit.isEmpty(email)) {
             return null;
         }
 
         final int prefixLength = 3;
 
         final int atIndex = email.indexOf(Symbol.AT);
-        String middle = StringUtils.fill(4, shadow);
+        String middle = StringKit.fill(4, shadow);
 
         if (atIndex > 0) {
             int middleLength = atIndex - prefixLength;
-            middle = StringUtils.repeat(shadow, middleLength);
+            middle = StringKit.repeat(shadow, middleLength);
         }
-        return StringUtils.buildString(email, middle, prefixLength);
+        return StringKit.buildString(email, middle, prefixLength);
     }
 
     @Override
     public Object build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
-        return this.email(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
+        return this.email(ObjectKit.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.date.format;
 
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 时长格式化器
@@ -111,7 +111,7 @@ public class DatePeriod {
             }
         }
 
-        if (StringUtils.isEmpty(sb)) {
+        if (StringKit.isEmpty(sb)) {
             sb.append(0).append(this.level.name);
         }
 

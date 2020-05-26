@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
-import org.springframework.util.ReflectionUtils;
+import org.aoju.bus.core.toolkit.ReflectKit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -52,8 +52,8 @@ public class PlaceHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object ret = method.invoke(delegate, args);
-        if (!ReflectionUtils.isEqualsMethod(method) && !ReflectionUtils.isHashCodeMethod(method)
-                && !ReflectionUtils.isToStringMethod(method) && isAttributeMethod(method)) {
+        if (!ReflectKit.isEqualsMethod(method) && !ReflectKit.isHashCodeMethod(method)
+                && !ReflectKit.isToStringMethod(method) && isAttributeMethod(method)) {
             return resolvePlaceHolder(ret);
         }
         return ret;

@@ -24,11 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.streams;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Lang;
 
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
@@ -37,19 +37,19 @@ import java.nio.charset.Charset;
  */
 public class StringInputStream extends ByteArrayInputStream {
 
-    public StringInputStream(CharSequence s, Charset charset) {
+    public StringInputStream(CharSequence s, java.nio.charset.Charset charset) {
         super(toBytes(s, charset));
     }
 
     public StringInputStream(CharSequence s) {
-        super(toBytes(s, org.aoju.bus.core.lang.Charset.UTF_8));
+        super(toBytes(s, Charset.UTF_8));
     }
 
-    protected static byte[] toBytes(CharSequence str, Charset charset) {
+    protected static byte[] toBytes(CharSequence str, java.nio.charset.Charset charset) {
         if (str == null)
             return new byte[0];
         if (charset == null)
-            charset = org.aoju.bus.core.lang.Charset.UTF_8;
+            charset = Charset.UTF_8;
         try {
             return str.toString().getBytes(charset.name());
         } catch (UnsupportedEncodingException e) {

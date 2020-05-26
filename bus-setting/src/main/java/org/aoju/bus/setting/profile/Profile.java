@@ -24,13 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.setting.profile;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.setting.Setting;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -63,7 +63,7 @@ public class Profile implements Serializable {
     /**
      * 编码
      */
-    private Charset charset;
+    private java.nio.charset.Charset charset;
     /**
      * 是否使用变量
      */
@@ -86,7 +86,7 @@ public class Profile implements Serializable {
      * @param profile 环境
      */
     public Profile(String profile) {
-        this(profile, org.aoju.bus.core.lang.Charset.UTF_8, false);
+        this(profile, Charset.UTF_8, false);
     }
 
     /**
@@ -96,7 +96,7 @@ public class Profile implements Serializable {
      * @param charset 编码
      * @param useVar  是否使用变量
      */
-    public Profile(String profile, Charset charset, boolean useVar) {
+    public Profile(String profile, java.nio.charset.Charset charset, boolean useVar) {
         super();
         this.profile = profile;
         this.charset = charset;
@@ -136,7 +136,7 @@ public class Profile implements Serializable {
      * @param charset 编码
      * @return 自身
      */
-    public Profile setCharset(Charset charset) {
+    public Profile setCharset(java.nio.charset.Charset charset) {
         this.charset = charset;
         return this;
     }
@@ -170,10 +170,10 @@ public class Profile implements Serializable {
      */
     private String fixNameForProfile(String name) {
         final String actralProfile = null == this.profile ? Normal.EMPTY : this.profile;
-        if (StringUtils.isNotBlank(name) && false == name.contains(Symbol.DOT)) {
-            return StringUtils.format("{}/{}.setting", actralProfile, name);
+        if (StringKit.isNotBlank(name) && false == name.contains(Symbol.DOT)) {
+            return StringKit.format("{}/{}.setting", actralProfile, name);
         }
-        return StringUtils.format("{}/{}", actralProfile);
+        return StringKit.format("{}/{}", actralProfile);
     }
 
 }

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.collection;
 
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -55,7 +55,7 @@ public class CopiedIter<E> implements Iterator<E>, Iterable<E>, Serializable {
      * @param iterator 被复制的Iterator
      */
     public CopiedIter(Iterator<E> iterator) {
-        final List<E> eleList = CollUtils.newArrayList(iterator);
+        final List<E> eleList = CollKit.newArrayList(iterator);
         this.listIterator = eleList.iterator();
     }
 

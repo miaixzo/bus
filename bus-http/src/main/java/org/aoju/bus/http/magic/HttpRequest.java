@@ -27,7 +27,7 @@ package org.aoju.bus.http.magic;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Httpd;
 import org.aoju.bus.http.Request;
@@ -112,10 +112,10 @@ public abstract class HttpRequest {
             public void writeTo(BufferSink sink) throws IOException {
                 Source source = null;
                 try {
-                    source = IoUtils.source(is);
+                    source = IoKit.source(is);
                     sink.writeAll(source);
                 } finally {
-                    IoUtils.close(source);
+                    IoKit.close(source);
                 }
             }
         };

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.NotNull;
 import org.aoju.bus.validate.validators.Matcher;
@@ -40,7 +40,7 @@ public class NotNullStrategy implements Matcher<Object, NotNull> {
 
     @Override
     public boolean on(Object object, NotNull annotation, Context context) {
-        return ObjectUtils.isNotEmpty(object);
+        return ObjectKit.isNotEmpty(object);
     }
 
 }

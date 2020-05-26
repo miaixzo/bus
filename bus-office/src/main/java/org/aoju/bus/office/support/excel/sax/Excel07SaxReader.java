@@ -26,9 +26,9 @@ package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.office.support.excel.ExcelSaxUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
@@ -174,7 +174,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                 this.sheetIndex = rid;
                 // 根据 rId# 或 rSheet# 查找sheet
                 sheetInputStream = xssfReader.getSheet(RID_PREFIX + (rid + 1));
-                ExcelSaxUtils.readFrom(sheetInputStream, this);
+                ExcelSaxKit.readFrom(sheetInputStream, this);
             } else {
                 this.sheetIndex = -1;
                 // 遍历所有sheet
@@ -184,7 +184,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                     curRow = 0;
                     this.sheetIndex++;
                     sheetInputStream = sheetInputStreams.next();
-                    ExcelSaxUtils.readFrom(sheetInputStream, this);
+                    ExcelSaxKit.readFrom(sheetInputStream, this);
                 }
             }
         } catch (InstrumentException e) {
@@ -192,8 +192,8 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
         } catch (Exception e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(sheetInputStream);
-            IoUtils.close(opcPackage);
+            IoKit.close(sheetInputStream);
+            IoKit.close(opcPackage);
         }
         return this;
     }
@@ -208,7 +208,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
             // 获取当前列坐标
             String tempCurCoordinate = attributes.getValue(R_ATTR);
             if (preCoordinate == null) {
-                preCoordinate = String.valueOf(ExcelSaxUtils.CELL_FILL_CHAR);
+                preCoordinate = String.valueOf(ExcelSaxKit.CELL_FILL_CHAR);
             } else {
                 // 存在,则前一列要设置为上一列的坐标
                 preCoordinate = curCoordinate;
@@ -255,11 +255,11 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      */
     @Override
     public void endElement(String uri, String localName, String qName) {
-        final String contentStr = StringUtils.trim(lastContent);
+        final String contentStr = StringKit.trim(lastContent);
 
         if (C_ELEMENT.equals(localName)) {
             // cell标签
-            Object value = ExcelSaxUtils.getDataValue(this.cellDataType, contentStr, this.sharedStringsTable, this.numFmtString);
+            Object value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStringsTable, this.numFmtString);
             // 补全单元格之间的空格
             fillBlankCell(preCoordinate, curCoordinate, false);
             rowCellList.add(curCell++, value);
@@ -362,7 +362,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      */
     private void fillBlankCell(String preCoordinate, String curCoordinate, boolean isEnd) {
         if (false == curCoordinate.equals(preCoordinate)) {
-            int len = ExcelSaxUtils.countNullCell(preCoordinate, curCoordinate);
+            int len = ExcelSaxKit.countNullCell(preCoordinate, curCoordinate);
             if (isEnd) {
                 len++;
             }

@@ -25,7 +25,7 @@
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.logger.Logger;
 
 /**
@@ -91,7 +91,7 @@ public class CronTimer extends Thread {
             nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
             sleep = nextTime - System.currentTimeMillis();
             if (isValidSleepMillis(sleep, timerUnit)) {
-                if (false == ThreadUtils.safeSleep(sleep)) {
+                if (false == ThreadKit.safeSleep(sleep)) {
                     //等待直到下一个时间点，如果被中断直接退出Timer
                     break;
                 }
@@ -108,7 +108,7 @@ public class CronTimer extends Thread {
      */
     synchronized public void stopTimer() {
         this.isStop = true;
-        ThreadUtils.interrupt(this, true);
+        ThreadKit.interrupt(this, true);
     }
 
     /**

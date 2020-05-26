@@ -25,7 +25,7 @@
 package org.aoju.bus.starter.mapper;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -57,7 +57,7 @@ public class MybatisConfiguration {
         try {
             SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
             bean.setDataSource(dataSource);
-            if (StringUtils.isNotBlank(this.properties.getTypeAliasesPackage())) {
+            if (StringKit.isNotBlank(this.properties.getTypeAliasesPackage())) {
                 bean.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
             }
 

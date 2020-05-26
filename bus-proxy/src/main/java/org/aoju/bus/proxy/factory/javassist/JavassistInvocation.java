@@ -72,17 +72,17 @@ public abstract class JavassistInvocation implements Invocation {
     private static Class createInvocationClass(ClassLoader classLoader, Method interfaceMethod)
             throws CannotCompileException {
         Class invocationClass;
-        final CtClass ctClass = JavassistUtils.createClass(
+        final CtClass ctClass = JavassistKit.createClass(
                 getSimpleName(interfaceMethod.getDeclaringClass()) + Symbol.UNDERLINE + interfaceMethod.getName() +
                         "_invocation",
                 JavassistInvocation.class);
         final CtConstructor constructor = new CtConstructor(
-                JavassistUtils.resolve(new Class[]{Method.class, Object.class, Object[].class}),
+                JavassistKit.resolve(new Class[]{Method.class, Object.class, Object[].class}),
                 ctClass);
         constructor.setBody("{\n\tsuper($$);\n}");
         ctClass.addConstructor(constructor);
-        final CtMethod proceedMethod = new CtMethod(JavassistUtils.resolve(Object.class), "proceed",
-                JavassistUtils.resolve(Normal.EMPTY_CLASS_ARRAY), ctClass);
+        final CtMethod proceedMethod = new CtMethod(JavassistKit.resolve(Object.class), "proceed",
+                JavassistKit.resolve(Normal.EMPTY_CLASS_ARRAY), ctClass);
         final Class[] argumentTypes = interfaceMethod.getParameterTypes();
         final StringBuffer proceedBody = new StringBuffer("{\n");
         if (!Void.TYPE.equals(interfaceMethod.getReturnType())) {

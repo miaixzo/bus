@@ -29,8 +29,8 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.core.utils.PinyinUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.PinyinKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
@@ -663,7 +663,7 @@ public final class Builder {
         Properties p = new Properties();
         try {
             String path = Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName;
-            InputStream is = PinyinUtils.class.getResourceAsStream(path);
+            InputStream is = PinyinKit.class.getResourceAsStream(path);
             Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
             String line;
@@ -1775,25 +1775,7 @@ public final class Builder {
      * @param value   值
      */
     public static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringUtils.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
-    }
-
-    /**
-     * 获取传感器相关信息，例如CPU温度、风扇转速等，传感器可能有多个
-     *
-     * @return 传感器相关信息
-     */
-    public Sensors getSensors() {
-        return hardware.getSensors();
-    }
-
-    /**
-     * 获取磁盘相关信息，可能有多个磁盘(包括可移动磁盘等)
-     *
-     * @return 磁盘相关信息
-     */
-    public List<HWDiskStore> getDiskStores() {
-        return hardware.getDiskStores();
+        builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
     }
 
     /**
@@ -1858,6 +1840,24 @@ public final class Builder {
         cpuInfo.setFree(Double.parseDouble(format.format(idle <= 0 ? 0 : (100d * idle / totalCpu))));
         cpuInfo.setCpuModel(processor.toString());
         return cpuInfo;
+    }
+
+    /**
+     * 获取传感器相关信息，例如CPU温度、风扇转速等，传感器可能有多个
+     *
+     * @return 传感器相关信息
+     */
+    public Sensors getSensors() {
+        return hardware.getSensors();
+    }
+
+    /**
+     * 获取磁盘相关信息，可能有多个磁盘(包括可移动磁盘等)
+     *
+     * @return 磁盘相关信息
+     */
+    public List<HWDiskStore> getDiskStores() {
+        return hardware.getDiskStores();
     }
 
     static class CpuInfo {

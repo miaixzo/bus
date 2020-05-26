@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -301,7 +301,7 @@ public final class RealSink implements BufferSink {
         }
         closed = true;
 
-        if (thrown != null) IoUtils.sneakyRethrow(thrown);
+        if (thrown != null) IoKit.sneakyRethrow(thrown);
     }
 
     @Override

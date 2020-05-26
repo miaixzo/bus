@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.BooleanUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.BooleanKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 字符转换器
@@ -39,10 +39,10 @@ public class CharacterConverter extends AbstractConverter<Character> {
     @Override
     protected Character convertInternal(Object value) {
         if (value instanceof Boolean) {
-            return BooleanUtils.toCharacter((Boolean) value);
+            return BooleanKit.toCharacter((Boolean) value);
         } else {
             final String valueStr = convertToStr(value);
-            if (StringUtils.isNotBlank(valueStr)) {
+            if (StringKit.isNotBlank(valueStr)) {
                 return valueStr.charAt(0);
             }
         }

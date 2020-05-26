@@ -28,7 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 import org.aoju.bus.health.windows.WmiQuery;
 import org.aoju.bus.health.windows.drivers.Win32Bios;
@@ -65,11 +65,11 @@ final class WindowsFirmware extends AbstractFirmware {
             version = WmiQuery.getString(win32BIOS, BiosProperty.VERSION, 0);
             releaseDate = WmiQuery.getDateString(win32BIOS, BiosProperty.RELEASEDATE, 0);
         }
-        return new Quintet<>(StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringUtils.isBlank(name) ? Normal.UNKNOWN : name,
-                StringUtils.isBlank(description) ? Normal.UNKNOWN : description,
-                StringUtils.isBlank(version) ? Normal.UNKNOWN : version,
-                StringUtils.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
+        return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(name) ? Normal.UNKNOWN : name,
+                StringKit.isBlank(description) ? Normal.UNKNOWN : description,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
     @Override

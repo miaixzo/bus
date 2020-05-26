@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.process;
 
-import org.aoju.bus.core.utils.ArrayUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
 
 import java.io.IOException;
 import java.util.List;
@@ -93,7 +93,7 @@ public class UnixProcessManager extends AbstractProcessManager {
      * @param runAsArgs sudo命令参数
      */
     public void setRunAsArgs(final String[] runAsArgs) {
-        this.runAsArgs = ArrayUtils.clone(runAsArgs);
+        this.runAsArgs = ArrayKit.clone(runAsArgs);
     }
 
     private static class DefaultHolder {

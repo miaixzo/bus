@@ -25,7 +25,7 @@
 package org.aoju.bus.logger.dialect.jboss;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
 import org.aoju.bus.logger.level.Level;
 import org.jboss.logging.Logger;
@@ -81,7 +81,7 @@ public class JbossLog extends AbstractAware {
     @Override
     public void trace(String fqcn, Throwable t, String format, Object... arguments) {
         if (isTrace()) {
-            logger.trace(fqcn, StringUtils.format(format, arguments), t);
+            logger.trace(fqcn, StringKit.format(format, arguments), t);
         }
     }
 
@@ -93,7 +93,7 @@ public class JbossLog extends AbstractAware {
     @Override
     public void debug(String fqcn, Throwable t, String format, Object... arguments) {
         if (isDebug()) {
-            logger.debug(fqcn, StringUtils.format(format, arguments), t);
+            logger.debug(fqcn, StringKit.format(format, arguments), t);
         }
     }
 
@@ -105,7 +105,7 @@ public class JbossLog extends AbstractAware {
     @Override
     public void info(String fqcn, Throwable t, String format, Object... arguments) {
         if (isInfo()) {
-            logger.info(fqcn, StringUtils.format(format, arguments), t);
+            logger.info(fqcn, StringKit.format(format, arguments), t);
         }
     }
 
@@ -117,7 +117,7 @@ public class JbossLog extends AbstractAware {
     @Override
     public void warn(String fqcn, Throwable t, String format, Object... arguments) {
         if (isWarn()) {
-            logger.warn(fqcn, StringUtils.format(format, arguments), t);
+            logger.warn(fqcn, StringKit.format(format, arguments), t);
         }
     }
 
@@ -129,7 +129,7 @@ public class JbossLog extends AbstractAware {
     @Override
     public void error(String fqcn, Throwable t, String format, Object... arguments) {
         if (isError()) {
-            logger.error(fqcn, StringUtils.format(format, arguments), t);
+            logger.error(fqcn, StringKit.format(format, arguments), t);
         }
     }
 
@@ -152,7 +152,7 @@ public class JbossLog extends AbstractAware {
                 error(fqcn, t, format, arguments);
                 break;
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 

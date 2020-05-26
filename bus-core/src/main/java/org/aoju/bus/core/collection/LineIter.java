@@ -26,7 +26,7 @@ package org.aoju.bus.core.collection;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -66,7 +66,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
      * @throws IllegalArgumentException reader为null抛出此异常
      */
     public LineIter(InputStream in, Charset charset) throws IllegalArgumentException {
-        this(IoUtils.getReader(in, charset));
+        this(IoKit.getReader(in, charset));
     }
 
     /**
@@ -77,7 +77,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
      */
     public LineIter(Reader reader) throws IllegalArgumentException {
         Assert.notNull(reader, "Reader must not be null");
-        this.bufferedReader = IoUtils.getReader(reader);
+        this.bufferedReader = IoKit.getReader(reader);
     }
 
 
@@ -144,7 +144,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
     @Override
     public void close() {
         finished = true;
-        IoUtils.close(bufferedReader);
+        IoKit.close(bufferedReader);
         cachedLine = null;
     }
 

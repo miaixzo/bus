@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -101,7 +101,7 @@ public final class HashSink extends DelegateSink {
 
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
-        IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
+        IoKit.checkOffsetAndCount(source.size, 0, byteCount);
 
         long hashedCount = 0;
         for (Segment s = source.head; hashedCount < byteCount; s = s.next) {

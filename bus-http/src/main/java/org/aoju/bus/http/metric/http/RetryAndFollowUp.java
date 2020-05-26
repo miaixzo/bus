@@ -26,7 +26,7 @@ package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.exception.RelevantException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.RouteException;
 import org.aoju.bus.http.accord.StreamAllocation;
@@ -167,7 +167,7 @@ public final class RetryAndFollowUp implements Interceptor {
                 return response;
             }
 
-            IoUtils.close(response.body());
+            IoKit.close(response.body());
 
             if (++followUpCount > MAX_FOLLOW_UPS) {
                 streamAllocation.release();

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.math;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
 import java.io.Serializable;
@@ -764,7 +764,7 @@ public class Money implements Serializable, Comparable<Money> {
      * @return 本对象内部变量的字符串表示
      */
     public String dump() {
-        return StringUtils.builder()
+        return StringKit.builder()
                 .append("cent = ")
                 .append(this.cent)
                 .append(File.separatorChar)

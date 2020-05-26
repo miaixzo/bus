@@ -25,7 +25,7 @@
 package org.aoju.bus.core.map.multi;
 
 import org.aoju.bus.core.map.MapWrapper;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -118,7 +118,7 @@ public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<
      */
     public V get(K key, int index) {
         final Collection<V> collection = get(key);
-        return CollUtils.get(collection, index);
+        return CollKit.get(collection, index);
     }
 
     /**

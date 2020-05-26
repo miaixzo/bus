@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.io;
 
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -133,20 +133,20 @@ public class ImageOutputStream extends FilterOutputStream {
 
     public void writeHeader(int tag, VR vr, int len) throws IOException {
         byte[] b = buf;
-        ByteUtils.tagToBytes(tag, b, 0, bigEndian);
+        ByteKit.tagToBytes(tag, b, 0, bigEndian);
         int headerLen;
         if (!Tag.isItem(tag) && explicitVR) {
             if ((len & 0xffff0000) != 0 && vr.headerLength() == 8)
                 vr = VR.UN;
-            ByteUtils.shortToBytesBE(vr.code(), b, 4);
+            ByteKit.shortToBytesBE(vr.code(), b, 4);
             if ((headerLen = vr.headerLength()) == 8) {
-                ByteUtils.shortToBytes(len, b, 6, bigEndian);
+                ByteKit.shortToBytes(len, b, 6, bigEndian);
             } else {
                 b[6] = b[7] = 0;
-                ByteUtils.intToBytes(len, b, 8, bigEndian);
+                ByteKit.intToBytes(len, b, 8, bigEndian);
             }
         } else {
-            ByteUtils.intToBytes(len, b, 4, bigEndian);
+            ByteKit.intToBytes(len, b, 4, bigEndian);
             headerLen = 8;
         }
         out.write(b, 0, headerLen);
@@ -188,14 +188,14 @@ public class ImageOutputStream extends FilterOutputStream {
 
     public void writeGroupLength(int tag, int len) throws IOException {
         byte[] b = buf;
-        ByteUtils.tagToBytes(tag, b, 0, bigEndian);
+        ByteKit.tagToBytes(tag, b, 0, bigEndian);
         if (explicitVR) {
-            ByteUtils.shortToBytesBE(VR.UL.code(), b, 4);
-            ByteUtils.shortToBytes(4, b, 6, bigEndian);
+            ByteKit.shortToBytesBE(VR.UL.code(), b, 4);
+            ByteKit.shortToBytes(4, b, 6, bigEndian);
         } else {
-            ByteUtils.intToBytes(4, b, 4, bigEndian);
+            ByteKit.intToBytes(4, b, 4, bigEndian);
         }
-        ByteUtils.intToBytes(len, b, 8, bigEndian);
+        ByteKit.intToBytes(len, b, 8, bigEndian);
         out.write(b, 0, 12);
     }
 

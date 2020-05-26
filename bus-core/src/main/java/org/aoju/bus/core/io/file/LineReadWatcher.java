@@ -27,7 +27,7 @@ package org.aoju.bus.core.io.file;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.watchers.SimpleWatcher;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -85,7 +85,7 @@ public class LineReadWatcher extends SimpleWatcher implements Runnable {
             }
 
             // 读取行
-            FileUtils.readLines(randomAccessFile, charset, lineHandler);
+            FileKit.readLines(randomAccessFile, charset, lineHandler);
 
             // 记录当前读到的位置
             randomAccessFile.seek(currentLength);

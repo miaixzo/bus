@@ -29,7 +29,7 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -77,7 +77,7 @@ public class QqProvider extends DefaultProvider {
             throw new AuthorizedException(object.getString("msg"));
         }
         String avatar = object.getString("figureurl_qq_2");
-        if (StringUtils.isEmpty(avatar)) {
+        if (StringKit.isEmpty(avatar)) {
             avatar = object.getString("figureurl_qq_1");
         }
 
@@ -107,9 +107,9 @@ public class QqProvider extends DefaultProvider {
                 .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());
 
-        String removePrefix = StringUtils.replace(response, "callback(", Normal.EMPTY);
-        String removeSuffix = StringUtils.replace(removePrefix, ");", Normal.EMPTY);
-        String openId = StringUtils.trim(removeSuffix);
+        String removePrefix = StringKit.replace(response, "callback(", Normal.EMPTY);
+        String removeSuffix = StringKit.replace(removePrefix, ");", Normal.EMPTY);
+        String openId = StringKit.trim(removeSuffix);
         JSONObject object = JSONObject.parseObject(openId);
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.get("error") + Symbol.COLON + object.get("error_description"));
@@ -118,7 +118,7 @@ public class QqProvider extends DefaultProvider {
         if (object.containsKey("unionid")) {
             token.setUnionId(object.getString("unionid"));
         }
-        return StringUtils.isEmpty(token.getUnionId()) ? token.getOpenId() : token.getUnionId();
+        return StringKit.isEmpty(token.getUnionId()) ? token.getOpenId() : token.getUnionId();
     }
 
     /**

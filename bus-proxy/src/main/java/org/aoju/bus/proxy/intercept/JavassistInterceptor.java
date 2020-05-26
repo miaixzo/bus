@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.proxy.intercept;
 
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.proxy.aspects.Aspectj;
 
 import java.io.Serializable;
@@ -70,10 +70,10 @@ public class JavassistInterceptor implements InvocationHandler, Serializable {
 
         // 开始前回调
         if (aspectj.before(target, method, args)) {
-            ReflectUtils.setAccessible(method);
+            ReflectKit.setAccessible(method);
 
             try {
-                result = method.invoke(ClassUtils.isStatic(method) ? null : target, args);
+                result = method.invoke(ClassKit.isStatic(method) ? null : target, args);
             } catch (InvocationTargetException e) {
                 // 异常回调(只捕获业务代码导致的异常,而非反射导致的异常)
                 if (aspectj.afterException(target, method, args, e.getTargetException())) {

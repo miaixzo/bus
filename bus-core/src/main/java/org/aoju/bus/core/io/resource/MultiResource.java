@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -55,7 +55,7 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
      * @param resources 资源数组
      */
     public MultiResource(Resource... resources) {
-        this(CollUtils.newArrayList(resources));
+        this(CollKit.newArrayList(resources));
     }
 
     /**
@@ -67,7 +67,7 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
         if (resources instanceof List) {
             this.resources = (List<Resource>) resources;
         } else {
-            this.resources = CollUtils.newArrayList(resources);
+            this.resources = CollKit.newArrayList(resources);
         }
     }
 

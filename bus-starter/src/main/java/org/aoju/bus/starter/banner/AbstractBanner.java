@@ -26,7 +26,7 @@ package org.aoju.bus.starter.banner;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.InputStream;
 
@@ -60,7 +60,7 @@ public abstract class AbstractBanner {
         try {
             if (resourceLocation != null) {
                 inputStream = resourceClass.getResourceAsStream(resourceLocation);
-                bannerText = IoUtils.toString(inputStream, Charset.DEFAULT_UTF_8);
+                bannerText = IoKit.toString(inputStream, Charset.DEFAULT_UTF_8);
             }
         } catch (Exception e) {
 
@@ -68,7 +68,7 @@ public abstract class AbstractBanner {
             banner = generateBanner(bannerText);
 
             if (inputStream != null) {
-                IoUtils.close(inputStream);
+                IoKit.close(inputStream);
             }
         }
     }

@@ -25,7 +25,7 @@
 package org.aoju.bus.http.cache;
 
 import org.aoju.bus.core.io.Sink;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
 
@@ -78,7 +78,7 @@ public final class CacheAdapter implements InternalCache {
             @Override
             public Sink body() throws IOException {
                 OutputStream body = request.getBody();
-                return body != null ? IoUtils.sink(body) : null;
+                return body != null ? IoKit.sink(body) : null;
             }
 
             @Override

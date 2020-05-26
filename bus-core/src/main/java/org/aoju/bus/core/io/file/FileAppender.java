@@ -24,10 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.lang.Charset;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class FileAppender implements Serializable {
      * @param isNewLineMode 追加内容是否为新行
      */
     public FileAppender(File destFile, int capacity, boolean isNewLineMode) {
-        this(destFile, org.aoju.bus.core.lang.Charset.UTF_8, capacity, isNewLineMode);
+        this(destFile, Charset.UTF_8, capacity, isNewLineMode);
     }
 
     /**
@@ -73,7 +74,7 @@ public class FileAppender implements Serializable {
      * @param capacity      当行数积累多少条时刷入到文件
      * @param isNewLineMode 追加内容是否为新行
      */
-    public FileAppender(File destFile, Charset charset, int capacity, boolean isNewLineMode) {
+    public FileAppender(File destFile, java.nio.charset.Charset charset, int capacity, boolean isNewLineMode) {
         this.capacity = capacity;
         this.isNewLineMode = isNewLineMode;
         this.writer = FileWriter.create(destFile, charset);

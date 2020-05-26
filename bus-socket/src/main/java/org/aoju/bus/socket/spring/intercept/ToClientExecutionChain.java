@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.socket.spring.intercept;
 
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.StompSubProtocolHandler;
 
@@ -49,7 +49,7 @@ public class ToClientExecutionChain {
     }
 
     public boolean applyPreHandle(WebSocketSession session, StompHeaderAccessor accessor, Object payload, StompSubProtocolHandler handler) {
-        if (!ObjectUtils.isEmpty(interceptors)) {
+        if (!ObjectKit.isEmpty(interceptors)) {
             for (int i = 0; i < interceptors.size(); i++) {
                 ToClientInterceptor interceptor = interceptors.get(i);
                 if (!interceptor.preHandle(session, accessor, payload, handler)) {
@@ -63,7 +63,7 @@ public class ToClientExecutionChain {
     }
 
     public void applyPostHandle(WebSocketSession session, StompHeaderAccessor accessor, Object payload, StompSubProtocolHandler handler) {
-        if (!ObjectUtils.isEmpty(interceptors)) {
+        if (!ObjectKit.isEmpty(interceptors)) {
             for (int i = this.interceptorIndex; i >= 0; i--) {
                 ToClientInterceptor interceptor = interceptors.get(i);
                 interceptor.postHandle(session, accessor, payload, handler);

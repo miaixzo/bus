@@ -30,8 +30,8 @@ import com.sun.star.lang.XServiceInfo;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Platform;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.UnoUrl;
@@ -153,7 +153,7 @@ public final class Builder {
     private static final File INSTANCE;
 
     static {
-        if (StringUtils.isNotBlank(System.getProperty("office.home"))) {
+        if (StringKit.isNotBlank(System.getProperty("office.home"))) {
             INSTANCE = new File(System.getProperty("office.home"));
         } else if (Platform.isWindows()) {
             final String programFiles64 = System.getenv("ProgramFiles");
@@ -238,7 +238,7 @@ public final class Builder {
         }
 
         final List<UnoUrl> unoUrls =
-                new ArrayList<>(ArrayUtils.getLength(portNumbers) + ArrayUtils.getLength(pipeNames));
+                new ArrayList<>(ArrayKit.getLength(portNumbers) + ArrayKit.getLength(pipeNames));
         Optional.ofNullable(pipeNames)
                 .map(Stream::of)
                 .ifPresent(stream -> stream.map(UnoUrl::new).forEach(unoUrls::add));

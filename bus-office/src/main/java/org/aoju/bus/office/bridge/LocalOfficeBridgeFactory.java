@@ -39,7 +39,7 @@ import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.XComponentContext;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.UnoUrl;
@@ -127,7 +127,7 @@ public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEvent
                 final String rootOid = unoUrl.getRootOid();
                 final Object bridgeInstance = bridge.getInstance(rootOid);
 
-                if (ObjectUtils.isEmpty(bridgeInstance)) {
+                if (ObjectKit.isEmpty(bridgeInstance)) {
                     throw new InstrumentException(
                             "Server didn't provide an instance for '" + rootOid + Symbol.SINGLE_QUOTE, connectPart);
                 }
@@ -147,7 +147,7 @@ public class LocalOfficeBridgeFactory implements LocalOfficeContextAware, XEvent
                         "com.sun.star.frame.Desktop", componentContext);
                 componentLoader = Lo.qi(XComponentLoader.class, desktopService);
 
-                if (ObjectUtils.isEmpty(componentLoader)) {
+                if (ObjectKit.isEmpty(componentLoader)) {
                     throw new InstrumentException("Could not create a desktop service", connectPart);
                 }
 

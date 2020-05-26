@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.GzipSource;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.bodys.RealResponseBody;
 import org.aoju.bus.http.bodys.RequestBody;
@@ -119,7 +119,7 @@ public final class BridgeInterceptor implements Interceptor {
                     .build();
             responseBuilder.headers(strippedHeaders);
             String contentType = networkResponse.header(Header.CONTENT_TYPE);
-            responseBuilder.body(new RealResponseBody(contentType, -1L, IoUtils.buffer(responseBody)));
+            responseBuilder.body(new RealResponseBody(contentType, -1L, IoKit.buffer(responseBody)));
         }
 
         return responseBuilder.build();

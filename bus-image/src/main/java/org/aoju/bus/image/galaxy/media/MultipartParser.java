@@ -26,7 +26,7 @@ package org.aoju.bus.image.galaxy.media;
 
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -146,7 +146,7 @@ public class MultipartParser {
     }
 
     protected static byte[] getBoundary(String respContentType, String ckeckMultipartType) {
-        if (!StringUtils.hasText(respContentType)) {
+        if (!StringKit.hasText(respContentType)) {
             return null;
         }
         HeaderFieldValues parser = new HeaderFieldValues(respContentType);

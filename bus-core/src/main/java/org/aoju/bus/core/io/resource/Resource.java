@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -101,7 +101,7 @@ public interface Resource {
      */
     default void writeTo(OutputStream out) throws InstrumentException {
         try (InputStream in = getStream()) {
-            IoUtils.copy(in, out);
+            IoKit.copy(in, out);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }

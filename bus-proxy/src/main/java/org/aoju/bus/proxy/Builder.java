@@ -26,7 +26,7 @@ package org.aoju.bus.proxy;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.AbstractFactory;
 import org.aoju.bus.proxy.invoker.NullInvoker;
@@ -156,7 +156,7 @@ public class Builder {
      * @return 代理类
      */
     public static <T> T newProxyInstance(InvocationHandler invocationHandler, Class<?>... interfaces) {
-        return newProxyInstance(ClassUtils.getClassLoader(), invocationHandler, interfaces);
+        return newProxyInstance(ClassKit.getClassLoader(), invocationHandler, interfaces);
     }
 
 }

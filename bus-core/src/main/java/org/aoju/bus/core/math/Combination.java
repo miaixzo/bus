@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.math;
 
-import org.aoju.bus.core.utils.MathUtils;
+import org.aoju.bus.core.toolkit.MathKit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,9 +64,9 @@ public class Combination {
             return 1;
         }
         if (n == m) {
-            return MathUtils.factorial(n) / MathUtils.factorial(m);
+            return MathKit.factorial(n) / MathKit.factorial(m);
         }
-        return (n > m) ? MathUtils.factorial(n, n - m) / MathUtils.factorial(m) : 0;
+        return (n > m) ? MathKit.factorial(n, n - m) / MathKit.factorial(m) : 0;
     }
 
     /**

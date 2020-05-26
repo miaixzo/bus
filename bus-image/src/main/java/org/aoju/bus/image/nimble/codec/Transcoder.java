@@ -25,9 +25,9 @@
 package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ByteUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Property;
@@ -133,7 +133,7 @@ public class Transcoder implements Closeable {
             } else {
                 int length = dis.length();
                 dos.writeHeader(Tag.Item, null, length);
-                StreamUtils.copy(dis, dos, length, buffer());
+                StreamKit.copy(dis, dos, length, buffer());
             }
         }
 
@@ -341,7 +341,7 @@ public class Transcoder implements Closeable {
         if (verifier != null)
             verifier.dispose();
         if (closeInputStream)
-            IoUtils.close(dis);
+            IoKit.close(dis);
         if (deleteBulkDataFiles)
             for (File tmpFile : dis.getBulkDataFiles())
                 tmpFile.delete();
@@ -409,9 +409,9 @@ public class Transcoder implements Closeable {
             dos.writeHeader(Tag.SequenceDelimitationItem, null, 0);
         } else {
             if (dis.bigEndian() == dos.isBigEndian())
-                StreamUtils.copy(dis, dos, length, buffer());
+                StreamKit.copy(dis, dos, length, buffer());
             else
-                StreamUtils.copy(dis, dos, length, dis.vr().numEndianBytes(), buffer());
+                StreamKit.copy(dis, dos, length, dis.vr().numEndianBytes(), buffer());
         }
     }
 
@@ -603,7 +603,7 @@ public class Transcoder implements Closeable {
             dis.readFully(b);
         }
         if (dis.bigEndian() && dis.vr() == VR.OW)
-            ByteUtils.swapShorts(bb);
+            ByteKit.swapShorts(bb);
     }
 
     private void readFully(short[] s) throws IOException {

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -214,7 +214,7 @@ public class AsyncTimeout extends Timeout {
         return new Sink() {
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
-                IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
+                IoKit.checkOffsetAndCount(source.size, 0, byteCount);
                 while (byteCount > 0L) {
                     // 计算要写入的字节数。这个循环保证我们在一个段边界上分割
                     long toWrite = 0L;
@@ -372,7 +372,7 @@ public class AsyncTimeout extends Timeout {
 
     private static final class Watchdog extends Thread {
         Watchdog() {
-            super("IoUtils.Watchdog");
+            super("IoKit.Watchdog");
             setDaemon(true);
         }
 

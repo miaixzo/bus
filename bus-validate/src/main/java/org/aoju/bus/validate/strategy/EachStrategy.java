@@ -25,7 +25,7 @@
 package org.aoju.bus.validate.strategy;
 
 import org.aoju.bus.core.lang.exception.NoSuchException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.Provider;
 import org.aoju.bus.validate.Registry;
@@ -48,7 +48,7 @@ public class EachStrategy implements Matcher<Object, Each> {
 
     @Override
     public boolean on(Object object, Each annotation, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
         List<Matcher> list = new ArrayList<>();

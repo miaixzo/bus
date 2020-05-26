@@ -26,9 +26,9 @@ package org.aoju.bus.limiter.execute;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.limiter.Injector;
 import org.aoju.bus.limiter.expression.LimiterOperationExpressionEvaluator;
 import org.aoju.bus.limiter.metadata.LimitedResourceMetadata;
@@ -115,7 +115,7 @@ public class LimiterExecutionContext {
         if (!method.isVarArgs()) {
             return args;
         } else {
-            Object[] varArgs = ObjectUtils.toObjectArray(args[args.length - 1]);
+            Object[] varArgs = ObjectKit.toObjectArray(args[args.length - 1]);
             Object[] combinedArgs = new Object[args.length - 1 + varArgs.length];
             System.arraycopy(args, 0, combinedArgs, 0, args.length - 1);
             System.arraycopy(varArgs, 0, combinedArgs, args.length - 1, varArgs.length);
@@ -124,7 +124,7 @@ public class LimiterExecutionContext {
     }
 
     private Object generateKey() {
-        if (StringUtils.hasText(this.metadata.getLimitedResource().getKey())) {
+        if (StringKit.hasText(this.metadata.getLimitedResource().getKey())) {
             EvaluationContext evaluationContext = evaluator.createEvaluationContext(this.metadata.getLimiter(), this.metadata.getTargetMethod(), this.args,
                     this.target, this.metadata.getTargetClass(), this.metadata.getTargetMethod(), injectArgs, beanFactory);
             Object evalKey = evaluator.key(this.metadata.getLimitedResource().getKey(), new AnnotatedElementKey(this.metadata.getTargetMethod(), this.metadata.getTargetClass()), evaluationContext);
@@ -138,7 +138,7 @@ public class LimiterExecutionContext {
 
     private Map<String, Object> generateInjectArgs() {
 
-        if (CollUtils.isEmpty(this.metadata.getArgumentInjectors())) {
+        if (CollKit.isEmpty(this.metadata.getArgumentInjectors())) {
             return emptyMap;
         }
         Map<String, Object> retVal = new HashMap<>();

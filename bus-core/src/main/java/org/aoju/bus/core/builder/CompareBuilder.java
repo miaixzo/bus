@@ -25,7 +25,7 @@
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ArrayUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -207,7 +207,7 @@ public class CompareBuilder implements Builder<Integer> {
         AccessibleObject.setAccessible(fields, true);
         for (int i = 0; i < fields.length && builder.comparison == 0; i++) {
             final Field f = fields[i];
-            if (!ArrayUtils.contains(excludeFields, f.getName())
+            if (!ArrayKit.contains(excludeFields, f.getName())
                     && !f.getName().contains(Symbol.DOLLAR)
                     && (useTransients || !Modifier.isTransient(f.getModifiers()))
                     && !Modifier.isStatic(f.getModifiers())) {

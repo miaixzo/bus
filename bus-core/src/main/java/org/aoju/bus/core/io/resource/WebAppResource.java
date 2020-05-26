@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 
@@ -43,7 +43,7 @@ public class WebAppResource extends FileResource {
      * @param path 相对于Web root的路径
      */
     public WebAppResource(String path) {
-        super(new File(FileUtils.getWebRoot(), path));
+        super(new File(FileKit.getWebRoot(), path));
     }
 
 }

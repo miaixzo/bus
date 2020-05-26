@@ -29,8 +29,8 @@ import com.google.common.collect.Maps;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +91,7 @@ public class DruidConfiguration {
         Map defaultConfig = beanToMap(this.druidProperties);
         DataSource defaultDatasource = bind(defaultConfig);
         sourceMap.put("dataSource", defaultDatasource);
-        if (ObjectUtils.isNotEmpty(druidProperties.getMulti())) {
+        if (ObjectKit.isNotEmpty(druidProperties.getMulti())) {
             Logger.info("Enabled Multiple DataSource");
             List<DruidProperties> list = this.druidProperties.getMulti();
             for (int i = 0; i < list.size(); i++) {
@@ -127,8 +127,8 @@ public class DruidConfiguration {
      * @return 数据库连接
      */
     private DataSource bind(Map<String, Object> map) {
-        String type = StringUtils.toString(map.get("type"));
-        if (StringUtils.isEmpty(type)) {
+        String type = StringKit.toString(map.get("type"));
+        if (StringKit.isEmpty(type)) {
             throw new InstrumentException("The database type is empty");
         }
         try {
@@ -150,7 +150,7 @@ public class DruidConfiguration {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
                 Object value = beanMap.get(key);
-                if (StringUtils.isNotEmpty(this.druidProperties.getPrivateKey())) {
+                if (StringKit.isNotEmpty(this.druidProperties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");
                     if ("url".equals(key)) {
                         value = Builder.decrypt(Algorithm.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
@@ -163,7 +163,7 @@ public class DruidConfiguration {
                         beanMap.put("password", value);
                     }
                 }
-                map.put(StringUtils.toString(key), value);
+                map.put(StringKit.toString(key), value);
             }
         }
         return map;

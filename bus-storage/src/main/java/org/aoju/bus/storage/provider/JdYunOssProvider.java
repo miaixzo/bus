@@ -37,7 +37,7 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.google.common.collect.Maps;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
@@ -123,7 +123,7 @@ public class JdYunOssProvider extends AbstractProvider {
                     Attachs storageItem = new Attachs();
                     storageItem.setName(item.getKey());
                     storageItem.setOwner(item.getOwner().getDisplayName());
-                    storageItem.setSize(StringUtils.toString(item.getSize()));
+                    storageItem.setSize(StringKit.toString(item.getSize()));
                     Map<String, Object> extend = Maps.newHashMap();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());

@@ -26,7 +26,7 @@ package org.aoju.bus.core.text;
 
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Arrays;
 
@@ -195,7 +195,7 @@ public abstract class StrMatcher {
      * @return 给定字符的新匹配器
      */
     public static StrMatcher charSetMatcher(final String chars) {
-        if (StringUtils.isEmpty(chars)) {
+        if (StringKit.isEmpty(chars)) {
             return NONE_MATCHER;
         }
         if (chars.length() == 1) {
@@ -211,7 +211,7 @@ public abstract class StrMatcher {
      * @return 给定字符串返回一个新的匹配器
      */
     public static StrMatcher stringMatcher(final String str) {
-        if (StringUtils.isEmpty(str)) {
+        if (StringKit.isEmpty(str)) {
             return NONE_MATCHER;
         }
         return new StringMatcher(str);

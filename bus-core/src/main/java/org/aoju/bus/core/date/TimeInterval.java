@@ -25,7 +25,7 @@
 package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 
 /**
  * 计时器
@@ -53,7 +53,7 @@ public class TimeInterval {
      * @return 开始计时并返回当前时间
      */
     public long start() {
-        time = DateUtils.timestamp(isNano);
+        time = DateKit.timestamp(isNano);
         return time;
     }
 
@@ -61,7 +61,7 @@ public class TimeInterval {
      * @return 重新计时并返回从开始到当前的持续时间
      */
     public long intervalRestart() {
-        long now = DateUtils.timestamp(isNano);
+        long now = DateKit.timestamp(isNano);
         long d = now - time;
         time = now;
         return d;
@@ -73,7 +73,7 @@ public class TimeInterval {
      * @return this
      */
     public TimeInterval restart() {
-        time = DateUtils.timestamp(isNano);
+        time = DateKit.timestamp(isNano);
         return this;
     }
 
@@ -84,7 +84,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔时间(毫秒数)
      */
     public long interval() {
-        return DateUtils.timestamp(isNano) - time;
+        return DateKit.timestamp(isNano) - time;
     }
 
     /**

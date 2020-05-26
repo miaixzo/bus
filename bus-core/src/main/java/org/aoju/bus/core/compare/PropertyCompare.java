@@ -25,8 +25,8 @@
 package org.aoju.bus.core.compare;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -80,8 +80,8 @@ public class PropertyCompare<T> implements Comparator<T>, Serializable {
         java.lang.Comparable<?> v1;
         java.lang.Comparable<?> v2;
         try {
-            v1 = (java.lang.Comparable<?>) BeanUtils.getProperty(o1, property);
-            v2 = (java.lang.Comparable<?>) BeanUtils.getProperty(o2, property);
+            v1 = (java.lang.Comparable<?>) BeanKit.getProperty(o1, property);
+            v2 = (java.lang.Comparable<?>) BeanKit.getProperty(o2, property);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }
@@ -90,9 +90,9 @@ public class PropertyCompare<T> implements Comparator<T>, Serializable {
     }
 
     private int compare(T o1, T o2, java.lang.Comparable fieldValue1, java.lang.Comparable fieldValue2) {
-        int result = ObjectUtils.compare(fieldValue1, fieldValue2, isNullGreater);
+        int result = ObjectKit.compare(fieldValue1, fieldValue2, isNullGreater);
         if (0 == result) {
-            result = ObjectUtils.compare(o1, o2, this.isNullGreater);
+            result = ObjectKit.compare(o1, o2, this.isNullGreater);
         }
         return result;
     }

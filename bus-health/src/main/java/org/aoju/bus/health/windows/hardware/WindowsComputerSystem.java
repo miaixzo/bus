@@ -28,7 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
@@ -66,14 +66,14 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
             manufacturer = WmiQuery.getString(win32ComputerSystem, ComputerSystemProperty.MANUFACTURER, 0);
             model = WmiQuery.getString(win32ComputerSystem, ComputerSystemProperty.MODEL, 0);
         }
-        return Pair.of(StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringUtils.isBlank(model) ? Normal.UNKNOWN : model);
+        return Pair.of(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model);
     }
 
     private static String querySystemSerialNumber() {
         String result;
         if (((result = querySerialFromBios()) != null || (result = querySerialFromCsProduct()) != null)
-                && !StringUtils.isBlank(result)) {
+                && !StringKit.isBlank(result)) {
             return result;
         }
         return Normal.UNKNOWN;

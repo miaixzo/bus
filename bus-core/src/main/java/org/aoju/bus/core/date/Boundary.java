@@ -26,7 +26,7 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Range;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 
 import java.util.Date;
 
@@ -75,7 +75,7 @@ public class Boundary extends Range<DateTime> {
      * @param isIncludeEnd   是否包含结束的时间
      */
     public Boundary(Date start, Date end, final Fields.DateField unit, final int step, boolean isIncludeStart, boolean isIncludeEnd) {
-        super(DateUtils.date(start), DateUtils.date(end), (current, end1, index) -> {
+        super(DateKit.date(start), DateKit.date(end), (current, end1, index) -> {
             DateTime dt = current.offset(unit, step);
             if (dt.isAfter(end1)) {
                 return null;

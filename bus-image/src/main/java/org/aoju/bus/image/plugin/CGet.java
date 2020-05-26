@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.Progress;
@@ -167,7 +167,7 @@ public class CGet {
     }
 
     private static void configureStorageSOPClass(GetSCU getSCU, String cuid, String tsuids) {
-        String[] ts = (String[]) StringUtils.split(tsuids, Symbol.C_SEMICOLON).toArray();
+        String[] ts = (String[]) StringKit.split(tsuids, Symbol.C_SEMICOLON).toArray();
         for (int i = 0; i < ts.length; i++) {
             ts[i] = Builder.toUID(ts[i]);
         }

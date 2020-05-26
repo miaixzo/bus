@@ -25,7 +25,7 @@
 package org.aoju.bus.office.support;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
 
 /**
  * POI引入检查器
@@ -46,7 +46,7 @@ public class PoiChecker {
      */
     public static void checkPoiImport() {
         try {
-            Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassUtils.getClassLoader());
+            Class.forName("org.apache.poi.ss.usermodel.Workbook", false, ClassKit.getClassLoader());
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             throw new InstrumentException(NO_POI_ERROR_MSG);
         }

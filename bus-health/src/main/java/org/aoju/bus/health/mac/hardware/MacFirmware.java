@@ -30,7 +30,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
 import java.nio.charset.StandardCharsets;
@@ -101,11 +101,11 @@ final class MacFirmware extends AbstractFirmware {
             }
             platformExpert.release();
         }
-        return new Quintet<>(StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringUtils.isBlank(name) ? Normal.UNKNOWN : name,
-                StringUtils.isBlank(description) ? Normal.UNKNOWN : description,
-                StringUtils.isBlank(version) ? Normal.UNKNOWN : version,
-                StringUtils.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
+        return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(name) ? Normal.UNKNOWN : name,
+                StringKit.isBlank(description) ? Normal.UNKNOWN : description,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
     @Override

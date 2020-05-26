@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -42,15 +42,15 @@ public class CnapsStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
         String snapCard = object.toString();
-        return StringUtils.rightPad(
-                StringUtils.left(snapCard, 4),
-                StringUtils.length(snapCard),
-                StringUtils.fill(10, shield.shadow()
+        return StringKit.rightPad(
+                StringKit.left(snapCard, 4),
+                StringKit.length(snapCard),
+                StringKit.fill(10, shield.shadow()
                 )
         );
     }

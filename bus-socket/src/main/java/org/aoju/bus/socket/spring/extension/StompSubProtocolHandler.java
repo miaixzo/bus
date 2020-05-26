@@ -25,7 +25,7 @@
 package org.aoju.bus.socket.spring.extension;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.socket.spring.intercept.FromClientExecutionChain;
 import org.aoju.bus.socket.spring.intercept.FromClientInterceptor;
 import org.aoju.bus.socket.spring.intercept.ToClientExecutionChain;
@@ -98,7 +98,7 @@ public class StompSubProtocolHandler extends org.springframework.web.socket.mess
             Queue<String> queue = new LinkedTransferQueue<>();
             for (String str : arr) {
                 String strTrim = str.trim();
-                if (StringUtils.isEmpty(strTrim)) {
+                if (StringKit.isEmpty(strTrim)) {
                     continue;
                 }
                 queue.offer(strTrim);
@@ -120,8 +120,8 @@ public class StompSubProtocolHandler extends org.springframework.web.socket.mess
                 }
             }
             String content = queue.poll();
-            if (!StringUtils.isEmpty(content)) {
-                if (content.startsWith("destination:") && StringUtils.isEmpty(message.getDestination())) {
+            if (!StringKit.isEmpty(content)) {
+                if (content.startsWith("destination:") && StringKit.isEmpty(message.getDestination())) {
                     message.setDestination(content.split(Symbol.COLON)[1].trim());
                 } else {
                     message.setContent(content.trim());

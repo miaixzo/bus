@@ -28,7 +28,7 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.DelegateSink;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Process;
 
@@ -73,7 +73,7 @@ public class ProcessRequestBody extends RequestBody {
     @Override
     public void writeTo(BufferSink sink) throws IOException {
         if (bufferedSink == null) {
-            bufferedSink = IoUtils.buffer(new DelegateSink(sink) {
+            bufferedSink = IoKit.buffer(new DelegateSink(sink) {
 
                 @Override
                 public void write(Buffer source, long byteCount) throws IOException {

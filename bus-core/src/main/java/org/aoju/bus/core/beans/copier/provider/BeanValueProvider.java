@@ -29,8 +29,8 @@ import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -59,7 +59,7 @@ public class BeanValueProvider implements ValueProvider<String> {
     public BeanValueProvider(Object bean, boolean ignoreCase, boolean ignoreError) {
         this.source = bean;
         this.ignoreError = ignoreError;
-        sourcePdMap = BeanUtils.getBeanDesc(source.getClass()).getPropMap(ignoreCase);
+        sourcePdMap = BeanKit.getBeanDesc(source.getClass()).getPropMap(ignoreCase);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class BeanValueProvider implements ValueProvider<String> {
         BeanDesc.PropDesc sourcePd = sourcePdMap.get(key);
         if (null == sourcePd && (Boolean.class == valueType || boolean.class == valueType)) {
             // boolean类型字段字段名支持两种方式
-            sourcePd = sourcePdMap.get(StringUtils.upperFirstAndAddPre(key, Normal.IS));
+            sourcePd = sourcePdMap.get(StringKit.upperFirstAndAddPre(key, Normal.IS));
         }
 
         Object result = null;
@@ -82,7 +82,10 @@ public class BeanValueProvider implements ValueProvider<String> {
                     }
                 }
                 // 尝试转换为目标类型，失败将返回原类型
-                result = Convert.convertWithCheck(valueType, result, result, ignoreError);
+                final Object convertValue = Convert.convertWithCheck(valueType, result, null, ignoreError);
+                if (null != convertValue) {
+                    result = convertValue;
+                }
             }
         }
         return result;
@@ -90,7 +93,7 @@ public class BeanValueProvider implements ValueProvider<String> {
 
     @Override
     public boolean containsKey(String key) {
-        return sourcePdMap.containsKey(key) || sourcePdMap.containsKey(StringUtils.upperFirstAndAddPre(key, Normal.IS));
+        return sourcePdMap.containsKey(key) || sourcePdMap.containsKey(StringKit.upperFirstAndAddPre(key, Normal.IS));
     }
 
 }

@@ -25,7 +25,7 @@
 package org.aoju.bus.office.metric;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.bridge.LocalOfficeBridgeFactory;
 
@@ -68,11 +68,11 @@ public class ConnectRetryable extends AbstractRetryable {
         try {
             localOffice.connect();
         } catch (InstrumentException connectionEx) {
-            if (ObjectUtils.isEmpty(process)) {
+            if (ObjectKit.isEmpty(process)) {
                 throw new InstrumentException(connectionEx);
             }
             final Integer exitCode = process.getExitCode();
-            if (ObjectUtils.isEmpty(exitCode)) {
+            if (ObjectKit.isEmpty(exitCode)) {
                 throw new InstrumentException(connectionEx);
             } else if (exitCode.equals(Integer.valueOf(81))) {
                 Logger.warn("Office process died with exit code 81; restarting it");

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.codec.jpeg;
 
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -51,14 +51,14 @@ public class JPEGHeader {
                 break;
             if (marker == lastMarker)
                 break;
-            offset += ByteUtils.bytesToUShortBE(data, offset);
+            offset += ByteKit.bytesToUShortBE(data, offset);
         }
         this.data = data;
         this.offsets = new int[n];
         for (int i = 0, offset = 0; i < n; i++) {
             offsets[i] = (offset = nextMarker(data, offset));
             if (!JPEG.isStandalone(data[offset++] & 255))
-                offset += ByteUtils.bytesToUShortBE(data, offset);
+                offset += ByteKit.bytesToUShortBE(data, offset);
         }
     }
 

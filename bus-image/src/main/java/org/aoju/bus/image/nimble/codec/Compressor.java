@@ -25,7 +25,7 @@
 package org.aoju.bus.image.nimble.codec;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.*;
@@ -215,7 +215,7 @@ public class Compressor extends Decompressor implements Closeable {
                 for (byte[] bs : data)
                     iis.readFully(bs);
                 if (pixeldata.bigEndian() && pixeldataVR.vr == VR.OW)
-                    ByteUtils.swapShorts(data);
+                    ByteKit.swapShorts(data);
                 break;
             case DataBuffer.TYPE_USHORT:
                 readFully(((DataBufferUShort) db).getData());

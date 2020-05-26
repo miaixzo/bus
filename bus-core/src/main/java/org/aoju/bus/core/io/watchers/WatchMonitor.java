@@ -26,9 +26,9 @@ package org.aoju.bus.core.io.watchers;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.UriUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,7 +163,7 @@ public class WatchMonitor extends WatchServer {
      * @return 监听对象
      */
     public static WatchMonitor create(URL url, int maxDepth, WatchEvent.Kind<?>... events) {
-        return create(UriUtils.toURI(url), maxDepth, events);
+        return create(UriKit.toURI(url), maxDepth, events);
     }
 
     /**
@@ -334,11 +334,11 @@ public class WatchMonitor extends WatchServer {
         //获取目录或文件路径
         if (false == Files.exists(this.path, LinkOption.NOFOLLOW_LINKS)) {
             // 不存在的路径
-            final Path lastPathEle = FileUtils.getLastPathEle(this.path);
+            final Path lastPathEle = FileKit.getLastPathEle(this.path);
             if (null != lastPathEle) {
                 final String lastPathEleStr = lastPathEle.toString();
                 //带有点表示有扩展名，按照未创建的文件对待。Linux下.d的为目录，排除之
-                if (StringUtils.contains(lastPathEleStr, Symbol.C_DOT) && false == StringUtils.endWithIgnoreCase(lastPathEleStr, ".d")) {
+                if (StringKit.contains(lastPathEleStr, Symbol.C_DOT) && false == StringKit.endWithIgnoreCase(lastPathEleStr, ".d")) {
                     this.filePath = this.path;
                     this.path = this.filePath.getParent();
                 }

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.watchers;
 
 import org.aoju.bus.core.lang.Chain;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -53,7 +53,7 @@ public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
      * @param watchers 观察者列表
      */
     public WatcherChain(Watcher... watchers) {
-        chain = CollUtils.newArrayList(watchers);
+        chain = CollKit.newArrayList(watchers);
     }
 
     /**

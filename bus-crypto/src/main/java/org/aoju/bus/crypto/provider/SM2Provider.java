@@ -26,7 +26,7 @@ package org.aoju.bus.crypto.provider;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.asymmetric.KeyType;
@@ -52,10 +52,10 @@ public class SM2Provider implements Provider {
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        String[] array = StringUtils.split(key, Symbol.COMMA);
+        String[] array = StringKit.split(key, Symbol.COMMA);
         SM2 sm2 = Builder.sm2(array[0], array[1]);
         sm2.setMode(SM2Engine.Mode.C1C3C2);
         return sm2.encrypt(content, KeyType.valueOf(array[2]));
@@ -70,10 +70,10 @@ public class SM2Provider implements Provider {
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        String[] array = StringUtils.split(key, Symbol.COMMA);
+        String[] array = StringKit.split(key, Symbol.COMMA);
         SM2 sm2 = Builder.sm2(array[0], array[1]);
         sm2.setMode(SM2Engine.Mode.C1C3C2);
         return sm2.decrypt(content, KeyType.valueOf(array[2]));

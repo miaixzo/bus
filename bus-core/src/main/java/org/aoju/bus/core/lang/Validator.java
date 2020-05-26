@@ -25,7 +25,7 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.lang.exception.ValidateException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import java.net.MalformedURLException;
 import java.util.regex.Matcher;
@@ -85,7 +85,7 @@ public class Validator {
      * @return 是否为空
      */
     public static boolean isEmpty(Object value) {
-        return (null == value || (value instanceof String && StringUtils.isEmpty((String) value)));
+        return (null == value || (value instanceof String && StringKit.isEmpty((String) value)));
     }
 
     /**
@@ -174,7 +174,7 @@ public class Validator {
      * @return 当两值都为null或相等返回true
      */
     public static boolean equal(Object t1, Object t2) {
-        return ObjectUtils.equal(t1, t2);
+        return ObjectKit.equal(t1, t2);
     }
 
     /**
@@ -243,7 +243,7 @@ public class Validator {
      * @return 是否匹配正则
      */
     public static boolean isMatchRegex(Pattern pattern, CharSequence value) {
-        return PatternUtils.isMatch(pattern, value);
+        return PatternKit.isMatch(pattern, value);
     }
 
     /**
@@ -254,7 +254,7 @@ public class Validator {
      * @return 是否匹配正则
      */
     public static boolean isMatchRegex(String regex, CharSequence value) {
-        return PatternUtils.isMatch(regex, value);
+        return PatternKit.isMatch(regex, value);
     }
 
     /**
@@ -359,7 +359,7 @@ public class Validator {
      * @return 是否全部为字母组成, 包括大写和小写字母和汉字
      */
     public static boolean isLetter(String value) {
-        return StringUtils.isAllCharMatch(value, Character::isLetter);
+        return StringKit.isAllCharMatch(value, Character::isLetter);
     }
 
     /**
@@ -382,7 +382,7 @@ public class Validator {
      * @return 是否全部为大写字母
      */
     public static boolean isUpperCase(String value) {
-        return StringUtils.isAllCharMatch(value, Character::isUpperCase);
+        return StringKit.isAllCharMatch(value, Character::isUpperCase);
     }
 
     /**
@@ -405,7 +405,7 @@ public class Validator {
      * @return 是否全部为小写字母
      */
     public static boolean isLowerCase(String value) {
-        return StringUtils.isAllCharMatch(value, t -> Character.isLowerCase(t));
+        return StringKit.isAllCharMatch(value, t -> Character.isLowerCase(t));
     }
 
     /**
@@ -428,7 +428,7 @@ public class Validator {
      * @return 是否是数字
      */
     public static boolean isNumber(String value) {
-        return MathUtils.isNumber(value);
+        return MathKit.isNumber(value);
     }
 
     /**
@@ -604,7 +604,7 @@ public class Validator {
      */
     public static boolean isBirthday(int year, int month, int day) {
         // 验证年
-        int thisYear = DateUtils.thisYear();
+        int thisYear = DateKit.thisYear();
         if (year < 1900 || year > thisYear) {
             return false;
         }
@@ -624,7 +624,7 @@ public class Validator {
         }
         if (month == 2) {
             // 在2月，非闰年最大28，闰年最大29
-            return day < 29 || (day == 29 && DateUtils.isLeapYear(year));
+            return day < 29 || (day == 29 && DateKit.isLeapYear(year));
         }
         return true;
     }

@@ -24,6 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+
 /**
  * 编码常量
  *
@@ -83,5 +90,119 @@ public class Charset {
      */
     public static final String DEFAULT_UTF_32_LE = "UTF-32LE";
     public static final java.nio.charset.Charset UTF_32_LE = java.nio.charset.Charset.forName(DEFAULT_UTF_32_LE);
+
+    /**
+     * 系统默认字符集编码
+     *
+     * @return 系统字符集编码
+     */
+    public static java.nio.charset.Charset defaultCharset() {
+        return java.nio.charset.Charset.defaultCharset();
+    }
+
+    /**
+     * 系统默认字符集编码
+     *
+     * @return 系统字符集编码
+     */
+    public static String defaultCharsetName() {
+        return defaultCharset().name();
+    }
+
+    /**
+     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link Charset#defaultCharsetName()}
+     *
+     * @return 系统字符集编码
+     * @see Charset#defaultCharsetName()
+     */
+    public static java.nio.charset.Charset systemCharset() {
+        return FileKit.isWindows() ? Charset.GBK : defaultCharset();
+    }
+
+    /**
+     * 系统字符集编码,如果是Windows,则默认为GBK编码,否则取 {@link Charset#defaultCharsetName()}
+     *
+     * @return 系统字符集编码
+     * @see Charset#defaultCharsetName()
+     */
+    public static String systemCharsetName() {
+        return systemCharset().name();
+    }
+
+    /**
+     * 返回给定的字符集；如果给定的字符集为null，则返回默认的字符集
+     *
+     * @param charset 字符集或null
+     * @return 给定的字符集；如果给定的字符集为null，则默认为字符集
+     */
+    public static java.nio.charset.Charset charset(final java.nio.charset.Charset charset) {
+        return ObjectKit.isEmpty(charset) ? java.nio.charset.Charset.defaultCharset() : charset;
+    }
+
+    /**
+     * 转换为Charset对象
+     *
+     * @param charsetName 字符集,为空则返回默认字符集
+     * @return Charset
+     */
+    public static java.nio.charset.Charset charset(final String charsetName) {
+        return StringKit.isBlank(charsetName) ? java.nio.charset.Charset.defaultCharset() : java.nio.charset.Charset.forName(charsetName);
+    }
+
+    /**
+     * 转换字符串的字符集编码
+     *
+     * @param source      字符串
+     * @param srcCharset  源字符集,默认ISO-8859-1
+     * @param destCharset 目标字符集,默认UTF-8
+     * @return 转换后的字符集
+     */
+    public static String convert(final String source, final String srcCharset, final String destCharset) {
+        return convert(source, java.nio.charset.Charset.forName(srcCharset), java.nio.charset.Charset.forName(destCharset));
+    }
+
+    /**
+     * 转换字符串的字符集编码
+     * 当以错误的编码读取为字符串时,打印字符串将出现乱码
+     * 此方法用于纠正因读取使用编码错误导致的乱码问题
+     * 例如,在Servlet请求中客户端用GBK编码了请求参数,我们使用UTF-8读取到的是乱码,此时,使用此方法即可还原原编码的内容
+     * <pre>
+     * 客户端 -》 GBK编码 -》 Servlet容器 -》 UTF-8解码 -》 乱码
+     * 乱码 -》 UTF-8编码 -》 GBK解码 -》 正确内容
+     * </pre>
+     *
+     * @param source      字符串
+     * @param srcCharset  源字符集,默认ISO-8859-1
+     * @param destCharset 目标字符集,默认UTF-8
+     * @return 转换后的字符集
+     */
+    public static String convert(final String source, java.nio.charset.Charset srcCharset, java.nio.charset.Charset destCharset) {
+        if (null == srcCharset) {
+            srcCharset = StandardCharsets.ISO_8859_1;
+        }
+
+        if (null == destCharset) {
+            destCharset = StandardCharsets.UTF_8;
+        }
+
+        if (StringKit.isBlank(source) || srcCharset.equals(destCharset)) {
+            return source;
+        }
+        return new String(source.getBytes(srcCharset), destCharset);
+    }
+
+    /**
+     * 转换文件编码
+     * 此方法用于转换文件编码,读取的文件实际编码必须与指定的srcCharset编码一致,否则导致乱码
+     *
+     * @param file        文件
+     * @param srcCharset  原文件的编码,必须与文件内容的编码保持一致
+     * @param destCharset 转码后的编码
+     * @return 被转换编码的文件
+     */
+    public static File convert(final File file, final java.nio.charset.Charset srcCharset, final java.nio.charset.Charset destCharset) {
+        final String str = FileKit.readString(file, srcCharset);
+        return FileKit.writeString(str, file, destCharset);
+    }
 
 }

@@ -33,7 +33,7 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import lombok.AllArgsConstructor;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 阿里云 短信服务
@@ -92,7 +92,7 @@ public class AliSmsService {
      */
     public AliSmsResult send(AliSmsEntity entity) throws InstrumentException {
         try {
-            IClientProfile profile = DefaultProfile.getProfile(StringUtils.toString(this.profile, "default"), this.accessKey, this.accessSecret);
+            IClientProfile profile = DefaultProfile.getProfile(StringKit.toString(this.profile, "default"), this.accessKey, this.accessSecret);
             DefaultProfile.addEndpoint(this.profile, ALIYUN_PRODUCT, ALIYUN_PRODUCT_DOMAIN);
             IAcsClient acsClient = new DefaultAcsClient(profile);
 

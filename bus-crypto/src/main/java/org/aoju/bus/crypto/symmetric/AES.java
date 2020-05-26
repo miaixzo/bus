@@ -25,8 +25,8 @@
 package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
@@ -124,7 +124,7 @@ public class AES extends Symmetric {
      * @param iv      偏移向量，加盐
      */
     public AES(Mode mode, Padding padding, SecretKey key, byte[] iv) {
-        this(mode, padding, key, ArrayUtils.isEmpty(iv) ? null : new IvParameterSpec(iv));
+        this(mode, padding, key, ArrayKit.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 
     /**
@@ -171,7 +171,7 @@ public class AES extends Symmetric {
     public AES(String mode, String padding, byte[] key, byte[] iv) {
         this(mode, padding,
                 Builder.generateKey(Algorithm.AES, key),
-                ArrayUtils.isEmpty(iv) ? null : new IvParameterSpec(iv));
+                ArrayKit.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 
     /**
@@ -194,7 +194,7 @@ public class AES extends Symmetric {
      * @param iv      加盐
      */
     public AES(String mode, String padding, SecretKey key, IvParameterSpec iv) {
-        super(StringUtils.format("AES/{}/{}", mode, padding), key, iv);
+        super(StringKit.format("AES/{}/{}", mode, padding), key, iv);
     }
 
 }

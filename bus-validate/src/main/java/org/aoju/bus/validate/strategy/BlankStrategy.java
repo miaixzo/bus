@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Blank;
 import org.aoju.bus.validate.validators.Matcher;
@@ -41,7 +41,7 @@ public class BlankStrategy implements Validator<String>, Matcher<String, Blank> 
 
     @Override
     public boolean on(String object, Context context) {
-        return StringUtils.isBlank(object);
+        return StringKit.isBlank(object);
     }
 
     @Override

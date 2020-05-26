@@ -28,7 +28,7 @@ import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.metric.internal.net.TCPHandler;
@@ -1009,7 +1009,7 @@ public class Connection implements Serializable {
                     doProxyHandshake(s, remoteHostname, remotePort, userauth,
                             connectTimeout);
                 } catch (IOException e) {
-                    IoUtils.close(s);
+                    IoKit.close(s);
                     throw e;
                 }
             } else {
@@ -1024,12 +1024,12 @@ public class Connection implements Serializable {
         } catch (GeneralSecurityException e) {
             if (monitor != null)
                 monitor.onConnectionFailed(this, remoteConn, s, e);
-            IoUtils.close(s);
+            IoKit.close(s);
             throw e;
         } catch (IOException e) {
             if (monitor != null)
                 monitor.onConnectionFailed(this, remoteConn, s, e);
-            IoUtils.close(s);
+            IoKit.close(s);
             throw e;
         }
     }
@@ -1097,7 +1097,7 @@ public class Connection implements Serializable {
 
     public void close(Socket s) {
         Logger.info("Close connection {}", s);
-        IoUtils.close(s);
+        IoKit.close(s);
     }
 
     public boolean isCompatible(Connection remoteConn) {

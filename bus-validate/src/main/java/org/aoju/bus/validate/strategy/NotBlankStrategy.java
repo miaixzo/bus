@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.NotBlank;
 import org.aoju.bus.validate.validators.Matcher;
@@ -46,7 +46,7 @@ public class NotBlankStrategy implements Validator<String>, Matcher<String, NotB
 
     @Override
     public boolean on(String object, Context context) {
-        return StringUtils.isNotBlank(object);
+        return StringKit.isNotBlank(object);
     }
 
 }

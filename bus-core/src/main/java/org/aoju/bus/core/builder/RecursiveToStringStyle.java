@@ -25,7 +25,7 @@
 package org.aoju.bus.core.builder;
 
 
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
 
 import java.util.Collection;
 
@@ -66,7 +66,7 @@ public class RecursiveToStringStyle extends ToStringStyle {
 
     @Override
     public void appendDetail(final StringBuffer buffer, final String fieldName, final Object value) {
-        if (!ClassUtils.isPrimitiveWrapper(value.getClass()) &&
+        if (!ClassKit.isPrimitiveWrapper(value.getClass()) &&
                 !String.class.equals(value.getClass()) &&
                 accept(value.getClass())) {
             buffer.append(ReflectionToStringBuilder.toString(value, this));

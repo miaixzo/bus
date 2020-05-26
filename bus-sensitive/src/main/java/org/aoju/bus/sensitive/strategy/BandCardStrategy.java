@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -43,18 +43,18 @@ public class BandCardStrategy extends AbstractProvider {
 
     @Override
     public String build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
         String bankCard = object.toString();
-        return StringUtils.left(bankCard, 4).concat(
-                StringUtils.removeStart(
-                        StringUtils.leftPad(
-                                StringUtils.right(bankCard, 4),
-                                StringUtils.length(bankCard), shield.shadow()
+        return StringKit.left(bankCard, 4).concat(
+                StringKit.removeStart(
+                        StringKit.leftPad(
+                                StringKit.right(bankCard, 4),
+                                StringKit.length(bankCard), shield.shadow()
                         ),
-                        StringUtils.fill(3, shield.shadow())
+                        StringKit.fill(3, shield.shadow())
                 ));
     }
 

@@ -35,7 +35,7 @@ Lock jdkLock() {
 ```java
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
-    return demoService.exchangeVip(request, ContextUtils.getCurrentUser());
+    return demoService.exchangeVip(request, SpringAware.getCurrentUser());
 }
 ```
 
@@ -47,7 +47,7 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 @HLock(limiter = "jdkLock", key = "#request.vipCode", fallback = "fallbackToBusy")
 public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
-   return demoService.exchangeVip(request, ContextUtils.getCurrentUser());
+   return demoService.exchangeVip(request, SpringAware.getCurrentUser());
 }
 ```
 
@@ -278,7 +278,7 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
       @Override
       public Map<String, Object> inject(Object... args) {
           Map<String, Object> ret = new HashMap<>();
-          ret.put("userInfo", ContextUtils.getCurrentUser());
+          ret.put("userInfo", SpringAware.getCurrentUser());
           return ret;
       }
   }
@@ -309,7 +309,7 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 @HLock(limiter = "jdkLock", key = "#request.vipCode", fallback = "fallbackToBusy")
 public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
-   return demoService.exchangeVip(request, ContextUtils.getCurrentUser());
+   return demoService.exchangeVip(request, SpringAware.getCurrentUser());
 }
 ```
 

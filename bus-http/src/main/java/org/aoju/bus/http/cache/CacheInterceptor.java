@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.bodys.RealResponseBody;
 import org.aoju.bus.http.bodys.ResponseBody;
@@ -142,7 +142,7 @@ public final class CacheInterceptor implements Interceptor {
 
         if (cacheCandidate != null && cacheResponse == null) {
             // 缓存候选不适用。关闭它
-            IoUtils.close(cacheCandidate.body());
+            IoKit.close(cacheCandidate.body());
         }
 
         // 如果我们被禁止使用网络且缓存不足，则失败
@@ -171,7 +171,7 @@ public final class CacheInterceptor implements Interceptor {
         } finally {
             // 如果我们在I/O或其他方面崩溃，不要泄漏缓存体
             if (networkResponse == null && cacheCandidate != null) {
-                IoUtils.close(cacheCandidate.body());
+                IoKit.close(cacheCandidate.body());
             }
         }
 
@@ -192,7 +192,7 @@ public final class CacheInterceptor implements Interceptor {
                 cache.update(cacheResponse, response);
                 return response;
             } else {
-                IoUtils.close(cacheResponse.body());
+                IoKit.close(cacheResponse.body());
             }
         }
 
@@ -238,7 +238,7 @@ public final class CacheInterceptor implements Interceptor {
         if (cacheBodyUnbuffered == null) return response;
 
         final BufferSource source = response.body().source();
-        final BufferSink cacheBody = IoUtils.buffer(cacheBodyUnbuffered);
+        final BufferSink cacheBody = IoKit.buffer(cacheBodyUnbuffered);
 
         Source cacheWritingSource = new Source() {
             boolean cacheRequestClosed;
@@ -290,7 +290,7 @@ public final class CacheInterceptor implements Interceptor {
         String contentType = response.header(Header.CONTENT_TYPE);
         long contentLength = response.body().contentLength();
         return response.newBuilder()
-                .body(new RealResponseBody(contentType, contentLength, IoUtils.buffer(cacheWritingSource)))
+                .body(new RealResponseBody(contentType, contentLength, IoKit.buffer(cacheWritingSource)))
                 .build();
     }
 

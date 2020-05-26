@@ -31,8 +31,8 @@ import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.DateKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -100,7 +100,7 @@ public class TwitterProvider extends DefaultProvider {
         }
         String str = parseMapToString(map, true);
         String baseStr = method.toUpperCase() + Symbol.AND + urlEncode(baseUrl) + Symbol.AND + urlEncode(str);
-        String signKey = apiSecret + Symbol.AND + (StringUtils.isEmpty(tokenSecret) ? Normal.EMPTY : tokenSecret);
+        String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? Normal.EMPTY : tokenSecret);
         byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1);
 
         return new String(Base64.encode(signature, false));
@@ -201,7 +201,7 @@ public class TwitterProvider extends DefaultProvider {
         params.put("oauth_consumer_key", context.getAppKey());
         params.put("oauth_nonce", generateNonce(32));
         params.put("oauth_signature_method", "HMAC-SHA1");
-        params.put("oauth_timestamp", Normal.EMPTY + DateUtils.timestamp());
+        params.put("oauth_timestamp", Normal.EMPTY + DateKit.timestamp());
         params.put("oauth_version", "1.0");
         return params;
     }

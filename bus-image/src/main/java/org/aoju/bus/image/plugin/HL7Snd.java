@@ -26,8 +26,8 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.internal.hl7.MLLPConnection;
@@ -91,10 +91,10 @@ public class HL7Snd extends Device {
         try {
             in = new FileInputStream(FileDescriptor.in);
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            StreamUtils.copy(in, buf);
+            StreamKit.copy(in, buf);
             return buf.toByteArray();
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
@@ -104,10 +104,10 @@ public class HL7Snd extends Device {
             File f = path.toFile();
             in = new FileInputStream(f);
             byte[] b = new byte[(int) f.length()];
-            StreamUtils.readFully(in, b, 0, b.length);
+            StreamKit.readFully(in, b, 0, b.length);
             return b;
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 

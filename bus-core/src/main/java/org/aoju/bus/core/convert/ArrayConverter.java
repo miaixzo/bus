@@ -25,10 +25,10 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.IterUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.IterKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -68,7 +68,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
         } else {
             //用户传入类为非数组时，按照数组元素类型对待
             this.targetComponentType = targetType;
-            this.targetType = ArrayUtils.getArrayType(targetType);
+            this.targetType = ArrayKit.getArrayType(targetType);
         }
     }
 
@@ -89,13 +89,13 @@ public class ArrayConverter extends AbstractConverter<Object> {
      * @return 转换后的数组
      */
     private Object convertArrayToArray(Object array) {
-        final Class<?> valueComponentType = ArrayUtils.getComponentType(array);
+        final Class<?> valueComponentType = ArrayKit.getComponentType(array);
 
         if (valueComponentType == targetComponentType) {
             return array;
         }
 
-        final int len = ArrayUtils.getLength(array);
+        final int len = ArrayKit.getLength(array);
         final Object result = Array.newInstance(targetComponentType, len);
 
         final ConverterRegistry converter = ConverterRegistry.getInstance();
@@ -118,7 +118,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
             }
 
             // 单纯字符串情况下按照逗号分隔后劈开
-            final String[] strings = StringUtils.split(value.toString(), Symbol.COMMA);
+            final String[] strings = StringKit.split(value.toString(), Symbol.COMMA);
             return convertArrayToArray(strings);
         }
 
@@ -143,21 +143,21 @@ public class ArrayConverter extends AbstractConverter<Object> {
             }
         } else if (value instanceof Iterable) {
             // 可循环对象转数组,可循环对象无法获取长度,因此先转为List后转为数组
-            final List<?> list = IterUtils.toList((Iterable<?>) value);
+            final List<?> list = IterKit.toList((Iterable<?>) value);
             result = Array.newInstance(targetComponentType, list.size());
             for (int i = 0; i < list.size(); i++) {
                 Array.set(result, i, converter.convert(targetComponentType, list.get(i)));
             }
         } else if (value instanceof Iterator) {
             // 可循环对象转数组,可循环对象无法获取长度,因此先转为List后转为数组
-            final List<?> list = IterUtils.toList((Iterator<?>) value);
+            final List<?> list = IterKit.toList((Iterator<?>) value);
             result = Array.newInstance(targetComponentType, list.size());
             for (int i = 0; i < list.size(); i++) {
                 Array.set(result, i, converter.convert(targetComponentType, list.get(i)));
             }
         } else if (value instanceof Serializable && byte.class == targetComponentType) {
             // 用户可能想序列化指定对象
-            result = ObjectUtils.serialize(value);
+            result = ObjectKit.serialize(value);
         } else {
             result = convertToSingleElementArray(value);
         }
@@ -172,7 +172,7 @@ public class ArrayConverter extends AbstractConverter<Object> {
      * @return 数组, 只包含一个元素
      */
     private Object[] convertToSingleElementArray(Object value) {
-        final Object[] singleElementArray = ArrayUtils.newArray(targetComponentType, 1);
+        final Object[] singleElementArray = ArrayKit.newArray(targetComponentType, 1);
         singleElementArray[0] = ConverterRegistry.getInstance().convert(targetComponentType, value);
         return singleElementArray;
     }

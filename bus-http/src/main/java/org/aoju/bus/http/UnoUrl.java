@@ -25,6 +25,7 @@
 package org.aoju.bus.http;
 
 import org.aoju.bus.core.io.Buffer;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -34,7 +35,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -234,7 +234,7 @@ public final class UnoUrl {
 
     static String canonicalize(String input, int pos, int limit, String encodeSet,
                                boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
-                               Charset charset) {
+                               java.nio.charset.Charset charset) {
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
             codePoint = input.codePointAt(i);
@@ -256,7 +256,7 @@ public final class UnoUrl {
 
     static void canonicalize(Buffer out, String input, int pos, int limit, String encodeSet,
                              boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
-                             Charset charset) {
+                             java.nio.charset.Charset charset) {
         Buffer encodedCharBuffer = null;
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
@@ -276,7 +276,7 @@ public final class UnoUrl {
                     encodedCharBuffer = new Buffer();
                 }
 
-                if (charset == null || charset.equals(org.aoju.bus.core.lang.Charset.UTF_8)) {
+                if (charset == null || charset.equals(Charset.UTF_8)) {
                     encodedCharBuffer.writeUtf8CodePoint(codePoint);
                 } else {
                     encodedCharBuffer.writeString(input, i, i + Character.charCount(codePoint), charset);
@@ -295,7 +295,7 @@ public final class UnoUrl {
     }
 
     public static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
-                                      boolean plusIsSpace, boolean asciiOnly, Charset charset) {
+                                      boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
         return canonicalize(
                 input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly,
                 charset);

@@ -63,7 +63,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造 RequestBody 需要指定MediaType，用于描述请求/响应 body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，RequstBody的几种构造方式：
  
  ``` 
-    MediaType mediaType = MediaType.valueOf("text/x-markdown; charset=utf-8");
+    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     String requestBody = "I am Jdqm.";
     Request request = new Request.Builder()
            .url("https://api.github.com/markdown/raw")
@@ -91,7 +91,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
  ```
     http/1.1 200 OK 
     Date:Sat, 10 Mar 2018 05:23:20 GMT 
-    Content-Type:text/html;charset=utf-8
+    Content-Type:text/html;charsets=utf-8
     Content-Length:18
     Server:GitHub.com 
     Status:200 OK 
@@ -119,7 +119,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
     
         @Override
         public MediaType contentType() {
-            return MediaType.valueOf("text/x-markdown; charset=utf-8");
+            return MediaType.valueOf("text/x-markdown; charsets=utf-8");
         }
     
         @Override
@@ -153,7 +153,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 
 2.3. POST提交文件
  ```
-    MediaType mediaType = MediaType.valueOf("text/x-markdown; charset=utf-8");
+    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     Httpd httpd = new Httpd();
     File file = new File("test.md");
     Request request = new Request.Builder()
@@ -797,7 +797,7 @@ call.cancel();  // 取消上传
 6.上传文件
 ```
     String url = "https://www.xxx.com";
-    byte[] imageContent = FileUtils.readBytes("/tmp/test.png");
+    byte[] imageContent = FileKit.readBytes("/tmp/test.png");
     Response response = FastHttpClient.post()
             .url(url)
             .addFile("file", "b.jpg", imageContent)

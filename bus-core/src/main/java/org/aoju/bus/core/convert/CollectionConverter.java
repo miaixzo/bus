@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.TypeUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -61,7 +61,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
      * @param collectionType 集合类型
      */
     public CollectionConverter(Type collectionType) {
-        this(collectionType, TypeUtils.getTypeArgument(collectionType));
+        this(collectionType, TypeKit.getTypeArgument(collectionType));
     }
 
     /**
@@ -70,7 +70,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
      * @param collectionType 集合类型
      */
     public CollectionConverter(Class<?> collectionType) {
-        this(collectionType, TypeUtils.getTypeArgument(collectionType));
+        this(collectionType, TypeKit.getTypeArgument(collectionType));
     }
 
     /**
@@ -102,7 +102,7 @@ public class CollectionConverter implements Converter<Collection<?>> {
      * @return 转换后的集合对象
      */
     protected Collection<?> convertInternal(Object value) {
-        return CollUtils.addAll(CollUtils.create(TypeUtils.getClass(this.collectionType)), value, this.elementType);
+        return CollKit.addAll(CollKit.create(TypeKit.getClass(this.collectionType)), value, this.elementType);
     }
 
 }

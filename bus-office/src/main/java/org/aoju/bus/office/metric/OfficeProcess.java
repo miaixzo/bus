@@ -27,8 +27,8 @@ package org.aoju.bus.office.metric;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.health.Platform;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
@@ -126,7 +126,7 @@ public class OfficeProcess {
     public void deleteInstanceProfileDir() {
         Logger.debug("Deleting instance profile directory '{}'", instanceProfileDir);
         try {
-            FileUtils.delete(instanceProfileDir);
+            FileKit.delete(instanceProfileDir);
         } catch (InstrumentException ioEx) {
             final File oldProfileDir =
                     new File(
@@ -151,7 +151,7 @@ public class OfficeProcess {
      */
     public int forciblyTerminate(final long retryInterval, final long retryTimeout)
             throws InstrumentException {
-        if (ObjectUtils.isEmpty(process)) {
+        if (ObjectKit.isEmpty(process)) {
             return 0;
         }
 
@@ -174,7 +174,7 @@ public class OfficeProcess {
      * @return 进程的退出值。值0表示正常终止。如果进程尚未终止，则返回{@code null}
      */
     public Integer getExitCode() {
-        if (ObjectUtils.isEmpty(process)) {
+        if (ObjectKit.isEmpty(process)) {
             return 0;
         }
         return process.getExitCode();
@@ -190,7 +190,7 @@ public class OfficeProcess {
      */
     public int getExitCode(final long retryInterval, final long retryTimeout)
             throws InstrumentException {
-        if (ObjectUtils.isEmpty(process)) {
+        if (ObjectKit.isEmpty(process)) {
             return 0;
         }
         try {
@@ -235,7 +235,7 @@ public class OfficeProcess {
         }
         if (config.getTemplateProfileDir() != null) {
             try {
-                FileUtils.copyFile(config.getTemplateProfileDir(), instanceProfileDir);
+                FileKit.copyFile(config.getTemplateProfileDir(), instanceProfileDir);
             } catch (InstrumentException ioEx) {
                 throw new InstrumentException("Failed to create the instance profile directory", ioEx);
             }

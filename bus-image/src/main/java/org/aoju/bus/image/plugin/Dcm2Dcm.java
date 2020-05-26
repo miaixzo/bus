@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.Property;
@@ -198,8 +198,8 @@ public class Dcm2Dcm {
             dos.setEncodingOptions(encOpts);
             dos.writeDataset(fmi, dataset);
         } finally {
-            IoUtils.close(compressor);
-            IoUtils.close(dos);
+            IoKit.close(compressor);
+            IoKit.close(dos);
         }
     }
 

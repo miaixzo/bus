@@ -34,7 +34,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -95,7 +95,7 @@ public class SpringBuilder {
         ConfigurableApplicationContext context = getContext();
         if (context != null) {
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
-            String beanName = StringUtils.lowerFirst(clazz.getSimpleName());
+            String beanName = StringKit.lowerFirst(clazz.getSimpleName());
             beanFactory.registerBeanDefinition(beanName, BeanDefinitionBuilder.rootBeanDefinition(clazz).getBeanDefinition());
         }
     }
@@ -114,7 +114,7 @@ public class SpringBuilder {
         ConfigurableApplicationContext context = getContext();
         if (context != null) {
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
-            String beanName = StringUtils.lowerFirst(clazz.getSimpleName());
+            String beanName = StringKit.lowerFirst(clazz.getSimpleName());
             beanFactory.registerSingleton(beanName, bean);
         }
     }

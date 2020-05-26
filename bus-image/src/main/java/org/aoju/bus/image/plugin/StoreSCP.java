@@ -25,8 +25,8 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -97,7 +97,7 @@ public class StoreSCP extends BasicCStoreSCP {
             in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             return in.readDataset(-1, Tag.PixelData);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
@@ -132,7 +132,7 @@ public class StoreSCP extends BasicCStoreSCP {
         try {
             Attributes fmi = as.createFileMetaInformation(iuid, cuid, tsuid);
             storeTo(as, fmi, data, file);
-            if (ObjectUtils.isNotEmpty(rollers)) {
+            if (ObjectKit.isNotEmpty(rollers)) {
                 rollers.supports(fmi, file, this.getClass());
             }
         } catch (Exception e) {
@@ -148,7 +148,7 @@ public class StoreSCP extends BasicCStoreSCP {
             out.writeFileMetaInformation(fmi);
             data.copyTo(out);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
     }
 

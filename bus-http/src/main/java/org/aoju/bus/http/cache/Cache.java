@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.ResponseBody;
@@ -151,14 +151,14 @@ public final class Cache implements Closeable, Flushable {
         try {
             entry = new Entry(snapshot.getSource(ENTRY_METADATA));
         } catch (IOException e) {
-            IoUtils.close(snapshot);
+            IoKit.close(snapshot);
             return null;
         }
 
         Response response = entry.response(snapshot);
 
         if (!entry.matches(request, response)) {
-            IoUtils.close(response.body());
+            IoKit.close(response.body());
             return null;
         }
 
@@ -283,7 +283,7 @@ public final class Cache implements Closeable, Flushable {
                 while (delegate.hasNext()) {
                     DiskLruCache.Snapshot snapshot = delegate.next();
                     try {
-                        BufferSource metadata = IoUtils.buffer(snapshot.getSource(ENTRY_METADATA));
+                        BufferSource metadata = IoKit.buffer(snapshot.getSource(ENTRY_METADATA));
                         nextUrl = metadata.readUtf8LineStrict();
                         return true;
                     } catch (IOException ignored) {
@@ -438,7 +438,7 @@ public final class Cache implements Closeable, Flushable {
          */
         Entry(Source in) throws IOException {
             try {
-                BufferSource source = IoUtils.buffer(in);
+                BufferSource source = IoKit.buffer(in);
                 url = source.readUtf8LineStrict();
                 requestMethod = source.readUtf8LineStrict();
                 Headers.Builder varyHeadersBuilder = new Headers.Builder();
@@ -504,7 +504,7 @@ public final class Cache implements Closeable, Flushable {
         }
 
         public void writeTo(DiskLruCache.Editor editor) throws IOException {
-            BufferSink sink = IoUtils.buffer(editor.newSink(ENTRY_METADATA));
+            BufferSink sink = IoKit.buffer(editor.newSink(ENTRY_METADATA));
 
             sink.writeUtf8(url)
                     .writeByte(Symbol.C_LF);
@@ -629,7 +629,7 @@ public final class Cache implements Closeable, Flushable {
             this.contentLength = contentLength;
 
             Source source = snapshot.getSource(ENTRY_BODY);
-            bodySource = IoUtils.buffer(new DelegateSource(source) {
+            bodySource = IoKit.buffer(new DelegateSource(source) {
                 @Override
                 public void close() throws IOException {
                     snapshot.close();
@@ -692,7 +692,7 @@ public final class Cache implements Closeable, Flushable {
                 done = true;
                 writeAbortCount++;
             }
-            IoUtils.close(cacheOut);
+            IoKit.close(cacheOut);
             try {
                 editor.abort();
             } catch (IOException ignored) {

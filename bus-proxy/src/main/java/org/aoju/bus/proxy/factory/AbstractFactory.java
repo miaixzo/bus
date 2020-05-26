@@ -25,8 +25,8 @@
 package org.aoju.bus.proxy.factory;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
 import org.aoju.bus.proxy.Factory;
 import org.aoju.bus.proxy.aspects.Aspectj;
 import org.aoju.bus.proxy.factory.cglib.CglibFactory;
@@ -122,7 +122,7 @@ public abstract class AbstractFactory extends Factory {
      * @return 代理对象
      */
     public static <T> T createProxy(T target, Class<? extends Aspectj> aspectClass) {
-        return createProxy(target, ReflectUtils.newInstance(aspectClass));
+        return createProxy(target, ReflectKit.newInstance(aspectClass));
     }
 
     /**
@@ -192,7 +192,7 @@ public abstract class AbstractFactory extends Factory {
      * @return 代理类
      */
     public static <T> T newProxyInstance(InvocationHandler invocationHandler, Class<?>... interfaces) {
-        return newProxyInstance(ClassUtils.getClassLoader(), invocationHandler, interfaces);
+        return newProxyInstance(ClassKit.getClassLoader(), invocationHandler, interfaces);
     }
 
     public boolean canProxy(Class[] proxyClasses) {

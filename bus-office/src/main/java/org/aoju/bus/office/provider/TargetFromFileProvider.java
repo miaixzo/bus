@@ -25,7 +25,7 @@
 package org.aoju.bus.office.provider;
 
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 
@@ -50,7 +50,7 @@ public class TargetFromFileProvider extends AbstractTargetProvider
 
     @Override
     public void onFailure(final File file, final Exception exception) {
-        FileUtils.delete(file);
+        FileKit.delete(file);
     }
 
 }

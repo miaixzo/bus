@@ -25,7 +25,7 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.builder.Builder;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.concurrent.*;
 
@@ -98,7 +98,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
             workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         }
         final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
-        RejectedExecutionHandler handler = ObjectUtils.defaultIfNull(builder.handler, new ThreadPoolExecutor.AbortPolicy());
+        RejectedExecutionHandler handler = ObjectKit.defaultIfNull(builder.handler, new ThreadPoolExecutor.AbortPolicy());
 
         final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(//
                 corePoolSize,

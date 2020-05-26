@@ -25,7 +25,7 @@
 package org.aoju.bus.image.nimble.codec.jpeg;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 
 /**
  * @author Kimi Liu
@@ -54,7 +54,7 @@ public class SOFSegment {
     }
 
     public int getHeaderLength() {
-        return ByteUtils.bytesToUShortBE(data, offset + 1);
+        return ByteKit.bytesToUShortBE(data, offset + 1);
     }
 
     public int getPrecision() {
@@ -62,11 +62,11 @@ public class SOFSegment {
     }
 
     public int getY() {
-        return ByteUtils.bytesToUShortBE(data, offset + 4);
+        return ByteKit.bytesToUShortBE(data, offset + 4);
     }
 
     public int getX() {
-        return ByteUtils.bytesToUShortBE(data, offset + 6);
+        return ByteKit.bytesToUShortBE(data, offset + 6);
     }
 
     public int getNumComponents() {

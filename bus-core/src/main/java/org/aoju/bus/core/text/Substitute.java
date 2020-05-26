@@ -26,7 +26,7 @@ package org.aoju.bus.core.text;
 
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.*;
 
@@ -867,7 +867,7 @@ public class Substitute {
      * @return this, 以启用链接
      */
     public Substitute setValueDelimiter(final String valueDelimiter) {
-        if (StringUtils.isEmpty(valueDelimiter)) {
+        if (StringKit.isEmpty(valueDelimiter)) {
             setValueDelimiterMatcher(null);
             return this;
         }

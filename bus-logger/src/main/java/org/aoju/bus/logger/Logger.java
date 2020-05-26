@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.logger;
 
-import org.aoju.bus.core.utils.CallerUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.CallerKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.level.Level;
 
 /**
@@ -51,7 +51,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void trace(String format, Object... arguments) {
-        trace(LogFactory.get(CallerUtils.getCallers()), format, arguments);
+        trace(LogFactory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -73,7 +73,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void debug(String format, Object... arguments) {
-        debug(LogFactory.get(CallerUtils.getCallers()), format, arguments);
+        debug(LogFactory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -95,7 +95,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void info(String format, Object... arguments) {
-        info(LogFactory.get(CallerUtils.getCallers()), format, arguments);
+        info(LogFactory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -117,7 +117,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void warn(String format, Object... arguments) {
-        warn(LogFactory.get(CallerUtils.getCallers()), format, arguments);
+        warn(LogFactory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -129,7 +129,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void warn(Throwable e, String format, Object... arguments) {
-        warn(LogFactory.get(CallerUtils.getCallers()), e, StringUtils.format(format, arguments));
+        warn(LogFactory.get(CallerKit.getCallers()), e, StringKit.format(format, arguments));
     }
 
     /**
@@ -162,7 +162,7 @@ public final class Logger {
      * @param e 需在日志中堆栈打印的异常
      */
     public static void error(Throwable e) {
-        error(LogFactory.get(CallerUtils.getCallers()), e);
+        error(LogFactory.get(CallerKit.getCallers()), e);
     }
 
     /**
@@ -173,7 +173,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void error(String format, Object... arguments) {
-        error(LogFactory.get(CallerUtils.getCallers()), format, arguments);
+        error(LogFactory.get(CallerKit.getCallers()), format, arguments);
     }
 
     /**
@@ -185,7 +185,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void error(Throwable e, String format, Object... arguments) {
-        error(LogFactory.get(CallerUtils.getCallers()), e, format, arguments);
+        error(LogFactory.get(CallerKit.getCallers()), e, format, arguments);
     }
 
     /**
@@ -230,7 +230,7 @@ public final class Logger {
      * @param arguments 变量对应的参数
      */
     public static void log(Level level, Throwable t, String format, Object... arguments) {
-        LogFactory.get(CallerUtils.getCallers()).log(FQCN, level, t, format, arguments);
+        LogFactory.get(CallerKit.getCallers()).log(FQCN, level, t, format, arguments);
     }
 
     /**
@@ -257,7 +257,7 @@ public final class Logger {
      * @return 获得日志, 自动判定日志发出者
      */
     public static Log get() {
-        return LogFactory.get(CallerUtils.getCallers());
+        return LogFactory.get(CallerKit.getCallers());
     }
 
     /**
@@ -266,7 +266,7 @@ public final class Logger {
      * @return the true/false
      */
     public boolean isTrace() {
-        return LogFactory.get(CallerUtils.getCallers()).isTrace();
+        return LogFactory.get(CallerKit.getCallers()).isTrace();
     }
 
     /**
@@ -275,7 +275,7 @@ public final class Logger {
      * @return the true/false
      */
     public boolean isDebug() {
-        return LogFactory.get(CallerUtils.getCallers()).isDebug();
+        return LogFactory.get(CallerKit.getCallers()).isDebug();
     }
 
     /**
@@ -284,7 +284,7 @@ public final class Logger {
      * @return the true/false
      */
     public boolean isInfo() {
-        return LogFactory.get(CallerUtils.getCallers()).isInfo();
+        return LogFactory.get(CallerKit.getCallers()).isInfo();
     }
 
     /**
@@ -293,7 +293,7 @@ public final class Logger {
      * @return the true/false
      */
     public boolean isWarn() {
-        return LogFactory.get(CallerUtils.getCallers()).isWarn();
+        return LogFactory.get(CallerKit.getCallers()).isWarn();
     }
 
     /**
@@ -302,7 +302,7 @@ public final class Logger {
      * @return the true/false
      */
     public boolean isError() {
-        return LogFactory.get(CallerUtils.getCallers()).isError();
+        return LogFactory.get(CallerKit.getCallers()).isError();
     }
 
 }

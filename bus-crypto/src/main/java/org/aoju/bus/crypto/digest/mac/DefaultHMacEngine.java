@@ -25,7 +25,7 @@
 package org.aoju.bus.crypto.digest.mac;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.crypto.Builder;
 
 import javax.crypto.Mac;
@@ -102,7 +102,7 @@ public class DefaultHMacEngine implements MacEngine {
     @Override
     public byte[] digest(InputStream data, int bufferLength) {
         if (bufferLength < 1) {
-            bufferLength = IoUtils.DEFAULT_BUFFER_SIZE;
+            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
         }
         byte[] buffer = new byte[bufferLength];
 

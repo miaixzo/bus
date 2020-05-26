@@ -27,13 +27,13 @@ package org.aoju.bus.http.bodys;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.Source;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * 内容对象
@@ -53,11 +53,11 @@ public abstract class RequestBody {
      * @return 传输请求体
      */
     public static RequestBody create(MediaType contentType, String content) {
-        Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
+        java.nio.charset.Charset charset = Charset.UTF_8;
         if (contentType != null) {
             charset = contentType.charset();
             if (charset == null) {
-                charset = org.aoju.bus.core.lang.Charset.UTF_8;
+                charset = Charset.UTF_8;
                 contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }
@@ -160,10 +160,10 @@ public abstract class RequestBody {
             public void writeTo(BufferSink sink) throws IOException {
                 Source source = null;
                 try {
-                    source = IoUtils.source(file);
+                    source = IoKit.source(file);
                     sink.writeAll(source);
                 } finally {
-                    IoUtils.close(source);
+                    IoKit.close(source);
                 }
             }
         };

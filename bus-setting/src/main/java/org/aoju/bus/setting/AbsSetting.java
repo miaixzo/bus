@@ -30,9 +30,9 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.OptNullString;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -60,7 +60,7 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
      * @return 值，如果字符串为{@code null}返回默认值
      */
     public String getStr(String key, String group, String defaultValue) {
-        return ObjectUtils.defaultIfNull(getByGroup(key, group), defaultValue);
+        return ObjectKit.defaultIfNull(getByGroup(key, group), defaultValue);
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
      * @return 值，如果字符串为{@code null}或者""返回默认值
      */
     public String getStrNotEmpty(String key, String group, String defaultValue) {
-        return ObjectUtils.defaultIfEmpty(getByGroup(key, group), defaultValue);
+        return ObjectKit.defaultIfEmpty(getByGroup(key, group), defaultValue);
     }
 
     /**
@@ -152,10 +152,10 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
      */
     public String[] getStrings(String key, String group, String delimiter) {
         final String value = getByGroup(key, group);
-        if (StringUtils.isBlank(value)) {
+        if (StringKit.isBlank(value)) {
             return null;
         }
-        return StringUtils.split(value, delimiter);
+        return StringKit.split(value, delimiter);
     }
 
     /**
@@ -236,7 +236,7 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
      */
     public Character getChar(String key, String group) {
         final String value = getByGroup(key, group);
-        if (StringUtils.isBlank(value)) {
+        if (StringKit.isBlank(value)) {
             return null;
         }
         return value.charAt(0);
@@ -275,7 +275,7 @@ public abstract class AbsSetting implements OptNullString<String>, Serializable 
      * @return Bean
      */
     public <T> T toBean(final String group, T bean) {
-        return BeanUtils.fillBean(bean, new ValueProvider<String>() {
+        return BeanKit.fillBean(bean, new ValueProvider<String>() {
             @Override
             public Object value(String key, Type valueType) {
                 return getByGroup(key, group);

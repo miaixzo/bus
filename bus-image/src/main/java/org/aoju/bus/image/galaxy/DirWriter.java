@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -280,13 +280,13 @@ public class DirWriter extends DirReader {
     }
 
     private void updateDirInfoHeader() {
-        ByteUtils.intToBytesLE(
+        ByteKit.intToBytesLE(
                 getOffsetOfFirstRootDirectoryRecord(),
                 dirInfoHeader, 8);
-        ByteUtils.intToBytesLE(
+        ByteKit.intToBytesLE(
                 getOffsetOfLastRootDirectoryRecord(),
                 dirInfoHeader, 20);
-        ByteUtils.intToBytesLE(
+        ByteKit.intToBytesLE(
                 getEncodingOptions().undefSequenceLength
                         ? -1 : nextRecordPos - firstRecordPos,
                 dirInfoHeader, 42);
@@ -294,9 +294,9 @@ public class DirWriter extends DirReader {
 
     private void restoreDirInfo() {
         setOffsetOfFirstRootDirectoryRecord(
-                ByteUtils.bytesToIntLE(dirInfoHeader, 8));
+                ByteKit.bytesToIntLE(dirInfoHeader, 8));
         setOffsetOfLastRootDirectoryRecord(
-                ByteUtils.bytesToIntLE(dirInfoHeader, 20));
+                ByteKit.bytesToIntLE(dirInfoHeader, 20));
     }
 
     private void writeDirInfoHeader() throws IOException {
@@ -306,13 +306,13 @@ public class DirWriter extends DirReader {
     }
 
     private void writeDirRecordHeader(Attributes rec) throws IOException {
-        ByteUtils.intToBytesLE(
+        ByteKit.intToBytesLE(
                 rec.getInt(Tag.OffsetOfTheNextDirectoryRecord, 0),
                 dirRecordHeader, 8);
-        ByteUtils.shortToBytesLE(
+        ByteKit.shortToBytesLE(
                 rec.getInt(Tag.RecordInUseFlag, 0),
                 dirRecordHeader, 20);
-        ByteUtils.intToBytesLE(
+        ByteKit.intToBytesLE(
                 rec.getInt(Tag.OffsetOfReferencedLowerLevelDirectoryEntity, 0),
                 dirRecordHeader, 30);
         raf.seek(rec.getItemPosition() + 8);

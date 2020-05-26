@@ -27,7 +27,7 @@ package org.aoju.bus.core.beans.copier.provider;
 import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -78,7 +78,7 @@ public class MapValueProvider implements ValueProvider<String> {
         Object value = map.get(key);
         if (null == value) {
             //检查下划线模式
-            value = map.get(StringUtils.toUnderlineCase(key));
+            value = map.get(StringKit.toUnderlineCase(key));
         }
 
         return Convert.convertWithCheck(valueType, value, null, this.ignoreError);
@@ -90,7 +90,7 @@ public class MapValueProvider implements ValueProvider<String> {
         if (map.containsKey(key)) {
             return true;
         } else {
-            return map.containsKey(StringUtils.toUnderlineCase(key));
+            return map.containsKey(StringKit.toUnderlineCase(key));
         }
     }
 

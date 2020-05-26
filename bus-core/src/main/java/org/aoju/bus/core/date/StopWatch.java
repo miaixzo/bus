@@ -26,9 +26,9 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.DateKit;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -278,7 +278,7 @@ public class StopWatch {
      * @see #getTotalTimeSeconds()
      */
     public long getTotalTimeMillis() {
-        return DateUtils.nanosToMillis(this.totalTimeNanos);
+        return DateKit.nanosToMillis(this.totalTimeNanos);
     }
 
     /**
@@ -289,7 +289,7 @@ public class StopWatch {
      * @see #getTotalTimeMillis()
      */
     public double getTotalTimeSeconds() {
-        return DateUtils.nanosToSeconds(this.totalTimeNanos);
+        return DateKit.nanosToSeconds(this.totalTimeNanos);
     }
 
     /**
@@ -319,7 +319,7 @@ public class StopWatch {
      * @return 任务信息
      */
     public String shortSummary() {
-        return StringUtils.format("StopWatch '{}': running time = {} ns", this.id, this.totalTimeNanos);
+        return StringKit.format("StopWatch '{}': running time = {} ns", this.id, this.totalTimeNanos);
     }
 
     /**
@@ -329,13 +329,13 @@ public class StopWatch {
      */
     public String prettyPrint() {
         StringBuilder sb = new StringBuilder(shortSummary());
-        sb.append(FileUtils.getLineSeparator());
+        sb.append(FileKit.getLineSeparator());
         if (null == this.taskList) {
             sb.append("No task info kept");
         } else {
-            sb.append("---------------------------------------------").append(FileUtils.getLineSeparator());
-            sb.append("ns         %     Task name").append(FileUtils.getLineSeparator());
-            sb.append("---------------------------------------------").append(FileUtils.getLineSeparator());
+            sb.append("---------------------------------------------").append(FileKit.getLineSeparator());
+            sb.append("ns         %     Task name").append(FileKit.getLineSeparator());
+            sb.append("---------------------------------------------").append(FileKit.getLineSeparator());
 
             final NumberFormat nf = NumberFormat.getNumberInstance();
             nf.setMinimumIntegerDigits(9);
@@ -347,7 +347,7 @@ public class StopWatch {
             for (TaskInfo task : getTaskInfo()) {
                 sb.append(nf.format(task.getTimeNanos())).append("  ");
                 sb.append(pf.format((double) task.getTimeNanos() / getTotalTimeNanos())).append("  ");
-                sb.append(task.getTaskName()).append(FileUtils.getLineSeparator());
+                sb.append(task.getTaskName()).append(FileKit.getLineSeparator());
             }
         }
         return sb.toString();
@@ -409,7 +409,7 @@ public class StopWatch {
          * @see #getTimeSeconds()
          */
         public long getTimeMillis() {
-            return DateUtils.nanosToMillis(this.timeNanos);
+            return DateKit.nanosToMillis(this.timeNanos);
         }
 
         /**
@@ -420,7 +420,7 @@ public class StopWatch {
          * @see #getTimeNanos()
          */
         public double getTimeSeconds() {
-            return DateUtils.nanosToSeconds(this.timeNanos);
+            return DateKit.nanosToSeconds(this.timeNanos);
         }
     }
 

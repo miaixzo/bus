@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.intercept;
 
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.limiter.resource.LimitedResourceSource;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;
 
@@ -47,7 +47,7 @@ abstract class LimitedResourceSourcePointcut extends StaticMethodMatcherPointcut
     @Override
     public boolean matches(Method method, Class<?> aClass) {
         LimitedResourceSource limitedResourceSource = this.getLimitedResourceSource();
-        boolean matched = limitedResourceSource != null && !CollUtils.isEmpty(limitedResourceSource.getLimitedResource(aClass, method));
+        boolean matched = limitedResourceSource != null && !CollKit.isEmpty(limitedResourceSource.getLimitedResource(aClass, method));
         if (matched == true) {
             return matched;
         }
@@ -61,7 +61,7 @@ abstract class LimitedResourceSourcePointcut extends StaticMethodMatcherPointcut
             return false;
         } else {
             LimitedResourceSourcePointcut otherPc = (LimitedResourceSourcePointcut) other;
-            return ObjectUtils.nullSafeEquals(this.getLimitedResourceSource(), otherPc.getLimitedResourceSource());
+            return ObjectKit.nullSafeEquals(this.getLimitedResourceSource(), otherPc.getLimitedResourceSource());
         }
     }
 

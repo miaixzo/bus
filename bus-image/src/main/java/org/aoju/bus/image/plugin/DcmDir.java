@@ -26,7 +26,7 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.DirReader;
@@ -183,7 +183,7 @@ public class DcmDir {
     }
 
     private void close() {
-        IoUtils.close(in);
+        IoKit.close(in);
         in = null;
         out = null;
     }

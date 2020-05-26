@@ -26,7 +26,7 @@ package org.aoju.bus.starter.oauth;
 
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Provider;
@@ -84,7 +84,7 @@ public class AuthProviderService {
 
     public Provider require(Registry type) {
         Context context = CACHE.get(type);
-        if (ObjectUtils.isEmpty(context)) {
+        if (ObjectKit.isEmpty(context)) {
             context = properties.getType().get(type);
         }
         if (Registry.ALIPAY.equals(type)) {

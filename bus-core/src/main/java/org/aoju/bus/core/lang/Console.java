@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.System;
 import java.util.Scanner;
@@ -101,7 +101,7 @@ public class Console {
      * @param values   值
      */
     public static void print(String template, Object... values) {
-        System.out.println(StringUtils.format(template, values));
+        System.out.println(StringKit.format(template, values));
     }
 
     /**
@@ -111,7 +111,7 @@ public class Console {
      * @param len      打印长度
      */
     public static void printProgress(char showChar, int len) {
-        print("{}{}", Symbol.CR, StringUtils.repeat(showChar, len));
+        print("{}{}", Symbol.CR, StringKit.repeat(showChar, len));
     }
 
     /**
@@ -165,7 +165,7 @@ public class Console {
      * @param values   值
      */
     public static void error(Throwable t, String template, Object... values) {
-        System.err.println(StringUtils.format(template, values));
+        System.err.println(StringKit.format(template, values));
         if (null != t) {
             t.printStackTrace(System.err);
             System.err.flush();

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.swing;
 
-import org.aoju.bus.core.utils.SwingUtils;
+import org.aoju.bus.core.toolkit.SwingKit;
 
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -45,7 +45,7 @@ public abstract class StringListener implements ClipboardListener, Serializable 
     @Override
     public Transferable onChange(Clipboard clipboard, Transferable contents) {
         if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-            return onChange(clipboard, SwingUtils.getStr(contents));
+            return onChange(clipboard, SwingKit.getStr(contents));
         }
         return null;
     }

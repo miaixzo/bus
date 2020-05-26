@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.accord;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Address;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Route;
@@ -207,7 +207,7 @@ public final class ConnectionPool {
         }
 
         for (RealConnection connection : evictedConnections) {
-            IoUtils.close(connection.socket());
+            IoKit.close(connection.socket());
         }
     }
 
@@ -262,7 +262,7 @@ public final class ConnectionPool {
             }
         }
 
-        IoUtils.close(longestIdleConnection.socket());
+        IoKit.close(longestIdleConnection.socket());
         // 立即清理.
         return 0;
     }

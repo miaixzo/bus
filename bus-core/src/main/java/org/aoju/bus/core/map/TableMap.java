@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.map;
 
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
 import java.util.*;
@@ -61,8 +61,8 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @param values 值列表
      */
     public TableMap(K[] keys, V[] values) {
-        this.keys = CollUtils.toList(keys);
-        this.values = CollUtils.toList(values);
+        this.keys = CollKit.toList(keys);
+        this.values = CollKit.toList(values);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
     @Override
     public boolean isEmpty() {
-        return CollUtils.isEmpty(keys);
+        return CollKit.isEmpty(keys);
     }
 
     @Override
@@ -115,9 +115,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @return 值列表
      */
     public List<V> getValues(K key) {
-        return CollUtils.getAny(
+        return CollKit.getAny(
                 this.values,
-                CollUtils.indexOfAll(this.keys, (ele) -> ObjectUtils.equal(ele, key))
+                CollKit.indexOfAll(this.keys, (ele) -> ObjectKit.equal(ele, key))
         );
     }
 
@@ -128,9 +128,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @return 值列表
      */
     public List<K> getKeys(V value) {
-        return CollUtils.getAny(
+        return CollKit.getAny(
                 this.keys,
-                CollUtils.indexOfAll(this.values, (ele) -> ObjectUtils.equal(ele, value))
+                CollKit.indexOfAll(this.values, (ele) -> ObjectKit.equal(ele, value))
         );
     }
 

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
-import org.aoju.bus.core.utils.MapUtils;
+import org.aoju.bus.core.toolkit.MapKit;
 
 import java.util.Map;
 
@@ -179,7 +179,7 @@ public class CopyOptions {
      * @return 反转映射
      */
     protected Map<String, String> getReversedMapping() {
-        return (null != this.fieldMapping) ? MapUtils.reverse(this.fieldMapping) : null;
+        return (null != this.fieldMapping) ? MapKit.reverse(this.fieldMapping) : null;
     }
 
 }

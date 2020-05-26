@@ -26,8 +26,8 @@ package org.aoju.bus.image;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StreamUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StreamKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.BulkData;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
@@ -126,7 +126,7 @@ public class Builder {
             return new String[]{Symbol.STAR};
         }
 
-        String[] uids = StringUtils.split(s, Symbol.COMMA);
+        String[] uids = StringKit.split(s, Symbol.COMMA);
         for (int i = 0; i < uids.length; i++) {
             uids[i] = toUID(uids[i]);
         }
@@ -330,7 +330,7 @@ public class Builder {
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
                     dos.write(p.buffer, 0, p.realBufferLength);
                 }
-                StreamUtils.copy(bis, dos, p.buffer);
+                StreamKit.copy(bis, dos, p.buffer);
                 if ((itemLen & 1) != 0) {
                     dos.write(0);
                 }
@@ -346,7 +346,7 @@ public class Builder {
         while (p.realBufferLength == p.buffer.length && p.realBufferLength < MAX_BUFFER_SIZE) {
             grow += p.realBufferLength;
             p.buffer = Arrays.copyOf(p.buffer, grow);
-            p.realBufferLength += StreamUtils.readAvailable(in, p.buffer, p.realBufferLength, p.buffer.length - p.realBufferLength);
+            p.realBufferLength += StreamKit.readAvailable(in, p.buffer, p.realBufferLength, p.buffer.length - p.realBufferLength);
             boolean jpgHeader;
             if (mpeg) {
                 MPEGHeader mpegHeader = new MPEGHeader(p.buffer);

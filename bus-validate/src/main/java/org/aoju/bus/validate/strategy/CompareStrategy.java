@@ -24,10 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.MathUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Compare;
 import org.aoju.bus.validate.validators.Matcher;
@@ -45,14 +45,14 @@ public class CompareStrategy implements Matcher<Object, Compare> {
 
     @Override
     public boolean on(Object object, Compare annotation, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
         boolean _matched = true;
-        Object obj = ReflectUtils.getFieldValue(object, annotation.with());
+        Object obj = ReflectKit.getFieldValue(object, annotation.with());
 
         if (obj instanceof String) {
-            if (MathUtils.isNumber(obj.toString())) {
+            if (MathKit.isNumber(obj.toString())) {
                 int _compValue = new BigDecimal(obj.toString()).compareTo(new BigDecimal(object.toString()));
                 switch (annotation.cond()) {
                     case EQ:
@@ -79,10 +79,10 @@ public class CompareStrategy implements Matcher<Object, Compare> {
             } else {
                 switch (annotation.cond()) {
                     case EQ:
-                        _matched = StringUtils.equals(obj.toString(), object.toString());
+                        _matched = StringKit.equals(obj.toString(), object.toString());
                         break;
                     case NOT_EQ:
-                        _matched = !StringUtils.equals(obj.toString(), object.toString());
+                        _matched = !StringKit.equals(obj.toString(), object.toString());
                         break;
                     default:
                 }

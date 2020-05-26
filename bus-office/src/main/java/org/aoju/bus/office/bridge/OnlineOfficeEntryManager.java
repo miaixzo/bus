@@ -27,8 +27,8 @@ package org.aoju.bus.office.bridge;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.builtin.MadeInOffice;
 import org.aoju.bus.office.metric.AbstractOfficeEntryManager;
 import org.aoju.bus.office.metric.RequestBuilder;
@@ -70,7 +70,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
     private static File getFile(final URL url) {
         try {
             return new File(
-                    new URI(StringUtils.replace(url.toString(), Symbol.SPACE, "%20")).getSchemeSpecificPart());
+                    new URI(StringKit.replace(url.toString(), Symbol.SPACE, "%20")).getSchemeSpecificPart());
         } catch (URISyntaxException ex) {
             return new File(url.getFile());
         }
@@ -81,7 +81,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
         if (resourceLocation.startsWith("classpath:")) {
             final String path = resourceLocation.substring("classpath:".length());
             final String description = "class path resource [" + path + "]";
-            final ClassLoader cl = ClassUtils.getDefaultClassLoader();
+            final ClassLoader cl = ClassKit.getDefaultClassLoader();
             final URL url = (cl != null ? cl.getResource(path) : ClassLoader.getSystemResource(path));
             if (url == null) {
                 throw new FileNotFoundException(
@@ -99,12 +99,12 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
     private String buildUrl(final String connectionUrl) throws MalformedURLException {
         final URL url = new URL(connectionUrl);
         final String path = url.toExternalForm().toLowerCase();
-        if (StringUtils.endsWithAny(path, "lool/convert-to", "lool/convert-to/")) {
-            return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH);
-        } else if (StringUtils.endsWithAny(path, "lool", "lool/")) {
-            return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH) + "convert-to/";
+        if (StringKit.endsWithAny(path, "lool/convert-to", "lool/convert-to/")) {
+            return StringKit.appendIfMissing(connectionUrl, Symbol.SLASH);
+        } else if (StringKit.endsWithAny(path, "lool", "lool/")) {
+            return StringKit.appendIfMissing(connectionUrl, Symbol.SLASH) + "convert-to/";
         }
-        return StringUtils.appendIfMissing(connectionUrl, Symbol.SLASH) + "lool/convert-to/";
+        return StringKit.appendIfMissing(connectionUrl, Symbol.SLASH) + "lool/convert-to/";
     }
 
     @Override

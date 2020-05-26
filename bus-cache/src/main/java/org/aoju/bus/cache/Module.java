@@ -33,7 +33,7 @@ import com.google.inject.name.Names;
 import org.aoju.bus.cache.magic.AbstractReader;
 import org.aoju.bus.cache.magic.MultiCacheReader;
 import org.aoju.bus.cache.magic.SingleCacheReader;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -68,7 +68,7 @@ public class Module extends AbstractModule {
     @Override
     protected void configure() {
         Preconditions.checkArgument(config != null, "config param can not be null.");
-        Preconditions.checkArgument(CollUtils.isNotEmpty(config.getCaches()), "caches param can not be empty.");
+        Preconditions.checkArgument(CollKit.isNotEmpty(config.getCaches()), "caches param can not be empty.");
 
         bind(Context.class).toInstance(config);
 

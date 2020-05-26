@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -180,7 +180,7 @@ final class RelayBuffer {
             complete = true;
         }
 
-        IoUtils.close(upstream);
+        IoKit.close(upstream);
         upstream = null;
     }
 
@@ -322,7 +322,7 @@ final class RelayBuffer {
             }
 
             if (fileToClose != null) {
-                IoUtils.close(fileToClose);
+                IoKit.close(fileToClose);
             }
         }
     }

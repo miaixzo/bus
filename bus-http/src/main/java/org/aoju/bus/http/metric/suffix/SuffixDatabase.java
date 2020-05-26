@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.GzipSource;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -283,7 +283,7 @@ public final class SuffixDatabase {
         InputStream resource = SuffixDatabase.class.getResourceAsStream(PUBLIC_SUFFIX_RESOURCE);
         if (resource == null) return;
 
-        BufferSource bufferedSource = IoUtils.buffer(new GzipSource(IoUtils.source(resource)));
+        BufferSource bufferedSource = IoKit.buffer(new GzipSource(IoKit.source(resource)));
         try {
             int totalBytes = bufferedSource.readInt();
             publicSuffixListBytes = new byte[totalBytes];
@@ -293,7 +293,7 @@ public final class SuffixDatabase {
             publicSuffixExceptionListBytes = new byte[totalExceptionBytes];
             bufferedSource.readFully(publicSuffixExceptionListBytes);
         } finally {
-            IoUtils.close(bufferedSource);
+            IoKit.close(bufferedSource);
         }
 
         synchronized (this) {

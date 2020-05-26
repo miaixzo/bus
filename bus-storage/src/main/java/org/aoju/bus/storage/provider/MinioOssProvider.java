@@ -31,8 +31,8 @@ import io.minio.errors.*;
 import io.minio.messages.Item;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -69,10 +69,10 @@ public class MinioOssProvider extends AbstractProvider {
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
         Assert.notNull(this.context.isSecure(), "[secure] not defined");
-        Assert.notBlank(StringUtils.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
-        Assert.notBlank(StringUtils.toString(this.context.getConnectTimeout()), "[connectTimeout] not defined");
-        Assert.notBlank(StringUtils.toString(this.context.getWriteTimeout()), "[writeTimeout] not defined");
-        Assert.notBlank(StringUtils.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
+        Assert.notBlank(StringKit.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
+        Assert.notBlank(StringKit.toString(this.context.getConnectTimeout()), "[connectTimeout] not defined");
+        Assert.notBlank(StringKit.toString(this.context.getWriteTimeout()), "[writeTimeout] not defined");
+        Assert.notBlank(StringKit.toString(this.context.getReadTimeout()), "[readTimeout] not defined");
         try {
             this.client = new MinioClient(
                     this.context.getEndpoint(),
@@ -119,7 +119,7 @@ public class MinioOssProvider extends AbstractProvider {
         try {
             InputStream inputStream = this.client.getObject(bucket, fileName);
             OutputStream outputStream = new FileOutputStream(file);
-            IoUtils.copy(inputStream, outputStream);
+            IoKit.copy(inputStream, outputStream);
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
@@ -149,7 +149,7 @@ public class MinioOssProvider extends AbstractProvider {
                                     Attachs storageItem = new Attachs();
                                     Item item = itemResult.get();
                                     storageItem.setName(item.objectName());
-                                    storageItem.setSize(StringUtils.toString(item.objectSize()));
+                                    storageItem.setSize(StringKit.toString(item.objectSize()));
                                     Map<String, Object> extend = Maps.newHashMap();
                                     extend.put("tag", item.etag());
                                     extend.put("storageClass", item.storageClass());

@@ -25,7 +25,7 @@
 package org.aoju.bus.logger.dialect.log4j;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -128,11 +128,11 @@ public class Log4jLog extends AbstractAware {
                 log4jLevel = Level.ERROR;
                 break;
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
 
         if (logger.isEnabledFor(log4jLevel)) {
-            logger.log(fqcn, log4jLevel, StringUtils.format(format, arguments), t);
+            logger.log(fqcn, log4jLevel, StringKit.format(format, arguments), t);
         }
     }
 

@@ -27,15 +27,15 @@ package org.aoju.bus.http.bodys;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.MediaType;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Callback;
 import org.aoju.bus.http.NewCall;
 import org.aoju.bus.http.Response;
 
 import java.io.*;
-import java.nio.charset.Charset;
 
 /**
  * 从源服务器到客户机应用程序的一次性流，包含响应主体的原始字节。 到web服务器的活动连接支持每个响应主体。
@@ -77,11 +77,11 @@ public abstract class ResponseBody implements Closeable {
      * @return 新响应体
      */
     public static ResponseBody create(MediaType contentType, String content) {
-        Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
+        java.nio.charset.Charset charset = Charset.UTF_8;
         if (contentType != null) {
             charset = contentType.charset();
             if (charset == null) {
-                charset = org.aoju.bus.core.lang.Charset.UTF_8;
+                charset = Charset.UTF_8;
                 contentType = MediaType.valueOf(contentType + "; charset=utf-8");
             }
         }
@@ -164,7 +164,7 @@ public abstract class ResponseBody implements Closeable {
         try {
             bytes = source.readByteArray();
         } finally {
-            IoUtils.close(source);
+            IoKit.close(source);
         }
         if (contentLength != -1 && contentLength != bytes.length) {
             throw new IOException("Content-Length (" + contentLength + ") and stream length (" + bytes.length + ") disagree");
@@ -180,31 +180,31 @@ public abstract class ResponseBody implements Closeable {
     public final String string() throws IOException {
         BufferSource source = source();
         try {
-            Charset charset = Builder.bomAwareCharset(source, charset());
+            java.nio.charset.Charset charset = Builder.bomAwareCharset(source, charset());
             return source.readString(charset);
         } finally {
-            IoUtils.close(source);
+            IoKit.close(source);
         }
     }
 
-    private Charset charset() {
+    private java.nio.charset.Charset charset() {
         MediaType contentType = contentType();
-        return contentType != null ? contentType.charset(org.aoju.bus.core.lang.Charset.UTF_8) : org.aoju.bus.core.lang.Charset.UTF_8;
+        return contentType != null ? contentType.charset(Charset.UTF_8) : Charset.UTF_8;
     }
 
     @Override
     public void close() {
-        IoUtils.close(source());
+        IoKit.close(source());
     }
 
     static final class BomAwareReader extends Reader {
         private final BufferSource source;
-        private final Charset charset;
+        private final java.nio.charset.Charset charset;
 
         private boolean closed;
         private Reader delegate;
 
-        BomAwareReader(BufferSource source, Charset charset) {
+        BomAwareReader(BufferSource source, java.nio.charset.Charset charset) {
             this.source = source;
             this.charset = charset;
         }
@@ -215,7 +215,7 @@ public abstract class ResponseBody implements Closeable {
 
             Reader delegate = this.delegate;
             if (delegate == null) {
-                Charset charset = Builder.bomAwareCharset(source, this.charset);
+                java.nio.charset.Charset charset = Builder.bomAwareCharset(source, this.charset);
                 delegate = this.delegate = new InputStreamReader(source.inputStream(), charset);
             }
             return delegate.read(cbuf, off, len);

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
 
 /**
  * 类转换器
@@ -41,7 +41,7 @@ public class ClassConverter extends AbstractConverter<Class<?>> {
     protected Class<?> convertInternal(Object value) {
         String valueStr = convertToStr(value);
         try {
-            return ClassUtils.getClassLoader().loadClass(valueStr);
+            return ClassKit.getClassLoader().loadClass(valueStr);
         } catch (Exception e) {
             throw new InstrumentException(e);
         }

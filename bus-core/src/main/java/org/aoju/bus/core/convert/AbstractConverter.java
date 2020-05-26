@@ -24,10 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.CharUtils;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.CharKit;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
     public T convert(Object value, T defaultValue) {
         Class<T> targetType = getTargetType();
         if (null == targetType && null == defaultValue) {
-            throw new NullPointerException(StringUtils.format("[type] and [defaultValue] are both null for Converter [{}], we can not know what type to convert !", this.getClass().getName()));
+            throw new NullPointerException(StringKit.format("[type] and [defaultValue] are both null for Converter [{}], we can not know what type to convert !", this.getClass().getName()));
         }
         if (null == targetType) {
             targetType = (Class<T>) defaultValue.getClass();
@@ -67,7 +67,9 @@ public abstract class AbstractConverter<T> implements Converter<T> {
             }
             return ((null == result) ? defaultValue : result);
         } else {
-            throw new IllegalArgumentException(StringUtils.format("Default value [{}] is not the instance of [{}]", defaultValue, targetType));
+            throw new IllegalArgumentException(
+                    StringKit.format("Default value [{}]({}) is not the instance of [{}]", defaultValue, defaultValue.getClass(), targetType));
+
         }
     }
 
@@ -120,11 +122,11 @@ public abstract class AbstractConverter<T> implements Converter<T> {
         }
         if (value instanceof CharSequence) {
             return value.toString();
-        } else if (ArrayUtils.isArray(value)) {
-            return ArrayUtils.toString(value);
-        } else if (CharUtils.isChar(value)) {
+        } else if (ArrayKit.isArray(value)) {
+            return ArrayKit.toString(value);
+        } else if (CharKit.isChar(value)) {
             //对于ASCII字符使用缓存加速转换，减少空间创建
-            return CharUtils.toString((char) value);
+            return CharKit.toString((char) value);
         }
         return value.toString();
     }
@@ -135,7 +137,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
      * @return 此类的泛型类型, 可能为{@code null}
      */
     public Class<T> getTargetType() {
-        return (Class<T>) ClassUtils.getTypeArgument(getClass());
+        return (Class<T>) ClassKit.getTypeArgument(getClass());
     }
 
 }

@@ -27,7 +27,7 @@ package org.aoju.bus.http.metric.http;
 import org.aoju.bus.core.Version;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.BufferedBody;
@@ -535,7 +535,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     public void setIfModifiedSince(long newValue) {
         super.setIfModifiedSince(newValue);
         if (ifModifiedSince != 0) {
-            requestHeaders.set("If-Modified-Since", DateUtils.format(new Date(ifModifiedSince)));
+            requestHeaders.set("If-Modified-Since", DateKit.format(new Date(ifModifiedSince)));
         } else {
             requestHeaders.removeAll("If-Modified-Since");
         }

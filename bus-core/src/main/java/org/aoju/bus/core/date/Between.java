@@ -26,7 +26,7 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -128,8 +128,8 @@ public class Between {
      * @return 相差月数
      */
     public long betweenMonth(boolean isReset) {
-        final Calendar beginCal = DateUtils.calendar(begin);
-        final Calendar endCal = DateUtils.calendar(end);
+        final Calendar beginCal = DateKit.calendar(begin);
+        final Calendar endCal = DateKit.calendar(end);
 
         final int betweenYear = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
         final int betweenMonthOfYear = endCal.get(Calendar.MONTH) - beginCal.get(Calendar.MONTH);
@@ -154,8 +154,8 @@ public class Between {
      * @return 相差年数
      */
     public long betweenYear(boolean isReset) {
-        final Calendar beginCal = DateUtils.calendar(begin);
-        final Calendar endCal = DateUtils.calendar(end);
+        final Calendar beginCal = DateKit.calendar(begin);
+        final Calendar endCal = DateKit.calendar(end);
 
         int result = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
         if (false == isReset) {
@@ -185,7 +185,7 @@ public class Between {
      * @return 字符串
      */
     public String toString(Fields.Level level) {
-        return DateUtils.formatBetween(between(Fields.Unit.MS), level);
+        return DateKit.formatBetween(between(Fields.Unit.MS), level);
     }
 
     @Override

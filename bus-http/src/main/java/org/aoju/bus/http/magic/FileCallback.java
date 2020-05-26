@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.magic;
 
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.http.NewCall;
 import org.aoju.bus.logger.Logger;
 
@@ -55,7 +55,7 @@ public abstract class FileCallback extends AbsCallback {
                 File file = new File(fileAbsolutePath);
                 FileOutputStream fos = new FileOutputStream(file);
                 ByteArrayInputStream bis = new ByteArrayInputStream(response.body().bytes());
-                StreamUtils.copy(bis, fos);
+                StreamKit.copy(bis, fos);
                 onSuccess(newCall, file, id);
             } else {
                 onSuccess(newCall, response.body().byteStream(), id);

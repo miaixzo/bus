@@ -25,8 +25,8 @@
 package org.aoju.bus.core;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 用于识别当前版本号和版权声明!
@@ -70,7 +70,7 @@ public class Version {
      * @return 版本号
      */
     public static String major() {
-        return StringUtils.split(get(), Symbol.DOT)[0];
+        return StringKit.split(get(), Symbol.DOT)[0];
     }
 
     /**
@@ -79,7 +79,7 @@ public class Version {
      * @return 次要号
      */
     public static String minor() {
-        return StringUtils.split(get(), Symbol.DOT)[1];
+        return StringKit.split(get(), Symbol.DOT)[1];
     }
 
     /**
@@ -88,7 +88,7 @@ public class Version {
      * @return 阶段号
      */
     public static String stage() {
-        return StringUtils.split(get(), Symbol.DOT)[2];
+        return StringKit.split(get(), Symbol.DOT)[2];
     }
 
     /**
@@ -97,7 +97,7 @@ public class Version {
      * @return 质量
      */
     public static String level() {
-        return StringUtils.split(get(), Symbol.DOT)[3];
+        return StringKit.split(get(), Symbol.DOT)[3];
     }
 
     /**
@@ -192,7 +192,7 @@ public class Version {
      * @return {int}
      */
     private int compare(String version) {
-        return ObjectUtils.compare(get(), version, complete);
+        return ObjectKit.compare(get(), version, complete);
     }
 
 }

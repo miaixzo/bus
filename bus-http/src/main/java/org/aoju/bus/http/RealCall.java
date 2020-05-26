@@ -27,7 +27,7 @@ package org.aoju.bus.http;
 import org.aoju.bus.core.io.AsyncTimeout;
 import org.aoju.bus.core.io.Timeout;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.accord.ConnectInterceptor;
 import org.aoju.bus.http.accord.StreamAllocation;
 import org.aoju.bus.http.accord.platform.Platform;
@@ -204,7 +204,7 @@ public final class RealCall implements NewCall {
 
         Response response = chain.proceed(originalRequest);
         if (retryAndFollowUp.isCanceled()) {
-            IoUtils.close(response);
+            IoKit.close(response);
             throw new IOException("Canceled");
         }
         return response;

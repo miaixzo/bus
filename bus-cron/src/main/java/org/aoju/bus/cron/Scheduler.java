@@ -28,8 +28,8 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.thread.ExecutorBuilder;
 import org.aoju.bus.core.thread.ThreadBuilder;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.cron.factory.InvokeTask;
 import org.aoju.bus.cron.factory.RunnableTask;
 import org.aoju.bus.cron.factory.Task;
@@ -215,13 +215,13 @@ public class Scheduler {
      * @return this
      */
     public Scheduler schedule(Setting cronSetting) {
-        if (CollUtils.isNotEmpty(cronSetting)) {
+        if (CollKit.isNotEmpty(cronSetting)) {
             String group;
             for (Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupedMap().entrySet()) {
                 group = groupedEntry.getKey();
                 for (Entry<String, String> entry : groupedEntry.getValue().entrySet()) {
                     String jobClass = entry.getKey();
-                    if (StringUtils.isNotBlank(group)) {
+                    if (StringKit.isNotBlank(group)) {
                         jobClass = group + Symbol.DOT + jobClass;
                     }
                     final String pattern = entry.getValue();

@@ -26,8 +26,8 @@ package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.BasicType;
-import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -275,7 +275,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @return vo
      */
     public <T> T toBean(Class<T> clazz) {
-        return BeanUtils.mapToBean(this, clazz, false);
+        return BeanKit.mapToBean(this, clazz, false);
     }
 
     /**
@@ -287,7 +287,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @return Bean
      */
     public <T> T toBean(T bean, boolean isToCamelCase) {
-        BeanUtils.fillBeanWithMap(this, bean, isToCamelCase, false);
+        BeanKit.fillBeanWithMap(this, bean, isToCamelCase, false);
         return bean;
     }
 
@@ -299,7 +299,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @return Bean
      */
     public <T> T toBeanIgnoreCase(T bean) {
-        BeanUtils.fillBeanWithMapIgnoreCase(this, bean, false);
+        BeanKit.fillBeanWithMapIgnoreCase(this, bean, false);
         return bean;
     }
 
@@ -311,7 +311,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @return Bean
      */
     public <T> T toBeanWithCamelCase(T bean) {
-        BeanUtils.fillBeanWithMap(this, bean, true, false);
+        BeanKit.fillBeanWithMap(this, bean, true, false);
         return bean;
     }
 
@@ -323,7 +323,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @return vo
      */
     public <T> T toBeanIgnoreCase(Class<T> clazz) {
-        return BeanUtils.mapToBeanIgnoreCase(this, clazz, false);
+        return BeanKit.mapToBeanIgnoreCase(this, clazz, false);
     }
 
     /**
@@ -336,7 +336,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      */
     public <T> Dict parseBean(T bean) {
         Assert.notNull(bean, "Bean class must be not null");
-        this.putAll(BeanUtils.beanToMap(bean));
+        this.putAll(BeanKit.beanToMap(bean));
         return this;
     }
 
@@ -352,7 +352,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      */
     public <T> Dict parseBean(T bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
         Assert.notNull(bean, "Bean class must be not null");
-        this.putAll(BeanUtils.beanToMap(bean, isToUnderlineCase, ignoreNullValue));
+        this.putAll(BeanKit.beanToMap(bean, isToUnderlineCase, ignoreNullValue));
         return this;
     }
 
@@ -365,7 +365,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      * @param withoutNames 不需要去除的字段名
      */
     public <T extends Dict> void removeEqual(T dict, String... withoutNames) {
-        HashSet<String> withoutSet = CollUtils.newHashSet(withoutNames);
+        HashSet<String> withoutSet = CollKit.newHashSet(withoutNames);
         for (Map.Entry<String, Object> entry : dict.entrySet()) {
             if (withoutSet.contains(entry.getKey())) {
                 continue;

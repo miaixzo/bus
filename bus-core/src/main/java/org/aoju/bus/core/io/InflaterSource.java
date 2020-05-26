@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public final class InflaterSource implements Source {
     private boolean closed;
 
     public InflaterSource(Source source, Inflater inflater) {
-        this(IoUtils.buffer(source), inflater);
+        this(IoKit.buffer(source), inflater);
     }
 
     InflaterSource(BufferSource source, Inflater inflater) {

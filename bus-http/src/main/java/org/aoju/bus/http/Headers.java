@@ -26,7 +26,7 @@ package org.aoju.bus.http;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.*;
 
@@ -110,7 +110,7 @@ public final class Headers {
         for (int i = 0, length = name.length(); i < length; i++) {
             char c = name.charAt(i);
             if (c <= '\u0020' || c >= '\u007f') {
-                throw new IllegalArgumentException(StringUtils.format(
+                throw new IllegalArgumentException(StringKit.format(
                         "Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
             }
         }
@@ -121,7 +121,7 @@ public final class Headers {
         for (int i = 0, length = value.length(); i < length; i++) {
             char c = value.charAt(i);
             if ((c <= '\u001f' && c != Symbol.C_HT) || c >= '\u007f') {
-                throw new IllegalArgumentException(StringUtils.format(
+                throw new IllegalArgumentException(StringKit.format(
                         "Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
             }
         }

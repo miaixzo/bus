@@ -25,14 +25,14 @@
 package org.aoju.bus.starter.wrapper;
 
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.utils.MapUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -60,16 +60,16 @@ public class WrapperConfiguration {
         registrationBean.setEnabled(this.properties.getEnabled());
         registrationBean.setOrder(this.properties.getOrder());
         registrationBean.setFilter(new BodyCacheFilter());
-        if (!StringUtils.isEmpty(this.properties.getName())) {
+        if (!StringKit.isEmpty(this.properties.getName())) {
             registrationBean.setName(this.properties.getName());
         }
-        if (MapUtils.isNotEmpty(this.properties.getInitParameters())) {
+        if (MapKit.isNotEmpty(this.properties.getInitParameters())) {
             registrationBean.setInitParameters(this.properties.getInitParameters());
         }
-        if (ObjectUtils.isNotEmpty(this.properties.getServletRegistrationBeans())) {
+        if (ObjectKit.isNotEmpty(this.properties.getServletRegistrationBeans())) {
             registrationBean.setServletRegistrationBeans(this.properties.getServletRegistrationBeans());
         }
-        if (!CollectionUtils.isEmpty(this.properties.getServletNames())) {
+        if (!CollKit.isEmpty(this.properties.getServletNames())) {
             registrationBean.setServletNames(this.properties.getServletNames());
         }
         return registrationBean;

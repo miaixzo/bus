@@ -28,7 +28,7 @@ import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.asymmetric.RSA;
 import org.aoju.bus.crypto.asymmetric.SM2;
 import org.aoju.bus.crypto.asymmetric.Sign;
@@ -70,7 +70,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.System;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -151,8 +150,8 @@ public final class Builder {
      * @param charset   字符集
      * @return 加密结果
      */
-    public static String encrypt(String algorithm, String key, String content, Charset charset) {
-        return HexUtils.encodeHexStr(encrypt(algorithm, key, content.getBytes(charset)));
+    public static String encrypt(String algorithm, String key, String content, java.nio.charset.Charset charset) {
+        return HexKit.encodeHexStr(encrypt(algorithm, key, content.getBytes(charset)));
     }
 
     /**
@@ -166,7 +165,7 @@ public final class Builder {
      */
     public static InputStream encrypt(String algorithm, String key, InputStream inputStream) {
         final Provider provider = Registry.require(algorithm);
-        return new ByteArrayInputStream(provider.encrypt(key, IoUtils.readBytes(inputStream)));
+        return new ByteArrayInputStream(provider.encrypt(key, IoKit.readBytes(inputStream)));
     }
 
     /**
@@ -192,8 +191,8 @@ public final class Builder {
      * @param charset   字符集
      * @return 解密结果
      */
-    public static String decrypt(String algorithm, String key, String content, Charset charset) {
-        return new String(decrypt(algorithm, key, HexUtils.decodeHex(content)), charset);
+    public static String decrypt(String algorithm, String key, String content, java.nio.charset.Charset charset) {
+        return new String(decrypt(algorithm, key, HexKit.decodeHex(content)), charset);
     }
 
     /**
@@ -206,7 +205,7 @@ public final class Builder {
      * @return 解密结果
      */
     public static InputStream decrypt(String algorithm, String key, InputStream inputStream) {
-        return new ByteArrayInputStream(Registry.require(algorithm).decrypt(key, IoUtils.readBytes(inputStream)));
+        return new ByteArrayInputStream(Registry.require(algorithm).decrypt(key, IoKit.readBytes(inputStream)));
     }
 
     /**
@@ -251,7 +250,7 @@ public final class Builder {
         SecretKey secretKey;
         if (algorithm.startsWith("PBE")) {
             // PBE密钥
-            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringUtils.toString(key, org.aoju.bus.core.lang.Charset.UTF_8).toCharArray());
+            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringKit.toString(key, Charset.UTF_8).toCharArray());
         } else if (algorithm.startsWith(Algorithm.DES)) {
             // DES密钥
             secretKey = generateDESKey(algorithm, key);
@@ -270,7 +269,7 @@ public final class Builder {
      * @return {@link SecretKey}
      */
     public static SecretKey generateDESKey(String algorithm, byte[] key) {
-        if (StringUtils.isBlank(algorithm) || false == algorithm.startsWith(Algorithm.DES)) {
+        if (StringKit.isBlank(algorithm) || false == algorithm.startsWith(Algorithm.DES)) {
             throw new InstrumentException("Algorithm [{}] is not a DES algorithm!");
         }
 
@@ -302,12 +301,12 @@ public final class Builder {
      * @return {@link SecretKey}
      */
     public static SecretKey generatePBEKey(String algorithm, char[] key) {
-        if (StringUtils.isBlank(algorithm) || false == algorithm.startsWith("PBE")) {
+        if (StringKit.isBlank(algorithm) || false == algorithm.startsWith("PBE")) {
             throw new InstrumentException("Algorithm [{}] is not a PBE algorithm!");
         }
 
         if (null == key) {
-            key = RandomUtils.randomString(32).toCharArray();
+            key = RandomKit.randomString(32).toCharArray();
         }
         PBEKeySpec keySpec = new PBEKeySpec(key);
         return generateKey(algorithm, keySpec);
@@ -537,7 +536,7 @@ public final class Builder {
      * @return {@link KeyPair}
      */
     public static KeyPair generateKeyPair(String algorithm, int keySize, byte[] seed, AlgorithmParameterSpec... params) {
-        return generateKeyPair(algorithm, keySize, RandomUtils.getSecureRandom(seed), params);
+        return generateKeyPair(algorithm, keySize, RandomKit.getSecureRandom(seed), params);
     }
 
     /**
@@ -588,7 +587,7 @@ public final class Builder {
         }
 
         // 自定义初始化参数
-        if (ArrayUtils.isNotEmpty(params)) {
+        if (ArrayKit.isNotEmpty(params)) {
             for (AlgorithmParameterSpec param : params) {
                 if (null == param) {
                     continue;
@@ -616,9 +615,9 @@ public final class Builder {
      */
     public static String getAlgorithmAfterWith(String algorithm) {
         Assert.notNull(algorithm, "algorithm must be not null !");
-        int indexOfWith = StringUtils.lastIndexOfIgnoreCase(algorithm, "with");
+        int indexOfWith = StringKit.lastIndexOfIgnoreCase(algorithm, "with");
         if (indexOfWith > 0) {
-            algorithm = StringUtils.subSuf(algorithm, indexOfWith + "with".length());
+            algorithm = StringKit.subSuf(algorithm, indexOfWith + "with".length());
         }
         if (Algorithm.ECDSA.equalsIgnoreCase(algorithm)
                 || Algorithm.SM2.equalsIgnoreCase(algorithm)) {
@@ -635,7 +634,7 @@ public final class Builder {
      * @return 算法
      */
     public static String generateAlgorithm(String asymmetric, Algorithm digest) {
-        return StringUtils.format("{}with{}", (null == digest) ? "NONE" : digest, asymmetric);
+        return StringKit.format("{}with{}", (null == digest) ? "NONE" : digest, asymmetric);
     }
 
     /**
@@ -658,7 +657,7 @@ public final class Builder {
      * KeyStore文件用于数字证书的密钥对保存
      * see: http://snowolf.iteye.com/blog/391931
      *
-     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @param password 密码
      * @return {@link KeyStore}
      */
@@ -672,7 +671,7 @@ public final class Builder {
      * see: http://snowolf.iteye.com/blog/391931
      *
      * @param type     类型
-     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @param password 密码，null表示无密码
      * @return {@link KeyStore}
      */
@@ -692,7 +691,7 @@ public final class Builder {
      * Certification为证书文件
      * see: http://snowolf.iteye.com/blog/391931
      *
-     * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @param password 密码
      * @param alias    别名
      * @return {@link KeyStore}
@@ -706,7 +705,7 @@ public final class Builder {
      * Certification为证书文件
      * see: http://snowolf.iteye.com/blog/391931
      *
-     * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @return {@link KeyStore}
      */
     public static Certificate readX509Certificate(InputStream in) {
@@ -719,7 +718,7 @@ public final class Builder {
      * see: http://snowolf.iteye.com/blog/391931
      *
      * @param type     类型，例如X.509
-     * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @param password 密码
      * @param alias    别名
      * @return {@link KeyStore}
@@ -739,7 +738,7 @@ public final class Builder {
      * see: http://snowolf.iteye.com/blog/391931
      *
      * @param type 类型，例如X.509
-     * @param in   {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in   {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @return {@link Certificate}
      */
     public static Certificate readCertificate(String type, InputStream in) {
@@ -909,7 +908,7 @@ public final class Builder {
      * 读取PKCS12 KeyStore文件
      * KeyStore文件用于数字证书的密钥对保存
      *
-     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @param password 密码
      * @return {@link KeyStore}
      */
@@ -930,10 +929,10 @@ public final class Builder {
     public static KeyStore readKeyStore(String type, File keyFile, char[] password) {
         InputStream in = null;
         try {
-            in = FileUtils.getInputStream(keyFile);
+            in = FileKit.getInputStream(keyFile);
             return readKeyStore(type, in, password);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
@@ -942,7 +941,7 @@ public final class Builder {
      * 从KeyStore中获取私钥公钥
      *
      * @param type     类型
-     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @param password 密码
      * @param alias    别名
      * @return {@link KeyPair}
@@ -978,7 +977,7 @@ public final class Builder {
      * Certification为证书文件
      * see: https://www.cnblogs.com/yinliang/p/10115519.html
      *
-     * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileUtils#getInputStream(java.io.File)} 读取
+     * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(java.io.File)} 读取
      * @return {@link KeyStore}
      */
     public static PublicKey readPublicKeyFromCert(InputStream in) {
@@ -1127,7 +1126,7 @@ public final class Builder {
      * @return MD5摘要
      */
     public static byte[] md5(String data) {
-        return md5(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return md5(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -1178,7 +1177,7 @@ public final class Builder {
      * @param charset 编码
      * @return MD5摘要的16进制表示
      */
-    public static String md5Hex(String data, Charset charset) {
+    public static String md5Hex(String data, java.nio.charset.Charset charset) {
         return new MD5().digestHex(data, charset);
     }
 
@@ -1189,7 +1188,7 @@ public final class Builder {
      * @return MD5摘要的16进制表示
      */
     public static String md5Hex(String data) {
-        return md5Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return md5Hex(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -1229,7 +1228,7 @@ public final class Builder {
      * @param charset 编码
      * @return MD5摘要的16进制表示
      */
-    public static String md5Hex16(String data, Charset charset) {
+    public static String md5Hex16(String data, java.nio.charset.Charset charset) {
         return new MD5().digestHex16(data, charset);
     }
 
@@ -1240,7 +1239,7 @@ public final class Builder {
      * @return MD5摘要的16进制表示
      */
     public static String md5Hex16(String data) {
-        return md5Hex16(data, org.aoju.bus.core.lang.Charset.UTF_8);
+        return md5Hex16(data, Charset.UTF_8);
     }
 
     /**
@@ -1313,7 +1312,7 @@ public final class Builder {
      * @return MD5摘要
      */
     public static byte[] sha1(String data) {
-        return sha1(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return sha1(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -1364,7 +1363,7 @@ public final class Builder {
      * @return SHA-1摘要的16进制表示
      */
     public static String sha1Hex(String data) {
-        return sha1Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return sha1Hex(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -1479,7 +1478,7 @@ public final class Builder {
      * @return SHA-256摘要的16进制表示
      */
     public static String sha256Hex(String data) {
-        return sha256Hex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return sha256Hex(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -1511,7 +1510,7 @@ public final class Builder {
      * @return {@link HMac}
      */
     public static HMac hmac(String algorithm, String key) {
-        return new HMac(algorithm, StringUtils.bytes(key));
+        return new HMac(algorithm, StringKit.bytes(key));
     }
 
     /**
@@ -1546,7 +1545,7 @@ public final class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacMd5(String key) {
-        return hmacMd5(StringUtils.bytes(key));
+        return hmacMd5(StringKit.bytes(key));
     }
 
     /**
@@ -1615,7 +1614,7 @@ public final class Builder {
      * @return {@link HMac}
      */
     public static HMac hmacSha1(String key) {
-        return hmacSha1(StringUtils.bytes(key));
+        return hmacSha1(StringKit.bytes(key));
     }
 
     /**
@@ -1746,7 +1745,7 @@ public final class Builder {
      */
     public static String signParams(Symmetric crypto, Map<?, ?> params, String separator,
                                     String keyValueSeparator, boolean isIgnoreNull, String... other) {
-        return crypto.encryptHex(MapUtils.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, other));
+        return crypto.encryptHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, other));
     }
 
     /**
@@ -1816,7 +1815,7 @@ public final class Builder {
      */
     public static String signParams(String algorithm, Map<?, ?> params, String separator,
                                     String keyValueSeparator, boolean isIgnoreNull, String... otherParams) {
-        return new Digester(algorithm).digestHex(MapUtils.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
+        return new Digester(algorithm).digestHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
     }
 
     /**
@@ -1844,7 +1843,7 @@ public final class Builder {
      * @return 密钥
      */
     public static byte[] decode(String key) {
-        return Validator.isHex(key) ? HexUtils.decodeHex(key) : Base64.decode(key);
+        return Validator.isHex(key) ? HexKit.decodeHex(key) : Base64.decode(key);
     }
 
     /**
@@ -2049,7 +2048,7 @@ public final class Builder {
      * @return ECPrivateKeyParameters
      */
     public static ECPrivateKeyParameters toSm2Params(String dHex) {
-        return toSm2Params(HexUtils.toBigInteger(dHex));
+        return toSm2Params(HexKit.toBigInteger(dHex));
     }
 
     /**
@@ -2143,7 +2142,7 @@ public final class Builder {
      * @return ECPublicKeyParameters
      */
     public static ECPublicKeyParameters toParams(String xHex, String yHex, ECDomainParameters domainParameters) {
-        return toParams(HexUtils.decodeHex(xHex), HexUtils.decodeHex(yHex), domainParameters);
+        return toParams(HexKit.decodeHex(xHex), HexKit.decodeHex(yHex), domainParameters);
     }
 
     /**
@@ -2293,13 +2292,13 @@ public final class Builder {
     public static Key readPemKey(InputStream keyStream) {
         final PemObject object = readPemObject(keyStream);
         final String type = object.getType();
-        if (StringUtils.isNotBlank(type)) {
+        if (StringKit.isNotBlank(type)) {
             if (type.endsWith("PRIVATE KEY")) {
                 return generateRSAPrivateKey(object.getContent());
             } else if (type.endsWith("PUBLIC KEY")) {
                 return generateRSAPublicKey(object.getContent());
             } else if (type.endsWith("CERTIFICATE")) {
-                return readPublicKeyFromCert(IoUtils.toStream(object.getContent()));
+                return readPublicKeyFromCert(IoKit.toStream(object.getContent()));
             }
         }
         return null;
@@ -2340,7 +2339,7 @@ public final class Builder {
      * @return {@link PemObject}
      */
     public static PemObject readPemObject(InputStream keyStream) {
-        return readPemObject(IoUtils.getReader(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
+        return readPemObject(IoKit.getReader(keyStream, Charset.UTF_8));
     }
 
     /**
@@ -2357,7 +2356,7 @@ public final class Builder {
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(pemReader);
+            IoKit.close(pemReader);
         }
     }
 
@@ -2381,12 +2380,12 @@ public final class Builder {
     public static void writePemObject(PemObjectGenerator pemObject, OutputStream keyStream) {
         PemWriter writer = null;
         try {
-            writer = new PemWriter(IoUtils.getWriter(keyStream, org.aoju.bus.core.lang.Charset.UTF_8));
+            writer = new PemWriter(IoKit.getWriter(keyStream, Charset.UTF_8));
             writer.writeObject(pemObject);
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(writer);
+            IoKit.close(writer);
         }
     }
 

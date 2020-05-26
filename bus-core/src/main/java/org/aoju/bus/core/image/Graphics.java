@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.image;
 
-import org.aoju.bus.core.utils.ImageUtils;
+import org.aoju.bus.core.toolkit.ImageKit;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -126,7 +126,7 @@ public class Graphics {
         for (int i = 0; i < len; i++) {
             if (null == color) {
                 // 产生随机的颜色值,让输出的每个字符的颜色值都将不同
-                g.setColor(ImageUtils.randomColor());
+                g.setColor(ImageKit.randomColor());
             }
             g.drawString(String.valueOf(str.charAt(i)), i * charWidth, midY);
         }

@@ -27,7 +27,7 @@ package org.aoju.bus.cache.metric;
 import lombok.Getter;
 import lombok.Setter;
 import org.aoju.bus.cache.CacheX;
-import org.aoju.bus.core.utils.MapUtils;
+import org.aoju.bus.core.toolkit.MapKit;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -82,7 +82,7 @@ public class MemoryCache implements CacheX {
      */
     @Override
     public void write(Map<String, Object> keyValueMap, long expire) {
-        if (MapUtils.isNotEmpty(keyValueMap)) {
+        if (MapKit.isNotEmpty(keyValueMap)) {
             keyValueMap.forEach((key, value) -> write(key, value, expire));
         }
     }

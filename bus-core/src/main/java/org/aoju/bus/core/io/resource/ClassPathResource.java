@@ -27,7 +27,7 @@ package org.aoju.bus.core.io.resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 /**
  * ClassPath单一资源访问类
@@ -86,9 +86,9 @@ public class ClassPathResource extends UriResource {
 
         final String path = normalizePath(pathBaseClassLoader);
         this.path = path;
-        this.name = StringUtils.isBlank(path) ? null : FileUtils.getName(path);
+        this.name = StringKit.isBlank(path) ? null : FileKit.getName(path);
 
-        this.classLoader = ObjectUtils.defaultIfNull(classLoader, ClassUtils.getClassLoader());
+        this.classLoader = ObjectKit.defaultIfNull(classLoader, ClassKit.getClassLoader());
         this.clazz = clazz;
         initUrl();
     }
@@ -109,11 +109,11 @@ public class ClassPathResource extends UriResource {
      * @return 绝对路径path
      */
     public final String getAbsolutePath() {
-        if (FileUtils.isAbsolutePath(this.path)) {
+        if (FileKit.isAbsolutePath(this.path)) {
             return this.path;
         }
         // url在初始化的时候已经断言,此处始终不为null
-        return FileUtils.normalize(UriUtils.getDecodedPath(this.url));
+        return FileKit.normalize(UriKit.getDecodedPath(this.url));
     }
 
     /**
@@ -154,10 +154,10 @@ public class ClassPathResource extends UriResource {
      */
     private String normalizePath(String path) {
         // 标准化路径
-        path = FileUtils.normalize(path);
-        path = StringUtils.removePrefix(path, Symbol.SLASH);
+        path = FileKit.normalize(path);
+        path = StringKit.removePrefix(path, Symbol.SLASH);
 
-        Assert.isFalse(FileUtils.isAbsolutePath(path), "Path [{}] must be a relative path !", path);
+        Assert.isFalse(FileKit.isAbsolutePath(path), "Path [{}] must be a relative path !", path);
         return path;
     }
 

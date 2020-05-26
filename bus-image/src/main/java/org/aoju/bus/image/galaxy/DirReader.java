@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -66,7 +66,7 @@ public class DirReader implements Closeable {
             if (in.tag() != Tag.DirectoryRecordSequence)
                 throw new IOException("Missing Directory Record Sequence");
         } catch (IOException e) {
-            IoUtils.close(raf);
+            IoKit.close(raf);
             throw e;
         }
     }

@@ -26,14 +26,14 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.codec.BCD;
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.HexUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.HexKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -77,7 +77,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return Hex字符串
      */
     public String encryptHex(byte[] data, KeyType keyType) {
-        return HexUtils.encodeHexStr(encrypt(data, keyType));
+        return HexKit.encodeHexStr(encrypt(data, keyType));
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 加密后的bytes
      */
     public byte[] encrypt(String data, String charset, KeyType keyType) {
-        return encrypt(StringUtils.bytes(data, charset), keyType);
+        return encrypt(StringKit.bytes(data, charset), keyType);
     }
 
     /**
@@ -111,8 +111,8 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return 加密后的bytes
      */
-    public byte[] encrypt(String data, Charset charset, KeyType keyType) {
-        return encrypt(StringUtils.bytes(data, charset), keyType);
+    public byte[] encrypt(String data, java.nio.charset.Charset charset, KeyType keyType) {
+        return encrypt(StringKit.bytes(data, charset), keyType);
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 加密后的bytes
      */
     public byte[] encrypt(String data, KeyType keyType) {
-        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.lang.Charset.UTF_8), keyType);
+        return encrypt(StringKit.bytes(data, Charset.UTF_8), keyType);
     }
 
     /**
@@ -134,7 +134,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return Hex字符串
      */
     public String encryptHex(String data, KeyType keyType) {
-        return HexUtils.encodeHexStr(encrypt(data, keyType));
+        return HexKit.encodeHexStr(encrypt(data, keyType));
     }
 
     /**
@@ -145,8 +145,8 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Hex字符串
      */
-    public String encryptHex(String data, Charset charset, KeyType keyType) {
-        return HexUtils.encodeHexStr(encrypt(data, charset, keyType));
+    public String encryptHex(String data, java.nio.charset.Charset charset, KeyType keyType) {
+        return HexKit.encodeHexStr(encrypt(data, charset, keyType));
     }
 
     /**
@@ -168,7 +168,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param keyType 私钥或公钥 {@link KeyType}
      * @return Base64字符串
      */
-    public String encryptBase64(String data, Charset charset, KeyType keyType) {
+    public String encryptBase64(String data, java.nio.charset.Charset charset, KeyType keyType) {
         return Base64.encode(encrypt(data, charset, keyType));
     }
 
@@ -181,7 +181,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @throws InstrumentException IO异常
      */
     public byte[] encrypt(InputStream data, KeyType keyType) throws InstrumentException {
-        return encrypt(IoUtils.readBytes(data), keyType);
+        return encrypt(IoKit.readBytes(data), keyType);
     }
 
     /**
@@ -192,7 +192,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return Hex字符串
      */
     public String encryptHex(InputStream data, KeyType keyType) {
-        return HexUtils.encodeHexStr(encrypt(data, keyType));
+        return HexKit.encodeHexStr(encrypt(data, keyType));
     }
 
     /**
@@ -215,7 +215,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @throws InstrumentException 加密异常
      */
     public String encryptBcd(String data, KeyType keyType) {
-        return encryptBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
+        return encryptBcd(data, keyType, Charset.UTF_8);
     }
 
     /**
@@ -227,7 +227,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 加密后的密文
      * @throws InstrumentException 加密异常
      */
-    public String encryptBcd(String data, KeyType keyType, Charset charset) {
+    public String encryptBcd(String data, KeyType keyType, java.nio.charset.Charset charset) {
         return BCD.bcdToStr(encrypt(data, charset, keyType));
     }
 
@@ -249,7 +249,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @throws InstrumentException IO异常
      */
     public byte[] decrypt(InputStream data, KeyType keyType) throws InstrumentException {
-        return decrypt(IoUtils.readBytes(data), keyType);
+        return decrypt(IoKit.readBytes(data), keyType);
     }
 
     /**
@@ -271,8 +271,8 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param charset 加密前编码
      * @return 解密后的密文
      */
-    public String decryptStr(String data, KeyType keyType, Charset charset) {
-        return StringUtils.toString(decrypt(data, keyType), charset);
+    public String decryptStr(String data, KeyType keyType, java.nio.charset.Charset charset) {
+        return StringKit.toString(decrypt(data, keyType), charset);
     }
 
     /**
@@ -283,7 +283,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public String decryptStr(String data, KeyType keyType) {
-        return decryptStr(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decryptStr(data, keyType, Charset.UTF_8);
     }
 
     /**
@@ -294,7 +294,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public byte[] decryptFromBcd(String data, KeyType keyType) {
-        return decryptFromBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decryptFromBcd(data, keyType, Charset.UTF_8);
     }
 
     /**
@@ -305,8 +305,8 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param charset 加密前编码
      * @return 解密后的密文
      */
-    public byte[] decryptFromBcd(String data, KeyType keyType, Charset charset) {
-        final byte[] dataBytes = BCD.ascToBcd(StringUtils.bytes(data, charset));
+    public byte[] decryptFromBcd(String data, KeyType keyType, java.nio.charset.Charset charset) {
+        final byte[] dataBytes = BCD.ascToBcd(StringKit.bytes(data, charset));
         return decrypt(dataBytes, keyType);
     }
 
@@ -318,8 +318,8 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @param charset 加密前编码
      * @return 解密后的密文
      */
-    public String decryptStrFromBcd(String data, KeyType keyType, Charset charset) {
-        return StringUtils.toString(decryptFromBcd(data, keyType, charset), charset);
+    public String decryptStrFromBcd(String data, KeyType keyType, java.nio.charset.Charset charset) {
+        return StringKit.toString(decryptFromBcd(data, keyType, charset), charset);
     }
 
     /**
@@ -330,7 +330,7 @@ public abstract class Safety<T extends Safety<T>> extends Keys<T> {
      * @return 解密后的密文
      */
     public String decryptStrFromBcd(String data, KeyType keyType) {
-        return decryptStrFromBcd(data, keyType, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decryptStrFromBcd(data, keyType, Charset.UTF_8);
     }
 
 }

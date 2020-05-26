@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Collection;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class Assert {
      */
     public static void isTrue(boolean expression, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
         if (false == expression) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
     }
 
@@ -87,7 +87,7 @@ public class Assert {
      */
     public static void isFalse(boolean expression, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
         if (expression) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
     }
 
@@ -119,7 +119,7 @@ public class Assert {
      */
     public static void isNull(Object object, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
         if (object != null) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
     }
 
@@ -153,7 +153,7 @@ public class Assert {
      */
     public static <T> T notNull(T object, String errorMsgTemplate, Object... params) throws NullPointerException {
         if (object == null) {
-            throw new NullPointerException(StringUtils.format(errorMsgTemplate, params));
+            throw new NullPointerException(StringKit.format(errorMsgTemplate, params));
         }
         return object;
     }
@@ -189,8 +189,8 @@ public class Assert {
      * @throws IllegalArgumentException 被检查字符串为空
      */
     public static <T extends CharSequence> T notEmpty(T text, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (StringUtils.isEmpty(text)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+        if (StringKit.isEmpty(text)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return text;
     }
@@ -224,11 +224,11 @@ public class Assert {
      * @param params           参数
      * @return 非空字符串
      * @throws IllegalArgumentException 被检查字符串为空白
-     * @see StringUtils#isNotBlank(CharSequence)
+     * @see StringKit#isNotBlank(CharSequence)
      */
     public static <T extends CharSequence> T notBlank(T text, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (StringUtils.isBlank(text)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+        if (StringKit.isBlank(text)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return text;
     }
@@ -264,8 +264,8 @@ public class Assert {
      * @throws IllegalArgumentException 非子串抛出异常
      */
     public static String notContain(String textToSearch, String substring, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (StringUtils.isNotEmpty(textToSearch) && StringUtils.isNotEmpty(substring) && textToSearch.contains(substring)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+        if (StringKit.isNotEmpty(textToSearch) && StringKit.isNotEmpty(substring) && textToSearch.contains(substring)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return substring;
     }
@@ -300,8 +300,8 @@ public class Assert {
      * @throws IllegalArgumentException if the object array is {@code null} or has no elements
      */
     public static Object[] notEmpty(Object[] array, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (ArrayUtils.isEmpty(array)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+        if (ArrayKit.isEmpty(array)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return array;
     }
@@ -336,8 +336,8 @@ public class Assert {
      * @throws IllegalArgumentException if the object array contains a {@code null} element
      */
     public static <T> T[] noNullElements(T[] array, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (ArrayUtils.hasNull(array)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+        if (ArrayKit.hasNull(array)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return array;
     }
@@ -373,8 +373,8 @@ public class Assert {
      * @throws IllegalArgumentException if the collection is {@code null} or has no elements
      */
     public static <T> Collection<T> notEmpty(Collection<T> collection, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (CollUtils.isEmpty(collection)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+        if (CollKit.isEmpty(collection)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return collection;
     }
@@ -411,8 +411,8 @@ public class Assert {
      * @throws IllegalArgumentException if the map is {@code null} or has no entries
      */
     public static <K, V> Map<K, V> notEmpty(Map<K, V> map, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (CollUtils.isEmpty(map)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+        if (CollKit.isEmpty(map)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return map;
     }
@@ -471,7 +471,7 @@ public class Assert {
     public static <T> T isInstanceOf(Class<?> type, T obj, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
         notNull(type, "Type to check against must not be null");
         if (false == type.isInstance(obj)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return obj;
     }
@@ -507,7 +507,7 @@ public class Assert {
     public static void isAssignable(Class<?> superType, Class<?> subType, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
         notNull(superType, "Type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
-            throw new IllegalArgumentException(StringUtils.format(errorMsgTemplate, params));
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
     }
 
@@ -525,7 +525,7 @@ public class Assert {
      */
     public static void state(boolean expression, String errorMsgTemplate, Object... params) throws IllegalStateException {
         if (false == expression) {
-            throw new IllegalStateException(StringUtils.format(errorMsgTemplate, params));
+            throw new IllegalStateException(StringKit.format(errorMsgTemplate, params));
         }
     }
 
@@ -554,7 +554,7 @@ public class Assert {
      * @throws IllegalArgumentException 表达式为 {@code false} 抛出此异常
      */
     public static void hasText(String text, String message) {
-        if (!StringUtils.hasText(text)) {
+        if (!StringKit.hasText(text)) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -570,11 +570,11 @@ public class Assert {
      */
     private static String badIndexMsg(int index, int size, String desc, Object... params) {
         if (index < 0) {
-            return StringUtils.format("{} ({}) must not be negative", StringUtils.format(desc, params), index);
+            return StringKit.format("{} ({}) must not be negative", StringKit.format(desc, params), index);
         } else if (size < 0) {
             throw new IllegalArgumentException("negative size: " + size);
         } else {
-            return StringUtils.format("{} ({}) must be less than size ({})", StringUtils.format(desc, params), index, size);
+            return StringKit.format("{} ({}) must be less than size ({})", StringKit.format(desc, params), index, size);
         }
     }
 
@@ -627,7 +627,7 @@ public class Assert {
      */
     public static int checkBetween(int value, int min, int max) {
         if (value < min || value > max) {
-            throw new IllegalArgumentException(StringUtils.format("Length must be between {} and {}.", min, max));
+            throw new IllegalArgumentException(StringKit.format("Length must be between {} and {}.", min, max));
         }
         return value;
     }
@@ -642,7 +642,7 @@ public class Assert {
      */
     public static long checkBetween(long value, long min, long max) {
         if (value < min || value > max) {
-            throw new IllegalArgumentException(StringUtils.format("Length must be between {} and {}.", min, max));
+            throw new IllegalArgumentException(StringKit.format("Length must be between {} and {}.", min, max));
         }
         return value;
     }
@@ -657,7 +657,7 @@ public class Assert {
      */
     public static double checkBetween(double value, double min, double max) {
         if (value < min || value > max) {
-            throw new IllegalArgumentException(StringUtils.format("Length must be between {} and {}.", min, max));
+            throw new IllegalArgumentException(StringKit.format("Length must be between {} and {}.", min, max));
         }
         return value;
     }
@@ -678,7 +678,7 @@ public class Assert {
         double minDouble = min.doubleValue();
         double maxDouble = max.doubleValue();
         if (valueDouble < minDouble || valueDouble > maxDouble) {
-            throw new IllegalArgumentException(StringUtils.format("Length must be between {} and {}.", min, max));
+            throw new IllegalArgumentException(StringKit.format("Length must be between {} and {}.", min, max));
         }
         return value;
     }

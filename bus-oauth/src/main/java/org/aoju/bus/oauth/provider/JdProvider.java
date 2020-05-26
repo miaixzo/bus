@@ -29,8 +29,8 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.DateKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpz;
 import org.aoju.bus.http.magic.HttpResponse;
 import org.aoju.bus.oauth.Builder;
@@ -124,7 +124,7 @@ public class JdProvider extends DefaultProvider {
                     .queryParam("app_key", context.getAppKey())
                     .queryParam("method", "jingdong.user.getUserInfoByOpenId")
                     .queryParam("360buy_param_json", "{\"openId\":\"" + accToken.getOpenId() + "\"}")
-                    .queryParam("timestamp", DateUtils.format(new Date()))
+                    .queryParam("timestamp", DateKit.format(new Date()))
                     .queryParam("v", "2.0");
             urlBuilder.queryParam("sign", sign(urlBuilder.getReadParams()));
             HttpResponse response = Httpz.post().url(urlBuilder.build(true)).build().execute();
@@ -232,7 +232,7 @@ public class JdProvider extends DefaultProvider {
         for (Map.Entry<String, Object> entry : treeMap.entrySet()) {
             String name = entry.getKey();
             String value = (String) entry.getValue();
-            if (StringUtils.isNotEmpty(name) && StringUtils.isNotEmpty(value)) {
+            if (StringKit.isNotEmpty(name) && StringKit.isNotEmpty(value)) {
                 signBuilder.append(name).append(value);
             }
         }

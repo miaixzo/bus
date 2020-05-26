@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.office.magic.family.DocumentFormat;
 import org.aoju.bus.office.magic.family.FormatRegistry;
 import org.aoju.bus.office.metric.OfficeManager;
@@ -73,7 +73,7 @@ public abstract class AbstractNorm implements OptionalSource {
     public AbstractJob to(final File target) {
         final TargetFromFileProvider specs = new TargetFromFileProvider(target);
         final DocumentFormat format =
-                formatRegistry.getFormatByExtension(FileUtils.getExtension(target.getName()));
+                formatRegistry.getFormatByExtension(FileKit.getExtension(target.getName()));
         if (format != null) {
             specs.setDocumentFormat(format);
         }

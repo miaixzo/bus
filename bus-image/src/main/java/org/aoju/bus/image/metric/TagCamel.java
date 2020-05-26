@@ -26,7 +26,7 @@ package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 
 import javax.xml.stream.XMLStreamReader;
@@ -259,7 +259,7 @@ public class TagCamel implements Serializable {
             str = value.toString();
         }
 
-        if (StringUtils.hasText(format) && !"$V".equals(format.trim())) {
+        if (StringKit.hasText(format) && !"$V".equals(format.trim())) {
             return formatValue(str, value instanceof Float || value instanceof Double, format);
         }
 

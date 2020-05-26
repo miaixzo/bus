@@ -24,7 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.starter.banner.BusBanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -35,7 +36,6 @@ import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEven
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.*;
-import org.springframework.util.ClassUtils;
 
 import java.util.*;
 import java.util.stream.StreamSupport;
@@ -76,7 +76,7 @@ public class GenieBuilder implements
             if (s instanceof Class) {
                 sources.add((Class) s);
             } else if (s instanceof String) {
-                sources.add(ClassUtils.resolveClassName((String) s, null));
+                sources.add(ClassKit.resolveClassName((String) s, null));
             }
         }
 
@@ -127,7 +127,7 @@ public class GenieBuilder implements
      * @param environment 环境信息
      */
     private void setRequireProperties(ConfigurableEnvironment environment) {
-        if (StringUtils.hasText(environment.getProperty(BusXBuilder.BUS_NAME))) {
+        if (StringKit.hasText(environment.getProperty(BusXBuilder.BUS_NAME))) {
             HIGH_PRIORITY_CONFIG.getSource().put(
                     BusXBuilder.BUS_NAME,
                     environment.getProperty(BusXBuilder.BUS_NAME)

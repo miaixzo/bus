@@ -27,7 +27,7 @@ package org.aoju.bus.image.metric;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Device;
 import org.aoju.bus.image.Dimse;
 import org.aoju.bus.image.Option;
@@ -618,7 +618,7 @@ public class ApplicationEntity implements Serializable {
                 monitor.onAssociationEstablished(as);
             return as;
         } catch (InterruptedException | IOException e) {
-            IoUtils.close(sock);
+            IoKit.close(sock);
             if (as != null && monitor != null)
                 monitor.onAssociationFailed(as, e);
             throw e;

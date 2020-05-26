@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.DateUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.DateKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -66,17 +66,17 @@ public class CalendarConverter extends AbstractConverter<Calendar> {
     protected Calendar convertInternal(Object value) {
         // Handle Date
         if (value instanceof Date) {
-            return DateUtils.calendar((Date) value);
+            return DateKit.calendar((Date) value);
         }
 
         // Handle Long
         if (value instanceof Long) {
             //此处使用自动拆装箱
-            return DateUtils.calendar((Long) value);
+            return DateKit.calendar((Long) value);
         }
 
         final String valueStr = convertToStr(value);
-        return DateUtils.calendar(StringUtils.isBlank(format) ? DateUtils.parse(valueStr) : DateUtils.parse(valueStr, format));
+        return DateKit.calendar(StringKit.isBlank(format) ? DateKit.parse(valueStr) : DateKit.parse(valueStr, format));
     }
 
 }

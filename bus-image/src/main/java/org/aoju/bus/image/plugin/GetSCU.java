@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.ElementDictionary;
@@ -117,7 +117,7 @@ public class GetSCU implements AutoCloseable {
             out.writeFileMetaInformation(fmi);
             data.copyTo(out);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
     }
 

@@ -25,11 +25,12 @@
 package org.aoju.bus.crypto.digest;
 
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.HexUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.HexKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngineFactory;
 
@@ -104,7 +105,7 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public byte[] digest(String data, String charset) {
-        return digest(StringUtils.bytes(data, charset));
+        return digest(StringKit.bytes(data, charset));
     }
 
     /**
@@ -114,7 +115,7 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return digest(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
@@ -125,7 +126,7 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data, String charset) {
-        return HexUtils.encodeHexStr(digest(data, charset));
+        return HexKit.encodeHexStr(digest(data, charset));
     }
 
     /**
@@ -135,12 +136,12 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return digestHex(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 生成文件摘要
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要bytes
@@ -149,22 +150,22 @@ public class HMac implements Serializable {
     public byte[] digest(File file) throws InstrumentException {
         InputStream in = null;
         try {
-            in = FileUtils.getInputStream(file);
+            in = FileKit.getInputStream(file);
             return digest(in);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
     /**
      * 生成文件摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要
      */
     public String digestHex(File file) {
-        return HexUtils.encodeHexStr(digest(file));
+        return HexKit.encodeHexStr(digest(file));
     }
 
     /**
@@ -184,35 +185,35 @@ public class HMac implements Serializable {
      * @return 摘要
      */
     public String digestHex(byte[] data) {
-        return HexUtils.encodeHexStr(digest(data));
+        return HexKit.encodeHexStr(digest(data));
     }
 
     /**
-     * 生成摘要，使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 生成摘要，使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param data {@link InputStream} 数据流
      * @return 摘要bytes
      */
     public byte[] digest(InputStream data) {
-        return digest(data, IoUtils.DEFAULT_BUFFER_SIZE);
+        return digest(data, IoKit.DEFAULT_BUFFER_SIZE);
     }
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param data 被摘要数据
      * @return 摘要
      */
     public String digestHex(InputStream data) {
-        return HexUtils.encodeHexStr(digest(data));
+        return HexKit.encodeHexStr(digest(data));
     }
 
     /**
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      */
     public byte[] digest(InputStream data, int bufferLength) {
@@ -221,14 +222,14 @@ public class HMac implements Serializable {
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param data         被摘要数据
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要
      */
     public String digestHex(InputStream data, int bufferLength) {
-        return HexUtils.encodeHexStr(digest(data, bufferLength));
+        return HexKit.encodeHexStr(digest(data, bufferLength));
     }
 
     /**

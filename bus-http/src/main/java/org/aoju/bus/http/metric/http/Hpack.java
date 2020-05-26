@@ -31,9 +31,9 @@ import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.IOException;
 import java.util.*;
@@ -58,13 +58,13 @@ final class Hpack {
             new HttpHeaders(HttpHeaders.TARGET_PATH, "/index.html"),
             new HttpHeaders(HttpHeaders.TARGET_SCHEME, Http.HTTP),
             new HttpHeaders(HttpHeaders.TARGET_SCHEME, Http.HTTPS),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringUtils.toString(Http.HTTP_OK)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringUtils.toString(Http.HTTP_NO_CONTENT)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringUtils.toString(Http.HTTP_PARTIAL)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringUtils.toString(Http.HTTP_NOT_MODIFIED)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringUtils.toString(Http.HTTP_BAD_REQUEST)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringUtils.toString(Http.HTTP_NOT_FOUND)),
-            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringUtils.toString(Http.HTTP_INTERNAL_ERROR)),
+            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_OK)),
+            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NO_CONTENT)),
+            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_PARTIAL)),
+            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_MODIFIED)),
+            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_BAD_REQUEST)),
+            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_NOT_FOUND)),
+            new HttpHeaders(HttpHeaders.RESPONSE_STATUS, StringKit.toString(Http.HTTP_INTERNAL_ERROR)),
             new HttpHeaders("accept-charset", Normal.EMPTY),
             new HttpHeaders("accept-encoding", "gzip, deflate"),
             new HttpHeaders("accept-language", Normal.EMPTY),
@@ -161,7 +161,7 @@ final class Hpack {
         Reader(int headerTableSizeSetting, int maxDynamicTableByteCount, Source source) {
             this.headerTableSizeSetting = headerTableSizeSetting;
             this.maxDynamicTableByteCount = maxDynamicTableByteCount;
-            this.source = IoUtils.buffer(source);
+            this.source = IoKit.buffer(source);
         }
 
         int maxDynamicTableByteCount() {
@@ -462,9 +462,9 @@ final class Hpack {
                 if (staticIndex != null) {
                     headerNameIndex = staticIndex + 1;
                     if (headerNameIndex > 1 && headerNameIndex < 8) {
-                        if (ObjectUtils.equal(STATIC_HEADERS_TABLE[headerNameIndex - 1].value, value)) {
+                        if (ObjectKit.equal(STATIC_HEADERS_TABLE[headerNameIndex - 1].value, value)) {
                             headerIndex = headerNameIndex;
-                        } else if (ObjectUtils.equal(STATIC_HEADERS_TABLE[headerNameIndex].value, value)) {
+                        } else if (ObjectKit.equal(STATIC_HEADERS_TABLE[headerNameIndex].value, value)) {
                             headerIndex = headerNameIndex + 1;
                         }
                     }
@@ -472,8 +472,8 @@ final class Hpack {
 
                 if (headerIndex == -1) {
                     for (int j = nextHeaderIndex + 1, length = dynamicTable.length; j < length; j++) {
-                        if (ObjectUtils.equal(dynamicTable[j].name, name)) {
-                            if (ObjectUtils.equal(dynamicTable[j].value, value)) {
+                        if (ObjectKit.equal(dynamicTable[j].name, name)) {
+                            if (ObjectKit.equal(dynamicTable[j].value, value)) {
                                 headerIndex = j - nextHeaderIndex + STATIC_HEADERS_TABLE.length;
                                 break;
                             } else if (headerNameIndex == -1) {

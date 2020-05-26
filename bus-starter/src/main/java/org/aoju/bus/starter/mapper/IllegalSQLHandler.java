@@ -42,7 +42,7 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.mapper.handlers.AbstractSqlParserHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -261,15 +261,15 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
      */
     public static List<IndexInfo> getIndexInfos(String key, String dbName, String tableName, Connection conn) {
         List<IndexInfo> indexInfos = null;
-        if (StringUtils.isNotBlank(key)) {
+        if (StringKit.isNotBlank(key)) {
             indexInfos = indexInfoMap.get(key);
         }
         if (indexInfos == null || indexInfos.isEmpty()) {
             ResultSet rs;
             try {
                 DatabaseMetaData metadata = conn.getMetaData();
-                String catalog = StringUtils.isBlank(dbName) ? conn.getCatalog() : dbName;
-                String schema = StringUtils.isBlank(dbName) ? conn.getSchema() : dbName;
+                String catalog = StringKit.isBlank(dbName) ? conn.getCatalog() : dbName;
+                String schema = StringKit.isBlank(dbName) ? conn.getSchema() : dbName;
                 rs = metadata.getIndexInfo(catalog, schema, tableName, false, true);
                 indexInfos = new ArrayList<>();
                 while (rs.next()) {
@@ -282,7 +282,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
                         indexInfos.add(indexInfo);
                     }
                 }
-                if (StringUtils.isNotBlank(key)) {
+                if (StringKit.isNotBlank(key)) {
                     indexInfoMap.put(key, indexInfos);
                 }
             } catch (SQLException e) {

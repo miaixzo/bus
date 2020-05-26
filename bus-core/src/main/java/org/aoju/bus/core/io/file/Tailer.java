@@ -25,17 +25,17 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.io.LineHandler;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.Stack;
 import java.util.concurrent.*;
 
@@ -53,7 +53,7 @@ public class Tailer implements Serializable {
     /**
      * 编码
      */
-    private final Charset charset;
+    private final java.nio.charset.Charset charset;
     /**
      * 行处理器
      */
@@ -88,7 +88,7 @@ public class Tailer implements Serializable {
      * @param initReadLine 启动时预读取的行数
      */
     public Tailer(File file, LineHandler lineHandler, int initReadLine) {
-        this(file, org.aoju.bus.core.lang.Charset.UTF_8, lineHandler, initReadLine, Fields.Unit.SECOND.getMillis());
+        this(file, Charset.UTF_8, lineHandler, initReadLine, Fields.Unit.SECOND.getMillis());
     }
 
     /**
@@ -98,7 +98,7 @@ public class Tailer implements Serializable {
      * @param charset     编码
      * @param lineHandler 行处理器
      */
-    public Tailer(File file, Charset charset, LineHandler lineHandler) {
+    public Tailer(File file, java.nio.charset.Charset charset, LineHandler lineHandler) {
         this(file, charset, lineHandler, 0, Fields.Unit.SECOND.getMillis());
     }
 
@@ -111,13 +111,13 @@ public class Tailer implements Serializable {
      * @param initReadLine 启动时预读取的行数
      * @param period       检查间隔
      */
-    public Tailer(File file, Charset charset, LineHandler lineHandler, int initReadLine, long period) {
+    public Tailer(File file, java.nio.charset.Charset charset, LineHandler lineHandler, int initReadLine, long period) {
         checkFile(file);
         this.charset = charset;
         this.lineHandler = lineHandler;
         this.period = period;
         this.initReadLine = initReadLine;
-        this.randomAccessFile = FileUtils.createRandomAccessFile(file, FileMode.r);
+        this.randomAccessFile = FileKit.createRandomAccessFile(file, FileMode.r);
         this.executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -195,8 +195,7 @@ public class Tailer implements Serializable {
 
                 c = this.randomAccessFile.read();
                 if (c == Symbol.C_LF || c == Symbol.C_CR) {
-                    // FileUtils.readLine(this.randomAccessFile, this.charset, this.lineHandler);
-                    final String line = FileUtils.readLine(this.randomAccessFile, this.charset);
+                    final String line = FileKit.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);
                     }
@@ -207,8 +206,7 @@ public class Tailer implements Serializable {
                 this.randomAccessFile.seek(nextEnd);
                 if (nextEnd == 0) {
                     // 当文件指针退至文件开始处，输出第一行
-                    // FileUtils.readLine(this.randomAccessFile, this.charset, this.lineHandler);
-                    final String line = FileUtils.readLine(this.randomAccessFile, this.charset);
+                    final String line = FileKit.readLine(this.randomAccessFile, this.charset);
                     if (null != line) {
                         stack.push(line);
                     }

@@ -30,8 +30,8 @@ import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.lang.exception.CrontabException;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.exception.ValidateException;
-import org.aoju.bus.core.utils.RuntimeUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.RuntimeKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -85,7 +85,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public Object defaultException(Exception e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
+        Logger.error(RuntimeKit.getStackTrace(e));
         return write(ErrorCode.EM_FAILURE);
     }
 
@@ -98,7 +98,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = InstrumentException.class)
     public Object instrumentException(InstrumentException e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
+        Logger.error(RuntimeKit.getStackTrace(e));
         return write(ErrorCode.EM_100510);
     }
 
@@ -112,8 +112,8 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
     public Object businessException(BusinessException e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
-        if (StringUtils.isBlank(e.getErrcode())) {
+        Logger.error(RuntimeKit.getStackTrace(e));
+        if (StringKit.isBlank(e.getErrcode())) {
             return write(ErrorCode.EM_100513, e.getMessage());
         }
         return write(e.getErrcode());
@@ -128,7 +128,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
     public Object crontabException(CrontabException e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
+        Logger.error(RuntimeKit.getStackTrace(e));
         return write(ErrorCode.EM_100514);
     }
 
@@ -141,7 +141,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
     public Object validateException(ValidateException e) {
-        Logger.error(RuntimeUtils.getStackTrace(e));
+        Logger.error(RuntimeKit.getStackTrace(e));
         return write(e.getErrcode(), e.getErrmsg());
     }
 

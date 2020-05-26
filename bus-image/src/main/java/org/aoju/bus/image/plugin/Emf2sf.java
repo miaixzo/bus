@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.builtin.Multiframe;
 import org.aoju.bus.image.galaxy.data.Attributes;
@@ -100,7 +100,7 @@ public class Emf2sf {
             dis.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
             src = dis.readDataset(-1, -1);
         } finally {
-            IoUtils.close(dis);
+            IoKit.close(dis);
         }
         Attributes fmi = dis.getFileMetaInformation();
         if (frames == null) {
@@ -126,7 +126,7 @@ public class Emf2sf {
                     fmi.getString(Tag.TransferSyntaxUID))
                     : null, sf);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
     }
 

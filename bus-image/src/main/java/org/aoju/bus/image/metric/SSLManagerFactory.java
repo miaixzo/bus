@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric;
 
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StreamKit;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -74,11 +74,11 @@ public abstract class SSLManagerFactory {
             throws IOException, KeyStoreException, NoSuchAlgorithmException,
             CertificateException {
         KeyStore ks = KeyStore.getInstance(type);
-        InputStream in = StreamUtils.openFileOrURL(url);
+        InputStream in = StreamKit.openFileOrURL(url);
         try {
             ks.load(in, password);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
         return ks;
     }

@@ -26,7 +26,7 @@ package org.aoju.bus.sensitive;
 
 import com.alibaba.fastjson.serializer.BeanContext;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.sensitive.annotation.Condition;
 import org.aoju.bus.sensitive.annotation.Entry;
 import org.aoju.bus.sensitive.annotation.Shield;
@@ -71,8 +71,8 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
     private static ConditionProvider getConditionOpt(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             Condition sensitiveCondition = annotation.annotationType().getAnnotation(Condition.class);
-            if (ObjectUtils.isNotNull(sensitiveCondition)) {
-                return ClassUtils.newInstance(sensitiveCondition.value());
+            if (ObjectKit.isNotNull(sensitiveCondition)) {
+                return ClassKit.newInstance(sensitiveCondition.value());
             }
         }
         return null;
@@ -81,14 +81,14 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
     @Override
     public Object process(BeanContext context, Object object, String name, Object value) {
         // 对象为 MAP 的时候,FastJson map 对应的 context 为 NULL
-        if (ObjectUtils.isNull(context)) {
+        if (ObjectKit.isNull(context)) {
             return value;
         }
 
         // 信息初始化
         final java.lang.reflect.Field field = context.getField();
         final Class clazz = context.getBeanClass();
-        final List<java.lang.reflect.Field> fieldList = ClassUtils.getAllFieldList(clazz);
+        final List<java.lang.reflect.Field> fieldList = ClassKit.getAllFieldList(clazz);
         sensitiveContext.setCurrentField(field);
         sensitiveContext.setCurrentObject(object);
         sensitiveContext.setBeanClass(clazz);
@@ -97,26 +97,26 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
         // 这里将缺少对于列表/集合/数组 的处理 可以单独实现
         // 设置当前处理的字段
         Entry sensitiveEntry = field.getAnnotation(Entry.class);
-        if (ObjectUtils.isNull(sensitiveEntry)) {
+        if (ObjectKit.isNull(sensitiveEntry)) {
             sensitiveContext.setEntry(value);
             return handleSensitive(sensitiveContext, field);
         }
 
         //2. 处理 @Entry 注解
         final Class fieldTypeClass = field.getType();
-        if (TypeUtils.isJavaBean(fieldTypeClass)) {
+        if (TypeKit.isJavaBean(fieldTypeClass)) {
             //不作处理,因为 json 本身就会进行递归处理
             return value;
         }
-        if (TypeUtils.isMap(fieldTypeClass)) {
+        if (TypeKit.isMap(fieldTypeClass)) {
             return value;
         }
 
-        if (TypeUtils.isArray(fieldTypeClass)) {
+        if (TypeKit.isArray(fieldTypeClass)) {
             // 为数组类型
             Object[] arrays = (Object[]) value;
-            if (ArrayUtils.isNotEmpty(arrays)) {
-                Object firstArrayEntry = ArrayUtils.firstNotNull(arrays).get();
+            if (ArrayKit.isNotEmpty(arrays)) {
+                Object firstArrayEntry = ArrayKit.firstNotNull(arrays).get();
                 final Class entryFieldClass = firstArrayEntry.getClass();
 
                 if (isBaseType(entryFieldClass)) {
@@ -134,11 +134,11 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
                 }
             }
         }
-        if (TypeUtils.isCollection(fieldTypeClass)) {
+        if (TypeKit.isCollection(fieldTypeClass)) {
             // Collection 接口的子类
             final Collection<?> entryCollection = (Collection<?>) value;
-            if (CollUtils.isNotEmpty(entryCollection)) {
-                Object firstCollectionEntry = CollUtils.firstNotNullElem(entryCollection).get();
+            if (CollKit.isNotEmpty(entryCollection)) {
+                Object firstCollectionEntry = CollKit.firstNotNullElem(entryCollection).get();
 
                 if (isBaseType(firstCollectionEntry.getClass())) {
                     //2, 基础值,直接循环设置即可
@@ -171,12 +171,12 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
 
             //处理 @Sensitive
             Shield sensitive = field.getAnnotation(Shield.class);
-            if (ObjectUtils.isNotNull(sensitive)) {
+            if (ObjectKit.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
                 ConditionProvider condition = conditionClass.newInstance();
                 if (condition.valid(context)) {
                     StrategyProvider strategy = Registry.require(sensitive.type());
-                    if (ObjectUtils.isEmpty(strategy)) {
+                    if (ObjectKit.isEmpty(strategy)) {
                         Class<? extends StrategyProvider> strategyClass = sensitive.strategy();
                         strategy = strategyClass.newInstance();
                     }
@@ -187,11 +187,11 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
 
             // 系统内置自定义注解的处理,获取所有的注解
             Annotation[] annotations = field.getAnnotations();
-            if (ArrayUtils.isNotEmpty(annotations)) {
+            if (ArrayKit.isNotEmpty(annotations)) {
                 ConditionProvider conditionOptional = getConditionOpt(annotations);
-                if (ObjectUtils.isNotEmpty(conditionOptional)) {
+                if (ObjectKit.isNotEmpty(conditionOptional)) {
                     final StrategyProvider strategyProvider = Registry.require(annotations);
-                    if (ObjectUtils.isEmpty(strategyProvider)) {
+                    if (ObjectKit.isEmpty(strategyProvider)) {
                         sensitiveContext.setEntry(null);
                         return strategyProvider.build(originalFieldVal, context);
                     }
@@ -214,14 +214,14 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
      * @return 是否
      */
     private boolean isBaseType(final Class fieldTypeClass) {
-        if (TypeUtils.isBase(fieldTypeClass)) {
+        if (TypeKit.isBase(fieldTypeClass)) {
             return true;
         }
 
-        if (TypeUtils.isJavaBean(fieldTypeClass)
-                || TypeUtils.isArray(fieldTypeClass)
-                || TypeUtils.isCollection(fieldTypeClass)
-                || TypeUtils.isMap(fieldTypeClass)) {
+        if (TypeKit.isJavaBean(fieldTypeClass)
+                || TypeKit.isArray(fieldTypeClass)
+                || TypeKit.isCollection(fieldTypeClass)
+                || TypeKit.isMap(fieldTypeClass)) {
             return false;
         }
         return true;

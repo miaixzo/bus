@@ -25,8 +25,8 @@
 package org.aoju.bus.extra.mail;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -282,7 +282,7 @@ public class Mail {
         final MimeMessage msg = new MimeMessage(getSession(this.useGlobalSession));
         // 发件人
         final String from = this.mailAccount.getFrom();
-        if (StringUtils.isEmpty(from)) {
+        if (StringKit.isEmpty(from)) {
             // 用户未提供发送方,则从Session中自动获取
             msg.setFrom();
         } else {
@@ -297,11 +297,11 @@ public class Mail {
         // 收件人
         msg.setRecipients(MimeMessage.RecipientType.TO, InternalMail.parseAddressFromStrs(this.tos, charset));
         // 抄送人
-        if (ArrayUtils.isNotEmpty(this.ccs)) {
+        if (ArrayKit.isNotEmpty(this.ccs)) {
             msg.setRecipients(MimeMessage.RecipientType.CC, InternalMail.parseAddressFromStrs(this.ccs, charset));
         }
         // 密送人
-        if (ArrayUtils.isNotEmpty(this.bccs)) {
+        if (ArrayKit.isNotEmpty(this.bccs)) {
             msg.setRecipients(MimeMessage.RecipientType.BCC, InternalMail.parseAddressFromStrs(this.bccs, charset));
         }
         return msg;
@@ -319,11 +319,11 @@ public class Mail {
 
         // 正文
         final BodyPart body = new MimeBodyPart();
-        body.setContent(content, StringUtils.format("text/{}; charset={}", isHtml ? "html" : "plain", charset));
+        body.setContent(content, StringKit.format("text/{}; charset={}", isHtml ? "html" : "plain", charset));
         mainPart.addBodyPart(body);
 
         // 附件
-        if (ArrayUtils.isNotEmpty(this.attachments)) {
+        if (ArrayKit.isNotEmpty(this.attachments)) {
             BodyPart bodyPart;
             for (DataSource attachment : attachments) {
                 bodyPart = new MimeBodyPart();

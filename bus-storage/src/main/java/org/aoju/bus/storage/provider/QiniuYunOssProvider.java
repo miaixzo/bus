@@ -34,7 +34,7 @@ import com.qiniu.util.Auth;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -168,7 +168,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
                     .data(Attachs.builder()
                             .name(fileName)
-                            .size(StringUtils.toString(response.body().length))
+                            .size(StringKit.toString(response.body().length))
                             .path(response.url()))
                     .build();
         } catch (QiniuException e) {
@@ -195,7 +195,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())
                     .errmsg(Builder.ErrorCode.SUCCESS.getMsg())
                     .data(Attachs.builder()
-                            .size(StringUtils.toString(response.body().length))
+                            .size(StringKit.toString(response.body().length))
                             .name(fileName)
                             .path(response.url()))
                     .build();

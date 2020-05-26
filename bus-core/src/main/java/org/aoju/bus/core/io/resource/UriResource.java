@@ -26,10 +26,10 @@ package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.UriUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -66,7 +66,7 @@ public class UriResource implements Resource {
      */
     public UriResource(URL url, String name) {
         this.url = url;
-        this.name = ObjectUtils.defaultIfNull(name, (null != url) ? FileUtils.getName(url.getPath()) : null);
+        this.name = ObjectKit.defaultIfNull(name, (null != url) ? FileKit.getName(url.getPath()) : null);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class UriResource implements Resource {
         if (null == this.url) {
             throw new InstrumentException("Resource URL is null!");
         }
-        return UriUtils.getStream(url);
+        return UriKit.getStream(url);
     }
 
     /**
@@ -95,7 +95,7 @@ public class UriResource implements Resource {
      */
     @Override
     public BufferedReader getReader(Charset charset) {
-        return UriUtils.getReader(this.url, charset);
+        return UriKit.getReader(this.url, charset);
     }
 
     @Override
@@ -103,9 +103,9 @@ public class UriResource implements Resource {
         BufferedReader reader = null;
         try {
             reader = getReader(charset);
-            return IoUtils.read(reader);
+            return IoKit.read(reader);
         } finally {
-            IoUtils.close(reader);
+            IoKit.close(reader);
         }
     }
 
@@ -114,9 +114,9 @@ public class UriResource implements Resource {
         InputStream in = null;
         try {
             in = getStream();
-            return IoUtils.readBytes(in);
+            return IoKit.readBytes(in);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
@@ -126,7 +126,7 @@ public class UriResource implements Resource {
      * @return {@link File}
      */
     public File getFile() {
-        return FileUtils.file(this.url);
+        return FileKit.file(this.url);
     }
 
     /**

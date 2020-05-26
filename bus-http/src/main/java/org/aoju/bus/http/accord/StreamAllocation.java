@@ -25,7 +25,7 @@
 package org.aoju.bus.http.accord;
 
 import org.aoju.bus.core.lang.exception.RevisedException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.metric.EventListener;
 import org.aoju.bus.http.metric.Interceptor;
@@ -181,7 +181,7 @@ public final class StreamAllocation {
                 }
             }
         }
-        IoUtils.close(toClose);
+        IoKit.close(toClose);
 
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
@@ -256,7 +256,7 @@ public final class StreamAllocation {
                 result = connection;
             }
         }
-        IoUtils.close(socket);
+        IoKit.close(socket);
 
         eventListener.connectionAcquired(call, result);
         return result;
@@ -295,7 +295,7 @@ public final class StreamAllocation {
             if (connection != null) releasedConnection = null;
             callEnd = this.released;
         }
-        IoUtils.close(socket);
+        IoKit.close(socket);
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
         }
@@ -335,7 +335,7 @@ public final class StreamAllocation {
             socket = deallocate(false, true, false);
             if (connection != null) releasedConnection = null;
         }
-        IoUtils.close(socket);
+        IoKit.close(socket);
         if (releasedConnection != null) {
             Builder.instance.timeoutExit(call, null);
             eventListener.connectionReleased(call, releasedConnection);
@@ -354,7 +354,7 @@ public final class StreamAllocation {
             socket = deallocate(true, false, false);
             if (connection != null) releasedConnection = null;
         }
-        IoUtils.close(socket);
+        IoKit.close(socket);
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
         }
@@ -362,7 +362,7 @@ public final class StreamAllocation {
 
     /**
      * 释放由这个分配所持有的资源。如果分配了足够的资源，连接将被分离或关闭。调用方必须在连接池上同步
-     * 返回一个关闭选项，调用者应该在同步块完成时将其传递给{@link IoUtils#close}。(在连接池上同步时，我们不执行I/O。)
+     * 返回一个关闭选项，调用者应该在同步块完成时将其传递给{@link IoKit#close}。(在连接池上同步时，我们不执行I/O。)
      *
      * @param noNewStreams   是否新的流
      * @param released       是否最终
@@ -449,7 +449,7 @@ public final class StreamAllocation {
             if (connection != null || !reportedAcquired) releasedConnection = null;
         }
 
-        IoUtils.close(socket);
+        IoKit.close(socket);
         if (releasedConnection != null) {
             eventListener.connectionReleased(call, releasedConnection);
         }
@@ -493,7 +493,7 @@ public final class StreamAllocation {
      * 释放该连接持有的连接，并获取{@code newConnection}。只有在持有的
      * 连接是新连接，但是被{@code newConnection}复制时，调用它才是安全
      * 的。通常在并发连接到HTTP/2 webserver时发生这种情况
-     * 返回一个关闭选项，调用者应该在同步块完成*时将其传递给{@link IoUtils#close(Socket)}
+     * 返回一个关闭选项，调用者应该在同步块完成*时将其传递给{@link IoKit#close(Socket)}
      *
      * @param newConnection 新连接信息
      * @return 套接字关闭选项

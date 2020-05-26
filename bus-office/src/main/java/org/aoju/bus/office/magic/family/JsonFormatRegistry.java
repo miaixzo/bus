@@ -25,10 +25,10 @@
 package org.aoju.bus.office.magic.family;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.extra.json.JsonUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.extra.json.JsonKit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,7 +81,7 @@ public class JsonFormatRegistry extends SimpleFormatRegistry {
             final InputStream source,
             final Map<String, FormatProperties> customProperties)
             throws IOException {
-        return create(IoUtils.toString(source, Charset.DEFAULT_UTF_8), customProperties);
+        return create(IoKit.toString(source, Charset.DEFAULT_UTF_8), customProperties);
     }
 
     /**
@@ -107,10 +107,10 @@ public class JsonFormatRegistry extends SimpleFormatRegistry {
      */
     protected void readJsonArray(final String source,
                                  final Map<String, FormatProperties> customProperties) {
-        final List<DocumentFormat> list = JsonUtils.toList(source, DocumentFormat.class);
-        if (CollUtils.isNotEmpty(list)) {
+        final List<DocumentFormat> list = JsonKit.toList(source, DocumentFormat.class);
+        if (CollKit.isNotEmpty(list)) {
             list.stream().map(fmt -> {
-                if (ObjectUtils.isEmpty(customProperties) || !customProperties.containsKey(fmt.getExtension())) {
+                if (ObjectKit.isEmpty(customProperties) || !customProperties.containsKey(fmt.getExtension())) {
                     return DocumentFormat.unmodifiableCopy(fmt);
                 }
                 final FormatProperties props = customProperties.get(fmt.getExtension());

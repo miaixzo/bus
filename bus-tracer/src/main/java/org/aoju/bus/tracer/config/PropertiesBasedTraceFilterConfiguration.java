@@ -25,7 +25,7 @@
 package org.aoju.bus.tracer.config;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.consts.TraceConsts;
 
@@ -104,7 +104,7 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
     @Override
     public boolean shouldProcessContext(final Channel channel) {
         final String messageTypePropertyValue = getProfiledOrDefaultProperty(channel.name());
-        return !StringUtils.isEmpty(messageTypePropertyValue);
+        return !StringKit.isEmpty(messageTypePropertyValue);
     }
 
     @Override

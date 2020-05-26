@@ -33,7 +33,7 @@ import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -141,7 +141,7 @@ public class TencentCosProvider extends AbstractProvider {
             objectMetadata.setContentLength(content.available());
             PutObjectRequest request = new PutObjectRequest(this.context.getBucket(), fileName, content, objectMetadata);
             PutObjectResult result = this.client.putObject(request);
-            if (StringUtils.isEmpty(result.getETag())) {
+            if (StringKit.isEmpty(result.getETag())) {
                 return Message.builder()
                         .errcode(Builder.ErrorCode.FAILURE.getCode())
                         .errmsg(Builder.ErrorCode.FAILURE.getMsg())
@@ -175,7 +175,7 @@ public class TencentCosProvider extends AbstractProvider {
         PutObjectRequest request = new PutObjectRequest(this.context.getBucket(), fileName,
                 new ByteArrayInputStream(content), objectMetadata);
         PutObjectResult result = this.client.putObject(request);
-        if (StringUtils.isEmpty(result.getETag())) {
+        if (StringKit.isEmpty(result.getETag())) {
             return Message.builder()
                     .errcode(Builder.ErrorCode.FAILURE.getCode())
                     .errmsg(Builder.ErrorCode.FAILURE.getMsg())

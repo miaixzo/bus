@@ -25,7 +25,7 @@
 package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
@@ -172,7 +172,7 @@ public class DESede extends Symmetric {
      * @param iv      加盐
      */
     public DESede(String mode, String padding, SecretKey key, IvParameterSpec iv) {
-        super(StringUtils.format("{}/{}/{}", Algorithm.DESede, mode, padding), key, iv);
+        super(StringKit.format("{}/{}/{}", Algorithm.DESede, mode, padding), key, iv);
     }
 
 }

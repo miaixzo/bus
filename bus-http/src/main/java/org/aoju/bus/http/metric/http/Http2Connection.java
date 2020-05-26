@@ -32,8 +32,8 @@ import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.RevisedException;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Protocol;
 import org.aoju.bus.http.Settings;
@@ -134,7 +134,7 @@ public final class Http2Connection implements Closeable {
         hostname = builder.hostname;
 
         writerExecutor = new ScheduledThreadPoolExecutor(1,
-                org.aoju.bus.http.Builder.threadFactory(StringUtils.format("Httpd %s Writer", hostname), false));
+                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Httpd %s Writer", hostname), false));
         if (builder.pingIntervalMillis != 0) {
             writerExecutor.scheduleAtFixedRate(new PingRunnable(false, 0, 0),
                     builder.pingIntervalMillis, builder.pingIntervalMillis, TimeUnit.MILLISECONDS);
@@ -142,7 +142,7 @@ public final class Http2Connection implements Closeable {
 
         pushExecutor = new ThreadPoolExecutor(0, 1, 60, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(),
-                org.aoju.bus.http.Builder.threadFactory(StringUtils.format("Httpd %s Push Observer", hostname), true));
+                org.aoju.bus.http.Builder.threadFactory(StringKit.format("Httpd %s Push Observer", hostname), true));
         peerSettings.set(Http.INITIAL_WINDOW_SIZE, Http.DEFAULT_INITIAL_WINDOW_SIZE);
         peerSettings.set(Http.MAX_FRAME_SIZE, Http2.INITIAL_MAX_FRAME_SIZE);
         bytesLeftInWriteWindow = peerSettings.getInitialWindowSize();
@@ -587,7 +587,7 @@ public final class Http2Connection implements Closeable {
 
         public Builder socket(Socket socket) throws IOException {
             return socket(socket, ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostName(),
-                    IoUtils.buffer(IoUtils.source(socket)), IoUtils.buffer(IoUtils.sink(socket)));
+                    IoKit.buffer(IoKit.source(socket)), IoKit.buffer(IoKit.sink(socket)));
         }
 
         public Builder socket(
@@ -697,7 +697,7 @@ public final class Http2Connection implements Closeable {
                     close(connectionErrorCode, streamErrorCode);
                 } catch (IOException ignored) {
                 }
-                IoUtils.close(reader);
+                IoKit.close(reader);
             }
         }
 

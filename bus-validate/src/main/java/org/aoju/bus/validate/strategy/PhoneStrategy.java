@@ -25,7 +25,7 @@
 package org.aoju.bus.validate.strategy;
 
 import org.aoju.bus.core.lang.Validator;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Phone;
 import org.aoju.bus.validate.validators.Matcher;
@@ -41,7 +41,7 @@ public class PhoneStrategy implements Matcher<Object, Phone> {
 
     @Override
     public boolean on(Object object, Phone annotation, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
         return Validator.isPhone(object.toString());

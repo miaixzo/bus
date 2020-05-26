@@ -27,7 +27,7 @@ package org.aoju.bus.health.linux.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
@@ -162,7 +162,7 @@ final class LinuxFirmware extends AbstractFirmware {
         final String biosVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_version").trim();
         if (!biosVersion.isEmpty()) {
             String biosRevision = this.bios.get().biosRevision;
-            return biosVersion + (StringUtils.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + ")");
+            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + ")");
         }
         return null;
     }

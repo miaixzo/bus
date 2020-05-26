@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.NotIn;
 import org.aoju.bus.validate.validators.Matcher;
@@ -41,10 +41,10 @@ public class NotInStrategy implements Matcher<String, NotIn> {
 
     @Override
     public boolean on(String object, NotIn annotation, Context context) {
-        if (StringUtils.isEmpty(object)) {
+        if (StringKit.isEmpty(object)) {
             return false;
         }
-        return !ArrayUtils.contains(annotation.value(), object);
+        return !ArrayKit.contains(annotation.value(), object);
     }
 
 }

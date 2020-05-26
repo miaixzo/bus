@@ -27,7 +27,7 @@ package org.aoju.bus.notify.provider.dingtalk;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Setter;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.notify.Builder;
@@ -68,10 +68,10 @@ public class DingTalkProvider extends AbstractProvider<DingTalkTemplate, Context
         param.put("access_token", template.getToken());
         param.put("agent_id", template.getAgentId());
         param.put("msg", template.getMsg());
-        if (StringUtils.isNotBlank(template.getUserIdList())) {
+        if (StringKit.isNotBlank(template.getUserIdList())) {
             param.put("userid_list", template.getUserIdList());
         }
-        if (StringUtils.isNotBlank(template.getDeptIdList())) {
+        if (StringKit.isNotBlank(template.getDeptIdList())) {
             param.put("dept_id_list", template.getDeptIdList());
         }
         param.put("to_all_user", template.isToAllUser());

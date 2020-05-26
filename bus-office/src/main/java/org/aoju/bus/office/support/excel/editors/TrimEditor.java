@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.editors;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Cell;
 
@@ -40,7 +40,7 @@ public class TrimEditor implements CellEditor {
     @Override
     public Object edit(Cell cell, Object value) {
         if (value instanceof String) {
-            return StringUtils.trim((String) value);
+            return StringKit.trim((String) value);
         }
         return value;
     }

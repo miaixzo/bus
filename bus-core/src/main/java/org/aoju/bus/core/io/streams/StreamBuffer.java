@@ -26,7 +26,7 @@ package org.aoju.bus.core.io.streams;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Lang;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,7 +98,7 @@ public class StreamBuffer extends InputStream {
         while ((c = (byte) this.read()) != -1)
             sos.write(c);
         sos.flush();
-        IoUtils.close(sos);
+        IoKit.close(sos);
         return sb.toString();
     }
 

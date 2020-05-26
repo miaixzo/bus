@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Length;
 import org.aoju.bus.validate.validators.Matcher;
@@ -43,7 +43,7 @@ public class LengthStrategy implements Matcher<Object, Length> {
 
     @Override
     public boolean on(Object object, Length annotation, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
 

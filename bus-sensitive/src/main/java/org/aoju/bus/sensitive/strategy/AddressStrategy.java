@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -43,7 +43,7 @@ public class AddressStrategy extends AbstractProvider {
 
     @Override
     public String build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final int RIGHT = 10;
@@ -51,14 +51,14 @@ public class AddressStrategy extends AbstractProvider {
 
         final Shield shield = context.getShield();
         String address = object.toString();
-        int length = StringUtils.length(address);
+        int length = StringKit.length(address);
         if (length > RIGHT + LEFT) {
-            return StringUtils.rightPad(StringUtils.left(address, length - RIGHT), length, shield.shadow());
+            return StringKit.rightPad(StringKit.left(address, length - RIGHT), length, shield.shadow());
         }
         if (length <= LEFT) {
             return address;
         } else {
-            return address.substring(0, LEFT + 1).concat(StringUtils.fill(5, shield.shadow()));
+            return address.substring(0, LEFT + 1).concat(StringKit.fill(5, shield.shadow()));
         }
     }
 

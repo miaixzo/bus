@@ -26,7 +26,7 @@ package org.aoju.bus.core.beans;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.Serializable;
 import java.util.*;
@@ -100,13 +100,13 @@ public class BeanPath implements Serializable {
     }
 
     private static Object getFieldValue(Object bean, String expression) {
-        if (StringUtils.isBlank(expression)) {
+        if (StringKit.isBlank(expression)) {
             return null;
         }
 
-        if (StringUtils.contains(expression, Symbol.C_COLON)) {
+        if (StringKit.contains(expression, Symbol.C_COLON)) {
             // [start:end:step] 模式
-            final List<String> parts = StringUtils.splitTrim(expression, Symbol.C_COLON);
+            final List<String> parts = StringKit.splitTrim(expression, Symbol.C_COLON);
             int start = Integer.parseInt(parts.get(0));
             int end = Integer.parseInt(parts.get(1));
             int step = 1;
@@ -114,32 +114,32 @@ public class BeanPath implements Serializable {
                 step = Integer.parseInt(parts.get(2));
             }
             if (bean instanceof Collection) {
-                return CollUtils.sub((Collection<?>) bean, start, end, step);
-            } else if (ArrayUtils.isArray(bean)) {
-                return ArrayUtils.sub(bean, start, end, step);
+                return CollKit.sub((Collection<?>) bean, start, end, step);
+            } else if (ArrayKit.isArray(bean)) {
+                return ArrayKit.sub(bean, start, end, step);
             }
-        } else if (StringUtils.contains(expression, Symbol.C_COMMA)) {
-            final List<String> keys = StringUtils.splitTrim(expression, Symbol.C_COMMA);
+        } else if (StringKit.contains(expression, Symbol.C_COMMA)) {
+            final List<String> keys = StringKit.splitTrim(expression, Symbol.C_COMMA);
             if (bean instanceof Collection) {
-                return CollUtils.getAny((Collection<?>) bean, Convert.convert(int[].class, keys));
-            } else if (ArrayUtils.isArray(bean)) {
-                return ArrayUtils.get(bean, Convert.convert(int[].class, keys));
+                return CollKit.getAny((Collection<?>) bean, Convert.convert(int[].class, keys));
+            } else if (ArrayKit.isArray(bean)) {
+                return ArrayKit.get(bean, Convert.convert(int[].class, keys));
             } else {
                 final String[] unwrapedKeys = new String[keys.size()];
                 for (int i = 0; i < unwrapedKeys.length; i++) {
-                    unwrapedKeys[i] = StringUtils.unWrap(keys.get(i), Symbol.C_SINGLE_QUOTE);
+                    unwrapedKeys[i] = StringKit.unWrap(keys.get(i), Symbol.C_SINGLE_QUOTE);
                 }
                 if (bean instanceof Map) {
                     // 只支持String为key的Map
-                    MapUtils.getAny((Map<String, ?>) bean, unwrapedKeys);
+                    MapKit.getAny((Map<String, ?>) bean, unwrapedKeys);
                 } else {
-                    final Map<String, Object> map = BeanUtils.beanToMap(bean);
-                    MapUtils.getAny(map, unwrapedKeys);
+                    final Map<String, Object> map = BeanKit.beanToMap(bean);
+                    MapKit.getAny(map, unwrapedKeys);
                 }
             }
         } else {
             // 数字或普通字符串
-            return BeanUtils.getFieldValue(bean, expression);
+            return BeanKit.getFieldValue(bean, expression);
         }
 
         return null;
@@ -152,10 +152,10 @@ public class BeanPath implements Serializable {
      * @return 表达式
      */
     private static String unWrapIfPossible(CharSequence expression) {
-        if (StringUtils.containsAny(expression, " = ", " > ", " < ", " like ", Symbol.COMMA)) {
+        if (StringKit.containsAny(expression, " = ", " > ", " < ", " like ", Symbol.COMMA)) {
             return expression.toString();
         }
-        return StringUtils.unWrap(expression, Symbol.C_SINGLE_QUOTE);
+        return StringKit.unWrap(expression, Symbol.C_SINGLE_QUOTE);
     }
 
     /**
@@ -206,7 +206,7 @@ public class BeanPath implements Serializable {
             //set中有可能做过转换,因此此处重新获取bean
             subBean = get(patternParts, bean, true);
         }
-        BeanUtils.setFieldValue(subBean, patternParts.get(patternParts.size() - 1), value);
+        BeanKit.setFieldValue(subBean, patternParts.get(patternParts.size() - 1), value);
     }
 
     /**
@@ -230,7 +230,7 @@ public class BeanPath implements Serializable {
             subBean = getFieldValue(subBean, patternPart);
             if (null == subBean) {
                 // 支持表达式的第一个对象为Bean本身(若用户定义表达式$开头,则不做此操作)
-                if (isFirst && false == this.isStartWith$ && BeanUtils.isMatchName(bean, patternPart, true)) {
+                if (isFirst && false == this.isStartWith$ && BeanKit.isMatchName(bean, patternPart, true)) {
                     subBean = bean;
                     isFirst = false;
                 } else {
@@ -250,7 +250,7 @@ public class BeanPath implements Serializable {
         List<String> localPatternParts = new ArrayList<>();
         int length = expression.length();
 
-        final TextUtils builder = new TextUtils();
+        final TextKit builder = new TextKit();
         char c;
         boolean isNumStart = false;// 下标标识符开始
         for (int i = 0; i < length; i++) {
@@ -261,18 +261,18 @@ public class BeanPath implements Serializable {
                 continue;
             }
 
-            if (ArrayUtils.contains(expChars, c)) {
+            if (ArrayKit.contains(expChars, c)) {
                 // 处理边界符号
                 if (Symbol.C_BRACKET_RIGHT == c) {
                     // 中括号(数字下标)结束
                     if (false == isNumStart) {
-                        throw new IllegalArgumentException(StringUtils.format("Bad expression '{}':{}, we find ']' but no '[' !", expression, i));
+                        throw new IllegalArgumentException(StringKit.format("Bad expression '{}':{}, we find ']' but no '[' !", expression, i));
                     }
                     isNumStart = false;
                 } else {
                     if (isNumStart) {
                         // 非结束中括号情况下发现起始中括号报错(中括号未关闭)
-                        throw new IllegalArgumentException(StringUtils.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, i));
+                        throw new IllegalArgumentException(StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, i));
                     } else if (Symbol.C_BRACKET_LEFT == c) {
                         // 数字下标开始
                         isNumStart = true;
@@ -291,7 +291,7 @@ public class BeanPath implements Serializable {
 
         // 末尾边界符检查
         if (isNumStart) {
-            throw new IllegalArgumentException(StringUtils.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, length - 1));
+            throw new IllegalArgumentException(StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, length - 1));
         } else {
             if (builder.length() > 0) {
                 localPatternParts.add(unWrapIfPossible(builder));

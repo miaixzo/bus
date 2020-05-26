@@ -26,7 +26,7 @@ package org.aoju.bus.image;
 
 import lombok.Data;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.metric.Association;
 import org.aoju.bus.logger.Logger;
 
@@ -62,7 +62,7 @@ public class Node {
     }
 
     public Node(String aet, String hostname, Integer port, boolean validate) {
-        if (!StringUtils.hasText(aet)) {
+        if (!StringKit.hasText(aet)) {
             throw new IllegalArgumentException("Missing AETitle");
         }
         if (aet.length() > 16) {
@@ -83,7 +83,7 @@ public class Node {
         } catch (UnknownHostException e) {
             Logger.error("Cannot resolve hostname", e);
         }
-        return StringUtils.hasText(hostname) ? hostname : Http.HTTP_HOST_IPV4;
+        return StringKit.hasText(hostname) ? hostname : Http.HTTP_HOST_IPV4;
     }
 
     public static Node buildLocalDicomNode(Association as) {

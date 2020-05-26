@@ -25,7 +25,7 @@
 package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class JarLoaders extends URLClassLoader {
      * @param urls 被加载的URL
      */
     public JarLoaders(URL[] urls) {
-        super(urls, ClassUtils.getClassLoader());
+        super(urls, ClassKit.getClassLoader());
     }
 
     /**
@@ -81,7 +81,7 @@ public class JarLoaders extends URLClassLoader {
         try {
             loader.addJar(jarFile);
         } finally {
-            IoUtils.close(loader);
+            IoKit.close(loader);
         }
         return loader;
     }
@@ -95,12 +95,12 @@ public class JarLoaders extends URLClassLoader {
      */
     public static void loadJar(URLClassLoader loader, File jarFile) throws InstrumentException {
         try {
-            final Method method = ClassUtils.getDeclaredMethod(URLClassLoader.class, "addURL", URL.class);
+            final Method method = ClassKit.getDeclaredMethod(URLClassLoader.class, "addURL", URL.class);
             if (null != method) {
                 method.setAccessible(true);
                 final List<File> jars = loopJar(jarFile);
                 for (File jar : jars) {
-                    ReflectUtils.invoke(loader, method, jar.toURI().toURL());
+                    ReflectKit.invoke(loader, method, jar.toURI().toURL());
                 }
             }
         } catch (IOException e) {
@@ -127,7 +127,7 @@ public class JarLoaders extends URLClassLoader {
      * @return jar文件列表
      */
     private static List<File> loopJar(File file) {
-        return FileUtils.loopFiles(file, file1 -> {
+        return FileKit.loopFiles(file, file1 -> {
             final String path = file1.getPath();
             return path != null && path.toLowerCase().endsWith(".jar");
         });
@@ -140,7 +140,7 @@ public class JarLoaders extends URLClassLoader {
      * @return 是否为jar文件
      */
     private static boolean isJarFile(File file) {
-        if (false == FileUtils.isFile(file)) {
+        if (false == FileKit.isFile(file)) {
             return false;
         }
         return file.getPath().toLowerCase().endsWith(".jar");
@@ -177,7 +177,7 @@ public class JarLoaders extends URLClassLoader {
      * @return the jarClassLoader
      */
     public JarLoaders addURL(File dir) {
-        super.addURL(UriUtils.getURL(dir));
+        super.addURL(UriKit.getURL(dir));
         return this;
     }
 

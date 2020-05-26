@@ -28,7 +28,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.util.XReplaceDescriptor;
 import com.sun.star.util.XReplaceable;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.magic.Lo;
@@ -56,8 +56,8 @@ public class TextReplacerFilter implements Filter {
      */
     public TextReplacerFilter(final String[] searchList, final String[] replacementList) {
         super();
-        this.searchList = ArrayUtils.clone(searchList);
-        this.replacementList = ArrayUtils.clone(replacementList);
+        this.searchList = ArrayKit.clone(searchList);
+        this.replacementList = ArrayKit.clone(replacementList);
     }
 
     @Override
