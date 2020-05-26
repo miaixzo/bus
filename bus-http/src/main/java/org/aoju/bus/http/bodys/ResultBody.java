@@ -331,7 +331,7 @@ public class ResultBody extends AbstractBody implements Body {
 
     private String resolveFileName() {
         String fileName = response.header("Content-Disposition");
-        // 通过Content-Disposition获取文件名，这点跟服务器有关，需要灵活变通
+        // 通过Content-Disposition获取文件名
         if (fileName == null || fileName.length() < 1) {
             fileName = response.request().url().encodedPath();
             fileName = fileName.substring(fileName.lastIndexOf(Symbol.SLASH) + 1);
@@ -342,7 +342,7 @@ public class ResultBody extends AbstractBody implements Body {
             } catch (UnsupportedEncodingException e) {
                 throw new InstrumentException("Failed to decode file name", e);
             }
-            // 有些文件名会被包含在""里面，所以要去掉，不然无法读取文件后缀
+            // 去掉文件名会被包含""，不然无法读取文件后缀
             fileName = fileName.replaceAll("\"", Normal.EMPTY);
         }
         return fileName;
