@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API Search API calls.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @see <a href="https://gitlab.com/help/api/search.md">Search API</a>
  * @since JDK 1.8+
  */

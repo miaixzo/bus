@@ -36,7 +36,7 @@ import java.util.List;
  * 邮件工具类,基于javax.mail封装
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class MailKit {

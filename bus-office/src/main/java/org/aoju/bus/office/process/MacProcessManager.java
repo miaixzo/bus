@@ -28,7 +28,7 @@ package org.aoju.bus.office.process;
  * 用于MAC的{@link ProcessManager}实现
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class MacProcessManager extends UnixProcessManager {

@@ -43,7 +43,7 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @ThreadSafe

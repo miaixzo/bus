@@ -35,7 +35,7 @@ import org.springframework.beans.factory.FactoryBean;
  * 增加mapperBuilder
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class MapperFactoryBean<T> extends SqlSessionDaoSupport

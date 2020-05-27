@@ -41,7 +41,7 @@ import org.aoju.bus.logger.Logger;
  * 帮助类来集中PDH计数器设置的样板部分，并允许应用程序轻松地添加、查询和删除计数器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -36,7 +36,7 @@ import java.util.*;
  * 阿里云语音通知
  *
  * @author Justubborn
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK1.8+
  */
 public class AliyunVmsProvider extends AliyunProvider<AliyunVmsTemplate, Context> {

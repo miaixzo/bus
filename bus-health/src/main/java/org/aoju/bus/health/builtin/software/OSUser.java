@@ -31,7 +31,7 @@ import org.aoju.bus.health.Platform;
  * OSUser class
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class OSUser {

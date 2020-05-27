@@ -36,7 +36,7 @@ import java.util.*;
  * 阿里云短信
  *
  * @author Justubborn
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK1.8+
  */
 public class AliyunSmsProvider extends AliyunProvider<AliyunSmsTemplate, Context> {

@@ -39,7 +39,7 @@ import javax.crypto.spec.IvParameterSpec;
  * Java中默认实现为：DES/CBC/PKCS5Padding
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DES extends Symmetric {
