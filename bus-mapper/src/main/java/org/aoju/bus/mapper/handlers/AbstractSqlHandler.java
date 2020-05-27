@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Data
 @Accessors(chain = true)
-public abstract class AbstractSqlParserHandler {
+public abstract class AbstractSqlHandler {
 
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
     public static final String DELEGATE_MAPPED_STATEMENT = "delegate.mappedStatement";

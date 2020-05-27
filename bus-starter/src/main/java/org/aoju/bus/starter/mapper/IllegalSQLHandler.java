@@ -41,10 +41,11 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.update.Update;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.handlers.AbstractSqlParserHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -53,8 +54,6 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -71,7 +70,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>1.1 如果因为动态SQL，bug导致update的where条件没有带上，全表更新上万条数据</p>
  * <p>1.2 如果检查到使用了索引，SQL性能基本不会太差</p>
  * <p>2.SQL尽量单表执行，有查询left jion的语句，必须在注释里面允许该SQL运行，否则会被拦截</p>
- * <p>https://gaoxianglong.github.io/shark</p>
  * <p>SQL尽量单表执行的好处</p>
  * <p>2.1 查询条件简单、易于开理解和维护；</p>
  * <p>2.2 扩展性极强；(可为分库分表做准备)</p>
@@ -246,7 +244,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
      * @param conn      ignore
      * @return ignore
      */
-    public static List<IndexInfo> getIndexInfos(String dbName, String tableName, Connection conn) {
+    private static List<IndexInfo> getIndexInfos(String dbName, String tableName, Connection conn) {
         return getIndexInfos(null, dbName, tableName, conn);
     }
 
@@ -259,7 +257,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
      * @param conn      ignore
      * @return ignore
      */
-    public static List<IndexInfo> getIndexInfos(String key, String dbName, String tableName, Connection conn) {
+    private static List<IndexInfo> getIndexInfos(String key, String dbName, String tableName, Connection conn) {
         List<IndexInfo> indexInfos = null;
         if (StringKit.isNotBlank(key)) {
             indexInfos = indexInfoMap.get(key);
@@ -292,24 +290,6 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
         return indexInfos;
     }
 
-    /**
-     * MD5 Base64 加密
-     *
-     * @param str 待加密的字符串
-     * @return 加密后的字符串
-     */
-    public static String md5Base64(String str) {
-        //确定计算方法
-        try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
-            //加密后的字符串
-            byte[] src = md5.digest(str.getBytes(StandardCharsets.UTF_8));
-            return Base64.getEncoder().encodeToString(src);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
-    }
-
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = realTarget(invocation.getTarget());
@@ -322,7 +302,9 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
         BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         String originalSql = boundSql.getSql();
         Logger.debug("Check for SQL : " + originalSql);
-        String md5Base64 = md5Base64(originalSql);
+
+        String md5Base64 = Base64.getEncoder().encodeToString(Builder.md5().digest(originalSql.getBytes(Charset.UTF_8)));
+
         if (cacheValidResult.contains(md5Base64)) {
             Logger.debug("The SQL has been checked : " + originalSql);
             return invocation.proceed();
@@ -360,16 +342,11 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
     }
 
     @Override
-    public Object plugin(Object target) {
-        if (target instanceof StatementHandler) {
-            return Plugin.wrap(target, this);
+    public Object plugin(Object object) {
+        if (object instanceof StatementHandler) {
+            return Plugin.wrap(object, this);
         }
-        return target;
-    }
-
-    @Override
-    public void setProperties(Properties prop) {
-
+        return object;
     }
 
     /**

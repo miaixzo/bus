@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.handlers.AbstractSqlParserHandler;
+import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.NShield;
@@ -50,7 +50,6 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 数据脱敏加密
@@ -60,8 +59,7 @@ import java.util.Properties;
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
-public class SensitiveStatementHandler extends AbstractSqlParserHandler
-        implements Interceptor {
+public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -86,13 +84,11 @@ public class SensitiveStatementHandler extends AbstractSqlParserHandler
     }
 
     @Override
-    public Object plugin(Object o) {
-        return Plugin.wrap(o, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-
+    public Object plugin(Object object) {
+        if (object instanceof StatementHandler) {
+            return Plugin.wrap(object, this);
+        }
+        return object;
     }
 
     private void handleParameters(Sensitive sensitive, Configuration configuration, BoundSql boundSql, Object param, SqlCommandType commandType) {

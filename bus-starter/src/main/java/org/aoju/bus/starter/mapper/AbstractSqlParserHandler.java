@@ -24,6 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -39,6 +42,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
 import org.apache.ibatis.reflection.MetaObject;
 
 /**
@@ -48,7 +52,10 @@ import org.apache.ibatis.reflection.MetaObject;
  * @version 5.9.3
  * @since JDK 1.8+
  */
-public class AbstractSqlSQLParser {
+@Data
+@Accessors(chain = true)
+@EqualsAndHashCode(callSuper = true)
+public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
 
     /**
      * 解析 SQL 方法
@@ -85,7 +92,7 @@ public class AbstractSqlSQLParser {
     /**
      * 执行 SQL 解析
      *
-     * @param statement JsqlParser Statement
+     * @param statement Statement
      * @return SQL 信息
      */
     public String processParser(Statement statement) {
@@ -98,7 +105,9 @@ public class AbstractSqlSQLParser {
         } else if (statement instanceof Delete) {
             this.processDelete((Delete) statement);
         }
-        Logger.debug("parser sql: " + statement.toString());
+        if (Logger.get().isDebug()) {
+            Logger.debug("parser sql: " + statement.toString());
+        }
         return statement.toString();
     }
 
@@ -132,7 +141,6 @@ public class AbstractSqlSQLParser {
         return true;
     }
 
-
     /**
      * 是否执行 SQL 解析 parser 方法
      *
@@ -150,6 +158,7 @@ public class AbstractSqlSQLParser {
      * @param insert 添加检查
      */
     public void processInsert(Insert insert) {
+
     }
 
     /**

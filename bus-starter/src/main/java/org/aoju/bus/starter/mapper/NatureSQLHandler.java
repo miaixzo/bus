@@ -46,7 +46,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.regex.Matcher;
 
 /**
@@ -62,31 +61,10 @@ import java.util.regex.Matcher;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class})})
-public class NatureSQLHandler implements Interceptor {
+public class NatureSQLHandler extends AbstractSqlParserHandler implements Interceptor {
 
-    public static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
+    private static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
         Logger.debug(sqlId + " :  ==> " + time + " ms");
-        Logger.debug(showSql(configuration, boundSql));
-    }
-
-    private static String getParameterValue(Object obj) {
-        String value;
-        if (obj instanceof String) {
-            value = Symbol.SINGLE_QUOTE + obj.toString() + Symbol.SINGLE_QUOTE;
-        } else if (obj instanceof Date) {
-            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
-            value = Symbol.SINGLE_QUOTE + formatter.format(new Date()) + Symbol.SINGLE_QUOTE;
-        } else {
-            if (obj != null) {
-                value = obj.toString();
-            } else {
-                value = Normal.EMPTY;
-            }
-        }
-        return value;
-    }
-
-    public static String showSql(Configuration configuration, BoundSql boundSql) {
         // 获取参数
         Object parameterObject = boundSql.getParameterObject();
         List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
@@ -112,16 +90,34 @@ public class NatureSQLHandler implements Interceptor {
                         Object obj = metaObject.getValue(propertyName);
                         sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
                     } else if (boundSql.hasAdditionalParameter(propertyName)) {
-                        Object obj = boundSql.getAdditionalParameter(propertyName);  // 该分支是动态sql
+                        Object obj = boundSql.getAdditionalParameter(propertyName);
+                        // 该分支是动态sql
                         sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
                     } else {
-                        // 打印出缺失,提醒该参数缺失并防止错位
-                        sql = sql.replaceFirst(id, "缺失");
+                        // 打印Missing,提醒该参数缺失并防止错位
+                        sql = sql.replaceFirst(id, "Missing");
                     }
                 }
             }
         }
-        return sql;
+        Logger.debug(sql);
+    }
+
+    private static String getParameterValue(Object obj) {
+        String value;
+        if (obj instanceof String) {
+            value = Symbol.SINGLE_QUOTE + obj.toString() + Symbol.SINGLE_QUOTE;
+        } else if (obj instanceof Date) {
+            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
+            value = Symbol.SINGLE_QUOTE + formatter.format(new Date()) + Symbol.SINGLE_QUOTE;
+        } else {
+            if (obj != null) {
+                value = obj.toString();
+            } else {
+                value = Normal.EMPTY;
+            }
+        }
+        return value;
     }
 
     @Override
@@ -145,12 +141,10 @@ public class NatureSQLHandler implements Interceptor {
 
     @Override
     public Object plugin(Object object) {
-        return Plugin.wrap(object, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-
+        if (object instanceof Executor) {
+            return Plugin.wrap(object, this);
+        }
+        return object;
     }
 
 }
