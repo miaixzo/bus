@@ -166,6 +166,19 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return totalLength;
     }
 
+    @Override
+    public int length() {
+        return size;
+    }
+
+    @Override
+    public char charAt(final int index) {
+        if (index < 0 || index >= length()) {
+            throw new StringIndexOutOfBoundsException(index);
+        }
+        return buffer[index];
+    }
+
     public String getNewLineText() {
         return newLine;
     }
@@ -185,11 +198,6 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         }
         this.nullText = nullText;
         return this;
-    }
-
-    @Override
-    public int length() {
-        return size;
     }
 
     /**
@@ -258,13 +266,16 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return this;
     }
 
-    @Override
-    public char charAt(final int index) {
-        if (index < 0 || index >= length()) {
-            throw new StringIndexOutOfBoundsException(index);
-        }
-        return buffer[index];
+    /**
+     * 删除全部字符，位置归零
+     *
+     * @return this
+     */
+    public StrBuilder reset() {
+        this.position = 0;
+        return this;
     }
+
 
     /**
      * 在指定的索引处设置字符
