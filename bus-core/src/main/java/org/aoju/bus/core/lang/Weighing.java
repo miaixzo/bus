@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.MapUtils;
-import org.aoju.bus.core.utils.RandomUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.RandomKit;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -46,7 +46,7 @@ import java.util.TreeMap;
  *
  * @param <T> 权重随机获取的对象类型
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Weighing<T> implements Serializable {
@@ -61,7 +61,7 @@ public class Weighing<T> implements Serializable {
      */
     public Weighing() {
         weightMap = new TreeMap<>();
-        random = RandomUtils.getRandom();
+        random = RandomKit.getRandom();
     }
 
     /**
@@ -83,7 +83,7 @@ public class Weighing<T> implements Serializable {
      */
     public Weighing(Iterable<WeightObj<T>> weightObjs) {
         this();
-        if (CollUtils.isNotEmpty(weightObjs)) {
+        if (CollKit.isNotEmpty(weightObjs)) {
             for (WeightObj<T> weightObj : weightObjs) {
                 add(weightObj);
             }
@@ -153,7 +153,7 @@ public class Weighing<T> implements Serializable {
      * @return 随机对象
      */
     public T next() {
-        if (MapUtils.isEmpty(this.weightMap)) {
+        if (MapKit.isEmpty(this.weightMap)) {
             return null;
         }
         double randomWeight = this.weightMap.lastKey() * random.nextDouble();

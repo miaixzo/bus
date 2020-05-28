@@ -42,7 +42,7 @@ import java.util.stream.Stream;
  * <a href="https://docs.gitlab.com/ee/api/pipeline_triggers.html">Pipeline Triggers API</a>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class PipelineApi extends AbstractApi implements Constants {
@@ -346,9 +346,8 @@ public class PipelineApi extends AbstractApi implements Constants {
         // The create pipeline REST API expects the variable data in an unusual format, this
         // class is used to create the JSON for the POST data.
         class CreatePipelineForm {
-            @SuppressWarnings("unused")
+
             public String ref;
-            @SuppressWarnings("unused")
             public List<Variable> variables;
 
             CreatePipelineForm(String ref, List<Variable> variables) {

@@ -27,7 +27,7 @@ package org.aoju.bus.http.metric.http;
 import org.aoju.bus.core.Version;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.BufferedBody;
@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * 此实现使用{@linkplain NewCall}发送请求和接收响应
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class HttpURLConnection extends java.net.HttpURLConnection implements Callback {
@@ -535,7 +535,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     public void setIfModifiedSince(long newValue) {
         super.setIfModifiedSince(newValue);
         if (ifModifiedSince != 0) {
-            requestHeaders.set("If-Modified-Since", DateUtils.format(new Date(ifModifiedSince)));
+            requestHeaders.set("If-Modified-Since", DateKit.format(new Date(ifModifiedSince)));
         } else {
             requestHeaders.removeAll("If-Modified-Since");
         }

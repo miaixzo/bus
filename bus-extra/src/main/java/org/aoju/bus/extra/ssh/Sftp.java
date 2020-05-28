@@ -33,8 +33,8 @@ import com.jcraft.jsch.SftpProgressMonitor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.extra.ftp.AbstractFtp;
 import org.aoju.bus.extra.ftp.FtpConfig;
 
@@ -55,7 +55,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {
@@ -139,7 +139,7 @@ public class Sftp extends AbstractFtp {
      * @param charset 编码
      */
     public void init(String sshHost, int sshPort, String sshUser, String sshPass, Charset charset) {
-        init(SSHUtils.getSession(sshHost, sshPort, sshUser, sshPass), charset);
+        init(SshKit.getSession(sshHost, sshPort, sshUser, sshPass), charset);
     }
 
     /**
@@ -166,7 +166,7 @@ public class Sftp extends AbstractFtp {
      */
     public void init(Session session, Charset charset) {
         this.session = session;
-        init(SSHUtils.openSftp(session, (int) this.ftpConfig.getConnectionTimeout()), charset);
+        init(SshKit.openSftp(session, (int) this.ftpConfig.getConnectionTimeout()), charset);
     }
 
     /**
@@ -187,7 +187,7 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public Sftp reconnectIfTimeout() {
-        if (false == this.cd(Symbol.SLASH) && StringUtils.isNotBlank(this.ftpConfig.getHost())) {
+        if (false == this.cd(Symbol.SLASH) && StringKit.isNotBlank(this.ftpConfig.getHost())) {
             init(this.ftpConfig);
         }
         return this;
@@ -272,8 +272,8 @@ public class Sftp extends AbstractFtp {
         try {
             channel.ls(path, entry -> {
                 String fileName = entry.getFilename();
-                if (false == StringUtils.equals(Symbol.DOT, fileName)
-                        && false == StringUtils.equals(Symbol.DOUBLE_DOT, fileName)) {
+                if (false == StringKit.equals(Symbol.DOT, fileName)
+                        && false == StringKit.equals(Symbol.DOUBLE_DOT, fileName)) {
                     if (null == filter || filter.accept(entry)) {
                         fileNames.add(entry.getFilename());
                     }
@@ -281,7 +281,7 @@ public class Sftp extends AbstractFtp {
                 return LsEntrySelector.CONTINUE;
             });
         } catch (SftpException e) {
-            if (false == StringUtils.startWithIgnoreCase(e.getMessage(), "No such file")) {
+            if (false == StringKit.startWithIgnoreCase(e.getMessage(), "No such file")) {
                 throw new InstrumentException(e);
             }
         }
@@ -306,7 +306,7 @@ public class Sftp extends AbstractFtp {
      */
     @Override
     public boolean cd(String directory) {
-        if (StringUtils.isBlank(directory)) {
+        if (StringKit.isBlank(directory)) {
             // 当前目录
             return true;
         }
@@ -355,8 +355,8 @@ public class Sftp extends AbstractFtp {
         String fileName;
         for (LsEntry entry : list) {
             fileName = entry.getFilename();
-            if (false == StringUtils.equals(fileName, Symbol.DOT)
-                    && false == StringUtils.equals(fileName, Symbol.DOUBLE_DOT)) {
+            if (false == StringKit.equals(fileName, Symbol.DOT)
+                    && false == StringKit.equals(fileName, Symbol.DOUBLE_DOT)) {
                 if (entry.getAttrs().isDir()) {
                     delDir(fileName);
                 } else {
@@ -380,7 +380,7 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public boolean upload(String destPath, File file) {
-        put(FileUtils.getAbsolutePath(file), destPath);
+        put(FileKit.getAbsolutePath(file), destPath);
         return true;
     }
 
@@ -427,7 +427,7 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public void download(String src, File destFile) {
-        get(src, FileUtils.getAbsolutePath(destFile));
+        get(src, FileKit.getAbsolutePath(destFile));
     }
 
     /**
@@ -445,13 +445,13 @@ public class Sftp extends AbstractFtp {
                 String destinationPathFile = destPath + Symbol.SLASH + item.getFilename();
                 if (!item.getAttrs().isDir()) {
                     // 本地不存在文件或者ftp上文件有修改则下载
-                    if (!FileUtils.exist(destinationPathFile)
-                            || (item.getAttrs().getMTime() > (FileUtils.lastModifiedTime(destinationPathFile).getTime() / 1000))) {
+                    if (!FileKit.exist(destinationPathFile)
+                            || (item.getAttrs().getMTime() > (FileKit.lastModifiedTime(destinationPathFile).getTime() / 1000))) {
                         // Download file from source (source filename, destination filename).
                         channel.get(sourcePathPathFile, destinationPathFile);
                     }
                 } else if (!(Symbol.DOT.equals(item.getFilename()) || Symbol.DOUBLE_DOT.equals(item.getFilename()))) {
-                    FileUtils.mkdir(destinationPathFile);
+                    FileKit.mkdir(destinationPathFile);
                     download(sourcePathPathFile, destinationPathFile);
                 }
             }
@@ -478,8 +478,8 @@ public class Sftp extends AbstractFtp {
 
     @Override
     public void close() {
-        SSHUtils.close(this.channel);
-        SSHUtils.close(this.session);
+        SshKit.close(this.channel);
+        SshKit.close(this.session);
     }
 
     /**

@@ -33,10 +33,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * 基于bzip2算法的数据解压缩.
+ * 基于bzip2算法的数据解压缩
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Bzip2Provider implements EffectProvider {

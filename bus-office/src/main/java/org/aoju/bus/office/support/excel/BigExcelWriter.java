@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
@@ -34,7 +34,7 @@ import java.io.File;
  * 大数据量Excel写出
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BigExcelWriter extends ExcelWriter {
@@ -58,7 +58,7 @@ public class BigExcelWriter extends ExcelWriter {
      * @param rowAccessWindowSize 在内存中的行数
      */
     public BigExcelWriter(int rowAccessWindowSize) {
-        this(BookUtils.createSXSSFBook(rowAccessWindowSize), null);
+        this(WorksKit.createSXSSFBook(rowAccessWindowSize), null);
     }
 
     /**
@@ -79,7 +79,7 @@ public class BigExcelWriter extends ExcelWriter {
      * @param sheetName           sheet名,第一个sheet名并写出到此sheet,例如sheet1
      */
     public BigExcelWriter(int rowAccessWindowSize, String sheetName) {
-        this(BookUtils.createSXSSFBook(rowAccessWindowSize), sheetName);
+        this(WorksKit.createSXSSFBook(rowAccessWindowSize), sheetName);
     }
 
     /**
@@ -89,7 +89,7 @@ public class BigExcelWriter extends ExcelWriter {
      * @param sheetName    sheet名,第一个sheet名并写出到此sheet,例如sheet1
      */
     public BigExcelWriter(String destFilePath, String sheetName) {
-        this(FileUtils.file(destFilePath), sheetName);
+        this(FileKit.file(destFilePath), sheetName);
     }
 
     /**
@@ -108,7 +108,7 @@ public class BigExcelWriter extends ExcelWriter {
      * @param sheetName sheet名,做为第一个sheet名并写出到此sheet,例如sheet1
      */
     public BigExcelWriter(File destFile, String sheetName) {
-        this(destFile.exists() ? BookUtils.createSXSSFBook(destFile) : BookUtils.createSXSSFBook(), sheetName);
+        this(destFile.exists() ? WorksKit.createSXSSFBook(destFile) : WorksKit.createSXSSFBook(), sheetName);
         this.destFile = destFile;
     }
 
@@ -121,7 +121,7 @@ public class BigExcelWriter extends ExcelWriter {
      * @param sheetName sheet名,做为第一个sheet名并写出到此sheet,例如sheet1
      */
     public BigExcelWriter(SXSSFWorkbook workbook, String sheetName) {
-        this(BookUtils.getOrCreateSheet(workbook, sheetName));
+        this(WorksKit.getOrCreateSheet(workbook, sheetName));
     }
 
     /**

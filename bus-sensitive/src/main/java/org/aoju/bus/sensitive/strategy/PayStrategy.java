@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -36,25 +36,25 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 签约协议号脱敏格式为前6位后6位保留明文,中间脱敏
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class PayStrategy extends AbstractProvider {
 
     @Override
     public Object build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
         String agreementNo = object.toString();
-        return StringUtils.left(agreementNo, 6).concat(
-                StringUtils.removeStart(
-                        StringUtils.leftPad(
-                                StringUtils.right(agreementNo, 6),
-                                StringUtils.length(agreementNo), shield.shadow()
+        return StringKit.left(agreementNo, 6).concat(
+                StringKit.removeStart(
+                        StringKit.leftPad(
+                                StringKit.right(agreementNo, 6),
+                                StringKit.length(agreementNo), shield.shadow()
                         ),
-                        StringUtils.fill(3, shield.shadow())
+                        StringKit.fill(3, shield.shadow())
                 )
         );
     }

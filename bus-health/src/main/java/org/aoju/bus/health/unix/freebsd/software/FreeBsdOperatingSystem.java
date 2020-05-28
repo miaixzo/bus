@@ -52,7 +52,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @ThreadSafe

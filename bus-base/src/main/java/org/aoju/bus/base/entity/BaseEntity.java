@@ -30,7 +30,7 @@ import lombok.EqualsAndHashCode;
 import org.aoju.bus.base.consts.Consts;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import javax.persistence.Transient;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.Objects;
  * Entity 基本信息.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Data
@@ -99,7 +99,7 @@ public class BaseEntity extends Tracer {
      * @param target 目标实体
      */
     public static <T extends BaseEntity> void setAccess(T source, T... target) {
-        if (Objects.isNull(source) || ArrayUtils.isEmpty(target)) {
+        if (Objects.isNull(source) || ArrayKit.isEmpty(target)) {
             return;
         }
         for (T targetEntity : target) {
@@ -116,7 +116,7 @@ public class BaseEntity extends Tracer {
      * @param target 目标实体
      */
     public static <S extends BaseEntity, E extends BaseEntity> void setAccess(S source, List<E> target) {
-        if (Objects.isNull(source) || CollUtils.isEmpty(target)) {
+        if (Objects.isNull(source) || CollKit.isEmpty(target)) {
             return;
         }
         target.forEach(targetEntity -> setAccess(source, targetEntity));
@@ -133,8 +133,8 @@ public class BaseEntity extends Tracer {
     public static <T extends BaseEntity> void resetIntField(T entity, String[] fields, String[] values) {
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
-            if (Consts.EMPTY.equals(values[i]) && ReflectUtils.hasField(entity, field)) {
-                ReflectUtils.invokeSetter(entity, field, null);
+            if (Consts.EMPTY.equals(values[i]) && ReflectKit.hasField(entity, field)) {
+                ReflectKit.invokeSetter(entity, field, null);
             }
         }
     }
@@ -147,13 +147,13 @@ public class BaseEntity extends Tracer {
      */
     public <T> void setCreateInfo(T entity) {
         String id = ObjectID.id();
-        String timestamp = StringUtils.toString(DateUtils.timestamp());
+        String timestamp = StringKit.toString(DateKit.timestamp());
         String[] fields = {"id", "created"};
         Object[] value = new Object[]{id, timestamp};
-        if (ObjectUtils.isEmpty(getValue(entity, "creator"))) {
+        if (ObjectKit.isEmpty(getValue(entity, "creator"))) {
             fields = new String[]{"id", "creator", "created"};
             value = new Object[]{id,
-                    ObjectUtils.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
+                    ObjectKit.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
                     timestamp};
         }
         setValue(entity, fields, value);
@@ -166,12 +166,12 @@ public class BaseEntity extends Tracer {
      * @param entity 反射对象
      */
     public <T> void setUpdatedInfo(T entity) {
-        String timestamp = StringUtils.toString(DateUtils.timestamp());
+        String timestamp = StringKit.toString(DateKit.timestamp());
         String[] fields = {"modified"};
         Object[] value = new Object[]{timestamp};
-        if (ObjectUtils.isEmpty(getValue(entity, "modifier"))) {
+        if (ObjectKit.isEmpty(getValue(entity, "modifier"))) {
             fields = new String[]{"modifier", "modified"};
-            value = new Object[]{ObjectUtils.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
+            value = new Object[]{ObjectKit.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
                     timestamp};
         }
 
@@ -192,10 +192,10 @@ public class BaseEntity extends Tracer {
      * @return 主键为空, 则返回false；主键有值,返回true
      */
     public <T> boolean isPKNotNull(T entity, String field) {
-        if (!ReflectUtils.hasField(entity, field)) {
+        if (!ReflectKit.hasField(entity, field)) {
             return false;
         }
-        Object value = ReflectUtils.getFieldValue(entity, field);
+        Object value = ReflectKit.getFieldValue(entity, field);
         return value != null && !Normal.EMPTY.equals(value);
     }
 
@@ -207,8 +207,8 @@ public class BaseEntity extends Tracer {
      * @param field  属性数组
      */
     private <T> Object getValue(T entity, String field) {
-        if (ReflectUtils.hasField(entity, field)) {
-            Object object = ReflectUtils.invokeGetter(entity, field);
+        if (ReflectKit.hasField(entity, field)) {
+            Object object = ReflectKit.invokeGetter(entity, field);
             return object != null ? object.toString() : null;
         }
         return null;
@@ -225,8 +225,8 @@ public class BaseEntity extends Tracer {
     private <T> void setValue(T entity, String[] fields, Object[] value) {
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
-            if (ReflectUtils.hasField(entity, field)) {
-                ReflectUtils.invokeSetter(entity, field, value[i]);
+            if (ReflectKit.hasField(entity, field)) {
+                ReflectKit.invokeSetter(entity, field, value[i]);
             }
         }
     }

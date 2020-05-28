@@ -27,9 +27,9 @@ package org.aoju.bus.core.io.file;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.copier.Duplicate;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,7 @@ import java.util.List;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FileCopier extends Duplicate<File, FileCopier> {
@@ -89,7 +89,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      * @return {@link FileCopier}
      */
     public static FileCopier create(String srcPath, String destPath) {
-        return new FileCopier(FileUtils.file(srcPath), FileUtils.file(destPath));
+        return new FileCopier(FileKit.file(srcPath), FileKit.file(destPath));
     }
 
     /**
@@ -209,7 +209,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
             throw new InstrumentException("File not exist: " + src);
         }
         Assert.notNull(dest, "Destination File or directiory is null !");
-        if (FileUtils.equals(src, dest)) {
+        if (FileKit.equals(src, dest)) {
             throw new InstrumentException("Files '{" + src + "}' and '{" + dest + "}' are equal");
         }
 
@@ -218,7 +218,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
                 //源为目录,目标为文件,抛出IO异常
                 throw new InstrumentException("Src is a directory but dest is a file!");
             }
-            final File subDest = isCopyContentIfDir ? dest : FileUtils.mkdir(FileUtils.file(dest, src.getName()));
+            final File subDest = isCopyContentIfDir ? dest : FileKit.mkdir(FileKit.file(dest, src.getName()));
             internalCopyDirContent(src, subDest);
         } else {// 复制文件
             internalCopyFile(src, dest);
@@ -244,11 +244,11 @@ public class FileCopier extends Duplicate<File, FileCopier> {
             //目标为不存在路径,创建为目录
             dest.mkdirs();
         } else if (false == dest.isDirectory()) {
-            throw new InstrumentException(StringUtils.format("Src [{}] is a directory but dest [{}] is a file!", src.getPath(), dest.getPath()));
+            throw new InstrumentException(StringKit.format("Src [{}] is a directory but dest [{}] is a file!", src.getPath(), dest.getPath()));
         }
 
         final String[] files = src.list();
-        if (ArrayUtils.isNotEmpty(files)) {
+        if (ArrayKit.isNotEmpty(files)) {
             File srcFile;
             File destFile;
             for (String file : files) {

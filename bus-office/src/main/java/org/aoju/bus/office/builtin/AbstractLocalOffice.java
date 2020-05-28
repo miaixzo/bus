@@ -31,7 +31,7 @@ import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.util.CloseVetoException;
 import com.sun.star.util.XCloseable;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.bridge.LocalOfficeContextAware;
 import org.aoju.bus.office.magic.Lo;
@@ -47,7 +47,7 @@ import java.util.Optional;
  * 所有本地office任务实现的基类.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractLocalOffice extends AbstractOffice {
@@ -128,7 +128,7 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
         if (document != null) {
             // 关闭转换后的文档。使用XCloseable。如果支持该接口，则关闭，否则使用XComponent.dispose
             final XCloseable closeable = Lo.qi(XCloseable.class, document);
-            if (ObjectUtils.isEmpty(closeable)) {
+            if (ObjectKit.isEmpty(closeable)) {
                 // 如果此模型不支持close，请尝试处理它.
                 Lo.qi(XComponent.class, document).dispose();
             } else {

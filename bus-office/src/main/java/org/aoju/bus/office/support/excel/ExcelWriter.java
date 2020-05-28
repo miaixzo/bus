@@ -26,7 +26,7 @@ package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.style.Align;
 import org.apache.poi.ss.usermodel.*;
@@ -51,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -102,7 +102,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param isXlsx 是否为xlsx格式
      */
     public ExcelWriter(boolean isXlsx) {
-        this(BookUtils.createBook(isXlsx), null);
+        this(WorksKit.createBook(isXlsx), null);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param sheetName sheet名,第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(boolean isXlsx, String sheetName) {
-        this(BookUtils.createBook(isXlsx), sheetName);
+        this(WorksKit.createBook(isXlsx), sheetName);
     }
 
     /**
@@ -133,7 +133,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param sheetName    sheet名,第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(String destFilePath, String sheetName) {
-        this(FileUtils.file(destFilePath), sheetName);
+        this(FileKit.file(destFilePath), sheetName);
     }
 
     /**
@@ -152,7 +152,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param sheetName sheet名,做为第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(File destFile, String sheetName) {
-        this(destFile.exists() ? BookUtils.createBook(FileUtils.getInputStream(destFile), true) : BookUtils.createBook(StringUtils.endWithIgnoreCase(destFile.getName(), ".xlsx")), sheetName);
+        this(destFile.exists() ? WorksKit.createBook(FileKit.getInputStream(destFile), true) : WorksKit.createBook(StringKit.endWithIgnoreCase(destFile.getName(), ".xlsx")), sheetName);
         this.destFile = destFile;
     }
 
@@ -165,7 +165,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param sheetName sheet名,做为第一个sheet名并写出到此sheet,例如sheet1
      */
     public ExcelWriter(Workbook workbook, String sheetName) {
-        this(BookUtils.getOrCreateSheet(workbook, sheetName));
+        this(WorksKit.getOrCreateSheet(workbook, sheetName));
     }
 
     /**
@@ -576,12 +576,12 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
 
         final CellStyle style = (isSetHeaderStyle && null != this.styleSet && null != this.styleSet.headCellStyle) ? this.styleSet.headCellStyle : this.styleSet.cellStyle;
-        CellUtils.mergingCells(this.sheet, firstRow, lastRow, firstColumn, lastColumn, style);
+        CellKit.mergingCells(this.sheet, firstRow, lastRow, firstColumn, lastColumn, style);
 
         // 设置内容
         if (null != content) {
             final Cell cell = getOrCreateCell(firstColumn, firstRow);
-            CellUtils.setCellValue(cell, content, this.styleSet, isSetHeaderStyle);
+            CellKit.setCellValue(cell, content, this.styleSet, isSetHeaderStyle);
         }
         return this;
     }
@@ -664,7 +664,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 map = new TreeMap<>(comparator);
                 map.putAll((Map) obj);
             } else {
-                map = BeanUtils.beanToMap(obj, new TreeMap<>(comparator), false, false);
+                map = BeanKit.beanToMap(obj, new TreeMap<>(comparator), false, false);
             }
             writeRow(map, isFirstRow);
             if (isFirstRow) {
@@ -691,8 +691,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         Cell cell;
         for (Object value : rowData) {
             cell = row.createCell(i);
-            CellUtils.setCellValue(cell, value, this.styleSet, true);
-            this.headLocationCache.put(StringUtils.toString(value), i);
+            CellKit.setCellValue(cell, value, this.styleSet, true);
+            this.headLocationCache.put(StringKit.toString(value), i);
             i++;
         }
         return this;
@@ -719,21 +719,21 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
         Map rowMap;
         if (rowBean instanceof Map) {
-            if (MapUtils.isNotEmpty(this.headerAlias)) {
-                rowMap = MapUtils.newTreeMap((Map) rowBean, getCachedAliasComparator());
+            if (MapKit.isNotEmpty(this.headerAlias)) {
+                rowMap = MapKit.newTreeMap((Map) rowBean, getCachedAliasComparator());
             } else {
                 rowMap = (Map) rowBean;
             }
-        } else if (BeanUtils.isBean(rowBean.getClass())) {
-            if (MapUtils.isEmpty(this.headerAlias)) {
-                rowMap = BeanUtils.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
+        } else if (BeanKit.isBean(rowBean.getClass())) {
+            if (MapKit.isEmpty(this.headerAlias)) {
+                rowMap = BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
             } else {
                 // 别名存在情况下按照别名的添加顺序排序Bean数据
-                rowMap = BeanUtils.beanToMap(rowBean, new TreeMap<>(getCachedAliasComparator()), false, false);
+                rowMap = BeanKit.beanToMap(rowBean, new TreeMap<>(getCachedAliasComparator()), false, false);
             }
         } else {
             // 其它转为字符串默认输出
-            return writeRow(CollUtils.newArrayList(rowBean), isWriteKeyAsHead);
+            return writeRow(CollKit.newArrayList(rowBean), isWriteKeyAsHead);
         }
         return writeRow(rowMap, isWriteKeyAsHead);
     }
@@ -748,7 +748,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter writeRow(Map<?, ?> rowMap, boolean isWriteKeyAsHead) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
-        if (MapUtils.isEmpty(rowMap)) {
+        if (MapKit.isEmpty(rowMap)) {
             // 如果写出数据为null或空，跳过当前行
             return passCurrentRow();
         }
@@ -760,13 +760,13 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
 
         // 如果已经写出标题行，根据标题行找对应的值写入
-        if (MapUtils.isNotEmpty(this.headLocationCache)) {
-            final Row row = RowUtils.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
+        if (MapKit.isNotEmpty(this.headLocationCache)) {
+            final Row row = RowKit.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
             Integer location;
             for (Entry<?, ?> entry : aliasMap.entrySet()) {
-                location = this.headLocationCache.get(StringUtils.toString(entry.getKey()));
+                location = this.headLocationCache.get(StringKit.toString(entry.getKey()));
                 if (null != location) {
-                    CellUtils.setCellValue(CellUtils.getOrCreateCell(row, location), entry.getValue(), this.styleSet, false);
+                    CellKit.setCellValue(CellKit.getOrCreateCell(row, location), entry.getValue(), this.styleSet, false);
                 }
             }
         } else {
@@ -786,7 +786,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter writeRow(Iterable<?> rowData) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
-        RowUtils.writeRow(this.sheet.createRow(this.currentRow.getAndIncrement()), rowData, this.styleSet, false);
+        RowKit.writeRow(this.sheet.createRow(this.currentRow.getAndIncrement()), rowData, this.styleSet, false);
         return this;
     }
 
@@ -800,7 +800,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter writeCellValue(int x, int y, Object value) {
         final Cell cell = getOrCreateCell(x, y);
-        CellUtils.setCellValue(cell, value, this.styleSet, false);
+        CellKit.setCellValue(cell, value, this.styleSet, false);
         return this;
     }
 
@@ -812,7 +812,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return this
      */
     public ExcelWriter writeCellValue(String locationRef, Object value) {
-        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return writeCellValue(cellLocation.getX(), cellLocation.getY(), value);
     }
 
@@ -844,7 +844,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return this
      */
     public ExcelWriter setStyle(CellStyle style, String locationRef) {
-        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return setStyle(style, cellLocation.getX(), cellLocation.getY());
     }
 
@@ -879,7 +879,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter flush(File destFile) throws InstrumentException {
         Assert.notNull(destFile, "[destFile] is null, and you must call setDestFile(File) first or call flush(OutputStream).");
-        return flush(FileUtils.getOutputStream(destFile), true);
+        return flush(FileKit.getOutputStream(destFile), true);
     }
 
     /**
@@ -910,7 +910,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             throw new InstrumentException(e);
         } finally {
             if (isCloseOut) {
-                IoUtils.close(out);
+                IoKit.close(out);
             }
         }
         return this;
@@ -995,11 +995,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return 别名列表
      */
     private Map<?, ?> aliasMap(Map<?, ?> rowMap) {
-        if (MapUtils.isEmpty(this.headerAlias)) {
+        if (MapKit.isEmpty(this.headerAlias)) {
             return rowMap;
         }
 
-        final Map<Object, Object> filteredMap = MapUtils.newHashMap(rowMap.size(), true);
+        final Map<Object, Object> filteredMap = MapKit.newHashMap(rowMap.size(), true);
         String aliasName;
         for (Entry<?, ?> entry : rowMap.entrySet()) {
             aliasName = this.headerAlias.get(entry.getKey());
@@ -1020,7 +1020,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return Comparator 比较器
      */
     private Comparator<String> getCachedAliasComparator() {
-        if (MapUtils.isEmpty(this.headerAlias)) {
+        if (MapKit.isEmpty(this.headerAlias)) {
             return null;
         }
         Comparator<String> aliasComparator = this.aliasComparator;
@@ -1047,8 +1047,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
         @Override
         public int compare(T o1, T o2) {
-            final int index1 = ArrayUtils.indexOf(array, o1);
-            final int index2 = ArrayUtils.indexOf(array, o2);
+            final int index1 = ArrayKit.indexOf(array, o1);
+            final int index2 = ArrayKit.indexOf(array, o2);
             if (index1 == index2) {
                 //位置相同使用自然排序
                 return compare(o1, o2, true);

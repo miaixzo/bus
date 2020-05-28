@@ -25,18 +25,17 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CharsetUtils;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.HexUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.HexKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -46,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * 类型转换器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Convert {
@@ -599,7 +598,7 @@ public class Convert {
      * @throws InstrumentException 转换器不存在
      */
     public static <T> T convertByClassName(String className, Object value) throws InstrumentException {
-        return (T) convert(ClassUtils.loadClass(className), value);
+        return (T) convert(ClassKit.loadClass(className), value);
     }
 
     /**
@@ -797,8 +796,8 @@ public class Convert {
      * @param charset 编码
      * @return 16进制字符串
      */
-    public static String toHex(String str, Charset charset) {
-        return HexUtils.encodeHexStr(str, charset);
+    public static String toHex(String str, java.nio.charset.Charset charset) {
+        return HexKit.encodeHexStr(str, charset);
     }
 
     /**
@@ -808,7 +807,7 @@ public class Convert {
      * @return 转换后的值
      */
     public static String toHex(byte[] bytes) {
-        return HexUtils.encodeHexStr(bytes);
+        return HexKit.encodeHexStr(bytes);
     }
 
     /**
@@ -818,7 +817,7 @@ public class Convert {
      * @return byte[]
      */
     public static byte[] hexToBytes(String src) {
-        return HexUtils.decodeHex(src.toCharArray());
+        return HexKit.decodeHex(src.toCharArray());
     }
 
     /**
@@ -827,10 +826,10 @@ public class Convert {
      * @param hexStr  Byte字符串(Byte之间无分隔符 如:[616C6B])
      * @param charset 编码 {@link Charset}
      * @return 对应的字符串
-     * @see HexUtils#decodeHexStr(String, Charset)
+     * @see HexKit#decodeHexStr(String, java.nio.charset.Charset)
      */
-    public static String hexToString(String hexStr, Charset charset) {
-        return HexUtils.decodeHexStr(hexStr, charset);
+    public static String hexToString(String hexStr, java.nio.charset.Charset charset) {
+        return HexKit.decodeHexStr(hexStr, charset);
     }
 
     /**
@@ -840,7 +839,7 @@ public class Convert {
      * @return String 每个unicode之间无分隔符
      */
     public static String toUnicode(String strText) {
-        return StringUtils.toUnicode(strText);
+        return StringKit.toUnicode(strText);
     }
 
     /**
@@ -848,10 +847,10 @@ public class Convert {
      *
      * @param unicode Unicode符
      * @return String 字符串
-     * @see StringUtils#toUnicodeString(String)
+     * @see StringKit#toUnicodeString(String)
      */
     public static String toUnicodeString(String unicode) {
-        return StringUtils.toUnicodeString(unicode);
+        return StringKit.toUnicodeString(unicode);
     }
 
     /**
@@ -862,14 +861,14 @@ public class Convert {
      * @param sourceCharset 原字符集
      * @param destCharset   目标字符集
      * @return 转换后的字符串
-     * @see CharsetUtils#convert(String, String, String)
+     * @see Charset#convert(String, String, String)
      */
     public static String convertCharset(String str, String sourceCharset, String destCharset) {
-        if (StringUtils.hasBlank(str, sourceCharset, destCharset)) {
+        if (StringKit.hasBlank(str, sourceCharset, destCharset)) {
             return str;
         }
 
-        return CharsetUtils.convert(str, sourceCharset, destCharset);
+        return Charset.convert(str, sourceCharset, destCharset);
     }
 
     /**

@@ -26,9 +26,9 @@ package org.aoju.bus.office.support.word;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
@@ -43,7 +43,7 @@ import java.io.*;
  * Word生成器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Word07Writer implements Closeable {
@@ -68,7 +68,7 @@ public class Word07Writer implements Closeable {
      * @param destFile 写出的文件
      */
     public Word07Writer(File destFile) {
-        this(DocUtils.create(destFile), destFile);
+        this(DocKit.create(destFile), destFile);
     }
 
     /**
@@ -135,7 +135,7 @@ public class Word07Writer implements Closeable {
         if (null != align) {
             p.setAlignment(align);
         }
-        if (ArrayUtils.isNotEmpty(texts)) {
+        if (ArrayKit.isNotEmpty(texts)) {
             XWPFRun run;
             for (String text : texts) {
                 run = p.createRun();
@@ -161,7 +161,7 @@ public class Word07Writer implements Closeable {
      */
     public Word07Writer addPicture(File picFile, int width, int height) {
         final String fileName = picFile.getName();
-        final String extName = FileUtils.extName(fileName).toUpperCase();
+        final String extName = FileKit.extName(fileName).toUpperCase();
         PicType picType;
         try {
             picType = PicType.valueOf(extName);
@@ -169,7 +169,7 @@ public class Word07Writer implements Closeable {
             // 默认值
             picType = PicType.JPEG;
         }
-        return addPicture(FileUtils.getInputStream(picFile), picType, fileName, width, height);
+        return addPicture(FileKit.getInputStream(picFile), picType, fileName, width, height);
     }
 
     /**
@@ -206,7 +206,7 @@ public class Word07Writer implements Closeable {
         } catch (IOException | InvalidFormatException e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
 
         return this;
@@ -219,7 +219,7 @@ public class Word07Writer implements Closeable {
      * @return this
      */
     public Word07Writer addTable(Iterable<?> data) {
-        TableUtils.createTable(this.doc, data);
+        TableKit.createTable(this.doc, data);
         return this;
     }
 
@@ -245,7 +245,7 @@ public class Word07Writer implements Closeable {
      */
     public Word07Writer flush(File destFile) throws InstrumentException {
         Assert.notNull(destFile, "[destFile] is null, and you must call setDestFile(File) first or call flush(OutputStream).");
-        return flush(FileUtils.getOutputStream(destFile), true);
+        return flush(FileKit.getOutputStream(destFile), true);
     }
 
     /**
@@ -276,7 +276,7 @@ public class Word07Writer implements Closeable {
             throw new InstrumentException(e);
         } finally {
             if (isCloseOut) {
-                IoUtils.close(out);
+                IoKit.close(out);
             }
         }
         return this;
@@ -298,7 +298,7 @@ public class Word07Writer implements Closeable {
      * 关闭Word文档但是不写出
      */
     protected void closeWithoutFlush() {
-        IoUtils.close(this.doc);
+        IoKit.close(this.doc);
         this.isClosed = true;
     }
 

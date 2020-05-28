@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,7 +37,7 @@ import java.util.Arrays;
  * 两个半部分,描述段如何组成这个字节字符串
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ByteBuffer extends ByteString {
@@ -47,7 +47,7 @@ public class ByteBuffer extends ByteString {
 
     public ByteBuffer(Buffer buffer, int byteCount) {
         super(null);
-        IoUtils.checkOffsetAndCount(buffer.size, 0, byteCount);
+        IoKit.checkOffsetAndCount(buffer.size, 0, byteCount);
 
         int offset = 0;
         int segmentCount = 0;
@@ -149,7 +149,7 @@ public class ByteBuffer extends ByteString {
 
     @Override
     public byte getByte(int pos) {
-        IoUtils.checkOffsetAndCount(directory[segments.length - 1], pos, 1);
+        IoKit.checkOffsetAndCount(directory[segments.length - 1], pos, 1);
         int segment = segment(pos);
         int segmentOffset = segment == 0 ? 0 : directory[segment - 1];
         int segmentPos = directory[segment + segments.length];
@@ -245,7 +245,7 @@ public class ByteBuffer extends ByteString {
             int stepSize = Math.min(byteCount, segmentOffset + segmentSize - offset);
             int segmentPos = directory[segments.length + s];
             int arrayOffset = offset - segmentOffset + segmentPos;
-            if (!IoUtils.arrayRangeEquals(segments[s], arrayOffset, other, otherOffset, stepSize)) return false;
+            if (!IoKit.arrayRangeEquals(segments[s], arrayOffset, other, otherOffset, stepSize)) return false;
             offset += stepSize;
             otherOffset += stepSize;
             byteCount -= stepSize;

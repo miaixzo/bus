@@ -28,6 +28,7 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.Source;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.accord.*;
 import org.aoju.bus.http.cache.InternalCache;
@@ -42,7 +43,6 @@ import java.net.IDN;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
  * 实用方法工具
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class Builder {
@@ -111,6 +111,10 @@ public abstract class Builder {
      * 快速和正则模式区分IP地址从主机名，这是Android私有的InetAddress#isNumeric API的近似值
      */
     public static final Pattern VERIFY_AS_IP_ADDRESS = Pattern.compile("([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)");
+    public static final String FORM = "form";
+    public static final String JSON = "json";
+    public static final String XML = "xml";
+    public static final String PROTOBUF = "protobuf";
     public static Builder instance;
 
     static {
@@ -392,26 +396,26 @@ public abstract class Builder {
         return VERIFY_AS_IP_ADDRESS.matcher(host).matches();
     }
 
-    public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {
+    public static java.nio.charset.Charset bomAwareCharset(BufferSource source, java.nio.charset.Charset charset) throws IOException {
         if (source.rangeEquals(0, UTF_8_BOM)) {
             source.skip(UTF_8_BOM.size());
-            return org.aoju.bus.core.lang.Charset.UTF_8;
+            return Charset.UTF_8;
         }
         if (source.rangeEquals(0, UTF_16_BE_BOM)) {
             source.skip(UTF_16_BE_BOM.size());
-            return org.aoju.bus.core.lang.Charset.UTF_16_BE;
+            return Charset.UTF_16_BE;
         }
         if (source.rangeEquals(0, UTF_16_LE_BOM)) {
             source.skip(UTF_16_LE_BOM.size());
-            return org.aoju.bus.core.lang.Charset.UTF_16_LE;
+            return Charset.UTF_16_LE;
         }
         if (source.rangeEquals(0, UTF_32_BE_BOM)) {
             source.skip(UTF_32_BE_BOM.size());
-            return org.aoju.bus.core.lang.Charset.UTF_32_BE;
+            return Charset.UTF_32_BE;
         }
         if (source.rangeEquals(0, UTF_32_LE_BOM)) {
             source.skip(UTF_32_LE_BOM.size());
-            return org.aoju.bus.core.lang.Charset.UTF_32_LE;
+            return Charset.UTF_32_LE;
         }
         return charset;
     }

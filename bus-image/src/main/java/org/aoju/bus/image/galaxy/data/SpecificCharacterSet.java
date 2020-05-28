@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.logger.Logger;
@@ -32,13 +33,16 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.*;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class SpecificCharacterSet {
@@ -149,8 +153,8 @@ public class SpecificCharacterSet {
     }
 
     private enum Codec {
-        ISO_646(org.aoju.bus.core.lang.Charset.DEFAULT_US_ASCII, true, 0x2842, 0, 1),
-        ISO_8859_1(org.aoju.bus.core.lang.Charset.DEFAULT_ISO_8859_1, true, 0x2842, 0x2d41, 1),
+        ISO_646(Charset.DEFAULT_US_ASCII, true, 0x2842, 0, 1),
+        ISO_8859_1(Charset.DEFAULT_ISO_8859_1, true, 0x2842, 0x2d41, 1),
         ISO_8859_2("ISO-8859-2", true, 0x2842, 0x2d42, 1),
         ISO_8859_3("ISO-8859-3", true, 0x2842, 0x2d43, 1),
         ISO_8859_4("ISO-8859-4", true, 0x2842, 0x2d44, 1),
@@ -170,7 +174,7 @@ public class SpecificCharacterSet {
         JIS_X_212("JIS_X0212-1990", false, 0x242844, 0, 2),
         KS_X_1001("EUC-KR", false, 0x2842, 0x242943, -1),
         GB2312("GB2312", false, 0x2842, 0x242941, -1),
-        UTF_8(org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8, true, 0, 0, -1),
+        UTF_8(Charset.DEFAULT_UTF_8, true, 0, 0, -1),
         GB18030("GB18030", false, 0, 0, -1);
 
         private final String charsetName;
@@ -229,7 +233,7 @@ public class SpecificCharacterSet {
                         return Codec.GB18030;
                     break;
                 case 31:
-                    if (code.equals(org.aoju.bus.core.lang.Charset.DEFAULT_GBK))
+                    if (code.equals(Charset.DEFAULT_GBK))
                         return Codec.GB18030;
                     break;
                 case 38:
@@ -324,7 +328,7 @@ public class SpecificCharacterSet {
 
         public Encoder(Codec codec) {
             this.codec = codec;
-            this.encoder = Charset.forName(codec.charsetName).newEncoder();
+            this.encoder = java.nio.charset.Charset.forName(codec.charsetName).newEncoder();
         }
 
         private static void escSeq(ByteBuffer bb, int seq) {

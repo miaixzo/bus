@@ -27,7 +27,7 @@ package org.aoju.bus.http.bodys;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.Pipe;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
 
@@ -36,7 +36,7 @@ import java.io.IOException;
  * 因为数据不是缓冲的，所以只能传输一次
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class StreamedBody extends OutputStreamBody implements UnrepeatableBody {
@@ -44,7 +44,7 @@ public final class StreamedBody extends OutputStreamBody implements Unrepeatable
     private final Pipe pipe = new Pipe(8192);
 
     public StreamedBody(long expectedContentLength) {
-        initOutputStream(IoUtils.buffer(pipe.sink()), expectedContentLength);
+        initOutputStream(IoKit.buffer(pipe.sink()), expectedContentLength);
     }
 
     @Override

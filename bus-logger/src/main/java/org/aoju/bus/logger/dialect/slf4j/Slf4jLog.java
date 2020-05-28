@@ -25,7 +25,7 @@
 package org.aoju.bus.logger.dialect.slf4j;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
 import org.aoju.bus.logger.level.Level;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * 无缝支持 LogBack
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Slf4jLog extends AbstractAware {
@@ -87,7 +87,7 @@ public class Slf4jLog extends AbstractAware {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.TRACE_INT, t, format, arguments);
             } else {
-                logger.trace(StringUtils.format(format, arguments), t);
+                logger.trace(StringKit.format(format, arguments), t);
             }
         }
     }
@@ -103,7 +103,7 @@ public class Slf4jLog extends AbstractAware {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.DEBUG_INT, t, format, arguments);
             } else {
-                logger.debug(StringUtils.format(format, arguments), t);
+                logger.debug(StringKit.format(format, arguments), t);
             }
         }
     }
@@ -119,7 +119,7 @@ public class Slf4jLog extends AbstractAware {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.INFO_INT, t, format, arguments);
             } else {
-                logger.info(StringUtils.format(format, arguments), t);
+                logger.info(StringKit.format(format, arguments), t);
             }
         }
     }
@@ -135,7 +135,7 @@ public class Slf4jLog extends AbstractAware {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.WARN_INT, t, format, arguments);
             } else {
-                logger.warn(StringUtils.format(format, arguments), t);
+                logger.warn(StringKit.format(format, arguments), t);
             }
         }
     }
@@ -151,7 +151,7 @@ public class Slf4jLog extends AbstractAware {
             if (this.isLocationAwareLogger) {
                 locationAwareLog((LocationAwareLogger) this.logger, fqcn, LocationAwareLogger.ERROR_INT, t, format, arguments);
             } else {
-                logger.error(StringUtils.format(format, arguments), t);
+                logger.error(StringKit.format(format, arguments), t);
             }
         }
     }
@@ -175,7 +175,7 @@ public class Slf4jLog extends AbstractAware {
                 error(fqcn, t, format, arguments);
                 break;
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 
@@ -191,7 +191,7 @@ public class Slf4jLog extends AbstractAware {
      * @param arguments   参数
      */
     private void locationAwareLog(LocationAwareLogger logger, String fqcn, int level_int, Throwable t, String msgTemplate, Object[] arguments) {
-        logger.log(null, fqcn, level_int, StringUtils.format(msgTemplate, arguments), null, t);
+        logger.log(null, fqcn, level_int, StringKit.format(msgTemplate, arguments), null, t);
     }
 
 }

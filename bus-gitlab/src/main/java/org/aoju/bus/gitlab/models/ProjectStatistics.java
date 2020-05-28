@@ -33,7 +33,7 @@ import org.aoju.bus.gitlab.JacksonJson;
  * which is only allowed for GitLab admins.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ProjectStatistics {

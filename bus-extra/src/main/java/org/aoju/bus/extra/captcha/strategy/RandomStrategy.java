@@ -24,15 +24,15 @@
  ********************************************************************************/
 package org.aoju.bus.extra.captcha.strategy;
 
-import org.aoju.bus.core.utils.RandomUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.RandomKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 随机字符验证码生成器
  * 可以通过传入的基础集合和长度随机生成验证码字符
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class RandomStrategy extends AbstractStrategy {
@@ -58,13 +58,13 @@ public class RandomStrategy extends AbstractStrategy {
 
     @Override
     public String generate() {
-        return RandomUtils.randomString(this.baseStr, this.length);
+        return RandomKit.randomString(this.baseStr, this.length);
     }
 
     @Override
     public boolean verify(String code, String userInputCode) {
-        if (StringUtils.isNotBlank(userInputCode)) {
-            return StringUtils.equalsIgnoreCase(code, userInputCode);
+        if (StringKit.isNotBlank(userInputCode)) {
+            return StringKit.equalsIgnoreCase(code, userInputCode);
         }
         return false;
     }

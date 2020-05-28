@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.pager.plugin.PageInterceptor;
 import org.aoju.bus.starter.sensitive.SensitiveResultSetHandler;
 import org.aoju.bus.starter.sensitive.SensitiveStatementHandler;
@@ -36,7 +36,7 @@ import java.util.Properties;
  * mybatis 插件启用
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class MybatisPluginBuilder {
@@ -44,7 +44,7 @@ public class MybatisPluginBuilder {
     protected static Interceptor[] plugins = {};
 
     public static Interceptor[] build(MybatisProperties properties) {
-        if (ObjectUtils.isNotEmpty(properties)) {
+        if (ObjectKit.isNotEmpty(properties)) {
             PageInterceptor interceptor = new PageInterceptor();
             Properties p = new Properties();
             p.setProperty("autoDelimitKeywords", properties.getAutoDelimitKeywords());

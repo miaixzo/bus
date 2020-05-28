@@ -26,7 +26,7 @@ package org.aoju.bus.health.unix.solaris.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
@@ -41,7 +41,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Hardware data obtained from smbios.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -152,7 +152,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
             }
         }
         // If we get to end and haven't assigned, use fallback
-        if (StringUtils.isBlank(serialNumber)) {
+        if (StringKit.isBlank(serialNumber)) {
             serialNumber = readSerialNumber();
         }
         return new SmbiosStrings(biosVendor, biosVersion, biosDate, manufacturer, model, serialNumber,
@@ -233,18 +233,18 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         private SmbiosStrings(String biosVendor, String biosVersion, String biosDate, //
                               String manufacturer, String model, String serialNumber, //
                               String boardManufacturer, String boardModel, String boardVersion, String boardSerialNumber) {
-            this.biosVendor = StringUtils.isBlank(biosVendor) ? Normal.UNKNOWN : biosVendor;
-            this.biosVersion = StringUtils.isBlank(biosVersion) ? Normal.UNKNOWN : biosVersion;
-            this.biosDate = StringUtils.isBlank(biosDate) ? Normal.UNKNOWN : biosDate;
+            this.biosVendor = StringKit.isBlank(biosVendor) ? Normal.UNKNOWN : biosVendor;
+            this.biosVersion = StringKit.isBlank(biosVersion) ? Normal.UNKNOWN : biosVersion;
+            this.biosDate = StringKit.isBlank(biosDate) ? Normal.UNKNOWN : biosDate;
 
-            this.manufacturer = StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer;
-            this.model = StringUtils.isBlank(model) ? Normal.UNKNOWN : model;
-            this.serialNumber = StringUtils.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber;
+            this.manufacturer = StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer;
+            this.model = StringKit.isBlank(model) ? Normal.UNKNOWN : model;
+            this.serialNumber = StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber;
 
-            this.boardManufacturer = StringUtils.isBlank(boardManufacturer) ? Normal.UNKNOWN : boardManufacturer;
-            this.boardModel = StringUtils.isBlank(boardModel) ? Normal.UNKNOWN : boardModel;
-            this.boardVersion = StringUtils.isBlank(boardVersion) ? Normal.UNKNOWN : boardVersion;
-            this.boardSerialNumber = StringUtils.isBlank(boardSerialNumber) ? Normal.UNKNOWN : boardSerialNumber;
+            this.boardManufacturer = StringKit.isBlank(boardManufacturer) ? Normal.UNKNOWN : boardManufacturer;
+            this.boardModel = StringKit.isBlank(boardModel) ? Normal.UNKNOWN : boardModel;
+            this.boardVersion = StringKit.isBlank(boardVersion) ? Normal.UNKNOWN : boardVersion;
+            this.boardSerialNumber = StringKit.isBlank(boardSerialNumber) ? Normal.UNKNOWN : boardSerialNumber;
         }
     }
 

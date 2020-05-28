@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.DateUtils;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
 import org.aoju.bus.setting.Setting;
@@ -43,7 +43,7 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class CronBuilder {
@@ -224,7 +224,7 @@ public final class CronBuilder {
      * @return 日期列表
      */
     public static List<Date> matchedDates(String patternStr, Date start, int count, boolean isMatchSecond) {
-        return matchedDates(patternStr, start, DateUtils.endOfYear(start), count, isMatchSecond);
+        return matchedDates(patternStr, start, DateKit.endOfYear(start), count, isMatchSecond);
     }
 
     /**
@@ -272,7 +272,7 @@ public final class CronBuilder {
         long step = isMatchSecond ? Fields.Unit.SECOND.getMillis() : Fields.Unit.MINUTE.getMillis();
         for (long i = start; i < end; i += step) {
             if (pattern.match(i, isMatchSecond)) {
-                result.add(DateUtils.date(i));
+                result.add(DateKit.date(i));
                 if (result.size() >= count) {
                     break;
                 }

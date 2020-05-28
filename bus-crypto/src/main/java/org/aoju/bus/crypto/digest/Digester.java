@@ -24,15 +24,15 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.Builder;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -42,7 +42,7 @@ import java.security.Provider;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Digester implements Serializable {
@@ -164,7 +164,7 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public byte[] digest(String data, String charsetName) {
-        return digest(data, CharsetUtils.charset(charsetName));
+        return digest(data, Charset.charset(charsetName));
     }
 
     /**
@@ -174,8 +174,8 @@ public class Digester implements Serializable {
      * @param charset 编码
      * @return 摘要
      */
-    public byte[] digest(String data, Charset charset) {
-        return digest(StringUtils.bytes(data, charset));
+    public byte[] digest(String data, java.nio.charset.Charset charset) {
+        return digest(StringKit.bytes(data, charset));
     }
 
     /**
@@ -185,7 +185,7 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public byte[] digest(String data) {
-        return digest(data, org.aoju.bus.core.lang.Charset.UTF_8);
+        return digest(data, Charset.UTF_8);
     }
 
     /**
@@ -196,7 +196,7 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data, String charsetName) {
-        return digestHex(data, CharsetUtils.charset(charsetName));
+        return digestHex(data, Charset.charset(charsetName));
     }
 
     /**
@@ -206,8 +206,8 @@ public class Digester implements Serializable {
      * @param charset 编码
      * @return 摘要
      */
-    public String digestHex(String data, Charset charset) {
-        return HexUtils.encodeHexStr(digest(data, charset));
+    public String digestHex(String data, java.nio.charset.Charset charset) {
+        return HexKit.encodeHexStr(digest(data, charset));
     }
 
     /**
@@ -217,12 +217,12 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public String digestHex(String data) {
-        return digestHex(data, org.aoju.bus.core.lang.Charset.DEFAULT_UTF_8);
+        return digestHex(data, Charset.DEFAULT_UTF_8);
     }
 
     /**
      * 生成文件摘要
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要bytes
@@ -231,22 +231,22 @@ public class Digester implements Serializable {
     public byte[] digest(File file) throws InstrumentException {
         InputStream in = null;
         try {
-            in = FileUtils.getInputStream(file);
+            in = FileKit.getInputStream(file);
             return digest(in);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
     /**
      * 生成文件摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param file 被摘要文件
      * @return 摘要
      */
     public String digestHex(File file) {
-        return HexUtils.encodeHexStr(digest(file));
+        return HexKit.encodeHexStr(digest(file));
     }
 
     /**
@@ -263,7 +263,7 @@ public class Digester implements Serializable {
         } else if (this.saltPosition >= data.length) {
             // 加盐在末尾，自动忽略空盐值
             result = doDigest(data, this.salt);
-        } else if (ArrayUtils.isNotEmpty(this.salt)) {
+        } else if (ArrayKit.isNotEmpty(this.salt)) {
             // 加盐在中间
             this.digest.update(data, 0, this.saltPosition);
             this.digest.update(this.salt);
@@ -284,46 +284,46 @@ public class Digester implements Serializable {
      * @return 摘要
      */
     public String digestHex(byte[] data) {
-        return HexUtils.encodeHexStr(digest(data));
+        return HexKit.encodeHexStr(digest(data));
     }
 
     /**
-     * 生成摘要，使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 生成摘要，使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param data {@link InputStream} 数据流
      * @return 摘要bytes
      */
     public byte[] digest(InputStream data) {
-        return digest(data, IoUtils.DEFAULT_BUFFER_SIZE);
+        return digest(data, IoKit.DEFAULT_BUFFER_SIZE);
     }
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param data 被摘要数据
      * @return 摘要
      */
     public String digestHex(InputStream data) {
-        return HexUtils.encodeHexStr(digest(data));
+        return HexKit.encodeHexStr(digest(data));
     }
 
     /**
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      * @throws InstrumentException IO异常
      */
     public byte[] digest(InputStream data, int bufferLength) throws InstrumentException {
         if (bufferLength < 1) {
-            bufferLength = IoUtils.DEFAULT_BUFFER_SIZE;
+            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
         }
 
         byte[] result;
         try {
-            if (ArrayUtils.isEmpty(this.salt)) {
+            if (ArrayKit.isEmpty(this.salt)) {
                 result = digestWithoutSalt(data, bufferLength);
             } else {
                 result = digestWithSalt(data, bufferLength);
@@ -337,14 +337,14 @@ public class Digester implements Serializable {
 
     /**
      * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link IoUtils#DEFAULT_BUFFER_SIZE}
+     * 使用默认缓存大小，见 {@link IoKit#DEFAULT_BUFFER_SIZE}
      *
      * @param data         被摘要数据
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要
      */
     public String digestHex(InputStream data, int bufferLength) {
-        return HexUtils.encodeHexStr(digest(data, bufferLength));
+        return HexKit.encodeHexStr(digest(data, bufferLength));
     }
 
     /**
@@ -369,7 +369,7 @@ public class Digester implements Serializable {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */
@@ -386,7 +386,7 @@ public class Digester implements Serializable {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      * @throws IOException 从流中读取数据引发的IO异常
      */

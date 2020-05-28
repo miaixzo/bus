@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.EnvironmentAware;
@@ -35,7 +35,7 @@ import org.springframework.core.env.Environment;
  * mapper 扫描配置类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @AutoConfigureAfter(MybatisConfiguration.class)
@@ -45,7 +45,7 @@ public class MapperConfiguration implements EnvironmentAware {
 
     @Override
     public void setEnvironment(Environment environment) {
-        this.basePackage = StringUtils.replaceBlank(environment.getProperty(BusXExtend.MYBATIS + ".basePackage"));
+        this.basePackage = StringKit.replaceBlank(environment.getProperty(BusXExtend.MYBATIS + ".basePackage"));
     }
 
     @Bean

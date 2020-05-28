@@ -29,7 +29,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 实例化工厂类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class InstanceFactory implements Instance {
@@ -106,7 +106,7 @@ public final class InstanceFactory implements Instance {
 
         //1. 校验 map 是否存在
         Map<String, Object> map = mapThreadLocal.get();
-        if (ObjectUtils.isNull(map)) {
+        if (ObjectKit.isNull(map)) {
             map = new ConcurrentHashMap<>();
         }
 
@@ -150,7 +150,7 @@ public final class InstanceFactory implements Instance {
 
         final String fullClassName = clazz.getName();
         T instance = (T) instanceMap.get(fullClassName);
-        if (ObjectUtils.isNull(instance)) {
+        if (ObjectKit.isNull(instance)) {
             instance = this.multiple(clazz);
             instanceMap.put(fullClassName, instance);
         }
@@ -172,7 +172,7 @@ public final class InstanceFactory implements Instance {
 
         final String fullClassName = clazz.getName() + Symbol.HYPHEN + group;
         T instance = (T) instanceMap.get(fullClassName);
-        if (ObjectUtils.isNull(instance)) {
+        if (ObjectKit.isNull(instance)) {
             instance = this.multiple(clazz);
             instanceMap.put(fullClassName, instance);
         }

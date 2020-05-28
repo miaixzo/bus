@@ -44,7 +44,7 @@ import java.util.Map;
  * 委托cookie 给{@link java.net.CookieHandler}
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class NetCookieJar implements CookieJar {
@@ -101,7 +101,7 @@ public final class NetCookieJar implements CookieJar {
     }
 
     /**
-     * Convert a request header to OkHttp's cookies via {@link HttpCookie}. That extra step handles
+     * Convert a request header to Httpd's cookies via {@link HttpCookie}. That extra step handles
      * multiple cookies in a single request header, which  doesn't support.
      */
     private List<Cookie> decodeHeaderAsJavaNetCookies(UnoUrl url, String header) {

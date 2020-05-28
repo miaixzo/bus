@@ -27,7 +27,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Triple;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
@@ -40,7 +40,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Firmware information from dmidecode
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -68,9 +68,9 @@ final class FreeBsdFirmware extends AbstractFirmware {
             }
         }
         releaseDate = Builder.parseMmDdYyyyToYyyyMmDD(releaseDate);
-        return Triple.of(StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringUtils.isBlank(version) ? Normal.UNKNOWN : version,
-                StringUtils.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
+        return Triple.of(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
     @Override

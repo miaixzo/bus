@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.reader;
 
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.logger.Logger;
 
 import javax.imageio.ImageReadParam;
@@ -40,7 +40,7 @@ import java.util.Iterator;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class NativeRLEImageReader extends javax.imageio.ImageReader {
@@ -244,7 +244,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
         if (bufLen < 64)
             throw new EOFException();
         for (int i = 0, off = 0; i < header.length; i++, off += 4)
-            header[i] = ByteUtils.bytesToIntLE(buf, off);
+            header[i] = ByteKit.bytesToIntLE(buf, off);
         bufPos = 64;
         if (header[0] != numSegments)
             throw new IOException(MISMATCH_NUM_RLE_SEGMENTS + header[0]);

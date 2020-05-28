@@ -24,26 +24,26 @@
  ********************************************************************************/
 package org.aoju.bus.extra.ftp;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Closeable;
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.List;
 
 /**
  * 抽象FTP类,用于定义通用的FTP方法
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractFtp implements Closeable {
 
-    public static final Charset DEFAULT_CHARSET = org.aoju.bus.core.lang.Charset.UTF_8;
+    public static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     protected FtpConfig ftpConfig;
 
@@ -64,10 +64,10 @@ public abstract class AbstractFtp implements Closeable {
      * @return 是否包含
      */
     private static boolean containsIgnoreCase(List<String> names, String nameToFind) {
-        if (CollUtils.isEmpty(names)) {
+        if (CollKit.isEmpty(names)) {
             return false;
         }
-        if (StringUtils.isEmpty(nameToFind)) {
+        if (StringKit.isEmpty(nameToFind)) {
             return false;
         }
         for (String name : names) {
@@ -124,8 +124,8 @@ public abstract class AbstractFtp implements Closeable {
      * @return 是否存在
      */
     public boolean exist(String path) {
-        final String fileName = FileUtils.getName(path);
-        final String dir = StringUtils.removeSuffix(path, fileName);
+        final String fileName = FileKit.getName(path);
+        final String dir = StringKit.removeSuffix(path, fileName);
         final List<String> names = ls(dir);
         return containsIgnoreCase(names, fileName);
     }
@@ -160,15 +160,15 @@ public abstract class AbstractFtp implements Closeable {
      * @param dir 文件夹路径,绝对路径
      */
     public void mkDirs(String dir) {
-        final String[] dirs = StringUtils.trim(dir).split("[\\\\/]+");
+        final String[] dirs = StringKit.trim(dir).split("[\\\\/]+");
 
         final String now = pwd();
-        if (dirs.length > 0 && StringUtils.isEmpty(dirs[0])) {
+        if (dirs.length > 0 && StringKit.isEmpty(dirs[0])) {
             //首位为空,表示以/开头
             this.cd(Symbol.SLASH);
         }
         for (String s : dirs) {
-            if (StringUtils.isNotEmpty(s)) {
+            if (StringKit.isNotEmpty(s)) {
                 if (false == cd(s)) {
                     //目录不存在时创建
                     mkdir(s);

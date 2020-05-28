@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.resource;
 
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Parser;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.MethodClassKey;
@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DefaultLimitedResourceSource implements LimitedResourceSource {
@@ -66,7 +66,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
             return retVal;
         }
         retVal = computeLimitedResource(method, targetClass);
-        if (CollUtils.isEmpty(retVal)) {
+        if (CollKit.isEmpty(retVal)) {
             cache.put(key, NULL_CACHING_ATTRIBUTE);
             return null;
         } else {
@@ -79,30 +79,29 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
         // 从代理前的方法上获取
         Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
         Collection<LimitedResource> reDef = findLimitedResource(specificMethod);
-        if (!CollUtils.isEmpty(reDef)) {
+        if (!CollKit.isEmpty(reDef)) {
             return reDef;
         }
         // 代理前class对象
         reDef = findLimitedResource(specificMethod.getDeclaringClass());
-        if (!CollUtils.isEmpty(reDef) && ClassUtils.isUserLevelMethod(specificMethod)) {
+        if (!CollKit.isEmpty(reDef) && ClassKit.isUserLevelMethod(specificMethod)) {
             return reDef;
         }
         if (specificMethod != method) {
             // 代理后的方法
             reDef = findLimitedResource(method);
-            if (!CollUtils.isEmpty(reDef)) {
+            if (!CollKit.isEmpty(reDef)) {
                 return reDef;
             }
             // 代理后的class对象
             reDef = findLimitedResource(method.getDeclaringClass());
-            if (!CollUtils.isEmpty(reDef) && ClassUtils.isUserLevelMethod(method)) {
+            if (!CollKit.isEmpty(reDef) && ClassKit.isUserLevelMethod(method)) {
                 return reDef;
             }
         }
 
         return null;
     }
-
 
     private Collection<LimitedResource> findLimitedResource(Method method) {
         return findLimitedResourceFromAnnotatedElement(method);
@@ -111,7 +110,6 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
     private Collection<LimitedResource> findLimitedResource(Class clazz) {
         return findLimitedResourceFromAnnotatedElement(clazz);
     }
-
 
     private Collection<LimitedResource> findLimitedResourceFromAnnotatedElement(AnnotatedElement ae) {
         Annotation[] annotations = ae.getAnnotations();

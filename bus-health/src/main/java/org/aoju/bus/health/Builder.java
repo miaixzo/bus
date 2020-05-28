@@ -29,8 +29,8 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.core.utils.PinyinUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.PinyinKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
@@ -44,6 +44,7 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
@@ -59,7 +60,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -662,7 +663,7 @@ public final class Builder {
         Properties p = new Properties();
         try {
             String path = Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName;
-            InputStream is = PinyinUtils.class.getResourceAsStream(path);
+            InputStream is = PinyinKit.class.getResourceAsStream(path);
             Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(reader);
             String line;
@@ -1774,7 +1775,71 @@ public final class Builder {
      * @param value   值
      */
     public static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringUtils.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
+        builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
+    }
+
+    /**
+     * 获取网络相关信息，可能多块网卡
+     *
+     * @return 网络相关信息
+     */
+    public static List<NetworkIF> getNetworkIFs() {
+        return hardware.getNetworkIFs();
+    }
+
+    /**
+     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
+     *
+     * @return 系统 CPU 使用率 等信息
+     */
+    public static CpuInfo getCpuInfo() {
+        return getCpuInfo(1000);
+    }
+
+    /**
+     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
+     *
+     * @param waitingTime 设置等待时间
+     * @return 系统 CPU 使用率 等信息
+     */
+    public static CpuInfo getCpuInfo(long waitingTime) {
+        return getCpuInfo(getProcessor(), waitingTime);
+    }
+
+    /**
+     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
+     *
+     * @param processor   {@link CentralProcessor}
+     * @param waitingTime 设置等待时间
+     * @return 系统 CPU 使用率 等信息
+     */
+    private static CpuInfo getCpuInfo(CentralProcessor processor, long waitingTime) {
+        CpuInfo cpuInfo = new CpuInfo();
+        long[] prevTicks = processor.getSystemCpuLoadTicks();
+        sleep(waitingTime);
+        long[] ticks = processor.getSystemCpuLoadTicks();
+        long nice = ticks[CentralProcessor.TickType.NICE.getIndex()] - prevTicks[CentralProcessor.TickType.NICE.getIndex()];
+        long irq = ticks[CentralProcessor.TickType.IRQ.getIndex()] - prevTicks[CentralProcessor.TickType.IRQ.getIndex()];
+        long softIrq = ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - prevTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()];
+        long steal = ticks[CentralProcessor.TickType.STEAL.getIndex()] - prevTicks[CentralProcessor.TickType.STEAL.getIndex()];
+        long cSys = ticks[CentralProcessor.TickType.SYSTEM.getIndex()] - prevTicks[CentralProcessor.TickType.SYSTEM.getIndex()];
+        long user = ticks[CentralProcessor.TickType.USER.getIndex()] - prevTicks[CentralProcessor.TickType.USER.getIndex()];
+        long ioWait = ticks[CentralProcessor.TickType.IOWAIT.getIndex()] - prevTicks[CentralProcessor.TickType.IOWAIT.getIndex()];
+        long idle = ticks[CentralProcessor.TickType.IDLE.getIndex()] - prevTicks[CentralProcessor.TickType.IDLE.getIndex()];
+        long totalCpu = Math.max(user + nice + cSys + idle + ioWait + irq + softIrq + steal, 0);
+        final DecimalFormat format = new DecimalFormat("#.00");
+        cpuInfo.setCpuNum(processor.getLogicalProcessorCount());
+        cpuInfo.setToTal(totalCpu);
+        cpuInfo.setSys(Double.parseDouble(format.format(cSys <= 0 ? 0 : (100d * cSys / totalCpu))));
+        cpuInfo.setUsed(Double.parseDouble(format.format(user <= 0 ? 0 : (100d * user / totalCpu))));
+        if (totalCpu == 0) {
+            cpuInfo.setWait(0);
+        } else {
+            cpuInfo.setWait(Double.parseDouble(format.format(100d * ioWait / totalCpu)));
+        }
+        cpuInfo.setFree(Double.parseDouble(format.format(idle <= 0 ? 0 : (100d * idle / totalCpu))));
+        cpuInfo.setCpuModel(processor.toString());
+        return cpuInfo;
     }
 
     /**
@@ -1793,6 +1858,133 @@ public final class Builder {
      */
     public List<HWDiskStore> getDiskStores() {
         return hardware.getDiskStores();
+    }
+
+    static class CpuInfo {
+
+        /**
+         * cpu核心数
+         */
+        private Integer cpuNum;
+
+        /**
+         * CPU总的使用率
+         */
+        private double toTal;
+
+        /**
+         * CPU系统使用率
+         */
+        private double sys;
+
+        /**
+         * CPU用户使用率
+         */
+        private double used;
+
+        /**
+         * CPU当前等待率
+         */
+        private double wait;
+
+        /**
+         * CPU当前空闲率
+         */
+        private double free;
+
+        /**
+         * CPU型号信息
+         */
+        private String cpuModel;
+
+        public CpuInfo() {
+        }
+
+        public CpuInfo(Integer cpuNum,
+                       double toTal,
+                       double sys,
+                       double used,
+                       double wait,
+                       double free,
+                       String cpuModel) {
+            this.cpuNum = cpuNum;
+            this.toTal = toTal;
+            this.sys = sys;
+            this.used = used;
+            this.wait = wait;
+            this.free = free;
+            this.cpuModel = cpuModel;
+        }
+
+        public Integer getCpuNum() {
+            return cpuNum;
+        }
+
+        public void setCpuNum(Integer cpuNum) {
+            this.cpuNum = cpuNum;
+        }
+
+        public double getToTal() {
+            return toTal;
+        }
+
+        public void setToTal(double toTal) {
+            this.toTal = toTal;
+        }
+
+        public double getSys() {
+            return sys;
+        }
+
+        public void setSys(double sys) {
+            this.sys = sys;
+        }
+
+        public double getUsed() {
+            return used;
+        }
+
+        public void setUsed(double used) {
+            this.used = used;
+        }
+
+        public double getWait() {
+            return wait;
+        }
+
+        public void setWait(double wait) {
+            this.wait = wait;
+        }
+
+        public double getFree() {
+            return free;
+        }
+
+        public void setFree(double free) {
+            this.free = free;
+        }
+
+        public String getCpuModel() {
+            return cpuModel;
+        }
+
+        public void setCpuModel(String cpuModel) {
+            this.cpuModel = cpuModel;
+        }
+
+        @Override
+        public String toString() {
+            return "CpuInfo{"
+                    + " CPU型号信息=" + cpuModel
+                    + ", CPU核心数=" + cpuNum
+                    + ", CPU总的使用率=" + toTal
+                    + ", CPU系统使用率=" + sys
+                    + ", CPU用户使用率=" + used
+                    + ", CPU当前等待率=" + wait
+                    + ", CPU当前空闲率=" + free
+                    + ", CPU利用率=" + Double.parseDouble(new DecimalFormat("#.00").format((100 - getFree()))) +
+                    "}";
+        }
     }
 
 }

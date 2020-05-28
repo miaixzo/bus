@@ -26,9 +26,9 @@ package org.aoju.bus.cron.pattern.matcher;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.MathUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.cron.pattern.parser.DayOfMonthValueParser;
 import org.aoju.bus.cron.pattern.parser.ValueParser;
 import org.aoju.bus.cron.pattern.parser.YearValueParser;
@@ -40,7 +40,7 @@ import java.util.List;
  * {@link ValueMatcher} 构建器,用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ValueMatcherBuilder {
@@ -90,9 +90,9 @@ public class ValueMatcherBuilder {
     private static List<Integer> parseArray(String value, ValueParser parser) {
         final List<Integer> values = new ArrayList<>();
 
-        final List<String> parts = StringUtils.split(value, Symbol.C_COMMA);
+        final List<String> parts = StringKit.split(value, Symbol.C_COMMA);
         for (String part : parts) {
-            CollUtils.addAllIfNotContains(values, parseStep(part, parser));
+            CollKit.addAllIfNotContains(values, parseStep(part, parser));
         }
         return values;
     }
@@ -111,7 +111,7 @@ public class ValueMatcherBuilder {
      * @return List
      */
     private static List<Integer> parseStep(String value, ValueParser parser) {
-        final List<String> parts = StringUtils.split(value, Symbol.C_SLASH);
+        final List<String> parts = StringKit.split(value, Symbol.C_SLASH);
         int size = parts.size();
 
         List<Integer> results;
@@ -180,12 +180,12 @@ public class ValueMatcherBuilder {
         }
 
         //Range模式
-        List<String> parts = StringUtils.split(value, Symbol.C_HYPHEN);
+        List<String> parts = StringKit.split(value, Symbol.C_HYPHEN);
         int size = parts.size();
         if (size == 1) {// 普通值
             final int v1 = parser.parse(value);
             if (step > 0) {//类似 20/2的形式
-                MathUtils.appendRange(v1, parser.getMax(), step, results);
+                MathKit.appendRange(v1, parser.getMax(), step, results);
             } else {
                 results.add(v1);
             }
@@ -197,13 +197,13 @@ public class ValueMatcherBuilder {
                 step = 1;
             }
             if (v1 < v2) {// 正常范围,例如：2-5
-                MathUtils.appendRange(v1, v2, step, results);
+                MathKit.appendRange(v1, v2, step, results);
             } else if (v1 > v2) {// 逆向范围,反选模式,例如：5-2
-                MathUtils.appendRange(v1, parser.getMax(), step, results);
-                MathUtils.appendRange(parser.getMin(), v2, step, results);
+                MathKit.appendRange(v1, parser.getMax(), step, results);
+                MathKit.appendRange(parser.getMin(), v2, step, results);
             } else {// v1 == v2,此时与单值模式一致
                 if (step > 0) {//类似 20/2的形式
-                    MathUtils.appendRange(v1, parser.getMax(), step, results);
+                    MathKit.appendRange(v1, parser.getMax(), step, results);
                 } else {
                     results.add(v1);
                 }

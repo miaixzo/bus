@@ -25,17 +25,17 @@
 package org.aoju.bus.setting;
 
 import org.aoju.bus.core.io.resource.UriResource;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.PatternUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.PatternKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.Set;
  * Setting文件加载器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class SettingLoader {
@@ -67,7 +67,7 @@ public class SettingLoader {
     /**
      * 本设置对象的字符集
      */
-    private Charset charset;
+    private java.nio.charset.Charset charset;
     /**
      * 是否使用变量
      */
@@ -83,7 +83,7 @@ public class SettingLoader {
      * @param groupedMap GroupedMap
      */
     public SettingLoader(GroupedMap groupedMap) {
-        this(groupedMap, org.aoju.bus.core.lang.Charset.UTF_8, false);
+        this(groupedMap, Charset.UTF_8, false);
     }
 
     /**
@@ -93,7 +93,7 @@ public class SettingLoader {
      * @param charset       编码
      * @param isUseVariable 是否使用变量
      */
-    public SettingLoader(GroupedMap groupedMap, Charset charset, boolean isUseVariable) {
+    public SettingLoader(GroupedMap groupedMap, java.nio.charset.Charset charset, boolean isUseVariable) {
         this.groupedMap = groupedMap;
         this.charset = charset;
         this.isUseVariable = isUseVariable;
@@ -130,7 +130,7 @@ public class SettingLoader {
         this.groupedMap.clear();
         BufferedReader reader = null;
         try {
-            reader = IoUtils.getReader(settingStream, this.charset);
+            reader = IoKit.getReader(settingStream, this.charset);
             // 分组
             String group = null;
 
@@ -142,17 +142,17 @@ public class SettingLoader {
                 }
                 line = line.trim();
                 // 跳过注释行和空行
-                if (StringUtils.isBlank(line) || StringUtils.startWith(line, COMMENT_FLAG_PRE)) {
+                if (StringKit.isBlank(line) || StringKit.startWith(line, COMMENT_FLAG_PRE)) {
                     continue;
                 }
 
                 // 记录分组名
-                if (StringUtils.isSurround(line, Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT)) {
+                if (StringKit.isSurround(line, Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT)) {
                     group = line.substring(1, line.length() - 1).trim();
                     continue;
                 }
 
-                final String[] keyValue = StringUtils.splitToArray(line, ASSIGN_FLAG, 2);
+                final String[] keyValue = StringKit.splitToArray(line, ASSIGN_FLAG, 2);
                 // 跳过不符合键值规范的行
                 if (keyValue.length < 2) {
                     continue;
@@ -166,7 +166,7 @@ public class SettingLoader {
                 this.groupedMap.put(group, keyValue[0].trim(), value);
             }
         } finally {
-            IoUtils.close(reader);
+            IoKit.close(reader);
         }
         return true;
     }
@@ -190,10 +190,10 @@ public class SettingLoader {
     public void store(String absolutePath) {
         PrintWriter writer = null;
         try {
-            writer = FileUtils.getPrintWriter(absolutePath, charset, false);
+            writer = FileKit.getPrintWriter(absolutePath, charset, false);
             store(writer);
         } finally {
-            IoUtils.close(writer);
+            IoKit.close(writer);
         }
     }
 
@@ -204,9 +204,9 @@ public class SettingLoader {
      */
     private void store(PrintWriter writer) {
         for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupedMap.entrySet()) {
-            writer.println(StringUtils.format("{}{}{}", Symbol.BRACKET_LEFT, groupEntry.getKey(), Symbol.BRACKET_RIGHT));
+            writer.println(StringKit.format("{}{}{}", Symbol.BRACKET_LEFT, groupEntry.getKey(), Symbol.BRACKET_RIGHT));
             for (Entry<String, String> entry : groupEntry.getValue().entrySet()) {
-                writer.println(StringUtils.format("{} {} {}", entry.getKey(), ASSIGN_FLAG, entry.getValue()));
+                writer.println(StringKit.format("{} {} {}", entry.getKey(), ASSIGN_FLAG, entry.getValue()));
             }
         }
     }
@@ -220,11 +220,11 @@ public class SettingLoader {
      */
     private String replaceVar(String group, String value) {
         // 找到所有变量标识
-        final Set<String> vars = PatternUtils.findAll(reg_var, value, 0, new HashSet<>());
+        final Set<String> vars = PatternKit.findAll(reg_var, value, 0, new HashSet<>());
         String key;
         for (String var : vars) {
-            key = PatternUtils.get(reg_var, var, 1);
-            if (StringUtils.isNotBlank(key)) {
+            key = PatternKit.get(reg_var, var, 1);
+            if (StringKit.isNotBlank(key)) {
                 // 查找变量名对应的值
                 String varValue = this.groupedMap.get(group, key);
                 if (null != varValue) {
@@ -232,7 +232,7 @@ public class SettingLoader {
                     value = value.replace(var, varValue);
                 } else {
                     // 跨分组查找
-                    final List<String> groupAndKey = StringUtils.split(key, Symbol.C_DOT, 2);
+                    final List<String> groupAndKey = StringKit.split(key, Symbol.C_DOT, 2);
                     if (groupAndKey.size() > 1) {
                         varValue = this.groupedMap.get(groupAndKey.get(0), groupAndKey.get(1));
                         if (null != varValue) {

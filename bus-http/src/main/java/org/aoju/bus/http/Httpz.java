@@ -35,7 +35,7 @@ import org.aoju.bus.http.secure.X509TrustManager;
  * 发送HTTP请求辅助类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Httpz {

@@ -28,8 +28,8 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.metric.CookieJar;
 import org.aoju.bus.http.secure.Challenge;
@@ -41,7 +41,7 @@ import java.util.*;
  * Header实用工具
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class HttpHeaders {
@@ -101,7 +101,7 @@ public final class HttpHeaders {
     public static boolean varyMatches(
             Response cachedResponse, Headers cachedRequest, Request newRequest) {
         for (String field : varyFields(cachedResponse)) {
-            if (!ObjectUtils.equal(cachedRequest.values(field), newRequest.headers(field))) return false;
+            if (!ObjectKit.equal(cachedRequest.values(field), newRequest.headers(field))) return false;
         }
         return true;
     }
@@ -367,7 +367,7 @@ public final class HttpHeaders {
 
     @Override
     public String toString() {
-        return StringUtils.format("%s: %s", name.utf8(), value.utf8());
+        return StringKit.format("%s: %s", name.utf8(), value.utf8());
     }
 
     interface Listener {

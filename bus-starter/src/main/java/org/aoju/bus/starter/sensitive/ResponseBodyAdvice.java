@@ -29,10 +29,10 @@ import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
@@ -56,7 +56,7 @@ import java.util.Map;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ResponseBodyAdvice extends BaseAdvice
@@ -76,8 +76,8 @@ public class ResponseBodyAdvice extends BaseAdvice
     private static <T> void setValue(T entity, String[] fields, Object[] value) {
         for (int i = 0; i < fields.length; i++) {
             String field = fields[i];
-            if (ReflectUtils.hasField(entity, field)) {
-                ReflectUtils.invokeSetter(entity, field, value[i]);
+            if (ReflectKit.hasField(entity, field)) {
+                ReflectKit.invokeSetter(entity, field, value[i]);
             }
         }
     }
@@ -90,8 +90,8 @@ public class ResponseBodyAdvice extends BaseAdvice
      * @param field  属性数组
      */
     private static <T> Object getValue(T entity, String field) {
-        if (ReflectUtils.hasField(entity, field)) {
-            Object object = ReflectUtils.invokeGetter(entity, field);
+        if (ReflectKit.hasField(entity, field)) {
+            Object object = ReflectKit.invokeGetter(entity, field);
             return object != null ? object.toString() : null;
         }
         return null;
@@ -101,7 +101,7 @@ public class ResponseBodyAdvice extends BaseAdvice
     public boolean supports(MethodParameter returnType,
                             Class<? extends HttpMessageConverter<?>> converterType) {
         Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
-        if (ArrayUtils.isNotEmpty(annotations)) {
+        if (ArrayKit.isNotEmpty(annotations)) {
             for (Annotation annotation : annotations) {
                 if (annotation instanceof Sensitive) {
                     return true;
@@ -125,10 +125,10 @@ public class ResponseBodyAdvice extends BaseAdvice
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter parameter, MediaType mediaType,
                                   Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request, ServerHttpResponse response) {
-        if (ObjectUtils.isNotEmpty(this.properties) && !this.properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
                 final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
-                if (ObjectUtils.isEmpty(sensitive)) {
+                if (ObjectKit.isEmpty(sensitive)) {
                     return body;
                 }
 
@@ -160,7 +160,7 @@ public class ResponseBodyAdvice extends BaseAdvice
 
 
     private void beforeBodyWrite(Sensitive sensitive, Object object) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return;
         }
         // 数据脱敏
@@ -175,12 +175,12 @@ public class ResponseBodyAdvice extends BaseAdvice
             Map<String, Privacy> map = getPrivacyMap(object.getClass());
             for (Map.Entry<String, Privacy> entry : map.entrySet()) {
                 Privacy privacy = entry.getValue();
-                if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
                     if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
                         String property = entry.getKey();
                         String value = (String) getValue(object, property);
-                        if (StringUtils.isNotEmpty(value)) {
-                            if (ObjectUtils.isEmpty(properties)) {
+                        if (StringKit.isNotEmpty(value)) {
+                            if (ObjectKit.isEmpty(properties)) {
                                 throw new InstrumentException("Please check the request.crypto.encrypt");
                             }
                             Logger.debug("Response data encryption enabled ...");

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class InputStreamResource implements Resource {
@@ -82,7 +82,7 @@ public class InputStreamResource implements Resource {
 
     @Override
     public BufferedReader getReader(Charset charset) {
-        return IoUtils.getReader(this.in, charset);
+        return IoKit.getReader(this.in, charset);
     }
 
     @Override
@@ -90,9 +90,9 @@ public class InputStreamResource implements Resource {
         BufferedReader reader = null;
         try {
             reader = getReader(charset);
-            return IoUtils.read(reader);
+            return IoKit.read(reader);
         } finally {
-            IoUtils.close(reader);
+            IoKit.close(reader);
         }
     }
 
@@ -101,9 +101,9 @@ public class InputStreamResource implements Resource {
         InputStream in = null;
         try {
             in = getStream();
-            return IoUtils.readBytes(in);
+            return IoKit.readBytes(in);
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 

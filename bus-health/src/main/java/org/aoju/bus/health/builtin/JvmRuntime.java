@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.builtin;
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ import java.io.Serializable;
  * 运行时信息，包括内存总大小、已用大小、可用大小等
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class JvmRuntime implements Serializable {
@@ -91,10 +91,10 @@ public class JvmRuntime implements Serializable {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        Builder.append(builder, "Max Memory:    ", FileUtils.readableFileSize(getMaxMemory()));
-        Builder.append(builder, "Total Memory:     ", FileUtils.readableFileSize(getTotalMemory()));
-        Builder.append(builder, "Free Memory:     ", FileUtils.readableFileSize(getFreeMemory()));
-        Builder.append(builder, "Usable Memory:     ", FileUtils.readableFileSize(getUsableMemory()));
+        Builder.append(builder, "Max Memory:    ", FileKit.readableFileSize(getMaxMemory()));
+        Builder.append(builder, "Total Memory:     ", FileKit.readableFileSize(getTotalMemory()));
+        Builder.append(builder, "Free Memory:     ", FileKit.readableFileSize(getFreeMemory()));
+        Builder.append(builder, "Usable Memory:     ", FileKit.readableFileSize(getUsableMemory()));
 
         return builder.toString();
     }

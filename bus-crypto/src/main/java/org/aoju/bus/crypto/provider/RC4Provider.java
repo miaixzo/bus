@@ -26,7 +26,7 @@ package org.aoju.bus.crypto.provider;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.symmetric.RC4;
 
@@ -38,7 +38,7 @@ import org.aoju.bus.crypto.symmetric.RC4;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class RC4Provider implements Provider {
@@ -51,11 +51,11 @@ public class RC4Provider implements Provider {
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
         RC4 rc4 = new RC4(key);
-        return rc4.encrypt(StringUtils.toString(content, Charset.UTF_8));
+        return rc4.encrypt(StringKit.toString(content, Charset.UTF_8));
     }
 
     /**
@@ -66,7 +66,7 @@ public class RC4Provider implements Provider {
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
         RC4 rc4 = new RC4(key);

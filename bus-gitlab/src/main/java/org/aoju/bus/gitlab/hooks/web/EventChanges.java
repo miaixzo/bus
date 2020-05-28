@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class EventChanges {
@@ -142,7 +142,6 @@ public abstract class EventChanges {
         this.totalTimeSpent = totalTimeSpent;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> ChangeContainer<T> get(String property) {
 
         if (otherProperties.containsKey(property)) {

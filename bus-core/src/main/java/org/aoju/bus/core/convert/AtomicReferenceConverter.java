@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.TypeUtils;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * {@link AtomicReference}转换器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class AtomicReferenceConverter extends AbstractConverter<AtomicReference> {
@@ -43,8 +43,8 @@ public class AtomicReferenceConverter extends AbstractConverter<AtomicReference>
 
         //尝试将值转换为Reference泛型的类型
         Object targetValue = null;
-        final Type paramType = TypeUtils.getTypeArgument(AtomicReference.class);
-        if (false == TypeUtils.isUnknow(paramType)) {
+        final Type paramType = TypeKit.getTypeArgument(AtomicReference.class);
+        if (false == TypeKit.isUnknow(paramType)) {
             targetValue = ConverterRegistry.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {

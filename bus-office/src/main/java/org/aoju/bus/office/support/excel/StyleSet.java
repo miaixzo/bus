@@ -32,7 +32,7 @@ import java.io.Serializable;
  * 样式集合,此样式集合汇集了整个工作簿的样式,用于减少样式的创建和冗余
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class StyleSet implements Serializable {
@@ -66,16 +66,16 @@ public class StyleSet implements Serializable {
      */
     public StyleSet(Workbook workbook) {
         this.workbook = workbook;
-        this.headCellStyle = StyleUtils.createHeadCellStyle(workbook);
-        this.cellStyle = StyleUtils.createDefaultCellStyle(workbook);
+        this.headCellStyle = StyleKit.createHeadCellStyle(workbook);
+        this.cellStyle = StyleKit.createDefaultCellStyle(workbook);
 
         // 默认日期格式
-        this.cellStyleForDate = StyleUtils.cloneCellStyle(workbook, this.cellStyle);
+        this.cellStyleForDate = StyleKit.cloneCellStyle(workbook, this.cellStyle);
         // 22表示：m/d/yy h:mm
         this.cellStyleForDate.setDataFormat((short) 22);
 
         // 默认数字格式
-        cellStyleForNumber = StyleUtils.cloneCellStyle(workbook, this.cellStyle);
+        cellStyleForNumber = StyleKit.cloneCellStyle(workbook, this.cellStyle);
         // 2表示：0.00
         cellStyleForNumber.setDataFormat((short) 2);
     }
@@ -124,10 +124,10 @@ public class StyleSet implements Serializable {
      * @return this
      */
     public StyleSet setBorder(BorderStyle borderSize, IndexedColors colorIndex) {
-        StyleUtils.setBorder(this.headCellStyle, borderSize, colorIndex);
-        StyleUtils.setBorder(this.cellStyle, borderSize, colorIndex);
-        StyleUtils.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
-        StyleUtils.setBorder(this.cellStyleForDate, borderSize, colorIndex);
+        StyleKit.setBorder(this.headCellStyle, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyle, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyleForDate, borderSize, colorIndex);
         return this;
     }
 
@@ -139,10 +139,10 @@ public class StyleSet implements Serializable {
      * @return this
      */
     public StyleSet setAlign(HorizontalAlignment halign, VerticalAlignment valign) {
-        StyleUtils.setAlign(this.headCellStyle, halign, valign);
-        StyleUtils.setAlign(this.cellStyle, halign, valign);
-        StyleUtils.setAlign(this.cellStyleForNumber, halign, valign);
-        StyleUtils.setAlign(this.cellStyleForDate, halign, valign);
+        StyleKit.setAlign(this.headCellStyle, halign, valign);
+        StyleKit.setAlign(this.cellStyle, halign, valign);
+        StyleKit.setAlign(this.cellStyleForNumber, halign, valign);
+        StyleKit.setAlign(this.cellStyleForDate, halign, valign);
         return this;
     }
 
@@ -155,11 +155,11 @@ public class StyleSet implements Serializable {
      */
     public StyleSet setBackgroundColor(IndexedColors backgroundColor, boolean withHeadCell) {
         if (withHeadCell) {
-            StyleUtils.setColor(this.headCellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+            StyleKit.setColor(this.headCellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         }
-        StyleUtils.setColor(this.cellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        StyleUtils.setColor(this.cellStyleForNumber, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        StyleUtils.setColor(this.cellStyleForDate, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyleForNumber, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyleForDate, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         return this;
     }
 
@@ -173,14 +173,14 @@ public class StyleSet implements Serializable {
      * @return this
      */
     public StyleSet setFont(short color, short fontSize, String fontName, boolean ignoreHead) {
-        final Font font = StyleUtils.createFont(this.workbook, color, fontSize, fontName);
+        final Font font = StyleKit.createFont(this.workbook, color, fontSize, fontName);
         return setFont(font, ignoreHead);
     }
 
     /**
      * 设置全局字体
      *
-     * @param font       字体,可以通过{@link StyleUtils#createFont(Workbook, short, short, String)}创建
+     * @param font       字体,可以通过{@link StyleKit#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */

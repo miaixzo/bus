@@ -27,8 +27,8 @@ package org.aoju.bus.office.metric;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 所有{@link OfficeManager}的基类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficeManager implements OfficeManager, TemporaryFileMaker {
@@ -98,7 +98,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
         if (tempDir != null) {
             Logger.debug("Deleting temporary directory '{}'", tempDir);
             try {
-                FileUtils.delete(tempDir);
+                FileKit.delete(tempDir);
             } catch (InstrumentException ioEx) {
                 Logger.error("Could not temporary profileDir: {}", ioEx.getMessage());
             }
@@ -151,7 +151,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
          * @return 当前实例信息.
          */
         public B workingDir(final String workingDir) {
-            return StringUtils.isBlank(workingDir) ? (B) this : workingDir(new File(workingDir));
+            return StringKit.isBlank(workingDir) ? (B) this : workingDir(new File(workingDir));
         }
 
         /**

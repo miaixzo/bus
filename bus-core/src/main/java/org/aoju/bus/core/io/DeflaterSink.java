@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io;
 
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
 import java.util.zip.Deflater;
@@ -36,7 +36,7 @@ import java.util.zip.Deflater;
  * 这种早期压缩可能不如执行的压缩有效
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DeflaterSink implements Sink {
@@ -46,7 +46,7 @@ public class DeflaterSink implements Sink {
     private boolean closed;
 
     public DeflaterSink(Sink sink, Deflater deflater) {
-        this(IoUtils.buffer(sink), deflater);
+        this(IoKit.buffer(sink), deflater);
     }
 
     DeflaterSink(BufferSink sink, Deflater deflater) {
@@ -58,7 +58,7 @@ public class DeflaterSink implements Sink {
 
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
-        IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
+        IoKit.checkOffsetAndCount(source.size, 0, byteCount);
         while (byteCount > 0) {
             Segment head = source.head;
             int toDeflate = (int) Math.min(byteCount, head.limit - head.pos);
@@ -135,7 +135,7 @@ public class DeflaterSink implements Sink {
         }
         closed = true;
 
-        if (thrown != null) IoUtils.sneakyRethrow(thrown);
+        if (thrown != null) IoKit.sneakyRethrow(thrown);
     }
 
     @Override

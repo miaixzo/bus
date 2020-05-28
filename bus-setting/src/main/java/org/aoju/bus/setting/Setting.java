@@ -32,15 +32,15 @@ import org.aoju.bus.core.io.resource.UriResource;
 import org.aoju.bus.core.io.watchers.SimpleWatcher;
 import org.aoju.bus.core.io.watchers.WatchMonitor;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.setting.dialect.Props;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.util.*;
@@ -58,7 +58,7 @@ import java.util.function.Consumer;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Setting extends AbsSetting implements Map<String, String> {
@@ -71,7 +71,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     /**
      * 本设置对象的字符集
      */
-    protected Charset charset;
+    protected java.nio.charset.Charset charset;
     /**
      * 是否使用变量
      */
@@ -106,7 +106,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      */
     public Setting(String path, boolean isUseVariable) {
-        this(path, org.aoju.bus.core.lang.Charset.UTF_8, isUseVariable);
+        this(path, Charset.UTF_8, isUseVariable);
     }
 
     /**
@@ -116,9 +116,9 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(String path, Charset charset, boolean isUseVariable) {
+    public Setting(String path, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
-        this.init(FileUtils.getResourceObj(path), charset, isUseVariable);
+        this.init(FileKit.getResourceObj(path), charset, isUseVariable);
     }
 
     /**
@@ -128,7 +128,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(File configFile, Charset charset, boolean isUseVariable) {
+    public Setting(File configFile, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notNull(configFile, "Null setting file define!");
         this.init(new FileResource(configFile), charset, isUseVariable);
     }
@@ -141,7 +141,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(String path, Class<?> clazz, Charset charset, boolean isUseVariable) {
+    public Setting(String path, Class<?> clazz, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
         this.init(new ClassPathResource(path, clazz), charset, isUseVariable);
     }
@@ -153,7 +153,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(URL url, Charset charset, boolean isUseVariable) {
+    public Setting(URL url, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notNull(url, "Null setting url define!");
         this.init(new UriResource(url), charset, isUseVariable);
     }
@@ -166,7 +166,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      * @return 成功初始化与否
      */
-    public boolean init(Resource resource, Charset charset, boolean isUseVariable) {
+    public boolean init(Resource resource, java.nio.charset.Charset charset, boolean isUseVariable) {
         if (resource == null) {
             throw new NullPointerException("Null setting url define!");
         }
@@ -211,7 +211,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
                 // 先关闭之前的监听
                 this.watchMonitor.close();
             }
-            this.watchMonitor = WatchUtils.createModify(this.settingUrl, new SimpleWatcher() {
+            this.watchMonitor = WatchKit.createModify(this.settingUrl, new SimpleWatcher() {
                 @Override
                 public void onModify(WatchEvent<?> event, Path currentPath) {
                     boolean success = load();
@@ -224,7 +224,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
             this.watchMonitor.start();
             Logger.debug("Auto load for [{}] listenning...", this.settingUrl);
         } else {
-            IoUtils.close(this.watchMonitor);
+            IoKit.close(this.watchMonitor);
             this.watchMonitor = null;
         }
     }
@@ -354,7 +354,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
         for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupedMap.entrySet()) {
             group = groupEntry.getKey();
             for (Entry<String, String> entry : groupEntry.getValue().entrySet()) {
-                properties.setProperty(StringUtils.isEmpty(group) ? entry.getKey() : group + Symbol.DOT + entry.getKey(), entry.getValue());
+                properties.setProperty(StringKit.isEmpty(group) ? entry.getKey() : group + Symbol.DOT + entry.getKey(), entry.getValue());
             }
         }
         return properties;
@@ -375,7 +375,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 获得所有分组名
      */
     public List<String> getGroups() {
-        return CollUtils.newArrayList(this.groupedMap.keySet());
+        return CollKit.newArrayList(this.groupedMap.keySet());
     }
 
     /**

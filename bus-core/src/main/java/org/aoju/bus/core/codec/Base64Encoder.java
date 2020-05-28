@@ -24,18 +24,17 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.CharUtils;
-import org.aoju.bus.core.utils.StringUtils;
-
-import java.nio.charset.Charset;
+import org.aoju.bus.core.toolkit.CharKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * Base64编码
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Base64Encoder {
@@ -69,7 +68,7 @@ public class Base64Encoder {
      * @return 被加密后的字符串
      */
     public static String encode(CharSequence source) {
-        return encode(source, org.aoju.bus.core.lang.Charset.UTF_8);
+        return encode(source, Charset.UTF_8);
     }
 
     /**
@@ -79,7 +78,7 @@ public class Base64Encoder {
      * @return 被加密后的字符串
      */
     public static String encodeUrlSafe(CharSequence source) {
-        return encodeUrlSafe(source, org.aoju.bus.core.lang.Charset.UTF_8);
+        return encodeUrlSafe(source, Charset.UTF_8);
     }
 
     /**
@@ -89,8 +88,8 @@ public class Base64Encoder {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(CharSequence source, Charset charset) {
-        return encode(StringUtils.bytes(source, charset));
+    public static String encode(CharSequence source, java.nio.charset.Charset charset) {
+        return encode(StringKit.bytes(source, charset));
     }
 
     /**
@@ -100,8 +99,8 @@ public class Base64Encoder {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encodeUrlSafe(CharSequence source, Charset charset) {
-        return encodeUrlSafe(StringUtils.bytes(source, charset));
+    public static String encodeUrlSafe(CharSequence source, java.nio.charset.Charset charset) {
+        return encodeUrlSafe(StringKit.bytes(source, charset));
     }
 
     /**
@@ -111,7 +110,7 @@ public class Base64Encoder {
      * @return 被加密后的字符串
      */
     public static String encode(byte[] source) {
-        return StringUtils.toString(encode(source, false), org.aoju.bus.core.lang.Charset.UTF_8);
+        return StringKit.toString(encode(source, false), Charset.UTF_8);
     }
 
     /**
@@ -121,7 +120,7 @@ public class Base64Encoder {
      * @return 被加密后的字符串
      */
     public static String encodeUrlSafe(byte[] source) {
-        return StringUtils.toString(encodeUrlSafe(source, false), org.aoju.bus.core.lang.Charset.UTF_8);
+        return StringKit.toString(encodeUrlSafe(source, false), Charset.UTF_8);
     }
 
     /**
@@ -210,24 +209,24 @@ public class Base64Encoder {
         int n = srcLen / 3;
         int r = srcLen - 3 * n;
         while (n-- > 0) {
-            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
                     | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
-            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b2 & 0x0F) << 2)
+            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b2 & 0x0F) << 2)
                     | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
-            dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[b3 & 0x3F];
+            dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[b3 & 0x3F];
         }
         if (r > 0)
             if (r == 1) {
-                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
-                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)];
+                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos]) >>> 2) & 0x3F];
+                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)];
                 dest[destPos++] = Symbol.C_EQUAL;
                 dest[destPos++] = Symbol.C_EQUAL;
             } else {
-                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
+                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 = src[srcPos++]) >>> 2) & 0x3F];
+                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[((b1 & 0x03) << 4)
                         | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
-                dest[destPos++] = CharUtils.getChars(Normal.ENCODE_64_TABLE)[(b2 & 0x0F) << 2];
+                dest[destPos++] = CharKit.getChars(Normal.ENCODE_64_TABLE)[(b2 & 0x0F) << 2];
                 dest[destPos++] = Symbol.C_EQUAL;
             }
     }

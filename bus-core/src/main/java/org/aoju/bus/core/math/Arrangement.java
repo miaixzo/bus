@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.math;
 
-import org.aoju.bus.core.utils.MathUtils;
+import org.aoju.bus.core.toolkit.MathKit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ import java.util.List;
  * 排列组合相关类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Arrangement {
@@ -70,9 +70,9 @@ public class Arrangement {
      */
     public static long count(int n, int m) {
         if (n == m) {
-            return MathUtils.factorial(n);
+            return MathKit.factorial(n);
         }
-        return (n > m) ? MathUtils.factorial(n, n - m) : 0;
+        return (n > m) ? MathKit.factorial(n, n - m) : 0;
     }
 
     /**

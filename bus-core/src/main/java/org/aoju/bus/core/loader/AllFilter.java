@@ -33,7 +33,7 @@ import java.util.Collection;
  * 如果没有过滤器的时候则认为所有过滤器都满足
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class AllFilter extends MixFilter implements Filter {

@@ -27,7 +27,7 @@ package org.aoju.bus.http.metric.http;
 import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.StreamAllocation;
 import org.aoju.bus.http.bodys.RealResponseBody;
@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * 使用HTTP/2帧对请求和响应进行编码.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class Http2Codec implements HttpCodec {
@@ -173,7 +173,7 @@ public final class Http2Codec implements HttpCodec {
         String contentType = response.header(Header.CONTENT_TYPE);
         long contentLength = HttpHeaders.contentLength(response);
         Source source = new StreamFinishingSource(stream.getSource());
-        return new RealResponseBody(contentType, contentLength, IoUtils.buffer(source));
+        return new RealResponseBody(contentType, contentLength, IoKit.buffer(source));
     }
 
     @Override

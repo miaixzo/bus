@@ -25,7 +25,7 @@
 package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 import java.io.InputStream;
@@ -35,14 +35,14 @@ import java.io.InputStream;
  *
  * @param <T> 子对象类型,用于标记返回值this
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractExcelSaxReader<T> implements ExcelSaxReader<T> {
 
     @Override
     public T read(String path) throws InstrumentException {
-        return read(FileUtils.file(path));
+        return read(FileKit.file(path));
     }
 
     @Override
@@ -57,7 +57,7 @@ public abstract class AbstractExcelSaxReader<T> implements ExcelSaxReader<T> {
 
     @Override
     public T read(String path, int sheetIndex) throws InstrumentException {
-        return read(FileUtils.file(path), sheetIndex);
+        return read(FileKit.file(path), sheetIndex);
     }
 
 }

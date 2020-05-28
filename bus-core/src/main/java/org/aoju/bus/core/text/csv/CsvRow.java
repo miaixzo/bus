@@ -25,7 +25,7 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.BeanUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
 
 import java.util.*;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * CSV中一行的表示
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class CsvRow implements List<String> {
@@ -138,7 +138,7 @@ public final class CsvRow implements List<String> {
      * @return Bean
      */
     public <T> T toBean(Class<T> clazz) {
-        return BeanUtils.mapToBean(getFieldMap(), clazz, true);
+        return BeanKit.mapToBean(getFieldMap(), clazz, true);
     }
 
     @Override

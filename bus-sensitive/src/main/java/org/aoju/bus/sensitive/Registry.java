@@ -25,8 +25,8 @@
 package org.aoju.bus.sensitive;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.sensitive.annotation.Strategy;
 import org.aoju.bus.sensitive.provider.StrategyProvider;
 import org.aoju.bus.sensitive.strategy.*;
@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 注解和实现之间映射
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class Registry {
@@ -90,7 +90,7 @@ public final class Registry {
      */
     public static StrategyProvider require(Builder.Type name) {
         StrategyProvider sensitiveProvider = STRATEGY_CACHE.get(name);
-        if (ObjectUtils.isEmpty(sensitiveProvider)) {
+        if (ObjectKit.isEmpty(sensitiveProvider)) {
             throw new IllegalArgumentException("none sensitiveProvider be found!, type:" + name);
         }
         return sensitiveProvider;
@@ -104,7 +104,7 @@ public final class Registry {
      */
     public static StrategyProvider require(final Class<? extends Annotation> annotationClass) {
         StrategyProvider strategy = STRATEGY_CACHE.get(annotationClass);
-        if (ObjectUtils.isEmpty(strategy)) {
+        if (ObjectKit.isEmpty(strategy)) {
             throw new InstrumentException("不支持的系统内置方法,用户请勿在自定义注解中使用[BuiltInStrategy]!");
         }
         return strategy;
@@ -119,13 +119,13 @@ public final class Registry {
     public static StrategyProvider require(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             Strategy sensitiveStrategy = annotation.annotationType().getAnnotation(Strategy.class);
-            if (ObjectUtils.isNotEmpty(sensitiveStrategy)) {
+            if (ObjectKit.isNotEmpty(sensitiveStrategy)) {
                 Class<? extends StrategyProvider> clazz = sensitiveStrategy.value();
                 StrategyProvider strategy;
                 if (BuiltInStrategy.class.equals(clazz)) {
                     strategy = Registry.require(annotation.annotationType());
                 } else {
-                    strategy = ClassUtils.newInstance(clazz);
+                    strategy = ClassKit.newInstance(clazz);
                 }
                 return strategy;
             }

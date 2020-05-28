@@ -25,15 +25,15 @@
 package org.aoju.bus.core.text.csv;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ import java.util.Objects;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class CsvReader {
@@ -64,7 +64,7 @@ public final class CsvReader {
      * @param config 配置项
      */
     public CsvReader(CsvReadConfig config) {
-        this.config = ObjectUtils.defaultIfNull(config, CsvReadConfig.defaultConfig());
+        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig.defaultConfig());
     }
 
     /**
@@ -120,7 +120,7 @@ public final class CsvReader {
      * @throws InstrumentException IO异常
      */
     public CsvData read(File file) throws InstrumentException {
-        return read(file, org.aoju.bus.core.lang.Charset.UTF_8);
+        return read(file, Charset.UTF_8);
     }
 
     /**
@@ -131,7 +131,7 @@ public final class CsvReader {
      * @return {@link CsvData},包含数据列表和行信息
      * @throws InstrumentException IO异常
      */
-    public CsvData read(File file, Charset charset) throws InstrumentException {
+    public CsvData read(File file, java.nio.charset.Charset charset) throws InstrumentException {
         return read(Objects.requireNonNull(file.toPath(), "file must not be null"), charset);
     }
 
@@ -143,7 +143,7 @@ public final class CsvReader {
      * @throws InstrumentException IO异常
      */
     public CsvData read(Path path) throws InstrumentException {
-        return read(path, org.aoju.bus.core.lang.Charset.UTF_8);
+        return read(path, Charset.UTF_8);
     }
 
     /**
@@ -154,9 +154,9 @@ public final class CsvReader {
      * @return {@link CsvData},包含数据列表和行信息
      * @throws InstrumentException IO异常
      */
-    public CsvData read(Path path, Charset charset) throws InstrumentException {
+    public CsvData read(Path path, java.nio.charset.Charset charset) throws InstrumentException {
         Assert.notNull(path, "path must not be null");
-        try (Reader reader = FileUtils.getReader(path, charset)) {
+        try (Reader reader = FileKit.getReader(path, charset)) {
             return read(reader);
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -202,7 +202,7 @@ public final class CsvReader {
                 rowHandler.handle(csvRow);
             }
         } finally {
-            IoUtils.close(csvParser);
+            IoKit.close(csvParser);
         }
     }
 

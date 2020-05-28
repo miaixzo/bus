@@ -24,10 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.socket.spring.intercept;
 
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.socket.spring.support.MessageFrom;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.StompSubProtocolHandler;
 
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FromClientExecutionChain {
@@ -50,7 +50,7 @@ public class FromClientExecutionChain {
     }
 
     public boolean applyPreHandle(WebSocketSession session, MessageFrom message, MessageChannel outputChannel, StompSubProtocolHandler handler) {
-        if (!ObjectUtils.isEmpty(interceptors)) {
+        if (!ObjectKit.isEmpty(interceptors)) {
             for (int i = 0; i < interceptors.size(); i++) {
                 FromClientInterceptor interceptor = interceptors.get(i);
                 if (!interceptor.preHandle(session, message, outputChannel, handler)) {
@@ -64,7 +64,7 @@ public class FromClientExecutionChain {
     }
 
     public void applyPostHandle(WebSocketSession session, MessageFrom message, MessageChannel outputChannel, StompSubProtocolHandler handler) {
-        if (!ObjectUtils.isEmpty(interceptors)) {
+        if (!ObjectKit.isEmpty(interceptors)) {
             for (int i = this.interceptorIndex; i >= 0; i--) {
                 FromClientInterceptor interceptor = interceptors.get(i);
                 interceptor.postHandle(session, message, outputChannel, handler);

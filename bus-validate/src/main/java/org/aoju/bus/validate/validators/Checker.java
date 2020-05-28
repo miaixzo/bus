@@ -28,9 +28,9 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.exception.NoSuchException;
 import org.aoju.bus.core.lang.exception.ValidateException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.validate.*;
 import org.aoju.bus.validate.annotation.Inside;
@@ -45,7 +45,7 @@ import java.util.List;
  * 校验检查器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Checker {
@@ -83,22 +83,22 @@ public class Checker {
         Collector collector = new Collector(validated);
         try {
             Object object = validated.getObject();
-            if (ObjectUtils.isNotEmpty(object)) {
-                Field[] fields = ClassUtils.getAllFields(object.getClass());
+            if (ObjectKit.isNotEmpty(object)) {
+                Field[] fields = ClassKit.getAllFields(object.getClass());
                 for (Field field : fields) {
-                    Object value = ClassUtils.readField(field, object, true);
+                    Object value = ClassKit.readField(field, object, true);
                     Annotation[] annotations = field.getDeclaredAnnotations();
 
                     String[] xFields = validated.getContext().getField();
                     String[] xSkip = validated.getContext().getSkip() == null ? null : validated.getContext().getSkip();
 
                     // 过滤当前需跳过的属性
-                    if (ArrayUtils.isNotEmpty(xSkip)
+                    if (ArrayKit.isNotEmpty(xSkip)
                             && Arrays.asList(xSkip).contains(field.getName())) {
                         continue;
                     }
                     // 过滤当前需要校验的属性
-                    if (ArrayUtils.isNotEmpty(xFields)
+                    if (ArrayKit.isNotEmpty(xFields)
                             && !Arrays.asList(xFields).contains(field.getName())) {
                         continue;
                     }
@@ -136,15 +136,15 @@ public class Checker {
      */
     private Collector doObject(Validated validated, Property property) {
         Matcher matcher = (Matcher) Registry.getInstance().require(property.getName(), property.getClazz());
-        if (ObjectUtils.isEmpty(matcher)) {
+        if (ObjectKit.isEmpty(matcher)) {
             throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
                     property.getName(),
                     property.getClazz() == null ? Normal.NULL : property.getClazz().getName()));
         }
         Object validatedTarget = validated.getObject();
-        if (ObjectUtils.isNotEmpty(validatedTarget) && property.isArray() && Provider.isArray(validatedTarget)) {
+        if (ObjectKit.isNotEmpty(validatedTarget) && property.isArray() && Provider.isArray(validatedTarget)) {
             return doArrayObject(validated, property);
-        } else if (ObjectUtils.isNotEmpty(validatedTarget) && property.isArray() && Provider.isCollection(validatedTarget)) {
+        } else if (ObjectKit.isNotEmpty(validatedTarget) && property.isArray() && Provider.isCollection(validatedTarget)) {
             return doCollection(validated, property);
         } else {
             boolean result = matcher.on(validatedTarget, property.getAnnotation(), validated.getContext());

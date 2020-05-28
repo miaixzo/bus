@@ -25,8 +25,8 @@
 package org.aoju.bus.crypto.provider;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.HexUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.HexKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.symmetric.Symmetric;
@@ -39,7 +39,7 @@ import org.aoju.bus.crypto.symmetric.Symmetric;
  * 达到十亿量级
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class SM4Provider implements Provider {
@@ -52,10 +52,10 @@ public class SM4Provider implements Provider {
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        Symmetric sm4 = Builder.sm4(HexUtils.decodeHex(key));
+        Symmetric sm4 = Builder.sm4(HexKit.decodeHex(key));
         return sm4.encrypt(content);
     }
 
@@ -67,10 +67,10 @@ public class SM4Provider implements Provider {
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
-        Symmetric sm4 = Builder.sm4(HexUtils.decodeHex(key));
+        Symmetric sm4 = Builder.sm4(HexKit.decodeHex(key));
         return sm4.decrypt(content);
     }
 

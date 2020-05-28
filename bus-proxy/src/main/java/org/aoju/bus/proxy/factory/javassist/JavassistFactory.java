@@ -44,7 +44,7 @@ import java.lang.reflect.Method;
  * Javassist 3.0或更高版本
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class JavassistFactory extends AbstractFactory {
@@ -103,22 +103,22 @@ public class JavassistFactory extends AbstractFactory {
 
         public Class createProxy(ClassLoader classLoader, Class[] proxyClasses) {
             try {
-                final CtClass proxyClass = JavassistUtils.createClass(getSuperclass(proxyClasses));
+                final CtClass proxyClass = JavassistKit.createClass(getSuperclass(proxyClasses));
                 final Method[] methods = getImplementationMethods(proxyClasses);
-                JavassistUtils.addInterfaces(proxyClass, toInterfaces(proxyClasses));
-                JavassistUtils.addField(Method[].class, "methods", proxyClass);
-                JavassistUtils.addField(Invoker.class, "invoker", proxyClass);
+                JavassistKit.addInterfaces(proxyClass, toInterfaces(proxyClasses));
+                JavassistKit.addField(Method[].class, "methods", proxyClass);
+                JavassistKit.addField(Invoker.class, "invoker", proxyClass);
                 final CtConstructor proxyConstructor = new CtConstructor(
-                        JavassistUtils.resolve(
+                        JavassistKit.resolve(
                                 new Class[]{Method[].class, Invoker.class}),
                         proxyClass);
                 proxyConstructor
                         .setBody("{\n\tthis.methods = $1;\n\tthis.invoker = $2; }");
                 proxyClass.addConstructor(proxyConstructor);
                 for (int i = 0; i < methods.length; ++i) {
-                    final CtMethod method = new CtMethod(JavassistUtils.resolve(methods[i].getReturnType()),
+                    final CtMethod method = new CtMethod(JavassistKit.resolve(methods[i].getReturnType()),
                             methods[i].getName(),
-                            JavassistUtils.resolve(methods[i].getParameterTypes()),
+                            JavassistKit.resolve(methods[i].getParameterTypes()),
                             proxyClass);
                     final String body = "{\n\t return ( $r ) invoker.invoke( this, methods[" + i +
                             "], $args );\n }";
@@ -137,14 +137,14 @@ public class JavassistFactory extends AbstractFactory {
 
         public Class createProxy(ClassLoader classLoader, Class[] proxyClasses) {
             try {
-                final CtClass proxyClass = JavassistUtils.createClass(getSuperclass(proxyClasses));
+                final CtClass proxyClass = JavassistKit.createClass(getSuperclass(proxyClasses));
                 final Method[] methods = getImplementationMethods(proxyClasses);
-                JavassistUtils.addInterfaces(proxyClass, toInterfaces(proxyClasses));
-                JavassistUtils.addField(Method[].class, "methods", proxyClass);
-                JavassistUtils.addField(Object.class, "target", proxyClass);
-                JavassistUtils.addField(Interceptor.class, "intercept", proxyClass);
+                JavassistKit.addInterfaces(proxyClass, toInterfaces(proxyClasses));
+                JavassistKit.addField(Method[].class, "methods", proxyClass);
+                JavassistKit.addField(Object.class, "target", proxyClass);
+                JavassistKit.addField(Interceptor.class, "intercept", proxyClass);
                 final CtConstructor proxyConstructor = new CtConstructor(
-                        JavassistUtils.resolve(
+                        JavassistKit.resolve(
                                 new Class[]{Method[].class, Object.class, Interceptor.class}),
                         proxyClass);
                 proxyConstructor
@@ -152,9 +152,9 @@ public class JavassistFactory extends AbstractFactory {
                                 "{\n\tthis.methods = $1;\n\tthis.target = $2;\n\tthis.intercept = $3; }");
                 proxyClass.addConstructor(proxyConstructor);
                 for (int i = 0; i < methods.length; ++i) {
-                    final CtMethod method = new CtMethod(JavassistUtils.resolve(methods[i].getReturnType()),
+                    final CtMethod method = new CtMethod(JavassistKit.resolve(methods[i].getReturnType()),
                             methods[i].getName(),
-                            JavassistUtils.resolve(methods[i].getParameterTypes()),
+                            JavassistKit.resolve(methods[i].getParameterTypes()),
                             proxyClass);
                     final Class invocationClass = JavassistInvocation
                             .getMethodInvocationClass(classLoader, methods[i]);
@@ -176,20 +176,20 @@ public class JavassistFactory extends AbstractFactory {
 
         public Class createProxy(ClassLoader classLoader, Class[] proxyClasses) {
             try {
-                final CtClass proxyClass = JavassistUtils.createClass(getSuperclass(proxyClasses));
-                JavassistUtils.addField(Provider.class, "provider", proxyClass);
+                final CtClass proxyClass = JavassistKit.createClass(getSuperclass(proxyClasses));
+                JavassistKit.addField(Provider.class, "provider", proxyClass);
                 final CtConstructor proxyConstructor = new CtConstructor(
-                        JavassistUtils.resolve(new Class[]{Provider.class}),
+                        JavassistKit.resolve(new Class[]{Provider.class}),
                         proxyClass);
                 proxyConstructor.setBody("{ this.provider = $1; }");
                 proxyClass.addConstructor(proxyConstructor);
-                JavassistUtils.addInterfaces(proxyClass, toInterfaces(proxyClasses));
+                JavassistKit.addInterfaces(proxyClass, toInterfaces(proxyClasses));
                 final Method[] methods = getImplementationMethods(proxyClasses);
                 for (int i = 0; i < methods.length; ++i) {
                     final Method method = methods[i];
-                    final CtMethod ctMethod = new CtMethod(JavassistUtils.resolve(method.getReturnType()),
+                    final CtMethod ctMethod = new CtMethod(JavassistKit.resolve(method.getReturnType()),
                             method.getName(),
-                            JavassistUtils.resolve(method.getParameterTypes()),
+                            JavassistKit.resolve(method.getParameterTypes()),
                             proxyClass);
                     final String body = "{ return ( $r ) ( ( " + method.getDeclaringClass().getName() +
                             " )provider.getObject() )." +

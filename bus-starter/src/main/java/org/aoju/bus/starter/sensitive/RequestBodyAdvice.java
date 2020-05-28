@@ -27,10 +27,10 @@ package org.aoju.bus.starter.sensitive;
 import org.aoju.bus.base.advice.BaseAdvice;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Sensitive;
@@ -49,7 +49,7 @@ import java.lang.reflect.Type;
  * 对加了@P的方法的数据进行解密密操作
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class RequestBodyAdvice extends BaseAdvice
@@ -72,7 +72,7 @@ public class RequestBodyAdvice extends BaseAdvice
                             Type type,
                             Class<? extends HttpMessageConverter<?>> converterType) {
         Annotation[] annotations = parameter.getDeclaringClass().getAnnotations();
-        if (ArrayUtils.isNotEmpty(annotations)) {
+        if (ArrayKit.isNotEmpty(annotations)) {
             for (Annotation annotation : annotations) {
                 if (annotation instanceof Sensitive) {
                     return true;
@@ -97,10 +97,10 @@ public class RequestBodyAdvice extends BaseAdvice
                                            MethodParameter parameter,
                                            Type type,
                                            Class<? extends HttpMessageConverter<?>> converterType) {
-        if (ObjectUtils.isNotEmpty(this.properties) && !this.properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
                 final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
-                if (ObjectUtils.isEmpty(sensitive)) {
+                if (ObjectKit.isEmpty(sensitive)) {
                     return inputMessage;
                 }
 
@@ -166,12 +166,12 @@ public class RequestBodyAdvice extends BaseAdvice
                             String key,
                             String type,
                             String charset) throws Exception {
-            if (StringUtils.isEmpty(key)) {
+            if (StringKit.isEmpty(key)) {
                 throw new NullPointerException("Please check the request.crypto.decrypt");
             }
 
             this.headers = inputMessage.getHeaders();
-            String content = IoUtils.toString(inputMessage.getBody(), charset);
+            String content = IoKit.toString(inputMessage.getBody(), charset);
 
             String decryptBody;
             if (content.startsWith(Symbol.BRACE_LEFT)) {
@@ -180,7 +180,7 @@ public class RequestBodyAdvice extends BaseAdvice
                 StringBuilder json = new StringBuilder();
                 content = content.replaceAll(Symbol.SPACE, Symbol.PLUS);
 
-                if (!StringUtils.isEmpty(content)) {
+                if (!StringKit.isEmpty(content)) {
                     Logger.debug("Request data decryption enabled ...");
                     String[] contents = content.split("\\|");
                     for (int k = 0; k < contents.length; k++) {
@@ -189,7 +189,7 @@ public class RequestBodyAdvice extends BaseAdvice
                 }
                 decryptBody = json.toString();
             }
-            this.body = IoUtils.toInputStream(decryptBody, charset);
+            this.body = IoKit.toInputStream(decryptBody, charset);
         }
 
         @Override

@@ -25,7 +25,7 @@
 package org.aoju.bus.image.galaxy.data;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
 
@@ -34,7 +34,7 @@ import java.util.TimeZone;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public enum BinaryValueType implements ValueType {
@@ -64,17 +64,17 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
-            return ByteUtils.swapShorts(preserve ? b.clone() : b, 0, b.length);
+            return ByteKit.swapShorts(preserve ? b.clone() : b, 0, b.length);
         }
 
         @Override
         protected int toInt(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToShort(b, off, bigEndian);
+            return ByteKit.bytesToShort(b, off, bigEndian);
         }
 
         @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.shortToBytes(i, b, off, bigEndian);
+            return ByteKit.shortToBytes(i, b, off, bigEndian);
         }
     },
     USHORT(2, 2) {
@@ -85,17 +85,17 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
-            return ByteUtils.swapShorts(preserve ? b.clone() : b, 0, b.length);
+            return ByteKit.swapShorts(preserve ? b.clone() : b, 0, b.length);
         }
 
         @Override
         protected int toInt(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToUShort(b, off, bigEndian);
+            return ByteKit.bytesToUShort(b, off, bigEndian);
         }
 
         @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.shortToBytes(i, b, off, bigEndian);
+            return ByteKit.shortToBytes(i, b, off, bigEndian);
         }
     },
     INT(4, 4) {
@@ -106,17 +106,17 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
-            return ByteUtils.swapInts(preserve ? b.clone() : b, 0, b.length);
+            return ByteKit.swapInts(preserve ? b.clone() : b, 0, b.length);
         }
 
         @Override
         protected int toInt(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToInt(b, off, bigEndian);
+            return ByteKit.bytesToInt(b, off, bigEndian);
         }
 
         @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.intToBytes(i, b, off, bigEndian);
+            return ByteKit.intToBytes(i, b, off, bigEndian);
         }
     },
     UINT(4, 4) {
@@ -127,17 +127,17 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
-            return ByteUtils.swapInts(preserve ? b.clone() : b, 0, b.length);
+            return ByteKit.swapInts(preserve ? b.clone() : b, 0, b.length);
         }
 
         @Override
         protected int toInt(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToInt(b, off, bigEndian);
+            return ByteKit.bytesToInt(b, off, bigEndian);
         }
 
         @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.intToBytes(i, b, off, bigEndian);
+            return ByteKit.intToBytes(i, b, off, bigEndian);
         }
 
         @Override
@@ -148,7 +148,7 @@ public enum BinaryValueType implements ValueType {
     TAG(4, 2) {
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
-            return ByteUtils.swapShorts(preserve ? b.clone() : b, 0, b.length);
+            return ByteKit.swapShorts(preserve ? b.clone() : b, 0, b.length);
         }
 
         @Override
@@ -158,7 +158,7 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected int toInt(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToTag(b, off, bigEndian);
+            return ByteKit.bytesToTag(b, off, bigEndian);
         }
 
         @Override
@@ -168,29 +168,29 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.tagToBytes(i, b, off, bigEndian);
+            return ByteKit.tagToBytes(i, b, off, bigEndian);
         }
     },
     FLOAT(4, 4) {
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
-            return ByteUtils.swapInts(preserve ? b.clone() : b, 0, b.length);
+            return ByteKit.swapInts(preserve ? b.clone() : b, 0, b.length);
         }
 
         @Override
         protected String toString(byte[] b, int off, boolean bigEndian) {
             return Property
-                    .formatDS(ByteUtils.bytesToFloat(b, off, bigEndian));
+                    .formatDS(ByteKit.bytesToFloat(b, off, bigEndian));
         }
 
         @Override
         protected float toFloat(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToFloat(b, off, bigEndian);
+            return ByteKit.bytesToFloat(b, off, bigEndian);
         }
 
         @Override
         protected double toDouble(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToFloat(b, off, bigEndian);
+            return ByteKit.bytesToFloat(b, off, bigEndian);
         }
 
         @Override
@@ -200,35 +200,35 @@ public enum BinaryValueType implements ValueType {
 
         @Override
         protected byte[] toBytes(float f, byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.floatToBytes(f, b, off, bigEndian);
+            return ByteKit.floatToBytes(f, b, off, bigEndian);
         }
 
         @Override
         protected byte[] toBytes(double d, byte[] b, int off,
                                  boolean bigEndian) {
-            return ByteUtils.floatToBytes((float) d, b, off, bigEndian);
+            return ByteKit.floatToBytes((float) d, b, off, bigEndian);
         }
     },
     DOUBLE(8, 8) {
         @Override
         public byte[] toggleEndian(byte[] b, boolean preserve) {
-            return ByteUtils.swapLongs(preserve ? b.clone() : b, 0, b.length);
+            return ByteKit.swapLongs(preserve ? b.clone() : b, 0, b.length);
         }
 
         @Override
         protected String toString(byte[] b, int off, boolean bigEndian) {
             return Property
-                    .formatDS(ByteUtils.bytesToDouble(b, off, bigEndian));
+                    .formatDS(ByteKit.bytesToDouble(b, off, bigEndian));
         }
 
         @Override
         protected float toFloat(byte[] b, int off, boolean bigEndian) {
-            return (float) ByteUtils.bytesToDouble(b, off, bigEndian);
+            return (float) ByteKit.bytesToDouble(b, off, bigEndian);
         }
 
         @Override
         protected double toDouble(byte[] b, int off, boolean bigEndian) {
-            return ByteUtils.bytesToDouble(b, off, bigEndian);
+            return ByteKit.bytesToDouble(b, off, bigEndian);
         }
 
         @Override
@@ -240,13 +240,13 @@ public enum BinaryValueType implements ValueType {
         @Override
         protected byte[] toBytes(float f, byte[] b, int off,
                                  boolean bigEndian) {
-            return ByteUtils.doubleToBytes(f, b, off, bigEndian);
+            return ByteKit.doubleToBytes(f, b, off, bigEndian);
         }
 
         @Override
         protected byte[] toBytes(double d, byte[] b, int off,
                                  boolean bigEndian) {
-            return ByteUtils.doubleToBytes(d, b, off, bigEndian);
+            return ByteKit.doubleToBytes(d, b, off, bigEndian);
         }
     };
 

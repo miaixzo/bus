@@ -24,14 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.BooleanUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.BooleanKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 字符转换器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class CharacterConverter extends AbstractConverter<Character> {
@@ -39,10 +39,10 @@ public class CharacterConverter extends AbstractConverter<Character> {
     @Override
     protected Character convertInternal(Object value) {
         if (value instanceof Boolean) {
-            return BooleanUtils.toCharacter((Boolean) value);
+            return BooleanKit.toCharacter((Boolean) value);
         } else {
             final String valueStr = convertToStr(value);
-            if (StringUtils.isNotBlank(valueStr)) {
+            if (StringKit.isNotBlank(valueStr)) {
                 return valueStr.charAt(0);
             }
         }

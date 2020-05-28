@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.logger.dialect.log4j2;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +35,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
  * Apache Log4J 2 log.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Log4j2Log extends AbstractAware {
@@ -134,7 +134,7 @@ public class Log4j2Log extends AbstractAware {
                 log4j2Level = Level.ERROR;
                 break;
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
         logIfEnabled(fqcn, log4j2Level, t, format, arguments);
     }
@@ -152,9 +152,9 @@ public class Log4j2Log extends AbstractAware {
     private void logIfEnabled(String fqcn, Level level, Throwable t, String msgTemplate, Object... arguments) {
         if (this.logger.isEnabled(level)) {
             if (this.logger instanceof AbstractLogger) {
-                ((AbstractLogger) this.logger).logIfEnabled(fqcn, level, null, StringUtils.format(msgTemplate, arguments), t);
+                ((AbstractLogger) this.logger).logIfEnabled(fqcn, level, null, StringKit.format(msgTemplate, arguments), t);
             } else {
-                this.logger.log(level, StringUtils.format(msgTemplate, arguments), t);
+                this.logger.log(level, StringKit.format(msgTemplate, arguments), t);
             }
         }
     }

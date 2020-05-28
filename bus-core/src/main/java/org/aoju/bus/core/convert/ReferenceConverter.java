@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.TypeUtils;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
@@ -36,7 +36,7 @@ import java.lang.reflect.Type;
  * {@link Reference}转换器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ReferenceConverter extends AbstractConverter<Reference> {
@@ -56,8 +56,8 @@ public class ReferenceConverter extends AbstractConverter<Reference> {
     protected Reference<?> convertInternal(Object value) {
         //尝试将值转换为Reference泛型的类型
         Object targetValue = null;
-        final Type paramType = TypeUtils.getTypeArgument(targetType);
-        if (false == TypeUtils.isUnknow(paramType)) {
+        final Type paramType = TypeKit.getTypeArgument(targetType);
+        if (false == TypeKit.isUnknow(paramType)) {
             targetValue = ConverterRegistry.getInstance().convert(paramType, value);
         }
         if (null == targetValue) {
@@ -69,7 +69,7 @@ public class ReferenceConverter extends AbstractConverter<Reference> {
         } else if (this.targetType == SoftReference.class) {
             return new SoftReference(targetValue);
         }
-        throw new UnsupportedOperationException(StringUtils.format("Unsupport Reference type: {}", this.targetType.getName()));
+        throw new UnsupportedOperationException(StringKit.format("Unsupport Reference type: {}", this.targetType.getName()));
     }
 
 }

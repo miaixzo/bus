@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.crypto.digest.mac;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.InputStream;
 
@@ -32,7 +32,7 @@ import java.io.InputStream;
  * MAC(Message Authentication Code)算法引擎
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public interface MacEngine {
@@ -41,7 +41,7 @@ public interface MacEngine {
      * 生成摘要
      *
      * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link  IoUtils#DEFAULT_BUFFER_SIZE} 做为默认值
+     * @param bufferLength 缓存长度，不足1使用 {@link  IoKit#DEFAULT_BUFFER_SIZE} 做为默认值
      * @return 摘要bytes
      */
     byte[] digest(InputStream data, int bufferLength);

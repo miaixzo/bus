@@ -26,7 +26,7 @@ package org.aoju.bus.core.text;
 
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.*;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * 按值替换字符串中的变量.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Substitute {
@@ -867,7 +867,7 @@ public class Substitute {
      * @return this, 以启用链接
      */
     public Substitute setValueDelimiter(final String valueDelimiter) {
-        if (StringUtils.isEmpty(valueDelimiter)) {
+        if (StringKit.isEmpty(valueDelimiter)) {
             setValueDelimiterMatcher(null);
             return this;
         }

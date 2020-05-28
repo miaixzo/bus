@@ -24,19 +24,19 @@
  ********************************************************************************/
 package org.aoju.bus.core.text.csv;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.Collection;
 
 /**
  * CSV数据写出器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class CsvWriter implements Closeable, Flushable {
@@ -60,7 +60,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param filePath File CSV文件路径
      */
     public CsvWriter(String filePath) {
-        this(FileUtils.file(filePath));
+        this(FileKit.file(filePath));
     }
 
     /**
@@ -69,7 +69,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param file File CSV文件
      */
     public CsvWriter(File file) {
-        this(file, org.aoju.bus.core.lang.Charset.UTF_8);
+        this(file, Charset.UTF_8);
     }
 
     /**
@@ -78,8 +78,8 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param filePath File CSV文件路径
      * @param charset  编码
      */
-    public CsvWriter(String filePath, Charset charset) {
-        this(FileUtils.file(filePath), charset);
+    public CsvWriter(String filePath, java.nio.charset.Charset charset) {
+        this(FileKit.file(filePath), charset);
     }
 
     /**
@@ -88,7 +88,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param file    File CSV文件
      * @param charset 编码
      */
-    public CsvWriter(File file, Charset charset) {
+    public CsvWriter(File file, java.nio.charset.Charset charset) {
         this(file, charset, false);
     }
 
@@ -99,8 +99,8 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param charset  编码
      * @param isAppend 是否追加
      */
-    public CsvWriter(String filePath, Charset charset, boolean isAppend) {
-        this(FileUtils.file(filePath), charset, isAppend);
+    public CsvWriter(String filePath, java.nio.charset.Charset charset, boolean isAppend) {
+        this(FileKit.file(filePath), charset, isAppend);
     }
 
     /**
@@ -110,7 +110,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param charset  编码
      * @param isAppend 是否追加
      */
-    public CsvWriter(File file, Charset charset, boolean isAppend) {
+    public CsvWriter(File file, java.nio.charset.Charset charset, boolean isAppend) {
         this(file, charset, isAppend, null);
     }
 
@@ -122,8 +122,8 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param isAppend 是否追加
      * @param config   写出配置,null则使用默认配置
      */
-    public CsvWriter(String filePath, Charset charset, boolean isAppend, CsvWriteConfig config) {
-        this(FileUtils.file(filePath), charset, isAppend, config);
+    public CsvWriter(String filePath, java.nio.charset.Charset charset, boolean isAppend, CsvWriteConfig config) {
+        this(FileKit.file(filePath), charset, isAppend, config);
     }
 
     /**
@@ -134,8 +134,8 @@ public final class CsvWriter implements Closeable, Flushable {
      * @param isAppend 是否追加
      * @param config   写出配置,null则使用默认配置
      */
-    public CsvWriter(File file, Charset charset, boolean isAppend, CsvWriteConfig config) {
-        this(FileUtils.getWriter(file, charset, isAppend), config);
+    public CsvWriter(File file, java.nio.charset.Charset charset, boolean isAppend, CsvWriteConfig config) {
+        this(FileKit.getWriter(file, charset, isAppend), config);
     }
 
     /**
@@ -155,7 +155,7 @@ public final class CsvWriter implements Closeable, Flushable {
      */
     public CsvWriter(Writer writer, CsvWriteConfig config) {
         this.writer = (writer instanceof BufferedWriter) ? writer : new BufferedWriter(writer);
-        this.config = ObjectUtils.defaultIfNull(config, CsvWriteConfig.defaultConfig());
+        this.config = ObjectKit.defaultIfNull(config, CsvWriteConfig.defaultConfig());
     }
 
     /**
@@ -184,7 +184,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @throws InstrumentException IO异常
      */
     public CsvWriter write(String[]... lines) throws InstrumentException {
-        if (ArrayUtils.isNotEmpty(lines)) {
+        if (ArrayKit.isNotEmpty(lines)) {
             for (final String[] values : lines) {
                 appendLine(values);
             }
@@ -201,7 +201,7 @@ public final class CsvWriter implements Closeable, Flushable {
      * @throws InstrumentException IO异常
      */
     public CsvWriter write(Collection<String[]> lines) throws InstrumentException {
-        if (CollUtils.isNotEmpty(lines)) {
+        if (CollKit.isNotEmpty(lines)) {
             for (final String[] values : lines) {
                 appendLine(values);
             }
@@ -226,7 +226,7 @@ public final class CsvWriter implements Closeable, Flushable {
 
     @Override
     public void close() {
-        IoUtils.close(this.writer);
+        IoKit.close(this.writer);
     }
 
     @Override

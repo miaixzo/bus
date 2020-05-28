@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.annotation;
 
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.lang.annotation.*;
 import java.lang.reflect.AnnotatedElement;
@@ -38,7 +38,7 @@ import java.util.Set;
  * 核心实现使用了递归获取指定元素上的注解以及注解的注解,以实现复合注解的获取
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Element implements AnnotatedElement {
@@ -46,7 +46,7 @@ public class Element implements AnnotatedElement {
     /**
      * 元注解
      */
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = CollUtils.newHashSet(Target.class, //
+    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = CollKit.newHashSet(Target.class, //
             Retention.class,
             Inherited.class,
             Documented.class,

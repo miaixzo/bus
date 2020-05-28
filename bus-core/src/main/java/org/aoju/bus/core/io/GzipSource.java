@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import java.util.zip.Inflater;
  * 解压读取数据
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class GzipSource implements Source {
@@ -63,7 +63,7 @@ public final class GzipSource implements Source {
     public GzipSource(Source source) {
         if (source == null) throw new IllegalArgumentException("source == null");
         this.inflater = new Inflater(true);
-        this.source = IoUtils.buffer(source);
+        this.source = IoKit.buffer(source);
         this.inflaterSource = new InflaterSource(this.source, inflater);
     }
 

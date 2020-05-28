@@ -26,9 +26,9 @@ package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.EscapeUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.EscapeKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -62,7 +62,7 @@ import java.util.WeakHashMap;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class ToStringStyle implements Serializable {
@@ -493,7 +493,7 @@ public abstract class ToStringStyle implements Serializable {
      *                  not <code>null</code>
      */
     protected void appendCyclicObject(final StringBuffer buffer, final String fieldName, final Object value) {
-        ObjectUtils.identityToString(buffer, value);
+        ObjectKit.identityToString(buffer, value);
     }
 
     /**
@@ -1480,7 +1480,7 @@ public abstract class ToStringStyle implements Serializable {
      * @return the short name
      */
     protected String getShortClassName(final Class<?> cls) {
-        return ClassUtils.getShortClassName(cls);
+        return ClassKit.getShortClassName(cls);
     }
 
     /**
@@ -2283,7 +2283,7 @@ public abstract class ToStringStyle implements Serializable {
         }
 
         private void appendValueAsString(final StringBuffer buffer, final String value) {
-            buffer.append(Symbol.C_DOUBLE_QUOTES).append(EscapeUtils.escapeJson(value)).append(Symbol.C_DOUBLE_QUOTES);
+            buffer.append(Symbol.C_DOUBLE_QUOTES).append(EscapeKit.escapeJson(value)).append(Symbol.C_DOUBLE_QUOTES);
         }
 
         @Override
@@ -2294,7 +2294,7 @@ public abstract class ToStringStyle implements Serializable {
                         "Field names are mandatory when using JsonToStringStyle");
             }
 
-            super.appendFieldStart(buffer, FIELD_NAME_QUOTE + EscapeUtils.escapeJson(fieldName)
+            super.appendFieldStart(buffer, FIELD_NAME_QUOTE + EscapeKit.escapeJson(fieldName)
                     + FIELD_NAME_QUOTE);
         }
 

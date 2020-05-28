@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.extra.captcha.provider;
 
-import org.aoju.bus.core.utils.ImageUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.RandomUtils;
+import org.aoju.bus.core.toolkit.ImageKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.RandomKit;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 圆圈干扰验证码
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class CircleProvider extends AbstractProvider {
@@ -77,7 +77,7 @@ public class CircleProvider extends AbstractProvider {
     @Override
     public Image createImage(String code) {
         final BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g = ImageUtils.createGraphics(image, ObjectUtils.defaultIfNull(this.background, Color.WHITE));
+        final Graphics2D g = ImageKit.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
 
         // 随机画干扰圈圈
         drawInterfere(g);
@@ -108,10 +108,10 @@ public class CircleProvider extends AbstractProvider {
      * @param g {@link Graphics2D}
      */
     private void drawInterfere(Graphics2D g) {
-        final ThreadLocalRandom random = RandomUtils.getRandom();
+        final ThreadLocalRandom random = RandomKit.getRandom();
 
         for (int i = 0; i < this.interfereCount; i++) {
-            g.setColor(ImageUtils.randomColor(random));
+            g.setColor(ImageKit.randomColor(random));
             g.drawOval(random.nextInt(width), random.nextInt(height), random.nextInt(height >> 1), random.nextInt(height >> 1));
         }
     }

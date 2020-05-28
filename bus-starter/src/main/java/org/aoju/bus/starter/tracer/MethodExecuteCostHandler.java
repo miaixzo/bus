@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
  * 方法执行耗时统计
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Component
@@ -76,7 +76,7 @@ public class MethodExecuteCostHandler {
 
                 //方法名
                 String methodName = null;
-                if (StringUtils.isEmpty(tacerCostLogger.methodName())) {
+                if (StringKit.isEmpty(tacerCostLogger.methodName())) {
                     //当methodName为默认值时,用signature(原方法名)代替
                     methodName = pjp.getSignature().toString();
                 } else if (tacerCostLogger.methodName() != null) {
@@ -86,7 +86,7 @@ public class MethodExecuteCostHandler {
 
                 //备注
                 String remark = null;
-                if (StringUtils.isEmpty(tacerCostLogger.remark())) {
+                if (StringKit.isEmpty(tacerCostLogger.remark())) {
                     remark = "";
                 } else if (tacerCostLogger.remark() != null) {
                     //有值则用值

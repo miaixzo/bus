@@ -26,8 +26,9 @@ package org.aoju.bus.crypto.symmetric;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Padding;
 
@@ -37,7 +38,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -49,7 +49,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Symmetric implements Serializable {
@@ -130,12 +130,12 @@ public class Symmetric implements Serializable {
 
         // 对于PBE算法使用随机数加盐
         if (algorithm.startsWith("PBE")) {
-            this.params = new PBEParameterSpec(RandomUtils.randomBytes(8), 100);
+            this.params = new PBEParameterSpec(RandomKit.randomBytes(8), 100);
         }
 
         // 检查是否为ZeroPadding，是则替换为NoPadding，并标记以便单独处理
         if (algorithm.contains(Padding.ZeroPadding.name())) {
-            algorithm = StringUtils.replace(algorithm, Padding.ZeroPadding.name(), Padding.NoPadding.name());
+            algorithm = StringKit.replace(algorithm, Padding.ZeroPadding.name(), Padding.NoPadding.name());
             this.isZeroPadding = true;
         }
 
@@ -206,7 +206,7 @@ public class Symmetric implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(byte[] data) {
-        return HexUtils.encodeHexStr(encrypt(data));
+        return HexKit.encodeHexStr(encrypt(data));
     }
 
     /**
@@ -227,7 +227,7 @@ public class Symmetric implements Serializable {
      * @return 加密后的bytes
      */
     public byte[] encrypt(String data, String charset) {
-        return encrypt(StringUtils.bytes(data, charset));
+        return encrypt(StringKit.bytes(data, charset));
     }
 
     /**
@@ -237,8 +237,8 @@ public class Symmetric implements Serializable {
      * @param charset 编码
      * @return 加密后的bytes
      */
-    public byte[] encrypt(String data, Charset charset) {
-        return encrypt(StringUtils.bytes(data, charset));
+    public byte[] encrypt(String data, java.nio.charset.Charset charset) {
+        return encrypt(StringKit.bytes(data, charset));
     }
 
     /**
@@ -249,7 +249,7 @@ public class Symmetric implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(String data, String charset) {
-        return HexUtils.encodeHexStr(encrypt(data, charset));
+        return HexKit.encodeHexStr(encrypt(data, charset));
     }
 
     /**
@@ -259,8 +259,8 @@ public class Symmetric implements Serializable {
      * @param charset 编码
      * @return 加密后的Hex
      */
-    public String encryptHex(String data, Charset charset) {
-        return HexUtils.encodeHexStr(encrypt(data, charset));
+    public String encryptHex(String data, java.nio.charset.Charset charset) {
+        return HexKit.encodeHexStr(encrypt(data, charset));
     }
 
     /**
@@ -281,7 +281,7 @@ public class Symmetric implements Serializable {
      * @param charset 编码
      * @return 加密后的Base64
      */
-    public String encryptBase64(String data, Charset charset) {
+    public String encryptBase64(String data, java.nio.charset.Charset charset) {
         return Base64.encode(encrypt(data, charset));
     }
 
@@ -292,7 +292,7 @@ public class Symmetric implements Serializable {
      * @return 加密后的bytes
      */
     public byte[] encrypt(String data) {
-        return encrypt(StringUtils.bytes(data, org.aoju.bus.core.lang.Charset.UTF_8));
+        return encrypt(StringKit.bytes(data, Charset.UTF_8));
     }
 
     /**
@@ -302,7 +302,7 @@ public class Symmetric implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(String data) {
-        return HexUtils.encodeHexStr(encrypt(data));
+        return HexKit.encodeHexStr(encrypt(data));
     }
 
     /**
@@ -323,7 +323,7 @@ public class Symmetric implements Serializable {
      * @throws InstrumentException IO异常
      */
     public byte[] encrypt(InputStream data) throws InstrumentException {
-        return encrypt(IoUtils.readBytes(data));
+        return encrypt(IoKit.readBytes(data));
     }
 
     /**
@@ -333,7 +333,7 @@ public class Symmetric implements Serializable {
      * @return 加密后的Hex
      */
     public String encryptHex(InputStream data) {
-        return HexUtils.encodeHexStr(encrypt(data));
+        return HexKit.encodeHexStr(encrypt(data));
     }
 
     /**
@@ -381,8 +381,8 @@ public class Symmetric implements Serializable {
      * @param charset 解密后的charset
      * @return 解密后的String
      */
-    public String decryptStr(byte[] bytes, Charset charset) {
-        return StringUtils.toString(decrypt(bytes), charset);
+    public String decryptStr(byte[] bytes, java.nio.charset.Charset charset) {
+        return StringKit.toString(decrypt(bytes), charset);
     }
 
     /**
@@ -392,7 +392,7 @@ public class Symmetric implements Serializable {
      * @return 解密后的String
      */
     public String decryptStr(byte[] bytes) {
-        return decryptStr(bytes, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decryptStr(bytes, Charset.UTF_8);
     }
 
     /**
@@ -412,8 +412,8 @@ public class Symmetric implements Serializable {
      * @param charset 解密后的charset
      * @return 解密后的String
      */
-    public String decryptStr(String data, Charset charset) {
-        return StringUtils.toString(decrypt(data), charset);
+    public String decryptStr(String data, java.nio.charset.Charset charset) {
+        return StringKit.toString(decrypt(data), charset);
     }
 
     /**
@@ -423,7 +423,7 @@ public class Symmetric implements Serializable {
      * @return 解密后的String
      */
     public String decryptStr(String data) {
-        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decryptStr(data, Charset.UTF_8);
     }
 
     /**
@@ -434,7 +434,7 @@ public class Symmetric implements Serializable {
      * @throws InstrumentException IO异常
      */
     public byte[] decrypt(InputStream data) throws InstrumentException {
-        return decrypt(IoUtils.readBytes(data));
+        return decrypt(IoKit.readBytes(data));
     }
 
     /**
@@ -444,8 +444,8 @@ public class Symmetric implements Serializable {
      * @param charset 解密后的charset
      * @return 解密后的String
      */
-    public String decryptStr(InputStream data, Charset charset) {
-        return StringUtils.toString(decrypt(data), charset);
+    public String decryptStr(InputStream data, java.nio.charset.Charset charset) {
+        return StringKit.toString(decrypt(data), charset);
     }
 
     /**
@@ -455,7 +455,7 @@ public class Symmetric implements Serializable {
      * @return 解密后的String
      */
     public String decryptStr(InputStream data) {
-        return decryptStr(data, org.aoju.bus.core.lang.Charset.UTF_8);
+        return decryptStr(data, Charset.UTF_8);
     }
 
     /**
@@ -496,7 +496,7 @@ public class Symmetric implements Serializable {
             final int remainLength = length % blockSize;
             if (remainLength > 0) {
                 // 新长度为blockSize的整数倍，多余部分填充0
-                return ArrayUtils.resize(data, length + blockSize - remainLength);
+                return ArrayKit.resize(data, length + blockSize - remainLength);
             }
         }
         return data;
@@ -522,7 +522,7 @@ public class Symmetric implements Serializable {
                 while (i >= 0 && 0 == data[i]) {
                     i--;
                 }
-                return ArrayUtils.resize(data, i + 1);
+                return ArrayKit.resize(data, i + 1);
             }
         }
         return data;

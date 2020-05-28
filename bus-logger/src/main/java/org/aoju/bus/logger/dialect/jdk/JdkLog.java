@@ -25,7 +25,7 @@
 package org.aoju.bus.logger.dialect.jdk;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
 
 import java.util.logging.Level;
@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * java.util.logging log.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class JdkLog extends AbstractAware {
@@ -156,7 +156,7 @@ public class JdkLog extends AbstractAware {
                 jdkLevel = Level.SEVERE;
                 break;
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
         logIfEnabled(fqcn, jdkLevel, t, format, arguments);
     }
@@ -172,7 +172,7 @@ public class JdkLog extends AbstractAware {
      */
     private void logIfEnabled(String callerFQCN, Level level, Throwable throwable, String format, Object[] arguments) {
         if (logger.isLoggable(level)) {
-            LogRecord record = new LogRecord(level, StringUtils.format(format, arguments));
+            LogRecord record = new LogRecord(level, StringKit.format(format, arguments));
             record.setLoggerName(getName());
             record.setThrown(throwable);
             fillCallerData(callerFQCN, record);

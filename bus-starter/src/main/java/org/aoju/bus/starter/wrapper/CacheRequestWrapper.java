@@ -30,9 +30,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.EscapeUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.extra.json.JsonUtils;
+import org.aoju.bus.core.toolkit.EscapeKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.logger.Logger;
 
 import javax.servlet.ReadListener;
@@ -43,7 +43,7 @@ import java.io.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class CacheRequestWrapper extends HttpServletRequestWrapper {
@@ -57,7 +57,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         // 从ParameterMap获取参数，并保存以便多次获取
         Logger.info(Symbol.DELIM, JSON.toJSON(request.getParameterMap()).toString());
         // 从InputStream获取参数，并保存以便多次获取
-        this.body = IoUtils.readBytes(request.getInputStream());
+        this.body = IoKit.readBytes(request.getInputStream());
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body != null ? this.body : DEFAULT_BYTE);
         // 初始 ServletInputStreamWrapper
         this.inputStreamWrapper = new ServletInputStreamWrapper(byteArrayInputStream);
@@ -89,8 +89,8 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         String[] encodedValues = new String[count];
         for (int i = 0; i < count; i++) {
             encodedValues[i] = values[i];
-            if (!JsonUtils.isJson(values[i])) {
-                encodedValues[i] = EscapeUtils.escapeHtml4(values[i]);
+            if (!JsonKit.isJson(values[i])) {
+                encodedValues[i] = EscapeKit.escapeHtml4(values[i]);
             }
         }
         return encodedValues;
@@ -99,8 +99,8 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getParameter(String name) {
         String content = super.getParameter(name);
-        if (!JsonUtils.isJson(content)) {
-            content = EscapeUtils.escapeHtml4(content);
+        if (!JsonKit.isJson(content)) {
+            content = EscapeKit.escapeHtml4(content);
         }
         return content;
     }
@@ -108,8 +108,8 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String getHeader(String name) {
         String content = super.getHeader(name);
-        if (!JsonUtils.isJson(content)) {
-            content = EscapeUtils.escapeHtml4(content);
+        if (!JsonKit.isJson(content)) {
+            content = EscapeKit.escapeHtml4(content);
         }
         return content;
     }

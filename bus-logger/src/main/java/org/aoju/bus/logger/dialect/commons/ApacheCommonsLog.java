@@ -25,7 +25,7 @@
 package org.aoju.bus.logger.dialect.commons;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
 import org.aoju.bus.logger.level.Level;
 import org.apache.commons.logging.Log;
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Apache Commons Logging
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ApacheCommonsLog extends AbstractAware {
@@ -69,7 +69,7 @@ public class ApacheCommonsLog extends AbstractAware {
     @Override
     public void trace(String fqcn, Throwable t, String format, Object... arguments) {
         if (isTrace()) {
-            logger.trace(StringUtils.format(format, arguments), t);
+            logger.trace(StringKit.format(format, arguments), t);
         }
     }
 
@@ -81,7 +81,7 @@ public class ApacheCommonsLog extends AbstractAware {
     @Override
     public void debug(String fqcn, Throwable t, String format, Object... arguments) {
         if (isDebug()) {
-            logger.debug(StringUtils.format(format, arguments), t);
+            logger.debug(StringKit.format(format, arguments), t);
         }
     }
 
@@ -93,7 +93,7 @@ public class ApacheCommonsLog extends AbstractAware {
     @Override
     public void info(String fqcn, Throwable t, String format, Object... arguments) {
         if (isInfo()) {
-            logger.info(StringUtils.format(format, arguments), t);
+            logger.info(StringKit.format(format, arguments), t);
         }
     }
 
@@ -105,7 +105,7 @@ public class ApacheCommonsLog extends AbstractAware {
     @Override
     public void warn(String format, Object... arguments) {
         if (isWarn()) {
-            logger.warn(StringUtils.format(format, arguments));
+            logger.warn(StringKit.format(format, arguments));
         }
     }
 
@@ -116,7 +116,7 @@ public class ApacheCommonsLog extends AbstractAware {
     @Override
     public void warn(String fqcn, Throwable t, String format, Object... arguments) {
         if (isWarn()) {
-            logger.warn(StringUtils.format(format, arguments), t);
+            logger.warn(StringKit.format(format, arguments), t);
         }
     }
 
@@ -128,7 +128,7 @@ public class ApacheCommonsLog extends AbstractAware {
     @Override
     public void error(String fqcn, Throwable t, String format, Object... arguments) {
         if (isError()) {
-            logger.warn(StringUtils.format(format, arguments), t);
+            logger.warn(StringKit.format(format, arguments), t);
         }
     }
 
@@ -151,7 +151,7 @@ public class ApacheCommonsLog extends AbstractAware {
                 error(t, format, arguments);
                 break;
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 

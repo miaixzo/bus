@@ -26,7 +26,7 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.DirReader;
@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DcmDir {
@@ -183,7 +183,7 @@ public class DcmDir {
     }
 
     private void close() {
-        IoUtils.close(in);
+        IoKit.close(in);
         in = null;
         out = null;
     }

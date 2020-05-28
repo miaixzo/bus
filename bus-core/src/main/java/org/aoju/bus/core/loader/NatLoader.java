@@ -26,7 +26,7 @@ package org.aoju.bus.core.loader;
 
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,7 +41,7 @@ import java.util.Enumeration;
  * Jar包资源加载器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class NatLoader extends StdLoader implements Loader {
@@ -66,7 +66,7 @@ public class NatLoader extends StdLoader implements Loader {
 
         File dir = new File(
                 System.getProperty("java.io.tmpdir"),
-                StringUtils.toString(System.nanoTime())
+                StringKit.toString(System.nanoTime())
         );
 
         if (!dir.mkdir())

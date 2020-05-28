@@ -26,7 +26,7 @@ package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageInputStream;
 import org.aoju.bus.image.nimble.BufferedImages;
@@ -47,7 +47,7 @@ import java.util.Iterator;
  * DCM-JPG转换
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Dcm2Jpg {
@@ -83,7 +83,7 @@ public class Dcm2Jpg {
         try {
             return dis.readDataset(-1, -1);
         } finally {
-            IoUtils.close(dis);
+            IoKit.close(dis);
         }
     }
 

@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.thread;
 
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class NamedThreadFactory implements ThreadFactory {
@@ -100,9 +100,9 @@ public class NamedThreadFactory implements ThreadFactory {
      * @param handler     未捕获异常处理
      */
     public NamedThreadFactory(String prefix, ThreadGroup threadGroup, boolean isDeamon, UncaughtExceptionHandler handler) {
-        this.prefix = StringUtils.isBlank(prefix) ? "Thread" : prefix;
+        this.prefix = StringKit.isBlank(prefix) ? "Thread" : prefix;
         if (null == threadGroup) {
-            threadGroup = ThreadUtils.currentThreadGroup();
+            threadGroup = ThreadKit.currentThreadGroup();
         }
         this.group = threadGroup;
         this.isDeamon = isDeamon;
@@ -111,7 +111,7 @@ public class NamedThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
-        final Thread t = new Thread(this.group, r, StringUtils.format("{}{}", prefix, threadNumber.getAndIncrement()));
+        final Thread t = new Thread(this.group, r, StringKit.format("{}{}", prefix, threadNumber.getAndIncrement()));
 
         //守护线程
         if (false == t.isDaemon()) {

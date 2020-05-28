@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.UriUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.File;
 
@@ -34,7 +34,7 @@ import java.io.File;
  * 文件资源访问对象
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FileResource extends UriResource {
@@ -55,7 +55,7 @@ public class FileResource extends UriResource {
      * @param fileName 文件名,如果为null获取文件本身的文件名
      */
     public FileResource(File file, String fileName) {
-        super(UriUtils.getURL(file), StringUtils.isBlank(fileName) ? file.getName() : fileName);
+        super(UriKit.getURL(file), StringKit.isBlank(fileName) ? file.getName() : fileName);
     }
 
     /**
@@ -64,7 +64,7 @@ public class FileResource extends UriResource {
      * @param path 文件绝对路径或相对ClassPath路径,但是这个路径不能指向一个jar包中的文件
      */
     public FileResource(String path) {
-        this(FileUtils.file(path));
+        this(FileKit.file(path));
     }
 
 }

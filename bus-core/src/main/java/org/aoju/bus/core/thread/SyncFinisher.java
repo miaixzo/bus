@@ -25,7 +25,7 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutorService;
  * 不能保证同时开始
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class SyncFinisher {
@@ -66,7 +66,7 @@ public class SyncFinisher {
     public SyncFinisher(int threadSize) {
         this.beginLatch = new CountDownLatch(1);
         this.threadSize = threadSize;
-        this.executorService = ThreadUtils.newExecutor(threadSize);
+        this.executorService = ThreadKit.newExecutor(threadSize);
         this.workers = new LinkedHashSet<>();
     }
 

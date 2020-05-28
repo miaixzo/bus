@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.Sink;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Request;
@@ -64,7 +64,7 @@ import java.util.Set;
  * 在Java和Httpd表示之间进行转换的方法
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class NetApiConvert {
@@ -339,7 +339,7 @@ public final class NetApiConvert {
                 if (body == null) {
                     return null;
                 }
-                return IoUtils.buffer(body).outputStream();
+                return IoKit.buffer(body).outputStream();
             }
         };
     }
@@ -427,7 +427,7 @@ public final class NetApiConvert {
 
     private static ResponseBody createBody(final Headers headers,
                                            final CacheResponse cacheResponse) throws IOException {
-        final BufferSource body = IoUtils.buffer(IoUtils.source(cacheResponse.getBody()));
+        final BufferSource body = IoKit.buffer(IoKit.source(cacheResponse.getBody()));
         return new ResponseBody() {
             @Override
             public MediaType contentType() {
@@ -452,7 +452,7 @@ public final class NetApiConvert {
             return null;
         }
 
-        final BufferSource body = IoUtils.buffer(IoUtils.source(urlConnection.getInputStream()));
+        final BufferSource body = IoKit.buffer(IoKit.source(urlConnection.getInputStream()));
         return new ResponseBody() {
             @Override
             public MediaType contentType() {

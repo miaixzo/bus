@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
-import org.aoju.bus.core.utils.ArrayUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.process.ProcessManager;
 
@@ -34,7 +34,7 @@ import java.io.File;
  * 这个类包含{@link OfficeProcess}的配置.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class OfficeProcessBuilder {
@@ -111,7 +111,7 @@ public class OfficeProcessBuilder {
      * @return sudo的参数.
      */
     public String[] getRunAsArgs() {
-        return ArrayUtils.clone(runAsArgs);
+        return ArrayKit.clone(runAsArgs);
     }
 
     /**
@@ -120,7 +120,7 @@ public class OfficeProcessBuilder {
      * @param runAsArgs unix操作系统的sudo参数
      */
     public void setRunAsArgs(final String... runAsArgs) {
-        this.runAsArgs = ArrayUtils.clone(runAsArgs);
+        this.runAsArgs = ArrayKit.clone(runAsArgs);
     }
 
     /**

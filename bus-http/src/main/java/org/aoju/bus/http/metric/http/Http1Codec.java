@@ -28,7 +28,7 @@ import org.aoju.bus.core.io.*;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.RealConnection;
 import org.aoju.bus.http.accord.StreamAllocation;
@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * 并可以跳过读取和关闭该源
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class Http1Codec implements HttpCodec {
@@ -117,21 +117,21 @@ public final class Http1Codec implements HttpCodec {
 
         if (!HttpHeaders.hasBody(response)) {
             Source source = newFixedLengthSource(0);
-            return new RealResponseBody(contentType, 0, IoUtils.buffer(source));
+            return new RealResponseBody(contentType, 0, IoKit.buffer(source));
         }
 
         if ("chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
             Source source = newChunkedSource(response.request().url());
-            return new RealResponseBody(contentType, -1L, IoUtils.buffer(source));
+            return new RealResponseBody(contentType, -1L, IoKit.buffer(source));
         }
 
         long contentLength = HttpHeaders.contentLength(response);
         if (contentLength != -1) {
             Source source = newFixedLengthSource(contentLength);
-            return new RealResponseBody(contentType, contentLength, IoUtils.buffer(source));
+            return new RealResponseBody(contentType, contentLength, IoKit.buffer(source));
         }
 
-        return new RealResponseBody(contentType, -1L, IoUtils.buffer(newUnknownLengthSource()));
+        return new RealResponseBody(contentType, -1L, IoKit.buffer(newUnknownLengthSource()));
     }
 
     public boolean isClosed() {

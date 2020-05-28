@@ -28,7 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
 import org.aoju.bus.health.windows.WmiQuery;
 import org.aoju.bus.health.windows.drivers.Win32BaseBoard;
@@ -42,7 +42,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Baseboard data obtained from WMI
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -63,9 +63,9 @@ final class WindowsBaseboard extends AbstractBaseboard {
             version = WmiQuery.getString(win32BaseBoard, BaseBoardProperty.VERSION, 0);
             serialNumber = WmiQuery.getString(win32BaseBoard, BaseBoardProperty.SERIALNUMBER, 0);
         }
-        return new Quartet<>(StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringUtils.isBlank(model) ? Normal.UNKNOWN : model, StringUtils.isBlank(version) ? Normal.UNKNOWN : version,
-                StringUtils.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
+        return new Quartet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
     @Override

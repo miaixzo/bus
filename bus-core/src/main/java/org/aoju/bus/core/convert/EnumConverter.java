@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class EnumConverter extends AbstractConverter<Object> {
@@ -64,7 +64,7 @@ public class EnumConverter extends AbstractConverter<Object> {
     protected static Enum tryConvertEnum(Object value, Class enumClass) {
         Enum enumResult = null;
         if (value instanceof Integer) {
-            enumResult = EnumUtils.getEnumAt(enumClass, (Integer) value);
+            enumResult = EnumKit.getEnumAt(enumClass, (Integer) value);
         } else if (value instanceof String) {
             try {
                 enumResult = Enum.valueOf(enumClass, (String) value);
@@ -76,11 +76,11 @@ public class EnumConverter extends AbstractConverter<Object> {
         // 尝试查找其它用户自定义方法
         if (null == enumResult) {
             final Map<Class<?>, Method> valueOfMethods = getValueOfMethods(enumClass);
-            if (MapUtils.isNotEmpty(valueOfMethods)) {
+            if (MapKit.isNotEmpty(valueOfMethods)) {
                 final Class<?> valueClass = value.getClass();
                 for (Map.Entry<Class<?>, Method> entry : valueOfMethods.entrySet()) {
-                    if (ClassUtils.isAssignable(entry.getKey(), valueClass)) {
-                        enumResult = ReflectUtils.invokeStatic(entry.getValue(), value);
+                    if (ClassKit.isAssignable(entry.getKey(), valueClass)) {
+                        enumResult = ReflectKit.invokeStatic(entry.getValue(), value);
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class EnumConverter extends AbstractConverter<Object> {
         Map<Class<?>, Method> valueOfMethods = VALUE_OF_METHOD_CACHE.get(enumClass);
         if (null == valueOfMethods) {
             valueOfMethods = Arrays.stream(enumClass.getMethods())
-                    .filter(BeanUtils::isStatic)
+                    .filter(BeanKit::isStatic)
                     .filter(m -> m.getReturnType() == enumClass)
                     .filter(m -> m.getParameterCount() == 1)
                     .filter(m -> false == "valueOf".equals(m.getName()))

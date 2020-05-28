@@ -25,13 +25,14 @@
 package org.aoju.bus.extra.ftp;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -41,7 +42,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +50,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Ftp extends AbstractFtp {
@@ -95,7 +95,7 @@ public class Ftp extends AbstractFtp {
      * @param password 密码
      */
     public Ftp(String host, int port, String user, String password) {
-        this(host, port, user, password, org.aoju.bus.core.lang.Charset.UTF_8);
+        this(host, port, user, password, Charset.UTF_8);
     }
 
     /**
@@ -107,7 +107,7 @@ public class Ftp extends AbstractFtp {
      * @param password 密码
      * @param charset  编码
      */
-    public Ftp(String host, int port, String user, String password, Charset charset) {
+    public Ftp(String host, int port, String user, String password, java.nio.charset.Charset charset) {
         this(host, port, user, password, charset, null);
     }
 
@@ -121,7 +121,7 @@ public class Ftp extends AbstractFtp {
      * @param charset  编码
      * @param mode     模式
      */
-    public Ftp(String host, int port, String user, String password, Charset charset, FtpMode mode) {
+    public Ftp(String host, int port, String user, String password, java.nio.charset.Charset charset, FtpMode mode) {
         this(new FtpConfig(host, port, user, password, charset), mode);
     }
 
@@ -264,7 +264,7 @@ public class Ftp extends AbstractFtp {
      */
     @Override
     public boolean cd(String directory) {
-        if (StringUtils.isBlank(directory)) {
+        if (StringKit.isBlank(directory)) {
             return false;
         }
 
@@ -308,7 +308,7 @@ public class Ftp extends AbstractFtp {
      */
     public FTPFile[] lsFiles(String path) {
         String pwd = null;
-        if (StringUtils.isNotBlank(path)) {
+        if (StringKit.isNotBlank(path)) {
             pwd = pwd();
             cd(path);
         }
@@ -347,14 +347,14 @@ public class Ftp extends AbstractFtp {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        return ArrayUtils.isNotEmpty(ftpFileArr);
+        return ArrayKit.isNotEmpty(ftpFileArr);
     }
 
     @Override
     public boolean delFile(String path) {
         final String pwd = pwd();
-        final String fileName = FileUtils.getName(path);
-        final String dir = StringUtils.removeSuffix(path, fileName);
+        final String fileName = FileKit.getName(path);
+        final String dir = StringKit.removeSuffix(path, fileName);
         cd(dir);
         boolean isSuccess;
         try {
@@ -379,11 +379,11 @@ public class Ftp extends AbstractFtp {
         String childPath;
         for (FTPFile ftpFile : dirs) {
             name = ftpFile.getName();
-            childPath = StringUtils.format("{}/{}", dirPath, name);
+            childPath = StringKit.format("{}/{}", dirPath, name);
             if (ftpFile.isDirectory()) {
                 // 上级和本级目录除外
-                if (false == ObjectUtils.equal(name, Symbol.DOT)
-                        && false == ObjectUtils.equal(name, Symbol.DOUBLE_DOT)) {
+                if (false == ObjectKit.equal(name, Symbol.DOT)
+                        && false == ObjectKit.equal(name, Symbol.DOUBLE_DOT)) {
                     delDir(childPath);
                 }
             } else {
@@ -433,7 +433,7 @@ public class Ftp extends AbstractFtp {
      * @return 是否上传成功
      */
     public boolean upload(String path, String fileName, File file) {
-        try (InputStream in = FileUtils.getInputStream(file)) {
+        try (InputStream in = FileKit.getInputStream(file)) {
             return upload(path, fileName, in);
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -466,7 +466,7 @@ public class Ftp extends AbstractFtp {
             pwd = pwd();
         }
 
-        if (StringUtils.isNotBlank(path)) {
+        if (StringKit.isNotBlank(path)) {
             mkDirs(path);
             boolean isOk = cd(path);
             if (false == isOk) {
@@ -493,8 +493,8 @@ public class Ftp extends AbstractFtp {
      */
     @Override
     public void download(String path, File outFile) {
-        final String fileName = FileUtils.getName(path);
-        final String dir = StringUtils.removeSuffix(path, fileName);
+        final String fileName = FileKit.getName(path);
+        final String dir = StringKit.removeSuffix(path, fileName);
         download(dir, fileName, outFile);
     }
 
@@ -510,9 +510,9 @@ public class Ftp extends AbstractFtp {
             outFile = new File(outFile, fileName);
         }
         if (false == outFile.exists()) {
-            FileUtils.touch(outFile);
+            FileKit.touch(outFile);
         }
-        try (OutputStream out = FileUtils.getOutputStream(outFile)) {
+        try (OutputStream out = FileKit.getOutputStream(outFile)) {
             download(path, fileName, out);
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -560,12 +560,12 @@ public class Ftp extends AbstractFtp {
 
             if (!ftpFile.isDirectory()) {
                 // 本地不存在文件或者ftp上文件有变更则下载
-                if (!FileUtils.exist(destinationPathFile)
-                        || (ftpFile.getTimestamp().getTimeInMillis() > FileUtils.lastModifiedTime(destinationPathFile).getTime())) {
-                    download(sourcePathPathFile, FileUtils.file(destinationPathFile));
+                if (!FileKit.exist(destinationPathFile)
+                        || (ftpFile.getTimestamp().getTimeInMillis() > FileKit.lastModifiedTime(destinationPathFile).getTime())) {
+                    download(sourcePathPathFile, FileKit.file(destinationPathFile));
                 }
             } else if (!(Symbol.DOT.equals(ftpFile.getName()) || Symbol.DOUBLE_DOT.equals(ftpFile.getName()))) {
-                FileUtils.mkdir(destinationPathFile);
+                FileKit.mkdir(destinationPathFile);
                 download(sourcePathPathFile, destinationPathFile);
             }
         }

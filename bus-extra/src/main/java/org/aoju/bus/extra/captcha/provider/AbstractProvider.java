@@ -26,9 +26,9 @@ package org.aoju.bus.extra.captcha.provider;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.ImageUtils;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.ImageKit;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.extra.captcha.CaptchaProvider;
 import org.aoju.bus.extra.captcha.strategy.CodeStrategy;
 import org.aoju.bus.extra.captcha.strategy.RandomStrategy;
@@ -46,7 +46,7 @@ import java.io.OutputStream;
  * 实现类通过实现{@link #createImage(String)} 方法生成图片对象
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements CaptchaProvider {
@@ -122,7 +122,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
         generateCode();
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ImageUtils.writePng(createImage(this.code), out);
+        ImageKit.writePng(createImage(this.code), out);
         this.imageBytes = out.toByteArray();
     }
 
@@ -161,7 +161,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * @throws InstrumentException IO异常
      */
     public void write(String path) throws InstrumentException {
-        this.write(FileUtils.touch(path));
+        this.write(FileKit.touch(path));
     }
 
     /**
@@ -171,7 +171,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * @throws InstrumentException IO异常
      */
     public void write(File file) throws InstrumentException {
-        try (OutputStream out = FileUtils.getOutputStream(file)) {
+        try (OutputStream out = FileKit.getOutputStream(file)) {
             this.write(out);
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -180,7 +180,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
 
     @Override
     public void write(OutputStream out) {
-        IoUtils.write(out, false, getImageBytes());
+        IoKit.write(out, false, getImageBytes());
     }
 
     /**
@@ -201,7 +201,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * @return 验证码图
      */
     public BufferedImage getImage() {
-        return ImageUtils.read(IoUtils.toStream(getImageBytes()));
+        return ImageKit.read(IoKit.toStream(getImageBytes()));
     }
 
     /**

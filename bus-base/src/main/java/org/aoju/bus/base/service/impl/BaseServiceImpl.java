@@ -29,8 +29,8 @@ import org.aoju.bus.base.entity.BaseEntity;
 import org.aoju.bus.base.entity.Result;
 import org.aoju.bus.base.mapper.BaseMapper;
 import org.aoju.bus.base.service.BaseService;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.mapper.entity.Condition;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageContext;
@@ -43,7 +43,7 @@ import java.util.List;
  * BaseService 接口实现
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
@@ -98,7 +98,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public int deleteByIds(String id) {
-        return mapper.deleteByIds(StringUtils.split(id));
+        return mapper.deleteByIds(StringKit.split(id));
     }
 
     @Override
@@ -121,8 +121,8 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     @Override
     public T updateByIdCas(T entity, String locking) {
         Condition condition = new Condition(entity.getClass());
-        Object before = ObjectUtils.getAttributeValue(entity, locking);
-        Object id = ObjectUtils.getAttributeValue(entity, "id");
+        Object before = ObjectKit.getAttributeValue(entity, locking);
+        Object id = ObjectKit.getAttributeValue(entity, "id");
         condition.createCriteria().andEqualTo(locking, before);
         condition.createCriteria().andEqualTo("id", id);
         updateByWhereSelective(entity, condition);
@@ -131,7 +131,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public T updateSelectiveByIdOrInsert(T entity) {
-        if (StringUtils.isEmpty(entity.getId())) {
+        if (StringKit.isEmpty(entity.getId())) {
             this.insert(entity);
         } else {
             entity.setUpdatedInfo(entity);
@@ -180,7 +180,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
 
     @Override
     public List<T> selectListByIds(String id) {
-        return mapper.selectByIds(StringUtils.split(id));
+        return mapper.selectByIds(StringKit.split(id));
     }
 
     @Override
@@ -201,7 +201,7 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     @Override
     public Result<T> page(T entity) {
         PageContext.startPage(entity.getPageNo(), entity.getPageSize());
-        if (StringUtils.isNotEmpty(entity.getOrderBy())) {
+        if (StringKit.isNotEmpty(entity.getOrderBy())) {
             PageContext.orderBy(entity.getOrderBy());
         }
         Page<T> list = (Page<T>) mapper.select(entity);
@@ -209,10 +209,10 @@ public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>
     }
 
     private String setValue(T entity) {
-        if (ObjectUtils.isEmpty(entity)) {
+        if (ObjectKit.isEmpty(entity)) {
             return null;
         }
-        if (StringUtils.isEmpty(entity.getStatus())) {
+        if (StringKit.isEmpty(entity.getStatus())) {
             entity.setStatus(Consts.STATUS_ONE);
         }
         entity.setCreateInfo(entity);

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -39,7 +39,7 @@ import java.nio.charset.Charset;
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BytesResource implements Resource {
@@ -89,7 +89,7 @@ public class BytesResource implements Resource {
 
     @Override
     public String readString(Charset charset) throws InstrumentException {
-        return StringUtils.toString(this.bytes, charset);
+        return StringKit.toString(this.bytes, charset);
     }
 
     @Override

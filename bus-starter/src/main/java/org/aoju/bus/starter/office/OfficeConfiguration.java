@@ -25,9 +25,9 @@
 package org.aoju.bus.starter.office;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.MathUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.bridge.LocalOfficePoolManager;
 import org.aoju.bus.office.bridge.OnlineOfficePoolManager;
@@ -46,7 +46,7 @@ import java.util.stream.Stream;
  * 文档在线预览配置
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
@@ -70,11 +70,11 @@ public class OfficeConfiguration {
     @Bean(initMethod = "start", destroyMethod = "stop")
     public OfficeManager localOfficeManager() {
         final LocalOfficePoolManager.Builder builder = LocalOfficePoolManager.builder();
-        if (!StringUtils.isBlank(properties.getPortNumbers())) {
+        if (!StringKit.isBlank(properties.getPortNumbers())) {
             builder.portNumbers(
-                    ArrayUtils.toPrimitive(
-                            Stream.of(StringUtils.split(properties.getPortNumbers(), Symbol.COMMA))
-                                    .map(str -> MathUtils.toInt(str, Builder.DEFAULT_PORT_NUMBER))
+                    ArrayKit.toPrimitive(
+                            Stream.of(StringKit.split(properties.getPortNumbers(), Symbol.COMMA))
+                                    .map(str -> MathKit.toInt(str, Builder.DEFAULT_PORT_NUMBER))
                                     .toArray(Integer[]::new)));
         }
 
@@ -88,7 +88,7 @@ public class OfficeConfiguration {
         builder.maxTasksPerProcess(properties.getMaxTasksPerProcess());
         builder.taskQueueTimeout(properties.getTaskQueueTimeout());
         final String processManagerClass = properties.getProcessManagerClass();
-        if (StringUtils.isNotEmpty(processManagerClass)) {
+        if (StringKit.isNotEmpty(processManagerClass)) {
             builder.processManager(processManagerClass);
         } else {
             builder.processManager(Builder.findBestProcessManager());

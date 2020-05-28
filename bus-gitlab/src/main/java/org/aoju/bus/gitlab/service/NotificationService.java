@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class NotificationService {
@@ -269,7 +269,6 @@ public abstract class NotificationService {
     }
 
     @JsonIgnore
-    @SuppressWarnings("unchecked")
     protected <T> T getProperty(String prop, T defaultValue) {
 
         Object value = (properties != null ? properties.get(prop) : null);

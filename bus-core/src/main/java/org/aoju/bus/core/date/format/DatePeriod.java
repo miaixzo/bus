@@ -25,13 +25,13 @@
 package org.aoju.bus.core.date.format;
 
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 时长格式化器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DatePeriod {
@@ -111,7 +111,7 @@ public class DatePeriod {
             }
         }
 
-        if (StringUtils.isEmpty(sb)) {
+        if (StringKit.isEmpty(sb)) {
             sb.append(0).append(this.level.name);
         }
 

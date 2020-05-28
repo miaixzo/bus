@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.utils.MapUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.Map;
 
@@ -34,7 +34,7 @@ import java.util.Map;
  * 只支持Map方式转换
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class StackTraceConverter extends AbstractConverter<StackTraceElement> {
@@ -44,12 +44,12 @@ public class StackTraceConverter extends AbstractConverter<StackTraceElement> {
         if (value instanceof Map) {
             final Map<?, ?> map = (Map<?, ?>) value;
 
-            final String declaringClass = MapUtils.getString(map, "className");
-            final String methodName = MapUtils.getString(map, "methodName");
-            final String fileName = MapUtils.getString(map, "fileName");
-            final Integer lineNumber = MapUtils.getInt(map, "lineNumber");
+            final String declaringClass = MapKit.getString(map, "className");
+            final String methodName = MapKit.getString(map, "methodName");
+            final String fileName = MapKit.getString(map, "fileName");
+            final Integer lineNumber = MapKit.getInt(map, "lineNumber");
 
-            return new StackTraceElement(declaringClass, methodName, fileName, ObjectUtils.defaultIfNull(lineNumber, 0));
+            return new StackTraceElement(declaringClass, methodName, fileName, ObjectKit.defaultIfNull(lineNumber, 0));
         }
         return null;
     }

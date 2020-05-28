@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.metadata;
 
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Handler;
 import org.aoju.bus.limiter.Injector;
 import org.aoju.bus.limiter.Limiter;
@@ -41,7 +41,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource> implements LimitedResourceMetadata<T>, Observer {
@@ -95,7 +95,7 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
             this.limitedFallbackResolver = (Resolver) this.beanFactory.getBean(limitedResource.getFallback());
         }
 
-        if (!CollUtils.isEmpty(limitedResource.getArgumentInjectors())) {
+        if (!CollKit.isEmpty(limitedResource.getArgumentInjectors())) {
             argumentInjectors = new ArrayList<>();
             Collection<String> injectors = limitedResource.getArgumentInjectors();
             for (String si : injectors) {

@@ -29,7 +29,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Triple;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
@@ -43,7 +43,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Hardware data obtained from ioreg.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -69,9 +69,9 @@ final class MacComputerSystem extends AbstractComputerSystem {
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
             platformExpert.release();
         }
-        return Triple.of(StringUtils.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
-                StringUtils.isBlank(model) ? Normal.UNKNOWN : model,
-                StringUtils.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
+        return Triple.of(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model,
+                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
     @Override

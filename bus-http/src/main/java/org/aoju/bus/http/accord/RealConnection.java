@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.platform.Platform;
 import org.aoju.bus.http.bodys.ResponseBody;
@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
  * 连接提供
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {
@@ -165,8 +165,8 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 eventListener.connectEnd(call, route.socketAddress(), route.proxy(), protocol);
                 break;
             } catch (IOException e) {
-                IoUtils.close(socket);
-                IoUtils.close(rawSocket);
+                IoKit.close(socket);
+                IoKit.close(rawSocket);
                 socket = null;
                 rawSocket = null;
                 source = null;
@@ -227,7 +227,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             }
 
             // 代理在验证请求后决定关闭连接。我们需要创建一个新的连接，但这次是使用auth凭据
-            IoUtils.close(rawSocket);
+            IoKit.close(rawSocket);
             rawSocket = null;
             sink = null;
             source = null;
@@ -265,8 +265,8 @@ public final class RealConnection extends Http2Connection.Listener implements Co
 
         // 下面的try/catch块是一种避免Android 7.0崩溃的伪代码
         try {
-            source = IoUtils.buffer(IoUtils.source(rawSocket));
-            sink = IoUtils.buffer(IoUtils.sink(rawSocket));
+            source = IoKit.buffer(IoKit.source(rawSocket));
+            sink = IoKit.buffer(IoKit.sink(rawSocket));
         } catch (NullPointerException npe) {
             if (NPE_THROW_WITH_NULL.equals(npe.getMessage())) {
                 throw new IOException(npe);
@@ -357,8 +357,8 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                     ? Platform.get().getSelectedProtocol(sslSocket)
                     : null;
             socket = sslSocket;
-            source = IoUtils.buffer(IoUtils.source(socket));
-            sink = IoUtils.buffer(IoUtils.sink(socket));
+            source = IoKit.buffer(IoKit.source(socket));
+            sink = IoKit.buffer(IoKit.sink(socket));
             handshake = unverifiedHandshake;
             protocol = maybeProtocol != null
                     ? Protocol.get(maybeProtocol)
@@ -372,7 +372,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                 Platform.get().afterHandshake(sslSocket);
             }
             if (!success) {
-                IoUtils.close(sslSocket);
+                IoKit.close(sslSocket);
             }
         }
     }
@@ -553,7 +553,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     }
 
     public void cancel() {
-        IoUtils.close(rawSocket);
+        IoKit.close(rawSocket);
     }
 
     @Override

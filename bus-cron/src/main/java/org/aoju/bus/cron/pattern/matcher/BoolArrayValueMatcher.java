@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
  * 将表达式中的数字值列表转换为Boolean数组,匹配时匹配相应数组位
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BoolArrayValueMatcher implements ValueMatcher {
@@ -57,6 +57,6 @@ public class BoolArrayValueMatcher implements ValueMatcher {
 
     @Override
     public String toString() {
-        return StringUtils.format("Matcher:{}", this.bValues);
+        return StringKit.format("Matcher:{}", this.bValues);
     }
 }

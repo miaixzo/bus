@@ -25,13 +25,12 @@
 package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,7 +41,7 @@ import java.util.jar.JarFile;
  * 类扫描器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Scaner {
@@ -70,7 +69,7 @@ public class Scaner {
     /**
      * 编码
      */
-    private Charset charset;
+    private java.nio.charset.Charset charset;
     /**
      * 是否初始化类
      */
@@ -101,7 +100,7 @@ public class Scaner {
      * @param classFilter 过滤器,无需传入null
      */
     public Scaner(String packageName, Filter<Class<?>> classFilter) {
-        this(packageName, classFilter, org.aoju.bus.core.lang.Charset.UTF_8);
+        this(packageName, classFilter, Charset.UTF_8);
     }
 
     /**
@@ -111,10 +110,10 @@ public class Scaner {
      * @param classFilter 过滤器,无需传入null
      * @param charset     编码
      */
-    public Scaner(String packageName, Filter<Class<?>> classFilter, Charset charset) {
-        packageName = StringUtils.nullToEmpty(packageName);
+    public Scaner(String packageName, Filter<Class<?>> classFilter, java.nio.charset.Charset charset) {
+        packageName = StringKit.nullToEmpty(packageName);
         this.packageName = packageName;
-        this.packageNameWithDot = StringUtils.addSuffixIfNot(packageName, Symbol.DOT);
+        this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
         this.packageDirName = packageName.replace(Symbol.C_DOT, File.separatorChar);
         this.packagePath = packageName.replace(Symbol.C_DOT, Symbol.C_SLASH);
         this.classFilter = classFilter;
@@ -181,18 +180,18 @@ public class Scaner {
      * @return 类集合
      */
     public Set<Class<?>> scan() {
-        for (URL url : FileUtils.getResourceIter(this.packagePath)) {
+        for (URL url : FileKit.getResourceIter(this.packagePath)) {
             switch (url.getProtocol()) {
                 case "file":
-                    scanFile(new File(UriUtils.decode(url.getFile(), this.charset.name())), null);
+                    scanFile(new File(UriKit.decode(url.getFile(), this.charset.name())), null);
                     break;
                 case "jar":
-                    scanJar(UriUtils.getJarFile(url));
+                    scanJar(UriKit.getJarFile(url));
                     break;
             }
         }
 
-        if (CollUtils.isEmpty(this.classes)) {
+        if (CollKit.isEmpty(this.classes)) {
             scanJavaClassPaths();
         }
 
@@ -214,10 +213,10 @@ public class Scaner {
      * @return 扫描到的类
      */
     private void scanJavaClassPaths() {
-        final String[] javaClassPaths = ClassUtils.getJavaClassPaths();
+        final String[] javaClassPaths = ClassKit.getJavaClassPaths();
         for (String classPath : javaClassPaths) {
             // bug修复,由于路径中空格和中文导致的Jar找不到
-            classPath = UriUtils.decode(classPath, CharsetUtils.systemCharsetName());
+            classPath = UriKit.decode(classPath, Charset.systemCharsetName());
 
             scanFile(new File(classPath), null);
         }
@@ -264,8 +263,8 @@ public class Scaner {
      */
     private void scanJar(JarFile jar) {
         String name;
-        for (JarEntry entry : new IterUtils.EnumerationIter<>(jar.entries())) {
-            name = StringUtils.removePrefix(entry.getName(), Symbol.SLASH);
+        for (JarEntry entry : new IterKit.EnumerationIter<>(jar.entries())) {
+            name = StringKit.removePrefix(entry.getName(), Symbol.SLASH);
             if (name.startsWith(this.packagePath)) {
                 if (name.endsWith(FileType.CLASS) && false == entry.isDirectory()) {
                     final String className = name
@@ -286,7 +285,7 @@ public class Scaner {
     private Class<?> loadClass(String className) {
         Class<?> clazz = null;
         try {
-            clazz = Class.forName(className, this.initialize, ClassUtils.getClassLoader());
+            clazz = Class.forName(className, this.initialize, ClassKit.getClassLoader());
         } catch (NoClassDefFoundError e) {
             // 由于依赖库导致的类无法加载,直接跳过此类
         } catch (UnsupportedClassVersionError e) {
@@ -305,7 +304,7 @@ public class Scaner {
      * @return 是否接受
      */
     private void addIfAccept(String className) {
-        if (StringUtils.isBlank(className)) {
+        if (StringKit.isBlank(className)) {
             return;
         }
         int classLen = className.length();
@@ -346,10 +345,10 @@ public class Scaner {
      */
     private String subPathBeforePackage(File file) {
         String filePath = file.getAbsolutePath();
-        if (StringUtils.isNotEmpty(this.packageDirName)) {
-            filePath = StringUtils.subBefore(filePath, this.packageDirName, true);
+        if (StringKit.isNotEmpty(this.packageDirName)) {
+            filePath = StringKit.subBefore(filePath, this.packageDirName, true);
         }
-        return StringUtils.addSuffixIfNot(filePath, File.separator);
+        return StringKit.addSuffixIfNot(filePath, File.separator);
     }
 
 }

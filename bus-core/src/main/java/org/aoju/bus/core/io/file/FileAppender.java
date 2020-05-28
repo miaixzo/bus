@@ -24,10 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
+import org.aoju.bus.core.lang.Charset;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ import java.util.List;
  * 在调用append方法后会缓存于内存,只有超过容量后才会一次性写入文件,因此内存中随时有剩余未写入文件的内容,在最后必须调用flush方法将剩余内容刷入文件
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FileAppender implements Serializable {
@@ -62,7 +63,7 @@ public class FileAppender implements Serializable {
      * @param isNewLineMode 追加内容是否为新行
      */
     public FileAppender(File destFile, int capacity, boolean isNewLineMode) {
-        this(destFile, org.aoju.bus.core.lang.Charset.UTF_8, capacity, isNewLineMode);
+        this(destFile, Charset.UTF_8, capacity, isNewLineMode);
     }
 
     /**
@@ -73,7 +74,7 @@ public class FileAppender implements Serializable {
      * @param capacity      当行数积累多少条时刷入到文件
      * @param isNewLineMode 追加内容是否为新行
      */
-    public FileAppender(File destFile, Charset charset, int capacity, boolean isNewLineMode) {
+    public FileAppender(File destFile, java.nio.charset.Charset charset, int capacity, boolean isNewLineMode) {
         this.capacity = capacity;
         this.isNewLineMode = isNewLineMode;
         this.writer = FileWriter.create(destFile, charset);

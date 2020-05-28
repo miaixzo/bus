@@ -26,14 +26,14 @@ package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 将浮点数类型的number转换成英语的表达方式
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class NumberWord {
@@ -69,7 +69,7 @@ public class NumberWord {
             lstr = x;
         }
 
-        String lstrrev = StringUtils.reverse(lstr); // 对左边的字串取反
+        String lstrrev = StringKit.reverse(lstr); // 对左边的字串取反
         String[] a = new String[5]; // 定义5个字串变量来存放解析出来的叁位一组的字串
 
         switch (lstrrev.length() % 3) {
@@ -82,8 +82,8 @@ public class NumberWord {
         }
         String lm = Normal.EMPTY; // 用来存放转换後的整数部分
         for (int i = 0; i < lstrrev.length() / 3; i++) {
-            a[i] = StringUtils.reverse(lstrrev.substring(3 * i, 3 * i + 3)); // 截取第一个叁位
-            if (!ObjectUtils.equal(a[i], "000")) { // 用来避免这种情况：1000000 = first million
+            a[i] = StringKit.reverse(lstrrev.substring(3 * i, 3 * i + 3)); // 截取第一个叁位
+            if (!ObjectKit.equal(a[i], "000")) { // 用来避免这种情况：1000000 = first million
                 // thousand only
                 if (i != 0) {
                     lm = transThree(a[i]) + Symbol.SPACE + parseMore(String.valueOf(i)) + Symbol.SPACE + lm; // 加:
@@ -148,7 +148,7 @@ public class NumberWord {
         String value;
         if (s.startsWith(Symbol.ZERO)) {// 是否小於100
             value = transTwo(s.substring(1));
-        } else if (ObjectUtils.equal(s.substring(1), "00")) {// 是否被100整除
+        } else if (ObjectKit.equal(s.substring(1), "00")) {// 是否被100整除
             value = parseFirst(s.substring(0, 1)) + " HUNDRED";
         } else {
             value = parseFirst(s.substring(0, 1)) + " HUNDRED AND " + transTwo(s.substring(1));

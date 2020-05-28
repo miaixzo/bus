@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * This class provides a handler for processing GitLab System Hook callouts.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class SystemHookManager implements HookManager {

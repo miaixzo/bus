@@ -25,9 +25,9 @@
 package org.aoju.bus.office.bridge;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.magic.UnoUrl;
 import org.aoju.bus.office.metric.*;
@@ -41,7 +41,7 @@ import java.util.Arrays;
  * 默认的{@link OfficeManager}实现，它使用一个office进程池来执行转换任务.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
@@ -122,15 +122,15 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
         @Override
         public LocalOfficePoolManager build() {
             // 为尚未设置的属性分配默认值.
-            if (ObjectUtils.isEmpty(officeHome)) {
+            if (ObjectKit.isEmpty(officeHome)) {
                 officeHome = org.aoju.bus.office.Builder.getDefaultOfficeHome();
             }
 
-            if (ObjectUtils.isEmpty(workingDir)) {
+            if (ObjectKit.isEmpty(workingDir)) {
                 workingDir = new File(System.getProperty("java.io.tmpdir"));
             }
 
-            if (ObjectUtils.isEmpty(processManager)) {
+            if (ObjectKit.isEmpty(processManager)) {
                 processManager = org.aoju.bus.office.Builder.findBestProcessManager();
             }
 
@@ -177,7 +177,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          */
         public Builder pipeNames(final String... pipeNames) {
             Assert.isTrue(pipeNames != null && pipeNames.length > 0, "The pipe name list must not be empty");
-            this.pipeNames = ArrayUtils.clone(pipeNames);
+            this.pipeNames = ArrayKit.clone(pipeNames);
             return this;
         }
 
@@ -189,7 +189,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          */
         public Builder portNumbers(final int... portNumbers) {
             Assert.isTrue(portNumbers != null && portNumbers.length > 0, "The port number list must not be empty");
-            this.portNumbers = ArrayUtils.clone(portNumbers);
+            this.portNumbers = ArrayKit.clone(portNumbers);
             return this;
         }
 
@@ -211,7 +211,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          * @return 构造器实例.
          */
         public Builder officeHome(final String officeHome) {
-            return StringUtils.isBlank(officeHome) ? this : officeHome(new File(officeHome));
+            return StringKit.isBlank(officeHome) ? this : officeHome(new File(officeHome));
         }
 
         /**
@@ -238,7 +238,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          */
         public Builder processManager(final String processManagerClass) {
             try {
-                return StringUtils.isBlank(processManagerClass)
+                return StringKit.isBlank(processManagerClass)
                         ? this
                         : processManager((ProcessManager) Class.forName(processManagerClass).newInstance());
             } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
@@ -257,7 +257,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          */
         public Builder runAsArgs(final String... runAsArgs) {
             Assert.isTrue(runAsArgs != null && runAsArgs.length > 0, "The runAs argument list must not be empty");
-            this.runAsArgs = ArrayUtils.clone(runAsArgs);
+            this.runAsArgs = ArrayKit.clone(runAsArgs);
             return this;
         }
 
@@ -279,7 +279,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          * @return 构造器实例.
          */
         public Builder templateProfileDir(final String templateProfileDir) {
-            return StringUtils.isBlank(templateProfileDir)
+            return StringKit.isBlank(templateProfileDir)
                     ? this
                     : templateProfileDir(new File(templateProfileDir));
         }
@@ -305,7 +305,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          * @return 构造器实例.
          */
         public Builder templateProfileDirOrDefault(final String templateProfileDir) {
-            return StringUtils.isBlank(templateProfileDir)
+            return StringKit.isBlank(templateProfileDir)
                     ? this
                     : templateProfileDirOrDefault(new File(templateProfileDir));
         }

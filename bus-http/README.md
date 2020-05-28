@@ -63,7 +63,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造 RequestBody 需要指定MediaType，用于描述请求/响应 body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，RequstBody的几种构造方式：
  
  ``` 
-    MediaType mediaType = MediaType.valueOf("text/x-markdown; charset=utf-8");
+    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     String requestBody = "I am Jdqm.";
     Request request = new Request.Builder()
            .url("https://api.github.com/markdown/raw")
@@ -91,7 +91,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
  ```
     http/1.1 200 OK 
     Date:Sat, 10 Mar 2018 05:23:20 GMT 
-    Content-Type:text/html;charset=utf-8
+    Content-Type:text/html;charsets=utf-8
     Content-Length:18
     Server:GitHub.com 
     Status:200 OK 
@@ -119,7 +119,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
     
         @Override
         public MediaType contentType() {
-            return MediaType.valueOf("text/x-markdown; charset=utf-8");
+            return MediaType.valueOf("text/x-markdown; charsets=utf-8");
         }
     
         @Override
@@ -153,7 +153,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 
 2.3. POST提交文件
  ```
-    MediaType mediaType = MediaType.valueOf("text/x-markdown; charset=utf-8");
+    MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     Httpd httpd = new Httpd();
     File file = new File("test.md");
     Request request = new Request.Builder()
@@ -249,7 +249,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
  ①一类是全局的 interceptor，该类 interceptor 在整个拦截器链中最早被调用，通过 Httpd.Builder#addInterceptor(Interceptor) 传入；
  ②另外一类是非网页请求的 interceptor ，这类拦截器只会在非网页请求中被调用，并且是在组装完请求之后，真正发起网络请求前被调用，所有的 interceptor 被保存在 List<Interceptor> interceptors 集合中，按照添加顺序来逐个调用，具体可参考 RealCall#getResponseWithInterceptorChain() 方法。通过 Httpd.Builder#addNetworkInterceptor(Interceptor) 传入；
 
- 这里举一个简单的例子，例如有这样一个需求，我要监控App通过 OkHttp 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的 interceptor 在拦截器链头去做。
+ 这里举一个简单的例子，例如有这样一个需求，我要监控App通过 Httpd 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的 interceptor 在拦截器链头去做。
  ```
     public class LoggingInterceptor implements Interceptor {
 
@@ -278,7 +278,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
             .build();
     Request request = new Request.Builder()
             .url("http://www.publicobject.com/helloworld.txt")
-            .header("User-Agent", "OkHttp Example")
+            .header("User-Agent", "Httpd Example")
             .build();
     httpd.newCall(request).enqueue(new Callback() {
         @Override
@@ -299,7 +299,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
 针对这个请求，打印出来的结果
  ```
     Sending request http://www.publicobject.com/helloworld.txt on null
-    User-Agent: OkHttp Example
+    User-Agent: Httpd Example
             
     Received response for https://publicobject.com/helloworld.txt in 1265.9ms
     Server: nginx/1.10.0 (Ubuntu)
@@ -325,7 +325,386 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
  ```
  2. 每一个Call(其实现是RealCall)只能执行一次，否则会报异常，具体参见 RealCall#execute()
   
-  
+### Httpv 使用
+
+- 支持URL 占位符
+- 支持Lambda 回调
+- 支持JSON自动封装解析
+- 支持异步预处理器
+- 支持回调执行器
+- 支持全局监听器
+- 支持回调阻断机制
+- 支持过程控制
+- 支持进度监听
+
+
+* `sync(String url)`   开始一个同步 Http 请求 
+* `async(String url)`  开始一个异步 Http 请求 
+* `webSocket(String url)`  开始一个 WebSocket 连接 
+* `cancel(String tag)` 按标签取消（同步 | 异步 | WebSocket）连接
+* `cancelAll()`        取消所有（同步 | 异步 | WebSocket）连接
+* `request(Request request)`  Httpv 原生 HTTP 请求 
+* `webSocket(Request request, WebSocketListener listener)` Httpv 原生 WebSocket 连接
+* `newBuilder()`       用于重新构建一个 Httpv 实例
+ 
+```
+Httpv http = Httpv.builder()
+        .baseUrl("http://api.example.com")
+        .addMsgConvertor(new GsonMsgConvertor());
+        .build();
+```
+ 
+### 同步请求
+
+　　使用方法`sync(String url)`开始一个同步请求：
+
+```
+List<User> users = http.sync("/users") // http://api.example.com/users
+        .get()                         // GET请求
+        .getBody()                     // 获取响应报文体
+        .toList(User.class);           // 得到目标数据
+```
+
+　　方法`sync`返回一个同步`CoverHttp`，可链式使用。
+
+### 异步请求
+
+　　使用方法`async(String url)`开始一个异步请求：
+
+```
+http.async("/users/1")                //  http://api.aoju.org/users/1
+        .setOnResponse((HttpResult result) -> {
+            // 得到目标数据
+            User user = result.getBody().toBean(User.class);
+        })
+        .get();                       // GET请求
+```
+　　方法`async`返回一个异步`CoverHttp`，可链式使用。
+
+### WebSocket
+
+　　使用方法`webSocket(String url)`开始一个 WebSocket 通讯：
+
+```
+http.webSocket("/chat") 
+        .setOnOpen((WebSocket ws, HttpResult res) -> {
+            ws.send("向服务器问好");
+        })
+        .setOnMessage((WebSocket ws，Message msg) -> {
+            // 从服务器接收消息（自动反序列化）
+            Chat chat = msg.toBean(Chat.class);
+            // 相同的消息发送给服务器（自动序列化 Chat 对象）
+            ws.send(chat); 
+        })
+        .listen();                     // 启动监听
+```
+方法`webSocket`返回一个支持 WebSocket 的`CoverHttp`，也可链式使用。
+
+#### 第一步、确定请求方式
+    
+同步 Httpv（`sync`）、异步 Httpv（`async`）或 WebSocket（`webSocket`）
+
+#### 第二步、构建请求任务
+
+* `addXxxPara` - 添加请求参数
+* `setOnXxxx` - 设置回调函数
+* `tag` - 添加标签
+* ...
+
+#### 第三步、调用请求方法
+
+Httpv 请求方法：
+
+* `get()` - GET 请求
+* `post()` - POST 请求
+* `put()` - PUT 请求
+* `delete()` - DELETE 请求
+* ...
+
+Websocket 方法：
+
+* `listen()` - 启动监听
+
+#### 任意请求，都遵循请求三部曲！
+
+
+* `sync(String url)`   开始一个同步 HTTP 请求 
+* `async(String url)`  开始一个异步 HTTP 请求 
+* `webSocket(String url)`  开始一个 WebSocket 连接 
+* `cancel(String tag)` 按标签取消（同步 | 异步 | WebSocket）连接
+* `cancelAll()`        取消所有（同步 | 异步 | WebSocket）连接
+* `request(Request request)`  OkHttp 原生 HTTP 请求 
+* `webSocket(Request request, WebSocketListener listener)` Httpv 原生 WebSocket 连接
+
+```
+Httpv.async("https://api.aoju.org/auth/login")
+        .addBodyPara("username", "jack")
+        .addBodyPara("password", "xxxx")
+        .setOnResponse((HttpResult result) -> {
+            // 得到返回数据，使用 Mapper 可省去定义一个实体类
+            Mapper mapper = result.getBody().toMapper();
+            // 登录是否成功
+            boolean success = mapper.getBool("success");
+        })
+        .post();
+```
+
+### 配置`Httpv`
+
+工具类`Httpv`还支持以 SPI 方式注入自定义配置，分以下两步：
+
+#### 第一步、新建一个配置类，实现[`org.aoju.bus.http.metric.Config`]接口
+
+例如：
+
+```
+
+public class HttpvConfig implements Config {
+
+    @Override
+    public void with(Httpv.Builder builder) {
+        // 在这里对 HTTP.Builder 做一些自定义的配置
+        builder.baseUrl("https://api.aoju.org");
+        // 如果项目中添加了 fastjson 或  gson 或  jackson 依赖
+        // Httpv 会自动注入它们提供的 Convertor 
+        // 所以这里就不需要再配置 Convertor 了 (内部实现自动注入的原理也是 SPI)
+        // 但如果没有添加这些依赖，那还需要自定义一个 Convertor
+        builder.addMsgConvertor(new MyMsgConvertor());
+    }
+
+}
+```
+ 
+
+## 文件下载
+
+　　Httpv 并没有把文件的下载排除在常规的请求之外，同一套API，它优雅的设计使得下载与常规请求融合的毫无违和感，一个最简单的示例：
+
+```
+http.sync("bus-http/test.zip")
+        .get()                           // 使用 GET 方法（其它方法也可以，看服务器支持）
+        .getBody()                       // 得到报文体
+        .toFile("bus-http/test.zip")     // 下载到指定的路径
+        .start();                        // 启动下载
+
+http.sync("/download/test.zip").get().getBody()                  
+        .toFolder("bus-http")            // 下载到指定的目录，文件名将根据下载信息自动生成
+        .start();
+```
+　　或使用异步连接方式：
+
+```
+http.async("bus-http/test.zip")
+        .setOnResponse((HttpResult result) -> {
+            result.getBody().toFolder("bus-http").start();
+        })
+        .get();
+```
+　　这里要说明一下：`sync`与`async`的区别在于连接服务器并得到响应这个过程的同步与异步（这个过程的耗时在大文件下载中占比极小），而`start`方法启动的下载过程则都是异步的。
+
+### 下载进度监听
+
+　　就直接上代码啦，诸君一看便懂：
+
+```
+http.sync("/download/test.zip")
+        .get()
+        .getBody()
+        .stepBytes(1024)   // 设置每接收 1024 个字节执行一次进度回调（不设置默认为 8192）  
+ //     .stepRate(0.01)    // 设置每接收 1% 执行一次进度回调（不设置以 StepBytes 为准）  
+        .setOnProcess((Process process) -> {           // 下载进度回调
+            long doneBytes = process.getDoneBytes();   // 已下载字节数
+            long totalBytes = process.getTotalBytes(); // 总共的字节数
+            double rate = process.getRate();           // 已下载的比例
+            boolean isDone = process.isDone();         // 是否下载完成
+        })
+        .toFolder("bus-http/")        // 指定下载的目录，文件名将根据下载信息自动生成
+ //     .toFile("bus-http/test.zip")  // 指定下载的路径，若文件已存在则覆盖
+        .setOnSuccess((File file) -> {   // 下载成功回调
+            
+        })
+        .start();
+```
+　　值得一提的是：由于 Httpv 并没有把下载做的很特别，这里设置的进度回调不只对下载文件起用作，即使对响应JSON的常规请求，只要设置了进度回调，它也会告诉你报文接收的进度（提前是服务器响应的报文有`Content-Length`头），例如：
+
+```
+List<User> users = http.sync("/users")
+        .get()
+        .getBody()
+        .stepBytes(2)
+        .setOnProcess((Process process) -> {
+            System.out.println(process.getRate());
+        })
+        .toList(User.class);
+```
+
+### 下载过程控制
+
+　　过于简单：还是直接上代码：
+
+```
+Ctrl ctrl = http.sync("bus-http/test.zip")
+        .get()
+        .getBody()
+        .setOnProcess((Process process) -> {
+            System.out.println(process.getRate());
+        })
+        .toFolder("bus-http/")
+        .start();   // 该方法返回一个下载过程控制器
+ 
+ctrl.status();      // 下载状态
+ctrl.pause();       // 暂停下载
+ctrl.resume();      // 恢复下载
+ctrl.cancel();      // 取消下载（同时会删除文件，不可恢复）
+```
+　　无论是同步还是异步发起的下载请求，都可以做以上的控制：
+
+```
+http.async("bus-http/test.zip")
+        .setOnResponse((HttpResult result) -> {
+            // 拿到下载控制器
+            Ctrl ctrl = result.getBody().toFolder("bus-http/").start();
+        })
+        .get();
+```
+
+### 实现断点续传
+
+　　Httpv 对断点续传并没有再做更高层次的封装，因为这是app该去做的事情，它在设计上使各种网络问题的处理变简单的同时力求纯粹。下面的例子可以看到，Httpv 通过一个失败回调拿到 **断点**，便将复杂的问题变得简单：
+
+```
+http.sync("bus-http/test.zip")
+        .get()
+        .getBody()
+        .toFolder("bus-http/")
+        .setOnFailure((Failure failure) -> {         // 下载失败回调，以便接收诸如网络错误等失败信息
+            IOException e = failure.getException();  // 具体的异常信息
+            long doneBytes = failure.getDoneBytes(); // 已下载的字节数（断点），需要保存，用于断点续传
+            File file = failure.getFile();           // 下载生成的文件，需要保存 ，用于断点续传（只保存路径也可以）
+        })
+        .start();
+```
+　　下面代码实现续传：
+
+```
+long doneBytes = ...    // 拿到保存的断点
+File file =  ...        // 待续传的文件
+
+http.sync("bus-http/test.zip")
+        .setRange(doneBytes)                         // 设置断点（已下载的字节数）
+        .get()
+        .getBody()
+        .toFile(file)                                // 下载到同一个文件里
+        .setAppended()                               // 开启文件追加模式
+        .setOnSuccess((File file) -> {
+
+        })
+        .setOnFailure((Failure failure) -> {
+        
+        })
+        .start();
+```
+
+### 实现分块下载
+
+　　当文件很大时，有时候我们会考虑分块下载，与断点续传的思路是一样的，示例代码：
+
+```
+    private static String url = "https://www.aoju.org/dl/test.zip";
+    private static Httpv httpv;
+
+    public static void httpv() {
+        Httpv.Builder builder = Httpv.builder();
+        ConvertProvider.inject(builder);
+        Config.config(builder);
+        httpv = builder.build();
+        long totalSize = httpv.sync(url).get().getBody()
+                .close()                   // 因为这次请求只是为了获得文件大小，不消费报文体，所以直接关闭
+                .getLength();              // 获得待下载文件的大小（由于未消费报文体，所以该请求不会消耗下载报文体的时间和网络流量）
+        download(totalSize, 0);      // 从第 0 块开始下载
+        sleep(50000);                // 等待下载完成（不然本例的主线程就结束啦）
+    }
+
+    static void download(long totalSize, int index) {
+        long size = 3 * 1024 * 1024;                 // 每块下载 3M
+        long start = index * size;
+        long end = Math.min(start + size, totalSize);
+        httpv.sync(url)
+                .setRange(start, end)                // 设置本次下载的范围
+                .get().getBody()
+                .toFile("bus-http/test.zip")         // 下载到同一个文件里
+                .setAppended()                       // 开启文件追加模式
+                .setOnSuccess((File file) -> {
+                    if (end < totalSize) {           // 若未下载完，则继续下载下一块
+                        download(totalSize, index + 1);
+                    } else {
+                        System.out.println("下载完成");
+                    }
+                })
+                .start();
+    }
+```
+ 
+## 文件上传
+
+　　一个简单文件上传的示例：
+
+```
+http.sync("/upload")
+        .addFilePara("test", "bus-http/test.zip")
+        .post();     // 上传发法一般使用 POST 或 PUT，看服务器支持
+```
+　　异步上传也是完全一样：
+
+```
+http.async("/upload")
+        .addFilePara("test", "bus-http/test.zip")
+        .post();
+```
+
+```
+http.async("/upload")
+        .bodyType("multipart/form")
+        .addFilePara("test", "bus-http/test.zip")
+        .post();
+```
+
+### 上传进度监听
+
+　　Httpv 的上传进度监听，监听的是所有请求报文体的发送进度，示例代码：
+
+```
+http.sync("/upload")
+        .addBodyPara("name", "Jack")
+        .addBodyPara("age", 20)
+        .addFilePara("avatar", "bus-http/avatar.jpg")
+        .stepBytes(1024)   // 设置每发送 1024 个字节执行一次进度回调（不设置默认为 8192）  
+ //     .stepRate(0.01)    // 设置每发送 1% 执行一次进度回调（不设置以 StepBytes 为准）  
+        .setOnProcess((Process process) -> {           // 上传进度回调
+            long doneBytes = process.getDoneBytes();   // 已发送字节数
+            long totalBytes = process.getTotalBytes(); // 总共的字节数
+            double rate = process.getRate();           // 已发送的比例
+            boolean isDone = process.isDone();         // 是否发送完成
+        })
+        .post();
+```
+　　咦！怎么感觉和下载的进度回调的一样？没错！Httpv 还是使用同一套API处理上传和下载的进度回调，区别只在于上传是在`get/post`方法之前使用这些API，下载是在`getBody`方法之后使用。很好理解：`get/post`之前是准备发送请求时段，有上传的含义，而`getBody`之后，已是报文响应的时段，当然是下载。
+
+### 上传过程控制
+
+　　上传文件的过程控制就很简单，和常规请求一样，只有异步发起的上传可以取消：
+
+```
+HttpCall call = http.async("/upload")
+        .addFilePara("test", "bus-http/test.zip")
+        .setOnProcess((Process process) -> {
+            System.out.println(process.getRate());
+        })
+        .post();
+
+call.cancel();  // 取消上传
+```
+
 ### Httpx 使用
 
  - 暂无
@@ -377,7 +756,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
 4.异步下载一张百度图片，有下载进度,保存为/tmp/tmp.jpg
 ```
     String savePath = "tmp.jpg";
-    String imageUrl = "http://e.hiphotos.baidu.com/image/pic/item/faedab64034f78f0b31a05a671310a55b3191c55.jpg";
+    String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
     Httpz.newBuilder().addNetworkInterceptor(new FileInterceptor() {
         @Override
         public void updateProgress(long downloadLenth, long totalLength, boolean isFinish) {
@@ -410,7 +789,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
 5.同步下载文件
 ```
     String savePath = "tmp.jpg";
-    String imageUrl = "http://e.hiphotos.baidu.com/image/pic/item/faedab64034f78f0b31a05a671310a55b3191c55.jpg";
+    String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
     InputStream is = Httpz.get().url(imageUrl).build().execute().byteStream();
     ...
 ```
@@ -418,7 +797,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
 6.上传文件
 ```
     String url = "https://www.xxx.com";
-    byte[] imageContent = FileUtils.readBytes("/tmp/test.png");
+    byte[] imageContent = FileKit.readBytes("/tmp/test.png");
     Response response = FastHttpClient.post()
             .url(url)
             .addFile("file", "b.jpg", imageContent)

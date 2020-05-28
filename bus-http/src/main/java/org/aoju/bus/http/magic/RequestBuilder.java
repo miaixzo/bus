@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.magic;
 
-import org.aoju.bus.core.utils.ClassUtils;
+import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.http.Httpd;
 
 import java.util.LinkedHashMap;
@@ -34,7 +34,7 @@ import java.util.Map;
  * 请求参数构造器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 
@@ -107,7 +107,7 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
 
     public T addParams(Object obj) {
         if (obj != null) {
-            Map<String, Object> map = ClassUtils.beanToMap(obj);
+            Map<String, Object> map = ClassKit.beanToMap(obj);
             map.forEach((key, val) -> addParams(key, (String) val));
         }
         return (T) this;

@@ -25,8 +25,8 @@
 package org.aoju.bus.logger.dialect.tinylog;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.LogEntryForwarder;
@@ -36,7 +36,7 @@ import org.pmw.tinylog.Logger;
  * tinylog log.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class TinyLog extends AbstractAware {
@@ -65,7 +65,7 @@ public class TinyLog extends AbstractAware {
      * @return 最后一个异常参数
      */
     private static Throwable getLastArgumentIfThrowable(Object... arguments) {
-        if (ArrayUtils.isNotEmpty(arguments) && arguments[arguments.length - 1] instanceof Throwable) {
+        if (ArrayKit.isNotEmpty(arguments) && arguments[arguments.length - 1] instanceof Throwable) {
             return (Throwable) arguments[arguments.length - 1];
         } else {
             return null;
@@ -181,7 +181,7 @@ public class TinyLog extends AbstractAware {
                 tinyLevel = Level.OFF;
                 break;
             default:
-                throw new Error(StringUtils.format("Can not identify level: {}", level));
+                throw new Error(StringKit.format("Can not identify level: {}", level));
         }
         return tinyLevel;
     }

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.builtin;
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.office.magic.family.DocumentFormat;
 import org.aoju.bus.office.magic.family.FormatRegistry;
 import org.aoju.bus.office.metric.OfficeManager;
@@ -41,7 +41,7 @@ import java.io.OutputStream;
  * 使用尚未应用于转换器的源格式的所有转换作业实现的基类.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractNorm implements OptionalSource {
@@ -73,7 +73,7 @@ public abstract class AbstractNorm implements OptionalSource {
     public AbstractJob to(final File target) {
         final TargetFromFileProvider specs = new TargetFromFileProvider(target);
         final DocumentFormat format =
-                formatRegistry.getFormatByExtension(FileUtils.getExtension(target.getName()));
+                formatRegistry.getFormatByExtension(FileKit.getExtension(target.getName()));
         if (format != null) {
             specs.setDocumentFormat(format);
         }

@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang;
  * HTTP 相关常量
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Http {
@@ -42,6 +42,14 @@ public class Http {
      */
     public static final String HTTPS = "https";
     /**
+     * The https
+     */
+    public static final String WS = "ws";
+    /**
+     * The https
+     */
+    public static final String WSS = "wss";
+    /**
      * The prefix http
      */
     public static final String HTTP_PREFIX = HTTP + Symbol.COLON + Symbol.FORWARDSLASH;
@@ -49,6 +57,14 @@ public class Http {
      * The prefix https
      */
     public static final String HTTPS_PREFIX = HTTPS + Symbol.COLON + Symbol.FORWARDSLASH;
+    /**
+     * The prefix ws
+     */
+    public static final String WS_PREFIX = WS + Symbol.COLON + Symbol.FORWARDSLASH;
+    /**
+     * The prefix wss
+     */
+    public static final String WSS_PREFIX = WSS + Symbol.COLON + Symbol.FORWARDSLASH;
     /**
      * HTTP Method GET
      */

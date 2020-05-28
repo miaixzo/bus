@@ -25,7 +25,7 @@
 package org.aoju.bus.core.thread;
 
 import org.aoju.bus.core.builder.Builder;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * ThreadFactory创建器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ThreadBuilder implements Builder<ThreadFactory> {
@@ -148,10 +148,10 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
      */
     public ThreadBuilder setPriority(int priority) {
         if (priority < Thread.MIN_PRIORITY) {
-            throw new IllegalArgumentException(StringUtils.format("Thread priority ({}) must be >= {}", priority, Thread.MIN_PRIORITY));
+            throw new IllegalArgumentException(StringKit.format("Thread priority ({}) must be >= {}", priority, Thread.MIN_PRIORITY));
         }
         if (priority > Thread.MAX_PRIORITY) {
-            throw new IllegalArgumentException(StringUtils.format("Thread priority ({}) must be <= {}", priority, Thread.MAX_PRIORITY));
+            throw new IllegalArgumentException(StringKit.format("Thread priority ({}) must be <= {}", priority, Thread.MAX_PRIORITY));
         }
         this.priority = priority;
         return this;

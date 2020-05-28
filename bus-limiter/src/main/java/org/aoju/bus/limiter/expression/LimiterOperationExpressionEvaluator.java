@@ -25,7 +25,7 @@
 package org.aoju.bus.limiter.expression;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.limiter.Limiter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.expression.AnnotatedElementKey;
@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class LimiterOperationExpressionEvaluator {
@@ -109,7 +109,7 @@ public class LimiterOperationExpressionEvaluator {
             }
             ExpressionKey otherKey = (ExpressionKey) other;
             return (this.element.equals(otherKey.element) &&
-                    ObjectUtils.nullSafeEquals(this.expression, otherKey.expression));
+                    ObjectKit.nullSafeEquals(this.expression, otherKey.expression));
         }
 
         @Override

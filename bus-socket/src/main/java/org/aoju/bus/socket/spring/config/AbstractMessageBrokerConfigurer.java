@@ -30,7 +30,7 @@ import org.aoju.bus.socket.spring.extension.StompEndpointRegistry;
  * 增加消息拦截器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractMessageBrokerConfigurer {

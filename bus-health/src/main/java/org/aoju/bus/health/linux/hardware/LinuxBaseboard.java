@@ -26,7 +26,7 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
 
@@ -40,7 +40,7 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
  * Baseboard data obtained by sysfs
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -207,10 +207,10 @@ final class LinuxBaseboard extends AbstractBaseboard {
         private final String serialNumber;
 
         private ProcCpuStrings(String manufacturer, String model, String version, String serialNumber) {
-            this.manufacturer = StringUtils.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer;
-            this.model = StringUtils.isBlank(model) ? Normal.UNKNOWN : model;
-            this.version = StringUtils.isBlank(version) ? Normal.UNKNOWN : version;
-            this.serialNumber = StringUtils.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber;
+            this.manufacturer = StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer;
+            this.model = StringKit.isBlank(model) ? Normal.UNKNOWN : model;
+            this.version = StringKit.isBlank(version) ? Normal.UNKNOWN : version;
+            this.serialNumber = StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber;
         }
     }
 

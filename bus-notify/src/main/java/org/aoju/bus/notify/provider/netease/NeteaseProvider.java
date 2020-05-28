@@ -42,7 +42,7 @@ import java.util.Map;
  * 云信抽象类
  *
  * @author Justubborn
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK1.8+
  */
 public abstract class NeteaseProvider extends AbstractProvider<NeteaseTemplate, Context> {

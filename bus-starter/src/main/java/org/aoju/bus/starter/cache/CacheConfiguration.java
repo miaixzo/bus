@@ -26,9 +26,9 @@ package org.aoju.bus.starter.cache;
 
 import org.aoju.bus.cache.Context;
 import org.aoju.bus.cache.provider.*;
-import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Bean;
  * 缓存配置
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {CacheProperties.class})
@@ -48,10 +48,10 @@ public class CacheConfiguration {
 
     @Bean
     public AspectjCacheProxy cacheConfigurer() {
-        String type = StringUtils.toString(this.properties.getType());
+        String type = StringKit.toString(this.properties.getType());
         try {
-            if (!StringUtils.isEmpty(type)) {
-                Object provider = ClassUtils.loadClass(type);
+            if (!StringKit.isEmpty(type)) {
+                Object provider = ClassKit.loadClass(type);
                 Context config = Context.newConfig(this.properties.getMap());
                 if (provider instanceof H2Shooting) {
                     config.setShooting(new H2Shooting(
@@ -61,7 +61,7 @@ public class CacheConfiguration {
                     ));
                 } else if (provider instanceof MySQLShooting) {
                     config.setShooting(new MySQLShooting(
-                            BeanUtils.beanToMap(this.properties)
+                            BeanKit.beanToMap(this.properties)
                     ));
                 } else if (provider instanceof SqliteShooting) {
                     config.setShooting(new SqliteShooting(

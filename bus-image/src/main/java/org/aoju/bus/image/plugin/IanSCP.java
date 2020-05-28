@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
@@ -42,7 +42,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class IanSCP extends Device {
@@ -115,7 +115,7 @@ public class IanSCP extends Device {
             Logger.warn(as + ": Failed to store Instance Available Notification:", e);
             throw new ImageException(Status.ProcessingFailure, e);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
         return null;
     }

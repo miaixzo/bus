@@ -26,7 +26,7 @@ package org.aoju.bus.image.centre;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.image.metric.Connection;
 import org.aoju.bus.image.metric.TransferCapability;
 import org.aoju.bus.image.plugin.StoreSCP;
@@ -39,7 +39,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class StoreSCPCentre extends AbstractCentre {
@@ -113,13 +113,13 @@ public class StoreSCPCentre extends AbstractCentre {
         if (executor != null) {
             throw new IllegalStateException("Already started");
         }
-        if (ObjectUtils.isEmpty(node)) {
+        if (ObjectKit.isEmpty(node)) {
             throw new NullPointerException("The node cannot be null.");
         }
-        if (ObjectUtils.isEmpty(args)) {
+        if (ObjectKit.isEmpty(args)) {
             throw new NullPointerException("The args cannot be null.");
         }
-        if (ObjectUtils.isEmpty(device)) {
+        if (ObjectKit.isEmpty(device)) {
             throw new NullPointerException("The device cannot be null.");
         }
         if (rollers != null) {

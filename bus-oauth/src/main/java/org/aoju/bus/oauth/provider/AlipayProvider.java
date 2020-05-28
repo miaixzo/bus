@@ -35,7 +35,7 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -47,7 +47,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 支付宝登录
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class AlipayProvider extends DefaultProvider {
@@ -103,11 +103,11 @@ public class AlipayProvider extends DefaultProvider {
         }
 
         String province = response.getProvince(), city = response.getCity();
-        String location = String.format("%s %s", StringUtils.isEmpty(province) ? Normal.EMPTY : province, StringUtils.isEmpty(city) ? Normal.EMPTY : city);
+        String location = String.format("%s %s", StringKit.isEmpty(province) ? Normal.EMPTY : province, StringKit.isEmpty(city) ? Normal.EMPTY : city);
 
         return Property.builder()
                 .uuid(response.getUserId())
-                .username(StringUtils.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())
+                .username(StringKit.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())
                 .nickname(response.getNickName())
                 .avatar(response.getAvatar())
                 .location(location)

@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab groups calls.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @see <a href="https://docs.gitlab.com/ce/api/groups.html">Groups API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/access_requests.html">Group and project access requests API</a>

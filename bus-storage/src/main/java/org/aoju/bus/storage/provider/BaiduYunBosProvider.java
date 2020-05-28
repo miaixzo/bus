@@ -32,7 +32,7 @@ import com.baidubce.services.bos.model.ListObjectsRequest;
 import com.baidubce.services.bos.model.ListObjectsResponse;
 import com.google.common.collect.Maps;
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
 import org.aoju.bus.storage.magic.Attachs;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * 存储服务-百度云
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BaiduYunBosProvider extends AbstractProvider {
@@ -108,7 +108,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
                     Attachs storageItem = new Attachs();
                     storageItem.setName(item.getKey());
                     storageItem.setOwner(item.getOwner().getDisplayName());
-                    storageItem.setSize(StringUtils.toString(item.getSize()));
+                    storageItem.setSize(StringKit.toString(item.getSize()));
                     Map<String, Object> extend = Maps.newHashMap();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());

@@ -24,9 +24,9 @@
  ********************************************************************************/
 package org.aoju.bus.extra.captcha.provider;
 
-import org.aoju.bus.core.utils.ImageUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.RandomUtils;
+import org.aoju.bus.core.toolkit.ImageKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.RandomKit;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
  * 扭曲干扰验证码
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ShearProvider extends AbstractProvider {
@@ -76,15 +76,15 @@ public class ShearProvider extends AbstractProvider {
     @Override
     public Image createImage(String code) {
         final BufferedImage image = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g = org.aoju.bus.core.image.Graphics.createGraphics(image, ObjectUtils.defaultIfNull(this.background, Color.WHITE));
+        final Graphics2D g = org.aoju.bus.core.image.Graphics.createGraphics(image, ObjectKit.defaultIfNull(this.background, Color.WHITE));
 
         // 画字符串
         drawString(g, code);
 
         // 扭曲
-        shear(g, this.width, this.height, ObjectUtils.defaultIfNull(this.background, Color.WHITE));
+        shear(g, this.width, this.height, ObjectKit.defaultIfNull(this.background, Color.WHITE));
         // 画干扰线
-        drawInterfere(g, 0, RandomUtils.randomInt(this.height) + 1, this.width, RandomUtils.randomInt(this.height) + 1, this.interfereCount, ImageUtils.randomColor());
+        drawInterfere(g, 0, RandomKit.randomInt(this.height) + 1, this.width, RandomKit.randomInt(this.height) + 1, this.interfereCount, ImageKit.randomColor());
 
         return image;
     }
@@ -126,10 +126,10 @@ public class ShearProvider extends AbstractProvider {
      */
     private void shearX(Graphics g, int w1, int h1, Color color) {
 
-        int period = RandomUtils.randomInt(this.width);
+        int period = RandomKit.randomInt(this.width);
 
         int frames = 1;
-        int phase = RandomUtils.randomInt(2);
+        int phase = RandomKit.randomInt(2);
 
         for (int i = 0; i < h1; i++) {
             double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
@@ -151,7 +151,7 @@ public class ShearProvider extends AbstractProvider {
      */
     private void shearY(Graphics g, int w1, int h1, Color color) {
 
-        int period = RandomUtils.randomInt(this.height >> 1);
+        int period = RandomKit.randomInt(this.height >> 1);
 
         int frames = 20;
         int phase = 7;

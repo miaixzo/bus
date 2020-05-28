@@ -28,7 +28,7 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.*;
 import org.aoju.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.software.NetworkParams;
@@ -58,7 +58,7 @@ import java.util.function.Supplier;
  * 操作系统信息支持
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Platform {
@@ -271,7 +271,7 @@ public class Platform {
      * @return 属性值或<code>null</code>
      */
     public static String get(String name, String defaultValue) {
-        return StringUtils.nullToDefault(get(name, false), defaultValue);
+        return StringKit.nullToDefault(get(name, false), defaultValue);
     }
 
     /**
@@ -562,7 +562,7 @@ public class Platform {
      * @param value   值
      */
     public static void append(StringBuilder builder, String caption, Object value) {
-        builder.append(caption).append(StringUtils.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
+        builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
     }
 
     /**

@@ -24,19 +24,19 @@
  ********************************************************************************/
 package org.aoju.bus.extra.mail;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.setting.Setting;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 import java.util.Properties;
 
 /**
  * 邮件账户对象
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class MailAccount implements Serializable {
@@ -87,7 +87,7 @@ public class MailAccount implements Serializable {
     /**
      * 编码用于编码邮件正文和发送人、收件人等中文
      */
-    private Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
+    private java.nio.charset.Charset charset = Charset.UTF_8;
     /**
      * 对于超长参数是否切分为多份,默认为false(国内邮箱附件不支持切分的附件名)
      */
@@ -292,7 +292,7 @@ public class MailAccount implements Serializable {
      *
      * @return 编码
      */
-    public Charset getCharset() {
+    public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
@@ -302,7 +302,7 @@ public class MailAccount implements Serializable {
      * @param charset 字符集编码
      * @return this
      */
-    public MailAccount setCharset(Charset charset) {
+    public MailAccount setCharset(java.nio.charset.Charset charset) {
         this.charset = charset;
         return this;
     }
@@ -499,17 +499,17 @@ public class MailAccount implements Serializable {
         // 去掉发件人的姓名部分
         final String fromAddress = InternalMail.parseFirstAddress(this.from, this.charset).getAddress();
 
-        if (StringUtils.isBlank(this.host)) {
+        if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
-            this.host = StringUtils.format("smtp.{}", StringUtils.subSuf(fromAddress, fromAddress.indexOf(Symbol.C_AT) + 1));
+            this.host = StringKit.format("smtp.{}", StringKit.subSuf(fromAddress, fromAddress.indexOf(Symbol.C_AT) + 1));
         }
-        if (StringUtils.isBlank(user)) {
+        if (StringKit.isBlank(user)) {
             // 如果用户名为空,默认为发件人邮箱前缀
-            this.user = StringUtils.subPre(fromAddress, fromAddress.indexOf(Symbol.C_AT));
+            this.user = StringKit.subPre(fromAddress, fromAddress.indexOf(Symbol.C_AT));
         }
         if (null == this.auth) {
             // 如果密码非空白,则使用认证模式
-            this.auth = (false == StringUtils.isBlank(this.pass));
+            this.auth = (false == StringKit.isBlank(this.pass));
         }
         if (null == this.port) {
             // 端口在SSL状态下默认与socketFactoryPort一致,非SSL状态下默认为25
@@ -517,7 +517,7 @@ public class MailAccount implements Serializable {
         }
         if (null == this.charset) {
             // 默认UTF-8编码
-            this.charset = org.aoju.bus.core.lang.Charset.UTF_8;
+            this.charset = Charset.UTF_8;
         }
         return this;
     }

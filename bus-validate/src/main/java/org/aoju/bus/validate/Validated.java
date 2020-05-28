@@ -28,8 +28,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.validate.annotation.*;
 import org.aoju.bus.validate.validators.Checker;
 import org.aoju.bus.validate.validators.Property;
@@ -48,7 +48,7 @@ import java.util.List;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Data
@@ -155,7 +155,7 @@ public class Validated extends Provider {
                 list.add(property);
             }
         }
-        if (ObjectUtils.isNotEmpty(this.object)) {
+        if (ObjectKit.isNotEmpty(this.object)) {
             Class<?> clazz = this.object.getClass();
             List<Annotation> clazzAnnotations = this.getAnnotation(clazz);
             for (Annotation annotation : clazzAnnotations) {
@@ -174,10 +174,10 @@ public class Validated extends Provider {
      * @return the object
      */
     private Context resolve(Context context, Annotation[] annotations) {
-        if (ObjectUtils.isNotEmpty(this.object)) {
+        if (ObjectKit.isNotEmpty(this.object)) {
             Class<?> clazz = this.object.getClass();
             Inside inside = clazz.getAnnotation(Inside.class);
-            if (ObjectUtils.isNotEmpty(inside)) {
+            if (ObjectKit.isNotEmpty(inside)) {
                 context.setInside(true);
             }
         }
@@ -243,7 +243,7 @@ public class Validated extends Provider {
             property.setErrcode(errcode);
             property.addParam(Builder.FIELD, this.field);
 
-            if (ObjectUtils.isNotEmpty(object) && object.getClass().isArray()) {
+            if (ObjectKit.isNotEmpty(object) && object.getClass().isArray()) {
                 property.addParam(Builder.VAL, Arrays.toString((Object[]) object));
             } else {
                 property.addParam(Builder.VAL, String.valueOf(object));
@@ -252,7 +252,7 @@ public class Validated extends Provider {
             Method[] declaredMethods = annotationType.getDeclaredMethods();
             for (Method m : declaredMethods) {
                 Filler filler = m.getAnnotation(Filler.class);
-                if (ObjectUtils.isNotEmpty(filler)) {
+                if (ObjectKit.isNotEmpty(filler)) {
                     Class<?> returnType = m.getReturnType();
                     Object invoke = m.invoke(annotation);
                     if (returnType.isArray()) {
@@ -275,7 +275,7 @@ public class Validated extends Provider {
                     property.setException(((ValidEx) anno).value());
                 }
             }
-            if (ObjectUtils.isEmpty(property.getClazz()) || StringUtils.isEmpty(property.getName())) {
+            if (ObjectKit.isEmpty(property.getClazz()) || StringKit.isEmpty(property.getName())) {
                 throw new InstrumentException("非法的校验注解,没有使用Complex元注解表示校验器:" + annotationType.getName());
             }
             return property;

@@ -28,7 +28,7 @@ import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
@@ -50,7 +50,7 @@ import java.nio.file.Path;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -98,7 +98,7 @@ public class Image implements Serializable {
      * @return {@link Image}
      */
     public static Image from(File imageFile) {
-        return new Image(ImageUtils.read(imageFile));
+        return new Image(ImageKit.read(imageFile));
     }
 
     /**
@@ -118,7 +118,7 @@ public class Image implements Serializable {
      * @return {@link Image}
      */
     public static Image from(InputStream in) {
-        return new Image(ImageUtils.read(in));
+        return new Image(ImageKit.read(in));
     }
 
     /**
@@ -128,7 +128,7 @@ public class Image implements Serializable {
      * @return {@link Image}
      */
     public static Image from(ImageInputStream imageStream) {
-        return new Image(ImageUtils.read(imageStream));
+        return new Image(ImageKit.read(imageStream));
     }
 
     /**
@@ -138,7 +138,7 @@ public class Image implements Serializable {
      * @return {@link Image}
      */
     public static Image from(URL imageUrl) {
-        return new Image(ImageUtils.read(imageUrl));
+        return new Image(ImageKit.read(imageUrl));
     }
 
     /**
@@ -148,7 +148,7 @@ public class Image implements Serializable {
      * @return {@link Image}
      */
     public static Image from(java.awt.Image image) {
-        return new Image(ImageUtils.toBufferedImage(image));
+        return new Image(ImageKit.toBufferedImage(image));
     }
 
     /**
@@ -263,13 +263,13 @@ public class Image implements Serializable {
         // PNG图片特殊处理
         if (FileType.TYPE_PNG.equals(this.targetImageType)) {
             final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(scale, scale), null);
-            this.targetImage = op.filter(ImageUtils.toBufferedImage(srcImage), null);
+            this.targetImage = op.filter(ImageKit.toBufferedImage(srcImage), null);
         } else {
             final String scaleStr = Float.toString(scale);
             // 缩放后的图片宽
-            int width = MathUtils.mul(Integer.toString(srcImage.getWidth(null)), scaleStr).intValue();
+            int width = MathKit.mul(Integer.toString(srcImage.getWidth(null)), scaleStr).intValue();
             // 缩放后的图片高
-            int height = MathUtils.mul(Integer.toString(srcImage.getHeight(null)), scaleStr).intValue();
+            int height = MathKit.mul(Integer.toString(srcImage.getHeight(null)), scaleStr).intValue();
             scale(width, height);
         }
         return this;
@@ -300,12 +300,12 @@ public class Image implements Serializable {
             scaleType = java.awt.Image.SCALE_DEFAULT;
         }
 
-        double sx = MathUtils.div(width, srcWidth);
-        double sy = MathUtils.div(height, srcHeight);
+        double sx = MathKit.div(width, srcWidth);
+        double sy = MathKit.div(height, srcHeight);
 
         if (FileType.TYPE_PNG.equals(this.targetImageType)) {
             final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(sx, sy), null);
-            this.targetImage = op.filter(ImageUtils.toBufferedImage(srcImage), null);
+            this.targetImage = op.filter(ImageKit.toBufferedImage(srcImage), null);
         } else {
             this.targetImage = srcImage.getScaledInstance(width, height, scaleType);
         }
@@ -326,8 +326,8 @@ public class Image implements Serializable {
         java.awt.Image srcImage = getValidSrcImg();
         int srcHeight = srcImage.getHeight(null);
         int srcWidth = srcImage.getWidth(null);
-        double heightRatio = MathUtils.div(height, srcHeight);
-        double widthRatio = MathUtils.div(width, srcWidth);
+        double heightRatio = MathKit.div(height, srcHeight);
+        double widthRatio = MathKit.div(width, srcWidth);
 
         if (widthRatio == heightRatio) {
             // 长宽都按照相同比例缩放时,返回缩放后的图片
@@ -375,7 +375,7 @@ public class Image implements Serializable {
 
         final ImageFilter cropFilter = new CropImageFilter(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
         final java.awt.Image image = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(srcImage.getSource(), cropFilter));
-        this.targetImage = ImageUtils.toBufferedImage(image);
+        this.targetImage = ImageKit.toBufferedImage(image);
         return this;
     }
 
@@ -431,7 +431,7 @@ public class Image implements Serializable {
         final int height = srcImage.getHeight(null);
 
         // 通过弧度占比计算弧度
-        arc = MathUtils.mul(arc, Math.min(width, height));
+        arc = MathKit.mul(arc, Math.min(width, height));
 
         final BufferedImage targetImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final Graphics2D g2 = targetImage.createGraphics();
@@ -453,7 +453,7 @@ public class Image implements Serializable {
      */
     public Image gray() {
         final ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-        this.targetImage = op.filter(ImageUtils.toBufferedImage(getValidSrcImg()), null);
+        this.targetImage = op.filter(ImageKit.toBufferedImage(getValidSrcImg()), null);
         return this;
     }
 
@@ -463,7 +463,7 @@ public class Image implements Serializable {
      * @return this
      */
     public Image binary() {
-        this.targetImage = ImageUtils.copyImage(getValidSrcImg(), BufferedImage.TYPE_BYTE_BINARY);
+        this.targetImage = ImageKit.copyImage(getValidSrcImg(), BufferedImage.TYPE_BYTE_BINARY);
         return this;
     }
 
@@ -480,7 +480,7 @@ public class Image implements Serializable {
      * @return 处理后的图像
      */
     public Image pressText(String pressText, Color color, Font font, int x, int y, float alpha) {
-        final BufferedImage targetImage = ImageUtils.toBufferedImage(getValidSrcImg());
+        final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg());
         final Graphics2D g = targetImage.createGraphics();
 
         if (null == font) {
@@ -533,7 +533,7 @@ public class Image implements Serializable {
         final java.awt.Image targetImage = getValidSrcImg();
 
         rectangle = fixRectangle(rectangle, targetImage.getWidth(null), targetImage.getHeight(null));
-        this.targetImage = draw(ImageUtils.toBufferedImage(targetImage), pressImage, rectangle, alpha);
+        this.targetImage = draw(ImageKit.toBufferedImage(targetImage), pressImage, rectangle, alpha);
         return this;
     }
 
@@ -596,7 +596,7 @@ public class Image implements Serializable {
      * @throws InstrumentException IO异常
      */
     public boolean write(OutputStream out) throws InstrumentException {
-        return write(ImageUtils.getImageOutputStream(out));
+        return write(ImageKit.getImageOutputStream(out));
     }
 
     /**
@@ -613,7 +613,7 @@ public class Image implements Serializable {
         final java.awt.Image targetImage = (null == this.targetImage) ? this.srcImage : this.targetImage;
         Assert.notNull(targetImage, "Target image is null !");
 
-        return ImageUtils.write(targetImage, this.targetImageType, targetImageStream, this.quality);
+        return ImageKit.write(targetImage, this.targetImageType, targetImageStream, this.quality);
     }
 
     /**
@@ -624,8 +624,8 @@ public class Image implements Serializable {
      * @throws InstrumentException IO异常
      */
     public boolean write(File targetFile) throws InstrumentException {
-        final String formatName = FileUtils.extName(targetFile);
-        if (StringUtils.isNotBlank(formatName)) {
+        final String formatName = FileKit.extName(targetFile);
+        if (StringKit.isNotBlank(formatName)) {
             this.targetImageType = formatName;
         }
 
@@ -635,10 +635,10 @@ public class Image implements Serializable {
 
         ImageOutputStream out = null;
         try {
-            out = ImageUtils.getImageOutputStream(targetFile);
+            out = ImageKit.getImageOutputStream(targetFile);
             return write(out);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
     }
 
@@ -664,7 +664,7 @@ public class Image implements Serializable {
      * @return 有效的源图片
      */
     private java.awt.Image getValidSrcImg() {
-        return ObjectUtils.defaultIfNull(this.targetImage, this.srcImage);
+        return ObjectKit.defaultIfNull(this.targetImage, this.srcImage);
     }
 
     /**

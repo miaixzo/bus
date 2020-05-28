@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.stream;
 
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.data.BulkData;
 import org.aoju.bus.image.galaxy.data.Fragments;
@@ -41,7 +41,7 @@ import java.util.Objects;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class SegmentedImageStream extends ImageInputStreamImpl {
@@ -186,7 +186,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
         stream.seek(testOffset);
         int size = stream.read(data);
         if (size < 8) return null;
-        int tag = ByteUtils.bytesToTagLE(data, 0);
+        int tag = ByteKit.bytesToTagLE(data, 0);
         if (tag == Tag.SequenceDelimitationItem) {
             // Safe to read un-protected now as we know there are no more items to update.
             lastSegment = fragments.size();
@@ -195,7 +195,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
         if (tag != Tag.Item) {
             throw new IOException("At " + testOffset + " isn't an Item(" + Integer.toHexString(Tag.Item) + "), but is " + Integer.toHexString(tag));
         }
-        int itemLen = ByteUtils.bytesToIntLE(data, 4);
+        int itemLen = ByteKit.bytesToIntLE(data, 4);
         BulkData bulk;
         synchronized (fragments) {
             if (at < fragments.size()) {

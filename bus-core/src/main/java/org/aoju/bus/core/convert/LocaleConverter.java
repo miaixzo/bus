@@ -25,7 +25,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.Locale;
 
@@ -34,7 +34,7 @@ import java.util.Locale;
  * 只提供String转换支持
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class LocaleConverter extends AbstractConverter<Locale> {
@@ -43,7 +43,7 @@ public class LocaleConverter extends AbstractConverter<Locale> {
     protected Locale convertInternal(Object value) {
         try {
             String str = convertToStr(value);
-            if (StringUtils.isEmpty(str)) {
+            if (StringKit.isEmpty(str)) {
                 return null;
             }
 

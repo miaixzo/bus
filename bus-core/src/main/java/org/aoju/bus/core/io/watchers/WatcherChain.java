@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.watchers;
 
 import org.aoju.bus.core.lang.Chain;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -37,7 +37,7 @@ import java.util.List;
  * 用于加入多个观察者
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
@@ -53,7 +53,7 @@ public class WatcherChain implements Watcher, Chain<Watcher, WatcherChain> {
      * @param watchers 观察者列表
      */
     public WatcherChain(Watcher... watchers) {
-        chain = CollUtils.newArrayList(watchers);
+        chain = CollKit.newArrayList(watchers);
     }
 
     /**

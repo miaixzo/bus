@@ -29,7 +29,7 @@ package org.aoju.bus.gitlab.models;
  * See <a href="https://docs.gitlab.com/ee/api/repositories.html#contributors">Contributors at GitLab</a>.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Contributor extends AbstractUser<Contributor> {

@@ -30,7 +30,7 @@ import com.alibaba.fastjson.serializer.ContextValueFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.sensitive.annotation.Condition;
 import org.aoju.bus.sensitive.annotation.*;
 import org.aoju.bus.sensitive.provider.ConditionProvider;
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @param <T> 参数类型
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Provider<T> {
@@ -118,11 +118,11 @@ public class Provider<T> {
      * @return 脱敏后的新对象
      */
     public T on(T object, Annotation annotation, boolean clone) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return object;
         }
 
-        if (ObjectUtils.isNotEmpty(annotation)) {
+        if (ObjectKit.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
             this.value = sensitive.field();
         }
@@ -152,11 +152,11 @@ public class Provider<T> {
      * @return json
      */
     public String json(T object, Annotation annotation) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return JSON.toJSONString(object);
         }
 
-        if (ObjectUtils.isNotEmpty(annotation)) {
+        if (ObjectKit.isNotEmpty(annotation)) {
             Sensitive sensitive = (Sensitive) annotation;
             this.value = sensitive.field();
         }
@@ -177,13 +177,13 @@ public class Provider<T> {
                                   final Object copyObject,
                                   final Class clazz) {
         // 每一个实体对应的字段,只对当前 clazz 生效
-        List<Field> fieldList = ClassUtils.getAllFieldList(clazz);
+        List<Field> fieldList = ClassKit.getAllFieldList(clazz);
         context.setAllFieldList(fieldList);
         context.setCurrentObject(copyObject);
 
         try {
             for (Field field : fieldList) {
-                if (ArrayUtils.isNotEmpty(this.value)) {
+                if (ArrayKit.isNotEmpty(this.value)) {
                     if (!Arrays.asList(this.value).contains(field.getName())) {
                         continue;
                     }
@@ -194,15 +194,15 @@ public class Provider<T> {
 
                 // 处理 @Entry 注解
                 Entry sensitiveEntry = field.getAnnotation(Entry.class);
-                if (ObjectUtils.isNotNull(sensitiveEntry)) {
-                    if (TypeUtils.isJavaBean(fieldTypeClass)) {
+                if (ObjectKit.isNotNull(sensitiveEntry)) {
+                    if (TypeKit.isJavaBean(fieldTypeClass)) {
                         // 为普通 javabean 对象
                         final Object fieldNewObject = field.get(copyObject);
                         handleClassField(context, fieldNewObject, fieldTypeClass);
-                    } else if (TypeUtils.isArray(fieldTypeClass)) {
+                    } else if (TypeKit.isArray(fieldTypeClass)) {
                         // 为数组类型
                         Object[] arrays = (Object[]) field.get(copyObject);
-                        if (ArrayUtils.isNotEmpty(arrays)) {
+                        if (ArrayKit.isNotEmpty(arrays)) {
                             Object firstArrayEntry = arrays[0];
                             final Class entryFieldClass = firstArrayEntry.getClass();
 
@@ -223,10 +223,10 @@ public class Provider<T> {
                                 field.set(copyObject, newArray);
                             }
                         }
-                    } else if (TypeUtils.isCollection(fieldTypeClass)) {
+                    } else if (TypeKit.isCollection(fieldTypeClass)) {
                         // Collection 接口的子类
                         final Collection<Object> entryCollection = (Collection<Object>) field.get(copyObject);
-                        if (CollUtils.isNotEmpty(entryCollection)) {
+                        if (CollKit.isNotEmpty(entryCollection)) {
                             Object firstCollectionEntry = entryCollection.iterator().next();
                             Class collectionEntryClass = firstCollectionEntry.getClass();
 
@@ -282,7 +282,7 @@ public class Provider<T> {
         try {
             //处理 @Field
             Shield sensitive = field.getAnnotation(Shield.class);
-            if (ObjectUtils.isNotNull(sensitive)) {
+            if (ObjectKit.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
                 ConditionProvider condition = conditionClass.newInstance();
                 if (condition.valid(context)) {
@@ -295,12 +295,12 @@ public class Provider<T> {
 
             // 获取所有的注解
             Annotation[] annotations = field.getAnnotations();
-            if (ArrayUtils.isNotEmpty(annotations)) {
+            if (ArrayKit.isNotEmpty(annotations)) {
                 ConditionProvider condition = getCondition(annotations);
-                if (ObjectUtils.isNull(condition)
+                if (ObjectKit.isNull(condition)
                         || condition.valid(context)) {
                     StrategyProvider strategy = getStrategy(annotations);
-                    if (ObjectUtils.isNotNull(strategy)) {
+                    if (ObjectKit.isNotNull(strategy)) {
                         return strategy.build(entry, context);
                     }
                 }
@@ -339,12 +339,12 @@ public class Provider<T> {
 
             // 系统内置自定义注解的处理,获取所有的注解
             Annotation[] annotations = field.getAnnotations();
-            if (ArrayUtils.isNotEmpty(annotations)) {
+            if (ArrayKit.isNotEmpty(annotations)) {
                 ConditionProvider condition = getCondition(annotations);
-                if (ObjectUtils.isNull(condition)
+                if (ObjectKit.isNull(condition)
                         || condition.valid(context)) {
                     StrategyProvider strategy = getStrategy(annotations);
-                    if (ObjectUtils.isNotNull(strategy)) {
+                    if (ObjectKit.isNotNull(strategy)) {
                         final Object originalFieldVal = field.get(copyObject);
                         final Object result = strategy.build(originalFieldVal, context);
                         field.set(copyObject, result);
@@ -365,12 +365,12 @@ public class Provider<T> {
     private StrategyProvider getStrategy(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             Strategy strategy = annotation.annotationType().getAnnotation(Strategy.class);
-            if (ObjectUtils.isNotNull(strategy)) {
+            if (ObjectKit.isNotNull(strategy)) {
                 Class<? extends StrategyProvider> clazz = strategy.value();
                 if (BuiltInStrategy.class.equals(clazz)) {
                     return Registry.require(annotation.annotationType());
                 } else {
-                    return ClassUtils.newInstance(clazz);
+                    return ClassKit.newInstance(clazz);
                 }
             }
         }
@@ -386,9 +386,9 @@ public class Provider<T> {
     private ConditionProvider getCondition(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             Condition condition = annotation.annotationType().getAnnotation(Condition.class);
-            if (ObjectUtils.isNotNull(condition)) {
+            if (ObjectKit.isNotNull(condition)) {
                 Class<? extends ConditionProvider> clazz = condition.value();
-                return ClassUtils.newInstance(clazz);
+                return ClassKit.newInstance(clazz);
             }
         }
         return null;
@@ -401,14 +401,14 @@ public class Provider<T> {
      * @return 是否
      */
     private boolean needHandleEntryType(final Class fieldTypeClass) {
-        if (TypeUtils.isBase(fieldTypeClass)
-                || TypeUtils.isMap(fieldTypeClass)) {
+        if (TypeKit.isBase(fieldTypeClass)
+                || TypeKit.isMap(fieldTypeClass)) {
             return false;
         }
 
-        if (TypeUtils.isJavaBean(fieldTypeClass)
-                || TypeUtils.isArray(fieldTypeClass)
-                || TypeUtils.isCollection(fieldTypeClass)) {
+        if (TypeKit.isJavaBean(fieldTypeClass)
+                || TypeKit.isArray(fieldTypeClass)
+                || TypeKit.isCollection(fieldTypeClass)) {
             return true;
         }
         return false;

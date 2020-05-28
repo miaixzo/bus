@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.NotNull;
 import org.aoju.bus.validate.validators.Matcher;
@@ -33,14 +33,14 @@ import org.aoju.bus.validate.validators.Matcher;
  * NOT NUll 校验
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class NotNullStrategy implements Matcher<Object, NotNull> {
 
     @Override
     public boolean on(Object object, NotNull annotation, Context context) {
-        return ObjectUtils.isNotEmpty(object);
+        return ObjectKit.isNotEmpty(object);
     }
 
 }

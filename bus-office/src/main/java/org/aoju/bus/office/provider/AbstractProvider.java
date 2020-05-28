@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.provider;
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.Provider;
 import org.aoju.bus.office.builtin.AbstractNorm;
@@ -43,7 +43,7 @@ import java.io.InputStream;
  * 所有文档转换器实现的基类.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements Provider {
@@ -70,7 +70,7 @@ public abstract class AbstractProvider implements Provider {
     public OptionalSource convert(final File source) {
         final SourceFromFileProvider specs = new SourceFromFileProvider(source);
         final DocumentFormat format =
-                formatRegistry.getFormatByExtension(FileUtils.getExtension(source.getName()));
+                formatRegistry.getFormatByExtension(FileKit.getExtension(source.getName()));
         if (format != null) {
             specs.setDocumentFormat(format);
         }

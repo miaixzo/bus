@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
 import java.util.zip.CRC32;
@@ -36,7 +36,7 @@ import java.util.zip.Deflater;
  * 只在应用程序行为需要时调用{@link #flush}
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class GzipSink implements Sink {
@@ -53,7 +53,7 @@ public final class GzipSink implements Sink {
     public GzipSink(Sink sink) {
         if (sink == null) throw new IllegalArgumentException("sink == null");
         this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
-        this.sink = IoUtils.buffer(sink);
+        this.sink = IoKit.buffer(sink);
         this.deflaterSink = new DeflaterSink(this.sink, deflater);
 
         writeHeader();
@@ -103,7 +103,7 @@ public final class GzipSink implements Sink {
         }
         closed = true;
 
-        if (thrown != null) IoUtils.sneakyRethrow(thrown);
+        if (thrown != null) IoKit.sneakyRethrow(thrown);
     }
 
     public final Deflater deflater() {

@@ -26,13 +26,14 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public interface Constants {
@@ -646,7 +647,7 @@ public interface Constants {
         private final String value;
 
         ArchiveFormat() {
-            this.value = name().toLowerCase().replace('_', '.');
+            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
         public static ArchiveFormat forValue(String value) throws GitLabApiException {

@@ -28,7 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -47,7 +47,7 @@ import java.util.Map;
  * 微博登录
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class WeiboProvider extends DefaultProvider {
@@ -100,7 +100,7 @@ public class WeiboProvider extends DefaultProvider {
                 .uuid(object.getString("id"))
                 .username(object.getString("name"))
                 .avatar(object.getString("profile_image_url"))
-                .blog(StringUtils.isEmpty(object.getString("url")) ? "https://weibo.com/" + object.getString("profile_url") : object
+                .blog(StringKit.isEmpty(object.getString("url")) ? "https://weibo.com/" + object.getString("profile_url") : object
                         .getString("url"))
                 .nickname(object.getString("screen_name"))
                 .location(object.getString("location"))

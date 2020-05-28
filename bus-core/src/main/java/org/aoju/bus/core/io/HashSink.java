@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.lang.Algorithm;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -40,7 +40,7 @@ import java.security.NoSuchAlgorithmException;
  * {@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class HashSink extends DelegateSink {
@@ -101,7 +101,7 @@ public final class HashSink extends DelegateSink {
 
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
-        IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
+        IoKit.checkOffsetAndCount(source.size, 0, byteCount);
 
         long hashedCount = 0;
         for (Segment s = source.head; hashedCount < byteCount; s = s.next) {

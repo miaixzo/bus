@@ -26,7 +26,7 @@ package org.aoju.bus.starter.oauth;
 
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Provider;
@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 授权服务提供
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class AuthProviderService {
@@ -84,7 +84,7 @@ public class AuthProviderService {
 
     public Provider require(Registry type) {
         Context context = CACHE.get(type);
-        if (ObjectUtils.isEmpty(context)) {
+        if (ObjectKit.isEmpty(context)) {
             context = properties.getType().get(type);
         }
         if (Registry.ALIPAY.equals(type)) {

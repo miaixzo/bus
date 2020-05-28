@@ -25,7 +25,7 @@
 package org.aoju.bus.office.provider;
 
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 
@@ -33,7 +33,7 @@ import java.io.File;
  * 当转换过程不再需要目标文件时，提供应用行为的接口.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class TargetFromFileProvider extends AbstractTargetProvider
@@ -50,7 +50,7 @@ public class TargetFromFileProvider extends AbstractTargetProvider
 
     @Override
     public void onFailure(final File file, final Exception exception) {
-        FileUtils.delete(file);
+        FileKit.delete(file);
     }
 
 }

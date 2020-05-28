@@ -30,7 +30,7 @@ import org.aoju.bus.core.io.DelegateSink;
 import org.aoju.bus.core.io.Sink;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.Response;
 import org.aoju.bus.http.accord.RealConnection;
@@ -46,7 +46,7 @@ import java.net.ProtocolException;
  * 它对服务器进行网络调用
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class CallServerInterceptor implements Interceptor {
@@ -84,7 +84,7 @@ public final class CallServerInterceptor implements Interceptor {
                 long contentLength = request.body().contentLength();
                 CountingSink requestBodyOut =
                         new CountingSink(httpCodec.createRequestBody(request, contentLength));
-                BufferSink bufferedRequestBody = IoUtils.buffer(requestBodyOut);
+                BufferSink bufferedRequestBody = IoKit.buffer(requestBodyOut);
 
                 request.body().writeTo(bufferedRequestBody);
                 bufferedRequestBody.close();

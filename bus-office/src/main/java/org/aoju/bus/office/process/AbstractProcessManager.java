@@ -25,7 +25,7 @@
 package org.aoju.bus.office.process;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
 
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * 包含的所有流程管理器实现的基类.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractProcessManager implements ProcessManager {
@@ -55,7 +55,7 @@ public abstract class AbstractProcessManager implements ProcessManager {
     private String buildOutput(final List<String> lines) {
         Objects.requireNonNull(lines, "lines must not be null");
 
-        return lines.stream().filter(StringUtils::isNotBlank).collect(Collectors.joining(Symbol.LF));
+        return lines.stream().filter(StringKit::isNotBlank).collect(Collectors.joining(Symbol.LF));
     }
 
     /**
@@ -85,11 +85,11 @@ public abstract class AbstractProcessManager implements ProcessManager {
         final String out = buildOutput(outLines);
         final String err = buildOutput(streamsHandler.getErrorPumper().getLines());
 
-        if (!StringUtils.isBlank(out)) {
+        if (!StringKit.isBlank(out)) {
             Logger.trace("Command Output: {}", out);
         }
 
-        if (!StringUtils.isBlank(err)) {
+        if (!StringKit.isBlank(err)) {
             Logger.trace("Command Error: {}", err);
         }
 
@@ -115,7 +115,7 @@ public abstract class AbstractProcessManager implements ProcessManager {
 
         final List<String> lines = execute(currentProcessesCommand);
         for (final String line : lines) {
-            if (StringUtils.isBlank(line)) {
+            if (StringKit.isBlank(line)) {
                 continue;
             }
             Logger.trace(

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class H2Shooting extends AbstractShooting {
@@ -55,9 +55,9 @@ public class H2Shooting extends AbstractShooting {
         return () -> {
             SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
             dataSource.setDriverClassName("org.h2.Driver");
-            dataSource.setUrl(StringUtils.toString(context.get("url")));
-            dataSource.setUsername(StringUtils.toString(context.get("username")));
-            dataSource.setPassword(StringUtils.toString(context.get("password")));
+            dataSource.setUrl(StringKit.toString(context.get("url")));
+            dataSource.setUsername(StringKit.toString(context.get("username")));
+            dataSource.setPassword(StringKit.toString(context.get("password")));
 
             JdbcTemplate template = new JdbcTemplate(dataSource);
             template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +

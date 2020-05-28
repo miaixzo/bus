@@ -25,7 +25,7 @@
 package org.aoju.bus.core.key;
 
 import org.aoju.bus.core.date.SystemClock;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -42,7 +42,7 @@ import java.util.Date;
  * (由数据中心ID和机器ID作区分),并且效率较高,经测试,SnowFlake每秒能够产生26万ID左右
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Snowflake implements Serializable {
@@ -106,10 +106,10 @@ public class Snowflake implements Serializable {
             this.twepoch = 1288834974657L;
         }
         if (workerId > maxWorkerId || workerId < 0) {
-            throw new IllegalArgumentException(StringUtils.format("worker Id can't be greater than {} or less than 0", maxWorkerId));
+            throw new IllegalArgumentException(StringKit.format("worker Id can't be greater than {} or less than 0", maxWorkerId));
         }
         if (dataCenterId > maxDataCenterId || dataCenterId < 0) {
-            throw new IllegalArgumentException(StringUtils.format("datacenter Id can't be greater than {} or less than 0", maxDataCenterId));
+            throw new IllegalArgumentException(StringKit.format("datacenter Id can't be greater than {} or less than 0", maxDataCenterId));
         }
         this.workerId = workerId;
         this.dataCenterId = dataCenterId;
@@ -155,7 +155,7 @@ public class Snowflake implements Serializable {
         long timestamp = genTime();
         if (timestamp < lastTimestamp) {
             // 如果服务器时间有问题(时钟后退) 报错
-            throw new IllegalStateException(StringUtils.format("Clock moved backwards. Refusing to generate id for {}ms", lastTimestamp - timestamp));
+            throw new IllegalStateException(StringKit.format("Clock moved backwards. Refusing to generate id for {}ms", lastTimestamp - timestamp));
         }
         if (lastTimestamp == timestamp) {
             sequence = (sequence + 1) & sequenceMask;

@@ -28,7 +28,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.util.XReplaceDescriptor;
 import com.sun.star.util.XReplaceable;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ArrayUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Context;
 import org.aoju.bus.office.magic.Lo;
@@ -40,7 +40,7 @@ import org.aoju.bus.office.magic.filter.FilterChain;
  * 此筛选器用于替换文档中的文本.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class TextReplacerFilter implements Filter {
@@ -56,8 +56,8 @@ public class TextReplacerFilter implements Filter {
      */
     public TextReplacerFilter(final String[] searchList, final String[] replacementList) {
         super();
-        this.searchList = ArrayUtils.clone(searchList);
-        this.replacementList = ArrayUtils.clone(replacementList);
+        this.searchList = ArrayKit.clone(searchList);
+        this.replacementList = ArrayKit.clone(replacementList);
     }
 
     @Override

@@ -26,7 +26,7 @@ package org.aoju.bus.storage.provider;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -43,7 +43,7 @@ import java.nio.file.Path;
  * 本地文件上传
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class LocalFileProvider extends AbstractProvider {
@@ -110,7 +110,7 @@ public class LocalFileProvider extends AbstractProvider {
                 }
             }
             OutputStream out = Files.newOutputStream(dest.toPath());
-            StreamUtils.copy(content, out);
+            StreamKit.copy(content, out);
             content.close();
             out.close();
             return Message.builder()

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.watchers;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.core.toolkit.ThreadKit;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,7 +41,7 @@ import java.util.Set;
  * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发,从而避免以上问题
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DelayWatcher implements Watcher {
@@ -123,8 +123,8 @@ public class DelayWatcher implements Watcher {
      * @param currentPath 事件发生的当前Path路径
      */
     private void startHandleModifyThread(final WatchEvent<?> event, final Path currentPath) {
-        ThreadUtils.execute(() -> {
-            ThreadUtils.sleep(delay);
+        ThreadKit.execute(() -> {
+            ThreadKit.sleep(delay);
             eventSet.remove(Paths.get(currentPath.toString(), event.context().toString()));
             watcher.onModify(event, currentPath);
         });

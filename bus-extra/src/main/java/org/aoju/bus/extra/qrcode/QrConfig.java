@@ -26,12 +26,12 @@ package org.aoju.bus.extra.qrcode;
 
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.ImageUtils;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.ImageKit;
 
 import java.awt.*;
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ import java.util.Map;
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class QrConfig {
@@ -74,7 +74,7 @@ public class QrConfig {
     /**
      * 编码
      */
-    public Charset charset = org.aoju.bus.core.lang.Charset.UTF_8;
+    public java.nio.charset.Charset charset = Charset.UTF_8;
     /**
      * 二维码中的Logo
      */
@@ -242,7 +242,7 @@ public class QrConfig {
      *
      * @return 编码
      */
-    public Charset getCharset() {
+    public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
@@ -252,7 +252,7 @@ public class QrConfig {
      * @param charset 编码
      * @return this
      */
-    public QrConfig setCharset(Charset charset) {
+    public QrConfig setCharset(java.nio.charset.Charset charset) {
         this.charset = charset;
         return this;
     }
@@ -273,7 +273,7 @@ public class QrConfig {
      * @return this;
      */
     public QrConfig setImg(String imgPath) {
-        return setImg(FileUtils.file(imgPath));
+        return setImg(FileKit.file(imgPath));
     }
 
     /**
@@ -283,7 +283,7 @@ public class QrConfig {
      * @return this;
      */
     public QrConfig setImg(File imgFile) {
-        return setImg(ImageUtils.read(imgFile));
+        return setImg(ImageKit.read(imgFile));
     }
 
     /**

@@ -25,14 +25,13 @@
 package org.aoju.bus.core.io.file;
 
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CharsetUtils;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,7 +40,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FileWriter extends FileWrapper {
@@ -52,7 +51,7 @@ public class FileWriter extends FileWrapper {
      * @param file    文件
      * @param charset 编码
      */
-    public FileWriter(File file, Charset charset) {
+    public FileWriter(File file, java.nio.charset.Charset charset) {
         super(file, charset);
         checkFile();
     }
@@ -64,7 +63,7 @@ public class FileWriter extends FileWrapper {
      * @param charset 编码
      */
     public FileWriter(File file, String charset) {
-        this(file, CharsetUtils.charset(charset));
+        this(file, Charset.charset(charset));
     }
 
     /**
@@ -73,18 +72,18 @@ public class FileWriter extends FileWrapper {
      * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
      * @param charset  编码
      */
-    public FileWriter(String filePath, Charset charset) {
-        this(FileUtils.file(filePath), charset);
+    public FileWriter(String filePath, java.nio.charset.Charset charset) {
+        this(FileKit.file(filePath), charset);
     }
 
     /**
      * 构造
      *
      * @param filePath 文件路径,相对路径会被转换为相对于ClassPath的路径
-     * @param charset  编码,使用 {@link CharsetUtils#charset(String)}
+     * @param charset  编码,使用 {@link Charset#charset(String)}
      */
     public FileWriter(String filePath, String charset) {
-        this(FileUtils.file(filePath), CharsetUtils.charset(charset));
+        this(FileKit.file(filePath), Charset.charset(charset));
     }
 
     /**
@@ -114,7 +113,7 @@ public class FileWriter extends FileWrapper {
      * @param charset 编码
      * @return {@link FileWriter}
      */
-    public static FileWriter create(File file, Charset charset) {
+    public static FileWriter create(File file, java.nio.charset.Charset charset) {
         return new FileWriter(file, charset);
     }
 
@@ -145,7 +144,7 @@ public class FileWriter extends FileWrapper {
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(writer);
+            IoKit.close(writer);
         }
         return file;
     }
@@ -262,7 +261,7 @@ public class FileWriter extends FileWrapper {
         try (PrintWriter writer = getPrintWriter(isAppend)) {
             for (Entry<?, ?> entry : map.entrySet()) {
                 if (null != entry) {
-                    writer.print(StringUtils.format("{}{}{}", entry.getKey(), kvSeparator, entry.getValue()));
+                    writer.print(StringKit.format("{}{}{}", entry.getKey(), kvSeparator, entry.getValue()));
                     printNewLine(writer, lineSeparator);
                     writer.flush();
                 }
@@ -310,13 +309,13 @@ public class FileWriter extends FileWrapper {
     public File write(byte[] data, int off, int len, boolean isAppend) throws InstrumentException {
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(FileUtils.touch(file), isAppend);
+            out = new FileOutputStream(FileKit.touch(file), isAppend);
             out.write(data, off, len);
             out.flush();
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
         return file;
     }
@@ -332,12 +331,12 @@ public class FileWriter extends FileWrapper {
     public File writeFromStream(InputStream in) throws InstrumentException {
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(FileUtils.touch(file));
-            IoUtils.copy(in, out);
+            out = new FileOutputStream(FileKit.touch(file));
+            IoKit.copy(in, out);
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            IoUtils.close(out);
+            IoKit.close(out);
         }
         return file;
     }
@@ -350,7 +349,7 @@ public class FileWriter extends FileWrapper {
      */
     public BufferedOutputStream getOutputStream() throws InstrumentException {
         try {
-            return new BufferedOutputStream(new FileOutputStream(FileUtils.touch(file)));
+            return new BufferedOutputStream(new FileOutputStream(FileKit.touch(file)));
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -365,7 +364,7 @@ public class FileWriter extends FileWrapper {
      */
     public BufferedWriter getWriter(boolean isAppend) throws InstrumentException {
         try {
-            return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FileUtils.touch(file), isAppend), charset));
+            return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FileKit.touch(file), isAppend), charset));
         } catch (Exception e) {
             throw new InstrumentException(e);
         }

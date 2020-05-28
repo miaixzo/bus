@@ -30,7 +30,7 @@ import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.*;
 import org.aoju.bus.http.accord.StreamAllocation;
 import org.aoju.bus.http.metric.EventListener;
@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
@@ -217,7 +217,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                     checkResponse(response);
                 } catch (ProtocolException e) {
                     failWebSocket(e, response);
-                    IoUtils.close(response);
+                    IoKit.close(response);
                     return;
                 }
 
@@ -379,7 +379,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 listener.onClosed(this, code, reason);
             }
         } finally {
-            IoUtils.close(toClose);
+            IoKit.close(toClose);
         }
     }
 
@@ -505,7 +505,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
             } else if (messageOrClose instanceof Message) {
                 ByteString data = ((Message) messageOrClose).data;
-                BufferSink sink = IoUtils.buffer(writer.newMessageSink(
+                BufferSink sink = IoKit.buffer(writer.newMessageSink(
                         ((Message) messageOrClose).formatOpcode, data.size()));
                 sink.write(data);
                 sink.close();
@@ -528,7 +528,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
             return true;
         } finally {
-            IoUtils.close(streamsToClose);
+            IoKit.close(streamsToClose);
         }
     }
 
@@ -571,7 +571,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
         try {
             listener.onFailure(this, e, response);
         } finally {
-            IoUtils.close(streamsToClose);
+            IoKit.close(streamsToClose);
         }
     }
 

@@ -29,7 +29,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
 
 import java.nio.charset.StandardCharsets;
@@ -41,7 +41,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Baseboard data obtained from ioreg
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -73,9 +73,9 @@ final class MacBaseboard extends AbstractBaseboard {
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
             platformExpert.release();
         }
-        return new Quartet<>(StringUtils.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
-                StringUtils.isBlank(model) ? Normal.UNKNOWN : model, StringUtils.isBlank(version) ? Normal.UNKNOWN : version,
-                StringUtils.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
+        return new Quartet<>(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
     @Override

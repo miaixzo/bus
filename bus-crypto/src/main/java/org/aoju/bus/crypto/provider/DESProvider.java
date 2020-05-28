@@ -25,7 +25,7 @@
 package org.aoju.bus.crypto.provider;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Builder;
 import org.aoju.bus.crypto.Provider;
 import org.aoju.bus.crypto.symmetric.DES;
@@ -34,7 +34,7 @@ import org.aoju.bus.crypto.symmetric.DES;
  * 数据加密标准,速度较快,适用于加密大量数据的场合
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DESProvider implements Provider {
@@ -47,7 +47,7 @@ public class DESProvider implements Provider {
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
         DES des = Builder.des(key.getBytes());
@@ -63,7 +63,7 @@ public class DESProvider implements Provider {
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {
-        if (StringUtils.isEmpty(key)) {
+        if (StringKit.isEmpty(key)) {
             throw new InstrumentException("key is null!");
         }
         DES des = Builder.des(key.getBytes());

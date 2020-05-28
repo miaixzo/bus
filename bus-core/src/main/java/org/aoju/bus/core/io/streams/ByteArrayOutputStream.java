@@ -25,12 +25,11 @@
 package org.aoju.bus.core.io.streams;
 
 import org.aoju.bus.core.io.FastByteBuffer;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CharsetUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 /**
  * 基于快速缓冲FastByteBuffer的OutputStream,自动扩充缓冲区
@@ -38,7 +37,7 @@ import java.nio.charset.Charset;
  * 避免重新分配内存块而是分配新增的缓冲区,缓冲区不会被GC,数据也不会被拷贝到其他缓冲区
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ByteArrayOutputStream extends OutputStream {
@@ -126,7 +125,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * @return 字符串
      */
     public String toString(String charsetName) {
-        return toString(CharsetUtils.charset(charsetName));
+        return toString(Charset.charset(charsetName));
     }
 
     /**
@@ -135,7 +134,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * @param charset 编码
      * @return 字符串
      */
-    public String toString(Charset charset) {
+    public String toString(java.nio.charset.Charset charset) {
         return new String(toByteArray(), charset);
     }
 

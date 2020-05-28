@@ -25,7 +25,7 @@
 package org.aoju.bus.starter.notify;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Provider;
@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通知提供服务
  *
  * @author Justubborn
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK1.8+
  */
 public class NotifyProviderService {
@@ -79,7 +79,7 @@ public class NotifyProviderService {
      */
     public Provider require(Registry registry) {
         Context context = CACHE.get(registry);
-        if (ObjectUtils.isEmpty(context)) {
+        if (ObjectKit.isEmpty(context)) {
             context = properties.getType().get(registry);
         }
         if (Registry.ALIYUN_SMS.equals(registry)) {

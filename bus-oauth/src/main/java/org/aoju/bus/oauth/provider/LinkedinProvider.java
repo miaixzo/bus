@@ -31,7 +31,7 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -48,7 +48,7 @@ import java.util.Map;
  * 领英登录
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class LinkedinProvider extends DefaultProvider {
@@ -175,7 +175,7 @@ public class LinkedinProvider extends DefaultProvider {
     @Override
     public Message refresh(AccToken oldToken) {
         String refreshToken = oldToken.getRefreshToken();
-        if (StringUtils.isEmpty(refreshToken)) {
+        if (StringKit.isEmpty(refreshToken)) {
             throw new AuthorizedException(Builder.ErrorCode.UNSUPPORTED.getCode());
         }
         String refreshTokenUrl = refreshTokenUrl(refreshToken);

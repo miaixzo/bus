@@ -26,7 +26,7 @@ package org.aoju.bus.crypto.asymmetric;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.crypto.Builder;
 
 import java.security.*;
@@ -39,7 +39,7 @@ import java.util.Set;
  * 签名包装，{@link Signature} 包装类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Sign extends Keys<Sign> {
@@ -207,7 +207,7 @@ public class Sign extends Keys<Sign> {
             final X509Certificate cert = (X509Certificate) certificate;
             final Set<String> critSet = cert.getCriticalExtensionOIDs();
 
-            if (CollUtils.isNotEmpty(critSet) && critSet.contains("2.5.29.15")) {
+            if (CollKit.isNotEmpty(critSet) && critSet.contains("2.5.29.15")) {
                 final boolean[] keyUsageInfo = cert.getKeyUsage();
                 // keyUsageInfo[0] 是数字签名
                 if ((keyUsageInfo != null) && (keyUsageInfo[0] == false)) {

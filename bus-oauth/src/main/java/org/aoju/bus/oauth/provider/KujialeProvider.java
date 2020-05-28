@@ -28,7 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 酷家乐授权登录
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class KujialeProvider extends DefaultProvider {
@@ -81,7 +81,7 @@ public class KujialeProvider extends DefaultProvider {
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state));
-        if (StringUtils.isNotEmpty(scopeStr)) {
+        if (StringKit.isNotEmpty(scopeStr)) {
             builder.queryParam("scope", scopeStr);
         }
         return builder.build();

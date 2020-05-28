@@ -26,7 +26,7 @@ package org.aoju.bus.office.provider;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.office.metric.TemporaryFileMaker;
 
 import java.io.File;
@@ -38,7 +38,7 @@ import java.util.Optional;
  * 当转换过程不再需要目标文件时，提供应用行为的接口.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class TargetFromOutputStreamProvider extends AbstractTargetProvider
@@ -70,7 +70,7 @@ public class TargetFromOutputStreamProvider extends AbstractTargetProvider
     @Override
     public void onComplete(final File tempFile) {
         try {
-            FileUtils.copyFile(tempFile, outputStream);
+            FileKit.copyFile(tempFile, outputStream);
             if (closeStream) {
                 outputStream.close();
             }
@@ -78,13 +78,13 @@ public class TargetFromOutputStreamProvider extends AbstractTargetProvider
         } catch (IOException ex) {
             throw new InstrumentException("Could not write file '" + tempFile + "' to stream", ex);
         } finally {
-            FileUtils.delete(tempFile);
+            FileKit.delete(tempFile);
         }
     }
 
     @Override
     public void onFailure(final File tempFile, final Exception exception) {
-        FileUtils.delete(tempFile);
+        FileKit.delete(tempFile);
     }
 
 }

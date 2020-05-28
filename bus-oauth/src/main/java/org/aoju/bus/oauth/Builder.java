@@ -30,7 +30,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.MapUtils;
+import org.aoju.bus.core.toolkit.MapKit;
 import org.aoju.bus.oauth.provider.DefaultProvider;
 
 import java.util.LinkedHashMap;
@@ -40,7 +40,7 @@ import java.util.Map;
  * 构造URL
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Setter
@@ -104,7 +104,7 @@ public class Builder {
      * @return url
      */
     public String build(boolean encode) {
-        if (MapUtils.isEmpty(this.params)) {
+        if (MapKit.isEmpty(this.params)) {
             return this.baseUrl;
         }
         String baseUrl = DefaultProvider.appendIfNotContain(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);

@@ -26,10 +26,10 @@ package org.aoju.bus.starter.sensitive;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.handlers.AbstractSqlParserHandler;
+import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.Provider;
 import org.aoju.bus.sensitive.annotation.NShield;
@@ -50,18 +50,16 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
-public class SensitiveStatementHandler extends AbstractSqlParserHandler
-        implements Interceptor {
+public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -76,9 +74,9 @@ public class SensitiveStatementHandler extends AbstractSqlParserHandler
             return invocation.proceed();
         }
         SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
-        if (ObjectUtils.isNotEmpty(properties) && !properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
             Sensitive sensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
-            if (ObjectUtils.isNotEmpty(sensitive)) {
+            if (ObjectKit.isNotEmpty(sensitive)) {
                 handleParameters(sensitive, mappedStatement.getConfiguration(), boundSql, params, commandType);
             }
         }
@@ -86,13 +84,11 @@ public class SensitiveStatementHandler extends AbstractSqlParserHandler
     }
 
     @Override
-    public Object plugin(Object o) {
-        return Plugin.wrap(o, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-
+    public Object plugin(Object object) {
+        if (object instanceof StatementHandler) {
+            return Plugin.wrap(object, this);
+        }
+        return object;
     }
 
     private void handleParameters(Sensitive sensitive, Configuration configuration, BoundSql boundSql, Object param, SqlCommandType commandType) {
@@ -113,15 +109,15 @@ public class SensitiveStatementHandler extends AbstractSqlParserHandler
                 }
             }
 
-            if (ObjectUtils.isNotEmpty(value)) {
+            if (ObjectKit.isNotEmpty(value)) {
                 // 数据加密
                 if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
                     Privacy privacy = field.getAnnotation(Privacy.class);
-                    if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                    if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
                         if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
                             SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
-                            if (ObjectUtils.isEmpty(properties)) {
+                            if (ObjectKit.isEmpty(properties)) {
                                 throw new InstrumentException("Please check the request.crypto.encrypt");
                             }
                             Logger.debug("Write data encryption enabled ...");
@@ -143,11 +139,11 @@ public class SensitiveStatementHandler extends AbstractSqlParserHandler
 
     private Object handleSensitive(Field field, Object value) {
         Shield sensitiveField = field.getAnnotation(Shield.class);
-        if (ObjectUtils.isNotEmpty(sensitiveField)) {
+        if (ObjectKit.isNotEmpty(sensitiveField)) {
             Builder.on(value);
         }
         NShield json = field.getAnnotation(NShield.class);
-        if (ObjectUtils.isNotEmpty(json) && ObjectUtils.isNotEmpty(value)) {
+        if (ObjectKit.isNotEmpty(json) && ObjectKit.isNotEmpty(value)) {
             Map<String, Object> map = Provider.parseToObjectMap(value.toString());
             Shield[] keys = json.value();
             for (Shield f : keys) {

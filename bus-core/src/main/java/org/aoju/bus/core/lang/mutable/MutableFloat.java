@@ -25,13 +25,13 @@
 package org.aoju.bus.core.lang.mutable;
 
 
-import org.aoju.bus.core.utils.MathUtils;
+import org.aoju.bus.core.toolkit.MathKit;
 
 /**
  * 可变 <code>float</code> 类型
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @see Float
  * @since JDK 1.8+
  */
@@ -215,7 +215,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      */
     @Override
     public int compareTo(final MutableFloat other) {
-        return MathUtils.compare(this.value, other.value);
+        return MathKit.compare(this.value, other.value);
     }
 
     @Override

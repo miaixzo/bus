@@ -25,7 +25,7 @@
 package org.aoju.bus.starter.i18n;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ import javax.validation.Validator;
  * 国际化配置
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {I18nProperties.class})
@@ -49,7 +49,7 @@ public class I18nConfiguration {
 
     private ResourceBundleMessageSource getMessageSource() {
         ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
-        bundleMessageSource.setDefaultEncoding(StringUtils.toString(properties.getDefaultEncoding(), Charset.DEFAULT_UTF_8));
+        bundleMessageSource.setDefaultEncoding(StringKit.toString(properties.getDefaultEncoding(), Charset.DEFAULT_UTF_8));
         bundleMessageSource.setBasenames(properties.getBaseNames());
         return bundleMessageSource;
     }

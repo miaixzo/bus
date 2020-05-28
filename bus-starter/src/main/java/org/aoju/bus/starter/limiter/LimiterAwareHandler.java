@@ -25,7 +25,7 @@
 package org.aoju.bus.starter.limiter;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.Handler;
 import org.aoju.bus.limiter.Parser;
 import org.aoju.bus.limiter.Resolver;
@@ -48,7 +48,7 @@ import java.util.List;
  * 限流配置
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -78,7 +78,7 @@ public class LimiterAwareHandler extends AbstractLimiterAware implements Resourc
     public LimitedResourceSource limitedResourceSource() {
         String[] parsersClassNames = this.enableLimiter.getStringArray("annotationParser");
         List<String> defaultParsers = findDefaultParsers();
-        if (!CollUtils.isEmpty(defaultParsers)) {
+        if (!CollKit.isEmpty(defaultParsers)) {
             int len = parsersClassNames.length;
             parsersClassNames = Arrays.copyOf(parsersClassNames, parsersClassNames.length + defaultParsers.size());
             for (int i = 0; i < defaultParsers.size(); i++) {

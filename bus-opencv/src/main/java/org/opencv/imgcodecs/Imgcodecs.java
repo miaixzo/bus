@@ -420,8 +420,9 @@ public class Imgcodecs {
      *     [Vector](http://www.gdal.org/ogr_formats.html).
      *   </li>
      *   <li>
-     *    If EXIF information are embedded in the image file, the EXIF orientation will be taken into account
-     *     and thus the image will be rotated accordingly except if the flag REF: IMREAD_IGNORE_ORIENTATION is passed.
+     *    If EXIF information is embedded in the image file, the EXIF orientation will be taken into account
+     *     and thus the image will be rotated accordingly except if the flags REF: IMREAD_IGNORE_ORIENTATION
+     *     or REF: IMREAD_UNCHANGED are passed.
      *   </li>
      *   <li>
      *    Use the IMREAD_UNCHANGED flag to keep the floating point values from PFM image.
@@ -522,8 +523,9 @@ public class Imgcodecs {
      *     [Vector](http://www.gdal.org/ogr_formats.html).
      *   </li>
      *   <li>
-     *    If EXIF information are embedded in the image file, the EXIF orientation will be taken into account
-     *     and thus the image will be rotated accordingly except if the flag REF: IMREAD_IGNORE_ORIENTATION is passed.
+     *    If EXIF information is embedded in the image file, the EXIF orientation will be taken into account
+     *     and thus the image will be rotated accordingly except if the flags REF: IMREAD_IGNORE_ORIENTATION
+     *     or REF: IMREAD_UNCHANGED are passed.
      *   </li>
      *   <li>
      *    Use the IMREAD_UNCHANGED flag to keep the floating point values from PFM image.

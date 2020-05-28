@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.setting;
 
-import org.aoju.bus.core.utils.MapUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.MapKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -34,7 +34,7 @@ import java.util.Map.Entry;
  * 基于分组的Map
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
@@ -49,8 +49,8 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 值, 如果分组不存在或者值不存在则返回null
      */
     public String get(String group, String key) {
-        LinkedHashMap<String, String> map = this.get(StringUtils.nullToEmpty(group));
-        if (MapUtils.isNotEmpty(map)) {
+        LinkedHashMap<String, String> map = this.get(StringKit.nullToEmpty(group));
+        if (MapKit.isNotEmpty(map)) {
             return map.get(key);
         }
         return null;
@@ -80,7 +80,7 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 此key之前存在的值, 如果没有返回null
      */
     public String put(String group, String key, String value) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         LinkedHashMap<String, String> valueMap = this.get(group);
         if (null == valueMap) {
             valueMap = new LinkedHashMap<>();
@@ -112,9 +112,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 被删除的值, 如果值不存在, 返回null
      */
     public String remove(String group, String key) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             return valueMap.remove(key);
         }
         return null;
@@ -127,9 +127,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 是否为空
      */
     public boolean isEmpty(String group) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             return valueMap.isEmpty();
         }
         return true;
@@ -152,9 +152,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 是否包含key
      */
     public boolean containsKey(String group, String key) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             return valueMap.containsKey(key);
         }
         return false;
@@ -168,9 +168,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 是否包含值
      */
     public boolean containsValue(String group, String value) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             return valueMap.containsValue(value);
         }
         return false;
@@ -183,9 +183,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return this
      */
     public GroupedMap clear(String group) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             valueMap.clear();
         }
         return this;
@@ -198,9 +198,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 键Set
      */
     public Set<String> keySet(String group) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             return valueMap.keySet();
         }
         return Collections.emptySet();
@@ -213,9 +213,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 值
      */
     public Collection<String> values(String group) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             return valueMap.values();
         }
         return Collections.emptyList();
@@ -228,9 +228,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @return 键值对
      */
     public Set<Entry<String, String>> entrySet(String group) {
-        group = StringUtils.nullToEmpty(group).trim();
+        group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
-        if (MapUtils.isNotEmpty(valueMap)) {
+        if (MapKit.isNotEmpty(valueMap)) {
             return valueMap.entrySet();
         }
         return Collections.emptySet();

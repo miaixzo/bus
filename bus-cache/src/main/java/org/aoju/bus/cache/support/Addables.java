@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.support;
 
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Addables {
@@ -50,7 +50,7 @@ public class Addables {
     public static Collection newCollection(Class<?> type, Collection initCollection) {
         try {
             Collection collection = (Collection) type.newInstance();
-            if (CollUtils.isNotEmpty(initCollection)) {
+            if (CollKit.isNotEmpty(initCollection)) {
                 collection.addAll(initCollection);
             }
 
@@ -63,7 +63,7 @@ public class Addables {
     public static Map newMap(Class<?> type, Map initMap) {
         try {
             Map map = (Map) type.newInstance();
-            if (CollUtils.isNotEmpty(initMap)) {
+            if (CollKit.isNotEmpty(initMap)) {
                 map.putAll(initMap);
             }
             return map;
@@ -150,7 +150,7 @@ public class Addables {
 
         @Override
         public Addable addAll(List<Object> list) {
-            if (CollUtils.isEmpty(list)) {
+            if (CollKit.isEmpty(list)) {
                 return this;
             }
 

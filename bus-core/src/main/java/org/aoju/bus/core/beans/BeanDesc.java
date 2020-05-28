@@ -28,7 +28,7 @@ import org.aoju.bus.core.annotation.Alias;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
-import org.aoju.bus.core.utils.*;
+import org.aoju.bus.core.toolkit.*;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -50,7 +50,7 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BeanDesc implements Serializable {
@@ -164,10 +164,10 @@ public class BeanDesc implements Serializable {
      * @return this
      */
     private BeanDesc init() {
-        for (Field field : ReflectUtils.getFields(this.beanClass)) {
-            if (false == BeanUtils.isStatic(field)) {
+        for (Field field : ReflectKit.getFields(this.beanClass)) {
+            if (false == BeanKit.isStatic(field)) {
                 //只针对非static属性
-                this.propMap.put(ReflectUtils.getFieldName(field), createProp(field));
+                this.propMap.put(ReflectKit.getFieldName(field), createProp(field));
             }
         }
         return this;
@@ -190,14 +190,14 @@ public class BeanDesc implements Serializable {
     private PropDesc createProp(Field field) {
         final String fieldName = field.getName();
         final Class<?> fieldType = field.getType();
-        final boolean isBooeanField = BooleanUtils.isBoolean(fieldType);
+        final boolean isBooeanField = BooleanKit.isBoolean(fieldType);
 
         Method getter = null;
         Method setter = null;
 
         String methodName;
         Class<?>[] parameterTypes;
-        for (Method method : ReflectUtils.getMethods(this.beanClass)) {
+        for (Method method : ReflectKit.getMethods(this.beanClass)) {
             parameterTypes = method.getParameterTypes();
             if (parameterTypes.length > 1) {
                 // 多于1个参数说明非Getter或Setter
@@ -304,7 +304,7 @@ public class BeanDesc implements Serializable {
         // 针对Boolean类型特殊检查
         if (isBooeanField && fieldName.startsWith(Normal.IS)) {
             // 字段是is开头
-            if (methodName.equals(Normal.SET + StringUtils.removePrefix(fieldName, Normal.IS))// isName -》 setName
+            if (methodName.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS))// isName -》 setName
                     || methodName.equals(Normal.SET + fieldName)// isName -》 setIsName
             ) {
                 return true;
@@ -343,8 +343,8 @@ public class BeanDesc implements Serializable {
          */
         public PropDesc(Field field, Method getter, Method setter) {
             this.field = field;
-            this.getter = ClassUtils.setAccessible(getter);
-            this.setter = ClassUtils.setAccessible(setter);
+            this.getter = ClassKit.setAccessible(getter);
+            this.setter = ClassKit.setAccessible(setter);
         }
 
         /**
@@ -353,7 +353,7 @@ public class BeanDesc implements Serializable {
          * @return 字段名
          */
         public String getFieldName() {
-            return ReflectUtils.getFieldName(this.field);
+            return ReflectKit.getFieldName(this.field);
         }
 
         /**
@@ -373,7 +373,7 @@ public class BeanDesc implements Serializable {
          */
         public Type getFieldType() {
             if (null != this.field) {
-                return TypeUtils.getType(this.field);
+                return TypeKit.getType(this.field);
             }
             return findPropType(getter, setter);
         }
@@ -386,7 +386,7 @@ public class BeanDesc implements Serializable {
          */
         public Class<?> getFieldClass() {
             if (null != this.field) {
-                return TypeUtils.getClass(this.field);
+                return TypeKit.getClass(this.field);
             }
             return findPropClass(getter, setter);
         }
@@ -418,9 +418,9 @@ public class BeanDesc implements Serializable {
          */
         public Object getValue(Object bean) {
             if (null != this.getter) {
-                return ReflectUtils.invoke(bean, this.getter);
-            } else if (BeanUtils.isPublic(this.field)) {
-                return ReflectUtils.getFieldValue(bean, this.field);
+                return ReflectKit.invoke(bean, this.getter);
+            } else if (BeanKit.isPublic(this.field)) {
+                return ReflectKit.getFieldValue(bean, this.field);
             }
             return null;
         }
@@ -435,9 +435,9 @@ public class BeanDesc implements Serializable {
          */
         public PropDesc setValue(Object bean, Object value) {
             if (null != this.setter) {
-                ReflectUtils.invoke(bean, this.setter, value);
-            } else if (BeanUtils.isPublic(this.field)) {
-                ReflectUtils.setFieldValue(bean, this.field, value);
+                ReflectKit.invoke(bean, this.setter, value);
+            } else if (BeanKit.isPublic(this.field)) {
+                ReflectKit.setFieldValue(bean, this.field, value);
             }
             return this;
         }
@@ -452,10 +452,10 @@ public class BeanDesc implements Serializable {
         private Type findPropType(Method getter, Method setter) {
             Type type = null;
             if (null != getter) {
-                type = TypeUtils.getReturnType(getter);
+                type = TypeKit.getReturnType(getter);
             }
             if (null == type && null != setter) {
-                type = TypeUtils.getParamType(setter, 0);
+                type = TypeKit.getParamType(setter, 0);
             }
             return type;
         }
@@ -470,10 +470,10 @@ public class BeanDesc implements Serializable {
         private Class<?> findPropClass(Method getter, Method setter) {
             Class<?> type = null;
             if (null != getter) {
-                type = TypeUtils.getReturnClass(getter);
+                type = TypeKit.getReturnClass(getter);
             }
             if (null == type && null != setter) {
-                type = TypeUtils.getFirstParamClass(setter);
+                type = TypeKit.getFirstParamClass(setter);
             }
             return type;
         }

@@ -26,7 +26,7 @@ package org.aoju.bus.starter.druid;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -43,7 +43,7 @@ import java.util.Map;
  * 数据源信息
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DataSourceHolder {
@@ -86,7 +86,7 @@ public class DataSourceHolder {
     public boolean addDataSource(Map<String, String> map) {
         try {
             String key = map.get("key");
-            if (StringUtils.isBlank(key)) return false;
+            if (StringKit.isBlank(key)) return false;
             if (DynamicDataSource.getInstance().containsKey(key)) {
                 return true;
             }
@@ -125,7 +125,7 @@ public class DataSourceHolder {
             Method method = ((MethodSignature) point.getSignature()).getMethod();
             // 获取方法的@DataSource注解
             DataSource dataSource = method.getAnnotation(DataSource.class);
-            if (!StringUtils.hasLength(dataSource.value())) {
+            if (!StringKit.hasLength(dataSource.value())) {
                 // 获取类级别的@DataSource注解
                 dataSource = method.getDeclaringClass().getAnnotation(DataSource.class);
             }

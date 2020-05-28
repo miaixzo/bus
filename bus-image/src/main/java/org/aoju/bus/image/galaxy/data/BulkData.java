@@ -26,7 +26,7 @@ package org.aoju.bus.image.galaxy.data;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.io.ImageEncodingOptions;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
@@ -38,7 +38,7 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BulkData implements Value {
@@ -155,7 +155,7 @@ public class BulkData implements Value {
             return new URL(uri).openStream();
 
         InputStream in = new FileInputStream(getFile());
-        StreamUtils.skipFully(in, offset);
+        StreamKit.skipFully(in, offset);
         return in;
 
     }
@@ -184,7 +184,7 @@ public class BulkData implements Value {
         InputStream in = openStream();
         try {
             byte[] b = new byte[length];
-            StreamUtils.readFully(in, b, 0, b.length);
+            StreamKit.readFully(in, b, 0, b.length);
             if (this.bigEndian != bigEndian) {
                 vr.toggleEndian(b, false);
             }
@@ -200,9 +200,9 @@ public class BulkData implements Value {
         InputStream in = openStream();
         try {
             if (this.bigEndian != out.isBigEndian())
-                StreamUtils.copy(in, out, length, vr.numEndianBytes());
+                StreamKit.copy(in, out, length, vr.numEndianBytes());
             else
-                StreamUtils.copy(in, out, length);
+                StreamKit.copy(in, out, length);
             if ((length & 1) != 0)
                 out.write(vr.paddingByte());
         } finally {

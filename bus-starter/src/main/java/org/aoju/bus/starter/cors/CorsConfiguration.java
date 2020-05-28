@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.starter.cors;
 
-import org.aoju.bus.core.utils.ArrayUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,7 +39,7 @@ import java.util.Arrays;
  * Cors 跨域支持
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {CorsProperties.class})
@@ -68,10 +68,10 @@ public class CorsConfiguration {
         corsConfiguration.setAllowedMethods(Arrays.asList(properties.getAllowedMethods()));
         // 是否发送 Cookie 信息
         corsConfiguration.setAllowCredentials(properties.getAllowCredentials());
-        if (ObjectUtils.isNotNull(properties.getMaxAge())) {
+        if (ObjectKit.isNotNull(properties.getMaxAge())) {
             corsConfiguration.setMaxAge(properties.getMaxAge());
         }
-        if (ArrayUtils.isNotEmpty(properties.getExposedHeaders())) {
+        if (ArrayKit.isNotEmpty(properties.getExposedHeaders())) {
             corsConfiguration.setExposedHeaders(Arrays.asList(properties.getExposedHeaders()));
         }
         return corsConfiguration;

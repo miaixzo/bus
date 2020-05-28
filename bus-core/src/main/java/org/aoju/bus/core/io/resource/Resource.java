@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import java.nio.charset.Charset;
  * 资源可以是文件、URL、ClassPath中的文件亦或者jar包中的文件
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public interface Resource {
@@ -101,7 +101,7 @@ public interface Resource {
      */
     default void writeTo(OutputStream out) throws InstrumentException {
         try (InputStream in = getStream()) {
-            IoUtils.copy(in, out);
+            IoKit.copy(in, out);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }

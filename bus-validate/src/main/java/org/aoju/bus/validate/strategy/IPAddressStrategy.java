@@ -25,7 +25,7 @@
 package org.aoju.bus.validate.strategy;
 
 import org.aoju.bus.core.lang.Validator;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.IPAddress;
 import org.aoju.bus.validate.validators.Matcher;
@@ -34,14 +34,14 @@ import org.aoju.bus.validate.validators.Matcher;
  * IP地址校验
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class IPAddressStrategy implements Matcher<Object, IPAddress> {
 
     @Override
     public boolean on(Object object, IPAddress annotation, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
         return Validator.isIpv4(object.toString());

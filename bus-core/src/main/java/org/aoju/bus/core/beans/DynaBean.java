@@ -27,9 +27,9 @@ package org.aoju.bus.core.beans;
 import org.aoju.bus.core.clone.Support;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.BeanUtils;
-import org.aoju.bus.core.utils.ClassUtils;
-import org.aoju.bus.core.utils.ReflectUtils;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.ClassKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -40,7 +40,7 @@ import java.util.Map;
  * 支持Map和普通Bean
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class DynaBean extends Support<DynaBean> implements Serializable {
@@ -57,7 +57,7 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
      * @param params    构造Bean所需要的参数
      */
     public DynaBean(Class<?> beanClass, Object... params) {
-        this(ReflectUtils.newInstance(beanClass, params));
+        this(ReflectKit.newInstance(beanClass, params));
     }
 
     /**
@@ -71,7 +71,7 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
             bean = ((DynaBean) bean).getBean();
         }
         this.bean = bean;
-        this.beanClass = ClassUtils.getClass(bean);
+        this.beanClass = ClassKit.getClass(bean);
     }
 
     /**
@@ -108,7 +108,7 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
             return (T) ((Map<?, ?>) bean).get(fieldName);
         } else {
             try {
-                final Method method = BeanUtils.getBeanDesc(beanClass).getGetter(fieldName);
+                final Method method = BeanKit.getBeanDesc(beanClass).getGetter(fieldName);
                 if (null == method) {
                     throw new InstrumentException("No get method for {}", fieldName);
                 }
@@ -147,7 +147,7 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
             return;
         } else {
             try {
-                final Method setter = BeanUtils.getBeanDesc(beanClass).getSetter(fieldName);
+                final Method setter = BeanKit.getBeanDesc(beanClass).getSetter(fieldName);
                 if (null == setter) {
                     throw new InstrumentException("No set method for {}", fieldName);
                 }
@@ -166,7 +166,7 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
      * @return 执行结果, 可能为null
      */
     public Object invoke(String methodName, Object... params) {
-        return ReflectUtils.invoke(this.bean, methodName, params);
+        return ReflectKit.invoke(this.bean, methodName, params);
     }
 
     /**

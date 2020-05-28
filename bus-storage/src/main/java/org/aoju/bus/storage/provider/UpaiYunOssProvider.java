@@ -28,7 +28,7 @@ import com.UpYun;
 import com.upyun.UpException;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.storage.Builder;
 import org.aoju.bus.storage.Context;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * 存储服务-又拍云
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class UpaiYunOssProvider extends AbstractProvider {
@@ -113,7 +113,7 @@ public class UpaiYunOssProvider extends AbstractProvider {
                         Attachs storageItem = new Attachs();
                         storageItem.setName(item.name);
                         storageItem.setType(item.type);
-                        storageItem.setSize(StringUtils.toString(item.size));
+                        storageItem.setSize(StringKit.toString(item.size));
                         return storageItem;
                     }).collect(Collectors.toList()))
                     .build();

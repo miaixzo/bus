@@ -25,7 +25,7 @@
 package org.aoju.bus.crypto.digest.mac;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.Mac;
@@ -40,7 +40,7 @@ import java.io.InputStream;
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class BCHMacEngine implements MacEngine {
@@ -83,7 +83,7 @@ public class BCHMacEngine implements MacEngine {
     @Override
     public byte[] digest(InputStream data, int bufferLength) {
         if (bufferLength < 1) {
-            bufferLength = IoUtils.DEFAULT_BUFFER_SIZE;
+            bufferLength = IoKit.DEFAULT_BUFFER_SIZE;
         }
         final byte[] buffer = new byte[bufferLength];
 

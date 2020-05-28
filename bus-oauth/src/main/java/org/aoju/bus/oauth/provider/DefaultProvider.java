@@ -32,10 +32,10 @@ import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
-import org.aoju.bus.core.utils.UriUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.*;
 import org.aoju.bus.oauth.magic.AccToken;
@@ -57,7 +57,7 @@ import java.util.*;
  * 默认的request处理类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class DefaultProvider implements Provider {
@@ -89,15 +89,15 @@ public abstract class DefaultProvider implements Provider {
      * @return true or false
      */
     public static boolean isSupportedAuth(Context context, Complex source) {
-        boolean isSupported = StringUtils.isNotEmpty(context.getAppKey()) && StringUtils.isNotEmpty(context.getAppSecret());
+        boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
         if (isSupported && Registry.ALIPAY == source) {
-            isSupported = StringUtils.isNotEmpty(context.getPublicKey());
+            isSupported = StringKit.isNotEmpty(context.getPublicKey());
         }
         if (isSupported && Registry.STACKOVERFLOW == source) {
-            isSupported = StringUtils.isNotEmpty(context.getOverflowKey());
+            isSupported = StringKit.isNotEmpty(context.getOverflowKey());
         }
         if (isSupported && Registry.WECHAT_EE == source) {
-            isSupported = StringUtils.isNotEmpty(context.getAgentId());
+            isSupported = StringKit.isNotEmpty(context.getAgentId());
         }
         return isSupported;
     }
@@ -109,7 +109,7 @@ public abstract class DefaultProvider implements Provider {
      * @return true: http协议, false: 非http协议
      */
     public static boolean isHttpProtocol(String url) {
-        if (StringUtils.isEmpty(url)) {
+        if (StringKit.isEmpty(url)) {
             return false;
         }
         return url.startsWith("http://");
@@ -122,7 +122,7 @@ public abstract class DefaultProvider implements Provider {
      * @return true: https协议, false: 非https协议
      */
     public static boolean isHttpsProtocol(String url) {
-        if (StringUtils.isEmpty(url)) {
+        if (StringKit.isEmpty(url)) {
             return false;
         }
         return url.startsWith(Http.HTTPS_PREFIX);
@@ -135,7 +135,7 @@ public abstract class DefaultProvider implements Provider {
      * @return true: 本地主机(域名), false: 非本地主机(域名)
      */
     public static boolean isLocalHost(String url) {
-        return StringUtils.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);
+        return StringKit.isEmpty(url) || url.contains(Http.HTTP_HOST_IPV4) || url.contains(Http.HTTP_HOST_LOCAL);
     }
 
     /**
@@ -233,7 +233,7 @@ public abstract class DefaultProvider implements Provider {
         } else if (complex == Registry.HUAWEI) {
             code = callback.getAuthorization_code();
         }
-        if (StringUtils.isEmpty(code)) {
+        if (StringKit.isEmpty(code)) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_CODE.getCode());
         }
     }
@@ -248,7 +248,7 @@ public abstract class DefaultProvider implements Provider {
      * @return 追加后的字符串
      */
     public static String appendIfNotContain(String str, String appendStr, String otherwise) {
-        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(appendStr)) {
+        if (StringKit.isEmpty(str) || StringKit.isEmpty(appendStr)) {
             return str;
         }
         if (str.contains(appendStr)) {
@@ -287,14 +287,14 @@ public abstract class DefaultProvider implements Provider {
     public static String parseMapToString(Map<String, Object> params, boolean encode) {
         List<String> paramList = new ArrayList<>();
         params.forEach((k, v) -> {
-            if (ObjectUtils.isNull(v)) {
+            if (ObjectKit.isNull(v)) {
                 paramList.add(k + Symbol.EQUAL);
             } else {
                 String valueString = v.toString();
                 paramList.add(k + Symbol.EQUAL + (encode ? urlEncode(valueString) : valueString));
             }
         });
-        return CollUtils.join(paramList, Symbol.AND);
+        return CollKit.join(paramList, Symbol.AND);
     }
 
     /**
@@ -305,7 +305,7 @@ public abstract class DefaultProvider implements Provider {
      */
     public static Map<String, Object> parseQueryToMap(String url) {
         Map<String, Object> paramMap = new HashMap<>();
-        UriUtils.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
+        UriKit.decodeVal(url, Charset.DEFAULT_UTF_8).forEach(paramMap::put);
         return paramMap;
     }
 
@@ -439,7 +439,7 @@ public abstract class DefaultProvider implements Provider {
      * @return 返回不为null的state
      */
     protected String getRealState(String state) {
-        if (StringUtils.isEmpty(state)) {
+        if (StringKit.isEmpty(state)) {
             state = ObjectID.id();
         }
         // 缓存state
@@ -497,7 +497,7 @@ public abstract class DefaultProvider implements Provider {
         if (source == Registry.TWITTER) {
             return;
         }
-        if (StringUtils.isEmpty(state) || ObjectUtils.isEmpty(extendCache.get(state))) {
+        if (StringKit.isEmpty(state) || ObjectKit.isEmpty(extendCache.get(state))) {
             throw new AuthorizedException(Normal.EMPTY + Builder.ErrorCode.ILLEGAL_REQUEST);
         }
     }
@@ -510,7 +510,7 @@ public abstract class DefaultProvider implements Provider {
      * @return map
      */
     public Map<String, String> parseStringToMap(String str, boolean decode) {
-        if (StringUtils.isNotEmpty(str)) {
+        if (StringKit.isNotEmpty(str)) {
             // 去除 URL 路径信息
             int beginPos = str.indexOf(Symbol.QUESTION_MARK);
             if (beginPos > -1) {
@@ -525,7 +525,7 @@ public abstract class DefaultProvider implements Provider {
         }
 
         Map<String, String> params = new HashMap<>(16);
-        if (StringUtils.isEmpty(str)) {
+        if (StringKit.isEmpty(str)) {
             return params;
         }
 

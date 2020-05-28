@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.reader;
 
-import org.aoju.bus.core.utils.ByteUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
 import org.aoju.bus.image.galaxy.data.*;
@@ -59,7 +59,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class NativeDCMImageReader extends ImageReader implements Closeable {
@@ -127,7 +127,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
             long offset = frame > 0 ? 1 : 0;
             int offsetStart = frame * 4;
             if (basicOffsetTable.length >= offsetStart + 4) {
-                offset = ByteUtils.bytesToIntLE(basicOffsetTable, offsetStart);
+                offset = ByteKit.bytesToIntLE(basicOffsetTable, offsetStart);
                 if (offset != 1) {
                     // Handle > 4 gb total image size by assuming incrementing modulo 4gb
                     offset = offset | (lastOffset & 0xFFFFFF00000000l);
@@ -388,7 +388,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
                     else
                         iis.readFully(bs);
                 if (pixelDataVR == VR.OW && bigEndian())
-                    ByteUtils.swapShorts(data);
+                    ByteKit.swapShorts(data);
             } else {
                 short[] data = ((DataBufferUShort) buf).getData();
                 if (dis != null)
@@ -835,7 +835,7 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
 
     /**
      * @author Kimi Liu
-     * @version 5.9.3
+     * @version 5.9.5
      * @since JDK 1.8+
      */
     public static class NativeDCMImageReadParam extends ImageReadParam {

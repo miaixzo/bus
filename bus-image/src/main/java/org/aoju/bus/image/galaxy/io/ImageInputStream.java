@@ -27,9 +27,9 @@ package org.aoju.bus.image.galaxy.io;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ByteUtils;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StreamUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StreamKit;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -46,7 +46,7 @@ import java.util.zip.InflaterInputStream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ImageInputStream extends FilterInputStream
@@ -119,7 +119,7 @@ public class ImageInputStream extends FilterInputStream
         try {
             guessTransferSyntax();
         } catch (IOException e) {
-            IoUtils.close(in);
+            IoKit.close(in);
             throw e;
         }
         uri = file.toURI().toString();
@@ -250,7 +250,7 @@ public class ImageInputStream extends FilterInputStream
     }
 
     public final void setFileMetaInformationGroupLength(byte[] val) {
-        fmiEndPos = pos + ByteUtils.bytesToInt(val, 0, bigEndian);
+        fmiEndPos = pos + ByteKit.bytesToInt(val, 0, bigEndian);
     }
 
     public final byte[] getPreamble() {
@@ -312,7 +312,7 @@ public class ImageInputStream extends FilterInputStream
 
     @Override
     public void close() throws IOException {
-        IoUtils.close(blkOut);
+        IoKit.close(blkOut);
         super.close();
     }
 
@@ -357,7 +357,7 @@ public class ImageInputStream extends FilterInputStream
     }
 
     public void skipFully(long n) throws IOException {
-        StreamUtils.skipFully(this, n);
+        StreamKit.skipFully(this, n);
     }
 
     public void readFully(byte[] b) throws IOException {
@@ -365,7 +365,7 @@ public class ImageInputStream extends FilterInputStream
     }
 
     public void readFully(byte[] b, int off, int len) throws IOException {
-        StreamUtils.readFully(this, b, off, len);
+        StreamKit.readFully(this, b, off, len);
     }
 
     public void readFully(short[] s, int off, int len) throws IOException {
@@ -380,7 +380,7 @@ public class ImageInputStream extends FilterInputStream
         while (len > 0) {
             int nelts = Math.min(len, byteBuf.length / 2);
             readFully(byteBuf, 0, nelts * 2);
-            ByteUtils.bytesToShorts(byteBuf, s, off, nelts, bigEndian);
+            ByteKit.bytesToShorts(byteBuf, s, off, nelts, bigEndian);
             off += nelts;
             len -= nelts;
         }
@@ -391,7 +391,7 @@ public class ImageInputStream extends FilterInputStream
         tagPos = pos;
         readFully(buf, 0, 8);
         encodedVR = 0;
-        switch (tag = ByteUtils.bytesToTag(buf, 0, bigEndian)) {
+        switch (tag = ByteKit.bytesToTag(buf, 0, bigEndian)) {
             case Tag.Item:
             case Tag.ItemDelimitationItem:
             case Tag.SequenceDelimitationItem:
@@ -399,9 +399,9 @@ public class ImageInputStream extends FilterInputStream
                 break;
             default:
                 if (explicitVR) {
-                    vr = VR.valueOf(encodedVR = ByteUtils.bytesToVR(buf, 4));
+                    vr = VR.valueOf(encodedVR = ByteKit.bytesToVR(buf, 4));
                     if (vr.headerLength() == 8) {
-                        length = ByteUtils.bytesToUShort(buf, 6, bigEndian);
+                        length = ByteKit.bytesToUShort(buf, 6, bigEndian);
                         return;
                     }
                     readFully(buf, 4, 4);
@@ -409,7 +409,7 @@ public class ImageInputStream extends FilterInputStream
                     vr = VR.UN;
                 }
         }
-        length = ByteUtils.bytesToInt(buf, 4, bigEndian);
+        length = ByteKit.bytesToInt(buf, 4, bigEndian);
     }
 
     public boolean readItemHeader() throws IOException {
@@ -558,10 +558,10 @@ public class ImageInputStream extends FilterInputStream
                 blkOutPos = 0L;
             }
             try {
-                StreamUtils.copy(this, blkOut, length);
+                StreamKit.copy(this, blkOut, length);
             } finally {
                 if (!catBlkFiles) {
-                    IoUtils.close(blkOut);
+                    IoKit.close(blkOut);
                     blkOut = null;
                 }
             }
@@ -672,7 +672,7 @@ public class ImageInputStream extends FilterInputStream
             int len = in.read(buf);
             ((PushbackInputStream) in).unread(buf, 0, len);
         }
-        switch (ByteUtils.bytesToVR(buf, 12)) {
+        switch (ByteKit.bytesToVR(buf, 12)) {
             case 0x4145: // AE
             case 0x4153: // AS
             case 0x4154: // AT
@@ -792,13 +792,13 @@ public class ImageInputStream extends FilterInputStream
         mark(2);
         read(buf, 0, 2);
         reset();
-        return ByteUtils.bytesToUShortBE(buf, 0) == ZLIB_HEADER;
+        return ByteKit.bytesToUShortBE(buf, 0) == ZLIB_HEADER;
     }
 
     private void guessTransferSyntax() throws IOException {
         byte[] b132 = new byte[132];
         mark(132);
-        int rlen = StreamUtils.readAvailable(this, b132, 0, 132);
+        int rlen = StreamKit.readAvailable(this, b132, 0, 132);
         if (rlen == 132) {
             if (b132[128] == 'D' && b132[129] == 'I' && b132[130] == 'C' && b132[131] == 'M') {
                 preamble = new byte[128];
@@ -811,7 +811,7 @@ public class ImageInputStream extends FilterInputStream
                     return;
                 }
                 mark(132);
-                rlen = StreamUtils.readAvailable(this, b132, 0, 132);
+                rlen = StreamKit.readAvailable(this, b132, 0, 132);
             }
         }
         if (rlen < 8
@@ -820,23 +820,23 @@ public class ImageInputStream extends FilterInputStream
             throw new InstrumentException(NOT_A_DICOM_STREAM);
         reset();
         hasfmi = Tag.isFileMetaInformation(
-                ByteUtils.bytesToTag(b132, 0, bigEndian));
+                ByteKit.bytesToTag(b132, 0, bigEndian));
     }
 
     private boolean guessTransferSyntax(byte[] b128, int rlen, boolean bigEndian)
             throws InstrumentException {
-        int tag1 = ByteUtils.bytesToTag(b128, 0, bigEndian);
+        int tag1 = ByteKit.bytesToTag(b128, 0, bigEndian);
         VR vr = ElementDictionary.vrOf(tag1, null);
         if (vr == VR.UN)
             return false;
-        if (ByteUtils.bytesToVR(b128, 4) == vr.code()) {
+        if (ByteKit.bytesToVR(b128, 4) == vr.code()) {
             this.tsuid = bigEndian ? UID.ExplicitVRBigEndianRetired
                     : UID.ExplicitVRLittleEndian;
             this.bigEndian = bigEndian;
             this.explicitVR = true;
             return true;
         }
-        int len = ByteUtils.bytesToInt(b128, 4, bigEndian);
+        int len = ByteKit.bytesToInt(b128, 4, bigEndian);
         if (len < 0 || 8 + len > rlen)
             return false;
 

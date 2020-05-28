@@ -24,14 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.provider;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Builder;
 
 /**
  * 脱敏策略
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractProvider implements StrategyProvider {
@@ -54,11 +54,11 @@ public abstract class AbstractProvider implements StrategyProvider {
             int half = (int) Math.ceil(length / 2.0);
             boolean head = mode == Builder.Mode.HEAD;
             if (head) {
-                resultBuilder.append(StringUtils.repeat(shadow, half))
+                resultBuilder.append(StringKit.repeat(shadow, half))
                         .append(rawVal, half, length);
             } else {
                 resultBuilder.append(rawVal, 0, length - half)
-                        .append(StringUtils.repeat(shadow, half));
+                        .append(StringKit.repeat(shadow, half));
             }
             return resultBuilder.toString();
         }
@@ -74,7 +74,7 @@ public abstract class AbstractProvider implements StrategyProvider {
         // 修正中间被mask的长度
         middle = length - side * 2;
         resultBuilder.append(rawVal, 0, side)
-                .append(StringUtils.repeat(shadow, middle))
+                .append(StringKit.repeat(shadow, middle))
                 .append(rawVal, side + middle, length);
         return resultBuilder.toString();
     }
@@ -105,7 +105,7 @@ public abstract class AbstractProvider implements StrategyProvider {
                 }
                 maskLength = length - fixedHeaderSize;
                 resultBuilder.append(rawVal, 0, fixedHeaderSize)
-                        .append(StringUtils.repeat(shadow, maskLength));
+                        .append(StringKit.repeat(shadow, maskLength));
                 break;
             default:
             case HEAD:
@@ -113,7 +113,7 @@ public abstract class AbstractProvider implements StrategyProvider {
                     return rawVal;
                 }
                 maskLength = length - fixedTailorSize;
-                resultBuilder.append(StringUtils.repeat(shadow, maskLength))
+                resultBuilder.append(StringKit.repeat(shadow, maskLength))
                         .append(rawVal.substring(maskLength));
                 break;
             case MIDDLE:
@@ -123,7 +123,7 @@ public abstract class AbstractProvider implements StrategyProvider {
                 }
                 maskLength = length - unmaskLength;
                 resultBuilder.append(rawVal, 0, fixedHeaderSize)
-                        .append(StringUtils.repeat(shadow, maskLength))
+                        .append(StringKit.repeat(shadow, maskLength))
                         .append(rawVal, fixedHeaderSize + maskLength, length);
                 break;
         }

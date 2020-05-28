@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.limiter.intercept;
 
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.limiter.execute.LimitContextsValueWrapper;
 import org.aoju.bus.limiter.execute.LimiterExecutionContext;
 import org.aoju.bus.limiter.metadata.LimitedResourceMetadata;
@@ -48,7 +48,7 @@ import java.util.Collection;
  * 使用beanfactory的一些基础设施
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class LimiterAspectSupport implements BeanFactoryAware, InitializingBean, SmartInitializingSingleton {
@@ -78,7 +78,7 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
             LimitedResourceSource limitedResourceSource = getLimitedResourceSource();
             if (limitedResourceSource != null) {
                 Collection<LimitedResource> limitedResources = limitedResourceSource.getLimitedResource(targetClass, method);
-                if (!CollUtils.isEmpty(limitedResources)) {
+                if (!CollKit.isEmpty(limitedResources)) {
                     Collection<LimiterExecutionContext> contexts = getLimiterOperationContexts(limitedResources, method, args, target, targetClass);
                     LimitContextsValueWrapper limitContextsValueWrapper = limitContexts(contexts);
                     if (limitContextsValueWrapper.value()) {

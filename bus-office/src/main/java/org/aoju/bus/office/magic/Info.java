@@ -32,7 +32,7 @@ import com.sun.star.uno.Exception;
 import com.sun.star.uno.XComponentContext;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.office.Builder;
 
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * 实用程序函数，使office信息更容易获取.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class Info {
@@ -117,11 +117,11 @@ public final class Info {
     public static int compareVersions(
             final String version1, final String version2, final int length) {
 
-        if (StringUtils.isEmpty(version1) && StringUtils.isEmpty(version2)) {
+        if (StringKit.isEmpty(version1) && StringKit.isEmpty(version2)) {
             return 0;
-        } else if (StringUtils.isEmpty(version1)) {
+        } else if (StringKit.isEmpty(version1)) {
             return -1;
-        } else if (StringUtils.isEmpty(version2)) {
+        } else if (StringKit.isEmpty(version2)) {
             return 1;
         }
 

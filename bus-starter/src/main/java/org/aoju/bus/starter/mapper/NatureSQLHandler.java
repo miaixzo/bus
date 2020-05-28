@@ -28,7 +28,7 @@ import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.logger.Logger;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -46,14 +46,13 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.regex.Matcher;
 
 /**
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Intercepts(value = {
@@ -62,11 +61,46 @@ import java.util.regex.Matcher;
                 RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
         @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
                 RowBounds.class, ResultHandler.class})})
-public class NatureSQLHandler implements Interceptor {
+public class NatureSQLHandler extends AbstractSqlParserHandler implements Interceptor {
 
-    public static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
+    private static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
         Logger.debug(sqlId + " :  ==> " + time + " ms");
-        Logger.debug(showSql(configuration, boundSql));
+        // 获取参数
+        Object parameterObject = boundSql.getParameterObject();
+        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+        String id = ObjectID.id();
+        // 1.SQL语句多个空格全部使用一个空格代替
+        // 2.防止参数值中有问号问题,全部动态替换
+        String sql = boundSql.getSql()
+                .replaceAll("[\\s]+", Symbol.SPACE)
+                .replaceAll("\\?", id);
+        if (!CollKit.isEmpty(parameterMappings) && parameterObject != null) {
+            // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
+            // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
+            TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+            if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+                sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));
+            } else {
+                // MetaObject主要是封装了originalObject对象,提供了get和set的方法
+                // 主要支持对JavaBean、Collection、Map三种类型对象的操作
+                MetaObject metaObject = configuration.newMetaObject(parameterObject);
+                for (ParameterMapping parameterMapping : parameterMappings) {
+                    String propertyName = parameterMapping.getProperty();
+                    if (metaObject.hasGetter(propertyName)) {
+                        Object obj = metaObject.getValue(propertyName);
+                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
+                    } else if (boundSql.hasAdditionalParameter(propertyName)) {
+                        Object obj = boundSql.getAdditionalParameter(propertyName);
+                        // 该分支是动态sql
+                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
+                    } else {
+                        // 打印Missing,提醒该参数缺失并防止错位
+                        sql = sql.replaceFirst(id, "Missing");
+                    }
+                }
+            }
+        }
+        Logger.debug(sql);
     }
 
     private static String getParameterValue(Object obj) {
@@ -84,44 +118,6 @@ public class NatureSQLHandler implements Interceptor {
             }
         }
         return value;
-    }
-
-    public static String showSql(Configuration configuration, BoundSql boundSql) {
-        // 获取参数
-        Object parameterObject = boundSql.getParameterObject();
-        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-        String id = ObjectID.id();
-        // 1.SQL语句多个空格全部使用一个空格代替
-        // 2.防止参数值中有问号问题,全部动态替换
-        String sql = boundSql.getSql()
-                .replaceAll("[\\s]+", Symbol.SPACE)
-                .replaceAll("\\?", id);
-        if (!CollUtils.isEmpty(parameterMappings) && parameterObject != null) {
-            // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
-            // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
-            TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-            if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
-                sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(parameterObject)));
-            } else {
-                // MetaObject主要是封装了originalObject对象,提供了get和set的方法
-                // 主要支持对JavaBean、Collection、Map三种类型对象的操作
-                MetaObject metaObject = configuration.newMetaObject(parameterObject);
-                for (ParameterMapping parameterMapping : parameterMappings) {
-                    String propertyName = parameterMapping.getProperty();
-                    if (metaObject.hasGetter(propertyName)) {
-                        Object obj = metaObject.getValue(propertyName);
-                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
-                    } else if (boundSql.hasAdditionalParameter(propertyName)) {
-                        Object obj = boundSql.getAdditionalParameter(propertyName);  // 该分支是动态sql
-                        sql = sql.replaceFirst(id, Matcher.quoteReplacement(getParameterValue(obj)));
-                    } else {
-                        // 打印出缺失,提醒该参数缺失并防止错位
-                        sql = sql.replaceFirst(id, "缺失");
-                    }
-                }
-            }
-        }
-        return sql;
     }
 
     @Override
@@ -145,12 +141,10 @@ public class NatureSQLHandler implements Interceptor {
 
     @Override
     public Object plugin(Object object) {
-        return Plugin.wrap(object, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-
+        if (object instanceof Executor) {
+            return Plugin.wrap(object, this);
+        }
+        return object;
     }
 
 }

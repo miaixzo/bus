@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -34,7 +34,7 @@ import java.nio.charset.StandardCharsets;
  * 文件包装器,扩展文件对象
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FileWrapper {
@@ -103,6 +103,6 @@ public class FileWrapper {
      * @return 大小
      */
     public String readableFileSize() {
-        return FileUtils.readableFileSize(file.length());
+        return FileKit.readableFileSize(file.length());
     }
 }

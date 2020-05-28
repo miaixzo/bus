@@ -27,7 +27,7 @@ package org.aoju.bus.core.key;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.RandomUtils;
+import org.aoju.bus.core.toolkit.RandomKit;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -61,7 +61,7 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -78,7 +78,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     private static final int MAX_RADIX = DIGITS.length;
     private static final Map<Character, Integer> DIGIT_MAP = new HashMap<>();
-    private static final SecureRandom numberGenerator = RandomUtils.getSecureRandom();
+    private static final SecureRandom numberGenerator = RandomKit.getSecureRandom();
 
     static {
         for (int i = 0; i < DIGITS.length; i++) {
@@ -215,7 +215,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 随机生成的 {@code UUID}
      */
     public static UUID randomUUID(boolean isSecure) {
-        final Random ng = isSecure ? numberGenerator : RandomUtils.getRandom();
+        final Random ng = isSecure ? numberGenerator : RandomKit.getRandom();
 
         byte[] randomBytes = new byte[16];
         ng.nextBytes(randomBytes);

@@ -32,14 +32,14 @@ import com.aliyuncs.profile.DefaultProfile;
 import lombok.AllArgsConstructor;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.CollUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 阿里云邮件服务
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @AllArgsConstructor
@@ -95,11 +95,11 @@ public class AliMailService {
                     )
             );
 
-            if (StringUtils.isEmpty(entity.getContent())) {
+            if (StringKit.isEmpty(entity.getContent())) {
                 throw new InstrumentException("Email content cannot be empty");
-            } else if (CollUtils.isEmpty(entity.getToAddress())) {
+            } else if (CollKit.isEmpty(entity.getToAddress())) {
                 throw new InstrumentException("Email address cannot be empty");
-            } else if (StringUtils.isEmpty(entity.getSubject())) {
+            } else if (StringKit.isEmpty(entity.getSubject())) {
                 throw new InstrumentException("Email subject cannot be empty");
             }
 
@@ -108,7 +108,7 @@ public class AliMailService {
             request.setFromAlias(entity.getFormAlias());
             request.setAddressType(addressType);
 
-            if (!StringUtils.isEmpty(entity.getTagName())) {
+            if (!StringKit.isEmpty(entity.getTagName())) {
                 request.setTagName(entity.getTagName());
             }
             request.setReplyToAddress(replyToAddress);
@@ -118,7 +118,7 @@ public class AliMailService {
 
             SingleSendMailResponse response = client.getAcsResponse(request);
 
-            return AliMailResult.builder().success(!StringUtils.isEmpty(response.getRequestId())).build();
+            return AliMailResult.builder().success(!StringKit.isEmpty(response.getRequestId())).build();
         } catch (Exception e) {
             throw new InstrumentException(e.getMessage(), e);
         }

@@ -25,8 +25,8 @@
 package org.aoju.bus.core.lang.tree;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.TreeUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.TreeKit;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @param <T> ID类型
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T> {
@@ -57,7 +57,7 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
      */
     public TreeMap(TreeEntity TreeEntity) {
         super();
-        this.TreeEntity = ObjectUtils.defaultIfNull(
+        this.TreeEntity = ObjectKit.defaultIfNull(
                 TreeEntity, TreeEntity.DEFAULT);
     }
 
@@ -92,7 +92,7 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
      * @return 节点
      */
     public TreeMap<T> getNode(T id) {
-        return TreeUtils.getNode(this, id);
+        return TreeKit.getNode(this, id);
     }
 
     /**
@@ -105,7 +105,7 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
      * @return 所有父节点名称列表
      */
     public List<CharSequence> getParentsName(T id, boolean includeCurrentNode) {
-        return TreeUtils.getParentsName(getNode(id), includeCurrentNode);
+        return TreeKit.getParentsName(getNode(id), includeCurrentNode);
     }
 
     /**
@@ -117,7 +117,7 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
      * @return 所有父节点名称列表
      */
     public List<CharSequence> getParentsName(boolean includeCurrentNode) {
-        return TreeUtils.getParentsName(this, includeCurrentNode);
+        return TreeKit.getParentsName(this, includeCurrentNode);
     }
 
     @Override

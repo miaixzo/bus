@@ -25,8 +25,8 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -36,7 +36,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 脱敏规则：180****1120
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class PhoneStrategy extends AbstractProvider {
@@ -49,17 +49,17 @@ public class PhoneStrategy extends AbstractProvider {
      */
     private static String phone(final String phone, final String shadow) {
         final int prefixLength = 3;
-        final String middle = StringUtils.fill(4, shadow);
-        return StringUtils.buildString(phone, middle, prefixLength);
+        final String middle = StringKit.fill(4, shadow);
+        return StringKit.buildString(phone, middle, prefixLength);
     }
 
     @Override
     public Object build(Object object, Context context) {
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
-        return this.phone(ObjectUtils.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
+        return this.phone(ObjectKit.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

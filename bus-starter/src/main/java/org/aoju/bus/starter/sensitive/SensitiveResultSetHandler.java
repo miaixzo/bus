@@ -26,10 +26,10 @@ package org.aoju.bus.starter.sensitive;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.mapper.handlers.AbstractSqlParserHandler;
+import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
@@ -45,18 +45,16 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
-public class SensitiveResultSetHandler extends AbstractSqlParserHandler
-        implements Interceptor {
+public class SensitiveResultSetHandler extends AbstractSqlHandler implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -67,14 +65,14 @@ public class SensitiveResultSetHandler extends AbstractSqlParserHandler
         }
 
         SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
-        if (ObjectUtils.isNotEmpty(properties) && !properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
             final MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("mappedStatement");
             final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null : mappedStatement.getResultMaps().get(0);
 
             Sensitive sensitive = results.get(0).getClass().getAnnotation(Sensitive.class);
-            if (ObjectUtils.isEmpty(sensitive)) {
+            if (ObjectKit.isEmpty(sensitive)) {
                 return results;
             }
 
@@ -86,12 +84,12 @@ public class SensitiveResultSetHandler extends AbstractSqlParserHandler
                     final MetaObject objMetaObject = mappedStatement.getConfiguration().newMetaObject(obj);
                     for (Map.Entry<String, Privacy> entry : privacyMap.entrySet()) {
                         Privacy privacy = entry.getValue();
-                        if (ObjectUtils.isNotEmpty(privacy) && StringUtils.isNotEmpty(privacy.value())) {
+                        if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
                             if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
                                 String property = entry.getKey();
                                 String value = (String) objMetaObject.getValue(property);
-                                if (StringUtils.isNotEmpty(value)) {
-                                    if (ObjectUtils.isEmpty(properties)) {
+                                if (StringKit.isNotEmpty(value)) {
+                                    if (ObjectKit.isEmpty(properties)) {
                                         throw new InstrumentException("Please check the request.crypto.decrypt");
                                     }
                                     Logger.debug("Query data decryption enabled ...");
@@ -114,13 +112,11 @@ public class SensitiveResultSetHandler extends AbstractSqlParserHandler
     }
 
     @Override
-    public Object plugin(Object o) {
-        return Plugin.wrap(o, this);
-    }
-
-    @Override
-    public void setProperties(Properties properties) {
-
+    public Object plugin(Object object) {
+        if (object instanceof ResultSetHandler) {
+            return Plugin.wrap(object, this);
+        }
+        return object;
     }
 
     private Map<String, Privacy> getSensitiveByResultMap(ResultMap resultMap) {

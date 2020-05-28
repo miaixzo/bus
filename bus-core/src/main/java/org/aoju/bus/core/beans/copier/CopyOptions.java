@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans.copier;
 
-import org.aoju.bus.core.utils.MapUtils;
+import org.aoju.bus.core.toolkit.MapKit;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ import java.util.Map;
  * 3、忽略的属性列表,设置一个属性列表,不拷贝这些属性值
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class CopyOptions {
@@ -179,7 +179,7 @@ public class CopyOptions {
      * @return 反转映射
      */
     protected Map<String, String> getReversedMapping() {
-        return (null != this.fieldMapping) ? MapUtils.reverse(this.fieldMapping) : null;
+        return (null != this.fieldMapping) ? MapKit.reverse(this.fieldMapping) : null;
     }
 
 }

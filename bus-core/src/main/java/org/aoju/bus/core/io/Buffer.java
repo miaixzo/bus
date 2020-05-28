@@ -25,16 +25,16 @@
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.lang.Algorithm;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ByteUtils;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.ByteKit;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.channels.ByteChannel;
-import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +46,7 @@ import java.util.List;
  * 内存中字节的集合.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
@@ -128,7 +128,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public BufferSource peek() {
-        return IoUtils.buffer(new PeekSource(this));
+        return IoKit.buffer(new PeekSource(this));
     }
 
     @Override
@@ -183,7 +183,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      */
     public final Buffer copyTo(OutputStream out, long offset, long byteCount) throws IOException {
         if (out == null) throw new IllegalArgumentException("out == null");
-        IoUtils.checkOffsetAndCount(size, offset, byteCount);
+        IoKit.checkOffsetAndCount(size, offset, byteCount);
         if (byteCount == 0) return this;
 
         Segment s = head;
@@ -212,7 +212,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      */
     public final Buffer copyTo(Buffer out, long offset, long byteCount) {
         if (out == null) throw new IllegalArgumentException("out == null");
-        IoUtils.checkOffsetAndCount(size, offset, byteCount);
+        IoKit.checkOffsetAndCount(size, offset, byteCount);
         if (byteCount == 0) return this;
 
         out.size += byteCount;
@@ -258,7 +258,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      */
     public final Buffer writeTo(OutputStream out, long byteCount) throws IOException {
         if (out == null) throw new IllegalArgumentException("out == null");
-        IoUtils.checkOffsetAndCount(size, 0, byteCount);
+        IoKit.checkOffsetAndCount(size, 0, byteCount);
 
         Segment s = head;
         while (byteCount > 0) {
@@ -362,7 +362,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return byte 内容
      */
     public final byte getByte(long pos) {
-        IoUtils.checkOffsetAndCount(size, pos, 1);
+        IoKit.checkOffsetAndCount(size, pos, 1);
         if (size - pos > pos) {
             for (Segment s = head; true; s = s.next) {
                 int segmentByteCount = s.limit - s.pos;
@@ -475,17 +475,17 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public short readShortLe() {
-        return IoUtils.reverseBytesShort(readShort());
+        return IoKit.reverseBytesShort(readShort());
     }
 
     @Override
     public int readIntLe() {
-        return IoUtils.reverseBytesInt(readInt());
+        return IoKit.reverseBytesInt(readInt());
     }
 
     @Override
     public long readLongLe() {
-        return IoUtils.reverseBytesLong(readLong());
+        return IoKit.reverseBytesLong(readLong());
     }
 
     @Override
@@ -743,7 +743,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public String readUtf8() {
         try {
-            return readString(size, org.aoju.bus.core.lang.Charset.UTF_8);
+            return readString(size, Charset.UTF_8);
         } catch (EOFException e) {
             throw new AssertionError(e);
         }
@@ -751,11 +751,11 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public String readUtf8(long byteCount) throws EOFException {
-        return readString(byteCount, org.aoju.bus.core.lang.Charset.UTF_8);
+        return readString(byteCount, Charset.UTF_8);
     }
 
     @Override
-    public String readString(Charset charset) {
+    public String readString(java.nio.charset.Charset charset) {
         try {
             return readString(size, charset);
         } catch (EOFException e) {
@@ -764,8 +764,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     @Override
-    public String readString(long byteCount, Charset charset) throws EOFException {
-        IoUtils.checkOffsetAndCount(size, 0, byteCount);
+    public String readString(long byteCount, java.nio.charset.Charset charset) throws EOFException {
+        IoKit.checkOffsetAndCount(size, 0, byteCount);
         if (charset == null) throw new IllegalArgumentException("charset == null");
         if (byteCount > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("byteCount > Integer.MAX_VALUE: " + byteCount);
@@ -917,7 +917,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public byte[] readByteArray(long byteCount) throws EOFException {
-        IoUtils.checkOffsetAndCount(size, 0, byteCount);
+        IoKit.checkOffsetAndCount(size, 0, byteCount);
         if (byteCount > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("byteCount > Integer.MAX_VALUE: " + byteCount);
         }
@@ -944,7 +944,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public int read(byte[] sink, int offset, int byteCount) {
-        IoUtils.checkOffsetAndCount(sink.length, offset, byteCount);
+        IoKit.checkOffsetAndCount(sink.length, offset, byteCount);
 
         Segment s = head;
         if (s == null) return -1;
@@ -1122,12 +1122,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     @Override
-    public Buffer writeString(String string, Charset charset) {
+    public Buffer writeString(String string, java.nio.charset.Charset charset) {
         return writeString(string, 0, string.length(), charset);
     }
 
     @Override
-    public Buffer writeString(String string, int beginIndex, int endIndex, Charset charset) {
+    public Buffer writeString(String string, int beginIndex, int endIndex, java.nio.charset.Charset charset) {
         if (string == null) throw new IllegalArgumentException("string == null");
         if (beginIndex < 0) throw new IllegalAccessError("beginIndex < 0: " + beginIndex);
         if (endIndex < beginIndex) {
@@ -1152,7 +1152,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public Buffer write(byte[] source, int offset, int byteCount) {
         if (source == null) throw new IllegalArgumentException("source == null");
-        IoUtils.checkOffsetAndCount(source.length, offset, byteCount);
+        IoKit.checkOffsetAndCount(source.length, offset, byteCount);
 
         int limit = offset + byteCount;
         while (offset < limit) {
@@ -1231,7 +1231,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public Buffer writeShortLe(int s) {
-        return writeShort(IoUtils.reverseBytesShort((short) s));
+        return writeShort(IoKit.reverseBytesShort((short) s));
     }
 
     @Override
@@ -1250,7 +1250,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public Buffer writeIntLe(int i) {
-        return writeInt(IoUtils.reverseBytesInt(i));
+        return writeInt(IoKit.reverseBytesInt(i));
     }
 
     @Override
@@ -1273,7 +1273,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public Buffer writeLongLe(long v) {
-        return writeLong(IoUtils.reverseBytesLong(v));
+        return writeLong(IoKit.reverseBytesLong(v));
     }
 
     @Override
@@ -1318,7 +1318,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         int pos = tail.limit + width;
         while (v != 0) {
             int digit = (int) (v % 10);
-            data[--pos] = ByteUtils.getBytes(Normal.DIGITS_16_LOWER)[digit];
+            data[--pos] = ByteKit.getBytes(Normal.DIGITS_16_LOWER)[digit];
             v /= 10;
         }
         if (negative) {
@@ -1341,7 +1341,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         Segment tail = writableSegment(width);
         byte[] data = tail.data;
         for (int pos = tail.limit + width - 1, start = tail.limit; pos >= start; pos--) {
-            data[pos] = ByteUtils.getBytes(Normal.DIGITS_16_LOWER)[(int) (v & 0xF)];
+            data[pos] = ByteKit.getBytes(Normal.DIGITS_16_LOWER)[(int) (v & 0xF)];
             v >>>= 4;
         }
         tail.limit += width;
@@ -1374,7 +1374,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     public void write(Buffer source, long byteCount) {
         if (source == null) throw new IllegalArgumentException("source == null");
         if (source == this) throw new IllegalArgumentException("source == this");
-        IoUtils.checkOffsetAndCount(source.size, 0, byteCount);
+        IoKit.checkOffsetAndCount(source.size, 0, byteCount);
 
         while (byteCount > 0) {
             if (byteCount < (source.head.limit - source.head.pos)) {

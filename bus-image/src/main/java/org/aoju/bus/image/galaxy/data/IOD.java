@@ -25,7 +25,7 @@
 package org.aoju.bus.image.galaxy.data;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.FileUtils;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.galaxy.Property;
 import org.xml.sax.Locator;
@@ -43,7 +43,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class IOD extends ArrayList<IOD.DataElement> {
@@ -55,7 +55,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
     public static IOD load(String uri) throws IOException {
         if (uri.startsWith("resource:")) {
             try {
-                uri = FileUtils.getResource(uri.substring(9), IOD.class).toString();
+                uri = FileKit.getResource(uri.substring(9), IOD.class).toString();
             } catch (NullPointerException npe) {
                 throw new FileNotFoundException(uri);
             }

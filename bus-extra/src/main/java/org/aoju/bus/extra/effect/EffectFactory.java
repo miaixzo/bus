@@ -31,10 +31,10 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 /**
- * 解压缩服务工厂.
+ * 解压缩服务工厂
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public enum EffectFactory {

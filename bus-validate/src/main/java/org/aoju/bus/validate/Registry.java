@@ -25,7 +25,7 @@
 package org.aoju.bus.validate;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.validate.strategy.*;
 
 import java.util.Map;
@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 校验器注册中心
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Registry {
@@ -89,7 +89,7 @@ public class Registry {
      */
     public static Registry getInstance() {
         synchronized (Registry.class) {
-            if (ObjectUtils.isEmpty(instance)) {
+            if (ObjectKit.isEmpty(instance)) {
                 instance = new Registry();
             }
         }
@@ -143,7 +143,7 @@ public class Registry {
      */
     public Object require(String name, Class<?> clazz) {
         Object object = this.require(name);
-        if (ObjectUtils.isEmpty(object)) {
+        if (ObjectKit.isEmpty(object)) {
             object = this.require(clazz.getSimpleName());
         }
         return object;

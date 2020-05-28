@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.Regex;
 import org.aoju.bus.validate.validators.Matcher;
@@ -35,14 +35,14 @@ import java.util.regex.Pattern;
  * 正则匹配校验
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class RegexStrategy implements Matcher<String, Regex> {
 
     @Override
     public boolean on(String object, Regex regexValidate, Context context) {
-        if (StringUtils.isEmpty(object)) {
+        if (StringKit.isEmpty(object)) {
             return false;
         }
         if (regexValidate.zeroAble() && object.length() == 0) {

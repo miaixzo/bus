@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.utils.TypeUtils;
+import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
 
@@ -38,7 +38,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> 需要自定义的参考类型
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class Types<T> implements Type {
@@ -52,7 +52,7 @@ public abstract class Types<T> implements Type {
      * 构造
      */
     public Types() {
-        this.type = TypeUtils.getTypeArgument(getClass());
+        this.type = TypeKit.getTypeArgument(getClass());
     }
 
     /**

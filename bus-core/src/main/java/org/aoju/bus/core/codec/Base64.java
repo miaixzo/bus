@@ -24,15 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
-import org.aoju.bus.core.utils.CharsetUtils;
-import org.aoju.bus.core.utils.FileUtils;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 /**
  * Base64工具类,提供Base64的编码和解码方案
@@ -40,7 +39,7 @@ import java.nio.charset.Charset;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class Base64 {
@@ -95,7 +94,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String encode(CharSequence source, String charset) {
-        return Base64Encoder.encode(source, CharsetUtils.charset(charset));
+        return Base64Encoder.encode(source, Charset.charset(charset));
     }
 
     /**
@@ -106,7 +105,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String encodeUrlSafe(CharSequence source, String charset) {
-        return Base64Encoder.encodeUrlSafe(source, CharsetUtils.charset(charset));
+        return Base64Encoder.encodeUrlSafe(source, Charset.charset(charset));
     }
 
     /**
@@ -116,7 +115,7 @@ public class Base64 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encode(CharSequence source, Charset charset) {
+    public static String encode(CharSequence source, java.nio.charset.Charset charset) {
         return Base64Encoder.encode(source, charset);
     }
 
@@ -127,7 +126,7 @@ public class Base64 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String encodeUrlSafe(CharSequence source, Charset charset) {
+    public static String encodeUrlSafe(CharSequence source, java.nio.charset.Charset charset) {
         return Base64Encoder.encodeUrlSafe(source, charset);
     }
 
@@ -158,7 +157,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String encode(InputStream in) {
-        return Base64Encoder.encode(IoUtils.readBytes(in));
+        return Base64Encoder.encode(IoKit.readBytes(in));
     }
 
     /**
@@ -168,7 +167,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String encodeUrlSafe(InputStream in) {
-        return Base64Encoder.encodeUrlSafe(IoUtils.readBytes(in));
+        return Base64Encoder.encodeUrlSafe(IoKit.readBytes(in));
     }
 
     /**
@@ -178,7 +177,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String encode(File file) {
-        return Base64Encoder.encode(FileUtils.readBytes(file));
+        return Base64Encoder.encode(FileKit.readBytes(file));
     }
 
     /**
@@ -188,7 +187,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String encodeUrlSafe(File file) {
-        return Base64Encoder.encodeUrlSafe(FileUtils.readBytes(file));
+        return Base64Encoder.encodeUrlSafe(FileKit.readBytes(file));
     }
 
     /**
@@ -216,7 +215,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String decodeStrGbk(CharSequence source) {
-        return Base64Decoder.decodeStr(source, org.aoju.bus.core.lang.Charset.GBK);
+        return Base64Decoder.decodeStr(source, Charset.GBK);
     }
 
     /**
@@ -237,7 +236,7 @@ public class Base64 {
      * @return 被加密后的字符串
      */
     public static String decodeStr(CharSequence source, String charset) {
-        return Base64Decoder.decodeStr(source, CharsetUtils.charset(charset));
+        return Base64Decoder.decodeStr(source, Charset.charset(charset));
     }
 
     /**
@@ -247,7 +246,7 @@ public class Base64 {
      * @param charset 字符集
      * @return 被加密后的字符串
      */
-    public static String decodeStr(CharSequence source, Charset charset) {
+    public static String decodeStr(CharSequence source, java.nio.charset.Charset charset) {
         return Base64Decoder.decodeStr(source, charset);
     }
 
@@ -259,7 +258,7 @@ public class Base64 {
      * @return 目标文件
      */
     public static File decodeToFile(CharSequence base64, File destFile) {
-        return FileUtils.writeBytes(Base64Decoder.decode(base64), destFile);
+        return FileKit.writeBytes(Base64Decoder.decode(base64), destFile);
     }
 
     /**
@@ -270,7 +269,7 @@ public class Base64 {
      * @param isCloseOut 是否关闭输出流
      */
     public static void decodeToStream(CharSequence base64, OutputStream out, boolean isCloseOut) {
-        IoUtils.write(out, isCloseOut, Base64Decoder.decode(base64));
+        IoKit.write(out, isCloseOut, Base64Decoder.decode(base64));
     }
 
     /**

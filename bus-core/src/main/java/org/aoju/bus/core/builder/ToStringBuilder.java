@@ -25,7 +25,7 @@
 package org.aoju.bus.core.builder;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 /**
  * 协助实现{@link Object#toString()}方法
@@ -63,7 +63,7 @@ import org.aoju.bus.core.utils.ObjectUtils;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ToStringBuilder implements Builder<String> {
@@ -877,7 +877,7 @@ public class ToStringBuilder implements Builder<String> {
      * @return this
      */
     public ToStringBuilder appendAsObjectToString(final Object srcObject) {
-        ObjectUtils.identityToString(this.getStringBuffer(), srcObject);
+        ObjectKit.identityToString(this.getStringBuffer(), srcObject);
         return this;
     }
 

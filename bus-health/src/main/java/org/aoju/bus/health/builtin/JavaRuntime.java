@@ -25,7 +25,7 @@
 package org.aoju.bus.health.builtin;
 
 import org.aoju.bus.core.lang.System;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Platform;
 
 import java.io.Serializable;
@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 代表当前运行的JRE的信息
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class JavaRuntime implements Serializable {
@@ -160,7 +160,7 @@ public class JavaRuntime implements Serializable {
      * @since Java 1.1
      */
     public final String[] getClassPathArray() {
-        return StringUtils.split(getClassPath(), Platform.get("path.separator", false));
+        return StringKit.split(getClassPath(), Platform.get("path.separator", false));
     }
 
     /**
@@ -200,7 +200,7 @@ public class JavaRuntime implements Serializable {
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
     public final String[] getLibraryPathArray() {
-        return StringUtils.split(getLibraryPath(), Platform.get("path.separator", false));
+        return StringKit.split(getLibraryPath(), Platform.get("path.separator", false));
     }
 
     /**

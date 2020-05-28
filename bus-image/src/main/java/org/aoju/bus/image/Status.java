@@ -26,7 +26,7 @@ package org.aoju.bus.image;
 
 import lombok.Data;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.metric.Progress;
 
@@ -37,7 +37,7 @@ import java.util.List;
  * 相关处理状态
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Data
@@ -310,7 +310,7 @@ public class Status {
 
         if (p != null && p.getAttributes() != null) {
             String error = p.getErrorComment();
-            if (StringUtils.hasText(error)) {
+            if (StringKit.hasText(error)) {
                 hasFailed = true;
                 if (msg.length() > 0) {
                     msg.append("\n");

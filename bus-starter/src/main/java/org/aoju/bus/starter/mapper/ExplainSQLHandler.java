@@ -25,62 +25,94 @@
 package org.aoju.bus.starter.mapper;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.apache.ibatis.cache.CacheKey;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.Statements;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.executor.statement.CallableStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-
-import java.util.Properties;
 
 /**
  * 防止全表更新与删除
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Data
 @Accessors(chain = true)
-//@Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
-@Intercepts(value = {
-        @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
-                RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
-                RowBounds.class, ResultHandler.class})})
-public class ExplainSQLHandler implements Interceptor {
-
-    private Properties properties;
+@EqualsAndHashCode()
+@Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
+public class ExplainSQLHandler extends AbstractSqlParserHandler implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
-        Object parameter = args[1];
-        Configuration configuration = ms.getConfiguration();
-        Object target = invocation.getTarget();
-        StatementHandler handler = configuration.newStatementHandler((Executor) target, ms, parameter, RowBounds.DEFAULT, null, null);
-        //this.sqlParser(SystemMetaObject.forObject(handler));
+        if (ms.getSqlCommandType() == SqlCommandType.DELETE
+                || ms.getSqlCommandType() == SqlCommandType.UPDATE) {
+            Object parameter = args[1];
+            Configuration configuration = ms.getConfiguration();
+            Object target = invocation.getTarget();
+            StatementHandler handler = configuration.newStatementHandler((Executor) target, ms, parameter, RowBounds.DEFAULT, null, null);
+
+            MetaObject metaObject = SystemMetaObject.forObject(handler);
+            if (null != metaObject) {
+                Object originalObject = metaObject.getOriginalObject();
+                StatementHandler statementHandler = realTarget(originalObject);
+                // 好像不用判断也行,为了保险起见,还是加上吧.
+                statementHandler = metaObject.hasGetter("delegate") ? (StatementHandler) metaObject.getValue("delegate") : statementHandler;
+                if (!(statementHandler instanceof CallableStatementHandler)) {
+                    // 标记是否修改过 SQL
+                    boolean sqlChangedFlag = false;
+                    String sql = (String) metaObject.getValue(DELEGATE_BOUNDSQL_SQL);
+                    if (this.allowProcess(metaObject)) {
+                        try {
+                            StringBuilder sqlStringBuilder = new StringBuilder();
+                            Statements statements = CCJSqlParserUtil.parseStatements(parser(metaObject, sql));
+                            int i = 0;
+                            for (Statement statement : statements.getStatements()) {
+                                if (null != statement) {
+                                    if (i++ > 0) {
+                                        sqlStringBuilder.append(';');
+                                    }
+                                    sqlStringBuilder.append(this.processParser(statement));
+                                }
+                            }
+                            if (sqlStringBuilder.length() > 0) {
+                                sql = sqlStringBuilder.toString();
+                                sqlChangedFlag = true;
+                            }
+                        } catch (JSQLParserException e) {
+                            throw new InstrumentException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
+                        }
+                    }
+                    if (sqlChangedFlag) {
+                        metaObject.setValue(DELEGATE_BOUNDSQL_SQL, sql);
+                    }
+                }
+            }
+        }
         return invocation.proceed();
     }
 
     @Override
-    public Object plugin(Object target) {
-        if (target instanceof Executor) {
-            return Plugin.wrap(target, this);
+    public Object plugin(Object object) {
+        if (object instanceof Executor) {
+            return Plugin.wrap(object, this);
         }
-        return target;
-    }
-
-    @Override
-    public void setProperties(Properties prop) {
-        this.properties = prop;
+        return object;
     }
 
 }

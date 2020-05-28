@@ -29,7 +29,7 @@ import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
@@ -44,7 +44,7 @@ import java.util.List;
  * Graphics Card obtained from WMI
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -84,21 +84,21 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 String deviceId = idPair == null ? Normal.UNKNOWN : idPair.getRight();
                 String vendor = WmiQuery.getString(cards, VideoControllerProperty.ADAPTERCOMPATIBILITY, index);
                 if (idPair != null) {
-                    if (StringUtils.isBlank(vendor)) {
+                    if (StringKit.isBlank(vendor)) {
                         deviceId = idPair.getLeft();
                     } else {
                         vendor = vendor + " (" + idPair.getLeft() + ")";
                     }
                 }
                 String versionInfo = WmiQuery.getString(cards, VideoControllerProperty.DRIVERVERSION, index);
-                if (!StringUtils.isBlank(versionInfo)) {
+                if (!StringKit.isBlank(versionInfo)) {
                     versionInfo = "DriverVersion=" + versionInfo;
                 } else {
                     versionInfo = Normal.UNKNOWN;
                 }
                 long vram = WmiQuery.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
-                cardList.add(new WindowsGraphicsCard(StringUtils.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
-                        StringUtils.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram));
+                cardList.add(new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
+                        StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram));
             }
         }
         return cardList;

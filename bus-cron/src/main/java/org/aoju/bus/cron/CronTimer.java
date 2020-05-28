@@ -25,7 +25,7 @@
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.utils.ThreadUtils;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.logger.Logger;
 
 /**
@@ -33,7 +33,7 @@ import org.aoju.bus.logger.Logger;
  * 计时器线程每隔一分钟检查一次任务列表,一旦匹配到执行对应的Task
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class CronTimer extends Thread {
@@ -91,7 +91,7 @@ public class CronTimer extends Thread {
             nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
             sleep = nextTime - System.currentTimeMillis();
             if (isValidSleepMillis(sleep, timerUnit)) {
-                if (false == ThreadUtils.safeSleep(sleep)) {
+                if (false == ThreadKit.safeSleep(sleep)) {
                     //等待直到下一个时间点，如果被中断直接退出Timer
                     break;
                 }
@@ -108,7 +108,7 @@ public class CronTimer extends Thread {
      */
     synchronized public void stopTimer() {
         this.isStop = true;
-        ThreadUtils.interrupt(this, true);
+        ThreadKit.interrupt(this, true);
     }
 
     /**

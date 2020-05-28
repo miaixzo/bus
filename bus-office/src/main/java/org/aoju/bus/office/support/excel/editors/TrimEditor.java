@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.editors;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.apache.poi.ss.usermodel.Cell;
 
@@ -32,7 +32,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * 去除String类型的单元格值两边的空格
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class TrimEditor implements CellEditor {
@@ -40,7 +40,7 @@ public class TrimEditor implements CellEditor {
     @Override
     public Object edit(Cell cell, Object value) {
         if (value instanceof String) {
-            return StringUtils.trim((String) value);
+            return StringKit.trim((String) value);
         }
         return value;
     }

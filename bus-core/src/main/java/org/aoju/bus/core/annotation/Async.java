@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.annotation;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * 将类或方法标记为异步
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -56,7 +56,7 @@ public @interface Async {
          * @return 与原始方法配对的异步方法的名称
          */
         public static String transform(String methodName) {
-            return StringUtils.concat(true, new String[]{"__act_", methodName, "_async"});
+            return StringKit.concat(true, new String[]{"__act_", methodName, "_async"});
         }
     }
 

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.utils.UriUtils;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.gitlab.models.Group;
 import org.aoju.bus.gitlab.models.Label;
 import org.aoju.bus.gitlab.models.Project;
@@ -43,7 +43,7 @@ import java.net.URL;
  * delete(), get(), post() and put() that are re-used by all the sub-classes.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public abstract class AbstractApi implements Constants {
@@ -221,7 +221,7 @@ public abstract class AbstractApi implements Constants {
      * @throws GitLabApiException if encoding throws an exception
      */
     protected String urlEncode(String s) throws GitLabApiException {
-        return (UriUtils.encode(s));
+        return (UriKit.encode(s));
     }
 
     /**

@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.validate.strategy;
 
-import org.aoju.bus.core.utils.BooleanUtils;
+import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.validate.Context;
 import org.aoju.bus.validate.annotation.False;
 import org.aoju.bus.validate.validators.Matcher;
@@ -33,14 +33,14 @@ import org.aoju.bus.validate.validators.Matcher;
  * FALSE 校验
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FalseStrategy implements Matcher<Boolean, False> {
 
     @Override
     public boolean on(Boolean object, False annotation, Context context) {
-        if (BooleanUtils.isFalse(object)) {
+        if (BooleanKit.isFalse(object)) {
             return annotation.nullable();
         }
         return !object;

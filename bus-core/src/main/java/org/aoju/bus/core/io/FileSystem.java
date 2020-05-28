@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.io;
 
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,7 +37,7 @@ import java.io.IOException;
  * 例如加密)
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public interface FileSystem {
@@ -45,26 +45,26 @@ public interface FileSystem {
     FileSystem SYSTEM = new FileSystem() {
         @Override
         public Source source(File file) throws FileNotFoundException {
-            return IoUtils.source(file);
+            return IoKit.source(file);
         }
 
         @Override
         public Sink sink(File file) throws FileNotFoundException {
             try {
-                return IoUtils.sink(file);
+                return IoKit.sink(file);
             } catch (FileNotFoundException e) {
                 file.getParentFile().mkdirs();
-                return IoUtils.sink(file);
+                return IoKit.sink(file);
             }
         }
 
         @Override
         public Sink appendingSink(File file) throws FileNotFoundException {
             try {
-                return IoUtils.appendingSink(file);
+                return IoKit.appendingSink(file);
             } catch (FileNotFoundException e) {
                 file.getParentFile().mkdirs();
-                return IoUtils.appendingSink(file);
+                return IoKit.appendingSink(file);
             }
         }
 

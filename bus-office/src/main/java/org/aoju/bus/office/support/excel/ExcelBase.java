@@ -25,7 +25,7 @@
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.apache.poi.ss.usermodel.*;
 
@@ -38,7 +38,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -130,7 +130,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return this
      */
     public T setSheet(String sheetName) {
-        return setSheet(BookUtils.getOrCreateSheet(this.workbook, sheetName));
+        return setSheet(WorksKit.getOrCreateSheet(this.workbook, sheetName));
     }
 
     /**
@@ -141,13 +141,13 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return this
      */
     public T setSheet(int sheetIndex) {
-        return setSheet(BookUtils.getOrCreateSheet(this.workbook, sheetIndex));
+        return setSheet(WorksKit.getOrCreateSheet(this.workbook, sheetIndex));
     }
 
     /**
      * 设置自定义Sheet
      *
-     * @param sheet 自定义sheet，可以通过{@link BookUtils#getOrCreateSheet(Workbook, String)} 创建
+     * @param sheet 自定义sheet，可以通过{@link WorksKit#getOrCreateSheet(Workbook, String)} 创建
      * @return this
      */
     public T setSheet(Sheet sheet) {
@@ -173,7 +173,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Cell}
      */
     public Cell getCell(String locationRef) {
-        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return getCell(cellLocation.getX(), cellLocation.getY());
     }
 
@@ -195,7 +195,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Cell}
      */
     public Cell getOrCreateCell(String locationRef) {
-        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return getOrCreateCell(cellLocation.getX(), cellLocation.getY());
     }
 
@@ -208,9 +208,9 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Cell}
      */
     public Cell getCell(int x, int y, boolean isCreateIfNotExist) {
-        final Row row = isCreateIfNotExist ? RowUtils.getOrCreateRow(this.sheet, y) : this.sheet.getRow(y);
+        final Row row = isCreateIfNotExist ? RowKit.getOrCreateRow(this.sheet, y) : this.sheet.getRow(y);
         if (null != row) {
-            return isCreateIfNotExist ? CellUtils.getOrCreateCell(row, x) : row.getCell(x);
+            return isCreateIfNotExist ? CellKit.getOrCreateCell(row, x) : row.getCell(x);
         }
         return null;
     }
@@ -223,7 +223,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Cell}
      */
     public Cell getCell(String locationRef, boolean isCreateIfNotExist) {
-        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return getCell(cellLocation.getX(), cellLocation.getY(), isCreateIfNotExist);
     }
 
@@ -234,7 +234,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link Row}
      */
     public Row getOrCreateRow(int y) {
-        return RowUtils.getOrCreateRow(this.sheet, y);
+        return RowKit.getOrCreateRow(this.sheet, y);
     }
 
     /**
@@ -277,7 +277,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link CellStyle}
      */
     public CellStyle getOrCreateCellStyle(String locationRef) {
-        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return getOrCreateCellStyle(cellLocation.getX(), cellLocation.getY());
     }
 
@@ -317,7 +317,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return {@link CellStyle}
      */
     public CellStyle createCellStyle(String locationRef) {
-        final CellLocation cellLocation = ExcelUtils.toLocation(locationRef);
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
         return createCellStyle(cellLocation.getX(), cellLocation.getY());
     }
 
@@ -380,7 +380,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      */
     @Override
     public void close() {
-        IoUtils.close(this.workbook);
+        IoKit.close(this.workbook);
         this.sheet = null;
         this.workbook = null;
         this.isClosed = true;

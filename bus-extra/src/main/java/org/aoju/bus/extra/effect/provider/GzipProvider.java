@@ -33,10 +33,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * 基于gzip算法的数据解压缩.
+ * 基于gzip算法的数据解压缩
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class GzipProvider implements EffectProvider {

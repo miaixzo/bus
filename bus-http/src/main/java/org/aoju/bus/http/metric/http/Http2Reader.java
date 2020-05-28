@@ -25,7 +25,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.io.*;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Settings;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.logger.level.Level;
@@ -40,7 +40,7 @@ import java.util.List;
  * 因此，我们希望所有帧的最大长度为{@link Http2#INITIAL_MAX_FRAME_SIZE}。
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class Http2Reader implements Closeable {
@@ -80,7 +80,7 @@ public final class Http2Reader implements Closeable {
         } else {
             ByteString connectionPreface = source.readByteString(Http2.CONNECTION_PREFACE.size());
             if (Logger.get().isEnabled(Level.DEBUG)) {
-                Logger.warn(StringUtils.format("<< CONNECTION %s", connectionPreface.hex()));
+                Logger.warn(StringKit.format("<< CONNECTION %s", connectionPreface.hex()));
             }
             if (!Http2.CONNECTION_PREFACE.equals(connectionPreface)) {
                 throw Http2.ioException("Expected a connection header but was %s", connectionPreface.utf8());

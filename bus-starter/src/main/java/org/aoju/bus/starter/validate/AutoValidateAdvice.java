@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.validate;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.proxy.invoker.ProxyChain;
 import org.aoju.bus.validate.Builder;
@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * 自动进行参数处理实现类
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class AutoValidateAdvice {
@@ -64,7 +64,7 @@ public class AutoValidateAdvice {
         Annotation[][] annotations = method.getParameterAnnotations();
         Object[] names = proxyChain.getNames();
         for (int i = 0; i < agruements.length; i++) {
-            Builder.on(agruements[i], annotations[i], Context.newInstance(), StringUtils.toString(names[i]));
+            Builder.on(agruements[i], annotations[i], Context.newInstance(), StringKit.toString(names[i]));
         }
         return proxyChain.proceed(agruements);
     }

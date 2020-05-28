@@ -25,7 +25,7 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.Sequence;
@@ -60,7 +60,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * findscu只支持使用C-FIND消息的查询功能
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class FindSCU extends Device implements AutoCloseable {
@@ -202,7 +202,7 @@ public class FindSCU extends Device implements AutoCloseable {
             as.waitForOutstandingRSP();
             as.release();
         }
-        IoUtils.close(out);
+        IoKit.close(out);
         out = null;
     }
 
@@ -289,11 +289,11 @@ public class FindSCU extends Device implements AutoCloseable {
             out.flush();
         } catch (Exception e) {
             Logger.error("Building response", e);
-            IoUtils.close(out);
+            IoKit.close(out);
             out = null;
         } finally {
             if (!catOut) {
-                IoUtils.close(out);
+                IoKit.close(out);
                 out = null;
             }
         }

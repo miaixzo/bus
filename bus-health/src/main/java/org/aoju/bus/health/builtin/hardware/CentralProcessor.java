@@ -28,7 +28,7 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 
 import java.util.Properties;
@@ -44,7 +44,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * 多个逻辑处理器(操作系统看到的内容，可能包括超线程内核)
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -537,19 +537,19 @@ public interface CentralProcessor {
             // Check for match with only family
             String arch = archProps.getProperty(sb.toString());
 
-            if (StringUtils.isBlank(arch)) {
+            if (StringKit.isBlank(arch)) {
                 // Append model
                 sb.append(Symbol.C_DOT).append(this.cpuModel);
             }
             arch = archProps.getProperty(sb.toString());
 
-            if (StringUtils.isBlank(arch)) {
+            if (StringKit.isBlank(arch)) {
                 // Append stepping
                 sb.append(Symbol.C_DOT).append(this.cpuStepping);
             }
             arch = archProps.getProperty(sb.toString());
 
-            return StringUtils.isBlank(arch) ? Normal.UNKNOWN : arch;
+            return StringKit.isBlank(arch) ? Normal.UNKNOWN : arch;
         }
 
         @Override

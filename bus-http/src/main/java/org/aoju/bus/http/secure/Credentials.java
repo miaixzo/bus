@@ -25,15 +25,14 @@
 package org.aoju.bus.http.secure;
 
 import org.aoju.bus.core.io.ByteString;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
-
-import java.nio.charset.Charset;
 
 /**
  * HTTP授权工厂
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class Credentials {
@@ -49,10 +48,10 @@ public final class Credentials {
      * @return 验证凭据
      */
     public static String basic(String username, String password) {
-        return basic(username, password, org.aoju.bus.core.lang.Charset.ISO_8859_1);
+        return basic(username, password, Charset.ISO_8859_1);
     }
 
-    public static String basic(String username, String password, Charset charset) {
+    public static String basic(String username, String password, java.nio.charset.Charset charset) {
         String usernameAndPassword = username + Symbol.COLON + password;
         String encoded = ByteString.encodeString(usernameAndPassword, charset).base64();
         return "Basic " + encoded;

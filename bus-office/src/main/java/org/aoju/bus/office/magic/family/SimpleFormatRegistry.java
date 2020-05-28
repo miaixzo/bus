@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.magic.family;
 
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * SimpleDocumentFormatRegistry包含office支持的文档格式集合.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class SimpleFormatRegistry implements FormatRegistry {
@@ -50,19 +50,19 @@ public class SimpleFormatRegistry implements FormatRegistry {
         documentFormat
                 .getExtensions()
                 .stream()
-                .map(StringUtils::lowerCase)
+                .map(StringKit::lowerCase)
                 .forEach(ext -> fmtsByExtension.put(ext, documentFormat));
-        fmtsByMediaType.put(StringUtils.lowerCase(documentFormat.getMediaType()), documentFormat);
+        fmtsByMediaType.put(StringKit.lowerCase(documentFormat.getMediaType()), documentFormat);
     }
 
     @Override
     public DocumentFormat getFormatByExtension(final String extension) {
-        return extension == null ? null : fmtsByExtension.get(StringUtils.lowerCase(extension));
+        return extension == null ? null : fmtsByExtension.get(StringKit.lowerCase(extension));
     }
 
     @Override
     public DocumentFormat getFormatByMediaType(final String mediaType) {
-        return mediaType == null ? null : fmtsByMediaType.get(StringUtils.lowerCase(mediaType));
+        return mediaType == null ? null : fmtsByMediaType.get(StringKit.lowerCase(mediaType));
     }
 
     @Override

@@ -25,8 +25,8 @@
 package org.aoju.bus.image.plugin;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
-import org.aoju.bus.core.utils.StringUtils;
+import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.data.VR;
@@ -55,7 +55,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class StoreSCU implements AutoCloseable {
@@ -178,7 +178,7 @@ public class StoreSCU implements AutoCloseable {
             } catch (Exception e) {
                 Logger.error("Failed to scan file " + f + ": " + e.getMessage());
             } finally {
-                IoUtils.close(in);
+                IoKit.close(in);
             }
         }
     }
@@ -276,7 +276,7 @@ public class StoreSCU implements AutoCloseable {
                         break;
                     }
                 }
-                String[] ss = (String[]) StringUtils.split(line, '\t').toArray();
+                String[] ss = (String[]) StringKit.split(line, '\t').toArray();
                 try {
                     send(new File(ss[4]), Long.parseLong(ss[3]), ss[1], ss[0], ss[2]);
                 } catch (Exception e) {
@@ -290,7 +290,7 @@ public class StoreSCU implements AutoCloseable {
                 Logger.error("Waiting for RSP", e);
             }
         } finally {
-            IoUtils.close(fileInfos);
+            IoKit.close(fileInfos);
         }
     }
 
@@ -382,7 +382,7 @@ public class StoreSCU implements AutoCloseable {
             }
             as.cstore(cuid, iuid, priority, dataWriter, ts, rspHandlerFactory.createDimseRSPHandler(f));
         } finally {
-            IoUtils.close(in);
+            IoKit.close(in);
         }
     }
 
@@ -457,7 +457,7 @@ public class StoreSCU implements AutoCloseable {
         public void init(Properties props) {
             for (String cuid : props.stringPropertyNames()) {
                 commonExtNegs.put(cuid, new CommonExtended(cuid, UID.StorageServiceClass,
-                        (String[]) StringUtils.split(props.getProperty(cuid), Symbol.C_COMMA).toArray()));
+                        (String[]) StringKit.split(props.getProperty(cuid), Symbol.C_COMMA).toArray()));
             }
         }
 

@@ -25,7 +25,7 @@
 package org.aoju.bus.core.io;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.IoUtils;
+import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.zip.Inflater;
  * 解压从另一个源读取的数据.
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class InflaterSource implements Source {
@@ -48,7 +48,7 @@ public final class InflaterSource implements Source {
     private boolean closed;
 
     public InflaterSource(Source source, Inflater inflater) {
-        this(IoUtils.buffer(source), inflater);
+        this(IoKit.buffer(source), inflater);
     }
 
     InflaterSource(BufferSource source, Inflater inflater) {

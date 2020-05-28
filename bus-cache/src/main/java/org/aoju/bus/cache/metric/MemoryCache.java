@@ -27,7 +27,7 @@ package org.aoju.bus.cache.metric;
 import lombok.Getter;
 import lombok.Setter;
 import org.aoju.bus.cache.CacheX;
-import org.aoju.bus.core.utils.MapUtils;
+import org.aoju.bus.core.toolkit.MapKit;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -46,7 +46,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 内存缓存支持
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public class MemoryCache implements CacheX {
@@ -82,7 +82,7 @@ public class MemoryCache implements CacheX {
      */
     @Override
     public void write(Map<String, Object> keyValueMap, long expire) {
-        if (MapUtils.isNotEmpty(keyValueMap)) {
+        if (MapKit.isNotEmpty(keyValueMap)) {
             keyValueMap.forEach((key, value) -> write(key, value, expire));
         }
     }

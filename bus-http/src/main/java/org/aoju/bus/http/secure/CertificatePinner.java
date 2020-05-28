@@ -27,7 +27,7 @@ package org.aoju.bus.http.secure;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.utils.ObjectUtils;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.http.UnoUrl;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -45,7 +45,7 @@ import java.util.*;
  * 则{@link CertificatePinner}不能用于pin自签名证书
  *
  * @author Kimi Liu
- * @version 5.9.3
+ * @version 5.9.5
  * @since JDK 1.8+
  */
 public final class CertificatePinner {
@@ -79,7 +79,7 @@ public final class CertificatePinner {
     public boolean equals(Object other) {
         if (other == this) return true;
         return other instanceof CertificatePinner
-                && (ObjectUtils.equal(certificateChainCleaner, ((CertificatePinner) other).certificateChainCleaner)
+                && (ObjectKit.equal(certificateChainCleaner, ((CertificatePinner) other).certificateChainCleaner)
                 && pins.equals(((CertificatePinner) other).pins));
     }
 
@@ -156,7 +156,7 @@ public final class CertificatePinner {
 
     public CertificatePinner withCertificateChainCleaner(
             CertificateChainCleaner certificateChainCleaner) {
-        return ObjectUtils.equal(this.certificateChainCleaner, certificateChainCleaner)
+        return ObjectKit.equal(this.certificateChainCleaner, certificateChainCleaner)
                 ? this
                 : new CertificatePinner(pins, certificateChainCleaner);
     }
