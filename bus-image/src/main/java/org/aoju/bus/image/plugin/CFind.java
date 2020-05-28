@@ -114,7 +114,8 @@ public class CFind {
             Connection conn = findSCU.getConnection();
             args.configureBind(findSCU.getAAssociateRQ(), remote, calledNode);
             args.configureBind(findSCU.getApplicationEntity(), conn, callingNode);
-            Device device = findSCU.getDevice();
+
+            Centre centre = new Centre(findSCU.getDevice());
 
             args.configure(conn);
             args.configureTLS(conn, remote);
@@ -131,7 +132,7 @@ public class CFind {
             findSCU.setCancelAfter(cancelAfter);
             findSCU.setPriority(args.getPriority());
 
-            device.start();
+            centre.start(true);
             try {
                 Status dcmState = findSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -151,7 +152,7 @@ public class CFind {
                 return Status.build(findSCU.getState(), null, e);
             } finally {
                 Builder.close(findSCU);
-                device.stop();
+                centre.stop();
             }
         } catch (Exception e) {
             Logger.error("findscu", e);

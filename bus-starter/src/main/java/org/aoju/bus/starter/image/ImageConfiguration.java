@@ -28,10 +28,10 @@ import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.image.Args;
 import org.aoju.bus.image.Centre;
+import org.aoju.bus.image.Efforts;
 import org.aoju.bus.image.Node;
-import org.aoju.bus.image.Rollers;
-import org.aoju.bus.image.centre.StoreSCPCentre;
 import org.aoju.bus.image.nimble.opencv.OpenCVNativeLoader;
+import org.aoju.bus.image.plugin.StoreSCP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -48,27 +48,40 @@ public class ImageConfiguration {
     ImageProperties properties;
 
     @Autowired
-    Rollers rollers;
+    Efforts efforts;
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Centre onStoreSCP() {
         if (properties.opencv) {
             new OpenCVNativeLoader().init();
         }
-        StoreSCPCentre store = StoreSCPCentre.Builder();
+
+        if (StringKit.isEmpty(properties.aeTitle)) {
+            throw new NullPointerException("The aeTitle cannot be null.");
+        }
+        if (StringKit.isEmpty(properties.host)) {
+            throw new NullPointerException("The host cannot be null.");
+        }
+        if (StringKit.isEmpty(properties.port)) {
+            throw new NullPointerException("The port cannot be null.");
+        }
         Args args = new Args(true);
+        if (StringKit.isNotEmpty(properties.relClass)) {
+            args.setExtendSopClassesURL(FileKit.getResource(properties.relClass, ImageConfiguration.class));
+        }
         if (StringKit.isNotEmpty(properties.relClass)) {
             args.setExtendSopClassesURL(FileKit.getResource(properties.relClass, ImageConfiguration.class));
         }
         if (StringKit.isNotEmpty(properties.sopClass)) {
             args.setTransferCapabilityFile(FileKit.getResource(properties.sopClass, ImageConfiguration.class));
         }
-        store.setArgs(args);
-        store.setNode(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.port)));
-        store.setRollers(rollers);
-        store.setStoreSCP(properties.dcmPath);
-        store.setDevice(store.getStoreSCP().getDevice());
-        return store.build();
+        if (StringKit.isNotEmpty(properties.tcsClass)) {
+            args.setExtendStorageSOPClass(FileKit.getResource(properties.tcsClass, ImageConfiguration.class));
+        }
+
+        return Centre.builder().args(args).efforts(efforts)
+                .node(new Node(properties.aeTitle, properties.host, Integer.valueOf(properties.port)))
+                .storeSCP(new StoreSCP(properties.dcmPath)).build();
     }
 
 }

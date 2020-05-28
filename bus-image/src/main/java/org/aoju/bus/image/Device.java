@@ -27,7 +27,6 @@ package org.aoju.bus.image;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Code;
 import org.aoju.bus.image.galaxy.data.Issuer;
@@ -216,27 +215,6 @@ public class Device implements Serializable {
             destPos += certs.length;
         }
         return dest;
-    }
-
-    public boolean isRunning() {
-        return executor != null;
-    }
-
-    public void start() {
-        try {
-            bindConnections();
-        } catch (Exception ex) {
-            stop();
-            throw new InstrumentException(ex);
-        }
-    }
-
-    public void stop() {
-        unbindConnections();
-        if (scheduledExecutor != null)
-            scheduledExecutor.shutdown();
-        executor = null;
-        scheduledExecutor = null;
     }
 
     private void checkNotEmpty(String name, String val) {

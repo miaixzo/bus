@@ -82,6 +82,8 @@ public class Echo {
             StoreSCU storeSCU = new StoreSCU(ae, null);
             Connection remote = storeSCU.getRemoteConnection();
 
+            Centre centre = new Centre(device);
+
             args.configureBind(storeSCU.getAAssociateRQ(), remote, calledNode);
             args.configureBind(ae, conn, callingNode);
 
@@ -90,7 +92,7 @@ public class Echo {
 
             storeSCU.setPriority(args.getPriority());
 
-            device.start();
+            centre.start(true);
             try {
                 long t1 = System.currentTimeMillis();
                 storeSCU.open();
@@ -104,7 +106,7 @@ public class Echo {
                 return new Status(rsp.getInt(Tag.Status, Status.Success), message, null);
             } finally {
                 Builder.close(storeSCU);
-                device.stop();
+                centre.stop();
             }
         } catch (Exception e) {
             String message = "DICOM Echo failed, storescu: " + e.getMessage();

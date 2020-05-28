@@ -79,6 +79,8 @@ public class CMove {
             args.configureBind(moveSCU.getAAssociateRQ(), remote, calledNode);
             args.configureBind(moveSCU.getApplicationEntity(), conn, callingNode);
 
+            Centre centre = new Centre(moveSCU);
+
             args.configure(conn);
             args.configureTLS(conn, remote);
 
@@ -90,7 +92,7 @@ public class CMove {
             }
             moveSCU.setDestination(destinationAet);
 
-            moveSCU.start();
+            centre.start(true);
             try {
                 Status dcmState = moveSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -110,7 +112,7 @@ public class CMove {
                 return Status.build(moveSCU.getState(), null, e);
             } finally {
                 Builder.close(moveSCU);
-                moveSCU.stop();
+                centre.stop();
             }
         } catch (Exception e) {
             Logger.error("movescu", e);

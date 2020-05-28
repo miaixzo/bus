@@ -95,7 +95,8 @@ public class Modality {
             Connection conn = findSCU.getConnection();
             args.configureBind(findSCU.getAAssociateRQ(), remote, calledNode);
             args.configureBind(findSCU.getApplicationEntity(), conn, callingNode);
-            Device device = findSCU.getDevice();
+
+            Centre centre = new Centre(findSCU.getDevice());
 
             args.configure(conn);
             args.configureTLS(conn, remote);
@@ -108,7 +109,7 @@ public class Modality {
             findSCU.setCancelAfter(cancelAfter);
             findSCU.setPriority(args.getPriority());
 
-            device.start();
+            centre.start(true);
             try {
                 Status dcmState = findSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -128,7 +129,7 @@ public class Modality {
                 return Status.build(findSCU.getState(), null, e);
             } finally {
                 Builder.close(findSCU);
-                device.stop();
+                centre.stop();
             }
         } catch (Exception e) {
             Logger.error("findscu", e);
@@ -186,7 +187,7 @@ public class Modality {
         attrs.setNull(Tag.ReferencedPerformedProcedureStepSequence, VR.SQ);
     }
 
-    private static void sendStgCmt(StgCmtSCU stgcmtscu) throws IOException,
+    private static void sendStgCmt(CmtSCU stgcmtscu) throws IOException,
             InterruptedException, InstrumentException, GeneralSecurityException {
         printNextStepMessage("Will now send Storage Commitment to " + calledAET);
         try {

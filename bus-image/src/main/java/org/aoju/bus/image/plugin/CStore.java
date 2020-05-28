@@ -112,6 +112,8 @@ public class CStore {
             storeSCU = new StoreSCU(ae, progress, args.getEditors());
             Connection remote = storeSCU.getRemoteConnection();
 
+            Centre centre = new Centre(device);
+
             args.configureBind(storeSCU.getAAssociateRQ(), remote, calledNode);
             args.configureBind(ae, conn, callingNode);
 
@@ -133,7 +135,7 @@ public class CStore {
             if (n == 0) {
                 return new Status(Status.UnableToProcess, "No DICOM file has been found!", null);
             } else {
-                device.start();
+                centre.start(true);
                 try {
                     long t1 = System.currentTimeMillis();
                     storeSCU.open();
@@ -152,7 +154,7 @@ public class CStore {
                     return Status.build(storeSCU.getState(), null, e);
                 } finally {
                     Builder.close(storeSCU);
-                    device.stop();
+                    centre.stop();
                 }
             }
         } catch (Exception e) {

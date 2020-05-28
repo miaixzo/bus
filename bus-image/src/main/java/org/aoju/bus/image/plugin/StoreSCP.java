@@ -58,11 +58,11 @@ public class StoreSCP extends BasicCStoreSCP {
     public final Connection conn = new Connection();
     public final String storageDir;
     public final List<Node> authorizedCallingNodes;
-    public Rollers rollers;
+    public Efforts efforts;
     private volatile int status = Status.Success;
 
     /**
-     * @param storageDir the base path of storage folder
+     * @param storageDir 存储文件夹的基本路径
      */
     public StoreSCP(String storageDir) {
         this(storageDir, null);
@@ -132,8 +132,8 @@ public class StoreSCP extends BasicCStoreSCP {
         try {
             Attributes fmi = as.createFileMetaInformation(iuid, cuid, tsuid);
             storeTo(as, fmi, data, file);
-            if (ObjectKit.isNotEmpty(rollers)) {
-                rollers.supports(fmi, file, this.getClass());
+            if (ObjectKit.isNotEmpty(efforts)) {
+                efforts.supports(fmi, file, this.getClass());
             }
         } catch (Exception e) {
             throw new ImageException(Status.ProcessingFailure, e);
@@ -194,12 +194,12 @@ public class StoreSCP extends BasicCStoreSCP {
         return device;
     }
 
-    public Rollers getRollers() {
-        return rollers;
+    public Efforts getEfforts() {
+        return efforts;
     }
 
-    public void setRollers(Rollers rollers) {
-        this.rollers = rollers;
+    public void setEfforts(Efforts efforts) {
+        this.efforts = efforts;
     }
 
 }

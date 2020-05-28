@@ -22,89 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.image.centre;
+package org.aoju.bus.image;
 
-import org.aoju.bus.image.*;
+import org.aoju.bus.image.galaxy.data.Attributes;
+
+import java.io.File;
 
 /**
+ * 图像处理额外接触点
+ * 即: 后续业务处理支持
+ *
  * @author Kimi Liu
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public abstract class AbstractCentre implements Centre {
+public interface Efforts {
 
     /**
-     * 服务器信息
+     * @param attributes 完整影像信息
+     * @param file       影像原始文件
+     * @param clazz      调用类信息
+     * @return 根据业务需要返回不同类型的值
      */
-    protected Node node;
-    /**
-     * 参数信息
-     */
-    protected Args args;
-    /**
-     * 设备信息
-     */
-    protected Device device;
-    /**
-     * 业务处理
-     */
-    protected Rollers rollers;
-
-    public AbstractCentre() {
-        this(null, null);
+    default Object supports(Attributes attributes, File file, Class<?> clazz) {
+        return file;
     }
 
-    public AbstractCentre(Node node, Args args) {
-        this(node, args, null);
-    }
-
-    public AbstractCentre(Node node, Args args, Device device) {
-        this(node, args, device, null);
-    }
-
-    public AbstractCentre(Node node, Args args, Device device, Rollers rollers) {
-        this.node = node;
-        this.args = args;
-        this.device = device;
-        this.rollers = rollers;
-    }
-
-    /**
-     * 创建此生成器指定的管理器
-     *
-     * @return 由该生成器指定的管理器
-     */
-    protected abstract AbstractCentre build();
-
-    public Node getNode() {
-        return node;
-    }
-
-    public void setNode(Node node) {
-        this.node = node;
-    }
-
-    public Args getArgs() {
-        return args;
-    }
-
-    public void setArgs(Args args) {
-        this.args = args;
-    }
-
-    public Device getDevice() {
-        return device;
-    }
-
-    public void setDevice(Device device) {
-        this.device = device;
-    }
-
-    public Rollers getRollers() {
-        return rollers;
-    }
-
-    public void setRollers(Rollers rollers) {
-        this.rollers = rollers;
-    }
 }

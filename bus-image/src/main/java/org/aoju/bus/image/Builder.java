@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 方法参数等构建器
@@ -147,6 +148,16 @@ public class Builder {
                 object.close();
             } catch (Exception e) {
                 Logger.error("Cannot close AutoCloseable", e);
+            }
+        }
+    }
+
+    public static void shutdown(ExecutorService executorService) {
+        if (executorService != null) {
+            try {
+                executorService.shutdown();
+            } catch (Exception e) {
+                Logger.error("ExecutorService shutdown", e);
             }
         }
     }

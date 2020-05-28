@@ -54,7 +54,7 @@ import java.util.List;
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public class StgCmtSCU {
+public class StgSCU {
 
     private final ApplicationEntity ae;
     private final Connection remote;
@@ -84,7 +84,7 @@ public class StgCmtSCU {
                     String tuid = data.getString(Tag.TransactionUID);
                     try {
                         Attributes rsp = Commands.mkNEventReportRSP(cmd, status);
-                        Attributes rspAttrs = StgCmtSCU.this.eventRecord(as, cmd, data);
+                        Attributes rspAttrs = StgSCU.this.eventRecord(as, cmd, data);
                         as.writeDimseRSP(pc, rsp, rspAttrs);
                     } catch (InstrumentException e) {
                         Logger.warn("{} << N-EVENT-RECORD-RSP failed: {}", as, e.getMessage());
@@ -95,7 +95,7 @@ public class StgCmtSCU {
             };
     private Association as;
 
-    public StgCmtSCU(ApplicationEntity ae) {
+    public StgSCU(ApplicationEntity ae) {
         this.remote = new Connection();
         this.ae = ae;
         ServiceHandler serviceHandler = new ServiceHandler();

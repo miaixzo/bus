@@ -69,10 +69,7 @@ public class Args {
      * 绑定调用AET
      */
     private boolean bindCallingAet;
-    /**
-     * 传输功能文件
-     */
-    private URL transferCapabilityFile;
+
     /**
      * 接受的呼叫AET
      */
@@ -93,6 +90,12 @@ public class Args {
      * 扩展Sop类URL
      */
     private URL extendSopClassesURL;
+
+    private URL extendStorageSOPClass;
+    /**
+     * 传输功能文件
+     */
+    private URL transferCapabilityFile;
 
     private int tag;
     private String[] values;
