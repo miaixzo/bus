@@ -5109,9 +5109,6 @@ public class Imgproc {
      * @param code  Color space conversion code (see the description below).
      * @param dstCn number of channels in the destination image; if the parameter is 0, the number of the
      *              channels is derived automatically from src and code.
-     *              <p>
-     *              can do the following transformations:
-     *
      *              <ul>
      *                <li>
      *                 Demosaicing using bilinear interpolation
@@ -5159,9 +5156,6 @@ public class Imgproc {
      * @param dst  output image of the same size and depth as src.
      * @param code Color space conversion code (see the description below).
      *             channels is derived automatically from src and code.
-     *             <p>
-     *              can do the following transformations:
-     *
      *             <ul>
      *               <li>
      *                Demosaicing using bilinear interpolation

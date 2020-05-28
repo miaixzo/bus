@@ -39,8 +39,9 @@ public class RoleSelection {
     private final boolean scp;
 
     public RoleSelection(String cuid, boolean scu, boolean scp) {
-        if (cuid == null)
-            throw new NullPointerException();
+        if (cuid == null) {
+            throw new NullPointerException("cuid cannot be null");
+        }
 
         this.cuid = cuid;
         this.scu = scu;
