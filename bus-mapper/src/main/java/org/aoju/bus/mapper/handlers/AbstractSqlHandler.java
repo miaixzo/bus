@@ -24,8 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.mapper.handlers;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
 import org.aoju.bus.core.lang.Symbol;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
@@ -42,8 +40,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 5.9.5
  * @since JDK 1.8+
  */
-@Data
-@Accessors(chain = true)
 public abstract class AbstractSqlHandler {
 
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
@@ -81,7 +77,7 @@ public abstract class AbstractSqlHandler {
     }
 
     /**
-     * 获得真正的处理对象,可能多层代理.
+     * 获得真正的处理对象,可能多层代理
      *
      * @param <T>    泛型
      * @param target 对象
@@ -90,7 +86,7 @@ public abstract class AbstractSqlHandler {
     protected static <T> T realTarget(Object target) {
         if (Proxy.isProxyClass(target.getClass())) {
             MetaObject metaObject = SystemMetaObject.forObject(target);
-            return realTarget(metaObject.getValue("hi.target"));
+            return realTarget(metaObject.getValue("h.target"));
         }
         return (T) target;
     }

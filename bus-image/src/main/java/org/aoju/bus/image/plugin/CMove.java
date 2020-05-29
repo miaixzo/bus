@@ -51,7 +51,7 @@ public class CMove {
                                  String destinationAet,
                                  Progress progress,
                                  Args... keys) {
-        return CMove.process(new Args(), callingNode, calledNode, destinationAet, progress, keys);
+        return process(new Args(), callingNode, calledNode, destinationAet, progress, keys);
     }
 
     /**
