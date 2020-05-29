@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import org.aoju.bus.cache.Shooting;
+import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public class ZKShooting implements Shooting {
+public class ZookeeperHitting implements Hitting {
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r);
@@ -74,11 +74,11 @@ public class ZKShooting implements Shooting {
 
     private String requirePathPrefix;
 
-    public ZKShooting(String zkServer) {
+    public ZookeeperHitting(String zkServer) {
         this(zkServer, System.getProperty("product.name", "unnamed"));
     }
 
-    public ZKShooting(String zkServer, String productName) {
+    public ZookeeperHitting(String zkServer, String productName) {
         this.client = CuratorFrameworkFactory.builder()
                 .connectString(zkServer)
                 .retryPolicy(new RetryNTimes(3, 0))

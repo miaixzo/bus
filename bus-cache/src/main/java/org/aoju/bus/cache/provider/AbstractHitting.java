@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import org.aoju.bus.cache.Shooting;
+import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.lang.Normal;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -46,7 +46,7 @@ import java.util.stream.Stream;
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public abstract class AbstractShooting implements Shooting {
+public abstract class AbstractHitting implements Hitting {
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r);
@@ -67,7 +67,7 @@ public abstract class AbstractShooting implements Shooting {
 
     private Properties sqls;
 
-    protected AbstractShooting(Map<String, Object> context) {
+    protected AbstractHitting(Map<String, Object> context) {
         InputStream resource = this.getClass().getClassLoader().getResourceAsStream(Normal.META_DATA_INF + "/caches/bus-cache.yaml");
         this.sqls = new Yaml().loadAs(resource, Properties.class);
 
@@ -80,7 +80,7 @@ public abstract class AbstractShooting implements Shooting {
         });
     }
 
-    public AbstractShooting(String url, String username, String password) {
+    public AbstractHitting(String url, String username, String password) {
         this(newHashMap(
                 "url", url,
                 "username", username,

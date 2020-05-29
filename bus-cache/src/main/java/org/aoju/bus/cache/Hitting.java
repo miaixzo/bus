@@ -22,74 +22,72 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.cache.provider;
+package org.aoju.bus.cache;
 
-import org.aoju.bus.cache.Shooting;
+import org.aoju.bus.core.lang.Symbol;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Kimi Liu
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public class MemoryShooting implements Shooting {
+public interface Hitting {
 
-    private ConcurrentMap<String, AtomicLong> hitMap = new ConcurrentHashMap<>();
+    void reqIncr(String pattern, int count);
 
-    private ConcurrentMap<String, AtomicLong> requireMap = new ConcurrentHashMap<>();
+    void hitIncr(String pattern, int count);
 
-    @Override
-    public void hitIncr(String pattern, int count) {
-        hitMap.computeIfAbsent(
-                pattern,
-                (k) -> new AtomicLong()
-        ).addAndGet(count);
+    Map<String, HittingDO> getHitting();
+
+    void reset(String pattern);
+
+    void resetAll();
+
+    default String summaryName() {
+        return "zh".equalsIgnoreCase(System.getProperty("user.language")) ? "全局" : "summary";
     }
 
-    @Override
-    public void reqIncr(String pattern, int count) {
-        requireMap.computeIfAbsent(
-                pattern,
-                (k) -> new AtomicLong()
-        ).addAndGet(count);
-    }
+    class HittingDO {
 
-    @Override
-    public Map<String, Shooting.ShootingDO> getShooting() {
-        Map<String, ShootingDO> result = new LinkedHashMap<>();
+        private long hit;
 
-        AtomicLong statisticsHit = new AtomicLong(0);
-        AtomicLong statisticsRequired = new AtomicLong(0);
-        requireMap.forEach((pattern, count) -> {
-            long hit = hitMap.computeIfAbsent(pattern, (key) -> new AtomicLong(0)).get();
-            long require = count.get();
+        private long required;
 
-            statisticsHit.addAndGet(hit);
-            statisticsRequired.addAndGet(require);
+        private String rate;
 
-            result.put(pattern, ShootingDO.newInstance(hit, require));
-        });
+        private HittingDO(long hit, long required, String rate) {
+            this.hit = hit;
+            this.required = required;
+            this.rate = rate;
+        }
 
-        result.put(summaryName(), ShootingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
+        public static HittingDO newInstance(long hit, long required) {
+            double rate = (required == 0 ? 0.0 : hit * 100.0 / required);
+            String rateStr = String.format("%.1f%s", rate, Symbol.PERCENT);
 
-        return result;
-    }
+            return new HittingDO(hit, required, rateStr);
+        }
 
-    @Override
-    public void reset(String pattern) {
-        hitMap.remove(pattern);
-        requireMap.remove(pattern);
-    }
+        public static HittingDO mergeShootingDO(HittingDO do1, HittingDO do2) {
+            long hit = do1.getHit() + do2.getHit();
+            long required = do1.getRequired() + do2.getRequired();
 
-    @Override
-    public void resetAll() {
-        hitMap.clear();
-        requireMap.clear();
+            return newInstance(hit, required);
+        }
+
+        public long getHit() {
+            return hit;
+        }
+
+        public long getRequired() {
+            return required;
+        }
+
+        public String getRate() {
+            return rate;
+        }
     }
 
 }

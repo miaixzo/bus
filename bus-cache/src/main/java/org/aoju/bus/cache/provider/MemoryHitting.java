@@ -24,69 +24,72 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import org.aoju.bus.core.toolkit.StringKit;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.aoju.bus.cache.Hitting;
 
-import javax.annotation.PreDestroy;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Kimi Liu
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public class H2Shooting extends AbstractShooting {
+public class MemoryHitting implements Hitting {
 
-    public H2Shooting(Map<String, Object> context) {
-        super(context);
-    }
+    private ConcurrentMap<String, AtomicLong> hitMap = new ConcurrentHashMap<>();
 
-    public H2Shooting(String url, String username, String password) {
-        super(url, username, password);
+    private ConcurrentMap<String, AtomicLong> requireMap = new ConcurrentHashMap<>();
+
+    @Override
+    public void hitIncr(String pattern, int count) {
+        hitMap.computeIfAbsent(
+                pattern,
+                (k) -> new AtomicLong()
+        ).addAndGet(count);
     }
 
     @Override
-    protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
-        return () -> {
-            SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-            dataSource.setDriverClassName("org.h2.Driver");
-            dataSource.setUrl(StringKit.toString(context.get("url")));
-            dataSource.setUsername(StringKit.toString(context.get("username")));
-            dataSource.setPassword(StringKit.toString(context.get("password")));
-
-            JdbcTemplate template = new JdbcTemplate(dataSource);
-            template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +
-                    "id BIGINT     IDENTITY PRIMARY KEY," +
-                    "pattern       VARCHAR(64) NOT NULL UNIQUE," +
-                    "hit_count     BIGINT      NOT NULL     DEFAULT 0," +
-                    "require_count BIGINT      NOT NULL     DEFAULT 0," +
-                    "version       BIGINT      NOT NULL     DEFAULT 0)");
-
-            return template;
-        };
+    public void reqIncr(String pattern, int count) {
+        requireMap.computeIfAbsent(
+                pattern,
+                (k) -> new AtomicLong()
+        ).addAndGet(count);
     }
 
     @Override
-    protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
-        return mapResults.stream().map((map) -> {
-            AbstractShooting.DataDO dataDO = new AbstractShooting.DataDO();
-            dataDO.setPattern((String) map.get("PATTERN"));
-            dataDO.setHitCount((long) map.get("HIT_COUNT"));
-            dataDO.setRequireCount((long) map.get("REQUIRE_COUNT"));
-            dataDO.setVersion((long) map.get("VERSION"));
+    public Map<String, Hitting.ShootingDO> getShooting() {
+        Map<String, ShootingDO> result = new LinkedHashMap<>();
 
-            return dataDO;
+        AtomicLong statisticsHit = new AtomicLong(0);
+        AtomicLong statisticsRequired = new AtomicLong(0);
+        requireMap.forEach((pattern, count) -> {
+            long hit = hitMap.computeIfAbsent(pattern, (key) -> new AtomicLong(0)).get();
+            long require = count.get();
+
+            statisticsHit.addAndGet(hit);
+            statisticsRequired.addAndGet(require);
+
+            result.put(pattern, ShootingDO.newInstance(hit, require));
         });
+
+        result.put(summaryName(), ShootingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
+
+        return result;
     }
 
-    @PreDestroy
-    public void tearDown() {
-        super.tearDown();
+    @Override
+    public void reset(String pattern) {
+        hitMap.remove(pattern);
+        requireMap.remove(pattern);
+    }
+
+    @Override
+    public void resetAll() {
+        hitMap.clear();
+        requireMap.clear();
     }
 
 }

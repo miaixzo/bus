@@ -25,8 +25,8 @@
 package org.aoju.bus.cache.magic;
 
 import org.aoju.bus.cache.Context;
+import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.Manage;
-import org.aoju.bus.cache.Shooting;
 import org.aoju.bus.cache.support.*;
 import org.aoju.bus.core.annotation.Inject;
 import org.aoju.bus.core.annotation.Singleton;
@@ -51,7 +51,7 @@ public class MultiCacheReader extends AbstractReader {
     private Context config;
 
     @Inject(optional = true)
-    private Shooting baseShooting;
+    private Hitting baseHitting;
 
     private static Map mergeMap(Class<?> resultMapType,
                                 Map proceedEntryValueMap,
@@ -258,12 +258,12 @@ public class MultiCacheReader extends AbstractReader {
         Logger.info("multi cache hit rate: {}/{}, missed keys: {}",
                 hitCount, totalCount, missKeys);
 
-        if (this.baseShooting != null) {
+        if (this.baseHitting != null) {
             // 分组模板
             String pattern = PatternGenerator.generatePattern(annoHolder);
 
-            this.baseShooting.hitIncr(pattern, hitCount);
-            this.baseShooting.reqIncr(pattern, totalCount);
+            this.baseHitting.hitIncr(pattern, hitCount);
+            this.baseHitting.reqIncr(pattern, totalCount);
         }
     }
 

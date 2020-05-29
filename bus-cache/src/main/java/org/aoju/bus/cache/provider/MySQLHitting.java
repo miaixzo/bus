@@ -40,13 +40,13 @@ import java.util.stream.Stream;
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public class MySQLShooting extends AbstractShooting {
+public class MySQLHitting extends AbstractHitting {
 
-    public MySQLShooting(Map<String, Object> context) {
+    public MySQLHitting(Map<String, Object> context) {
         super(context);
     }
 
-    public MySQLShooting(String url, String username, String password) {
+    public MySQLHitting(String url, String username, String password) {
         super(url, username, password);
     }
 

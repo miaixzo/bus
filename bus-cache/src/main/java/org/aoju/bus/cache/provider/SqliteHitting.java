@@ -38,13 +38,13 @@ import java.util.stream.Stream;
  * @version 5.9.5
  * @since JDK 1.8+
  */
-public class SqliteShooting extends AbstractShooting {
+public class SqliteHitting extends AbstractHitting {
 
-    public SqliteShooting(Map<String, Object> context) {
+    public SqliteHitting(Map<String, Object> context) {
         super(context);
     }
 
-    public SqliteShooting(String url, String username, String password) {
+    public SqliteHitting(String url, String username, String password) {
         super(url, username, password);
     }
 
