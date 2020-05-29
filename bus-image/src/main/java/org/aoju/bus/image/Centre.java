@@ -24,7 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.BooleanKit;
@@ -51,8 +52,9 @@ import java.util.concurrent.ScheduledExecutorService;
  * @version 5.9.5
  * @since JDK 1.8+
  */
-@Data
 @lombok.Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Centre {
 
     /**
@@ -97,6 +99,8 @@ public class Centre {
 
     /**
      * 启动管理器
+     *
+     * @param flag 标记信息
      */
     public synchronized void start(boolean... flag) {
         if (BooleanKit.or(flag)) {

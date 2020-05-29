@@ -187,7 +187,7 @@ public class Modality {
         attrs.setNull(Tag.ReferencedPerformedProcedureStepSequence, VR.SQ);
     }
 
-    private static void sendStgCmt(CmtSCU stgcmtscu) throws IOException,
+    private static void sendStgCmt(StgSCU stgcmtscu) throws IOException,
             InterruptedException, InstrumentException, GeneralSecurityException {
         printNextStepMessage("Will now send Storage Commitment to " + calledAET);
         try {
