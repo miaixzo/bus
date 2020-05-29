@@ -160,13 +160,13 @@ public class Centre {
         executor = Executors.newCachedThreadPool();
         scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         try {
+            device = storeSCP.getDevice();
             device.setExecutor(executor);
             device.setScheduledExecutor(scheduledExecutor);
             device.bindConnections();
-            return;
         } catch (IOException | GeneralSecurityException e) {
             stop();
-            Logger.warn(e.getMessage());
+            Logger.error(e.getMessage());
         }
     }
 
