@@ -25,6 +25,7 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.extra.emoji.EmojiKit;
 import org.aoju.bus.sensitive.Context;
@@ -47,7 +48,7 @@ public class DafaultStrategy extends AbstractProvider {
 
         String value = object.toString();
 
-        if (EmojiKit.isEmoji(value)) {
+        if (CollKit.isNotEmpty(EmojiKit.extractEmojis(value))) {
             return value;
         }
 

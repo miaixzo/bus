@@ -23,7 +23,7 @@
         <jsch.version>0.1.54</jsch.version>
         <zxing.version>3.4.0</zxing.version>
         <net.version>3.6</net.version>
-        <emoji.java.version>4.0.0</emoji.java.version>
+        <emoji.java.version>5.1.1</emoji.java.version>
         <aliyun.sdk.core.version>4.2.0</aliyun.sdk.core.version>
         <aliyun.sdk.sms.version>2.1.0</aliyun.sdk.sms.version>
         <aliyun.sdk.dm.version>3.3.1</aliyun.sdk.dm.version>

@@ -25,6 +25,7 @@
 package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.extra.emoji.EmojiKit;
@@ -55,7 +56,7 @@ public class NameStrategy extends AbstractProvider {
         if (StringKit.isEmpty(value)) {
             return value;
         }
-        if (EmojiKit.isEmoji(value)) {
+        if (CollKit.isNotEmpty(EmojiKit.extractEmojis(value))) {
             return value;
         }
         final int nameLength = value.length();

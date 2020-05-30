@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.sensitive.strategy;
 
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.extra.emoji.EmojiKit;
@@ -47,22 +48,22 @@ public class AddressStrategy extends AbstractProvider {
         if (ObjectKit.isEmpty(object)) {
             return null;
         }
-        String address = object.toString();
-        if (EmojiKit.isEmoji(address)) {
-            return address;
+        String value = object.toString();
+        if (CollKit.isNotEmpty(EmojiKit.extractEmojis(value))) {
+            return value;
         }
         final int RIGHT = 10;
         final int LEFT = 6;
 
         final Shield shield = context.getShield();
-        int length = StringKit.length(address);
+        int length = StringKit.length(value);
         if (length > RIGHT + LEFT) {
-            return StringKit.rightPad(StringKit.left(address, length - RIGHT), length, shield.shadow());
+            return StringKit.rightPad(StringKit.left(value, length - RIGHT), length, shield.shadow());
         }
         if (length <= LEFT) {
-            return address;
+            return value;
         } else {
-            return address.substring(0, LEFT + 1).concat(StringKit.fill(5, shield.shadow()));
+            return value.substring(0, LEFT + 1).concat(StringKit.fill(5, shield.shadow()));
         }
     }
 
