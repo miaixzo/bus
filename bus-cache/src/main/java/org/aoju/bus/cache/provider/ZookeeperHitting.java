@@ -119,8 +119,8 @@ public class ZookeeperHitting implements Hitting {
     }
 
     @Override
-    public Map<String, ShootingDO> getShooting() {
-        Map<String, ShootingDO> result = new LinkedHashMap<>();
+    public Map<String, Hitting.HittingDO> getHitting() {
+        Map<String, Hitting.HittingDO> result = new LinkedHashMap<>();
 
         AtomicLong totalHit = new AtomicLong(0L);
         AtomicLong totalRequire = new AtomicLong(0L);
@@ -132,13 +132,13 @@ public class ZookeeperHitting implements Hitting {
                 totalRequire.addAndGet(require);
                 totalHit.addAndGet(hit);
 
-                result.put(key, ShootingDO.newInstance(hit, require));
+                result.put(key, Hitting.HittingDO.newInstance(hit, require));
             } catch (Exception e) {
                 Logger.error(e, "acquire hit count error: ", e.getMessage());
             }
         });
 
-        result.put(summaryName(), ShootingDO.newInstance(totalHit.get(), totalRequire.get()));
+        result.put(summaryName(), Hitting.HittingDO.newInstance(totalHit.get(), totalRequire.get()));
 
         return result;
     }

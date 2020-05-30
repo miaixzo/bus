@@ -60,8 +60,8 @@ public class MemoryHitting implements Hitting {
     }
 
     @Override
-    public Map<String, Hitting.ShootingDO> getShooting() {
-        Map<String, ShootingDO> result = new LinkedHashMap<>();
+    public Map<String, Hitting.HittingDO> getHitting() {
+        Map<String, Hitting.HittingDO> result = new LinkedHashMap<>();
 
         AtomicLong statisticsHit = new AtomicLong(0);
         AtomicLong statisticsRequired = new AtomicLong(0);
@@ -72,10 +72,10 @@ public class MemoryHitting implements Hitting {
             statisticsHit.addAndGet(hit);
             statisticsRequired.addAndGet(require);
 
-            result.put(pattern, ShootingDO.newInstance(hit, require));
+            result.put(pattern, Hitting.HittingDO.newInstance(hit, require));
         });
 
-        result.put(summaryName(), ShootingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
+        result.put(summaryName(), Hitting.HittingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
 
         return result;
     }

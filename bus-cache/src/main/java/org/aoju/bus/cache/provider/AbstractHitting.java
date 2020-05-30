@@ -147,25 +147,25 @@ public abstract class AbstractHitting implements Hitting {
     }
 
     @Override
-    public Map<String, ShootingDO> getShooting() {
+    public Map<String, Hitting.HittingDO> getHitting() {
         List<DataDO> dataDOS = queryAll();
         AtomicLong statisticsHit = new AtomicLong(0);
         AtomicLong statisticsRequired = new AtomicLong(0);
 
         // gather pattern's hit rate
-        Map<String, ShootingDO> result = dataDOS.stream().collect(Collectors.toMap(
+        Map<String, Hitting.HittingDO> result = dataDOS.stream().collect(Collectors.toMap(
                 DataDO::getPattern,
                 (dataDO) -> {
                     statisticsHit.addAndGet(dataDO.hitCount);
                     statisticsRequired.addAndGet(dataDO.requireCount);
-                    return ShootingDO.newInstance(dataDO.hitCount, dataDO.requireCount);
+                    return Hitting.HittingDO.newInstance(dataDO.hitCount, dataDO.requireCount);
                 },
-                ShootingDO::mergeShootingDO,
+                Hitting.HittingDO::mergeShootingDO,
                 LinkedHashMap::new
         ));
 
         // gather application all pattern's hit rate
-        result.put(summaryName(), ShootingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
+        result.put(summaryName(), Hitting.HittingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
 
         return result;
     }
