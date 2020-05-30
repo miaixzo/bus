@@ -27,6 +27,7 @@ package org.aoju.bus.sensitive.strategy;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.extra.emoji.EmojiKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.annotation.Shield;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
@@ -47,29 +48,31 @@ public class NameStrategy extends AbstractProvider {
     /**
      * 脱敏中文名称
      *
-     * @param chineseName 中文名称
+     * @param value 中文名称
      * @return 脱敏后的结果
      */
-    private static String name(final String chineseName, final String shadow) {
-        if (StringKit.isEmpty(chineseName)) {
-            return chineseName;
+    private static String name(final String value, final String shadow) {
+        if (StringKit.isEmpty(value)) {
+            return value;
         }
-
-        final int nameLength = chineseName.length();
+        if (EmojiKit.isEmoji(value)) {
+            return value;
+        }
+        final int nameLength = value.length();
         if (1 == nameLength) {
-            return chineseName;
+            return value;
         }
 
         if (2 == nameLength) {
-            return shadow + chineseName.charAt(1);
+            return shadow + value.charAt(1);
         }
 
         StringBuilder stringBuffer = new StringBuilder();
-        stringBuffer.append(chineseName.charAt(0));
+        stringBuffer.append(value.charAt(0));
         for (int i = 0; i < nameLength - 2; i++) {
             stringBuffer.append(shadow);
         }
-        stringBuffer.append(chineseName.charAt(nameLength - 1));
+        stringBuffer.append(value.charAt(nameLength - 1));
         return stringBuffer.toString();
     }
 

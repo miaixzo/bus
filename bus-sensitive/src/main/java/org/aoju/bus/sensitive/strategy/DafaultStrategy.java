@@ -26,6 +26,7 @@ package org.aoju.bus.sensitive.strategy;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.extra.emoji.EmojiKit;
 import org.aoju.bus.sensitive.Context;
 import org.aoju.bus.sensitive.provider.AbstractProvider;
 
@@ -44,11 +45,15 @@ public class DafaultStrategy extends AbstractProvider {
             return null;
         }
 
+        String value = object.toString();
+
+        if (EmojiKit.isEmoji(value)) {
+            return value;
+        }
+
         final int SIZE = 6;
         final int TWO = 2;
         final String SYMBOL = Symbol.STAR;
-
-        String value = object.toString();
 
         int len = value.length();
         int pamaone = len / TWO;
