@@ -341,6 +341,16 @@ public class DateKit {
     }
 
     /**
+     * 获得指定日期是这个日期所在年的第几天
+     *
+     * @param date 日期
+     * @return 天
+     */
+    public static int dayOfYear(Date date) {
+        return DateTime.of(date).dayOfYear();
+    }
+
+    /**
      * 获得指定日期是星期几,1表示周日,2表示周一
      *
      * @param date 日期
@@ -358,6 +368,16 @@ public class DateKit {
      */
     public static Fields.Week dayOfWeeks(Date date) {
         return DateTime.of(date).dayOfWeekEnum();
+    }
+
+    /**
+     * 获得指定年份的总天数
+     *
+     * @param year 年份
+     * @return 天
+     */
+    public static int lengthOfYear(int year) {
+        return Year.of(year).length();
     }
 
     /**

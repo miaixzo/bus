@@ -220,7 +220,8 @@ public class StringKit {
     }
 
     /**
-     * 字符串是否为非空白 空白的定义如下：
+     * 字符串是否为非空白
+     * 定义如下：
      * 1、不为null
      * 2、不为不可见字符(如空格)
      * 3、不为""
@@ -230,6 +231,17 @@ public class StringKit {
      */
     public static boolean isNotBlank(CharSequence str) {
         return false == isBlank(str);
+    }
+
+    /**
+     * 是否存都不为{@code null}或空对象或空白符的对象
+     * 通过{@link StringKit#hasBlank(CharSequence...)} 判断元素
+     *
+     * @param args 被检查的对象,一个或者多个
+     * @return 是否都不为空
+     */
+    public static boolean isAllNotBlank(CharSequence... args) {
+        return false == hasBlank(args);
     }
 
     /**
@@ -331,6 +343,17 @@ public class StringKit {
             }
         }
         return true;
+    }
+
+    /**
+     * 是否存都不为{@code null}或空对象
+     * 通过{@link StringKit#hasEmpty(CharSequence...)} 判断元素
+     *
+     * @param args 被检查的对象,一个或者多个
+     * @return 是否都不为空
+     */
+    public static boolean isAllNotEmpty(CharSequence... args) {
+        return false == hasEmpty(args);
     }
 
     /**
