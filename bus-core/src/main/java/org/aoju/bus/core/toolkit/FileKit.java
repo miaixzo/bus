@@ -1004,7 +1004,6 @@ public class FileKit {
      * <pre>
      * FileKit.rename(file, "aaa", true) xx/xx.png =》xx/aaa.png
      * </pre>
-     * <p>
      *
      * <pre>
      * FileKit.rename(file, "aaa.jpg", false) xx/xx.png =》xx/aaa.jpg
