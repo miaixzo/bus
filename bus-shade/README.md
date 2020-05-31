@@ -8,7 +8,7 @@
 5. 控制器实现单表的增副改查，并集成swagger实现api文档
 
 # MAVEN地址
-``` xml
+```
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
@@ -16,7 +16,7 @@
 </dependency>
 ```
 # 数据表结构样式
-``` sql
+```
 CREATE TABLE `hi_user` (
   `id` varchar(24) NOT NULL COMMENT 'ID',
   `name` varchar(40) DEFAULT NULL COMMENT '登录名',

@@ -62,7 +62,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 2.1. POST方式提交String
 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造 RequestBody 需要指定MediaType，用于描述请求/响应 body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，RequstBody的几种构造方式：
  
- ``` 
+``` 
     MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     String requestBody = "I am Jdqm.";
     Request request = new Request.Builder()
@@ -86,9 +86,9 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
            Logger.info("onResponse: " + response.body().string());
        }
     });
- ``` 
+``` 
 响应内容
- ```
+```
     http/1.1 200 OK 
     Date:Sat, 10 Mar 2018 05:23:20 GMT 
     Content-Type:text/html;charsets=utf-8
@@ -111,10 +111,10 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
     Vary:Accept-Encoding 
     X-GitHub-Request-Id:1474:20A83:5CC0B6:7A7C1B:5AA36BC8 
     onResponse: <p>I am Jdqm.</p>
- ```
+```
 
 2.2 POST方式提交流
- ```
+```
     RequestBody requestBody = new RequestBody() {
     
         @Override
@@ -149,10 +149,10 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
             Logger.info("onResponse: " + response.body().string());
         }
     });
- ```
+```
 
 2.3. POST提交文件
- ```
+```
     MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     Httpd httpd = new Httpd();
     File file = new File("test.md");
@@ -176,11 +176,11 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
            Logger.info("onResponse: " + response.body().string());
        }
     });
- ```
+```
 
 2.4. POST方式提交表单
 
- ```
+```
     Httpd httpd = new Httpd();
     RequestBody requestBody = new FormBody.Builder()
             .add("search", "Jurassic Park")
@@ -206,11 +206,11 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
             Logger.info("onResponse: " + response.body().string());
         }
     });
- ```
+```
 
 2.5. POST方式提交分块请求
 MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容。多块请求体中每块请求都是一个请求体，可以定义自己的请求头。这些请求头可以用来描述这块请求，例如它的 Content-Disposition 。如果 Content-Length 和 Content-Type 可用的话，他们会被自动添加到请求头中
- ``` 
+``` 
     Httpd client = new Httpd();
     MultipartBody body = new MultipartBody.Builder("AaB03x")
             .setType(MediaType.MULTIPART_FORM_DATA_TYPE)
@@ -242,7 +242,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
         }
     
     });
- ```
+```
 
 3.1. 拦截器
  Httpd的拦截器链可谓是其整个框架的精髓，用户可传入的 interceptor 分为两类：
@@ -250,7 +250,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
  ②另外一类是非网页请求的 interceptor ，这类拦截器只会在非网页请求中被调用，并且是在组装完请求之后，真正发起网络请求前被调用，所有的 interceptor 被保存在 List<Interceptor> interceptors 集合中，按照添加顺序来逐个调用，具体可参考 RealCall#getResponseWithInterceptorChain() 方法。通过 Httpd.Builder#addNetworkInterceptor(Interceptor) 传入；
 
  这里举一个简单的例子，例如有这样一个需求，我要监控App通过 Httpd 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的 interceptor 在拦截器链头去做。
- ```
+```
     public class LoggingInterceptor implements Interceptor {
 
         @Override
@@ -270,9 +270,9 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
             return response;
         }
     }
- ```
+```
 
- ```
+```
     Httpd httpd = new Httpd.Builder()
             .addInterceptor(new LoggingInterceptor())
             .build();
@@ -295,9 +295,9 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
             }
         }
     });
- ```
+```
 针对这个请求，打印出来的结果
- ```
+```
     Sending request http://www.publicobject.com/helloworld.txt on null
     User-Agent: Httpd Example
             
@@ -310,19 +310,19 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
     Connection: keep-alive
     ETag: "5383fa03-6df"
     Accept-Ranges: bytes
- ```
+```
 
 注意到一点是这个请求做了重定向，原始的 request url 是 http://www.publicobject.com/helloworld.tx，而响应的 request url 是 https://publicobject.com/helloworld.txt，这说明一定发生了重定向，但是做了几次重定向其实我们这里是不知道的，要知道这些的话，可以使用 addNetworkInterceptor()去做。更多的关于 interceptor的使用以及它们各自的优缺点
  
  
 ## 其他
  1. 推荐让 Httpd 保持单例，用同一个 Httpd 实例来执行你的所有请求，因为每一个 Httpd 实例都拥有自己的连接池和线程池，重用这些资源可以减少延时和节省资源，如果为每个请求创建一个 Httpd 实例，显然就是一种资源的浪费。当然，也可以使用如下的方式来创建一个新的 Httpd 实例，它们共享连接池、线程池和配置信息。
- ```
+```
     Httpd client = Httpd.newBuilder()
             .readTimeout(500, TimeUnit.MILLISECONDS)
             .build();
     Response response = client.newCall(request).execute();
- ```
+```
  2. 每一个Call(其实现是RealCall)只能执行一次，否则会报异常，具体参见 RealCall#execute()
   
 ### Httpv 使用

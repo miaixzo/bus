@@ -10,7 +10,7 @@
 ## 快速开始
 
 - 引入依赖
-```xml
+```
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
@@ -18,7 +18,7 @@
 </dependency>
 ```
 - 调用api
-```java
+```
 // 创建授权request
 Provider provider = new GiteeProvider(Context.builder()
         .clientId("clientId")
@@ -34,7 +34,7 @@ provider.login(callback);
 
 ### 获取授权链接
 
-```java
+```
 String authorizeUrl = shooting.authorize("state");
 ```
 获取到`authorizeUrl`后，可以手动实现redirect到`authorizeUrl`上
@@ -44,7 +44,7 @@ String authorizeUrl = shooting.authorize("state");
 
 ### 登录(获取用户信息)
 
-```java
+```
 provider.login(callback);
 ```
 
@@ -56,7 +56,7 @@ provider.login(callback);
 
 注：`refresh`功能，并不是每个平台都支持
 
-```java
+```
 provider.refresh(AccToken.builder().refreshToken(token).build());
 ```
 
@@ -64,7 +64,7 @@ provider.refresh(AccToken.builder().refreshToken(token).build());
 
 注：`revoke`功能，并不是每个平台都支持
 
-```java
+```
 provider.revoke(AccToken.builder().accessToken(token).build());
 ```
 
@@ -125,7 +125,7 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
 - `Client` 客户端，即代表意图访问受限资源的**第三方应用**
 
 ### 授权流程
-```html
+```
      +--------+                               +---------------+
      |        |--(A)- Authorization Request ->|   Resource    |
      |        |                               |     Owner     |

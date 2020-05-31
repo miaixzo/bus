@@ -277,8 +277,7 @@ public class MppsSCU {
             throw new IllegalStateException("codec not initialized");
         String codeMeaning = codes.getProperty(codeValue);
         if (codeMeaning == null)
-            throw new IllegalArgumentException("undefined internal value: "
-                    + codeValue);
+            throw new IllegalArgumentException("undefined internal value: " + codeValue);
         int endDesignator = codeValue.indexOf('-');
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH,
