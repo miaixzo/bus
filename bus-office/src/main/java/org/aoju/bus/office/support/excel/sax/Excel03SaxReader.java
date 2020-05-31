@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.*;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
@@ -314,7 +315,7 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
                     value = numrec.getValue();
                 } else if (formatString.contains(Symbol.SLASH) || formatString.contains(Symbol.COLON)) {
                     //日期
-                    value = formatListener.formatNumberDateCell(numrec);
+                    value = ExcelSaxKit.getDateValue(numrec.getValue());
                 } else {
                     final double doubleValue = numrec.getValue();
                     final long longPart = (long) doubleValue;

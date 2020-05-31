@@ -165,8 +165,18 @@ public class ExcelSaxKit {
      * @param value 单元格值
      * @return 日期
      */
-    private static DateTime getDateValue(String value) {
-        return DateKit.date(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(value), false));
+    public static DateTime getDateValue(String value) {
+        return getDateValue(Double.parseDouble(value));
+    }
+
+    /**
+     * 获取日期
+     *
+     * @param value 单元格值
+     * @return 日期
+     */
+    public static DateTime getDateValue(double value) {
+        return DateKit.date(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value, false));
     }
 
     /**

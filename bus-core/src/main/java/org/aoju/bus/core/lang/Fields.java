@@ -29,6 +29,7 @@ import org.aoju.bus.core.date.format.FormatBuilder;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 /**
  * 日期场景属性
@@ -277,10 +278,21 @@ public class Fields {
      * UTC时间：yyyy-MM-dd'T'HH:mm:ssZ
      */
     public final static String WITH_ZONE_OFFSET_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
+
     /**
      * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ssZ
      */
     public final static FormatBuilder WITH_ZONE_OFFSET_FORMAT = FormatBuilder.getInstance(WITH_ZONE_OFFSET_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * 标准日期时间正则，每个字段支持单个数字或2个数字
+     * <pre>
+     *     yyyy-MM-dd HH:mm:ss
+     *     yyyy-MM-dd HH:mm
+     *     yyyy-MM-dd
+     * </pre>
+     */
+    public static final Pattern REGEX_NORM = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}( \\d{1,2}:\\d{1,2}(:\\d{1,2})?)?");
 
     public final static String[] WTB = {
             "sun", "mon", "tue", "wed", "thu", "fri", "sat",
