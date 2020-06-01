@@ -46,12 +46,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 方法参数等构建器
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class Builder {
@@ -147,6 +148,16 @@ public class Builder {
                 object.close();
             } catch (Exception e) {
                 Logger.error("Cannot close AutoCloseable", e);
+            }
+        }
+    }
+
+    public static void shutdown(ExecutorService executorService) {
+        if (executorService != null) {
+            try {
+                executorService.shutdown();
+            } catch (Exception e) {
+                Logger.error("ExecutorService shutdown", e);
             }
         }
     }

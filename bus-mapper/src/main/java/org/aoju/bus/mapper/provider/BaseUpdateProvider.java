@@ -33,7 +33,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * BaseUpdateProvider实现类,基础方法实现类
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class BaseUpdateProvider extends MapperTemplate {

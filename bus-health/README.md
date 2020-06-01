@@ -63,7 +63,7 @@ Processes: 401, Threads: 1159
  39272  11.2 17.8   7.1 GiB   2.8 GiB prl_vm_app
  85316   6.5  2.9   5.6 GiB 471.4 MiB thunderbird
  35301   5.4  0.5   1.7 GiB  89.8 MiB Microsoft Excel
- ```
+```
 Memory and swapfile information is available.
 ```
 Memory: 11.6 GiB/32 GiB

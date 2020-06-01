@@ -28,7 +28,7 @@ package org.aoju.bus.notify.provider.email;
  * 邮箱
  *
  * @author Justubborn
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK1.8+
  */
 public class EmailProvider {

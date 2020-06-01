@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * Utility to query geom part list
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 @ThreadSafe

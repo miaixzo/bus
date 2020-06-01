@@ -39,7 +39,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class CGet {
@@ -105,7 +105,8 @@ public class CGet {
             Connection conn = getSCU.getConnection();
             args.configureBind(getSCU.getAAssociateRQ(), remote, calledNode);
             args.configureBind(getSCU.getApplicationEntity(), conn, callingNode);
-            Device device = getSCU.getDevice();
+
+            Centre centre = new Centre(getSCU.getDevice());
 
             args.configure(conn);
             args.configureTLS(conn, remote);
@@ -123,7 +124,7 @@ public class CGet {
                 getSCU.addKey(p.getTag(), p.getValues());
             }
 
-            device.start();
+            centre.start(true);
             try {
                 Status dcmState = getSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -143,7 +144,7 @@ public class CGet {
                 return Status.build(getSCU.getState(), null, e);
             } finally {
                 Builder.close(getSCU);
-                device.stop();
+                centre.stop();
             }
         } catch (Exception e) {
             Logger.error("getscu", e);

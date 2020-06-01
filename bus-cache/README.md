@@ -53,15 +53,15 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
 ## I. 简单使用
 ### 配置
 - pom
-```xml
+```
 <dependency>
     <groupId>org.aoju.bus</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>5.9.5</version>
+    <version>5.9.6</version>
 </dependency>
 ```
 - XML注册
-```xml
+```
 <!-- 启用自动代理: 如果已经开启则不必重复开启 -->
 <aop:aspectj-autoproxy proxy-target-class="true"/>
 
@@ -75,7 +75,7 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
     </constructor-arg>
 </bean>
 
-org.aoju.bus.cache.shooting.cache.Cache实现 -->
+org.aoju.bus.cache.provider.cache.Cache实现 -->
 <bean id="guava" class="GuavaCache">
     <constructor-arg name="expire" value="600000"/>
     <constructor-arg name="size" value="100000"/>
@@ -104,7 +104,7 @@ org.aoju.bus.cache.shooting.cache.Cache实现 -->
 ### @Cached
 - 在需要走缓存的方法前添加`@Cached`注解.
 
-```java
+```
 @Documented
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -149,7 +149,7 @@ public @interface Cached {
 ### @Invalid
 - 在需要失效缓存的方法前添加`@Invalid`注解.
 
-```java
+```
 @Documented
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -178,7 +178,7 @@ public @interface Invalid {
 ### @CacheKey
 - 在需要作为缓存key的方法参数前添加`@CacheKey`注解.
 
-```java
+```
 @Documented
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
@@ -209,7 +209,7 @@ public @interface CacheKey {
 - 在需要走缓存的方法前添加`@CachedGet`注解.
 > 与`@Cached`的不同在于`@CachedGet`只会从缓存内查询, 不会写入缓存(当缓存不存在时, 只是会取执行方法, 但不讲方法返回内容写入缓存).
 
-```java
+```
 @Documented
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

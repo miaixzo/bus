@@ -25,8 +25,8 @@
 package org.aoju.bus.cache.magic;
 
 import org.aoju.bus.cache.Context;
+import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.Manage;
-import org.aoju.bus.cache.Shooting;
 import org.aoju.bus.cache.support.KeyGenerator;
 import org.aoju.bus.cache.support.PatternGenerator;
 import org.aoju.bus.cache.support.PreventObjects;
@@ -37,7 +37,7 @@ import org.aoju.bus.proxy.invoker.ProxyChain;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 @Singleton
@@ -50,7 +50,7 @@ public class SingleCacheReader extends AbstractReader {
     private Context config;
 
     @Inject(optional = true)
-    private Shooting baseShooting;
+    private Hitting baseHitting;
 
     @Override
     public Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite) throws Throwable {
@@ -95,13 +95,13 @@ public class SingleCacheReader extends AbstractReader {
 
     private void doRecord(Object result, String key, AnnoHolder annoHolder) {
         Logger.info("single cache hit rate: {}/1, key: {}", result == null ? 0 : 1, key);
-        if (this.baseShooting != null) {
+        if (this.baseHitting != null) {
             String pattern = PatternGenerator.generatePattern(annoHolder);
 
             if (result != null) {
-                this.baseShooting.hitIncr(pattern, 1);
+                this.baseHitting.hitIncr(pattern, 1);
             }
-            this.baseShooting.reqIncr(pattern, 1);
+            this.baseHitting.reqIncr(pattern, 1);
         }
     }
 

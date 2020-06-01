@@ -28,7 +28,7 @@ package org.aoju.bus.core.text.escape;
  * Translates codepoints to their Unicode escaped value suitable for Java source.
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class JavaUnicodeEscaper extends UnicodeEscaper {

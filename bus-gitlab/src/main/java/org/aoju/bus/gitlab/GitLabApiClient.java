@@ -55,7 +55,7 @@ import java.util.logging.Logger;
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class GitLabApiClient implements AutoCloseable {

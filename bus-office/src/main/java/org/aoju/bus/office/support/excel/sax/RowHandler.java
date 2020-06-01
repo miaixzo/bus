@@ -24,23 +24,40 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
+import org.apache.poi.ss.usermodel.CellStyle;
+
 import java.util.List;
 
 /**
  * Sax方式读取Excel行处理器
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
+@FunctionalInterface
 public interface RowHandler {
 
     /**
      * 处理一行数据
      *
      * @param sheetIndex 当前Sheet序号
-     * @param rowIndex   当前行号
+     * @param rowIndex   当前行号，从0开始计数
      * @param rowList    行数据列表
      */
-    void handle(int sheetIndex, int rowIndex, List<Object> rowList);
+    void handle(int sheetIndex, long rowIndex, List<Object> rowList);
+
+    /**
+     * 处理一个单元格的数据
+     *
+     * @param sheetIndex    当前Sheet序号
+     * @param rowIndex      当前行号
+     * @param cellIndex     当前列号
+     * @param value         单元格的值
+     * @param xssfCellStyle 单元格样式
+     */
+    default void handleCell(int sheetIndex, long rowIndex, int cellIndex, Object value, CellStyle xssfCellStyle) {
+
+    }
+
 }

@@ -35,7 +35,7 @@ import java.util.Arrays;
  * 可复用的字符串生成器,非线程安全
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class TextKit implements CharSequence, Appendable, Serializable {
@@ -408,7 +408,7 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      */
     public TextKit insert(int index, CharSequence csq, int start, int end) {
         if (csq == null) {
-            csq = "null";
+            csq = Normal.NULL;
         }
         final int csqLen = csq.length();
         if (start > csqLen) {

@@ -62,7 +62,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 @ThreadSafe

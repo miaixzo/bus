@@ -28,7 +28,7 @@ package org.aoju.bus.core.annotation;
  * 设置返回元素的类型
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 @FunctionalInterface

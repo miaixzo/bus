@@ -41,7 +41,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Memory obtained by /proc/meminfo and /proc/vmstat
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 @ThreadSafe

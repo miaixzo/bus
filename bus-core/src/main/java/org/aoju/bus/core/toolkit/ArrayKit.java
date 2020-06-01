@@ -41,7 +41,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class ArrayKit {
@@ -3870,12 +3870,20 @@ public class ArrayKit {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
+     *
+     * <pre>
+     * ArrayKit.addAll(null, null)     = null
+     * ArrayKit.addAll(array1, null)   = cloned copy of array1
+     * ArrayKit.addAll(null, array2)   = cloned copy of array2
+     * ArrayKit.addAll([], [])         = []
+     * ArrayKit.addAll(["a", "b", "c"], ["1", "2", "3"]) = ["a", "b", "c", "1", "2", "3"]
+     * </pre>
      *
      * @param <T>    数组元素类型
      * @param arrays 数组集合
-     * @return 合并后的数组
+     * @return 合并后的新数组 T[]
      */
     public static <T> T[] addAll(T[]... arrays) {
         if (arrays.length == 1) {
@@ -3901,11 +3909,17 @@ public class ArrayKit {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
+     *
+     * <pre>
+     * ArrayKit.addAll(array1, null)   = cloned copy of array1
+     * ArrayKit.addAll(null, array2)   = cloned copy of array2
+     * ArrayKit.addAll([], [])         = []
+     * </pre>
      *
      * @param arrays 数组集合
-     * @return 合并后的数组
+     * @return 合并后的新数组 byte[]
      */
     public static byte[] addAll(byte[]... arrays) {
         if (arrays.length == 1) {
@@ -3932,52 +3946,44 @@ public class ArrayKit {
     }
 
     /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
      *
      * <pre>
-     * ArrayKit.addAll(null, null)     = null
      * ArrayKit.addAll(array1, null)   = cloned copy of array1
      * ArrayKit.addAll(null, array2)   = cloned copy of array2
      * ArrayKit.addAll([], [])         = []
-     * ArrayKit.addAll([null], [null]) = [null, null]
-     * ArrayKit.addAll(["a", "b", "c"], ["1", "2", "3"]) = ["a", "b", "c", "1", "2", "3"]
      * </pre>
      *
-     * @param <T>    数组的组件类型
-     * @param array1 将元素添加到新数组的第一个数组可以是{@code null}
-     * @param array2 将元素添加到新数组的第二个数组可以是{@code null}
-     * @return T如果两个数组都是{@code null}，则为{@code null}.
-     * 新数组的类型是第一个数组的类型，除非第一个数组为空，否则类型与第二个数组相同.
-     * @throws IllegalArgumentException 如果数组类型不兼容
+     * @param arrays 数组集合
+     * @return 合并后的新数组 boolean[]
      */
-    public static <T> T[] addAll(final T[] array1, final T... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+    public static boolean[] addAll(boolean[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        final Class<?> type1 = array1.getClass().getComponentType();
-        final T[] joinedArray = (T[]) Array.newInstance(type1, array1.length + array2.length);
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        try {
-            System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        } catch (final ArrayStoreException ase) {
-            final Class<?> type2 = array2.getClass().getComponentType();
-            if (!type1.isAssignableFrom(type2)) {
-                throw new IllegalArgumentException("Cannot store " + type2.getName() + " in an array of "
-                        + type1.getName(), ase);
+
+        int length = 0;
+        for (boolean[] array : arrays) {
+            if (null != array) {
+                length += array.length;
             }
-            throw ase;
         }
-        return joinedArray;
+
+        final boolean[] result = new boolean[length];
+        length = 0;
+        for (boolean[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
      *
      * <pre>
      * ArrayKit.addAll(array1, null)   = cloned copy of array1
@@ -3985,26 +3991,35 @@ public class ArrayKit {
      * ArrayKit.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 boolean[] 数组.
+     * @param arrays 数组集合
+     * @return 合并后的新数组 char[]
      */
-    public static boolean[] addAll(final boolean[] array1, final boolean... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+    public static char[] addAll(char[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        final boolean[] joinedArray = new boolean[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
+
+        int length = 0;
+        for (char[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
+        }
+
+        final char[] result = new char[length];
+        length = 0;
+        for (char[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
      *
      * <pre>
      * ArrayKit.addAll(array1, null)   = cloned copy of array1
@@ -4012,26 +4027,35 @@ public class ArrayKit {
      * ArrayKit.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 char[] 数组.
+     * @param arrays 数组集合
+     * @return 合并后的新数组 short[]
      */
-    public static char[] addAll(final char[] array1, final char... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+    public static short[] addAll(short[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        final char[] joinedArray = new char[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
+
+        int length = 0;
+        for (short[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
+        }
+
+        final short[] result = new short[length];
+        length = 0;
+        for (short[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
      *
      * <pre>
      * ArrayKit.addAll(array1, null)   = cloned copy of array1
@@ -4039,26 +4063,35 @@ public class ArrayKit {
      * ArrayKit.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 byte[] 数组.
+     * @param arrays 数组集合
+     * @return 合并后的新数组 int[]
      */
-    public static byte[] addAll(final byte[] array1, final byte... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+    public static int[] addAll(int[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        final byte[] joinedArray = new byte[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
+
+        int length = 0;
+        for (int[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
+        }
+
+        final int[] result = new int[length];
+        length = 0;
+        for (int[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
      *
      * <pre>
      * ArrayKit.addAll(array1, null)   = cloned copy of array1
@@ -4066,26 +4099,35 @@ public class ArrayKit {
      * ArrayKit.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 short[] 数组.
+     * @param arrays 数组集合
+     * @return 合并后的新数组 long[]
      */
-    public static short[] addAll(final short[] array1, final short... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+    public static long[] addAll(long[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        final short[] joinedArray = new short[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
+
+        int length = 0;
+        for (long[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
+        }
+
+        final long[] result = new long[length];
+        length = 0;
+        for (long[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
      *
      * <pre>
      * ArrayKit.addAll(array1, null)   = cloned copy of array1
@@ -4093,26 +4135,36 @@ public class ArrayKit {
      * ArrayKit.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 int[] 数组.
+     * @param arrays 数组集合
+     * @return 合并后的新数组 float[]
      */
-    public static int[] addAll(final int[] array1, final int... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+    public static float[] addAll(float[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        final int[] joinedArray = new int[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
+
+        // 计算总长度
+        int length = 0;
+        for (float[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
+        }
+
+        final float[] result = new float[length];
+        length = 0;
+        for (float[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
+        }
+        return result;
     }
 
     /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
+     * 将给定数组的所有元素添加到新数组中
+     * 忽略null数组,新数组包含{@code arrays}的所有元素
      *
      * <pre>
      * ArrayKit.addAll(array1, null)   = cloned copy of array1
@@ -4120,74 +4172,30 @@ public class ArrayKit {
      * ArrayKit.addAll([], [])         = []
      * </pre>
      *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 long[] 数组.
+     * @param arrays 数组集合
+     * @return 合并后的新数组 double[]
      */
-    public static long[] addAll(final long[] array1, final long... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+    public static double[] addAll(double[]... arrays) {
+        if (arrays.length == 1) {
+            return arrays[0];
         }
-        final long[] joinedArray = new long[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
-    }
 
-    /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
-     *
-     * <pre>
-     * ArrayKit.addAll(array1, null)   = cloned copy of array1
-     * ArrayKit.addAll(null, array2)   = cloned copy of array2
-     * ArrayKit.addAll([], [])         = []
-     * </pre>
-     *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 float[] 数组.
-     */
-    public static float[] addAll(final float[] array1, final float... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+        int length = 0;
+        for (double[] array : arrays) {
+            if (null != array) {
+                length += array.length;
+            }
         }
-        final float[] joinedArray = new float[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
-    }
 
-    /**
-     * 将给定数组的所有元素添加到新数组中.
-     * 新数组包含{@code array1}的所有元素，然后是{@code array2}的所有元素.
-     * 当一个数组被返回时，它总是一个新的数组.
-     *
-     * <pre>
-     * ArrayKit.addAll(array1, null)   = cloned copy of array1
-     * ArrayKit.addAll(null, array2)   = cloned copy of array2
-     * ArrayKit.addAll([], [])         = []
-     * </pre>
-     *
-     * @param array1 将元素添加到新数组中的第一个数组.
-     * @param array2 第二个数组，其元素被添加到新数组中.
-     * @return 新的 double[] 数组.
-     */
-    public static double[] addAll(final double[] array1, final double... array2) {
-        if (array1 == null) {
-            return clone(array2);
-        } else if (array2 == null) {
-            return clone(array1);
+        final double[] result = new double[length];
+        length = 0;
+        for (double[] array : arrays) {
+            if (null != array) {
+                System.arraycopy(array, 0, result, length, array.length);
+                length += array.length;
+            }
         }
-        final double[] joinedArray = new double[array1.length + array2.length];
-        System.arraycopy(array1, 0, joinedArray, 0, array1.length);
-        System.arraycopy(array2, 0, joinedArray, array1.length, array2.length);
-        return joinedArray;
+        return result;
     }
 
     /**

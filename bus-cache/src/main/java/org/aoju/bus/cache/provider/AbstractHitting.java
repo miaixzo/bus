@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import org.aoju.bus.cache.Shooting;
+import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.lang.Normal;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -43,10 +43,10 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-public abstract class AbstractShooting implements Shooting {
+public abstract class AbstractHitting implements Hitting {
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r);
@@ -67,7 +67,7 @@ public abstract class AbstractShooting implements Shooting {
 
     private Properties sqls;
 
-    protected AbstractShooting(Map<String, Object> context) {
+    protected AbstractHitting(Map<String, Object> context) {
         InputStream resource = this.getClass().getClassLoader().getResourceAsStream(Normal.META_DATA_INF + "/caches/bus-cache.yaml");
         this.sqls = new Yaml().loadAs(resource, Properties.class);
 
@@ -80,7 +80,7 @@ public abstract class AbstractShooting implements Shooting {
         });
     }
 
-    public AbstractShooting(String url, String username, String password) {
+    public AbstractHitting(String url, String username, String password) {
         this(newHashMap(
                 "url", url,
                 "username", username,
@@ -147,25 +147,25 @@ public abstract class AbstractShooting implements Shooting {
     }
 
     @Override
-    public Map<String, ShootingDO> getShooting() {
+    public Map<String, Hitting.HittingDO> getHitting() {
         List<DataDO> dataDOS = queryAll();
         AtomicLong statisticsHit = new AtomicLong(0);
         AtomicLong statisticsRequired = new AtomicLong(0);
 
         // gather pattern's hit rate
-        Map<String, ShootingDO> result = dataDOS.stream().collect(Collectors.toMap(
+        Map<String, Hitting.HittingDO> result = dataDOS.stream().collect(Collectors.toMap(
                 DataDO::getPattern,
                 (dataDO) -> {
                     statisticsHit.addAndGet(dataDO.hitCount);
                     statisticsRequired.addAndGet(dataDO.requireCount);
-                    return ShootingDO.newInstance(dataDO.hitCount, dataDO.requireCount);
+                    return Hitting.HittingDO.newInstance(dataDO.hitCount, dataDO.requireCount);
                 },
-                ShootingDO::mergeShootingDO,
+                Hitting.HittingDO::mergeShootingDO,
                 LinkedHashMap::new
         ));
 
         // gather application all pattern's hit rate
-        result.put(summaryName(), ShootingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
+        result.put(summaryName(), Hitting.HittingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
 
         return result;
     }

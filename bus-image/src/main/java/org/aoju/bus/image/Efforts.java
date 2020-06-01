@@ -22,62 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.cache.provider;
+package org.aoju.bus.image;
 
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.aoju.bus.image.galaxy.data.Attributes;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.io.File;
 
 /**
+ * 图像处理额外接触点
+ * 即: 后续业务处理支持
+ *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-public class SqliteShooting extends AbstractShooting {
+public interface Efforts {
 
-    public SqliteShooting(Map<String, Object> context) {
-        super(context);
-    }
-
-    public SqliteShooting(String url, String username, String password) {
-        super(url, username, password);
-    }
-
-    @Override
-    protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
-        return () -> {
-            SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-            dataSource.setDriverClassName("org.sqlite.JDBC");
-            dataSource.setUrl((String) context.get("url"));
-
-            JdbcTemplate template = new JdbcTemplate(dataSource);
-            template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +
-                    "id BIGINT     IDENTITY PRIMARY KEY," +
-                    "pattern       VARCHAR(64) NOT NULL UNIQUE," +
-                    "hit_count     BIGINT      NOT NULL     DEFAULT 0," +
-                    "require_count BIGINT      NOT NULL     DEFAULT 0," +
-                    "version       BIGINT      NOT NULL     DEFAULT 0)");
-
-            return template;
-        };
-    }
-
-    @Override
-    protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
-        return mapResults.stream().map(result -> {
-            DataDO dataDO = new DataDO();
-            dataDO.setHitCount((Integer) result.get("hit_count"));
-            dataDO.setPattern((String) result.get("pattern"));
-            dataDO.setRequireCount((Integer) result.get("require_count"));
-            dataDO.setVersion((Integer) result.get("version"));
-
-            return dataDO;
-        });
+    /**
+     * @param attributes 完整影像信息
+     * @param file       影像原始文件
+     * @param clazz      调用类信息
+     * @return 根据业务需要返回不同类型的值
+     */
+    default Object supports(Attributes attributes, File file, Class<?> clazz) {
+        return file;
     }
 
 }

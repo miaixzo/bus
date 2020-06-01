@@ -61,7 +61,7 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public final class UUID implements java.io.Serializable, Comparable<UUID> {
@@ -297,12 +297,12 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
     /**
      * 将字符串转换为长整型数字
      *
-     * @param s     数字字符串
+     * @param str   数字字符串
      * @param radix 进制数
      */
-    private static long toNumber(String s, int radix) {
-        if (s == null) {
-            throw new NumberFormatException("null");
+    private static long toNumber(String str, int radix) {
+        if (str == null) {
+            throw new NumberFormatException("The str cannot be null");
         }
         if (radix < MIN_RADIX) {
             throw new NumberFormatException("radix " + radix + " less than Numbers.MIN_RADIX");
@@ -312,35 +312,35 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         }
 
         boolean negative = false;
-        Integer digit, i = 0, len = s.length();
+        Integer digit, i = 0, len = str.length();
         long result = 0, limit = -Long.MAX_VALUE, multmin;
         if (len <= 0) {
-            throw forInputString(s);
+            throw forInputString(str);
         }
 
-        char firstChar = s.charAt(0);
+        char firstChar = str.charAt(0);
         if (firstChar < '0') {
             if (firstChar == Symbol.C_HYPHEN) {
                 negative = true;
                 limit = Long.MIN_VALUE;
             } else if (firstChar != Symbol.C_PLUS) {
-                throw forInputString(s);
+                throw forInputString(str);
             }
             if (len == 1) {
-                throw forInputString(s);
+                throw forInputString(str);
             }
             i++;
         }
 
         multmin = limit / radix;
         while (i < len) {
-            digit = DIGIT_MAP.get(s.charAt(i++));
+            digit = DIGIT_MAP.get(str.charAt(i++));
             if (digit == null || digit < 0 || result < multmin) {
-                throw forInputString(s);
+                throw forInputString(str);
             }
             result *= radix;
             if (result < limit + digit) {
-                throw forInputString(s);
+                throw forInputString(str);
             }
             result -= digit;
         }

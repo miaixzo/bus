@@ -48,7 +48,7 @@ import java.util.Properties;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class MppsSCU {
@@ -277,8 +277,7 @@ public class MppsSCU {
             throw new IllegalStateException("codec not initialized");
         String codeMeaning = codes.getProperty(codeValue);
         if (codeMeaning == null)
-            throw new IllegalArgumentException("undefined internal value: "
-                    + codeValue);
+            throw new IllegalArgumentException("undefined internal value: " + codeValue);
         int endDesignator = codeValue.indexOf('-');
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH,

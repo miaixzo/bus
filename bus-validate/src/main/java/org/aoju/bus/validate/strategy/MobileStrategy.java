@@ -34,7 +34,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * 移动电话校验
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class MobileStrategy implements Matcher<Object, Mobile> {

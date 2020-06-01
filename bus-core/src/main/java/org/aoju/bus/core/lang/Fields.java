@@ -29,12 +29,13 @@ import org.aoju.bus.core.date.format.FormatBuilder;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 /**
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class Fields {
@@ -277,10 +278,21 @@ public class Fields {
      * UTC时间：yyyy-MM-dd'T'HH:mm:ssZ
      */
     public final static String WITH_ZONE_OFFSET_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
+
     /**
      * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ssZ
      */
     public final static FormatBuilder WITH_ZONE_OFFSET_FORMAT = FormatBuilder.getInstance(WITH_ZONE_OFFSET_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
+     * 标准日期时间正则，每个字段支持单个数字或2个数字
+     * <pre>
+     *     yyyy-MM-dd HH:mm:ss
+     *     yyyy-MM-dd HH:mm
+     *     yyyy-MM-dd
+     * </pre>
+     */
+    public static final Pattern REGEX_NORM = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}( \\d{1,2}:\\d{1,2}(:\\d{1,2})?)?");
 
     public final static String[] WTB = {
             "sun", "mon", "tue", "wed", "thu", "fri", "sat",
@@ -664,7 +676,7 @@ public class Fields {
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
-     * @version 5.9.5
+     * @version 5.9.6
      * @since JDK 1.8+
      */
     public enum DateField {
@@ -819,7 +831,7 @@ public class Fields {
      * 日期时间单位,每个单位都是以毫秒为基数
      *
      * @author Kimi Liu
-     * @version 5.9.5
+     * @version 5.9.6
      * @since JDK 1.8+
      */
     public enum Unit {
@@ -868,7 +880,7 @@ public class Fields {
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
-     * @version 5.9.5
+     * @version 5.9.6
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -1006,7 +1018,7 @@ public class Fields {
      * 季度枚举
      *
      * @author Kimi Liu
-     * @version 5.9.5
+     * @version 5.9.6
      * @since JDK 1.8+
      */
     public enum Quarter {
@@ -1069,7 +1081,7 @@ public class Fields {
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
-     * @version 5.9.5
+     * @version 5.9.6
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY

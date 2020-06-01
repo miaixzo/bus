@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -341,6 +341,16 @@ public class DateKit {
     }
 
     /**
+     * 获得指定日期是这个日期所在年的第几天
+     *
+     * @param date 日期
+     * @return 天
+     */
+    public static int dayOfYear(Date date) {
+        return DateTime.of(date).dayOfYear();
+    }
+
+    /**
      * 获得指定日期是星期几,1表示周日,2表示周一
      *
      * @param date 日期
@@ -358,6 +368,16 @@ public class DateKit {
      */
     public static Fields.Week dayOfWeeks(Date date) {
         return DateTime.of(date).dayOfWeekEnum();
+    }
+
+    /**
+     * 获得指定年份的总天数
+     *
+     * @param year 年份
+     * @return 天
+     */
+    public static int lengthOfYear(int year) {
+        return Year.of(year).length();
     }
 
     /**
@@ -869,9 +889,25 @@ public class DateKit {
             // yyyy-MM-dd HH:mm
             return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
         } else if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
+            // yyyy-MM-dd HH:mm:ss.SSS
             return parse(normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
         }
-
+        // 含有单个位数数字的日期时间格式
+        dateStr = normalize(dateStr);
+        if (PatternKit.isMatch(Fields.REGEX_NORM, dateStr)) {
+            final int colonCount = StringKit.count(dateStr, Symbol.COLON);
+            switch (colonCount) {
+                case 0:
+                    // yyyy-MM-dd
+                    return parseDate(dateStr);
+                case 1:
+                    // yyyy-MM-dd HH:mm
+                    return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
+                case 2:
+                    // yyyy-MM-dd HH:mm:ss
+                    return parseDateTime(dateStr);
+            }
+        }
         // 没有更多匹配的时间格式
         throw new InstrumentException("No format fit for date String [{}] !", dateStr);
     }

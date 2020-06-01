@@ -28,7 +28,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class Context {
@@ -37,7 +37,7 @@ public class Context {
     private Map<String, CacheX> caches;
 
     // 缓存分组命中率统计
-    private Shooting shooting;
+    private Hitting hitting;
 
     // 是否开启Cache(全局开关)
     private Switch cache;
@@ -50,7 +50,7 @@ public class Context {
         config.caches = caches;
         config.cache = Switch.ON;
         config.prevent = Switch.OFF;
-        config.shooting = null;
+        config.hitting = null;
         return config;
     }
 
@@ -66,12 +66,12 @@ public class Context {
         this.caches = caches;
     }
 
-    public Shooting getShooting() {
-        return shooting;
+    public Hitting getHitting() {
+        return hitting;
     }
 
-    public void setShooting(Shooting shooting) {
-        this.shooting = shooting;
+    public void setHitting(Hitting hitting) {
+        this.hitting = hitting;
     }
 
     public Switch getCache() {

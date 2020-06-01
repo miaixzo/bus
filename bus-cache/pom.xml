@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>5.9.5</version>
+    <version>5.9.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -19,7 +19,7 @@
         <project.compiler.version>1.8</project.compiler.version>
         <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
         <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.68</fastjson.version>
+        <fastjson.version>1.2.70</fastjson.version>
         <guice.version>4.2.3</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <memcached.version>2.4.6</memcached.version>

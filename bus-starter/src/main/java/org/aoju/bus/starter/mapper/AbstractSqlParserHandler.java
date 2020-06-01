@@ -24,9 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -49,12 +46,9 @@ import org.apache.ibatis.reflection.MetaObject;
  * 抽象 SQL 解析类
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-@Data
-@Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
 public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
 
     /**
@@ -106,7 +100,7 @@ public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
             this.processDelete((Delete) statement);
         }
         if (Logger.get().isDebug()) {
-            Logger.debug("parser sql: " + statement.toString());
+            Logger.debug("Parser SQL: " + statement.toString());
         }
         return statement.toString();
     }

@@ -35,7 +35,7 @@ import java.util.List;
  * 新增分页的多项属性
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class Pages<T> extends PageSerializable<T> {

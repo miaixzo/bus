@@ -2,7 +2,7 @@
 
 添加`@EnableLimiter` 注解
 
-```java
+```
 @SpringBootApplication
 @EnableLimiter
 public class Application {
@@ -20,7 +20,7 @@ public class Application {
 
   下面的代码向`BeanFactory`中注册了一个`BeanId`为 `jdkLock`的实例
 
-```java
+```
 @Bean
 Lock jdkLock() {
     JdkLock jdkLock = new JdkLock("mnyJdkLock");
@@ -32,7 +32,7 @@ Lock jdkLock() {
 
   我们假设有这样一个业务场景，用户可以使用一个Vip兑换码来延长自己的VIP期限，理所当然的是，每个兑换码只能被使用一次，通常情况下，我们会在数据库中查询该兑换码是否存在并且是否已经使用。
 
-```java
+```
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
     return demoService.exchangeVip(request, SpringAware.getCurrentUser());
@@ -43,7 +43,7 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
 
   上面的接口并不安全，假如在极短的的时间内用户发起了多次相同兑换的请求，由于数据库的事务隔离特性，该兑换码便会被多次兑换，这个漏洞可能被用户恶意使用，造成损失。  这里涉及的重放攻击问题此处不再深入讨论,(欢迎移步我的[博客](https://blog.higgs.site/2019/06/24/从接口幂等性到重放攻击/#))。现在我们添加HLock注解保护该接口。
 
-```java
+```
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 @HLock(limiter = "jdkLock", key = "#request.vipCode", fallback = "fallbackToBusy")
 public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
@@ -55,7 +55,7 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
 
 在同一class下添加降级方法 `fallbackToBusy`
 
-```java
+```
 ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
    return ResponseMessage.error("服务繁忙，请稍后再试！");
  }
@@ -67,7 +67,7 @@ ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
 
 注入一个RedisLock
 
-```java
+```
 @Bean
     Lock redisLock() {
         Config config = new Config();
@@ -89,7 +89,7 @@ ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
 
 修改注解
 
-```java
+```
 @HLock(limiter = "redisLock", key = "#request.vipCode", fallback = "fallback")
 ```
 
@@ -104,7 +104,7 @@ ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
 
 `limiter`是作为顶层抽象，所有类型的限制组件均实现自该接口。limiter的定义非常简单
 
-```java
+```
 public interface Limiter<T extends Annotation> {
 
     String getLimiterName();
@@ -130,7 +130,7 @@ public interface Limiter<T extends Annotation> {
 
 对应的注解为`HLock`
 
-```java
+```
 public abstract class Lock implements Limiter<HLock> {
 
     public abstract boolean lock(Object key);
@@ -159,7 +159,7 @@ public abstract class Lock implements Limiter<HLock> {
 
 频率限制器，用于限制某一资源的访问频率，抽象接口为`RateLimiter`，对应的注解为`HRateLimiter`
 
-```java
+```
 public abstract class RateLimiter implements Limiter<HRateLimiter> {
 
     public abstract boolean acquire(Object key, double rate, long capacity);
@@ -191,7 +191,7 @@ public abstract class RateLimiter implements Limiter<HRateLimiter> {
 
 `HPeak`
 
-```java
+```
 public abstract class PeakLimiter implements Limiter<HPeak> {
 
     public abstract boolean acquire(Object key, int max);
@@ -226,16 +226,16 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 - **limiter** : 使用的限流器的BeanId,将会从Spring的BeanFacotry中获取，不能为空。
   例如：设置limiter="jdkLock" 便会使用该限流组件
 
-  ```java
+```
   @Bean
   Lock jdkLock() {
       JdkLock jdkLock = new JdkLock("mnyJdkLock");
       return jdkLock;
       
   }
-  ```
+```
 
-	```java
+	```
 	@HLock(limiter = "jdkLock")
 	```
 
@@ -247,18 +247,18 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 
   在从`BeanFactory`中查找，该对象应该实现 `LimitedFallbackResolver`接口，例如
 
-  ```java
+```
   public class MyFallback implements LimitedFallbackResolver {
       @Override
       public Object resolve(Method method, Class clazz, Object[] args, LimitedResource limitedResource, Object target) {
           return null;
       }
   }
-  ```
+```
 
 - **errorHandler** :   从BeanFactory中获取。 限流组件出现错误时的处理方法，比如使用RedisLock作为分布式锁时，Redis宕机了，如果不想影响业务进行可以选择跳过该限流器。更好的策略应该在具体的限流实现中处理，此处作为一个兜底方法， 默认策略为`defaultErrorHandler`，即抛出异常。该对象应该实现 接口
 
-  ```java
+```
   public class MyErrorHandler implements ErrorHandler {
       @Override
       public boolean resolve(Throwable throwable, LimiterExecutionContext executionContext) {
@@ -267,13 +267,13 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
       }
   }
   
-  ```
+```
 
 
 
 - **argumentInjectors**  ：从BeanFactory中获取，可配置多个。参数注入器。如果我们想要使用方法入参之外的参数作为key的变量，可以使用参数注入器注入，比如从用户上下文中注入用户id、从请求上下文中注入ip。该对象应该实现`ArgumentInjector`接口
 
-  ```java
+```
   public class UserInfoArgumentInjector implements ArgumentInjector {
       @Override
       public Map<String, Object> inject(Object... args) {
@@ -282,22 +282,22 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
           return ret;
       }
   }
-  ```
+```
 
-  ```java
+```
    @Bean
    ArgumentInjector userInfoArgumentInjector() {
           return new UserInfoArgumentInjector();
    }
-  ```
+```
 
-  ```java
+```
   // 注入userInfo 信息 并在key中使用 
   @HLock(limiter = "jdkLock", key = "#request.vipCode +  #userInfo.userId", fallback ="fallback",argumentInjectors = "userInfoArgumentInjector")
   public ResponseMessage exchangeVipOnJDKLock(@RequestBody ExchangeVipRequest request) {
       // ...
   }
-  ```
+```
 
 #### 2. @HLock 注解
 
@@ -305,7 +305,7 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 
    业务中最常见的需要，限制某一个资源的并发数量。下面的例子即为限制相同`vipCode`的请求最大并发数为1
 
-```java
+```
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 @HLock(limiter = "jdkLock", key = "#request.vipCode", fallback = "fallbackToBusy")
 public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
@@ -351,7 +351,7 @@ Limiter提供了标准的扩展方式，开发者可以添加自定义组件。
 
 **SETP 0. 添加黑名单的注解**
 
-```java
+```
 public @interface HBlacklist {
     String limiter() default "";
 
@@ -373,7 +373,7 @@ public @interface HBlacklist {
 
 **STEP 1.定义黑名单抽象类**
 
-```java
+```
 public abstract class BlacklistLimiter implements Limiter<HBlacklist> {
 
 
@@ -403,7 +403,7 @@ public abstract class BlacklistLimiter implements Limiter<HBlacklist> {
 
 serviceId用`@LimiterParameter`标注，在装配成meta时，会作为限流器的参数放入map中
 
-```java
+```
 public class BlacklistResource extends AbstractLimitedResource {
 
 
@@ -424,7 +424,7 @@ public class BlacklistResource extends AbstractLimitedResource {
 
 ```
 
-```java
+```
 public class BlacklistLimiterResourceMetadata extends AbstractLimitedResourceMetadata<BlacklistResource> {
 
 
@@ -443,7 +443,7 @@ public class BlacklistLimiterResourceMetadata extends AbstractLimitedResourceMet
 
 下面的逻辑即为解析`HBlacklist`注解的过程，解析的结果是一个`BlacklistResource`
 
-```java
+```
 public class BlacklistAnnotationParser extends AbstractLimiterAnnotationParser<BlacklistLimiter, HBlacklist> {
     @Override
     public LimitedResource<BlacklistLimiter> parseLimiterAnnotation(AnnotationAttributes attributes) {
@@ -465,7 +465,7 @@ public class BlacklistAnnotationParser extends AbstractLimiterAnnotationParser<B
 
 我们添加一个简单的实现，从Redis中检查该用户是否是该serciceId的该黑名单用户。
 
-```java
+```
 public class RedisBlacklistLimiter extends BlacklistLimiter {
 
     String name;
@@ -495,7 +495,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 
 ***在注解中指定注解解析器的全限定类名，启用该组件***
 
-```java
+```
 @EnableLimiter(annotationParser = "org.aoju.bus.limiter.limitertest.extend.BlacklistAnnotationParser")
 ```
 

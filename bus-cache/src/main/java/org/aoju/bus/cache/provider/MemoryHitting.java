@@ -24,64 +24,72 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidDataSourceFactory;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.aoju.bus.cache.Hitting;
 
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-public class MySQLShooting extends AbstractShooting {
+public class MemoryHitting implements Hitting {
 
-    public MySQLShooting(Map<String, Object> context) {
-        super(context);
-    }
+    private ConcurrentMap<String, AtomicLong> hitMap = new ConcurrentHashMap<>();
 
-    public MySQLShooting(String url, String username, String password) {
-        super(url, username, password);
+    private ConcurrentMap<String, AtomicLong> requireMap = new ConcurrentHashMap<>();
+
+    @Override
+    public void hitIncr(String pattern, int count) {
+        hitMap.computeIfAbsent(
+                pattern,
+                (k) -> new AtomicLong()
+        ).addAndGet(count);
     }
 
     @Override
-    protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
-        return () -> {
-            try {
-                DruidDataSource druidDataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(context);
-                druidDataSource.init();
-                JdbcTemplate template = new JdbcTemplate(druidDataSource);
-                template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +
-                        "id BIGINT     PRIMARY KEY AUTO_INCREMENT," +
-                        "pattern       VARCHAR(64) NOT NULL UNIQUE," +
-                        "hit_count     BIGINT      NOT NULL     DEFAULT 0," +
-                        "require_count BIGINT      NOT NULL     DEFAULT 0," +
-                        "version       BIGINT      NOT NULL     DEFAULT 0)");
-
-                return template;
-            } catch (Exception e) {
-                throw new InstrumentException(e);
-            }
-        };
+    public void reqIncr(String pattern, int count) {
+        requireMap.computeIfAbsent(
+                pattern,
+                (k) -> new AtomicLong()
+        ).addAndGet(count);
     }
 
     @Override
-    protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
-        return mapResults.stream().map(result -> {
-            DataDO dataDO = new DataDO();
-            dataDO.setRequireCount((Long) result.get("require_count"));
-            dataDO.setHitCount((Long) result.get("hit_count"));
-            dataDO.setPattern((String) result.get("pattern"));
-            dataDO.setVersion((Long) result.get("version"));
+    public Map<String, Hitting.HittingDO> getHitting() {
+        Map<String, Hitting.HittingDO> result = new LinkedHashMap<>();
 
-            return dataDO;
+        AtomicLong statisticsHit = new AtomicLong(0);
+        AtomicLong statisticsRequired = new AtomicLong(0);
+        requireMap.forEach((pattern, count) -> {
+            long hit = hitMap.computeIfAbsent(pattern, (key) -> new AtomicLong(0)).get();
+            long require = count.get();
+
+            statisticsHit.addAndGet(hit);
+            statisticsRequired.addAndGet(require);
+
+            result.put(pattern, Hitting.HittingDO.newInstance(hit, require));
         });
+
+        result.put(summaryName(), Hitting.HittingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));
+
+        return result;
+    }
+
+    @Override
+    public void reset(String pattern) {
+        hitMap.remove(pattern);
+        requireMap.remove(pattern);
+    }
+
+    @Override
+    public void resetAll() {
+        hitMap.clear();
+        requireMap.clear();
     }
 
 }

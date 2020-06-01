@@ -28,7 +28,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public interface HL7Configuration {

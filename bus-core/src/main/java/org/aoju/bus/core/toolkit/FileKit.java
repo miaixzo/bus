@@ -53,7 +53,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -994,6 +994,28 @@ public class FileKit {
             }
 
         }
+    }
+
+    /**
+     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
+     * 重命名有两种模式：
+     * isRetainExt为true时，保留原扩展名：
+     *
+     * <pre>
+     * FileKit.rename(file, "aaa", true) xx/xx.png =》xx/aaa.png
+     * </pre>
+     *
+     * <pre>
+     * FileKit.rename(file, "aaa.jpg", false) xx/xx.png =》xx/aaa.jpg
+     * </pre>
+     *
+     * @param file       被修改的文件
+     * @param newName    新的文件名，包括扩展名
+     * @param isOverride 是否覆盖目标文件
+     * @return 目标文件
+     */
+    public static File rename(File file, String newName, boolean isOverride) {
+        return rename(file, newName, false, isOverride);
     }
 
     /**

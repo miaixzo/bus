@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.text.StrBuilder;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
@@ -35,11 +35,11 @@ import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.xml.sax.*;
-import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,63 +50,42 @@ import java.util.List;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> implements ContentHandler {
 
-    // saxParser
-    private static final String CLASS_SAXPARSER = "org.apache.xerces.parsers.SAXParser";
-    /**
-     * Cell单元格元素
-     */
-    private static final String C_ELEMENT = "c";
-    /**
-     * 行元素
-     */
-    private static final String ROW_ELEMENT = "row";
-    /**
-     * Cell中的行列号
-     */
-    private static final String R_ATTR = "r";
-    /**
-     * Cell类型
-     */
-    private static final String T_ELEMENT = "t";
-    /**
-     * SST(SharedStringsTable) 的索引
-     */
-    private static final String S_ATTR_VALUE = "s";
-    // 列中属性值
-    private static final String T_ATTR_VALUE = "t";
+
     // sheet r:Id前缀
     private static final String RID_PREFIX = "rId";
-    // 存储每行的列元素
-    List<Object> rowCellList = new ArrayList<>();
+    // 上一次的内容
+    private final StrBuilder lastContent = StringKit.strBuilder();
+    // 单元格的格式表，对应style.xml
+    private StylesTable stylesTable;
     // excel 2007 的共享字符串表,对应sharedString.xml
     private SharedStringsTable sharedStringsTable;
-    // 当前行
-    private int curRow;
+    // sheet的索引
+    private int sheetIndex;
+    // 当前非空行
+    private int index;
     // 当前列
     private int curCell;
-    // 上一次的内容
-    private StringBuilder lastContent = new StringBuilder(64);
     // 单元数据类型
     private CellDataType cellDataType;
-    // 当前列坐标, 如A1,B5
+    // 当前行号，从0开始
+    private long rowNumber;
+    // 当前列坐标， 如A1，B5
     private String curCoordinate;
     // 前一个列的坐标
     private String preCoordinate;
     // 行的最大列坐标
     private String maxCellCoordinate;
-    // 单元格的格式表,对应style.xml
-    private StylesTable stylesTable;
-    // 单元格存储格式的索引,对应style.xml中的numFmts元素的子元素索引
-    private int numFmtIndex;
-    // 单元格存储的格式化字符串,nmtFmt的formateCode属性的值
+    // 单元格样式
+    private XSSFCellStyle xssfCellStyle;
+    // 单元格存储的格式化字符串，nmtFmt的formatCode属性的值
     private String numFmtString;
-    // sheet的索引
-    private int sheetIndex;
+    // 存储每行的列元素
+    private List<Object> rowCellList = new ArrayList<>();
     /**
      * 行处理器
      */
@@ -153,10 +132,10 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     }
 
     /**
-     * 开始读取Excel,Sheet编号从0开始计数
+     * 开始读取Excel，Sheet编号从0开始计数
      *
-     * @param opcPackage {@link OPCPackage},Excel包
-     * @param rid        Excel中的sheet rid编号,如果为-1处理所有编号的sheet
+     * @param opcPackage {@link OPCPackage}，Excel包
+     * @param rid        Excel中的sheet rid编号，如果为-1处理所有编号的sheet
      * @return this
      * @throws InstrumentException POI异常
      */
@@ -166,7 +145,11 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
             final XSSFReader xssfReader = new XSSFReader(opcPackage);
 
             // 获取共享样式表
-            stylesTable = xssfReader.getStylesTable();
+            try {
+                stylesTable = xssfReader.getStylesTable();
+            } catch (Exception e) {
+                //ignore
+            }
             // 获取共享字符串表
             this.sharedStringsTable = xssfReader.getSharedStringsTable();
 
@@ -181,13 +164,13 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                 final Iterator<InputStream> sheetInputStreams = xssfReader.getSheetsData();
                 while (sheetInputStreams.hasNext()) {
                     // 重新读取一个sheet时行归零
-                    curRow = 0;
+                    index = 0;
                     this.sheetIndex++;
                     sheetInputStream = sheetInputStreams.next();
                     ExcelSaxKit.readFrom(sheetInputStream, this);
                 }
             }
-        } catch (InstrumentException e) {
+        } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new InstrumentException(e);
@@ -202,51 +185,11 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      * 读到一个xml开始标签时的回调处理方法
      */
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        // 单元格元素
-        if (C_ELEMENT.equals(qName)) {
-            // 获取当前列坐标
-            String tempCurCoordinate = attributes.getValue(R_ATTR);
-            if (preCoordinate == null) {
-                preCoordinate = String.valueOf(ExcelSaxKit.CELL_FILL_CHAR);
-            } else {
-                // 存在,则前一列要设置为上一列的坐标
-                preCoordinate = curCoordinate;
-            }
-            // 重置当前列
-            curCoordinate = tempCurCoordinate;
-            // 设置单元格类型
-            setCellType(attributes);
-        }
-
-        lastContent.setLength(0);
-    }
-
-    /**
-     * 设置单元格的类型
-     *
-     * @param attribute 属性
-     */
-    private void setCellType(Attributes attribute) {
-        // numFmtString的值
-        numFmtString = Normal.EMPTY;
-        this.cellDataType = CellDataType.of(attribute.getValue(T_ATTR_VALUE));
-
-        // 获取单元格的xf索引，对应style.xml中cellXfs的子元素xf
-        if (null != this.stylesTable) {
-            final String xfIndexStr = attribute.getValue(S_ATTR_VALUE);
-            if (null != xfIndexStr) {
-                int xfIndex = Integer.parseInt(xfIndexStr);
-                final XSSFCellStyle xssfCellStyle = stylesTable.getStyleAt(xfIndex);
-                numFmtString = xssfCellStyle.getDataFormatString();
-                // 单元格存储格式的索引，对应style.xml中的numFmts元素的子元素索引
-                int numFmtIndex = xssfCellStyle.getDataFormat();
-                if (numFmtString == null) {
-                    numFmtString = BuiltinFormats.getBuiltinFormat(numFmtIndex);
-                } else if (CellDataType.NUMBER == this.cellDataType && org.apache.poi.ss.usermodel.DateUtil.isADateFormat(numFmtIndex, numFmtString)) {
-                    cellDataType = CellDataType.DATE;
-                }
-            }
+    public void startElement(String uri, String localName, String qName, Attributes attributes) {
+        if (ElementName.row.match(localName)) {// 行开始
+            startRow(attributes);
+        } else if (ElementName.c.match(localName)) {// 单元格元素
+            startCell(attributes);
         }
     }
 
@@ -255,38 +198,10 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      */
     @Override
     public void endElement(String uri, String localName, String qName) {
-        final String contentStr = StringKit.trim(lastContent);
-
-        if (C_ELEMENT.equals(localName)) {
-            // cell标签
-            Object value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStringsTable, this.numFmtString);
-            // 补全单元格之间的空格
-            fillBlankCell(preCoordinate, curCoordinate, false);
-            rowCellList.add(curCell++, value);
-        } else if (ROW_ELEMENT.equals(localName)) {
-            // 如果是row标签,说明已经到了一行的结尾
-            // 最大列坐标以第一行的为准
-            if (curRow == 0) {
-                maxCellCoordinate = curCoordinate;
-            }
-
-            // 补全一行尾部可能缺失的单元格
-            if (maxCellCoordinate != null) {
-                fillBlankCell(curCoordinate, maxCellCoordinate, true);
-            }
-
-            rowHandler.handle(sheetIndex, curRow, rowCellList);
-
-            // 一行结束
-            // 清空rowCellList,
-            rowCellList.clear();
-            // 行数增加
-            curRow++;
-            // 当前列置0
-            curCell = 0;
-            // 置空当前列坐标和前一列坐标
-            curCoordinate = null;
-            preCoordinate = null;
+        if (ElementName.c.match(localName)) { // 单元格结束
+            endCell();
+        } else if (ElementName.row.match(localName)) {// 行结束
+            endRow();
         }
     }
 
@@ -301,7 +216,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
 
     @Override
     public void setDocumentLocator(Locator locator) {
-        // pass
+
     }
 
     /**
@@ -309,32 +224,32 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      */
     @Override
     public void startDocument() {
-        // pass
+
     }
 
     @Override
     public void endDocument() {
-        // pass
+
     }
 
     @Override
     public void startPrefixMapping(String prefix, String uri) {
-        // pass
+
     }
 
     @Override
     public void endPrefixMapping(String prefix) {
-        // pass
+
     }
 
     @Override
     public void ignorableWhitespace(char[] ch, int start, int length) {
-        // pass
+
     }
 
     @Override
     public void processingInstruction(String target, String data) {
-        // pass
+
     }
 
     @Override
@@ -343,18 +258,90 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
     }
 
     /**
-     * 处理流中的Excel数据
+     * 行开始
      *
-     * @param sheetInputStream sheet流
-     * @throws IOException  IO异常
-     * @throws SAXException SAX异常
+     * @param attributes 属性列表
      */
-    private void parse(InputStream sheetInputStream) throws IOException, SAXException {
-        fetchSheetReader().parse(new InputSource(sheetInputStream));
+    private void startRow(Attributes attributes) {
+        this.rowNumber = Long.parseLong(AttributeName.r.getValue(attributes)) - 1;
     }
 
     /**
-     * 填充空白单元格,如果前一个单元格大于后一个,不需要填充
+     * 单元格开始
+     *
+     * @param attributes 属性列表
+     */
+    private void startCell(Attributes attributes) {
+        // 获取当前列坐标
+        final String tempCurCoordinate = AttributeName.r.getValue(attributes);
+        // 前一列为null，则将其设置为"@",A为第一列，ascii码为65，前一列即为@，ascii码64
+        if (preCoordinate == null) {
+            preCoordinate = String.valueOf(ExcelSaxKit.CELL_FILL_CHAR);
+        } else {
+            // 存在，则前一列要设置为上一列的坐标
+            preCoordinate = curCoordinate;
+        }
+        // 重置当前列
+        curCoordinate = tempCurCoordinate;
+        // 设置单元格类型
+        setCellType(attributes);
+
+        // 清空之前的数据
+        lastContent.reset();
+    }
+
+    /**
+     * 一个单元格结尾
+     */
+    private void endCell() {
+        final String contentStr = StringKit.trim(lastContent);
+        final Object value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStringsTable, this.numFmtString);
+        // 补全单元格之间的空格
+        fillBlankCell(preCoordinate, curCoordinate, false);
+        addCellValue(curCell++, value);
+    }
+
+    /**
+     * 一行结尾
+     */
+    private void endRow() {
+        // 最大列坐标以第一个非空行的为准
+        if (index == 0) {
+            maxCellCoordinate = curCoordinate;
+        }
+
+        // 补全一行尾部可能缺失的单元格
+        if (maxCellCoordinate != null) {
+            fillBlankCell(curCoordinate, maxCellCoordinate, true);
+        }
+
+        rowHandler.handle(sheetIndex, rowNumber, rowCellList);
+
+        // 一行结束
+        // 新建一个新列，之前的列抛弃（可能被回收或rowHandler处理）
+        rowCellList = new ArrayList<>(curCell + 1);
+        // 行数增加
+        index++;
+        // 当前列置0
+        curCell = 0;
+        // 置空当前列坐标和前一列坐标
+        curCoordinate = null;
+        preCoordinate = null;
+    }
+
+    /**
+     * 在一行中的指定列增加值
+     *
+     * @param index 位置
+     * @param value 值
+     */
+    private void addCellValue(int index, Object value) {
+        this.rowCellList.add(index, value);
+        this.rowHandler.handleCell(this.sheetIndex, this.rowNumber, index, value, this.xssfCellStyle);
+    }
+
+    /**
+     * 填充空白单元格，如果前一个单元格大于后一个，不需要填充<br>
      *
      * @param preCoordinate 前一个单元格坐标
      * @param curCoordinate 当前单元格坐标
@@ -367,30 +354,100 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                 len++;
             }
             while (len-- > 0) {
-                rowCellList.add(curCell++, Normal.EMPTY);
+                addCellValue(curCell++, "");
             }
         }
     }
 
     /**
-     * 获取sheet的解析器
+     * 设置单元格的类型
      *
-     * @return {@link XMLReader}
-     * @throws SAXException SAX异常
+     * @param attributes 属性
      */
-    private XMLReader fetchSheetReader() throws SAXException {
-        XMLReader xmlReader;
-        try {
-            xmlReader = XMLReaderFactory.createXMLReader(CLASS_SAXPARSER);
-        } catch (SAXException e) {
-            if (e.getMessage().contains("org.apache.xerces.parsers.SAXParser")) {
-                throw new InstrumentException("You need to add 'xerces:xercesImpl' to your project and version >= 2.11.0");
-            } else {
-                throw e;
+    private void setCellType(Attributes attributes) {
+        // numFmtString的值
+        numFmtString = "";
+        this.cellDataType = CellDataType.of(AttributeName.t.getValue(attributes));
+
+        // 获取单元格的xf索引，对应style.xml中cellXfs的子元素xf
+        if (null != this.stylesTable) {
+            final String xfIndexStr = AttributeName.s.getValue(attributes);
+            if (null != xfIndexStr) {
+                int xfIndex = Integer.parseInt(xfIndexStr);
+                this.xssfCellStyle = stylesTable.getStyleAt(xfIndex);
+                numFmtString = xssfCellStyle.getDataFormatString();
+                // 单元格存储格式的索引，对应style.xml中的numFmts元素的子元素索引
+                int numFmtIndex = xssfCellStyle.getDataFormat();
+                if (numFmtString == null) {
+                    numFmtString = BuiltinFormats.getBuiltinFormat(numFmtIndex);
+                } else if (CellDataType.NUMBER == this.cellDataType && org.apache.poi.ss.usermodel.DateUtil.isADateFormat(numFmtIndex, numFmtString)) {
+                    cellDataType = CellDataType.DATE;
+                }
             }
         }
-        xmlReader.setContentHandler(this);
-        return xmlReader;
+    }
+
+    /**
+     * 标签名枚举
+     */
+    public enum ElementName {
+        /**
+         * 行标签名，表示一行
+         */
+        row,
+        /**
+         * 单元格标签名，表示一个单元格
+         */
+        c;
+
+        /**
+         * 给定标签名是否匹配当前标签
+         *
+         * @param elementName 标签名
+         * @return 是否匹配
+         */
+        public boolean match(String elementName) {
+            return this.name().equals(elementName);
+        }
+    }
+
+    /**
+     * Excel的XML中属性名枚举
+     */
+    public enum AttributeName {
+
+        /**
+         * 行列号属性，行标签下此为行号属性名，cell标签下下为列号属性名
+         */
+        r,
+        /**
+         * ST（StylesTable） 的索引，样式index，用于获取行或单元格样式
+         */
+        s,
+        /**
+         * Type类型，单元格类型属性，见{@link CellDataType}
+         */
+        t;
+
+        /**
+         * 是否匹配给定属性
+         *
+         * @param attributeName 属性
+         * @return 是否匹配
+         */
+        public boolean match(String attributeName) {
+            return this.name().equals(attributeName);
+        }
+
+        /**
+         * 从属性里列表中获取对应属性值
+         *
+         * @param attributes 属性列表
+         * @return 属性值
+         */
+        public String getValue(Attributes attributes) {
+            return attributes.getValue(name());
+        }
     }
 
 }

@@ -48,7 +48,7 @@ import java.io.InputStream;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class ExcelSaxKit {
@@ -165,8 +165,18 @@ public class ExcelSaxKit {
      * @param value 单元格值
      * @return 日期
      */
-    private static DateTime getDateValue(String value) {
-        return DateKit.date(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(Double.parseDouble(value), false));
+    public static DateTime getDateValue(String value) {
+        return getDateValue(Double.parseDouble(value));
+    }
+
+    /**
+     * 获取日期
+     *
+     * @param value 单元格值
+     * @return 日期
+     */
+    public static DateTime getDateValue(double value) {
+        return DateKit.date(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value, false));
     }
 
     /**

@@ -29,7 +29,7 @@ import org.aoju.bus.image.galaxy.Property;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class RoleSelection {
@@ -39,8 +39,9 @@ public class RoleSelection {
     private final boolean scp;
 
     public RoleSelection(String cuid, boolean scu, boolean scp) {
-        if (cuid == null)
-            throw new NullPointerException();
+        if (cuid == null) {
+            throw new NullPointerException("cuid cannot be null");
+        }
 
         this.cuid = cuid;
         this.scu = scu;

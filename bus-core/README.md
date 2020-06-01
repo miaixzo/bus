@@ -11,28 +11,28 @@
 * 传递URLStreamHandler，支持自定义的URLStreamHandler
 
 ## **示例代码**
-```java
+```
 // 从当前的classpath中加载org/aoju/bus/core/loader目录的资源，但不递归加载子目录
 Loaders.std().load("org/aoju/bus/core/loader");
 ```
 
-```java
+```
 // 从当前的classpath中加载io目录的资源，而且递归加载子目录
 Loaders.std().load("org", true);
 ```
 
-```java
+```
 // 从当前的classpath中加载io以及所有递归子目录并且名称以Loader.class结尾的资源
 Loaders.std().load("org", true, (name, url) -> name.endsWith("Loader.class"));
 ```
 
-```java
+```
 // 上面的API默认采用的时当前线程的上下文类加载器，如果上下文类加载器不存在时则采用ClassLoader.getSystemClassLoader();
 // 同时也可以采用下面的方式指定类加载器
 Loaders.std(otherClassLoader);
 ```
 
-```java
+```
 // 当加载某个package下的类资源时也要用路径的方式来写包名的话其实不太直观，这时可以采用pkg资源加载器
 Loaders.pkg().load("org.aoju.bus.core.loader"); // 不递归
 Loaders.pkg().load("org.aoju.bus.core.loader", true); // 递归
@@ -40,14 +40,14 @@ Loaders.pkg().load("org.aoju.bus.core.loader", true); // 递归
 Loaders.pkg().load("org.aoju.bus.core.loader", (name, url) -> name.endsWith("Loader.class")); 
 ```
 
-```java
+```
 // package资源加载器实际上是一个委派加载器，只是内部将包名转换成路径方式然后委派给实际的资源加载器
 // 缺省情况下采用的是Loaders.std()资源加载器，也可以通过指定ClassLoader和delegate，实现更灵活的资源加载方式
 Loaders.pkg(otherClassLoader);
 Loaders.pkg(Loaders.std(otherClassLoader));
 ```
 
-```java
+```
 // 在package资源加载器中要加载org.aoju.bus.core.loader包下的名称Loader.class结尾的资源是需要自定义过滤器，
 // 即便使用了Lambda表达式，但是采用ANT表达式就更简洁
 // * 任意个字符，但不包括子目录
@@ -56,19 +56,19 @@ Loaders.pkg(Loaders.std(otherClassLoader));
 Loaders.ant().load("org/aoju/bus/core/loader/*Loader.class");
 ```
 
-```java
+```
 // 上面的ANT风格路径的资源加载器加载io.loadkit包的资源时，需要用 “/” 来分隔目录，用来加载包资源不太直观
 // 这时可以采用delegate模式用package资源加载器去包装一个ANT资源加载器，
 // 让资源加载同时拥有package 和 ant 两个加载器的解析能力
 Loaders.pkg(Loaders.ant()).load("org.aoju.bus.core.loader.*"); // 加载 org.aoju.bus.core.loader.*
 ```
 
-```java
+```
 // 有ANT表达式的资源加载器，自然也会有正则表达式的资源加载器。
 Loaders.regex().load("org/aoju/bus/core/loader/\\w+Loader.class"); // 加载 org.aoju.bus.core.loader 包下名称以Loader.class 结尾的资源
 ```
 
-```java
+```
 // Loader#load(); 方法只接收一个Filter参数，当过滤逻辑比较多而且不好写在一个过滤器，当然这样的类也是违背了"单一职责原则"的
 Filters.and(Filter...filters); // AND 连接的混合过滤器
 Filters.or(Filter...filters); // OR 连接的混合过滤器

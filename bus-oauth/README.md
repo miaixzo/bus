@@ -10,31 +10,31 @@
 ## 快速开始
 
 - 引入依赖
-```xml
+```
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>5.9.5</version>
+    <version>5.9.6</version>
 </dependency>
 ```
 - 调用api
-```java
+```
 // 创建授权request
-Provider shooting = new GiteeProvider(Context.builder()
+Provider provider = new GiteeProvider(Context.builder()
         .clientId("clientId")
         .clientSecret("clientSecret")
         .redirectUri("redirectUri")
         .build());
 // 生成授权页面
-shooting.authorize("state");
+provider.authorize("state");
 // 授权登录后会返回code(auth_code(仅限支付宝))、state，1.8.0版本后，可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
-shooting.login(callback);
+provider.login(callback);
 ```
 
 ### 获取授权链接
 
-```java
+```
 String authorizeUrl = shooting.authorize("state");
 ```
 获取到`authorizeUrl`后，可以手动实现redirect到`authorizeUrl`上
@@ -44,8 +44,8 @@ String authorizeUrl = shooting.authorize("state");
 
 ### 登录(获取用户信息)
 
-```java
-shooting.login(callback);
+```
+provider.login(callback);
 ```
 
 授权登录后会返回code(auth_code(仅限支付宝)、authorization_code(仅限华为))、state，1.8.0版本后，用`AuthCallback`类作为回调接口的入参
@@ -56,16 +56,16 @@ shooting.login(callback);
 
 注：`refresh`功能，并不是每个平台都支持
 
-```java
-shooting.refresh(AccToken.builder().refreshToken(token).build());
+```
+provider.refresh(AccToken.builder().refreshToken(token).build());
 ```
 
 ### 取消授权
 
 注：`revoke`功能，并不是每个平台都支持
 
-```java
-shooting.revoke(AccToken.builder().accessToken(token).build());
+```
+provider.revoke(AccToken.builder().accessToken(token).build());
 ```
 
 #### API列表
@@ -125,7 +125,7 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
 - `Client` 客户端，即代表意图访问受限资源的**第三方应用**
 
 ### 授权流程
-```html
+```
      +--------+                               +---------------+
      |        |--(A)- Authorization Request ->|   Resource    |
      |        |                               |     Owner     |

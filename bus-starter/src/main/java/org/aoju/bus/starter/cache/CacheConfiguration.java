@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Bean;
  * 缓存配置
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {CacheProperties.class})
@@ -53,28 +53,28 @@ public class CacheConfiguration {
             if (!StringKit.isEmpty(type)) {
                 Object provider = ClassKit.loadClass(type);
                 Context config = Context.newConfig(this.properties.getMap());
-                if (provider instanceof H2Shooting) {
-                    config.setShooting(new H2Shooting(
+                if (provider instanceof H2Hitting) {
+                    config.setHitting(new H2Hitting(
                             this.properties.getProvider().getUrl(),
                             this.properties.getProvider().getUsername(),
                             this.properties.getProvider().getPassword()
                     ));
-                } else if (provider instanceof MySQLShooting) {
-                    config.setShooting(new MySQLShooting(
+                } else if (provider instanceof MySQLHitting) {
+                    config.setHitting(new MySQLHitting(
                             BeanKit.beanToMap(this.properties)
                     ));
-                } else if (provider instanceof SqliteShooting) {
-                    config.setShooting(new SqliteShooting(
+                } else if (provider instanceof SqliteHitting) {
+                    config.setHitting(new SqliteHitting(
                             this.properties.getProvider().getUrl(),
                             this.properties.getProvider().getUsername(),
                             this.properties.getProvider().getPassword()
                     ));
-                } else if (provider instanceof ZKShooting) {
-                    config.setShooting(new ZKShooting(
+                } else if (provider instanceof ZookeeperHitting) {
+                    config.setHitting(new ZookeeperHitting(
                             this.properties.getProvider().getUrl()
                     ));
-                } else if (provider instanceof MemoryShooting) {
-                    config.setShooting(new MemoryShooting());
+                } else if (provider instanceof MemoryHitting) {
+                    config.setHitting(new MemoryHitting());
                 }
                 return new AspectjCacheProxy(config);
             }

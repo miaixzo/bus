@@ -32,7 +32,7 @@ import java.io.File;
  * 这个类包含{@link ExternalOfficeManager}的配置.
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class ExternalOfficeBuilder implements OfficeManagerBuilder {

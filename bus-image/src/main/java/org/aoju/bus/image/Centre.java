@@ -24,7 +24,24 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.BooleanKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.image.metric.Connection;
+import org.aoju.bus.image.metric.TransferCapability;
+import org.aoju.bus.image.plugin.StoreSCP;
+import org.aoju.bus.logger.Logger;
+
+import java.io.IOException;
+import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * 进程服务管理器
@@ -32,30 +49,138 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 2. 设备服务进程
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-public interface Centre {
+@lombok.Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Centre {
 
     /**
-     * 获取管理器是否正在运行
-     *
-     * @return 如果管理器正在运行，则为{@code true}，否则为{@code false}
+     * 设备信息
      */
-    boolean isRunning();
+    public Device device;
+
+    /**
+     * 操作行为
+     */
+    public StoreSCP storeSCP;
+
+    /**
+     * 服务器信息
+     */
+    public Node node;
+    /**
+     * 参数信息
+     */
+    public Args args;
+
+    /**
+     * 业务处理
+     */
+    public Efforts efforts;
+    /**
+     * 任务处理者
+     */
+    public ExecutorService executor;
+    /**
+     * 业务处理
+     */
+    public ScheduledExecutorService scheduledExecutor;
+
+    public Centre(Device device) {
+        this.device = Objects.requireNonNull(device);
+    }
+
+    public void start() {
+        start(false);
+    }
 
     /**
      * 启动管理器
      *
-     * @throws InstrumentException 如果管理器不能启动
+     * @param flag 标记信息
      */
-    void start() throws InstrumentException;
+    public synchronized void start(boolean... flag) {
+        if (BooleanKit.or(flag)) {
+            if (executor == null) {
+                executor = Executors.newSingleThreadExecutor();
+                scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+                device.setExecutor(executor);
+                device.setScheduledExecutor(scheduledExecutor);
+            }
+            return;
+        }
+
+        if (storeSCP.getConnection().isListening()) {
+            throw new InstrumentException("Cannot start a Listener because it is already running.");
+        }
+
+        if (ObjectKit.isEmpty(storeSCP)) {
+            throw new NullPointerException("The StoreSCP cannot be null.");
+        }
+
+        if (ObjectKit.isEmpty(node)) {
+            throw new NullPointerException("The node cannot be null.");
+        }
+        if (ObjectKit.isEmpty(args)) {
+            throw new NullPointerException("The args cannot be null.");
+        }
+        if (ObjectKit.isNotEmpty(efforts)) {
+            storeSCP.setEfforts(efforts);
+        }
+
+        storeSCP.setStatus(0);
+
+        Connection conn = storeSCP.getConnection();
+        if (args.isBindCallingAet()) {
+            args.configureBind(storeSCP.getApplicationEntity(), conn, node);
+        } else {
+            args.configureBind(conn, node);
+        }
+
+        args.configure(conn);
+        try {
+            args.configureTLS(conn, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        storeSCP.getApplicationEntity().setAcceptedCallingAETitles(args.getAcceptedCallingAETitles());
+
+        URL transferCapabilityFile = args.getTransferCapabilityFile();
+        if (transferCapabilityFile != null) {
+            storeSCP.loadDefaultTransferCapability(transferCapabilityFile);
+        } else {
+            storeSCP.getApplicationEntity()
+                    .addTransferCapability(new TransferCapability(null, Symbol.STAR, TransferCapability.Role.SCP, Symbol.STAR));
+        }
+
+        executor = Executors.newCachedThreadPool();
+        scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+        try {
+            device = storeSCP.getDevice();
+            device.setExecutor(executor);
+            device.setScheduledExecutor(scheduledExecutor);
+            device.bindConnections();
+        } catch (IOException | GeneralSecurityException e) {
+            stop();
+            Logger.error(e.getMessage());
+        }
+    }
 
     /**
      * 停止管理器
-     *
-     * @throws InstrumentException 如果管理器不能停止
      */
-    void stop() throws InstrumentException;
+    public synchronized void stop() {
+        if (device != null) {
+            device.unbindConnections();
+        }
+        Builder.shutdown(scheduledExecutor);
+        Builder.shutdown(executor);
+        executor = null;
+        scheduledExecutor = null;
+    }
 
 }

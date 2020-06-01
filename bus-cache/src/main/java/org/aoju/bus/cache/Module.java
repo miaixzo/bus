@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class Module extends AbstractModule {
@@ -77,8 +77,8 @@ public class Module extends AbstractModule {
         config.getCaches().forEach((name, cache) -> mapBinder.addBinding(name).toInstance(cache));
 
         // bind baseProvider
-        Optional.ofNullable(config.getShooting())
-                .ifPresent(mxBean -> bind(Shooting.class).toInstance(mxBean));
+        Optional.ofNullable(config.getHitting())
+                .ifPresent(mxBean -> bind(Hitting.class).toInstance(mxBean));
 
         bind(AbstractReader.class).annotatedWith(Names.named("singleCacheReader")).to(SingleCacheReader.class);
         bind(AbstractReader.class).annotatedWith(Names.named("multiCacheReader")).to(MultiCacheReader.class);

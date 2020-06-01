@@ -33,7 +33,7 @@ import java.text.MessageFormat;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class CMove {
@@ -51,7 +51,7 @@ public class CMove {
                                  String destinationAet,
                                  Progress progress,
                                  Args... keys) {
-        return CMove.process(new Args(), callingNode, calledNode, destinationAet, progress, keys);
+        return process(new Args(), callingNode, calledNode, destinationAet, progress, keys);
     }
 
     /**
@@ -79,6 +79,8 @@ public class CMove {
             args.configureBind(moveSCU.getAAssociateRQ(), remote, calledNode);
             args.configureBind(moveSCU.getApplicationEntity(), conn, callingNode);
 
+            Centre centre = new Centre(moveSCU);
+
             args.configure(conn);
             args.configureTLS(conn, remote);
 
@@ -90,7 +92,7 @@ public class CMove {
             }
             moveSCU.setDestination(destinationAet);
 
-            moveSCU.start();
+            centre.start(true);
             try {
                 Status dcmState = moveSCU.getState();
                 long t1 = System.currentTimeMillis();
@@ -110,7 +112,7 @@ public class CMove {
                 return Status.build(moveSCU.getState(), null, e);
             } finally {
                 Builder.close(moveSCU);
-                moveSCU.stop();
+                centre.stop();
             }
         } catch (Exception e) {
             Logger.error("movescu", e);

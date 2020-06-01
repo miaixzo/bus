@@ -37,16 +37,16 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-public class H2Shooting extends AbstractShooting {
+public class H2Hitting extends AbstractHitting {
 
-    public H2Shooting(Map<String, Object> context) {
+    public H2Hitting(Map<String, Object> context) {
         super(context);
     }
 
-    public H2Shooting(String url, String username, String password) {
+    public H2Hitting(String url, String username, String password) {
         super(url, username, password);
     }
 
@@ -74,7 +74,7 @@ public class H2Shooting extends AbstractShooting {
     @Override
     protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
         return mapResults.stream().map((map) -> {
-            AbstractShooting.DataDO dataDO = new AbstractShooting.DataDO();
+            AbstractHitting.DataDO dataDO = new AbstractHitting.DataDO();
             dataDO.setPattern((String) map.get("PATTERN"));
             dataDO.setHitCount((long) map.get("HIT_COUNT"));
             dataDO.setRequireCount((long) map.get("REQUIRE_COUNT"));

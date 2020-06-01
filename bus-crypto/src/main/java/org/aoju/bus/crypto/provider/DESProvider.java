@@ -34,7 +34,7 @@ import org.aoju.bus.crypto.symmetric.DES;
  * 数据加密标准,速度较快,适用于加密大量数据的场合
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class DESProvider implements Provider {

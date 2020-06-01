@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-sensitive</artifactId>
-    <version>5.9.5</version>
+    <version>5.9.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -18,13 +18,18 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.68</fastjson.version>
+        <fastjson.version>1.2.70</fastjson.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-crypto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-extra</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

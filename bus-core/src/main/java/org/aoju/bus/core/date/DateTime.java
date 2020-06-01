@@ -51,7 +51,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class DateTime extends Date {
@@ -492,6 +492,15 @@ public class DateTime extends Date {
      */
     public int dayOfMonth() {
         return getField(Fields.DateField.DAY_OF_MONTH);
+    }
+
+    /**
+     * 获得指定日期是这个日期所在年份的第几天
+     *
+     * @return 天
+     */
+    public int dayOfYear() {
+        return getField(Fields.DateField.DAY_OF_YEAR);
     }
 
     /**

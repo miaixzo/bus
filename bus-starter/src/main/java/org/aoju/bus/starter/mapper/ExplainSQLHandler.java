@@ -24,9 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -47,12 +44,9 @@ import org.apache.ibatis.session.RowBounds;
  * 防止全表更新与删除
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-@Data
-@Accessors(chain = true)
-@EqualsAndHashCode()
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
 public class ExplainSQLHandler extends AbstractSqlParserHandler implements Interceptor {
 
@@ -66,41 +60,35 @@ public class ExplainSQLHandler extends AbstractSqlParserHandler implements Inter
             Configuration configuration = ms.getConfiguration();
             Object target = invocation.getTarget();
             StatementHandler handler = configuration.newStatementHandler((Executor) target, ms, parameter, RowBounds.DEFAULT, null, null);
+            if (!(handler instanceof CallableStatementHandler)) {
+                // 标记是否修改过 SQL
+                boolean sqlChangedFlag = false;
+                MetaObject metaObject = SystemMetaObject.forObject(realTarget(SystemMetaObject.forObject(handler).getOriginalObject()));
 
-            MetaObject metaObject = SystemMetaObject.forObject(handler);
-            if (null != metaObject) {
-                Object originalObject = metaObject.getOriginalObject();
-                StatementHandler statementHandler = realTarget(originalObject);
-                // 好像不用判断也行,为了保险起见,还是加上吧.
-                statementHandler = metaObject.hasGetter("delegate") ? (StatementHandler) metaObject.getValue("delegate") : statementHandler;
-                if (!(statementHandler instanceof CallableStatementHandler)) {
-                    // 标记是否修改过 SQL
-                    boolean sqlChangedFlag = false;
-                    String sql = (String) metaObject.getValue(DELEGATE_BOUNDSQL_SQL);
-                    if (this.allowProcess(metaObject)) {
-                        try {
-                            StringBuilder sqlStringBuilder = new StringBuilder();
-                            Statements statements = CCJSqlParserUtil.parseStatements(parser(metaObject, sql));
-                            int i = 0;
-                            for (Statement statement : statements.getStatements()) {
-                                if (null != statement) {
-                                    if (i++ > 0) {
-                                        sqlStringBuilder.append(';');
-                                    }
-                                    sqlStringBuilder.append(this.processParser(statement));
+                String sql = (String) metaObject.getValue(DELEGATE_BOUNDSQL_SQL);
+                if (this.allowProcess(metaObject)) {
+                    try {
+                        StringBuilder sqlStringBuilder = new StringBuilder();
+                        Statements statements = CCJSqlParserUtil.parseStatements(parser(metaObject, sql));
+                        int i = 0;
+                        for (Statement statement : statements.getStatements()) {
+                            if (null != statement) {
+                                if (i++ > 0) {
+                                    sqlStringBuilder.append(';');
                                 }
+                                sqlStringBuilder.append(this.processParser(statement));
                             }
-                            if (sqlStringBuilder.length() > 0) {
-                                sql = sqlStringBuilder.toString();
-                                sqlChangedFlag = true;
-                            }
-                        } catch (JSQLParserException e) {
-                            throw new InstrumentException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
                         }
+                        if (sqlStringBuilder.length() > 0) {
+                            sql = sqlStringBuilder.toString();
+                            sqlChangedFlag = true;
+                        }
+                    } catch (JSQLParserException e) {
+                        throw new InstrumentException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
                     }
-                    if (sqlChangedFlag) {
-                        metaObject.setValue(DELEGATE_BOUNDSQL_SQL, sql);
-                    }
+                }
+                if (sqlChangedFlag) {
+                    metaObject.setValue(DELEGATE_BOUNDSQL_SQL, sql);
                 }
             }
         }

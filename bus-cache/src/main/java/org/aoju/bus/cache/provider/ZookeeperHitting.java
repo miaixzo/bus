@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cache.provider;
 
-import org.aoju.bus.cache.Shooting;
+import org.aoju.bus.cache.Hitting;
 import org.aoju.bus.cache.magic.CachePair;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
@@ -44,10 +44,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
-public class ZKShooting implements Shooting {
+public class ZookeeperHitting implements Hitting {
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r);
@@ -74,11 +74,11 @@ public class ZKShooting implements Shooting {
 
     private String requirePathPrefix;
 
-    public ZKShooting(String zkServer) {
+    public ZookeeperHitting(String zkServer) {
         this(zkServer, System.getProperty("product.name", "unnamed"));
     }
 
-    public ZKShooting(String zkServer, String productName) {
+    public ZookeeperHitting(String zkServer, String productName) {
         this.client = CuratorFrameworkFactory.builder()
                 .connectString(zkServer)
                 .retryPolicy(new RetryNTimes(3, 0))
@@ -119,8 +119,8 @@ public class ZKShooting implements Shooting {
     }
 
     @Override
-    public Map<String, ShootingDO> getShooting() {
-        Map<String, ShootingDO> result = new LinkedHashMap<>();
+    public Map<String, Hitting.HittingDO> getHitting() {
+        Map<String, Hitting.HittingDO> result = new LinkedHashMap<>();
 
         AtomicLong totalHit = new AtomicLong(0L);
         AtomicLong totalRequire = new AtomicLong(0L);
@@ -132,13 +132,13 @@ public class ZKShooting implements Shooting {
                 totalRequire.addAndGet(require);
                 totalHit.addAndGet(hit);
 
-                result.put(key, ShootingDO.newInstance(hit, require));
+                result.put(key, Hitting.HittingDO.newInstance(hit, require));
             } catch (Exception e) {
                 Logger.error(e, "acquire hit count error: ", e.getMessage());
             }
         });
 
-        result.put(summaryName(), ShootingDO.newInstance(totalHit.get(), totalRequire.get()));
+        result.put(summaryName(), Hitting.HittingDO.newInstance(totalHit.get(), totalRequire.get()));
 
         return result;
     }
