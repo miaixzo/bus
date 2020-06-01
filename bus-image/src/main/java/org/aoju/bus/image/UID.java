@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * UID信息
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class UID {
@@ -1825,7 +1825,7 @@ public class UID {
     /**
      * Private Siemens CSA Non Image Storage
      */
-    public static final String PrivateSiemensCSANonImageStorage = "1.3.12.2.1107.5.9.5";
+    public static final String PrivateSiemensCSANonImageStorage = "1.3.12.2.1107.5.9.6";
     /**
      * Private Siemens CT MR Volume Storage
      */
@@ -1889,11 +1889,11 @@ public class UID {
     /**
      * Private Philips MR Cardio Storage (Retired)
      */
-    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.5.9.5";
+    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.5.9.6";
     /**
      * Private Philips MR Cardio Storage
      */
-    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.5.9.5.1";
+    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.5.9.6.1";
     /**
      * Private Philips CT Synthetic Image Storage
      */

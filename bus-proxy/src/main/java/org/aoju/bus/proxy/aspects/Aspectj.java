@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  * 切面接口
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public interface Aspectj {

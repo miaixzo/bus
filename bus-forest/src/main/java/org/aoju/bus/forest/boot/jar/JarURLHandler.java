@@ -44,7 +44,7 @@ import java.util.Set;
  * 加密的URL处理器
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class JarURLHandler extends URLStreamHandler {

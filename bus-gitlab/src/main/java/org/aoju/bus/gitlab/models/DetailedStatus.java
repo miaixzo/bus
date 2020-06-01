@@ -30,7 +30,7 @@ import org.aoju.bus.gitlab.JacksonJson;
  * This class is part of the Pipeline message.
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class DetailedStatus {

@@ -40,7 +40,7 @@ import java.security.Key;
  * 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class DefaultHMacEngine implements MacEngine {

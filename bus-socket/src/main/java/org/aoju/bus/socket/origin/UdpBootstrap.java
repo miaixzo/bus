@@ -43,7 +43,7 @@ import java.util.Set;
  * UDP服务启动类
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class UdpBootstrap<Request> implements Runnable {

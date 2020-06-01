@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 微信公众平台登录
  *
  * @author Kimi Liu
- * @version 5.9.5
+ * @version 5.9.6
  * @since JDK 1.8+
  */
 public class WeChatMpProvider extends DefaultProvider {
