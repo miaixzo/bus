@@ -43,11 +43,11 @@ import java.util.Map;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class ProcessPerformanceData {
+public final class ProcessPerformance {
 
     private static final String PROCESS = "Process";
 
-    private ProcessPerformanceData() {
+    private ProcessPerformance() {
     }
 
     /**
@@ -62,7 +62,7 @@ public final class ProcessPerformanceData {
      */
     public static Map<Integer, OSProcess> buildProcessMapFromRegistry(OperatingSystem os, Collection<Integer> pids) {
         // Grab the data from the registry.
-        Triple<List<Map<ProcessPerformanceProperty, Object>>, Long, Long> processData = HkeyPerformanceDataUtil
+        Triple<List<Map<ProcessPerformanceProperty, Object>>, Long, Long> processData = HkeyPerformance
                 .readPerfDataFromRegistry(PROCESS, ProcessPerformanceProperty.class);
         if (processData == null) {
             return null;

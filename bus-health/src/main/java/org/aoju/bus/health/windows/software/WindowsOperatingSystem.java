@@ -580,7 +580,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     private Map<Integer, OSProcess> queryProcessMapFromRegistry() {
-        return ProcessPerformanceData.buildProcessMapFromRegistry(this, null);
+        return ProcessPerformance.buildProcessMapFromRegistry(this, null);
     }
 
     private Map<Integer, OSProcess> queryProcessMapFromPerfCounters() {

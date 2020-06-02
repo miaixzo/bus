@@ -548,7 +548,7 @@ public class ExcelKit {
             }
             int remainder = index % 26;
             colName.append((char) (remainder + 'A'));
-            index = (int) ((index - remainder) / 26);
+            index = (index - remainder) / 26;
         } while (index > 0);
         return colName.reverse().toString();
     }

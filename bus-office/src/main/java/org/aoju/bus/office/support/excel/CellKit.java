@@ -455,7 +455,7 @@ public class CellKit {
             return true;
         }
 
-        return org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell);
+        return DateUtil.isCellDateFormatted(cell);
     }
 
 }
