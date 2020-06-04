@@ -162,8 +162,9 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
      *
      * @param uncaughtExceptionHandler {@link UncaughtExceptionHandler}
      */
-    public void setUncaughtExceptionHandler(UncaughtExceptionHandler uncaughtExceptionHandler) {
+    public ThreadBuilder setUncaughtExceptionHandler(UncaughtExceptionHandler uncaughtExceptionHandler) {
         this.uncaughtExceptionHandler = uncaughtExceptionHandler;
+        return this;
     }
 
     /**

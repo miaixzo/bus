@@ -879,19 +879,6 @@ public class DateKit {
             return parseUTC(dateStr);
         }
 
-        if (length == Fields.NORM_DATETIME_PATTERN.length()) {
-            // yyyy-MM-dd HH:mm:ss
-            return parseDateTime(dateStr);
-        } else if (length == Fields.NORM_DATE_PATTERN.length()) {
-            // yyyy-MM-dd
-            return parseDate(dateStr);
-        } else if (length == Fields.NORM_DATETIME_MINUTE_PATTERN.length()) {
-            // yyyy-MM-dd HH:mm
-            return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
-        } else if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
-            // yyyy-MM-dd HH:mm:ss.SSS
-            return parse(normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
-        }
         // 含有单个位数数字的日期时间格式
         dateStr = normalize(dateStr);
         if (PatternKit.isMatch(Fields.REGEX_NORM, dateStr)) {
@@ -899,15 +886,22 @@ public class DateKit {
             switch (colonCount) {
                 case 0:
                     // yyyy-MM-dd
-                    return parseDate(dateStr);
+                    return parse(dateStr, Fields.NORM_DATE_FORMAT);
                 case 1:
                     // yyyy-MM-dd HH:mm
-                    return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
+                    return parse(dateStr, Fields.NORM_DATETIME_MINUTE_FORMAT);
                 case 2:
                     // yyyy-MM-dd HH:mm:ss
-                    return parseDateTime(dateStr);
+                    return parse(dateStr, Fields.NORM_DATETIME_FORMAT);
             }
         }
+
+        // 长度判断
+        if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
+            // yyyy-MM-dd HH:mm:ss.SSS
+            return parse(dateStr, Fields.NORM_DATETIME_MS_FORMAT);
+        }
+
         // 没有更多匹配的时间格式
         throw new InstrumentException("No format fit for date String [{}] !", dateStr);
     }

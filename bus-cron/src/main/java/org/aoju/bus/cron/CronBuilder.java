@@ -198,7 +198,7 @@ public final class CronBuilder {
         }
         if (scheduler.isStarted()) {
             //关闭并清除已有任务
-            scheduler.stop(true);
+            stop();
         }
 
         //重新加载任务
@@ -211,7 +211,7 @@ public final class CronBuilder {
      * 停止
      */
     synchronized public static void stop() {
-        scheduler.stop();
+        scheduler.stop(true);
     }
 
     /**
