@@ -104,13 +104,22 @@ public class Fields {
     public static final FormatBuilder NORM_PART_DATETIME_FORMAT = FormatBuilder.getInstance(NORM_PART_DATETIME_PATTERN);
 
     /**
-     * 格式化通配符: :yyyy-MM-dd HH:mm:ss.SSS
+     * 格式化通配符: yyyy-MM-dd HH:mm:ss.SSS
      */
     public static final String NORM_DATETIME_MS_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
     /**
      * 格式化通配符: {@link FormatBuilder} yyyy-MM-dd HH:mm:ss.SSS
      */
     public static final FormatBuilder NORM_DATETIME_MS_FORMAT = FormatBuilder.getInstance(NORM_DATETIME_MS_PATTERN);
+
+    /**
+     * 格式化通配符: yyyy-MM-dd HH:mm:ss,SSS
+     */
+    public static final String NORM_DATETIME_ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+    /**
+     * 格式化通配符: {@link FormatBuilder}：yyyy-MM-dd HH:mm:ss,SSS
+     */
+    public static final FormatBuilder NORM_DATETIME_ISO8601_FORMAT = FormatBuilder.getInstance(NORM_DATETIME_ISO8601_PATTERN);
 
     /**
      * 格式化通配符: yyyyMMddHHmmss

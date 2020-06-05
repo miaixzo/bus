@@ -3022,8 +3022,11 @@ public class DateKit {
             builder.append(Symbol.C_SPACE);
             String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
             timePart = StringKit.removeSuffix(timePart, Symbol.COLON);
+            //将ISO8601中的逗号替换为.
+            timePart = timePart.replace(Symbol.C_COMMA, Symbol.C_DOT);
             builder.append(timePart);
         }
+
 
         return builder.toString();
     }
