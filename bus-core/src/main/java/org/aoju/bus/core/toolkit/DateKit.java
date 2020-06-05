@@ -2934,7 +2934,7 @@ public class DateKit {
         if (year < 1900) {
             return null;
         }
-        return StringKit.toString(Fields.CN_ANIMAIL[(year - 1900) % Fields.CN_ANIMAIL.length]);
+        return StringKit.toString(Fields.CN_ZODIAC[(year - 1900) % Fields.CN_ZODIAC.length]);
     }
 
     /**
@@ -3450,7 +3450,7 @@ public class DateKit {
      * @return 生肖名
      */
     public static String getAnimalYearName(int y) {
-        return Fields.CN_ANIMAIL[(y - 4) % 12 - 1];
+        return Fields.CN_ZODIAC[(y - 4) % 12 - 1];
     }
 
     /**

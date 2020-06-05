@@ -315,7 +315,7 @@ public class Fields {
     /**
      * 12生肖,属相
      */
-    public static final String[] CN_ANIMAIL = {
+    public static final String[] CN_ZODIAC = {
             "鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"
     };
 

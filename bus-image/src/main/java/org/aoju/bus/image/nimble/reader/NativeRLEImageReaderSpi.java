@@ -37,7 +37,7 @@ import java.util.Locale;
  */
 public class NativeRLEImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
 
-    private static final String vendorName = "org.aoju.bus.image";
+    private static final String vendorName = "org.aoju";
     private static final String version = Implementation.getVersionName();
     private static final String[] formatNames = {"rle", "RLE"};
     private static final Class<?>[] inputTypes = {ImageInputStream.class};

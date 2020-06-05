@@ -36,8 +36,10 @@ public class SOFSegment {
     private final int lines; // height
     private final int samplesPerLine; // width
     private final int components;
+    private final boolean jfif;
 
-    SOFSegment(int marker, int samplePrecision, int lines, int samplesPerLine, int components) {
+    SOFSegment(boolean jfif, int marker, int samplePrecision, int lines, int samplesPerLine, int components) {
+        this.jfif = jfif;
         this.marker = marker;
         this.samplePrecision = samplePrecision;
         this.lines = lines;
@@ -63,6 +65,10 @@ public class SOFSegment {
 
     public int getComponents() {
         return components;
+    }
+
+    public boolean isJfif() {
+        return jfif;
     }
 
     @Override

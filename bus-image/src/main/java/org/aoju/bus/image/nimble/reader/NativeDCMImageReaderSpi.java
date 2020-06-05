@@ -41,7 +41,7 @@ import java.util.Locale;
  */
 public class NativeDCMImageReaderSpi extends ImageReaderSpi {
 
-    private static final String vendorName = "org.aoju.bus.image";
+    private static final String vendorName = "org.aoju";
     private static final String version = Implementation.getVersionName();
     private static final String[] formatNames = {"dicom", "DICOM"};
     private static final String[] suffixes = {"dcm", "dic", "dicm", "dicom"};
