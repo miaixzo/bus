@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  */
 public class SpecificCharacterSet {
 
-    public static final SpecificCharacterSet ASCII = new SpecificCharacterSet(new Codec[]{Codec.ISO_646});
+    public static final SpecificCharacterSet ASCII = new SpecificCharacterSet(new Codec[]{Codec.GB18030});
     private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder1 = new ThreadLocal<>();
     private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder2 = new ThreadLocal<>();
     private static SpecificCharacterSet DEFAULT = ASCII;
