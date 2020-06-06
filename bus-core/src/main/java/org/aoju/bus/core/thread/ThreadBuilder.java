@@ -161,6 +161,7 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
      * 设置未捕获异常的处理方式
      *
      * @param uncaughtExceptionHandler {@link UncaughtExceptionHandler}
+     * @return {@link ThreadBuilder}
      */
     public ThreadBuilder setUncaughtExceptionHandler(UncaughtExceptionHandler uncaughtExceptionHandler) {
         this.uncaughtExceptionHandler = uncaughtExceptionHandler;
