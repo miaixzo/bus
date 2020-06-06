@@ -31,7 +31,7 @@ import lombok.Data;
  * 配置信息
  *
  * @author Justubborn
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK1.8+
  */
 @Data

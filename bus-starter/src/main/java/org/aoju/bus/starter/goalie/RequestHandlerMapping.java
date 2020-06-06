@@ -36,12 +36,11 @@ import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class RequestHandlerMapping extends RequestMappingHandlerMapping {
 
-    //重写此处，保证读取我们的注解ApiVersion
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
         RequestMappingInfo mappinginfo = super.getMappingForMethod(method, handlerType);
@@ -85,7 +84,6 @@ public class RequestHandlerMapping extends RequestMappingHandlerMapping {
     }
 
     private RequestMappingInfo getApiVersionMappingInfo(Method method, Class<?> handlerType) {
-        //优先查找method
         ApiVersion apiVersion = AnnotatedElementUtils.findMergedAnnotation(method, ApiVersion.class);
         if (apiVersion == null || StringKit.isBlank(apiVersion.value())) {
             apiVersion = AnnotatedElementUtils.findMergedAnnotation(handlerType, ApiVersion.class);

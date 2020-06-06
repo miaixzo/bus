@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response;
  * See <a href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/services.md">GitLab documentation</a> for more info.
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class ServicesApi extends AbstractApi {

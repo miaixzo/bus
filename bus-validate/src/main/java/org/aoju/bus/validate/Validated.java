@@ -48,7 +48,7 @@ import java.util.List;
  * </P>
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @Data

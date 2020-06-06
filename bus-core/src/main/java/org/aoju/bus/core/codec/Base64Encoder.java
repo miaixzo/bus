@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * Base64编码
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class Base64Encoder {

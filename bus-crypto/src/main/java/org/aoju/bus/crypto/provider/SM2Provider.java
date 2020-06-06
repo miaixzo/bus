@@ -37,7 +37,7 @@ import org.bouncycastle.crypto.engines.SM2Engine;
  * RSA 加密解密算法
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class SM2Provider implements Provider {

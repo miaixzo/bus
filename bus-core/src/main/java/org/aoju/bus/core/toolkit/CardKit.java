@@ -34,7 +34,7 @@ import java.util.Map;
  * 银行卡工具类
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class CardKit {

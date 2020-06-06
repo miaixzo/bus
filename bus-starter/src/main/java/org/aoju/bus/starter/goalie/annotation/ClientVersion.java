@@ -28,7 +28,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @Documented
@@ -39,6 +39,6 @@ public @interface ClientVersion {
 
     TerminalVersion[] value() default {};
 
-    String[] expression() default {};//从string表达式解析，和上述效果一致
+    String[] expression() default {};
 
 }

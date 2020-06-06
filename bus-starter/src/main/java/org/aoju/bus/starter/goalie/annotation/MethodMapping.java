@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.goalie.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -31,7 +32,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
@@ -43,49 +44,49 @@ import java.lang.annotation.*;
 public @interface MethodMapping {
 
     /**
-     * Alias for {@link RequestMapping#name}.
+     * Alias for {@link RequestMapping#name}
      */
     @AliasFor(annotation = RequestMapping.class)
     String name() default "";
 
     /**
-     * Alias for {@link RequestMapping#value}.
+     * Alias for {@link RequestMapping#value}
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] value() default {};
 
     /**
-     * Alias for {@link RequestMapping#path}.
+     * Alias for {@link RequestMapping#path}
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] path() default {};
 
     /**
-     * Alias for {@link RequestMapping#params}.
+     * Alias for {@link RequestMapping#params}
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] params() default {};
 
     /**
-     * Alias for {@link RequestMapping#headers}.
+     * Alias for {@link RequestMapping#headers}
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] headers() default {};
 
     /**
-     * Alias for {@link RequestMapping#consumes}.
+     * Alias for {@link RequestMapping#consumes}
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] consumes() default {};
 
     /**
-     * Alias for {@link RequestMapping#produces}.
+     * Alias for {@link RequestMapping#produces}
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] produces() default {};
 
     @AliasFor(annotation = ApiVersion.class, attribute = "value")
-    String apiVersion() default "";
+    String apiVersion() default Normal.EMPTY;
 
     @AliasFor(annotation = ClientVersion.class, attribute = "value")
     TerminalVersion[] terminalVersion() default {};

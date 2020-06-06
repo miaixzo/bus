@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class RequestConditions extends AbstractRequestCondition<RequestConditions> {
@@ -50,7 +50,6 @@ public class RequestConditions extends AbstractRequestCondition<RequestCondition
     }
 
     public RequestConditions(String[] stringExpressions) {
-        //待实现，适配string，可以使用正则快速匹配
         expressions = Collections.unmodifiableSet(parseByExpression(stringExpressions));
     }
 

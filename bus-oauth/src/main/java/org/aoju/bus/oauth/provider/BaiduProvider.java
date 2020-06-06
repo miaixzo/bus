@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 百度账号登录
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class BaiduProvider extends DefaultProvider {

@@ -37,7 +37,7 @@ import java.util.Set;
  * Utility to query diskutil
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @ThreadSafe

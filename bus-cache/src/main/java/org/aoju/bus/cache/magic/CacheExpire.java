@@ -26,7 +26,7 @@ package org.aoju.bus.cache.magic;
 
 /**
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public interface CacheExpire {
