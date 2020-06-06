@@ -35,9 +35,9 @@ import java.lang.annotation.*;
  * @version 5.9.8
  * @since JDK 1.8+
  */
+@Documented
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
 @RequestMapping
 @ApiVersion
 @ClientVersion
@@ -45,42 +45,50 @@ public @interface MethodMapping {
 
     /**
      * Alias for {@link RequestMapping#name}
+     *
+     * @return String
      */
     @AliasFor(annotation = RequestMapping.class)
     String name() default "";
 
     /**
      * Alias for {@link RequestMapping#value}
+     * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] value() default {};
 
     /**
      * Alias for {@link RequestMapping#path}
+     * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] path() default {};
 
     /**
      * Alias for {@link RequestMapping#params}
+     * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] params() default {};
 
     /**
      * Alias for {@link RequestMapping#headers}
+     * @return the String[]
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] headers() default {};
 
     /**
      * Alias for {@link RequestMapping#consumes}
+     * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] consumes() default {};
 
     /**
      * Alias for {@link RequestMapping#produces}
+     * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
     String[] produces() default {};
