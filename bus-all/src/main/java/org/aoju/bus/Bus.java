@@ -45,6 +45,60 @@ import org.aoju.bus.core.Version;
  * @version 5.9.8
  * @since JDK 1.8+
  */
-public class Bus extends Version {
+public class Bus {
+
+    /**
+     * 版本号信息
+     *
+     * @return 版本号
+     */
+    public static String get() {
+        return Version.get();
+    }
+
+    /**
+     * 主要版本号
+     *
+     * @return 版本号
+     */
+    public static String major() {
+        return Version.major();
+    }
+
+    /**
+     * 次要版本号
+     *
+     * @return 次要号
+     */
+    public static String minor() {
+        return Version.minor();
+    }
+
+    /**
+     * 阶段版本号
+     *
+     * @return 阶段号
+     */
+    public static String stage() {
+        return Version.stage();
+    }
+
+    /**
+     * 版本质量
+     *
+     * @return 质量
+     */
+    public static String level() {
+        return Version.level();
+    }
+
+    /**
+     * 完整版本号
+     *
+     * @return the agent
+     */
+    public static String all() {
+        return Version.all();
+    }
 
 }
