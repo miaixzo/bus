@@ -72,7 +72,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.*;
  * and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -580,7 +580,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     private Map<Integer, OSProcess> queryProcessMapFromRegistry() {
-        return ProcessPerformanceData.buildProcessMapFromRegistry(this, null);
+        return ProcessPerformance.buildProcessMapFromRegistry(this, null);
     }
 
     private Map<Integer, OSProcess> queryProcessMapFromPerfCounters() {

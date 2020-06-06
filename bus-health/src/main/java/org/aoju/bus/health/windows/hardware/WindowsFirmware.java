@@ -42,7 +42,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Firmware data obtained from WMI
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @Immutable

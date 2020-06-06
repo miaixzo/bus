@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * ThreadFactory创建器
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class ThreadBuilder implements Builder<ThreadFactory> {
@@ -161,9 +161,11 @@ public class ThreadBuilder implements Builder<ThreadFactory> {
      * 设置未捕获异常的处理方式
      *
      * @param uncaughtExceptionHandler {@link UncaughtExceptionHandler}
+     * @return {@link ThreadBuilder}
      */
-    public void setUncaughtExceptionHandler(UncaughtExceptionHandler uncaughtExceptionHandler) {
+    public ThreadBuilder setUncaughtExceptionHandler(UncaughtExceptionHandler uncaughtExceptionHandler) {
         this.uncaughtExceptionHandler = uncaughtExceptionHandler;
+        return this;
     }
 
     /**

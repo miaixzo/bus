@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 数字计算验证码生成器
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class MathStrategy implements CodeStrategy {
@@ -99,7 +99,7 @@ public class MathStrategy implements CodeStrategy {
     }
 
     /**
-     * 获取长度验证码
+     * 获取验证码长度
      *
      * @return 验证码长度
      */

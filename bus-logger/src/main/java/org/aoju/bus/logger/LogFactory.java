@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日志工厂类
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public abstract class LogFactory {

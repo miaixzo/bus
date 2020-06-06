@@ -29,7 +29,7 @@ import java.io.InputStream;
 
 /**
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class InputStreamWriter implements DataWriter {

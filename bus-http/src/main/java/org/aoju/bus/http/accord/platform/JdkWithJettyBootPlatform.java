@@ -40,7 +40,7 @@ import java.util.List;
  * OpenJDK 7 or OpenJDK 8 with {@code org.mortbay.jetty.alpn/alpn-boot} 在引导类路径中.
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class JdkWithJettyBootPlatform extends Platform {

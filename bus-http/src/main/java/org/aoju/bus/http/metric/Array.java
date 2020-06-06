@@ -30,7 +30,7 @@ import org.aoju.bus.http.Wapper;
  * 可以是 xml、yml、protobuf 等任何一种格式的数据
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public interface Array {

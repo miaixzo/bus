@@ -50,7 +50,7 @@ import java.util.List;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -455,7 +455,7 @@ public class CellKit {
             return true;
         }
 
-        return org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell);
+        return DateUtil.isCellDateFormatted(cell);
     }
 
 }

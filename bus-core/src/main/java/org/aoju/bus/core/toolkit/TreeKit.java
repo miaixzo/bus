@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 6、代码简洁轻量无额外依赖
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class TreeKit {

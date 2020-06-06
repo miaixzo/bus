@@ -46,7 +46,7 @@ import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
  * LinuxNetworkParams class.
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @ThreadSafe

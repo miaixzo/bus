@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -879,19 +879,6 @@ public class DateKit {
             return parseUTC(dateStr);
         }
 
-        if (length == Fields.NORM_DATETIME_PATTERN.length()) {
-            // yyyy-MM-dd HH:mm:ss
-            return parseDateTime(dateStr);
-        } else if (length == Fields.NORM_DATE_PATTERN.length()) {
-            // yyyy-MM-dd
-            return parseDate(dateStr);
-        } else if (length == Fields.NORM_DATETIME_MINUTE_PATTERN.length()) {
-            // yyyy-MM-dd HH:mm
-            return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
-        } else if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
-            // yyyy-MM-dd HH:mm:ss.SSS
-            return parse(normalize(dateStr), Fields.NORM_DATETIME_MS_FORMAT);
-        }
         // 含有单个位数数字的日期时间格式
         dateStr = normalize(dateStr);
         if (PatternKit.isMatch(Fields.REGEX_NORM, dateStr)) {
@@ -899,15 +886,22 @@ public class DateKit {
             switch (colonCount) {
                 case 0:
                     // yyyy-MM-dd
-                    return parseDate(dateStr);
+                    return parse(dateStr, Fields.NORM_DATE_FORMAT);
                 case 1:
                     // yyyy-MM-dd HH:mm
-                    return parse(normalize(dateStr), Fields.NORM_DATETIME_MINUTE_FORMAT);
+                    return parse(dateStr, Fields.NORM_DATETIME_MINUTE_FORMAT);
                 case 2:
                     // yyyy-MM-dd HH:mm:ss
-                    return parseDateTime(dateStr);
+                    return parse(dateStr, Fields.NORM_DATETIME_FORMAT);
             }
         }
+
+        // 长度判断
+        if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
+            // yyyy-MM-dd HH:mm:ss.SSS
+            return parse(dateStr, Fields.NORM_DATETIME_MS_FORMAT);
+        }
+
         // 没有更多匹配的时间格式
         throw new InstrumentException("No format fit for date String [{}] !", dateStr);
     }
@@ -2940,7 +2934,7 @@ public class DateKit {
         if (year < 1900) {
             return null;
         }
-        return StringKit.toString(Fields.CN_ANIMAIL[(year - 1900) % Fields.CN_ANIMAIL.length]);
+        return StringKit.toString(Fields.CN_ZODIAC[(year - 1900) % Fields.CN_ZODIAC.length]);
     }
 
     /**
@@ -3028,8 +3022,11 @@ public class DateKit {
             builder.append(Symbol.C_SPACE);
             String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
             timePart = StringKit.removeSuffix(timePart, Symbol.COLON);
+            //将ISO8601中的逗号替换为.
+            timePart = timePart.replace(Symbol.C_COMMA, Symbol.C_DOT);
             builder.append(timePart);
         }
+
 
         return builder.toString();
     }
@@ -3456,7 +3453,7 @@ public class DateKit {
      * @return 生肖名
      */
     public static String getAnimalYearName(int y) {
-        return Fields.CN_ANIMAIL[(y - 4) % 12 - 1];
+        return Fields.CN_ZODIAC[(y - 4) % 12 - 1];
     }
 
     /**

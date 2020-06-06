@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -33,10 +34,18 @@ import org.aoju.bus.core.toolkit.StringKit;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
-public class Version {
+public enum Version {
+
+    NIL(Normal.EMPTY),
+    LT(Symbol.LT),
+    GT(Symbol.GT),
+    LE(Symbol.LE),
+    GE(Symbol.GE),
+    NE(Symbol.NOT + Symbol.EQUAL),
+    EQ(Symbol.EQUAL + Symbol.EQUAL);
 
     /**
      * 是否完整模式,默认使用完整模式
@@ -60,8 +69,27 @@ public class Version {
      * @return 项目的版本号
      */
 
+    private String code;
+
+    Version(String code) {
+        this.code = code;
+    }
+
+    public static Version parse(String code) {
+        for (Version operator : Version.values()) {
+            if (operator.getCode().equalsIgnoreCase(code)) {
+                return operator;
+            }
+        }
+        return null;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
     public static String get() {
-        return "5.9.6.RELEASE";
+        return "5.9.8.RELEASE";
     }
 
     /**

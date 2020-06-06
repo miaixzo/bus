@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.*;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -518,6 +519,7 @@ public class CitizenIdKit {
         } else {
             gender = 0;
         }
+
         return gender;
     }
 
@@ -609,6 +611,183 @@ public class CitizenIdKit {
             }
         }
         return iSum;
+    }
+
+    /**
+     * 获取星座信息
+     *
+     * @param month 出生月份
+     * @param day   出生日期
+     * @return 星座
+     */
+    private String getZodiac(int month, int day) {
+        return day < Fields.ZODIAC_SLICED[month - 1] ? Fields.ZODIAC[month - 1]
+                : Fields.ZODIAC[month];
+    }
+
+    /**
+     * 获取生肖属相信息
+     *
+     * @param calendar 出生年月日
+     * @return 生肖属相
+     */
+    private String getCNZodiac(Calendar calendar) {
+        return Fields.CN_ZODIAC[calendar.get(Calendar.YEAR) % 12];
+    }
+
+    /**
+     * 获取公民身份相关信息
+     *
+     * @param idCard 身份号码
+     * @return 身份信息
+     */
+    public CitizenInfo getCitizenInfo(String idCard) {
+        CitizenInfo citizenInfo = new CitizenInfo();
+        if (isValidCard(idCard)) {
+            short year = getYearByIdCard(idCard);
+            short month = getMonthByIdCard(idCard);
+            short day = getDayByIdCard(idCard);
+            citizenInfo.setVerify(isValidCard(idCard));
+            citizenInfo.setBirthDate(getBirthByIdCard(idCard));
+            citizenInfo.setAge(getAgeByIdCard(idCard));
+            citizenInfo.setProvince(getProvinceByIdCard(idCard));
+            citizenInfo.setBirthYear(year);
+            citizenInfo.setBirthMonth(month);
+            citizenInfo.setBirthDay(day);
+            citizenInfo.setGender(Normal.Gender.getGender("" + getGenderByIdCard(idCard)).getDesc());
+            citizenInfo.setZodiac(getZodiac(month, day));
+            Calendar c = Calendar.getInstance();
+            c.set(year, month, day);
+            citizenInfo.setCn_zodiac(getCNZodiac(c));
+        } else {
+            citizenInfo.setVerify(false);
+        }
+        return citizenInfo;
+    }
+
+    class CitizenInfo {
+
+        /**
+         * 身份证真伪
+         */
+        private boolean verify;
+        /**
+         * 出生日期
+         */
+        private String birthDate;
+        /**
+         * 出生省份
+         */
+        private String province;
+        /**
+         * 出生年
+         */
+        private Short birthYear;
+        /**
+         * 出生月
+         */
+        private Short birthMonth;
+        /**
+         * 出生日
+         */
+        private Short birthDay;
+        /**
+         * 年龄
+         */
+        private Integer age;
+        /**
+         * 性别
+         */
+        private String gender;
+        /**
+         * 星座
+         */
+        private String zodiac;
+        /**
+         * 生肖
+         */
+        private String cn_zodiac;
+
+        public boolean isVerify() {
+            return verify;
+        }
+
+        public void setVerify(boolean verify) {
+            this.verify = verify;
+        }
+
+        public String getBirthDate() {
+            return birthDate;
+        }
+
+        public void setBirthDate(String birthDate) {
+            this.birthDate = birthDate;
+        }
+
+        public String getProvince() {
+            return province;
+        }
+
+        public void setProvince(String province) {
+            this.province = province;
+        }
+
+        public Short getBirthYear() {
+            return birthYear;
+        }
+
+        public void setBirthYear(Short birthYear) {
+            this.birthYear = birthYear;
+        }
+
+        public Short getBirthMonth() {
+            return birthMonth;
+        }
+
+        public void setBirthMonth(Short birthMonth) {
+            this.birthMonth = birthMonth;
+        }
+
+        public Short getBirthDay() {
+            return birthDay;
+        }
+
+        public void setBirthDay(Short birthDay) {
+            this.birthDay = birthDay;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+
+        public void setGender(String gender) {
+            this.gender = gender;
+        }
+
+        public String getZodiac() {
+            return zodiac;
+        }
+
+        public void setZodiac(String zodiac) {
+            this.zodiac = zodiac;
+        }
+
+        public String getCn_zodiac() {
+            return cn_zodiac;
+        }
+
+        public void setCn_zodiac(String cn_zodiac) {
+            this.cn_zodiac = cn_zodiac;
+        }
+
     }
 
 }

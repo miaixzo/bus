@@ -31,7 +31,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * physical memory (RAM) as well as any available virtual memory.
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -47,7 +47,7 @@ import java.util.concurrent.Executor;
  * Httpv 客户端接口
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class Httpv {

@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -2870,7 +2870,8 @@ public class StringKit {
     }
 
     /**
-     * 原字符串首字母大写并在其首部添加指定字符串 例如：str=name, preString=get =》 return getName
+     * 原字符串首字母大写并在其首部添加指定字符串
+     * 例如：str=name, preString=get = return getName
      *
      * @param str       被处理的字符串
      * @param preString 添加的首部
@@ -2925,7 +2926,8 @@ public class StringKit {
 
 
     /**
-     * 将驼峰式命名的字符串转换为下划线方式 如果转换前的驼峰式命名的字符串为空,则返回空字符串
+     * 将驼峰式命名的字符串转换为下划线方式
+     * 如果转换前的驼峰式命名的字符串为空,则返回空字符串
      * 例如：HelloWorld=》hello_world
      *
      * @param camelCaseStr 转换前的驼峰式命名的字符串
@@ -2962,7 +2964,8 @@ public class StringKit {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为使用符号连接方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串
+     * 将驼峰式命名的字符串转换为使用符号连接方式
+     * 如果转换前的驼峰式命名的字符串为空，则返回空字符串
      *
      * @param str    转换前的驼峰式命名的字符串，也可以为符号连接形式
      * @param symbol 连接符
@@ -3013,7 +3016,8 @@ public class StringKit {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串
+     * 将下划线方式命名的字符串转换为驼峰式
+     * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串
      * 例如：hello_world=》helloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串

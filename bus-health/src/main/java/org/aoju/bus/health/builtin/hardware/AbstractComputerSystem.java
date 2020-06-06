@@ -34,7 +34,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * 计算机系统数据
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @Immutable

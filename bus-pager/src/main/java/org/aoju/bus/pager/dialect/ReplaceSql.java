@@ -28,7 +28,7 @@ package org.aoju.bus.pager.dialect;
  * 替换和还原 SQL
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public interface ReplaceSql {

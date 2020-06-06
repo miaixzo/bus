@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * NOTE: This API is not available in the Community edition of GitLab.
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class PackagesApi extends AbstractApi {

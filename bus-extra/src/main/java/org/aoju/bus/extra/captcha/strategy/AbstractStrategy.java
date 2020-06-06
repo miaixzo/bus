@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Normal;
  * 可以通过传入的基础集合和长度随机生成验证码字符
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public abstract class AbstractStrategy implements CodeStrategy {
@@ -66,7 +66,7 @@ public abstract class AbstractStrategy implements CodeStrategy {
     }
 
     /**
-     * 获取长度验证码
+     * 获取验证码长度
      *
      * @return 验证码长度
      */

@@ -40,11 +40,11 @@ import java.util.*;
  * Utility to read HKEY_PERFORMANCE_DATA information.
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class HkeyPerformanceDataUtil {
+public final class HkeyPerformance {
 
     /*
      * Do a one-time lookup of the HKEY_PERFORMANCE_TEXT counter indices and store
@@ -54,7 +54,7 @@ public final class HkeyPerformanceDataUtil {
     private static final String COUNTER = "Counter";
     private static final Map<String, Integer> COUNTER_INDEX_MAP = mapCounterIndicesFromRegistry();
 
-    private HkeyPerformanceDataUtil() {
+    private HkeyPerformance() {
     }
 
     /**

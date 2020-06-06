@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * proper functionality.  It may not work on earlier or later versions.</p>
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public final class AccessToken {

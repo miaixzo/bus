@@ -51,7 +51,7 @@ import java.util.Iterator;
 
 /**
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public class NativeImageReader extends ImageReader implements Closeable {
@@ -71,6 +71,110 @@ public class NativeImageReader extends ImageReader implements Closeable {
                                                               byte[] redPalette, byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) throws IOException {
         return createImageType(params,
                 createColorModel(params, colorSpace, redPalette, greenPalette, bluePalette, alphaPalette));
+    }
+
+    protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorModel colorModel) {
+
+        int nType = params.getDataType();
+        int nWidth = params.getWidth();
+        int nHeight = params.getHeight();
+        int nBands = params.getSamplesPerPixel();
+        int nBitDepth = params.getBitsPerSample();
+        int nScanlineStride = params.getBytesPerLine() / ((nBitDepth + 7) / 8);
+
+        if (nType < 0 || (nType > ImageParameters.TYPE_BIT)) {
+            throw new UnsupportedOperationException("Unsupported data type" + Symbol.SPACE + nType);
+        }
+
+        int[] bandOffsets = new int[nBands];
+        for (int i = 0; i < nBands; i++) {
+            bandOffsets[i] = i;
+        }
+        SampleModel sampleModel =
+                new PixelInterleavedSampleModel(nType, nWidth, nHeight, nBands, nScanlineStride, bandOffsets);
+
+        return new ImageTypeSpecifier(colorModel, sampleModel);
+    }
+
+    public static void closeMat(Mat mat) {
+        if (mat != null) {
+            mat.release();
+        }
+    }
+
+    public static SOFSegment getSOFSegment(ImageInputStream iis) throws IOException {
+        iis.mark();
+        try {
+            boolean jfif = false;
+            int byte1 = iis.read();
+            int byte2 = iis.read();
+            // Magic numbers for JPEG (general jpeg marker)
+            if ((byte1 != 0xFF) || (byte2 != 0xD8)) {
+                return null;
+            }
+            do {
+                byte1 = iis.read();
+                byte2 = iis.read();
+                // Something wrong, but try to read it anyway
+                if (byte1 != 0xFF) {
+                    break;
+                }
+                // Start of scan
+                if (byte2 == 0xDA) {
+                    break;
+                }
+                // Start of Frame, also known as SOF55, indicates a JPEG-LS file.
+                if (byte2 == 0xF7) {
+                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
+                }
+                // 0xffc0: // SOF_0: JPEG baseline
+                // 0xffc1: // SOF_1: JPEG extended sequential DCT
+                // 0xffc2: // SOF_2: JPEG progressive DCT
+                // 0xffc3: // SOF_3: JPEG lossless sequential
+                if ((byte2 >= 0xC0) && (byte2 <= 0xC3)) {
+                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
+                }
+                // 0xffc5: // SOF_5: differential (hierarchical) extended sequential, Huffman
+                // 0xffc6: // SOF_6: differential (hierarchical) progressive, Huffman
+                // 0xffc7: // SOF_7: differential (hierarchical) lossless, Huffman
+                if ((byte2 >= 0xC5) && (byte2 <= 0xC7)) {
+                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
+                }
+                // 0xffc9: // SOF_9: extended sequential, arithmetic
+                // 0xffca: // SOF_10: progressive, arithmetic
+                // 0xffcb: // SOF_11: lossless, arithmetic
+                if ((byte2 >= 0xC9) && (byte2 <= 0xCB)) {
+                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
+                }
+                // 0xffcd: // SOF_13: differential (hierarchical) extended sequential, arithmetic
+                // 0xffce: // SOF_14: differential (hierarchical) progressive, arithmetic
+                // 0xffcf: // SOF_15: differential (hierarchical) lossless, arithmetic
+                if ((byte2 >= 0xCD) && (byte2 <= 0xCF)) {
+                    return getSOF(iis, jfif, (byte1 << 8) + byte2);
+                }
+                if (byte2 == 0xE0) {
+                    jfif = true;
+                }
+                int length = iis.read() << 8;
+                length += iis.read();
+                length -= 2;
+                while (length > 0) {
+                    length -= iis.skipBytes(length);
+                }
+            } while (true);
+            return null;
+        } finally {
+            iis.reset();
+        }
+    }
+
+    protected static SOFSegment getSOF(ImageInputStream iis, boolean jfif, int marker) throws IOException {
+        readUnsignedShort(iis);
+        int samplePrecision = readUnsignedByte(iis);
+        int lines = readUnsignedShort(iis);
+        int samplesPerLine = readUnsignedShort(iis);
+        int componentsInFrame = readUnsignedByte(iis);
+        return new SOFSegment(jfif, marker, samplePrecision, lines, samplesPerLine, componentsInFrame);
     }
 
     private static ColorModel createColorModel(ImageParameters params, ColorSpace colorSpace, byte[] redPalette,
@@ -127,106 +231,6 @@ public class NativeImageReader extends ImageReader implements Closeable {
                     hasAlpha ? Transparency.TRANSLUCENT : Transparency.OPAQUE, nType);
         }
         return colorModel;
-    }
-
-    protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorModel colorModel) {
-
-        int nType = params.getDataType();
-        int nWidth = params.getWidth();
-        int nHeight = params.getHeight();
-        int nBands = params.getSamplesPerPixel();
-        int nBitDepth = params.getBitsPerSample();
-        int nScanlineStride = params.getBytesPerLine() / ((nBitDepth + 7) / 8);
-
-        if (nType < 0 || (nType > ImageParameters.TYPE_BIT)) {
-            throw new UnsupportedOperationException("Unsupported data type" + Symbol.SPACE + nType);
-        }
-
-        int[] bandOffsets = new int[nBands];
-        for (int i = 0; i < nBands; i++) {
-            bandOffsets[i] = i;
-        }
-        SampleModel sampleModel =
-                new PixelInterleavedSampleModel(nType, nWidth, nHeight, nBands, nScanlineStride, bandOffsets);
-
-        return new ImageTypeSpecifier(colorModel, sampleModel);
-    }
-
-    public static void closeMat(Mat mat) {
-        if (mat != null) {
-            mat.release();
-        }
-    }
-
-    public static SOFSegment getSOFSegment(ImageInputStream iis) throws IOException {
-        iis.mark();
-        try {
-            int byte1 = iis.read();
-            int byte2 = iis.read();
-            // Magic numbers for JPEG (general jpeg marker)
-            if ((byte1 != 0xFF) || (byte2 != 0xD8)) {
-                return null;
-            }
-            do {
-                byte1 = iis.read();
-                byte2 = iis.read();
-                // Something wrong, but try to read it anyway
-                if (byte1 != 0xFF) {
-                    break;
-                }
-                // Start of scan
-                if (byte2 == 0xDA) {
-                    break;
-                }
-                // Start of Frame, also known as SOF55, indicates a JPEG-LS file.
-                if (byte2 == 0xF7) {
-                    return getSOF(iis, (byte1 << 8) + byte2);
-                }
-                // 0xffc0: // SOF_0: JPEG baseline
-                // 0xffc1: // SOF_1: JPEG extended sequential DCT
-                // 0xffc2: // SOF_2: JPEG progressive DCT
-                // 0xffc3: // SOF_3: JPEG lossless sequential
-                if ((byte2 >= 0xC0) && (byte2 <= 0xC3)) {
-                    return getSOF(iis, (byte1 << 8) + byte2);
-                }
-                // 0xffc5: // SOF_5: differential (hierarchical) extended sequential, Huffman
-                // 0xffc6: // SOF_6: differential (hierarchical) progressive, Huffman
-                // 0xffc7: // SOF_7: differential (hierarchical) lossless, Huffman
-                if ((byte2 >= 0xC5) && (byte2 <= 0xC7)) {
-                    return getSOF(iis, (byte1 << 8) + byte2);
-                }
-                // 0xffc9: // SOF_9: extended sequential, arithmetic
-                // 0xffca: // SOF_10: progressive, arithmetic
-                // 0xffcb: // SOF_11: lossless, arithmetic
-                if ((byte2 >= 0xC9) && (byte2 <= 0xCB)) {
-                    return getSOF(iis, (byte1 << 8) + byte2);
-                }
-                // 0xffcd: // SOF_13: differential (hierarchical) extended sequential, arithmetic
-                // 0xffce: // SOF_14: differential (hierarchical) progressive, arithmetic
-                // 0xffcf: // SOF_15: differential (hierarchical) lossless, arithmetic
-                if ((byte2 >= 0xCD) && (byte2 <= 0xCF)) {
-                    return getSOF(iis, (byte1 << 8) + byte2);
-                }
-                int length = iis.read() << 8;
-                length += iis.read();
-                length -= 2;
-                while (length > 0) {
-                    length -= iis.skipBytes(length);
-                }
-            } while (true);
-            return null;
-        } finally {
-            iis.reset();
-        }
-    }
-
-    protected static SOFSegment getSOF(ImageInputStream iis, int marker) throws IOException {
-        readUnsignedShort(iis);
-        int samplePrecision = readUnsignedByte(iis);
-        int lines = readUnsignedShort(iis);
-        int samplesPerLine = readUnsignedShort(iis);
-        int componentsInFrame = readUnsignedByte(iis);
-        return new SOFSegment(marker, samplePrecision, lines, samplesPerLine, componentsInFrame);
     }
 
     private static final int readUnsignedByte(ImageInputStream iis) throws IOException {
@@ -292,10 +296,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
 
     @Override
     public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex) throws IOException {
-
-        ImageTypeSpecifier imageType = createImageType(params, null, null, null, null, null);
-
-        return Collections.singletonList(imageType).iterator();
+        return Collections.singletonList(createImageType(params, null, null, null, null, null)).iterator();
     }
 
     @Override
@@ -318,20 +319,22 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return bufferedImage;
     }
 
-    private boolean ybr2rgb(Photometric pmi) {
-        // Preserve YBR for JPEG Lossless (1.2.840.10008.1.2.4.57, 1.2.840.10008.1.2.4.70)
-        if (params.getJpegMarker() == 0xffc3) {
-            return false;
+    public ImageParameters buildImage(ImageInputStream iis) throws IOException {
+        if (iis != null && params.getBytesPerLine() < 1) {
+            SOFSegment sof = getSOFSegment(iis);
+            if (sof != null) {
+                params.setJfif(sof.isJfif());
+                params.setJpegMarker(sof.getMarker());
+                params.setWidth(sof.getSamplesPerLine());
+                params.setHeight(sof.getLines());
+                params.setBitsPerSample(sof.getSamplePrecision());
+                params.setSamplesPerPixel(sof.getComponents());
+                params.setBytesPerLine(
+                        params.getWidth() * params.getSamplesPerPixel() * ((params.getBitsPerSample() + 7) / 8));
+                return params;
+            }
         }
-        switch (pmi) {
-            case MONOCHROME1:
-            case MONOCHROME2:
-            case PALETTE_COLOR:
-                return false;
-            case RGB:
-                return params.isJfif() && params.getJpegMarker() == 0xffc0;
-        }
-        return true;
+        return null;
     }
 
     private PlanarImage getNativeImage(ImageReadParam param) throws IOException {
@@ -370,21 +373,22 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return null;
     }
 
-    public ImageParameters buildImage(ImageInputStream iis) throws IOException {
-        if (iis != null && params.getBytesPerLine() < 1) {
-            SOFSegment sof = getSOFSegment(iis);
-            if (sof != null) {
-                params.setJpegMarker(sof.getMarker());
-                params.setWidth(sof.getSamplesPerLine());
-                params.setHeight(sof.getLines());
-                params.setBitsPerSample(sof.getSamplePrecision());
-                params.setSamplesPerPixel(sof.getComponents());
-                params.setBytesPerLine(
-                        params.getWidth() * params.getSamplesPerPixel() * ((params.getBitsPerSample() + 7) / 8));
-                return params;
-            }
+    private boolean ybr2rgb(Photometric pmi) {
+        //  保留YBR以实现JPEG无损 (1.2.840.10008.1.2.4.57, 1.2.840.10008.1.2.4.70)
+        if (params.getJpegMarker() == 0xffc3) {
+            return false;
         }
-        return null;
+        switch (pmi) {
+            case MONOCHROME1:
+            case MONOCHROME2:
+            case PALETTE_COLOR:
+                return false;
+            case RGB:
+                // 当使用JFIF报头为RGB时，强制JPEG转换(1.2.840.10008.1.2.4.50)到YBR_FULL_422颜色模型
+                // 对于带有JFIF报头的有损jpeg，RGB颜色模型没有意义
+                return params.isJfif() && params.getJpegMarker() == 0xffc0;
+        }
+        return true;
     }
 
 }

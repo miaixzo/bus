@@ -43,7 +43,7 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 5.9.6
+ * @version 5.9.8
  * @since JDK 1.8+
  */
 public final class CronBuilder {
@@ -198,7 +198,7 @@ public final class CronBuilder {
         }
         if (scheduler.isStarted()) {
             //关闭并清除已有任务
-            scheduler.stop(true);
+            stop();
         }
 
         //重新加载任务
@@ -211,7 +211,7 @@ public final class CronBuilder {
      * 停止
      */
     synchronized public static void stop() {
-        scheduler.stop();
+        scheduler.stop(true);
     }
 
     /**
