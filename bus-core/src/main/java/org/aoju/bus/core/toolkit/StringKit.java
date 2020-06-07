@@ -5947,7 +5947,6 @@ public class StringKit {
         return str.length() > position && c == str.charAt(position);
     }
 
-
     /**
      * 字符串按照字符排序方法
      *
