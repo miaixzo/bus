@@ -84,10 +84,6 @@ public enum Version {
         return null;
     }
 
-    public String getCode() {
-        return code;
-    }
-
     public static String get() {
         return "5.9.8.RELEASE";
     }
@@ -135,6 +131,10 @@ public enum Version {
      */
     public static String all() {
         return major() + minor() + stage();
+    }
+
+    public String getCode() {
+        return code;
     }
 
     /**
