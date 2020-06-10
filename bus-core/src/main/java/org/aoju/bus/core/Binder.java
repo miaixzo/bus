@@ -71,9 +71,9 @@ public class Binder {
     private static final Map<String, String> SIMPLE_PREFIXES = new HashMap<>(4);
 
     static {
-        SIMPLE_PREFIXES.put("}", "{");
-        SIMPLE_PREFIXES.put("]", "[");
-        SIMPLE_PREFIXES.put(")", "(");
+        SIMPLE_PREFIXES.put(Symbol.BRACE_RIGHT, Symbol.BRACE_LEFT);
+        SIMPLE_PREFIXES.put(Symbol.BRACKET_RIGHT, Symbol.BRACKET_LEFT);
+        SIMPLE_PREFIXES.put(Symbol.PARENTHESE_RIGHT, Symbol.PARENTHESE_LEFT);
 
         DEFAULT_HELPER = new Binder(DEFAULT_PLACEHOLDER_PREFIX, DEFAULT_PLACEHOLDER_SUFFIX,
                 DEFAULT_VALUE_SEPARATOR, true);
