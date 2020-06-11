@@ -92,14 +92,20 @@ public class TableKit {
     public static void writeRow(XWPFTableRow row, Object rowBean, boolean isWriteKeyAsHead) {
         if (rowBean instanceof Iterable) {
             writeRow(row, (Iterable<?>) rowBean);
-        } else if (rowBean instanceof Map) {
-            writeRow(row, (Map) rowBean, isWriteKeyAsHead);
+            return;
+        }
+
+        Map rowMap = null;
+        if (rowBean instanceof Map) {
+            rowMap = (Map) rowBean;
         } else if (BeanKit.isBean(rowBean.getClass())) {
-            writeRow(row, BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false), isWriteKeyAsHead);
-        } else if (BeanKit.isBean(rowBean.getClass())) {
+            rowMap = BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
+        } else {
             // 其它转为字符串默认输出
             writeRow(row, CollKit.newArrayList(rowBean), isWriteKeyAsHead);
         }
+
+        writeRow(row, rowMap, isWriteKeyAsHead);
     }
 
     /**
