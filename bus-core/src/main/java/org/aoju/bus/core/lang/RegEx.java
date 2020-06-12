@@ -49,9 +49,15 @@ public class RegEx {
     public final static String CHINESES_PATTERN = CHINESE_PATTERN + "+";
     public static final Pattern CHINESES = Pattern.compile(CHINESES_PATTERN);
     /**
-     * 在XML中无效的字符 正则
+     * 用于检查十六进制字符串的有效性
      */
-    public static final String INVALID_REGEX = "[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]";
+    public static final String VALID_HEX_PATTERN = "[0-9a-fA-F]+";
+    public static final Pattern VALID_HEX = Pattern.compile(VALID_HEX_PATTERN);
+    /**
+     * XML中无效的字符
+     */
+    public static final String VALID_XML_PATTERN = "[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]";
+    public static final Pattern VALID_XML = Pattern.compile(VALID_XML_PATTERN);
     /**
      * 中文字、英文字母、数字和下划线
      */
@@ -67,6 +73,26 @@ public class RegEx {
      */
     public static final String NUMBERS_PATTERN = "\\d+";
     public static final Pattern NUMBERS = Pattern.compile(NUMBERS_PATTERN);
+    /**
+     * 非数字
+     */
+    public static final String NOT_NUMBERS_PATTERN = "[^0-9]+";
+    public static final Pattern NOT_NUMBERS = Pattern.compile(NOT_NUMBERS_PATTERN);
+    /**
+     * 从非数字开始
+     */
+    public static final String WITH_NOT_NUMBERS_PATTERN = "^[^0-9]*";
+    public static final Pattern WITH_NOT_NUMBERS = Pattern.compile(WITH_NOT_NUMBERS_PATTERN);
+    /**
+     * 空格
+     */
+    public static final String SPACES_PATTERN = "\\s+";
+    public static final Pattern SPACES = Pattern.compile(SPACES_PATTERN);
+    /**
+     * 空格冒号空格
+     */
+    public static final String SPACES_COLON_SPACE_PATTERN = "\\s+:\\s";
+    public static final Pattern SPACES_COLON_SPACE = Pattern.compile(SPACES_COLON_SPACE_PATTERN);
     /**
      * 分组
      */

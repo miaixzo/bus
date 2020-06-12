@@ -524,7 +524,7 @@ public interface CentralProcessor {
         }
 
         private String queryMicroarchitecture() {
-            Properties archProps = Builder.readPropertiesFromFilename(Builder.BUS_HEALTH_ARCH_PROPERTIES);
+            Properties archProps = Builder.readProperties(Builder.BUS_HEALTH_ARCH_PROPERTIES);
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix

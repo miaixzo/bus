@@ -38,7 +38,7 @@ import java.util.Properties;
 @NotThreadSafe
 public final class Config {
 
-    private static final Properties CONFIG = Builder.readPropertiesFromFilename(Builder.BUS_HEALTH_PROPERTIES);
+    private static final Properties CONFIG = Builder.readProperties(Builder.BUS_HEALTH_PROPERTIES);
 
     private Config() {
     }

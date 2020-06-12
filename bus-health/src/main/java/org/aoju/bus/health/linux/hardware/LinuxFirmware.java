@@ -26,6 +26,7 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
@@ -214,7 +215,7 @@ final class LinuxFirmware extends AbstractFirmware {
         // Requires root, may not return anything
         for (final String checkLine : Executor.runNative("dmidecode -t bios")) {
             if (checkLine.contains(biosMarker)) {
-                String[] biosArr = Builder.whitespaces.split(checkLine);
+                String[] biosArr = RegEx.SPACES.split(checkLine);
                 if (biosArr.length >= 2) {
                     biosName = biosArr[0] + Symbol.SPACE + biosArr[1];
                 }
@@ -242,7 +243,7 @@ final class LinuxFirmware extends AbstractFirmware {
                 vcReleaseDate = Normal.UNKNOWN;
             }
             // Second line is copyright
-            String[] copyright = Builder.whitespaces.split(vcgencmd.get(1));
+            String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
             vcManufacturer = copyright[copyright.length - 1];
             // Third line is version
             vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);

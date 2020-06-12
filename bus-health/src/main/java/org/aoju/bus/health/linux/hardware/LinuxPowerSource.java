@@ -27,6 +27,7 @@ package org.aoju.bus.health.linux.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
@@ -106,7 +107,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
             }
             // Skip if can't read uevent file
             List<String> psInfo;
-            psInfo = Builder.readFile(PS_PATH + name + "/uevent", false);
+            psInfo = FileKit.readLines(PS_PATH + name + "/uevent");
             if (psInfo.isEmpty()) {
                 continue;
             }

@@ -952,7 +952,7 @@ public class XmlKit {
         if (xmlContent == null) {
             return null;
         }
-        return xmlContent.replaceAll(RegEx.INVALID_REGEX, Normal.EMPTY);
+        return xmlContent.replaceAll(RegEx.VALID_XML_PATTERN, Normal.EMPTY);
     }
 
     /**

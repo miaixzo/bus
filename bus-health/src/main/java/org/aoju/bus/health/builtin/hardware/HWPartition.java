@@ -170,7 +170,7 @@ public class HWPartition {
         sb.append(getName()).append(Symbol.SPACE);
         sb.append(Symbol.PARENTHESE_LEFT).append(getType()).append(") ");
         sb.append("Maj:Min=").append(getMajor()).append(Symbol.COLON).append(getMinor()).append(", ");
-        sb.append("size: ").append(Builder.formatBytesDecimal(getSize()));
+        sb.append("size: ").append(Builder.formatBytes(getSize()));
         sb.append(getMountPoint().isEmpty() ? Normal.EMPTY : " @ " + getMountPoint());
         return sb.toString();
     }

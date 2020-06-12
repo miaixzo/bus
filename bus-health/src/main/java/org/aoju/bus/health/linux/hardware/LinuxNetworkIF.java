@@ -159,15 +159,15 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         this.timeStamp = System.currentTimeMillis();
         this.ifType = Builder.getIntFromFile(ifTypePath);
         this.connectorPresent = Builder.getIntFromFile(carrierPath) > 0;
-        this.bytesSent = Builder.getUnsignedLongFromFile(txBytesPath);
-        this.bytesRecv = Builder.getUnsignedLongFromFile(rxBytesPath);
-        this.packetsSent = Builder.getUnsignedLongFromFile(txPacketsPath);
-        this.packetsRecv = Builder.getUnsignedLongFromFile(rxPacketsPath);
-        this.outErrors = Builder.getUnsignedLongFromFile(txErrorsPath);
-        this.inErrors = Builder.getUnsignedLongFromFile(rxErrorsPath);
-        this.collisions = Builder.getUnsignedLongFromFile(collisionsPath);
-        this.inDrops = Builder.getUnsignedLongFromFile(rxDropsPath);
-        long speedMiB = Builder.getUnsignedLongFromFile(ifSpeed);
+        this.bytesSent = Builder.getLongFromFile(txBytesPath);
+        this.bytesRecv = Builder.getLongFromFile(rxBytesPath);
+        this.packetsSent = Builder.getLongFromFile(txPacketsPath);
+        this.packetsRecv = Builder.getLongFromFile(rxPacketsPath);
+        this.outErrors = Builder.getLongFromFile(txErrorsPath);
+        this.inErrors = Builder.getLongFromFile(rxErrorsPath);
+        this.collisions = Builder.getLongFromFile(collisionsPath);
+        this.inDrops = Builder.getLongFromFile(rxDropsPath);
+        long speedMiB = Builder.getLongFromFile(ifSpeed);
         // speed may be -1 from file.
         this.speed = speedMiB < 0 ? 0 : speedMiB << 20;
 

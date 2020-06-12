@@ -25,8 +25,10 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.linux.ProcPath;
@@ -68,9 +70,9 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
         long swapTotal = 0L;
         long commitLimit = 0L;
 
-        List<String> procMemInfo = Builder.readFile(ProcPath.MEMINFO);
+        List<String> procMemInfo = FileKit.readLines(ProcPath.MEMINFO);
         for (String checkLine : procMemInfo) {
-            String[] memorySplit = Builder.whitespaces.split(checkLine);
+            String[] memorySplit = RegEx.SPACES.split(checkLine);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "SwapTotal:":
@@ -94,9 +96,9 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
     private static Pair<Long, Long> queryVmStat() {
         long swapPagesIn = 0L;
         long swapPagesOut = 0L;
-        List<String> procVmStat = Builder.readFile(ProcPath.VMSTAT);
+        List<String> procVmStat = FileKit.readLines(ProcPath.VMSTAT);
         for (String checkLine : procVmStat) {
-            String[] memorySplit = Builder.whitespaces.split(checkLine);
+            String[] memorySplit = RegEx.SPACES.split(checkLine);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "pgpgin":

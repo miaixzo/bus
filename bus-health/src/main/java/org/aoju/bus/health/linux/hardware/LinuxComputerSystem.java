@@ -26,6 +26,7 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
@@ -89,7 +90,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private static String queryManufacturerFromProcCpu() {
-        List<String> cpuInfo = Builder.readFile(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(CPUINFO);
         for (String line : cpuInfo) {
             if (line.startsWith("CPU implementer")) {
                 int part = Builder.parseLastInt(line, 0);

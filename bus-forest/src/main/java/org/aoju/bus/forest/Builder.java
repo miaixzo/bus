@@ -27,6 +27,7 @@ package org.aoju.bus.forest;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.System;
 import org.aoju.bus.forest.algorithm.Key;
 import org.aoju.bus.forest.algorithm.SecureRandom;
 import org.aoju.bus.forest.algorithm.SymmetricSecureKey;
@@ -455,7 +456,7 @@ public abstract class Builder {
     }
 
     public static String absolutize(String path) {
-        return normalize(isAbsolute(path) ? path : System.getProperty("user.dir") + File.separator + path);
+        return normalize(isAbsolute(path) ? path : System.getProperty(System.USER_DIR) + File.separator + path);
     }
 
     public static String normalize(String path) {

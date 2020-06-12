@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.solaris.software;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -86,7 +87,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public FamilyVersionInfo queryFamilyVersionInfo() {
-        String[] split = Builder.whitespaces.split(Executor.getFirstAnswer("uname -rv"));
+        String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
         String version = split[0];
         String buildNumber = null;
         if (split.length > 1) {
@@ -155,7 +156,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            String[] split = Builder.whitespaces.split(proc.trim(), 15);
+            String[] split = RegEx.SPACES.split(proc.trim(), 15);
             // Elements should match ps command order
             if (split.length < 15) {
                 continue;
@@ -236,7 +237,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         if (cpuset.isEmpty()) {
             List<String> allProcs = Executor.runNative("psrinfo");
             for (String proc : allProcs) {
-                String[] split = Builder.whitespaces.split(proc);
+                String[] split = RegEx.SPACES.split(proc);
                 int bitToSet = Builder.parseIntOrDefault(split[0], -1);
                 if (bitToSet >= 0) {
                     bitMask |= 1L << bitToSet;
@@ -245,7 +246,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             return bitMask;
         } else if (cpuset.endsWith(Symbol.DOT) && cpuset.contains("strongly bound to processor(s)")) {
             String parse = cpuset.substring(0, cpuset.length() - 1);
-            String[] split = Builder.whitespaces.split(parse);
+            String[] split = RegEx.SPACES.split(parse);
             for (int i = split.length - 1; i >= 0; i--) {
                 int bitToSet = Builder.parseIntOrDefault(split[i], -1);
                 if (bitToSet >= 0) {
@@ -330,7 +331,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                     services.add(new OSService(name, 0, STOPPED));
                 }
             } else if (line.startsWith(Symbol.SPACE)) {
-                String[] split = Builder.whitespaces.split(line.trim());
+                String[] split = RegEx.SPACES.split(line.trim());
                 if (split.length == 3) {
                     services.add(new OSService(split[2], Builder.parseIntOrDefault(split[1], 0), RUNNING));
                 }

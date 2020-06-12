@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
@@ -57,7 +58,7 @@ final class FreeBsdVirtualMemory extends AbstractVirtualMemory {
 
     private static long querySwapUsed() {
         String swapInfo = Executor.getAnswerAt("swapinfo -k", 1);
-        String[] split = Builder.whitespaces.split(swapInfo);
+        String[] split = RegEx.SPACES.split(swapInfo);
         if (split.length < 5) {
             return 0L;
         }

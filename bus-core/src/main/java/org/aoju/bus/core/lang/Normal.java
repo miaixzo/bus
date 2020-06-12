@@ -142,7 +142,10 @@ public class Normal {
      * 通用的运算符
      */
     public static final String OPERATOR_EN = "+-*x";
-
+    /**
+     * 十六进制错误
+     */
+    public static final String HEX_ERROR = "0x%08X";
     /**
      * 简体中文运算符
      */

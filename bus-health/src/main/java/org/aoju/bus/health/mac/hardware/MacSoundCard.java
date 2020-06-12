@@ -25,6 +25,7 @@
 package org.aoju.bus.health.mac.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
@@ -79,8 +80,7 @@ final class MacSoundCard extends AbstractSoundCard {
         boolean version = false;
         String versionMarker = "<key>com.apple.driver.AppleHDAController</key>";
 
-        for (final String checkLine : Builder
-                .readFile("/System/Library/Extensions/AppleHDA.kext/Contents/Info.plist")) {
+        for (final String checkLine : FileKit.readLines("/System/Library/Extensions/AppleHDA.kext/Contents/Info.plist")) {
             if (checkLine.contains(versionMarker)) {
                 version = true;
                 continue;

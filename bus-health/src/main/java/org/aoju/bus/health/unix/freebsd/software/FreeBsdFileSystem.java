@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -113,7 +114,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             /dev/twed0s1a   2026030 584112 1279836    31%    2751 279871    1%   /
             */
             if (line.startsWith(Symbol.SLASH)) {
-                String[] split = Builder.whitespaces.split(line);
+                String[] split = RegEx.SPACES.split(line);
                 if (split.length > 7) {
                     inodeFreeMap.put(split[0], Builder.parseLongOrDefault(split[6], 0L));
                     // total is used + free
@@ -125,7 +126,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
 
         // Get mount table
         for (String fs : Executor.runNative("mount -p")) {
-            String[] split = Builder.whitespaces.split(fs);
+            String[] split = RegEx.SPACES.split(fs);
             if (split.length < 5) {
                 continue;
             }

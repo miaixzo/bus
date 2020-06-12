@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.health.builtin.software;
+package org.aoju.bus.health.builtin;
 
 import org.aoju.bus.core.lang.System;
 import org.aoju.bus.health.Platform;
@@ -34,7 +34,7 @@ import org.aoju.bus.health.Platform;
  * @version 5.9.8
  * @since JDK 1.8+
  */
-public class OSUser {
+public class User {
 
     private String USER_ID;
     private String USER_NAME = Platform.get(System.USER_NAME, false);

@@ -110,4 +110,5 @@ public final class Memoize {
     public static <T> Supplier<T> memoize(Supplier<T> original) {
         return memoize(original, -1L);
     }
+
 }

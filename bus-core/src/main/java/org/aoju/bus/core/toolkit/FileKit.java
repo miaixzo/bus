@@ -2007,7 +2007,7 @@ public class FileKit {
      * @return BufferedReader对象
      * @throws InstrumentException 异常
      */
-    public static BufferedReader getUtf8Reader(Path path) throws InstrumentException {
+    public static BufferedReader getReader(Path path) throws InstrumentException {
         return getReader(path, Charset.UTF_8);
     }
 
@@ -2018,7 +2018,7 @@ public class FileKit {
      * @return BufferedReader对象
      * @throws InstrumentException 异常
      */
-    public static BufferedReader getUtf8Reader(File file) throws InstrumentException {
+    public static BufferedReader getReader(File file) throws InstrumentException {
         return getReader(file, Charset.UTF_8);
     }
 
@@ -2029,7 +2029,7 @@ public class FileKit {
      * @return BufferedReader对象
      * @throws InstrumentException 异常
      */
-    public static BufferedReader getUtf8Reader(String path) throws InstrumentException {
+    public static BufferedReader getReader(String path) throws InstrumentException {
         return getReader(path, Charset.UTF_8);
     }
 
@@ -2124,7 +2124,7 @@ public class FileKit {
      * @return 内容
      * @throws InstrumentException 异常
      */
-    public static String readUtf8String(File file) throws InstrumentException {
+    public static String readString(File file) throws InstrumentException {
         return readString(file, Charset.UTF_8);
     }
 
@@ -2135,7 +2135,7 @@ public class FileKit {
      * @return 内容
      * @throws InstrumentException 异常
      */
-    public static String readUtf8String(String path) throws InstrumentException {
+    public static String readString(String path) throws InstrumentException {
         return readString(path, Charset.UTF_8);
     }
 
@@ -2220,7 +2220,7 @@ public class FileKit {
      * @return 文件中的每行内容的集合
      * @throws InstrumentException 异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(String path, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(String path, T collection) throws InstrumentException {
         return readLines(path, Charset.UTF_8, collection);
     }
 
@@ -2261,7 +2261,7 @@ public class FileKit {
      * @return 文件中的每行内容的集合
      * @throws InstrumentException 异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(File file, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(File file, T collection) throws InstrumentException {
         return readLines(file, Charset.UTF_8, collection);
     }
 
@@ -2302,7 +2302,7 @@ public class FileKit {
      * @return 文件中的每行内容的集合
      * @throws InstrumentException 异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(URL url, T collection) throws InstrumentException {
+    public static <T extends Collection<String>> T readLines(URL url, T collection) throws InstrumentException {
         return readLines(url, Charset.UTF_8, collection);
     }
 
@@ -2349,7 +2349,7 @@ public class FileKit {
      * @return 文件中的每行内容的集合List
      * @throws InstrumentException 异常
      */
-    public static List<String> readUtf8Lines(URL url) throws InstrumentException {
+    public static List<String> readLines(URL url) throws InstrumentException {
         return readLines(url, Charset.UTF_8);
     }
 
@@ -2384,7 +2384,7 @@ public class FileKit {
      * @return 文件中的每行内容的集合List
      * @throws InstrumentException 异常
      */
-    public static List<String> readUtf8Lines(String path) throws InstrumentException {
+    public static List<String> readLines(String path) throws InstrumentException {
         return readLines(path, Charset.UTF_8);
     }
 
@@ -2419,7 +2419,7 @@ public class FileKit {
      * @return 文件中的每行内容的集合List
      * @throws InstrumentException 异常
      */
-    public static List<String> readUtf8Lines(File file) throws InstrumentException {
+    public static List<String> readLines(File file) throws InstrumentException {
         return readLines(file, Charset.UTF_8);
     }
 
@@ -2454,7 +2454,7 @@ public class FileKit {
      * @param lineHandler {@link LineHandler}行处理器
      * @throws InstrumentException 异常
      */
-    public static void readUtf8Lines(File file, LineHandler lineHandler) throws InstrumentException {
+    public static void readLines(File file, LineHandler lineHandler) throws InstrumentException {
         readLines(file, Charset.UTF_8, lineHandler);
     }
 
@@ -2479,7 +2479,7 @@ public class FileKit {
      * @throws InstrumentException 异常
      */
     public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, LineHandler lineHandler) {
-        String line = null;
+        String line;
         try {
             while ((line = file.readLine()) != null) {
                 lineHandler.handle(Charset.convert(line, Charset.ISO_8859_1, charset));
@@ -2511,7 +2511,7 @@ public class FileKit {
      * @return 行内容
      */
     public static String readLine(RandomAccessFile file, java.nio.charset.Charset charset) {
-        String line = null;
+        String line;
         try {
             line = file.readLine();
         } catch (IOException e) {
@@ -2533,7 +2533,7 @@ public class FileKit {
      * @return 从文件中load出的数据
      * @throws InstrumentException 异常
      */
-    public static <T> T loadUtf8(String path, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
+    public static <T> T load(String path, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
         return load(path, Charset.UTF_8, readerHandler);
     }
 
@@ -2574,7 +2574,7 @@ public class FileKit {
      * @return 从文件中load出的数据
      * @throws InstrumentException 异常
      */
-    public static <T> T loadUtf8(File file, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
+    public static <T> T load(File file, FileReader.ReaderHandler<T> readerHandler) throws InstrumentException {
         return load(file, Charset.UTF_8, readerHandler);
     }
 
@@ -2732,7 +2732,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InstrumentException 异常
      */
-    public static File writeUtf8String(String content, String path) throws InstrumentException {
+    public static File writeString(String content, String path) throws InstrumentException {
         return writeString(content, path, Charset.UTF_8);
     }
 
@@ -2744,7 +2744,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InstrumentException 异常
      */
-    public static File writeUtf8String(String content, File file) throws InstrumentException {
+    public static File writeString(String content, File file) throws InstrumentException {
         return writeString(content, file, Charset.UTF_8);
     }
 
@@ -2808,7 +2808,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InstrumentException 异常
      */
-    public static File appendUtf8String(String content, String path) throws InstrumentException {
+    public static File appendString(String content, String path) throws InstrumentException {
         return appendString(content, path, Charset.UTF_8);
     }
 
@@ -2846,7 +2846,7 @@ public class FileKit {
      * @return 写入的文件
      * @throws InstrumentException 异常
      */
-    public static File appendUtf8String(String content, File file) throws InstrumentException {
+    public static File appendString(String content, File file) throws InstrumentException {
         return appendString(content, file, Charset.UTF_8);
     }
 
@@ -2885,7 +2885,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InstrumentException 异常
      */
-    public static <T> File writeUtf8Lines(Collection<T> list, String path) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, String path) throws InstrumentException {
         return writeLines(list, path, Charset.UTF_8);
     }
 
@@ -2898,7 +2898,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InstrumentException 异常
      */
-    public static <T> File writeUtf8Lines(Collection<T> list, File file) throws InstrumentException {
+    public static <T> File writeLines(Collection<T> list, File file) throws InstrumentException {
         return writeLines(list, file, Charset.UTF_8);
     }
 
@@ -2967,7 +2967,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InstrumentException 异常
      */
-    public static <T> File appendUtf8Lines(Collection<T> list, File file) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, File file) throws InstrumentException {
         return appendLines(list, file, Charset.UTF_8);
     }
 
@@ -2980,7 +2980,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InstrumentException 异常
      */
-    public static <T> File appendUtf8Lines(Collection<T> list, String path) throws InstrumentException {
+    public static <T> File appendLines(Collection<T> list, String path) throws InstrumentException {
         return appendLines(list, path, Charset.UTF_8);
     }
 
@@ -3110,7 +3110,7 @@ public class FileKit {
      * @return 目标文件
      * @throws InstrumentException 异常
      */
-    public static File writeUtf8Map(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws InstrumentException {
+    public static File writeMap(Map<?, ?> map, File file, String kvSeparator, boolean isAppend) throws InstrumentException {
         return FileWriter.create(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 

@@ -26,6 +26,8 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
@@ -135,9 +137,9 @@ final class LinuxBaseboard extends AbstractBaseboard {
         String pcVersion = null;
         String pcSerialNumber = null;
 
-        List<String> cpuInfo = Builder.readFile(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(CPUINFO);
         for (String line : cpuInfo) {
-            String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
+            String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
             if (splitLine.length < 2) {
                 continue;
             }

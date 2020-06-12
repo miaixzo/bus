@@ -138,7 +138,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     }
 
     private static Properties queryVmMacAddrProps() {
-        return Builder.readPropertiesFromFilename(Builder.BUS_HEALTH_ADDR_PROPERTIES);
+        return Builder.readProperties(Builder.BUS_HEALTH_ADDR_PROPERTIES);
     }
 
     @Override

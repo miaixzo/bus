@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -79,13 +80,13 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
         Map<String, Triple<String, String, Long>> diskInfoMap = GeomDiskList.queryDisks();
 
         // Get list of disks from sysctl
-        List<String> devices = Arrays.asList(Builder.whitespaces.split(BsdSysctl.sysctl("kern.disks", Normal.EMPTY)));
+        List<String> devices = Arrays.asList(RegEx.SPACES.split(BsdSysctl.sysctl("kern.disks", Normal.EMPTY)));
 
         // Run iostat -Ix to enumerate disks by name and get kb r/w
         List<String> iostat = Executor.runNative("iostat -Ix");
         long now = System.currentTimeMillis();
         for (String line : iostat) {
-            String[] split = Builder.whitespaces.split(line);
+            String[] split = RegEx.SPACES.split(line);
             if (split.length > 6 && devices.contains(split[0])) {
                 Triple<String, String, Long> storeInfo = diskInfoMap.get(split[0]);
                 FreeBsdHWDiskStore store = (storeInfo == null)
@@ -156,7 +157,7 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
         long now = System.currentTimeMillis();
         boolean diskFound = false;
         for (String line : output) {
-            String[] split = Builder.whitespaces.split(line);
+            String[] split = RegEx.SPACES.split(line);
             if (split.length < 7 || !split[0].equals(getName())) {
                 continue;
             }

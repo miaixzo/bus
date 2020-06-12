@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
@@ -84,7 +85,7 @@ public final class GeomDiskList {
             if (diskName != null) {
                 line = line.trim();
                 if (line.startsWith("Mediasize:")) {
-                    String[] split = Builder.whitespaces.split(line);
+                    String[] split = RegEx.SPACES.split(line);
                     if (split.length > 1) {
                         mediaSize = Builder.parseLongOrDefault(split[1], 0L);
                     }

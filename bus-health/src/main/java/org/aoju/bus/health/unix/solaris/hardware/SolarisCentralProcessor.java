@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.solaris.hardware;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -91,7 +92,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 flags.append(Symbol.C_SPACE).append(line.trim());
             }
         }
-        return createProcessorID(stepping, model, family, Builder.whitespaces.split(flags.toString().toLowerCase()));
+        return createProcessorID(stepping, model, family, RegEx.SPACES.split(flags.toString().toLowerCase()));
     }
 
     @Override

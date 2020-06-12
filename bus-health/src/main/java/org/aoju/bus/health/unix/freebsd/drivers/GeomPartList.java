@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -115,7 +116,7 @@ public final class GeomPartList {
                 }
                 // If we don't have a valid partition, don't parse anything until we do.
                 if (partName != null) {
-                    String[] split = Builder.whitespaces.split(line);
+                    String[] split = RegEx.SPACES.split(line);
                     if (split.length >= 2) {
                         if (line.startsWith("Mediasize:")) {
                             size = Builder.parseLongOrDefault(split[1], 0L);

@@ -34,6 +34,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.logger.Logger;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,11 +94,11 @@ public final class KstatCtl {
             case LibKstat.KSTAT_DATA_INT32:
                 return Integer.toString(data.value.i32);
             case LibKstat.KSTAT_DATA_UINT32:
-                return Builder.toUnsignedString(data.value.ui32);
+                return toUnsignedString(data.value.ui32);
             case LibKstat.KSTAT_DATA_INT64:
                 return Long.toString(data.value.i64);
             case LibKstat.KSTAT_DATA_UINT64:
-                return Builder.toUnsignedString(data.value.ui64);
+                return toUnsignedString(data.value.ui64);
             case LibKstat.KSTAT_DATA_STRING:
                 return data.value.str.addr.getString(0);
             default:
@@ -142,6 +143,36 @@ public final class KstatCtl {
                 Logger.error("Unimplemented or non-numeric kstat data type {}", data.data_type);
                 return 0L;
         }
+    }
+
+    /**
+     * Represent a 32 bit value as if it were an unsigned integer.
+     * <p>
+     * This is a Java 7 implementation of Java 8's Integer.toUnsignedString.
+     *
+     * @param i a 32 bit value
+     * @return the string representation of the unsigned integer
+     */
+    public static String toUnsignedString(int i) {
+        if (i >= 0) {
+            return Integer.toString(i);
+        }
+        return Long.toString(Builder.getUnsignedInt(i));
+    }
+
+    /**
+     * Represent a 64 bit value as if it were an unsigned long.
+     * <p>
+     * This is a Java 7 implementation of Java 8's Long.toUnsignedString.
+     *
+     * @param l a 64 bit value
+     * @return the string representation of the unsigned long
+     */
+    public static String toUnsignedString(long l) {
+        if (l >= 0) {
+            return Long.toString(l);
+        }
+        return BigInteger.valueOf(l).add(BigInteger.ONE.shiftLeft(64)).toString();
     }
 
     /**
