@@ -100,6 +100,11 @@ public class FileType {
     public static final String TYPE_PNG = "png";
 
     /**
+     * 纯文本文件
+     */
+    public static final String TYPE_CSV = "csv";
+
+    /**
      * 图片
      */
     public static final Map<String, String> PICS = new HashMap<String, String>() {
