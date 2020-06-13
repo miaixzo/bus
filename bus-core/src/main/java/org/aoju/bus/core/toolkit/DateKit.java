@@ -242,9 +242,9 @@ public class DateKit {
     }
 
     /**
-     * 当前时间秒数
+     * 当前时间毫秒数
      *
-     * @return 当前时间秒数
+     * @return 当前时间毫秒数
      */
     public static long timestamp() {
         return System.currentTimeMillis();
