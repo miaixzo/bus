@@ -29,6 +29,7 @@ import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
@@ -46,7 +47,7 @@ import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
  * LinuxNetworkParams class.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -102,7 +103,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {
-            String[] fields = Builder.whitespaces.split(routes.get(i));
+            String[] fields = RegEx.SPACES.split(routes.get(i));
             if (fields.length > 4 && fields[0].equals(IPV4_DEFAULT_DEST)) {
                 boolean isGateway = fields[3].indexOf('G') != -1;
                 int metric = Builder.parseIntOrDefault(fields[4], Integer.MAX_VALUE);
@@ -126,7 +127,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
         int minMetric = Integer.MAX_VALUE;
 
         for (int i = 2; i < routes.size(); i++) {
-            String[] fields = Builder.whitespaces.split(routes.get(i));
+            String[] fields = RegEx.SPACES.split(routes.get(i));
             if (fields.length > 3 && fields[0].equals(IPV6_DEFAULT_DEST)) {
                 boolean isGateway = fields[2].indexOf('G') != -1;
                 int metric = Builder.parseIntOrDefault(fields[3], Integer.MAX_VALUE);

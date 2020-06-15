@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 文件类型(扩展名)
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class FileType {
@@ -98,6 +98,11 @@ public class FileType {
      * 可移植网络图形
      */
     public static final String TYPE_PNG = "png";
+
+    /**
+     * 纯文本文件
+     */
+    public static final String TYPE_CSV = "csv";
 
     /**
      * 图片

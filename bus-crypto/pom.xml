@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-crypto</artifactId>
-    <version>5.9.8</version>
+    <version>5.9.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

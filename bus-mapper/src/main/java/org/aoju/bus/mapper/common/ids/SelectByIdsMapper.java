@@ -33,7 +33,7 @@ import java.util.List;
  * 通用Mapper接口,根据ids查询
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public interface SelectByIdsMapper<T> {

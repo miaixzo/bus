@@ -25,7 +25,9 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
@@ -42,7 +44,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Memory obtained by /proc/meminfo and sysinfo.totalram
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -82,9 +84,9 @@ final class LinuxGlobalMemory extends AbstractGlobalMemory {
         long memTotal = 0L;
         long memAvailable;
 
-        List<String> procMemInfo = Builder.readFile(ProcPath.MEMINFO);
+        List<String> procMemInfo = FileKit.readLines(ProcPath.MEMINFO);
         for (String checkLine : procMemInfo) {
-            String[] memorySplit = Builder.whitespaces.split(checkLine);
+            String[] memorySplit = RegEx.SPACES.split(checkLine);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "MemTotal:":

@@ -26,6 +26,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
@@ -40,7 +41,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class ZipKit {
@@ -1146,6 +1147,104 @@ public class ZipKit {
             throw new InstrumentException(e);
         } finally {
             IoKit.close(in);
+        }
+    }
+
+    /**
+     * 压缩字符串
+     *
+     * @param body 压缩的字符串
+     * @return 压缩后的字符串
+     */
+    public static String compress(String body) {
+        if (StringKit.isEmpty(body)) {
+            return body;
+        }
+
+        try {
+            java.io.ByteArrayOutputStream outputStream = compressToStream(body);
+            if (outputStream != null) {
+                // 通过解码字节将缓冲区内容转换为字符串
+                return new String(outputStream.toByteArray(), Charset.DEFAULT_ISO_8859_1);
+            }
+        } catch (Exception e) {
+            Console.log("GZIP compress 压缩失败，使用源文件", e);
+        }
+
+        return body;
+    }
+
+    /**
+     * 压缩字符串
+     *
+     * @param body 压缩的字符串
+     * @return 压缩后的字符串
+     */
+    public static java.io.ByteArrayOutputStream compressToStream(String body) {
+        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+        GZIPOutputStream os = null;
+        try {
+            os = new GZIPOutputStream(bos);
+            // 写入输出流
+            os.write(body.getBytes());
+            return bos;
+        } catch (IOException e) {
+            Console.log("Compression failed, using source file", e);
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 解压缩字符串
+     *
+     * @param body 解压缩的字符串
+     * @return 解压后的字符串
+     */
+    public static String decompress(String body) {
+
+        if (StringKit.isEmpty(body)) {
+            return body;
+        }
+
+        byte[] buf = new byte[1024];
+        ByteArrayInputStream bis = null;
+        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+        GZIPInputStream is = null;
+        try {
+            bis = new ByteArrayInputStream(body.getBytes(Charset.DEFAULT_ISO_8859_1));
+            is = new GZIPInputStream(bis);
+            int len;
+            // 将未压缩数据读入字节数组
+            while ((len = is.read(buf)) != -1) {
+                // 将指定 byte 数组中从偏移量 off 开始的 len 个字节写入此byte数组输出流
+                bos.write(buf, 0, len);
+            }
+            // 通过解码字节将缓冲区内容转换为字符串
+            return new String(bos.toByteArray());
+        } catch (Exception e) {
+            Console.log("Decompress failed, using source file", e);
+            return body;
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+                if (bis != null) {
+                    bis.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

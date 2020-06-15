@@ -25,14 +25,10 @@
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.health.builtin.*;
 import org.aoju.bus.health.builtin.hardware.HardwareAbstractionLayer;
-import org.aoju.bus.health.builtin.software.NetworkParams;
-import org.aoju.bus.health.builtin.software.OSUser;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
 import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
@@ -45,11 +41,7 @@ import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
 import org.aoju.bus.health.windows.hardware.WindowsHardwareAbstractionLayer;
 import org.aoju.bus.health.windows.software.WindowsOperatingSystem;
 
-import java.io.PrintWriter;
 import java.lang.management.*;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -58,7 +50,7 @@ import java.util.function.Supplier;
  * 操作系统信息支持
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class Platform {
@@ -451,110 +443,6 @@ public class Platform {
     }
 
     /**
-     * 取得Java Virtual Machine Specification的信息
-     *
-     * @return <code>JvmSpecInfo</code>对象
-     */
-    public static JvmSpec getJvmSpecInfo() {
-        return Instances.singletion(JvmSpec.class);
-    }
-
-    /**
-     * 取得Java Virtual Machine Implementation的信息
-     *
-     * @return <code>JvmInfo</code>对象
-     */
-    public static Jvm getJvmInfo() {
-        return Instances.singletion(Jvm.class);
-    }
-
-    /**
-     * 取得Java Specification的信息
-     *
-     * @return <code>JavaSpecInfo</code>对象
-     */
-    public static JavaSpec getJavaSpecInfo() {
-        return Instances.singletion(JavaSpec.class);
-    }
-
-    /**
-     * 取得Java Implementation的信息
-     *
-     * @return <code>JavaInfo</code>对象
-     */
-    public static Java getJavaInfo() {
-        return Instances.singletion(Java.class);
-    }
-
-    /**
-     * 取得当前运行的JRE的信息
-     *
-     * @return <code>JreInfo</code>对象
-     */
-    public static JavaRuntime getJavaRuntimeInfo() {
-        return Instances.singletion(JavaRuntime.class);
-    }
-
-    /**
-     * 取得OS的信息
-     *
-     * @return <code>OsInfo</code>对象
-     */
-    public static OperatingSystem getOsInfo() {
-        return Instances.singletion(OperatingSystem.class);
-    }
-
-    /**
-     * 取得User的信息
-     *
-     * @return <code>UserInfo</code>对象
-     */
-    public static OSUser getUserInfo() {
-        return Instances.singletion(OSUser.class);
-    }
-
-    /**
-     * 取得Host的信息
-     *
-     * @return <code>HostInfo</code>对象
-     */
-    public static NetworkParams getHostInfo() {
-        return Instances.singletion(NetworkParams.class);
-    }
-
-    /**
-     * 将系统信息输出到<code>System.out</code>中
-     */
-    public static void dumpSystemInfo() {
-        dumpSystemInfo(new PrintWriter(System.out));
-    }
-
-    /**
-     * 将系统信息输出到指定<code>PrintWriter</code>中
-     *
-     * @param out <code>PrintWriter</code>输出流
-     */
-    public static void dumpSystemInfo(PrintWriter out) {
-        out.println("--------------");
-        out.println(getJvmSpecInfo());
-        out.println("--------------");
-        out.println(getJvmInfo());
-        out.println("--------------");
-        out.println(getJavaSpecInfo());
-        out.println("--------------");
-        out.println(getJavaInfo());
-        out.println("--------------");
-        out.println(getJavaRuntimeInfo());
-        out.println("--------------");
-        out.println(getOsInfo());
-        out.println("--------------");
-        out.println(getUserInfo());
-        out.println("--------------");
-        out.println(getHostInfo());
-        out.flush();
-    }
-
-    /**
      * 输出到<code>StringBuilder</code>
      *
      * @param builder <code>StringBuilder</code>对象
@@ -563,45 +451,6 @@ public class Platform {
      */
     public static void append(StringBuilder builder, String caption, Object value) {
         builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
-    }
-
-    /**
-     * 取得当前主机信息
-     *
-     * @return 主机地址信息
-     */
-    public static InetAddress getLocalAddress() {
-        try {
-            InetAddress inetAddress = null;
-            /** 遍历所有的网络接口 */
-            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
-                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-                /** 在所有的网络接口下再遍历IP */
-                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
-                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
-                    if (!inetAddr.isLoopbackAddress()) {// 排除loopback类型地址
-                        if (inetAddr.isSiteLocalAddress()) {
-                            /** 如果是site-local地址,就是它了 */
-                            return inetAddr;
-                        } else if (inetAddress == null) {
-                            /** site-local类型的地址未被发现,先记录候选地址 */
-                            inetAddress = inetAddr;
-                        }
-                    }
-                }
-            }
-            if (inetAddress != null) {
-                return inetAddress;
-            }
-            /**  如果没有发现 non-loopback地址.只能用最次选的方案 */
-            inetAddress = InetAddress.getLocalHost();
-            if (inetAddress == null) {
-                throw new InstrumentException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
-            }
-            return inetAddress;
-        } catch (Exception e) {
-            throw new InstrumentException("Failed to determine LAN address: " + e);
-        }
     }
 
     /**

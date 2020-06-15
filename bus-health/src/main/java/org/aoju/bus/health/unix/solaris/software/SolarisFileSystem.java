@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.solaris.software;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -45,7 +46,7 @@ import java.util.*;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -76,7 +77,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
                  ufs fstype       0x00000004 flag             255 filename length
             */
             if (line.startsWith(Symbol.SLASH)) {
-                key = Builder.whitespaces.split(line)[0];
+                key = RegEx.SPACES.split(line)[0];
                 total = null;
             } else if (line.contains("available") && line.contains("total files")) {
                 total = Builder.getTextBetweenStrings(line, "available", "total files").trim();
@@ -92,7 +93,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
 
         // Get mount table
         for (String fs : Executor.runNative("cat /etc/mnttab")) { // NOSONAR squid:S135
-            String[] split = Builder.whitespaces.split(fs);
+            String[] split = RegEx.SPACES.split(fs);
             if (split.length < 5) {
                 continue;
             }

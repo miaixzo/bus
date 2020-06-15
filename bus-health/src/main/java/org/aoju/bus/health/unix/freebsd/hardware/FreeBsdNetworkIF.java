@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
  * FreeBsdNetworks class.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -125,19 +126,19 @@ public final class FreeBsdNetworkIF extends AbstractNetworkIF {
     public boolean updateAttributes() {
         String stats = Executor.getAnswerAt("netstat -bI " + getName(), 1);
         this.timeStamp = System.currentTimeMillis();
-        String[] split = Builder.whitespaces.split(stats);
+        String[] split = RegEx.SPACES.split(stats);
         if (split.length < 12) {
             // No update
             return false;
         }
-        this.bytesSent = Builder.parseUnsignedLongOrDefault(split[10], 0L);
-        this.bytesRecv = Builder.parseUnsignedLongOrDefault(split[7], 0L);
-        this.packetsSent = Builder.parseUnsignedLongOrDefault(split[8], 0L);
-        this.packetsRecv = Builder.parseUnsignedLongOrDefault(split[4], 0L);
-        this.outErrors = Builder.parseUnsignedLongOrDefault(split[9], 0L);
-        this.inErrors = Builder.parseUnsignedLongOrDefault(split[5], 0L);
-        this.collisions = Builder.parseUnsignedLongOrDefault(split[11], 0L);
-        this.inDrops = Builder.parseUnsignedLongOrDefault(split[6], 0L);
+        this.bytesSent = Builder.parseLongOrDefault(split[10], 0L);
+        this.bytesRecv = Builder.parseLongOrDefault(split[7], 0L);
+        this.packetsSent = Builder.parseLongOrDefault(split[8], 0L);
+        this.packetsRecv = Builder.parseLongOrDefault(split[4], 0L);
+        this.outErrors = Builder.parseLongOrDefault(split[9], 0L);
+        this.inErrors = Builder.parseLongOrDefault(split[5], 0L);
+        this.collisions = Builder.parseLongOrDefault(split[11], 0L);
+        this.inDrops = Builder.parseLongOrDefault(split[6], 0L);
         return true;
     }
 

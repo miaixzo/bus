@@ -25,6 +25,8 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.linux.ProcPath;
@@ -35,7 +37,7 @@ import java.util.List;
  * Utility to read CPU statistics from {@code /proc/stat}
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -55,7 +57,7 @@ public final class CpuStat {
         // first line is overall user,nice,system,idle,iowait,irq, etc.
         // cpu 3357 0 4313 1362393 ...
         String tickStr;
-        List<String> procStat = Builder.readFile(ProcPath.STAT);
+        List<String> procStat = FileKit.readLines(ProcPath.STAT);
         if (!procStat.isEmpty()) {
             tickStr = procStat.get(0);
         } else {
@@ -63,7 +65,7 @@ public final class CpuStat {
         }
         // Split the line. Note the first (0) element is "cpu" so remaining
         // elements are offset by 1 from the enum index
-        String[] tickArr = Builder.whitespaces.split(tickStr);
+        String[] tickArr = RegEx.SPACES.split(tickStr);
         if (tickArr.length <= CentralProcessor.TickType.IDLE.getIndex()) {
             // If ticks don't at least go user/nice/system/idle, abort
             return ticks;
@@ -90,13 +92,13 @@ public final class CpuStat {
         // cpu 3357 0 4313 1362393 ...
         // per-processor subsequent lines for cpu0, cpu1, etc.
         int cpu = 0;
-        List<String> procStat = Builder.readFile(ProcPath.STAT);
+        List<String> procStat = FileKit.readLines(ProcPath.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("cpu") && !stat.startsWith("cpu ")) {
                 // Split the line. Note the first (0) element is "cpu" so
                 // remaining
                 // elements are offset by 1 from the enum index
-                String[] tickArr = Builder.whitespaces.split(stat);
+                String[] tickArr = RegEx.SPACES.split(stat);
                 if (tickArr.length <= CentralProcessor.TickType.IDLE.getIndex()) {
                     // If ticks don't at least go user/nice/system/idle, abort
                     return ticks;
@@ -120,10 +122,10 @@ public final class CpuStat {
      * @return The number of context switches if available, -1 otherwise
      */
     public static long getContextSwitches() {
-        List<String> procStat = Builder.readFile(ProcPath.STAT);
+        List<String> procStat = FileKit.readLines(ProcPath.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("ctxt ")) {
-                String[] ctxtArr = Builder.whitespaces.split(stat);
+                String[] ctxtArr = RegEx.SPACES.split(stat);
                 if (ctxtArr.length == 2) {
                     return Builder.parseLongOrDefault(ctxtArr[1], 0);
                 }
@@ -138,10 +140,10 @@ public final class CpuStat {
      * @return The number of interrupts if available, -1 otherwise
      */
     public static long getInterrupts() {
-        List<String> procStat = Builder.readFile(ProcPath.STAT);
+        List<String> procStat = FileKit.readLines(ProcPath.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("intr ")) {
-                String[] intrArr = Builder.whitespaces.split(stat);
+                String[] intrArr = RegEx.SPACES.split(stat);
                 if (intrArr.length > 2) {
                     return Builder.parseLongOrDefault(intrArr[1], 0);
                 }
@@ -157,10 +159,10 @@ public final class CpuStat {
      */
     public static long getBootTime() {
         // Boot time given by btime variable in /proc/stat.
-        List<String> procStat = Builder.readFile(ProcPath.STAT);
+        List<String> procStat = FileKit.readLines(ProcPath.STAT);
         for (String stat : procStat) {
             if (stat.startsWith("btime")) {
-                String[] bTime = Builder.whitespaces.split(stat);
+                String[] bTime = RegEx.SPACES.split(stat);
                 return Builder.parseLongOrDefault(bTime[1], 0L);
             }
         }

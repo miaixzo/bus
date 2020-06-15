@@ -51,7 +51,7 @@ import java.util.*;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class ClassKit {
@@ -3276,53 +3276,44 @@ public class ClassKit {
     }
 
     /**
-     * XXX Default access superclass workaround.
-     * <p>
-     * When a {@code public} class has a default access superclass with {@code public} members,
-     * these members are accessible. Calling them from compiled code works fine.
-     * Unfortunately, on some JVMs, using reflection to invoke these members
-     * seems to (wrongly) prevent access even when the modifier is {@code public}.
-     * Calling {@code setAccessible(true)} solves the problem but will only work from
-     * sufficiently privileged code. Better workarounds would be gratefully
-     * accepted.
+     * 默认访问超类的解决方法
      *
-     * @param o the AccessibleObject to set as accessible
-     * @return a boolean indicating whether the accessibility of the object was set to true.
+     * @param accessibleObject AccessibleObject设置为可访问
+     * @return 指示对象的可访问性是否设置为true的布尔值
      */
-    static boolean setAccessibleWorkaround(final AccessibleObject o) {
-        if (o == null || o.isAccessible()) {
+    public static boolean setAccessibleWorkaround(final AccessibleObject accessibleObject) {
+        if (accessibleObject == null || accessibleObject.isAccessible()) {
             return false;
         }
-        final Member m = (Member) o;
-        if (!o.isAccessible() && Modifier.isPublic(m.getModifiers()) && isPackageAccess(m.getDeclaringClass().getModifiers())) {
+        final Member m = (Member) accessibleObject;
+        if (!accessibleObject.isAccessible() && Modifier.isPublic(m.getModifiers()) && isPackageAccess(m.getDeclaringClass().getModifiers())) {
             try {
-                o.setAccessible(true);
+                accessibleObject.setAccessible(true);
                 return true;
-            } catch (final SecurityException e) { // NOPMD
-                // ignore in favor of subsequent IllegalAccessException
+            } catch (final SecurityException e) {
             }
         }
         return false;
     }
 
     /**
-     * Returns whether a given set of modifiers implies package access.
+     * 返回给定的一组修饰符是否允许程序包访问
      *
      * @param modifiers to test
      * @return {@code true} unless {@code package}/{@code protected}/{@code private} modifier detected
      */
-    static boolean isPackageAccess(final int modifiers) {
+    public static boolean isPackageAccess(final int modifiers) {
         return (modifiers & ACCESS_TEST) == 0;
     }
 
     /**
-     * Returns whether a {@link Member} is accessible.
+     * 返回{@link Member}是否可访问
      *
-     * @param m Member to check
-     * @return {@code true} if <code>m</code> is accessible
+     * @param member 检查成员
+     * @return the {@code true}，如果可以访问<code>member</code>
      */
-    static boolean isAccessible(final Member m) {
-        return m != null && Modifier.isPublic(m.getModifiers()) && !m.isSynthetic();
+    public static boolean isAccessible(final Member member) {
+        return member != null && Modifier.isPublic(member.getModifiers()) && !member.isSynthetic();
     }
 
     /**
@@ -3337,7 +3328,7 @@ public class ClassKit {
      *               {@code left}/{@code right}
      * @return int consistent with {@code compare} semantics
      */
-    static int compareConstructorFit(final Constructor<?> left, final Constructor<?> right, final Class<?>[] actual) {
+    public static int compareConstructorFit(final Constructor<?> left, final Constructor<?> right, final Class<?>[] actual) {
         return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
     }
 
@@ -3353,7 +3344,7 @@ public class ClassKit {
      *               {@code left}/{@code right}
      * @return int consistent with {@code compare} semantics
      */
-    static int compareMethodFit(final Method left, final Method right, final Class<?>[] actual) {
+    public static int compareMethodFit(final Method left, final Method right, final Class<?>[] actual) {
         return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
     }
 
@@ -3369,7 +3360,7 @@ public class ClassKit {
      *               {@code left}/{@code right}
      * @return int consistent with {@code compare} semantics
      */
-    private static int compareParameterTypes(final Executable left, final Executable right, final Class<?>[] actual) {
+    public static int compareParameterTypes(final Executable left, final Executable right, final Class<?>[] actual) {
         final float leftCost = getTotalTransformationCost(actual, left);
         final float rightCost = getTotalTransformationCost(actual, right);
         return leftCost < rightCost ? -1 : rightCost < leftCost ? 1 : 0;
@@ -3383,7 +3374,7 @@ public class ClassKit {
      * @param executable The executable to calculate transformation costs for
      * @return The total transformation cost
      */
-    private static float getTotalTransformationCost(final Class<?>[] srcArgs, final Executable executable) {
+    public static float getTotalTransformationCost(final Class<?>[] srcArgs, final Executable executable) {
         final Class<?>[] destArgs = executable.getParameterTypes();
         final boolean isVarArgs = executable.isVarArgs();
 
@@ -3422,15 +3413,14 @@ public class ClassKit {
     }
 
     /**
-     * Gets the number of steps required needed to turn the source class into
-     * the destination class. This represents the number of steps in the object
-     * hierarchy graph.
+     * 获取将源类转换为目标类所需的步骤数
+     * 这表示对象层次图中的步骤数.
      *
-     * @param srcClass  The source class
-     * @param destClass The destination class
-     * @return The cost of transforming an object
+     * @param srcClass  源类
+     * @param destClass 目标类
+     * @return 转换对象的成本
      */
-    private static float getObjectTransformationCost(Class<?> srcClass, final Class<?> destClass) {
+    public static float getObjectTransformationCost(Class<?> srcClass, final Class<?> destClass) {
         if (destClass.isPrimitive()) {
             return getPrimitivePromotionCost(srcClass, destClass);
         }
@@ -3456,7 +3446,7 @@ public class ClassKit {
      * @param destClass （原始）目标类
      * @return 原始的成本
      */
-    private static float getPrimitivePromotionCost(final Class<?> srcClass, final Class<?> destClass) {
+    public static float getPrimitivePromotionCost(final Class<?> srcClass, final Class<?> destClass) {
         float cost = 0.0f;
         Class<?> cls = srcClass;
         if (!cls.isPrimitive()) {
@@ -3474,15 +3464,15 @@ public class ClassKit {
         return cost;
     }
 
-    static boolean isMatchingMethod(final Method method, final Class<?>[] parameterTypes) {
+    public static boolean isMatchingMethod(final Method method, final Class<?>[] parameterTypes) {
         return isMatchingExecutable(Executable.of(method), parameterTypes);
     }
 
-    static boolean isMatchingConstructor(final Constructor<?> method, final Class<?>[] parameterTypes) {
+    public static boolean isMatchingConstructor(final Constructor<?> method, final Class<?>[] parameterTypes) {
         return isMatchingExecutable(Executable.of(method), parameterTypes);
     }
 
-    private static boolean isMatchingExecutable(final Executable method, final Class<?>[] parameterTypes) {
+    public static boolean isMatchingExecutable(final Executable method, final Class<?>[] parameterTypes) {
         final Class<?>[] methodParameterTypes = method.getParameterTypes();
         if (ClassKit.isAssignable(parameterTypes, methodParameterTypes, true)) {
             return true;
@@ -3505,6 +3495,51 @@ public class ClassKit {
         }
 
         return false;
+    }
+
+
+    /**
+     * 验证类是否是cglib代理对象
+     *
+     * @param object the object to check
+     * @return true为是代理对象
+     */
+    public static boolean isCglibProxy(Object object) {
+        return isCglibProxyClass(object.getClass());
+    }
+
+    /**
+     * 验证类是否是cglib生成类
+     *
+     * @param clazz the class to check
+     * @return true为是代理类
+     */
+    public static boolean isCglibProxyClass(Class<?> clazz) {
+        return (clazz != null && isCglibProxyClassName(clazz.getName()));
+    }
+
+    /**
+     * 验证类名是否为cglib代理类名
+     *
+     * @param className the class name to check
+     * @return true为是代理类
+     */
+    public static boolean isCglibProxyClassName(String className) {
+        return (className != null && className.contains(Symbol.DOLLAR + Symbol.DOLLAR));
+    }
+
+    /**
+     * 获取cglib代理的真实类
+     *
+     * @param clazz 代理类
+     * @return 类
+     */
+    public static Class<?> getCglibActualClass(Class<?> clazz) {
+        Class<?> actualClass = clazz;
+        while (isCglibProxyClass(actualClass)) {
+            actualClass = actualClass.getSuperclass();
+        }
+        return actualClass;
     }
 
     public enum Interfaces {

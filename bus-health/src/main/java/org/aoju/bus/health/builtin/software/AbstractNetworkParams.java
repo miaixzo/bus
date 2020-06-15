@@ -26,8 +26,9 @@ package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.logger.Logger;
 
 import java.net.InetAddress;
@@ -40,7 +41,7 @@ import java.util.List;
  * Common NetworkParams implementation.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -59,7 +60,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
         for (String line : lines) {
             String leftTrimmed = line.replaceFirst("^\\s+", Normal.EMPTY);
             if (leftTrimmed.startsWith("gateway:")) {
-                String[] split = Builder.whitespaces.split(leftTrimmed);
+                String[] split = RegEx.SPACES.split(leftTrimmed);
                 if (split.length < 2) {
                     return Normal.EMPTY;
                 }
@@ -97,7 +98,7 @@ public abstract class AbstractNetworkParams implements NetworkParams {
 
     @Override
     public String[] getDnsServers() {
-        List<String> resolv = Builder.readFile("/etc/resolv.conf");
+        List<String> resolv = FileKit.readLines("/etc/resolv.conf");
         String key = NAMESERVER;
         int maxNameServer = 3;
         List<String> servers = new ArrayList<>();

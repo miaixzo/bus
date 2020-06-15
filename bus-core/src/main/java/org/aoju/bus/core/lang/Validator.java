@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class Validator {
@@ -514,17 +514,17 @@ public class Validator {
     }
 
     /**
-     * 验证是否为可用邮箱地址
+     * 验证邮箱地址是否有效
      *
      * @param value 值
-     * @return 否为可用邮箱地址
+     * @return 邮箱是否有效
      */
     public static boolean isEmail(String value) {
         return isMatchRegex(RegEx.EMAIL, value);
     }
 
     /**
-     * 验证是否为可用邮箱地址
+     * 验证邮箱地址是否有效
      *
      * @param value    值
      * @param errorMsg 验证错误的信息

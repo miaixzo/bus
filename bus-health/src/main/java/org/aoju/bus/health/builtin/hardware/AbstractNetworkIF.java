@@ -43,7 +43,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -138,7 +138,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     }
 
     private static Properties queryVmMacAddrProps() {
-        return Builder.readPropertiesFromFilename(Builder.BUS_HEALTH_ADDR_PROPERTIES);
+        return Builder.readProperties(Builder.BUS_HEALTH_ADDR_PROPERTIES);
     }
 
     @Override

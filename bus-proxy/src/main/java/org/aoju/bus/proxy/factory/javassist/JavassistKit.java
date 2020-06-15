@@ -36,7 +36,7 @@ import java.util.Set;
  * 处理Javassist的实用方法
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 class JavassistKit {

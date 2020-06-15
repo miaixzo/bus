@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public enum Version {
@@ -84,12 +84,8 @@ public enum Version {
         return null;
     }
 
-    public String getCode() {
-        return code;
-    }
-
     public static String get() {
-        return "5.9.8.RELEASE";
+        return "5.9.9.RELEASE";
     }
 
     /**
@@ -135,6 +131,10 @@ public enum Version {
      */
     public static String all() {
         return major() + minor() + stage();
+    }
+
+    public String getCode() {
+        return code;
     }
 
     /**

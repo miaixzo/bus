@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 6、代码简洁轻量无额外依赖
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class TreeKit {
@@ -154,7 +154,7 @@ public class TreeKit {
 
     /**
      * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个
-     * 此方法只查找此节点及子节点，采用广度优先遍历。
+     * 此方法只查找此节点及子节点，采用递归深度优先遍历
      *
      * @param <T>  对象
      * @param id   节点ID

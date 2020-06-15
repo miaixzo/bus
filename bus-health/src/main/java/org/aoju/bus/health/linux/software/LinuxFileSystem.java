@@ -28,6 +28,7 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
@@ -48,7 +49,7 @@ import java.util.*;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -68,7 +69,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         List<OSFileStore> fsList = new ArrayList<>();
 
         // Parse /proc/mounts to get fs types
-        List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
+        List<String> mounts = FileKit.readLines(ProcPath.MOUNTS);
         for (String mount : mounts) {
             String[] split = mount.split(Symbol.SPACE);
             // As reported in fstab(5) manpage, struct is:
@@ -256,7 +257,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         if (index < 0 || index > 2) {
             throw new IllegalArgumentException("Index must be between 0 and 2.");
         }
-        List<String> osDescriptors = Builder.readFile(filename);
+        List<String> osDescriptors = FileKit.readLines(filename);
         if (!osDescriptors.isEmpty()) {
             String[] splittedLine = osDescriptors.get(0).split("\\D+");
             return Builder.parseLongOrDefault(splittedLine[index], 0L);

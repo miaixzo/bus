@@ -32,13 +32,13 @@ import java.util.Properties;
  * The global configuration utility.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @NotThreadSafe
 public final class Config {
 
-    private static final Properties CONFIG = Builder.readPropertiesFromFilename(Builder.BUS_HEALTH_PROPERTIES);
+    private static final Properties CONFIG = Builder.readProperties(Builder.BUS_HEALTH_PROPERTIES);
 
     private Config() {
     }

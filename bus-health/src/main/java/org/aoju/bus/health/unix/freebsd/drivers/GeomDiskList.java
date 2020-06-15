@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
@@ -39,7 +40,7 @@ import java.util.Map;
  * Utility to query geom part list
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -84,7 +85,7 @@ public final class GeomDiskList {
             if (diskName != null) {
                 line = line.trim();
                 if (line.startsWith("Mediasize:")) {
-                    String[] split = Builder.whitespaces.split(line);
+                    String[] split = RegEx.SPACES.split(line);
                     if (split.length > 1) {
                         mediaSize = Builder.parseLongOrDefault(split[1], 0L);
                     }

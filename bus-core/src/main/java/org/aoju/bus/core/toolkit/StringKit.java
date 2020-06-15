@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -5946,7 +5946,6 @@ public class StringKit {
         }
         return str.length() > position && c == str.charAt(position);
     }
-
 
     /**
      * 字符串按照字符排序方法

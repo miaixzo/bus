@@ -37,7 +37,7 @@ import org.apache.cxf.interceptor.InterceptorProvider;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class TraceCxfFeature extends AbstractFeature {

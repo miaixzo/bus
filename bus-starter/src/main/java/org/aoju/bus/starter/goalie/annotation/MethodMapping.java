@@ -32,7 +32,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @Documented
@@ -53,6 +53,7 @@ public @interface MethodMapping {
 
     /**
      * Alias for {@link RequestMapping#value}
+     *
      * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
@@ -60,6 +61,7 @@ public @interface MethodMapping {
 
     /**
      * Alias for {@link RequestMapping#path}
+     *
      * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
@@ -67,6 +69,7 @@ public @interface MethodMapping {
 
     /**
      * Alias for {@link RequestMapping#params}
+     *
      * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
@@ -74,6 +77,7 @@ public @interface MethodMapping {
 
     /**
      * Alias for {@link RequestMapping#headers}
+     *
      * @return the String[]
      */
     @AliasFor(annotation = RequestMapping.class)
@@ -81,6 +85,7 @@ public @interface MethodMapping {
 
     /**
      * Alias for {@link RequestMapping#consumes}
+     *
      * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)
@@ -88,6 +93,7 @@ public @interface MethodMapping {
 
     /**
      * Alias for {@link RequestMapping#produces}
+     *
      * @return String[]
      */
     @AliasFor(annotation = RequestMapping.class)

@@ -33,6 +33,7 @@ import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
 import com.sun.jna.platform.win32.WinNT.*;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -58,7 +59,7 @@ import java.util.*;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -153,7 +154,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      * @return the string following id
      */
     private String parseIdentifier(String identifier, String key) {
-        String[] idSplit = Builder.whitespaces.split(identifier);
+        String[] idSplit = RegEx.SPACES.split(identifier);
         boolean found = false;
         for (String s : idSplit) {
             // If key string found, return next value

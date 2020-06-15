@@ -32,7 +32,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

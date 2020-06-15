@@ -26,7 +26,9 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Executor;
@@ -43,7 +45,7 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -102,7 +104,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             if (checkLine.contains(marker) && checkLine.trim().startsWith("0x00000001")) {
                 String eax = Normal.EMPTY;
                 String edx = Normal.EMPTY;
-                for (String register : Builder.whitespaces.split(checkLine)) {
+                for (String register : RegEx.SPACES.split(checkLine)) {
                     if (register.startsWith("eax=")) {
                         eax = Builder.removeMatchingString(register, "eax=0x");
                     } else if (register.startsWith("edx=")) {
@@ -160,9 +162,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
         StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
         String[] flags = new String[0];
-        List<String> cpuInfo = Builder.readFile(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(CPUINFO);
         for (String line : cpuInfo) {
-            String[] splitLine = Builder.whitespacesColonWhitespace.split(line);
+            String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
             if (splitLine.length < 2) {
                 continue;
             }
@@ -222,7 +224,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected LogicalProcessor[] initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
-        List<String> procCpu = Builder.readFile(CPUINFO);
+        List<String> procCpu = FileKit.readLines(CPUINFO);
         List<LogicalProcessor> logProcs = new ArrayList<>();
         int currentProcessor = 0;
         int currentCore = 0;
@@ -286,7 +288,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
         // If unsuccessful, try from /proc/cpuinfo
         Arrays.fill(freqs, -1);
-        List<String> cpuInfo = Builder.readFile(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(CPUINFO);
         int proc = 0;
         for (String s : cpuInfo) {
             if (s.toLowerCase().contains("cpu mhz")) {

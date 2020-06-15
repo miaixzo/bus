@@ -24,11 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import java.util.Properties;
+
 /**
  * 系统常量
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class System {
@@ -212,7 +214,19 @@ public class System {
      * @return 结果
      */
     public static String getProperty(final String key) {
-        return System.getProperty(key);
+        return java.lang.System.getProperty(key);
+    }
+
+    public static String getProperty(String key, String def) {
+        return java.lang.System.getProperty(key, def);
+    }
+
+    public static Properties getProperties() {
+        return java.lang.System.getProperties();
+    }
+
+    public static String clearProperty(String key) {
+        return java.lang.System.clearProperty(key);
     }
 
 }

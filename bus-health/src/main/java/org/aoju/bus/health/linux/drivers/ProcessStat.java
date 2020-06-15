@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
@@ -39,7 +40,7 @@ import java.util.regex.Pattern;
  * Utility to read process statistics from {@code /proc/[pid]/stat}
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -73,7 +74,7 @@ public final class ProcessStat {
         String name = stat.substring(nameStart, nameEnd);
         Character state = stat.charAt(nameEnd + 2);
         // Split everything after the state
-        String[] split = Builder.whitespaces.split(stat.substring(nameEnd + 4).trim());
+        String[] split = RegEx.SPACES.split(stat.substring(nameEnd + 4).trim());
 
         Map<PidStat, Long> statMap = new EnumMap<>(PidStat.class);
         PidStat[] enumArray = PidStat.class.getEnumConstants();

@@ -33,7 +33,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class Normal {
@@ -142,7 +142,10 @@ public class Normal {
      * 通用的运算符
      */
     public static final String OPERATOR_EN = "+-*x";
-
+    /**
+     * 十六进制错误
+     */
+    public static final String HEX_ERROR = "0x%08X";
     /**
      * 简体中文运算符
      */

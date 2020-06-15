@@ -58,7 +58,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class IoKit {
@@ -567,7 +567,7 @@ public class IoKit {
             throw new InstrumentException(e);
         }
         if (readLength > 0 && readLength < length) {
-            byte[] b2 = new byte[length];
+            byte[] b2 = new byte[readLength];
             System.arraycopy(b, 0, b2, 0, readLength);
             return b2;
         } else {

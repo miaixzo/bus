@@ -34,7 +34,7 @@ import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.logger.Logger;
@@ -47,7 +47,7 @@ import java.util.List;
  * WindowsNetworkParams class.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -117,7 +117,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     private String parseIpv4Route() {
         List<String> lines = Executor.runNative("route print -4 0.0.0.0");
         for (String line : lines) {
-            String[] fields = Builder.whitespaces.split(line.trim());
+            String[] fields = RegEx.SPACES.split(line.trim());
             if (fields.length > 2 && "0.0.0.0".equals(fields[0])) {
                 return fields[2];
             }
@@ -128,7 +128,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
     private String parseIpv6Route() {
         List<String> lines = Executor.runNative("route print -6 ::/0");
         for (String line : lines) {
-            String[] fields = Builder.whitespaces.split(line.trim());
+            String[] fields = RegEx.SPACES.split(line.trim());
             if (fields.length > 3 && "::/0".equals(fields[2])) {
                 return fields[3];
             }

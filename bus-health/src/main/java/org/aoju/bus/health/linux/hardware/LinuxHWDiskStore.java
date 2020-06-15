@@ -26,7 +26,9 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
@@ -41,7 +43,7 @@ import java.util.stream.Collectors;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -170,9 +172,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
     private static Map<String, String> readMountsMap() {
         Map<String, String> mountsMap = new HashMap<>();
-        List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
+        List<String> mounts = FileKit.readLines(ProcPath.MOUNTS);
         for (String mount : mounts) {
-            String[] split = Builder.whitespaces.split(mount);
+            String[] split = RegEx.SPACES.split(mount);
             if (split.length < 2 || !split[0].startsWith("/dev/")) {
                 continue;
             }

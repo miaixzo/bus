@@ -60,7 +60,7 @@ import java.util.stream.StreamSupport;
  *
  * @param <T> the GitLab type contained in the List.
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {

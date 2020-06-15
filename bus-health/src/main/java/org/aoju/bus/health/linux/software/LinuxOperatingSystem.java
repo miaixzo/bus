@@ -29,9 +29,11 @@ import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.linux.LibC.Sysinfo;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
@@ -62,7 +64,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -229,7 +231,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
-        List<String> osRelease = Builder.readFile("/etc/os-release");
+        List<String> osRelease = FileKit.readLines("/etc/os-release");
         // Search for NAME=
         for (String line : osRelease) {
             if (line.startsWith("VERSION=")) {
@@ -317,7 +319,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         String family = null;
         String versionId = Normal.UNKNOWN;
         String codeName = Normal.UNKNOWN;
-        List<String> osRelease = Builder.readFile("/etc/lsb-release");
+        List<String> osRelease = FileKit.readLines("/etc/lsb-release");
         // Search for NAME=
         for (String line : osRelease) {
             if (line.startsWith("DISTRIB_DESCRIPTION=")) {
@@ -356,7 +358,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     private static Triple<String, String, String> readDistribRelease(String filename) {
         if (new File(filename).exists()) {
-            List<String> osRelease = Builder.readFile(filename);
+            List<String> osRelease = FileKit.readLines(filename);
             // Search for Distrib release x.x (Codename)
             for (String line : osRelease) {
                 Logger.debug("{}: {}", filename, line);
@@ -511,9 +513,9 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     public FamilyVersionInfo queryFamilyVersionInfo() {
         Triple<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
         String buildNumber = null;
-        List<String> procVersion = Builder.readFile(ProcPath.VERSION);
+        List<String> procVersion = FileKit.readLines(ProcPath.VERSION);
         if (!procVersion.isEmpty()) {
-            String[] split = Builder.whitespaces.split(procVersion.get(0));
+            String[] split = RegEx.SPACES.split(procVersion.get(0));
             for (String s : split) {
                 if (!"Linux".equals(s) && !"version".equals(s)) {
                     buildNumber = s;
@@ -663,8 +665,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 proc.setState(OSProcess.State.OTHER);
                 break;
         }
-        proc.setUserID(Builder.whitespaces.split(status.getOrDefault("Uid", ""))[0]);
-        proc.setGroupID(Builder.whitespaces.split(status.getOrDefault("Gid", ""))[0]);
+        proc.setUserID(RegEx.SPACES.split(status.getOrDefault("Uid", ""))[0]);
+        proc.setGroupID(RegEx.SPACES.split(status.getOrDefault("Gid", ""))[0]);
         Pair<String, String> user = userGroupInfo.getUser(proc.getUserID());
         proc.setUser(user.getRight());
         proc.setGroup(userGroupInfo.getGroupName(proc.getGroupID()));
@@ -709,7 +711,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // Output:
         // pid 3283's current affinity mask: 3
         // pid 9726's current affinity mask: f
-        String[] split = Builder.whitespaces.split(mask);
+        String[] split = RegEx.SPACES.split(mask);
         try {
             return new BigInteger(split[split.length - 1], 16).longValue();
         } catch (NumberFormatException e) {
@@ -770,7 +772,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         boolean systemctlFound = false;
         List<String> systemctl = Executor.runNative("systemctl list-unit-files");
         for (String str : systemctl) {
-            String[] split = Builder.whitespaces.split(str);
+            String[] split = RegEx.SPACES.split(str);
             if (split.length == 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);

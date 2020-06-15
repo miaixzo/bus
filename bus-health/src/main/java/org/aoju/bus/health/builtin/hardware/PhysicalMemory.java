@@ -32,7 +32,7 @@ import org.aoju.bus.health.Builder;
  * computer system and available to the operating system.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @Immutable
@@ -105,7 +105,7 @@ public class PhysicalMemory {
         StringBuilder sb = new StringBuilder();
         sb.append("Bank label: " + getBankLabel());
         sb.append(", Capacity: " + Builder.formatBytes(getCapacity()));
-        sb.append(", Clock speed: " + Builder.formatHertz(getClockSpeed()));
+        sb.append(", Clock speed: " + Builder.formatValue(getClockSpeed(), "Hz"));
         sb.append(", Manufacturer: " + getManufacturer());
         sb.append(", Memory type: " + getMemoryType());
         return sb.toString();

@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.solaris.hardware;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -41,7 +42,7 @@ import java.util.*;
  * A CPU
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -91,7 +92,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 flags.append(Symbol.C_SPACE).append(line.trim());
             }
         }
-        return createProcessorID(stepping, model, family, Builder.whitespaces.split(flags.toString().toLowerCase()));
+        return createProcessorID(stepping, model, family, RegEx.SPACES.split(flags.toString().toLowerCase()));
     }
 
     @Override

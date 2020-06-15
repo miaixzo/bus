@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.solaris.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -38,7 +39,7 @@ import java.util.List;
  * Utility to query iostat
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -64,7 +65,7 @@ public final class Prtvtoc {
                 // specifying bytes per sector
                 if (line.startsWith(Symbol.STAR)) {
                     if (line.endsWith("bytes/sector")) {
-                        split = Builder.whitespaces.split(line);
+                        split = RegEx.SPACES.split(line);
                         if (split.length > 0) {
                             bytesPerSector = Builder.parseIntOrDefault(split[1], 0);
                         }
@@ -72,10 +73,10 @@ public final class Prtvtoc {
                 } else if (bytesPerSector > 0) {
                     // If bytes/sector is still 0, these are not real partitions so
                     // ignore.
-                    // Lines without asterisk have 6 or 7 whitespaces-split values
+                    // Lines without asterisk have 6 or 7 spaces-split values
                     // representing (last field optional):
                     // Partition Tag Flags Sector Count Sector Mount
-                    split = Builder.whitespaces.split(line.trim());
+                    split = RegEx.SPACES.split(line.trim());
                     // Partition 2 is always the whole disk so we ignore it
                     if (split.length >= 6 && !"2".equals(split[0])) {
                         // First field is partition number

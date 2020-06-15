@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -361,6 +361,39 @@ public class CollKit {
     public static <T> Collection<T> subtract(Collection<T> coll1, Collection<T> coll2) {
         final Collection<T> result = ObjectKit.clone(coll1);
         result.removeAll(coll2);
+        return result;
+    }
+
+    /**
+     * 计算集合的单差集，即只返回【集合1】中有，但是【集合2】中没有的元素
+     * 例如：
+     * <pre>
+     *     subtractToList([1,2,3,4],[2,3,4,5]) - [1]
+     * </pre>
+     *
+     * @param coll1 集合1
+     * @param coll2 集合2
+     * @param <T>   元素类型
+     * @return 单差集
+     */
+    public static <T> List<T> subtractToList(Collection<T> coll1, Collection<T> coll2) {
+        if (isEmpty(coll1)) {
+            return Collections.emptyList();
+        }
+        if (isEmpty(coll2)) {
+            if (null == coll1) {
+                return new LinkedList<>();
+            }
+            return new ArrayList<>(coll1);
+        }
+
+        final List<T> result = new LinkedList<>();
+        Set<T> set = new HashSet<>(coll2);
+        for (T t : coll1) {
+            if (false == set.contains(t)) {
+                result.add(t);
+            }
+        }
         return result;
     }
 

@@ -44,7 +44,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * 多个逻辑处理器(操作系统看到的内容，可能包括超线程内核)
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -524,7 +524,7 @@ public interface CentralProcessor {
         }
 
         private String queryMicroarchitecture() {
-            Properties archProps = Builder.readPropertiesFromFilename(Builder.BUS_HEALTH_ARCH_PROPERTIES);
+            Properties archProps = Builder.readProperties(Builder.BUS_HEALTH_ARCH_PROPERTIES);
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix

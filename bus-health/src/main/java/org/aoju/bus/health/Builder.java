@@ -26,24 +26,26 @@ package org.aoju.bus.health;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.core.toolkit.PinyinKit;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.builtin.*;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -52,7 +54,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +61,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -75,64 +76,38 @@ public final class Builder {
      * symlinks here
      */
     public static final String SYSFS_SERIAL_PATH = "/sys/devices/virtual/dmi/id/";
-
     /**
      * The Unix Epoch, a default value when WMI DateTime queries return no value.
      */
     public static final OffsetDateTime UNIX_EPOCH = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
-
+    private static final String MESSAGE = "{} didn't parse. Returning default. {}";
     /**
-     * Constant <code>whitespacesColonWhitespace</code>
-     */
-    public static final Pattern whitespacesColonWhitespace = Pattern.compile("\\s+:\\s");
-    /**
-     * Constant <code>whitespaces</code>
-     */
-    public static final Pattern whitespaces = Pattern.compile("\\s+");
-    /**
-     * Constant <code>notDigits</code>
-     */
-    public static final Pattern notDigits = Pattern.compile("[^0-9]+");
-    /**
-     * Constant <code>startWithNotDigits</code>
-     */
-    public static final Pattern startWithNotDigits = Pattern.compile("^[^0-9]*");
-    /**
-     * Constant <code>HEX_ERROR="0x%08X"</code>
-     */
-    public static final String HEX_ERROR = "0x%08X";
-    private static final String DEFAULT_Logger_MSG = "{} didn't parse. Returning default. {}";
-    /*
      * Used for matching
      */
     private static final Pattern HERTZ_PATTERN = Pattern.compile("(\\d+(.\\d+)?) ?([kMGT]?Hz).*");
-    /*
-     * Used to check validity of a hexadecimal string
-     */
-    private static final Pattern VALID_HEX = Pattern.compile("[0-9a-fA-F]+");
-    /*
+    /**
      * Pattern for [dd-[hh:[mm:[ss[.sss]]]]]
      */
     private static final Pattern DHMS = Pattern.compile("(?:(\\d+)-)?(?:(\\d+):)??(?:(\\d+):)?(\\d+)(?:\\.(\\d+))?");
-    /*
+    /**
      * Pattern for a UUID
      */
     private static final Pattern UUID_PATTERN = Pattern
             .compile(".*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
-    /*
+    /**
      * Pattern for Windows PnPDeviceID vendor and product ID
      */
     private static final Pattern VENDOR_PRODUCT_ID = Pattern
             .compile(".*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4}).*");
-    /*
+    /**
      * Pattern for Linux lspci machine readable
      */
     private static final Pattern LSPCI_MACHINE_READABLE = Pattern.compile("(.+)\\s\\[(.*?)\\]");
-    /*
+    /**
      * Pattern for Linux lspci memory
      */
     private static final Pattern LSPCI_MEMORY_SIZE = Pattern.compile(".+\\s\\[size=(\\d+)([kKMGT])\\]");
-    /*
+    /**
      * Hertz related variables.
      */
     private static final String HZ = "Hz";
@@ -170,6 +145,7 @@ public final class Builder {
     private static final long TEBI = 1L << 40;
     private static final long PEBI = 1L << 50;
     private static final long EXBI = 1L << 60;
+    private static final long ZXBI = 1L << 70;
     /**
      * Decimal prefixes, used for Hz and other metric units and for bytes by hard
      * drive manufacturers
@@ -180,10 +156,6 @@ public final class Builder {
     private static final long TERA = 1_000_000_000_000L;
     private static final long PETA = 1_000_000_000_000_000L;
     private static final long EXA = 1_000_000_000_000_000_000L;
-    /*
-     * Two's complement reference: 2^64.
-     */
-    private static final BigInteger TWOS_COMPLEMENT_REF = BigInteger.ONE.shiftLeft(64);
 
     private static final Platform platform;
     /**
@@ -256,6 +228,182 @@ public final class Builder {
         return hardware.getProcessor();
     }
 
+
+    /**
+     * 取得Java Virtual Machine Specification的信息
+     *
+     * @return <code>JvmSpecInfo</code>对象
+     */
+    public static JvmSpec getJvmSpecInfo() {
+        return Instances.singletion(JvmSpec.class);
+    }
+
+    /**
+     * 取得Java Virtual Machine Implementation的信息
+     *
+     * @return <code>JvmInfo</code>对象
+     */
+    public static Jvm getJvmInfo() {
+        return Instances.singletion(Jvm.class);
+    }
+
+    /**
+     * 取得Java Specification的信息
+     *
+     * @return <code>JavaSpecInfo</code>对象
+     */
+    public static JavaSpec getJavaSpecInfo() {
+        return Instances.singletion(JavaSpec.class);
+    }
+
+    /**
+     * 取得Java Implementation的信息
+     *
+     * @return <code>JavaInfo</code>对象
+     */
+    public static Java getJavaInfo() {
+        return Instances.singletion(Java.class);
+    }
+
+    /**
+     * 取得当前运行的JRE的信息
+     *
+     * @return <code>JreInfo</code>对象
+     */
+    public static JavaRuntime getJavaRuntimeInfo() {
+        return Instances.singletion(JavaRuntime.class);
+    }
+
+    /**
+     * 取得User的信息
+     *
+     * @return <code>UserInfo</code>对象
+     */
+    public static User getUserInfo() {
+        return Instances.singletion(User.class);
+    }
+
+    /**
+     * 取得当前主机信息
+     *
+     * @return 主机地址信息
+     */
+    public static InetAddress getLocalAddress() {
+        try {
+            InetAddress inetAddress = null;
+            /** 遍历所有的网络接口 */
+            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
+                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+                /** 在所有的网络接口下再遍历IP */
+                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
+                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+                    if (!inetAddr.isLoopbackAddress()) {// 排除loopback类型地址
+                        if (inetAddr.isSiteLocalAddress()) {
+                            /** 如果是site-local地址,就是它了 */
+                            return inetAddr;
+                        } else if (inetAddress == null) {
+                            /** site-local类型的地址未被发现,先记录候选地址 */
+                            inetAddress = inetAddr;
+                        }
+                    }
+                }
+            }
+            if (inetAddress != null) {
+                return inetAddress;
+            }
+            /**  如果没有发现 non-loopback地址.只能用最次选的方案 */
+            inetAddress = InetAddress.getLocalHost();
+            if (inetAddress == null) {
+                throw new InstrumentException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
+            }
+            return inetAddress;
+        } catch (Exception e) {
+            throw new InstrumentException("Failed to determine LAN address: " + e);
+        }
+    }
+
+    /**
+     * 获取网络相关信息，可能多块网卡
+     *
+     * @return 网络相关信息
+     */
+    public static List<NetworkIF> getNetworkIFs() {
+        return hardware.getNetworkIFs();
+    }
+
+    /**
+     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
+     *
+     * @return 系统 CPU 使用率 等信息
+     */
+    public static Cpu getCpuInfo() {
+        return getCpuInfo(1000);
+    }
+
+    /**
+     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
+     *
+     * @param waitingTime 设置等待时间
+     * @return 系统 CPU 使用率 等信息
+     */
+    public static Cpu getCpuInfo(long waitingTime) {
+        return getCpuInfo(getProcessor(), waitingTime);
+    }
+
+    /**
+     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
+     *
+     * @param processor   {@link CentralProcessor}
+     * @param waitingTime 设置等待时间
+     * @return 系统 CPU 使用率 等信息
+     */
+    private static Cpu getCpuInfo(CentralProcessor processor, long waitingTime) {
+        Cpu cpu = new Cpu();
+        long[] prevTicks = processor.getSystemCpuLoadTicks();
+        sleep(waitingTime);
+        long[] ticks = processor.getSystemCpuLoadTicks();
+        long nice = ticks[CentralProcessor.TickType.NICE.getIndex()] - prevTicks[CentralProcessor.TickType.NICE.getIndex()];
+        long irq = ticks[CentralProcessor.TickType.IRQ.getIndex()] - prevTicks[CentralProcessor.TickType.IRQ.getIndex()];
+        long softIrq = ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - prevTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()];
+        long steal = ticks[CentralProcessor.TickType.STEAL.getIndex()] - prevTicks[CentralProcessor.TickType.STEAL.getIndex()];
+        long cSys = ticks[CentralProcessor.TickType.SYSTEM.getIndex()] - prevTicks[CentralProcessor.TickType.SYSTEM.getIndex()];
+        long user = ticks[CentralProcessor.TickType.USER.getIndex()] - prevTicks[CentralProcessor.TickType.USER.getIndex()];
+        long ioWait = ticks[CentralProcessor.TickType.IOWAIT.getIndex()] - prevTicks[CentralProcessor.TickType.IOWAIT.getIndex()];
+        long idle = ticks[CentralProcessor.TickType.IDLE.getIndex()] - prevTicks[CentralProcessor.TickType.IDLE.getIndex()];
+        long totalCpu = Math.max(user + nice + cSys + idle + ioWait + irq + softIrq + steal, 0);
+        final DecimalFormat format = new DecimalFormat("#.00");
+        cpu.setCpuNum(processor.getLogicalProcessorCount());
+        cpu.setToTal(totalCpu);
+        cpu.setSys(Double.parseDouble(format.format(cSys <= 0 ? 0 : (100d * cSys / totalCpu))));
+        cpu.setUsed(Double.parseDouble(format.format(user <= 0 ? 0 : (100d * user / totalCpu))));
+        if (totalCpu == 0) {
+            cpu.setWait(0);
+        } else {
+            cpu.setWait(Double.parseDouble(format.format(100d * ioWait / totalCpu)));
+        }
+        cpu.setFree(Double.parseDouble(format.format(idle <= 0 ? 0 : (100d * idle / totalCpu))));
+        cpu.setCpuModel(processor.toString());
+        return cpu;
+    }
+
+    /**
+     * 获取传感器相关信息，例如CPU温度、风扇转速等，传感器可能有多个
+     *
+     * @return 传感器相关信息
+     */
+    public static Sensors getSensors() {
+        return hardware.getSensors();
+    }
+
+    /**
+     * 获取磁盘相关信息，可能有多个磁盘(包括可移动磁盘等)
+     *
+     * @return 磁盘相关信息
+     */
+    public static List<HWDiskStore> getDiskStores() {
+        return hardware.getDiskStores();
+    }
+
     /**
      * Sleeps for the specified number of milliseconds.
      *
@@ -269,25 +417,6 @@ public final class Builder {
             Logger.warn("Interrupted while sleeping for {} ms: {}", ms, e.getMessage());
             Thread.currentThread().interrupt();
         }
-    }
-
-    /**
-     * Tests if a String matches another String with a wildcard pattern.
-     *
-     * @param text    The String to test
-     * @param pattern The String containing a wildcard pattern where ? represents a
-     *                single character and * represents any number of characters. If the
-     *                first character of the pattern is a carat (^) the test is
-     *                performed against the remaining characters and the result of the
-     *                test is the opposite.
-     * @return True if the String matches or if the first character is ^ and the
-     * remainder of the String does not match.
-     */
-    public static boolean wildcardMatch(String text, String pattern) {
-        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
-            return !wildcardMatch(text, pattern.substring(1));
-        }
-        return text.matches(pattern.replace("?", ".?").replace(Symbol.STAR, ".*?"));
     }
 
     /**
@@ -325,17 +454,14 @@ public final class Builder {
     /**
      * Format bytes into a rounded string representation using IEC standard (matches
      * Mac/Linux). For hard drive capacities, use @link
-     * {@link #formatBytesDecimal(long)}. For Windows displays for KB, MB and GB, in
-     * JEDEC units, edit the returned string to remove the 'i' to display the
-     * (incorrect) JEDEC units.
      *
      * @param bytes Bytes.
      * @return Rounded string representation of the byte size.
      */
     public static String formatBytes(long bytes) {
-        if (bytes == 1L) { // bytes
+        if (bytes == 1L) {
             return String.format("%d byte", bytes);
-        } else if (bytes < KIBI) { // bytes
+        } else if (bytes < KIBI || bytes < KILO) {
             return String.format("%d bytes", bytes);
         } else if (bytes < MEBI) { // KiB
             return formatUnits(bytes, KIBI, "KiB");
@@ -347,9 +473,10 @@ public final class Builder {
             return formatUnits(bytes, TEBI, "TiB");
         } else if (bytes < EXBI) { // PiB
             return formatUnits(bytes, PEBI, "PiB");
-        } else { // EiB
+        } else if (bytes < ZXBI) { // EiB
             return formatUnits(bytes, EXBI, "EiB");
         }
+        return formatValue(bytes, "B");
     }
 
     /**
@@ -366,34 +493,6 @@ public final class Builder {
             return String.format("%d %s", value / prefix, unit);
         }
         return String.format("%.1f %s", (double) value / prefix, unit);
-    }
-
-    /**
-     * Format bytes into a rounded string representation using decimal SI units.
-     * These are used by hard drive manufacturers for capacity. Most other storage
-     * should use {@link #formatBytes(long)}.
-     *
-     * @param bytes Bytes.
-     * @return Rounded string representation of the byte size.
-     */
-    public static String formatBytesDecimal(long bytes) {
-        if (bytes == 1L) { // bytes
-            return String.format("%d byte", bytes);
-        } else if (bytes < KILO) { // bytes
-            return String.format("%d bytes", bytes);
-        } else {
-            return formatValue(bytes, "B");
-        }
-    }
-
-    /**
-     * Format hertz into a string to a rounded string representation.
-     *
-     * @param hertz Hertz.
-     * @return Rounded string representation of the hertz size.
-     */
-    public static String formatHertz(long hertz) {
-        return formatValue(hertz, "Hz");
     }
 
     /**
@@ -423,122 +522,13 @@ public final class Builder {
     }
 
     /**
-     * Formats an elapsed time in seconds as days, hh:mm:ss.
-     *
-     * @param secs Elapsed seconds
-     * @return A string representation of elapsed time
-     */
-    public static String formatElapsedSecs(long secs) {
-        long eTime = secs;
-        final long days = TimeUnit.SECONDS.toDays(eTime);
-        eTime -= TimeUnit.DAYS.toSeconds(days);
-        final long hr = TimeUnit.SECONDS.toHours(eTime);
-        eTime -= TimeUnit.HOURS.toSeconds(hr);
-        final long min = TimeUnit.SECONDS.toMinutes(eTime);
-        eTime -= TimeUnit.MINUTES.toSeconds(min);
-        final long sec = eTime;
-        return String.format("%d days, %02d:%02d:%02d", days, hr, min, sec);
-    }
-
-    /**
-     * Round to certain number of decimals.
-     *
-     * @param d            Number to be rounded
-     * @param decimalPlace Number of decimal places to round to
-     * @return rounded result
-     */
-    public static float round(float d, int decimalPlace) {
-        final BigDecimal bd = new BigDecimal(Float.toString(d)).setScale(decimalPlace, RoundingMode.HALF_UP);
-        return bd.floatValue();
-    }
-
-    /**
-     * Convert unsigned int to signed long.
-     *
-     * @param x Signed int representing an unsigned integer
-     * @return long value of x unsigned
-     */
-    public static long getUnsignedInt(int x) {
-        return x & 0x00000000ffffffffL;
-    }
-
-    /**
-     * Represent a 32 bit value as if it were an unsigned integer.
-     * <p>
-     * This is a Java 7 implementation of Java 8's Integer.toUnsignedString.
-     *
-     * @param i a 32 bit value
-     * @return the string representation of the unsigned integer
-     */
-    public static String toUnsignedString(int i) {
-        if (i >= 0) {
-            return Integer.toString(i);
-        }
-        return Long.toString(getUnsignedInt(i));
-    }
-
-    /**
-     * Represent a 64 bit value as if it were an unsigned long.
-     * <p>
-     * This is a Java 7 implementation of Java 8's Long.toUnsignedString.
-     *
-     * @param l a 64 bit value
-     * @return the string representation of the unsigned long
-     */
-    public static String toUnsignedString(long l) {
-        if (l >= 0) {
-            return Long.toString(l);
-        }
-        return BigInteger.valueOf(l).add(TWOS_COMPLEMENT_REF).toString();
-    }
-
-    /**
      * Translate an integer error code to its hex notation
      *
      * @param errorCode The error code
      * @return A string representing the error as 0x....
      */
     public static String formatError(int errorCode) {
-        return String.format(HEX_ERROR, errorCode);
-    }
-
-    /**
-     * Read an entire file at one time. Intended primarily for Linux /proc
-     * filesystem to avoid recalculating file contents on iterative reads.
-     *
-     * @param filename The file to read
-     * @return A list of Strings representing each line of the file, or an empty
-     * list if file could not be read or is empty
-     */
-    public static List<String> readFile(String filename) {
-        return readFile(filename, true);
-    }
-
-    /**
-     * Read an entire file at one time. Intended primarily for Linux /proc
-     * filesystem to avoid recalculating file contents on iterative reads.
-     *
-     * @param filename    The file to read
-     * @param reportError Whether to log errors reading the file
-     * @return A list of Strings representing each line of the file, or an empty
-     * list if file could not be read or is empty
-     */
-    public static List<String> readFile(String filename, boolean reportError) {
-        if (new File(filename).canRead()) {
-            if (Logger.get().isDebug()) {
-                Logger.debug(READING_LOG, filename);
-            }
-            try {
-                return Files.readAllLines(Paths.get(filename), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                if (reportError) {
-                    Logger.error("Error reading file {}. {}", filename, e.getMessage());
-                }
-            }
-        } else if (reportError) {
-            Logger.warn("File not found or not readable: {}", filename);
-        }
-        return new ArrayList<>();
+        return String.format(Normal.HEX_ERROR, errorCode);
     }
 
     /**
@@ -552,7 +542,7 @@ public final class Builder {
         if (Logger.get().isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
-        List<String> read = readFile(filename, false);
+        List<String> read = FileKit.readLines(filename);
         if (!read.isEmpty()) {
             if (Logger.get().isTrace()) {
                 Logger.trace(READ_LOG, read.get(0));
@@ -563,24 +553,13 @@ public final class Builder {
     }
 
     /**
-     * Read a file and return the unsigned long value contained therein as a long.
-     * Intended primarily for Linux /sys filesystem
+     * Convert unsigned int to signed long.
      *
-     * @param filename The file to read
-     * @return The value contained in the file, if any; otherwise zero
+     * @param x Signed int representing an unsigned integer
+     * @return long value of x unsigned
      */
-    public static long getUnsignedLongFromFile(String filename) {
-        if (Logger.get().isDebug()) {
-            Logger.debug(READING_LOG, filename);
-        }
-        List<String> read = readFile(filename, false);
-        if (!read.isEmpty()) {
-            if (Logger.get().isTrace()) {
-                Logger.trace(READ_LOG, read.get(0));
-            }
-            return Builder.parseUnsignedLongOrDefault(read.get(0), 0L);
-        }
-        return 0L;
+    public static long getUnsignedInt(int x) {
+        return x & 0x00000000ffffffffL;
     }
 
     /**
@@ -595,7 +574,7 @@ public final class Builder {
             Logger.debug(READING_LOG, filename);
         }
         try {
-            List<String> read = readFile(filename, false);
+            List<String> read = FileKit.readLines(filename);
             if (!read.isEmpty()) {
                 if (Logger.get().isTrace()) {
                     Logger.trace(READ_LOG, read.get(0));
@@ -619,7 +598,7 @@ public final class Builder {
         if (Logger.get().isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
-        List<String> read = readFile(filename, false);
+        List<String> read = FileKit.readLines(filename);
         if (!read.isEmpty()) {
             if (Logger.get().isTrace()) {
                 Logger.trace(READ_LOG, read.get(0));
@@ -643,7 +622,7 @@ public final class Builder {
         if (Logger.get().isDebug()) {
             Logger.debug(READING_LOG, filename);
         }
-        List<String> lines = readFile(filename, false);
+        List<String> lines = FileKit.readLines(filename);
         for (String line : lines) {
             String[] parts = line.split(separator);
             if (parts.length == 2) {
@@ -651,31 +630,6 @@ public final class Builder {
             }
         }
         return map;
-    }
-
-    /**
-     * Read a configuration file from the class path and return its properties
-     *
-     * @param fileName The filename
-     * @return A {@link Properties} object containing the properties.
-     */
-    public static Properties readPropertiesFromFilename(String fileName) {
-        Properties p = new Properties();
-        try {
-            String path = Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName;
-            InputStream is = PinyinKit.class.getResourceAsStream(path);
-            Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(reader);
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.trim().split(Symbol.EQUAL);
-                p.setProperty(tokens[0], tokens[1]);
-            }
-            br.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return p;
     }
 
     /**
@@ -854,6 +808,31 @@ public final class Builder {
     }
 
     /**
+     * Read a configuration file from the class path and return its properties
+     *
+     * @param fileName The filename
+     * @return A {@link Properties} object containing the properties.
+     */
+    public static Properties readProperties(String fileName) {
+        Properties p = new Properties();
+        try {
+            String path = Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName;
+            InputStream is = Builder.class.getResourceAsStream(path);
+            Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(reader);
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.trim().split(Symbol.EQUAL);
+                p.setProperty(tokens[0], tokens[1]);
+            }
+            br.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return p;
+    }
+
+    /**
      * Parse an EDID byte array into user-readable information
      *
      * @param edid An EDID byte array
@@ -938,7 +917,7 @@ public final class Builder {
                 return Integer.parseInt(ls);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, s, e);
+            Logger.trace(MESSAGE, s, e);
             return i;
         }
     }
@@ -959,7 +938,7 @@ public final class Builder {
                 return Long.parseLong(ls);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, s, e);
+            Logger.trace(MESSAGE, s, e);
             return li;
         }
     }
@@ -975,7 +954,7 @@ public final class Builder {
         try {
             return Double.parseDouble(parseLastString(s));
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, s, e);
+            Logger.trace(MESSAGE, s, e);
             return d;
         }
     }
@@ -987,7 +966,7 @@ public final class Builder {
      * @return last space-delimited element
      */
     public static String parseLastString(String s) {
-        String[] ss = whitespaces.split(s);
+        String[] ss = RegEx.SPACES.split(s);
         if (ss.length < 1) {
             return s;
         } else {
@@ -1023,7 +1002,7 @@ public final class Builder {
     public static byte[] hexStringToByteArray(String digits) {
         int len = digits.length();
         // Check if string is valid hex
-        if (!VALID_HEX.matcher(digits).matches() || (len & 0x1) != 0) {
+        if (!RegEx.VALID_HEX.matcher(digits).matches() || (len & 0x1) != 0) {
             Logger.warn("Invalid hexadecimal string: {}", digits);
             return new byte[0];
         }
@@ -1140,18 +1119,6 @@ public final class Builder {
     }
 
     /**
-     * Convert an unsigned long to a signed long value by stripping the sign bit.
-     * This method "rolls over" long values greater than the max value but ensures
-     * the result is never negative.
-     *
-     * @param unsignedValue The unsigned long value to convert.
-     * @return The signed long value.
-     */
-    public static long unsignedLongToSignedLong(long unsignedValue) {
-        return unsignedValue & 0x7fffffff_ffffffffL;
-    }
-
-    /**
      * Parses a string of hex digits to a string where each pair of hex digits
      * represents an ASCII character
      *
@@ -1175,7 +1142,7 @@ public final class Builder {
                 sb.append((char) charAsInt);
             }
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, hexString, e);
+            Logger.trace(MESSAGE, hexString, e);
             // Hex failed to parse, just return the existing string
             return hexString;
         }
@@ -1193,7 +1160,7 @@ public final class Builder {
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, s, e);
+            Logger.trace(MESSAGE, s, e);
             return defaultInt;
         }
     }
@@ -1207,27 +1174,9 @@ public final class Builder {
      */
     public static long parseLongOrDefault(String s, long defaultLong) {
         try {
-            return Long.parseLong(s);
-        } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, s, e);
-            return defaultLong;
-        }
-    }
-
-    /**
-     * Attempts to parse a string to an "unsigned" long. If it fails, returns the
-     * default
-     *
-     * @param s           The string to parse
-     * @param defaultLong The value to return if parsing fails
-     * @return The parsed long containing the same 64 bits that an unsigned long
-     * would contain (which may produce a negative value)
-     */
-    public static long parseUnsignedLongOrDefault(String s, long defaultLong) {
-        try {
             return new BigInteger(s).longValue();
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, s, e);
+            Logger.trace(MESSAGE, s, e);
             return defaultLong;
         }
     }
@@ -1243,7 +1192,7 @@ public final class Builder {
         try {
             return Double.parseDouble(s);
         } catch (NumberFormatException e) {
-            Logger.trace(DEFAULT_Logger_MSG, s, e);
+            Logger.trace(MESSAGE, s, e);
             return defaultDouble;
         }
     }
@@ -1353,7 +1302,7 @@ public final class Builder {
      */
     public static int getNthIntValue(String line, int n) {
         // Split the string by non-digits,
-        String[] split = notDigits.split(startWithNotDigits.matcher(line).replaceFirst(Normal.EMPTY));
+        String[] split = RegEx.NOT_NUMBERS.split(RegEx.WITH_NOT_NUMBERS.matcher(line).replaceFirst(Normal.EMPTY));
         if (split.length >= n) {
             return parseIntOrDefault(split[n - 1], 0);
         }
@@ -1638,7 +1587,7 @@ public final class Builder {
      * @return the size parsed to a long
      */
     public static long parseDecimalMemorySizeToBinary(String size) {
-        String[] mem = Builder.whitespaces.split(size);
+        String[] mem = RegEx.SPACES.split(size);
         long capacity = Builder.parseLongOrDefault(mem[0], 0L);
         if (mem.length == 2 && mem[1].length() > 1) {
             switch (mem[1].charAt(0)) {
@@ -1691,7 +1640,7 @@ public final class Builder {
     public static long parseLshwResourceString(String resources) {
         long bytes = 0L;
         // First split by whitespace
-        String[] resourceArray = whitespaces.split(resources);
+        String[] resourceArray = RegEx.SPACES.split(resources);
         for (String r : resourceArray) {
             // Remove prefix
             if (r.startsWith("memory:")) {
@@ -1702,7 +1651,7 @@ public final class Builder {
                         // Parse the hex strings
                         bytes += Long.parseLong(mem[1], 16) - Long.parseLong(mem[0], 16) + 1;
                     } catch (NumberFormatException e) {
-                        Logger.trace(DEFAULT_Logger_MSG, r, e);
+                        Logger.trace(MESSAGE, r, e);
                     }
                 }
             }
@@ -1750,7 +1699,7 @@ public final class Builder {
      */
     public static List<Integer> parseHyphenatedIntList(String str) {
         List<Integer> result = new ArrayList<>();
-        for (String s : whitespaces.split(str)) {
+        for (String s : RegEx.SPACES.split(str)) {
             if (s.contains(Symbol.HYPHEN)) {
                 int first = getFirstIntValue(s);
                 int last = getNthIntValue(s, 2);
@@ -1776,215 +1725,6 @@ public final class Builder {
      */
     public static void append(StringBuilder builder, String caption, Object value) {
         builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
-    }
-
-    /**
-     * 获取网络相关信息，可能多块网卡
-     *
-     * @return 网络相关信息
-     */
-    public static List<NetworkIF> getNetworkIFs() {
-        return hardware.getNetworkIFs();
-    }
-
-    /**
-     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
-     *
-     * @return 系统 CPU 使用率 等信息
-     */
-    public static CpuInfo getCpuInfo() {
-        return getCpuInfo(1000);
-    }
-
-    /**
-     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
-     *
-     * @param waitingTime 设置等待时间
-     * @return 系统 CPU 使用率 等信息
-     */
-    public static CpuInfo getCpuInfo(long waitingTime) {
-        return getCpuInfo(getProcessor(), waitingTime);
-    }
-
-    /**
-     * 获取系统CPU 系统使用率、用户使用率、利用率等等 相关信息
-     *
-     * @param processor   {@link CentralProcessor}
-     * @param waitingTime 设置等待时间
-     * @return 系统 CPU 使用率 等信息
-     */
-    private static CpuInfo getCpuInfo(CentralProcessor processor, long waitingTime) {
-        CpuInfo cpuInfo = new CpuInfo();
-        long[] prevTicks = processor.getSystemCpuLoadTicks();
-        sleep(waitingTime);
-        long[] ticks = processor.getSystemCpuLoadTicks();
-        long nice = ticks[CentralProcessor.TickType.NICE.getIndex()] - prevTicks[CentralProcessor.TickType.NICE.getIndex()];
-        long irq = ticks[CentralProcessor.TickType.IRQ.getIndex()] - prevTicks[CentralProcessor.TickType.IRQ.getIndex()];
-        long softIrq = ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()] - prevTicks[CentralProcessor.TickType.SOFTIRQ.getIndex()];
-        long steal = ticks[CentralProcessor.TickType.STEAL.getIndex()] - prevTicks[CentralProcessor.TickType.STEAL.getIndex()];
-        long cSys = ticks[CentralProcessor.TickType.SYSTEM.getIndex()] - prevTicks[CentralProcessor.TickType.SYSTEM.getIndex()];
-        long user = ticks[CentralProcessor.TickType.USER.getIndex()] - prevTicks[CentralProcessor.TickType.USER.getIndex()];
-        long ioWait = ticks[CentralProcessor.TickType.IOWAIT.getIndex()] - prevTicks[CentralProcessor.TickType.IOWAIT.getIndex()];
-        long idle = ticks[CentralProcessor.TickType.IDLE.getIndex()] - prevTicks[CentralProcessor.TickType.IDLE.getIndex()];
-        long totalCpu = Math.max(user + nice + cSys + idle + ioWait + irq + softIrq + steal, 0);
-        final DecimalFormat format = new DecimalFormat("#.00");
-        cpuInfo.setCpuNum(processor.getLogicalProcessorCount());
-        cpuInfo.setToTal(totalCpu);
-        cpuInfo.setSys(Double.parseDouble(format.format(cSys <= 0 ? 0 : (100d * cSys / totalCpu))));
-        cpuInfo.setUsed(Double.parseDouble(format.format(user <= 0 ? 0 : (100d * user / totalCpu))));
-        if (totalCpu == 0) {
-            cpuInfo.setWait(0);
-        } else {
-            cpuInfo.setWait(Double.parseDouble(format.format(100d * ioWait / totalCpu)));
-        }
-        cpuInfo.setFree(Double.parseDouble(format.format(idle <= 0 ? 0 : (100d * idle / totalCpu))));
-        cpuInfo.setCpuModel(processor.toString());
-        return cpuInfo;
-    }
-
-    /**
-     * 获取传感器相关信息，例如CPU温度、风扇转速等，传感器可能有多个
-     *
-     * @return 传感器相关信息
-     */
-    public Sensors getSensors() {
-        return hardware.getSensors();
-    }
-
-    /**
-     * 获取磁盘相关信息，可能有多个磁盘(包括可移动磁盘等)
-     *
-     * @return 磁盘相关信息
-     */
-    public List<HWDiskStore> getDiskStores() {
-        return hardware.getDiskStores();
-    }
-
-    static class CpuInfo {
-
-        /**
-         * cpu核心数
-         */
-        private Integer cpuNum;
-
-        /**
-         * CPU总的使用率
-         */
-        private double toTal;
-
-        /**
-         * CPU系统使用率
-         */
-        private double sys;
-
-        /**
-         * CPU用户使用率
-         */
-        private double used;
-
-        /**
-         * CPU当前等待率
-         */
-        private double wait;
-
-        /**
-         * CPU当前空闲率
-         */
-        private double free;
-
-        /**
-         * CPU型号信息
-         */
-        private String cpuModel;
-
-        public CpuInfo() {
-        }
-
-        public CpuInfo(Integer cpuNum,
-                       double toTal,
-                       double sys,
-                       double used,
-                       double wait,
-                       double free,
-                       String cpuModel) {
-            this.cpuNum = cpuNum;
-            this.toTal = toTal;
-            this.sys = sys;
-            this.used = used;
-            this.wait = wait;
-            this.free = free;
-            this.cpuModel = cpuModel;
-        }
-
-        public Integer getCpuNum() {
-            return cpuNum;
-        }
-
-        public void setCpuNum(Integer cpuNum) {
-            this.cpuNum = cpuNum;
-        }
-
-        public double getToTal() {
-            return toTal;
-        }
-
-        public void setToTal(double toTal) {
-            this.toTal = toTal;
-        }
-
-        public double getSys() {
-            return sys;
-        }
-
-        public void setSys(double sys) {
-            this.sys = sys;
-        }
-
-        public double getUsed() {
-            return used;
-        }
-
-        public void setUsed(double used) {
-            this.used = used;
-        }
-
-        public double getWait() {
-            return wait;
-        }
-
-        public void setWait(double wait) {
-            this.wait = wait;
-        }
-
-        public double getFree() {
-            return free;
-        }
-
-        public void setFree(double free) {
-            this.free = free;
-        }
-
-        public String getCpuModel() {
-            return cpuModel;
-        }
-
-        public void setCpuModel(String cpuModel) {
-            this.cpuModel = cpuModel;
-        }
-
-        @Override
-        public String toString() {
-            return "CpuInfo{"
-                    + " CPU型号信息=" + cpuModel
-                    + ", CPU核心数=" + cpuNum
-                    + ", CPU总的使用率=" + toTal
-                    + ", CPU系统使用率=" + sys
-                    + ", CPU用户使用率=" + used
-                    + ", CPU当前等待率=" + wait
-                    + ", CPU当前空闲率=" + free
-                    + ", CPU利用率=" + Double.parseDouble(new DecimalFormat("#.00").format((100 - getFree()))) +
-                    "}";
-        }
     }
 
 }

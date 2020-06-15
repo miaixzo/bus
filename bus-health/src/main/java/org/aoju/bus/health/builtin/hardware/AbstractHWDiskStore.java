@@ -30,7 +30,7 @@ import org.aoju.bus.health.Builder;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -75,7 +75,7 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
         sb.append(getName()).append(": ");
         sb.append("(model: ").append(getModel());
         sb.append(" - S/N: ").append(getSerial()).append(") ");
-        sb.append("size: ").append(getSize() > 0 ? Builder.formatBytesDecimal(getSize()) : Symbol.QUESTION_MARK).append(", ");
+        sb.append("size: ").append(getSize() > 0 ? Builder.formatBytes(getSize()) : Symbol.QUESTION_MARK).append(", ");
         sb.append("reads: ").append(readwrite ? getReads() : Symbol.QUESTION_MARK);
         sb.append(" (").append(readwrite ? Builder.formatBytes(getReadBytes()) : Symbol.QUESTION_MARK).append("), ");
         sb.append("writes: ").append(readwrite ? getWrites() : Symbol.QUESTION_MARK);

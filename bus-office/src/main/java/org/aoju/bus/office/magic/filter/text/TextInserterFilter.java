@@ -45,7 +45,7 @@ import java.util.Map;
  * 筛选器用于将文本插入文档.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class TextInserterFilter extends AbstractTextContentInserterFilter {

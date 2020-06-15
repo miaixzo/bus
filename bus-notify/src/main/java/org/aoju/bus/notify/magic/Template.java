@@ -32,7 +32,7 @@ import lombok.experimental.SuperBuilder;
  * 消息模版
  *
  * @author Justubborn
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK1.8+
  */
 @Getter

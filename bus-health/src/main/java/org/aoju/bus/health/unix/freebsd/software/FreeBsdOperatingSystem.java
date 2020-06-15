@@ -29,6 +29,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -52,7 +53,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -156,7 +157,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         procList.remove(0);
         // Fill list
         for (String proc : procList) {
-            String[] split = Builder.whitespaces.split(proc.trim(), 16);
+            String[] split = RegEx.SPACES.split(proc.trim(), 16);
             // Elements should match ps command order
             if (split.length < 16) {
                 continue;

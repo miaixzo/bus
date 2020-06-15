@@ -42,7 +42,7 @@ import java.util.Map;
  * Word中表格相关工具
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class TableKit {
@@ -92,6 +92,7 @@ public class TableKit {
     public static void writeRow(XWPFTableRow row, Object rowBean, boolean isWriteKeyAsHead) {
         if (rowBean instanceof Iterable) {
             writeRow(row, (Iterable<?>) rowBean);
+            return;
         }
 
         Map rowMap = null;

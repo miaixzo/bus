@@ -31,7 +31,7 @@ import java.util.Map;
  * 包含将在为特定的{@link DocumentFormat}加载(打开)和存储(保存)文档时应用的属性.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class FormatProperties {

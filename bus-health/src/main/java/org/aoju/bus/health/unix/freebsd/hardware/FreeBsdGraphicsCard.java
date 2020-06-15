@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -39,7 +40,7 @@ import java.util.List;
  * Graphics Card info obtained from pciconf
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @Immutable
@@ -91,7 +92,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                             versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
                 }
                 // Parse this line
-                String[] split = Builder.whitespaces.split(line);
+                String[] split = RegEx.SPACES.split(line);
                 for (String s : split) {
                     String[] keyVal = s.split(Symbol.EQUAL);
                     if (keyVal.length > 1) {

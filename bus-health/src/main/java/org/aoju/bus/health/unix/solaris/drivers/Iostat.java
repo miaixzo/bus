@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.solaris.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.health.Builder;
@@ -40,7 +41,7 @@ import java.util.Set;
  * Utility to query iostat
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -156,7 +157,7 @@ public final class Iostat {
                     // Size: 1.23GB <1227563008 bytes>
                     String[] bytes = keyValue.split(Symbol.LT);
                     if (bytes.length > 1) {
-                        bytes = Builder.whitespaces.split(bytes[1]);
+                        bytes = RegEx.SPACES.split(bytes[1]);
                         size = Builder.parseLongOrDefault(bytes[0], 0L);
                     }
                 }

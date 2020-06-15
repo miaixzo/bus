@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -242,9 +242,9 @@ public class DateKit {
     }
 
     /**
-     * 当前时间秒数
+     * 当前时间毫秒数
      *
-     * @return 当前时间秒数
+     * @return 当前时间毫秒数
      */
     public static long timestamp() {
         return System.currentTimeMillis();

@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 开启内容脱敏
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @Inherited

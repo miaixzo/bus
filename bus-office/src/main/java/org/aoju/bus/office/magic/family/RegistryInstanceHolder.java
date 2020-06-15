@@ -30,7 +30,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
  * 保存默认的{@link FormatRegistry}实例.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public final class RegistryInstanceHolder {

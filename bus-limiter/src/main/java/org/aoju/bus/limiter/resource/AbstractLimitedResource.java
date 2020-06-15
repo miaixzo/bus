@@ -29,7 +29,7 @@ import java.util.Observable;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public abstract class AbstractLimitedResource extends Observable implements LimitedResource {

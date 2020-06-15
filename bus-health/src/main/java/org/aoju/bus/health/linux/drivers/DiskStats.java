@@ -25,6 +25,8 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.linux.ProcPath;
 
@@ -37,7 +39,7 @@ import java.util.Map;
  * Utility to read disk statistics from {@code /proc/diskstats}
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -56,9 +58,9 @@ public final class DiskStats {
     public static Map<String, Map<IoStat, Long>> getDiskStats() {
         Map<String, Map<IoStat, Long>> diskStatMap = new HashMap<>();
         IoStat[] enumArray = IoStat.class.getEnumConstants();
-        List<String> diskStats = Builder.readFile(ProcPath.DISKSTATS);
+        List<String> diskStats = FileKit.readLines(ProcPath.DISKSTATS);
         for (String stat : diskStats) {
-            String[] split = Builder.whitespaces.split(stat.trim());
+            String[] split = RegEx.SPACES.split(stat.trim());
             Map<IoStat, Long> statMap = new EnumMap<>(IoStat.class);
             String name = null;
             for (int i = 0; i < enumArray.length && i < split.length; i++) {

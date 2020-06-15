@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab Snippets API project calls.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class SnippetsApi extends AbstractApi {
