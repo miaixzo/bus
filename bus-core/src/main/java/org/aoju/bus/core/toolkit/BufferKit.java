@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
  * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class BufferKit {

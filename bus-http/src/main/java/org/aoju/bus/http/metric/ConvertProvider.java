@@ -32,7 +32,7 @@ import java.util.ServiceLoader;
  * ConvertProvider 提供者
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public interface ConvertProvider {

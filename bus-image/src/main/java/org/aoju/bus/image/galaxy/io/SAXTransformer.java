@@ -34,7 +34,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public abstract class SAXTransformer {

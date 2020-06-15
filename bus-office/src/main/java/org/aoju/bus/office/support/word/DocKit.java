@@ -37,7 +37,7 @@ import java.io.IOException;
  * Word Document工具
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class DocKit {

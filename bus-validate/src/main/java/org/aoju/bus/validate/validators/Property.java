@@ -40,7 +40,7 @@ import java.util.Map;
  * 校验注解所包含的通用属性
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @Data

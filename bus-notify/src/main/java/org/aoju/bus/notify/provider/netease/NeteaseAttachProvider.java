@@ -34,7 +34,7 @@ import java.util.Map;
  * 云信通知
  *
  * @author Justubborn
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK1.8+
  */
 public class NeteaseAttachProvider extends NeteaseProvider {

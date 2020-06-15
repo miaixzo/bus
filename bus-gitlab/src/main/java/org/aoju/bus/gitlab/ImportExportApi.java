@@ -44,7 +44,7 @@ import java.util.Map;
  * This class provides an entry point to all the GitLab API project import/export calls.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
  * @since JDK 1.8+
  */

@@ -33,7 +33,7 @@ import java.util.List;
  * 规则处理
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class Assert {

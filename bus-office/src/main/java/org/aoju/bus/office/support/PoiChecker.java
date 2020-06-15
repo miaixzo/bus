@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.ClassKit;
  * POI引入检查器
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class PoiChecker {

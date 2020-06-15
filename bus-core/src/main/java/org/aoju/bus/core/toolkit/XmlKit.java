@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class XmlKit {

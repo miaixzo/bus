@@ -33,7 +33,7 @@ import org.aoju.bus.gitlab.GitLabApiForm;
  * This class is used to filter Projects when getting lists of projects for a specified user.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class ProjectFilter {

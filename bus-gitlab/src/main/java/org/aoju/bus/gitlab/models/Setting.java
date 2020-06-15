@@ -36,7 +36,7 @@ import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
  * List of settings that can be accessed via API calls</a> for more information.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public enum Setting {

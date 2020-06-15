@@ -28,7 +28,7 @@ import org.aoju.bus.image.nimble.codec.ImageReaderFactory;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class ImageReaderExtension extends DeviceExtension {

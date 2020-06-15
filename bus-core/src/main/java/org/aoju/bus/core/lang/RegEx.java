@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class RegEx {

@@ -32,7 +32,7 @@ import org.springframework.core.task.AsyncTaskExecutor;
 
 /**
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ConditionalOnClass(Builder.class)

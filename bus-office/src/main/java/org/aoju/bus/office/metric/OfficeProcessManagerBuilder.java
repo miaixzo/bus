@@ -33,7 +33,7 @@ import java.io.File;
  * 这个类包含{@link OfficeProcessManager}的配置.
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 public class OfficeProcessManagerBuilder extends OfficeProcessBuilder {

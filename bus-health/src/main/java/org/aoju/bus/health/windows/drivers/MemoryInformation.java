@@ -34,7 +34,7 @@ import java.util.Map;
  * Utility to query Memory performance counter
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @since JDK 1.8+
  */
 @ThreadSafe

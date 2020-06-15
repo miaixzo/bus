@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>int</code> 类型
  *
  * @author Kimi Liu
- * @version 5.9.8
+ * @version 5.9.9
  * @see Integer
  * @since JDK 1.8+
  */
