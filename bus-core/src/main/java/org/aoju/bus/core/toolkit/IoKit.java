@@ -567,7 +567,7 @@ public class IoKit {
             throw new InstrumentException(e);
         }
         if (readLength > 0 && readLength < length) {
-            byte[] b2 = new byte[length];
+            byte[] b2 = new byte[readLength];
             System.arraycopy(b, 0, b2, 0, readLength);
             return b2;
         } else {
