@@ -27,7 +27,7 @@ package org.aoju.bus.starter.wrapper;
 import org.aoju.bus.core.lang.Ansi;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.health.Platform;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -83,7 +83,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
                 method = Ansi.BgWhite.and(Ansi.Black).format(" %s ", method);
                 break;
         }
-        Logger.info("{} {} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", Platform.getLocalAddress(), method, url);
+        Logger.info("{} {} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", Builder.getLocalAddress(), method, url);
     }
 
     /**
