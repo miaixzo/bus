@@ -35,7 +35,7 @@ import java.util.Arrays;
  * 可复用的字符串生成器,非线程安全
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class TextKit implements CharSequence, Appendable, Serializable {

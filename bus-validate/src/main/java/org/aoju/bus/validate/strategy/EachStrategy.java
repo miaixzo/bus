@@ -41,7 +41,7 @@ import java.util.Map;
  * 容器元素内部校验
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class EachStrategy implements Matcher<Object, Each> {

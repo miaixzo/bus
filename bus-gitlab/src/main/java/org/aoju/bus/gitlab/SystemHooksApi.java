@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab System Hooks Keys API calls.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class SystemHooksApi extends AbstractApi {

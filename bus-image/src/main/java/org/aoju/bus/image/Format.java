@@ -45,7 +45,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 日期格式化等工具
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class Format extends java.text.Format {
@@ -444,8 +444,8 @@ public class Format extends java.text.Format {
                         ? typeStart - 1
                         : tagStr.length();
 
-                int indexStart = tagStr.charAt(tagStrLen - 1) == ']'
-                        ? tagStr.lastIndexOf('[', tagStrLen - 3) + 1
+                int indexStart = tagStr.charAt(tagStrLen - 1) == Symbol.C_BRACKET_RIGHT
+                        ? tagStr.lastIndexOf(Symbol.C_BRACKET_LEFT, tagStrLen - 3) + 1
                         : 0;
                 try {
                     tagPaths[i] = Tag.parseTagPath(tagStr.substring(0, indexStart != 0 ? indexStart - 1 : tagStrLen));

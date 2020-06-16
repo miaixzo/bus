@@ -25,6 +25,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.collection.ArrayIterator;
+import org.aoju.bus.core.collection.EnumerationIter;
 import org.aoju.bus.core.collection.IteratorEnumeration;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
@@ -51,7 +52,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -1834,12 +1835,12 @@ public class CollKit {
         } else if (value instanceof Iterable) {
             iter = ((Iterable) value).iterator();
         } else if (value instanceof Enumeration) {
-            iter = new IterKit.EnumerationIter<>((Enumeration) value);
+            iter = new EnumerationIter<>((Enumeration) value);
         } else if (ArrayKit.isArray(value)) {
             iter = new ArrayIterator<>(value);
         } else if (value instanceof CharSequence) {
             // String按照逗号分隔的列表对待
-            final String ArrayStr = StringKit.unWrap((CharSequence) value, '[', ']');
+            final String ArrayStr = StringKit.unWrap((CharSequence) value, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT);
             iter = StringKit.splitTrim(ArrayStr, Symbol.C_COMMA).iterator();
         } else {
             // 其它类型按照单一元素处理

@@ -40,7 +40,7 @@ import java.util.*;
  * Utility to read HKEY_PERFORMANCE_DATA information.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe

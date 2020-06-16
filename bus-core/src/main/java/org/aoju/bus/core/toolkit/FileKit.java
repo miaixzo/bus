@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.collection.EnumerationIter;
 import org.aoju.bus.core.io.LineHandler;
 import org.aoju.bus.core.io.file.FileReader;
 import org.aoju.bus.core.io.file.FileWriter;
@@ -53,7 +54,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -1605,15 +1606,25 @@ public class FileKit {
             return null;
         }
 
-        // 兼容Spring风格的ClassPath路径,去除前缀,不区分大小写
-        String pathToUse = StringKit.removePrefixIgnoreCase(path, "classpath:");
+        // 兼容Spring风格的ClassPath路径，去除前缀，不区分大小写
+        String pathToUse = StringKit.removePrefixIgnoreCase(path, Normal.CLASSPATH);
         // 去除file:前缀
         pathToUse = StringKit.removePrefixIgnoreCase(pathToUse, Normal.FILE_URL_PREFIX);
-        // 统一使用斜杠
-        pathToUse = pathToUse.replaceAll("[/\\\\]{1,}", Symbol.SLASH).trim();
 
-        int prefixIndex = pathToUse.indexOf(Symbol.COLON);
+        // 识别home目录形式，并转换为绝对路径
+        if (pathToUse.startsWith(Symbol.TILDE)) {
+            pathToUse = pathToUse.replace(Symbol.TILDE, getUserHomePath());
+        }
+
+        // 统一使用斜杠
+        pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH).trim();
+        //兼容Windows下的共享目录路径（原始路径如果以\\开头，则保留这种路径）
+        if (path.startsWith("\\\\")) {
+            pathToUse = "\\" + pathToUse;
+        }
+
         String prefix = Normal.EMPTY;
+        int prefixIndex = pathToUse.indexOf(Symbol.COLON);
         if (prefixIndex > -1) {
             // 可能Windows风格路径
             prefix = pathToUse.substring(0, prefixIndex + 1);
@@ -1640,17 +1651,18 @@ public class FileKit {
         String element;
         for (int i = pathList.size() - 1; i >= 0; i--) {
             element = pathList.get(i);
-            if (Symbol.DOT.equals(element)) {
-                // 当前目录,丢弃
-            } else if (Symbol.DOUBLE_DOT.equals(element)) {
-                tops++;
-            } else {
-                if (tops > 0) {
-                    // 有上级目录标记时按照个数依次跳过
-                    tops--;
+            // 只处理非.的目录，即只处理非当前目录
+            if (false == Symbol.DOT.equals(element)) {
+                if (Symbol.DOUBLE_DOT.equals(element)) {
+                    tops++;
                 } else {
-                    // Normal path element found.
-                    pathElements.add(0, element);
+                    if (tops > 0) {
+                        // 有上级目录标记时按照个数依次跳过
+                        tops--;
+                    } else {
+                        // Normal path element found.
+                        pathElements.add(0, element);
+                    }
                 }
             }
         }
@@ -3736,14 +3748,14 @@ public class FileKit {
      * @param resource 资源路径
      * @return 资源列表
      */
-    public static IterKit.EnumerationIter<URL> getResourceIter(String resource) {
+    public static EnumerationIter<URL> getResourceIter(String resource) {
         final Enumeration<URL> resources;
         try {
             resources = ClassKit.getClassLoader().getResources(resource);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-        return new IterKit.EnumerationIter<>(resources);
+        return new EnumerationIter<>(resources);
     }
 
     /**

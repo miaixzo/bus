@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class TransferCapability implements Serializable {
@@ -228,7 +228,7 @@ public class TransferCapability implements Serializable {
         if (storageOptions != null)
             sb.append(indent2).append(storageOptions)
                     .append(Property.LINE_SEPARATOR);
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     public enum Role {SCU, SCP}

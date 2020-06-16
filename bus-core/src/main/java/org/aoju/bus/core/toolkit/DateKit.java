@@ -54,7 +54,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -891,15 +891,13 @@ public class DateKit {
                     // yyyy-MM-dd HH:mm
                     return parse(dateStr, Fields.NORM_DATETIME_MINUTE_FORMAT);
                 case 2:
+                    if (StringKit.contains(dateStr, Symbol.DOT)) {
+                        // yyyy-MM-dd HH:mm:ss.SSS
+                        return parse(dateStr, Fields.NORM_DATETIME_MS_FORMAT);
+                    }
                     // yyyy-MM-dd HH:mm:ss
                     return parse(dateStr, Fields.NORM_DATETIME_FORMAT);
             }
-        }
-
-        // 长度判断
-        if (length >= Fields.NORM_DATETIME_MS_PATTERN.length() - 2) {
-            // yyyy-MM-dd HH:mm:ss.SSS
-            return parse(dateStr, Fields.NORM_DATETIME_MS_FORMAT);
         }
 
         // 没有更多匹配的时间格式

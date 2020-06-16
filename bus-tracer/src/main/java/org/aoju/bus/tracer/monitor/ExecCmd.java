@@ -24,16 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.monitor;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.System;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.logger.Logger;
-import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
@@ -47,7 +42,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class ExecCmd {
@@ -94,41 +89,6 @@ public class ExecCmd {
     }
 
     /**
-     * 获取IP地址
-     * 使用Nginx等反向代理软件， 则不能通过request.getRemoteAddr()获取IP地址
-     * 如果使用了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP地址
-     * X-Forwarded-For中第一个非unknown的有效IP字符串，则为真实IP地址
-     *
-     * @param request 请求
-     * @return 网络IP
-     */
-    public static String getIpAddr(HttpServletRequest request) {
-        String ip = null;
-        try {
-            ip = request.getHeader("x-forwarded-for");
-            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-                ip = request.getHeader("Proxy-Client-IP");
-            }
-            if (StringUtils.isEmpty(ip) || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-                ip = request.getHeader("WL-Proxy-Client-IP");
-            }
-            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-                ip = request.getHeader("HTTP_CLIENT_IP");
-            }
-            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-                ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-            }
-            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-                ip = request.getRemoteAddr();
-            }
-        } catch (Exception e) {
-            Logger.error("IPUtils ERROR ", e);
-        }
-
-        return ip;
-    }
-
-    /**
      * @return 本机器IP
      */
     public static String getHostIp() {
@@ -136,7 +96,7 @@ public class ExecCmd {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
         }
-        return "127.0.0.1";
+        return Http.HTTP_HOST_IPV4;
     }
 
     /**

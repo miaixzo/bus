@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * represented by a drive letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class Fields {
@@ -296,12 +296,13 @@ public class Fields {
     /**
      * 标准日期时间正则，每个字段支持单个数字或2个数字
      * <pre>
+     *     yyyy-MM-dd HH:mm:ss.SSS
      *     yyyy-MM-dd HH:mm:ss
      *     yyyy-MM-dd HH:mm
      *     yyyy-MM-dd
      * </pre>
      */
-    public static final Pattern REGEX_NORM = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}( \\d{1,2}:\\d{1,2}(:\\d{1,2})?)?");
+    public static final Pattern REGEX_NORM = Pattern.compile("\\d{4}-\\d{1,2}-\\d{1,2}(\\s\\d{1,2}:\\d{1,2}(:\\d{1,2})?)?(.\\d{1,3})?");
 
     public final static String[] WTB = {
             "sun", "mon", "tue", "wed", "thu", "fri", "sat",
@@ -685,7 +686,7 @@ public class Fields {
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
-     * @version 5.9.9
+     * @version 6.0.0
      * @since JDK 1.8+
      */
     public enum DateField {
@@ -840,7 +841,7 @@ public class Fields {
      * 日期时间单位,每个单位都是以毫秒为基数
      *
      * @author Kimi Liu
-     * @version 5.9.9
+     * @version 6.0.0
      * @since JDK 1.8+
      */
     public enum Unit {
@@ -889,7 +890,7 @@ public class Fields {
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
-     * @version 5.9.9
+     * @version 6.0.0
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -1027,7 +1028,7 @@ public class Fields {
      * 季度枚举
      *
      * @author Kimi Liu
-     * @version 5.9.9
+     * @version 6.0.0
      * @since JDK 1.8+
      */
     public enum Quarter {
@@ -1090,7 +1091,7 @@ public class Fields {
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
-     * @version 5.9.9
+     * @version 6.0.0
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY

@@ -27,7 +27,7 @@ package org.aoju.bus.starter.wrapper;
 import org.aoju.bus.core.lang.Ansi;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.extra.servlet.ServletKit;
 import org.aoju.bus.logger.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @Component
@@ -53,10 +53,10 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     /**
      * 请求日志信息
      *
-     * @param method 请求类型
-     * @param url    请求URL
+     * @param method  请求类型
+     * @param request 网络请求
      */
-    private static void isHandle(String method, String url) {
+    private static void isHandle(HttpServletRequest request, String method) {
         switch (method) {
             case Http.ALL:
                 method = Ansi.BgBlack.and(Ansi.White).format(" %s ", method);
@@ -83,7 +83,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
                 method = Ansi.BgWhite.and(Ansi.Black).format(" %s ", method);
                 break;
         }
-        Logger.info("{} {} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", Builder.getLocalAddress(), method, url);
+        Logger.info("{} {} {} {}", Ansi.isWindows ? Normal.EMPTY : "==>", ServletKit.getClientIP(request), method, request.getRequestURL().toString());
     }
 
     /**
@@ -99,7 +99,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String method = request.getMethod().toUpperCase();
-        isHandle(method, request.getRequestURL().toString());
+        isHandle(request, method);
         if (Http.GET.equals(method)
                 || Http.POST.equals(method)
                 || Http.PATCH.equals(method)

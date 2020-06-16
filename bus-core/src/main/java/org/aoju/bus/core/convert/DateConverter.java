@@ -36,7 +36,7 @@ import java.util.Date;
  * 日期转换器
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class DateConverter extends AbstractConverter<Date> {

@@ -31,7 +31,7 @@ import java.math.BigInteger;
  * 基于分组的Get接口
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public interface GroupedType {

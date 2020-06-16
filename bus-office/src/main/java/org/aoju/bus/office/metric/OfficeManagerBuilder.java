@@ -30,7 +30,7 @@ import java.io.File;
  * 这个类提供了{@link AbstractOfficeManager}的配置.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public interface OfficeManagerBuilder {

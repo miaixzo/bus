@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * Utility to read process statistics from {@code /proc/[pid]/stat}
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe

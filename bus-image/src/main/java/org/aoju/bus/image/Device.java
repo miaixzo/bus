@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * 设备信息
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class Device implements Serializable {
@@ -1267,7 +1267,7 @@ public class Device implements Serializable {
             conn.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
         for (ApplicationEntity ae : aes.values())
             ae.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     public void reconfigure(Device from) {

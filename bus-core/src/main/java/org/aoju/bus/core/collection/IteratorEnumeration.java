@@ -32,52 +32,30 @@ import java.util.Iterator;
  *
  * @param <E> 元素类型
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class IteratorEnumeration<E> implements Enumeration<E> {
 
-    private Iterator<? extends E> iterator;
-
-
-    public IteratorEnumeration() {
-    }
+    private final Iterator<E> iterator;
 
     /**
      * 构造
      *
      * @param iterator {@link Iterator}对象
      */
-    public IteratorEnumeration(final Iterator<? extends E> iterator) {
+    public IteratorEnumeration(Iterator<E> iterator) {
         this.iterator = iterator;
     }
 
-    /**
-     * 如果底层迭代器有更多的元素，则返回true
-     *
-     * @return 如果底层迭代器有更多的元素，则为true
-     */
     @Override
     public boolean hasMoreElements() {
         return iterator.hasNext();
     }
 
-    /**
-     * 从基础迭代器返回下一个元素.
-     *
-     * @return 底层迭代器的下一个元素.
-     */
     @Override
     public E nextElement() {
         return iterator.next();
-    }
-
-    public Iterator<? extends E> getIterator() {
-        return iterator;
-    }
-
-    public void setIterator(final Iterator<? extends E> iterator) {
-        this.iterator = iterator;
     }
 
 }

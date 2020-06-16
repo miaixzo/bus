@@ -29,17 +29,22 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.File;
+import java.io.OutputStream;
 
 /**
  * 大数据量Excel写出
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class BigExcelWriter extends ExcelWriter {
 
     public static final int DEFAULT_WINDOW_SIZE = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
+    /**
+     * 只能flush一次，调用后不再重复写出
+     */
+    private boolean isFlushed;
 
     /**
      * 构造,默认生成xls格式的Excel文件
@@ -136,10 +141,20 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     @Override
+    public ExcelWriter flush(OutputStream out, boolean isCloseOut) {
+        if (false == isFlushed) {
+            isFlushed = true;
+            return super.flush(out, isCloseOut);
+        }
+        return this;
+    }
+
+    @Override
     public void close() {
-        if (null != this.destFile) {
+        if (null != this.destFile && false == isFlushed) {
             flush();
         }
+
         ((SXSSFWorkbook) this.workbook).dispose();
         super.closeWithoutFlush();
     }

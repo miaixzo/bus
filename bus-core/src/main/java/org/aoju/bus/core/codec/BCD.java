@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 使二进制和十进制之间的转换得以快捷的进行
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class BCD {

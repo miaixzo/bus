@@ -24,12 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.time.Period;
 import java.util.Calendar;
 
 /**
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class RetentionPeriod implements Comparable<RetentionPeriod> {
@@ -45,12 +47,12 @@ public class RetentionPeriod implements Comparable<RetentionPeriod> {
     }
 
     public static RetentionPeriod valueOf(String s) {
-        String[] split1 = Property.split(s, ']');
+        String[] split1 = Property.split(s, Symbol.C_BRACKET_RIGHT);
         switch (split1.length) {
             case 1:
                 return new RetentionPeriod(s, Period.parse(s), null);
             case 2:
-                String[] split2 = Property.split(split1[0], '[');
+                String[] split2 = Property.split(split1[0], Symbol.C_BRACKET_LEFT);
                 if (split2.length == 2)
                     return new RetentionPeriod(s,
                             Period.parse(split1[split1.length - 1]),
@@ -69,7 +71,7 @@ public class RetentionPeriod implements Comparable<RetentionPeriod> {
     }
 
     public String getPrefix() {
-        return value.substring(0, value.indexOf(']') + 1);
+        return value.substring(0, value.indexOf(Symbol.C_BRACKET_RIGHT) + 1);
     }
 
     public boolean match(Calendar cal) {

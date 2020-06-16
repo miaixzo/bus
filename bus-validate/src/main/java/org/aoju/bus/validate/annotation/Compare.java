@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 参数值比较验证注解
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @Target({ElementType.FIELD, ElementType.PARAMETER})

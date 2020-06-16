@@ -51,7 +51,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class Connection implements Serializable {
@@ -840,7 +840,7 @@ public class Connection implements Serializable {
         Property.appendLine(sb, indent2, "port: ", port);
         Property.appendLine(sb, indent2, "ciphers: ", Arrays.toString(tlsCipherSuites));
         Property.appendLine(sb, indent2, "installed: ", getInstalled());
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     public void setSocketSendOptions(Socket s) throws SocketException {

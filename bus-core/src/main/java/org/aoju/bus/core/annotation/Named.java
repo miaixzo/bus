@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 注解命名
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @Binding

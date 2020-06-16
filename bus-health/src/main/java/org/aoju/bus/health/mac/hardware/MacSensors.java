@@ -33,7 +33,7 @@ import org.aoju.bus.health.mac.Smc;
  * Sensors from SMC
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class ValidationResult {
@@ -252,7 +252,7 @@ public class ValidationResult {
             vr.vr.prompt(value,
                     attrs.bigEndian(),
                     attrs.getSpecificCharacterSet(vr.vr), 200, sb);
-            sb.append(']');
+            sb.append(Symbol.C_BRACKET_RIGHT);
             if (iav.reason != Invalid.Item) {
                 sb.append(" Invalid ").append(iav.reason);
                 appendIODRef(iav.dataElement.getLineNumber(), sb);

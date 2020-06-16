@@ -63,7 +63,7 @@ import org.aoju.bus.core.toolkit.ObjectKit;
  * </pre>
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class ToStringBuilder implements Builder<String> {

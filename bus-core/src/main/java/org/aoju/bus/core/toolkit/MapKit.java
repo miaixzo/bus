@@ -37,7 +37,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class MapKit {
@@ -919,6 +919,75 @@ public class MapKit {
             map.put(newKey, map.remove(oldKey));
         }
         return map;
+    }
+
+    /**
+     * 去除Map中值为{@code null}的键值对
+     * 注意：此方法在传入的Map上直接修改。
+     *
+     * @param <K> key的类型
+     * @param <V> value的类型
+     * @param map Map
+     * @return map
+     */
+    public static <K, V> Map<K, V> removeNullValue(Map<K, V> map) {
+        if (isEmpty(map)) {
+            return map;
+        }
+
+        final Iterator<Entry<K, V>> iter = map.entrySet().iterator();
+        Entry<K, V> entry;
+        while (iter.hasNext()) {
+            entry = iter.next();
+            if (null == entry.getValue()) {
+                iter.remove();
+            }
+        }
+
+        return map;
+    }
+
+    /**
+     * 返回一个空Map
+     *
+     * @param <K> 键类型
+     * @param <V> 值类型
+     * @return 空Map
+     * @see Collections#emptyMap()
+     */
+    public static <K, V> Map<K, V> empty() {
+        return Collections.emptyMap();
+    }
+
+    /**
+     * 根据传入的Map类型不同，返回对应类型的空Map
+     *
+     * <pre>
+     *     1. NavigableMap
+     *     2. SortedMap
+     *     3. Map
+     * </pre>
+     *
+     * @param <K>      键类型
+     * @param <V>      值类型
+     * @param <T>      Map类型
+     * @param mapClass Map类型，null返回默认的Map
+     * @return 空Map
+     */
+    public static <K, V, T extends Map<K, V>> T empty(Class<?> mapClass) {
+        if (null == mapClass) {
+            return (T) Collections.emptyMap();
+        }
+        if (NavigableMap.class == mapClass) {
+            return (T) Collections.emptyNavigableMap();
+        } else if (SortedMap.class == mapClass) {
+            return (T) Collections.emptySortedMap();
+        } else if (Map.class == mapClass) {
+            return (T) Collections.emptyMap();
+        }
+
+        // 不支持空集合的集合类型
+        throw new IllegalArgumentException(StringKit.format("[{}] is not support to get empty!", mapClass));
     }
 
     /**

@@ -32,7 +32,7 @@ import java.awt.datatransfer.Transferable;
  * 用户通过实现此接口,实现监听剪贴板内容变化
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public interface ClipboardListener {

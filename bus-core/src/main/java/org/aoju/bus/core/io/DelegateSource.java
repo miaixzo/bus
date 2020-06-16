@@ -32,7 +32,7 @@ import java.io.IOException;
  * 将调用转发给另一个调用的{@link Source}
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public abstract class DelegateSource implements Source {

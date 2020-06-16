@@ -53,7 +53,7 @@ import java.util.zip.Deflater;
  * Spring-Boot JAR包加密器
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry>

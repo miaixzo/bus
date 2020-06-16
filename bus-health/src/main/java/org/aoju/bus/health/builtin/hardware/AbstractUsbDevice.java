@@ -34,7 +34,7 @@ import java.util.Arrays;
  * USB设备
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @Immutable
@@ -90,7 +90,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
             sb.append(" (").append(usbDevice.getVendor()).append(Symbol.C_PARENTHESE_RIGHT);
         }
         if (usbDevice.getSerialNumber().length() > 0) {
-            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(']');
+            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(Symbol.C_BRACKET_RIGHT);
         }
         for (UsbDevice connected : usbDevice.getConnectedDevices()) {
             sb.append('\n').append(indentUsb(connected, indent + 4));
