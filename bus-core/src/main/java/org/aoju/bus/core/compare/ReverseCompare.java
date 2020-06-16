@@ -32,7 +32,7 @@ import java.util.Comparator;
  *
  * @param <E> 被比较对象类型
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class ReverseCompare<E> implements Comparator<E>, Serializable {

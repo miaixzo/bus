@@ -30,7 +30,7 @@ import lombok.*;
  * 授权所需的token
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8++
  */
 @Getter

@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
  * 公共常量
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class Consts extends Normal {

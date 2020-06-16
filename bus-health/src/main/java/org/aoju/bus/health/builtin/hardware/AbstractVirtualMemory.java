@@ -32,7 +32,7 @@ import org.aoju.bus.health.Builder;
  * 虚拟内存信息
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe

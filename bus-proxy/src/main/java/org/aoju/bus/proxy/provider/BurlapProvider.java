@@ -34,7 +34,7 @@ import java.net.MalformedURLException;
  * burlap 服务提供
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class BurlapProvider implements Provider {

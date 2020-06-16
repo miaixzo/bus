@@ -40,7 +40,7 @@ import org.aoju.bus.logger.Logger;
  * for definitions as they apply to specific platforms.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @NotThreadSafe

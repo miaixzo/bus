@@ -45,7 +45,7 @@ import java.util.*;
  * 动态条目被添加到数组中，从最后一个位置开始向前移动。当数组填满时，它被加倍.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 final class Hpack {

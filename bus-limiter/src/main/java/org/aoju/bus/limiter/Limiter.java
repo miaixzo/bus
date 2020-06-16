@@ -31,7 +31,7 @@ import java.util.Map;
  * 限制器件的定义
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public interface Limiter<T extends Annotation> {

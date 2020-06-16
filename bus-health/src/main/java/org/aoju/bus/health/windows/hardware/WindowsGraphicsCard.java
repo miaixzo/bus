@@ -44,7 +44,7 @@ import java.util.List;
  * Graphics Card obtained from WMI
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @Immutable

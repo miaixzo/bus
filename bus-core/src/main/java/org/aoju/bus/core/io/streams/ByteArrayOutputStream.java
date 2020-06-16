@@ -37,7 +37,7 @@ import java.io.OutputStream;
  * 避免重新分配内存块而是分配新增的缓冲区,缓冲区不会被GC,数据也不会被拷贝到其他缓冲区
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class ByteArrayOutputStream extends OutputStream {

@@ -42,7 +42,7 @@ import java.util.Map;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe

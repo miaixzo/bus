@@ -34,7 +34,7 @@ import java.util.Date;
  * Job Events</a> is incorrect, this class represents the actual content of the Job Hook event.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class BuildEvent extends AbstractEvent {

@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * 适用规则:关闭洗涤槽,稍后重试
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class Timeout {

@@ -46,7 +46,7 @@ To utilize GitLab&trade; API in your Java project, simply add the following depe
 ```
 dependencies {
     ...
-    compile group: 'org.aoju', name: 'bus-gitlab', version: '5.9.9'
+    compile group: 'org.aoju', name: 'bus-gitlab', version: '6.0.0'
 }
 ```
 
@@ -55,7 +55,7 @@ dependencies {
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-gitlab</artifactId>
-    <version>5.9.9</version>
+    <version>6.0.0</version>
 </dependency>
 ```
 

@@ -33,7 +33,7 @@ import org.aoju.bus.notify.magic.Template;
  * 云信消息
  *
  * @author Justubborn
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK1.8+
  */
 

@@ -34,7 +34,7 @@ import java.util.List;
  * This class implements the client side API for the GitLab Award Emoji API calls.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @see <a href="https://docs.gitlab.com/ce/api/award_emoji.html">GitLab Award Emoji API Documentaion</a>
  * @since v4.8.31
  * @since JDK 1.8+

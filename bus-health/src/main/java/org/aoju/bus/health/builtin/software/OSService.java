@@ -32,7 +32,7 @@ import org.aoju.bus.core.annotation.Immutable;
  * generally shield applications from the implementation details of the machine.
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @Immutable

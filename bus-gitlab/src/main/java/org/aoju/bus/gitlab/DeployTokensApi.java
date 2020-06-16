@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * See https://docs.gitlab.com/ee/api/deploy_tokens.html
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public class DeployTokensApi extends AbstractApi {

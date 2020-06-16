@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.Normal;
  * 单元格数据类型枚举
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 public enum CellDataType {

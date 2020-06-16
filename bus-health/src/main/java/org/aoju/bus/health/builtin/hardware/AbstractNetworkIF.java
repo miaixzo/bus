@@ -43,7 +43,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe
