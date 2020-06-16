@@ -49,9 +49,9 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -188,7 +188,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param propertiesUrl 属性文件路径
      */
     public Props(URL propertiesUrl) {
-        this(propertiesUrl, StandardCharsets.ISO_8859_1);
+        this(propertiesUrl, Charset.ISO_8859_1);
     }
 
     /**
@@ -259,6 +259,17 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
+     * 获得Classpath下的Properties文件
+     *
+     * @param resource 资源(相对Classpath的路径)
+     * @param clazz    基准类
+     * @return Properties
+     */
+    public static Properties getProp(String resource, Class<?> clazz) {
+        return new Props(resource, clazz);
+    }
+
+    /**
      * 初始化配置文件
      *
      * @param urlResource {@link UriResource}
@@ -270,7 +281,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
         }
         try (final BufferedReader reader = urlResource.getReader(charset)) {
             super.load(reader);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new InstrumentException(e);
         }
     }
@@ -289,20 +300,18 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      */
     public void autoLoad(boolean autoReload) {
         if (autoReload) {
+            Assert.notNull(this.propertiesFileUrl, "Properties URL is null !");
             if (null != this.watchMonitor) {
+                // 先关闭之前的监听
                 this.watchMonitor.close();
             }
-            try {
-                watchMonitor = WatchMonitor.create(Paths.get(this.propertiesFileUrl.toURI()));
-                watchMonitor.setWatcher(new SimpleWatcher() {
-                    @Override
-                    public void onModify(WatchEvent<?> event, Path currentPath) {
-                        load();
-                    }
-                }).start();
-            } catch (Exception e) {
-                throw new InstrumentException("Setting auto load not support url: [{}]", this.propertiesFileUrl);
-            }
+            this.watchMonitor = WatchKit.createModify(this.propertiesFileUrl, new SimpleWatcher() {
+                @Override
+                public void onModify(WatchEvent<?> event, Path currentPath) {
+                    load();
+                }
+            });
+            this.watchMonitor.start();
         } else {
             IoKit.close(this.watchMonitor);
             this.watchMonitor = null;
@@ -472,6 +481,23 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     }
 
     /**
+     * 获取并删除键值对，当指定键对应值非空时，返回并删除这个值，后边的键对应的值不再查找
+     *
+     * @param keys 键列表，常用于别名
+     * @return 字符串值
+     */
+    public String getAndRemoveStr(String... keys) {
+        Object value = null;
+        for (String key : keys) {
+            value = remove(key);
+            if (null != value) {
+                break;
+            }
+        }
+        return (String) value;
+    }
+
+    /**
      * 将配置文件转换为Bean，支持嵌套Bean
      * 支持的表达式：
      *
@@ -534,7 +560,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
         prefix = StringKit.nullToEmpty(StringKit.addSuffixIfNot(prefix, Symbol.DOT));
 
         String key;
-        for (java.util.Map.Entry<Object, Object> entry : this.entrySet()) {
+        for (Map.Entry<Object, Object> entry : this.entrySet()) {
             key = (String) entry.getKey();
             if (false == StringKit.startWith(key, prefix)) {
                 // 非指定开头的属性忽略掉
@@ -549,23 +575,6 @@ public final class Props extends Properties implements BasicType<String>, OptBas
         }
 
         return bean;
-    }
-
-    /**
-     * 获取并删除键值对,当指定键对应值非空时,返回并删除这个值,后边的键对应的值不再查找
-     *
-     * @param keys 键列表,常用于别名
-     * @return 字符串值
-     */
-    public String getAndRemoveStr(String... keys) {
-        Object value = null;
-        for (String key : keys) {
-            value = remove(key);
-            if (null != value) {
-                break;
-            }
-        }
-        return (String) value;
     }
 
     /**

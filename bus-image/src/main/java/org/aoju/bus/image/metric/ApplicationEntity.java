@@ -288,7 +288,7 @@ public class ApplicationEntity implements Serializable {
         for (Map.Entry<String, String> entry : masqueradeCallingAETs.entrySet()) {
             aets[i] = entry.getKey().equals(Symbol.STAR)
                     ? entry.getValue()
-                    : '[' + entry.getKey() + ']' + entry.getValue();
+                    : Symbol.C_BRACKET_LEFT + entry.getKey() + Symbol.C_BRACKET_RIGHT + entry.getValue();
             i++;
         }
         return aets;
@@ -297,8 +297,8 @@ public class ApplicationEntity implements Serializable {
     public void setMasqueradeCallingAETitles(String... aets) {
         masqueradeCallingAETs.clear();
         for (String aet : aets) {
-            if (aet.charAt(0) == '[') {
-                int end = aet.indexOf(']');
+            if (aet.charAt(0) == Symbol.C_BRACKET_LEFT) {
+                int end = aet.indexOf(Symbol.C_BRACKET_RIGHT);
                 if (end > 0)
                     masqueradeCallingAETs.put(aet.substring(1, end), aet.substring(end + 1));
             } else {
@@ -674,7 +674,7 @@ public class ApplicationEntity implements Serializable {
             conn.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
         for (TransferCapability tc : getTransferCapabilities())
             tc.promptTo(sb, indent2).append(Property.LINE_SEPARATOR);
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     public void reconfigure(ApplicationEntity src) {

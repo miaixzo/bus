@@ -90,7 +90,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
             sb.append(" (").append(usbDevice.getVendor()).append(Symbol.C_PARENTHESE_RIGHT);
         }
         if (usbDevice.getSerialNumber().length() > 0) {
-            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(']');
+            sb.append(" [s/n: ").append(usbDevice.getSerialNumber()).append(Symbol.C_BRACKET_RIGHT);
         }
         for (UsbDevice connected : usbDevice.getConnectedDevices()) {
             sb.append('\n').append(indentUsb(connected, indent + 4));

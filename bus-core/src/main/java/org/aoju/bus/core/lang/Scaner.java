@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.collection.EnumerationIter;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
@@ -263,7 +264,7 @@ public class Scaner {
      */
     private void scanJar(JarFile jar) {
         String name;
-        for (JarEntry entry : new IterKit.EnumerationIter<>(jar.entries())) {
+        for (JarEntry entry : new EnumerationIter<>(jar.entries())) {
             name = StringKit.removePrefix(entry.getName(), Symbol.SLASH);
             if (name.startsWith(this.packagePath)) {
                 if (name.endsWith(FileType.CLASS) && false == entry.isDirectory()) {

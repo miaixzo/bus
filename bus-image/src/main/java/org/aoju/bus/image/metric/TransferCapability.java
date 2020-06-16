@@ -228,7 +228,7 @@ public class TransferCapability implements Serializable {
         if (storageOptions != null)
             sb.append(indent2).append(storageOptions)
                     .append(Property.LINE_SEPARATOR);
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     public enum Role {SCU, SCP}

@@ -840,7 +840,7 @@ public class Connection implements Serializable {
         Property.appendLine(sb, indent2, "port: ", port);
         Property.appendLine(sb, indent2, "ciphers: ", Arrays.toString(tlsCipherSuites));
         Property.appendLine(sb, indent2, "installed: ", getInstalled());
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     public void setSocketSendOptions(Socket s) throws SocketException {

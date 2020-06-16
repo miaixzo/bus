@@ -38,8 +38,8 @@ import org.aoju.bus.health.builtin.*;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.setting.dialect.Props;
 
-import java.io.*;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -814,22 +814,7 @@ public final class Builder {
      * @return A {@link Properties} object containing the properties.
      */
     public static Properties readProperties(String fileName) {
-        Properties p = new Properties();
-        try {
-            String path = Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName;
-            InputStream is = Builder.class.getResourceAsStream(path);
-            Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(reader);
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.trim().split(Symbol.EQUAL);
-                p.setProperty(tokens[0], tokens[1]);
-            }
-            br.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return p;
+        return Props.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName, Builder.class);
     }
 
     /**

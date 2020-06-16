@@ -61,9 +61,9 @@ public class Code implements Serializable {
         this.codeValue = trimsubstring(s, 1, endVal);
         this.codingSchemeDesignator = trimsubstring(s, endVal + 1, endScheme);
         this.codeMeaning = trimsubstring(s, startMeaning, len - 2);
-        if (codingSchemeDesignator.endsWith("]")) {
-            int endVersion = s.lastIndexOf(']', endScheme - 1);
-            endScheme = s.lastIndexOf('[', endVersion - 1);
+        if (codingSchemeDesignator.endsWith(Symbol.BRACKET_RIGHT)) {
+            int endVersion = s.lastIndexOf(Symbol.C_BRACKET_RIGHT, endScheme - 1);
+            endScheme = s.lastIndexOf(Symbol.C_BRACKET_LEFT, endVersion - 1);
             this.codingSchemeDesignator = trimsubstring(s, endVal + 1, endScheme);
             this.codingSchemeVersion = nullifyDCM01(trimsubstring(s, endScheme + 1, endVersion));
         }
@@ -163,7 +163,7 @@ public class Code implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append(Symbol.C_PARENTHESE_LEFT).append(codeValue).append(", ").append(codingSchemeDesignator);
         if (codingSchemeVersion != null)
-            sb.append(" [").append(codingSchemeVersion).append(']');
+            sb.append(" [").append(codingSchemeVersion).append(Symbol.C_BRACKET_RIGHT);
         sb.append(", \"").append(codeMeaning).append("\")");
         return sb.toString();
     }

@@ -134,7 +134,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         Property.appendLine(sb, indent2, "aets: ",
                 Arrays.toString(condition.aeTitles));
         Property.appendLine(sb, indent2, "uri: ", uri);
-        return sb.append(indent).append(']');
+        return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
 
     private static class Condition implements Serializable, Comparable<Condition> {

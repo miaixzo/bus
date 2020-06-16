@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.image.galaxy.data.Attributes;
 
@@ -202,7 +203,7 @@ public enum Dimse {
                 sb.append(Tag.toString(tag)).append(", ");
             sb.setLength(sb.length() - 2);
         }
-        sb.append(']');
+        sb.append(Symbol.C_BRACKET_RIGHT);
     }
 
     private static void promptNumberOfSubOpsTo(Attributes cmd, StringBuilder sb) {
@@ -288,7 +289,7 @@ public enum Dimse {
         promptUIDTo(cmdAttrs, "  cuid=", tagOfSOPClassUID, sb);
         promptUIDTo(cmdAttrs, "  iuid=", tagOfSOPInstanceUID, sb);
         promptUIDTo("  tsuid=", tsuid, sb);
-        sb.append(']');
+        sb.append(Symbol.C_BRACKET_RIGHT);
         return sb.toString();
     }
 

@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.util.Calendar;
 
 /**
@@ -42,12 +44,12 @@ public class DeleterThreshold extends StorageThreshold
     }
 
     public static DeleterThreshold valueOf(String s) {
-        String[] split1 = Property.split(s, ']');
+        String[] split1 = Property.split(s, Symbol.C_BRACKET_RIGHT);
         switch (split1.length) {
             case 1:
                 return new DeleterThreshold(s, BinaryPrefix.parse(s), null);
             case 2:
-                String[] split2 = Property.split(split1[0], '[');
+                String[] split2 = Property.split(split1[0], Symbol.C_BRACKET_LEFT);
                 if (split2.length == 2)
                     return new DeleterThreshold(s, BinaryPrefix.parse(split1[split1.length - 1]), ScheduleExpression.valueOf(split2[1]));
         }
@@ -55,7 +57,7 @@ public class DeleterThreshold extends StorageThreshold
     }
 
     public String getPrefix() {
-        return value.substring(0, value.indexOf(']') + 1);
+        return value.substring(0, value.indexOf(Symbol.C_BRACKET_RIGHT) + 1);
     }
 
     public boolean match(Calendar cal) {
