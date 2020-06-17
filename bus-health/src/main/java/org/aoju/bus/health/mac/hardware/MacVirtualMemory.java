@@ -33,7 +33,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
-import org.aoju.bus.health.mac.Sysctl;
+import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.util.function.Supplier;
@@ -70,7 +70,7 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
         long swapUsed = 0L;
         long swapTotal = 0L;
         XswUsage xswUsage = new XswUsage();
-        if (Sysctl.sysctl("vm.swapusage", xswUsage)) {
+        if (SysctlKit.sysctl("vm.swapusage", xswUsage)) {
             swapUsed = xswUsage.xsu_used;
             swapTotal = xswUsage.xsu_total;
         }

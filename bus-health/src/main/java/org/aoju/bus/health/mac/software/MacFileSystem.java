@@ -42,7 +42,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
-import org.aoju.bus.health.mac.Sysctl;
+import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -120,11 +120,11 @@ public class MacFileSystem extends AbstractFileSystem {
         OPTIONS_MAP.put(MNT_NOATIME, "noatime");
     }
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
+    public static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
         return getFileStoreMatching(nameToMatch, false);
     }
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
+    public static List<OSFileStore> getFileStoreMatching(String nameToMatch, boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
         // Use getfsstat to find fileSystems
@@ -232,22 +232,9 @@ public class MacFileSystem extends AbstractFileSystem {
                         }
                     }
 
-                    // Add to the list
-                    OSFileStore osStore = new OSFileStore();
-                    osStore.setName(name);
-                    osStore.setVolume(volume);
-                    osStore.setLabel(name);
-                    osStore.setMount(path);
-                    osStore.setDescription(description);
-                    osStore.setType(type);
-                    osStore.setOptions(options.toString());
-                    osStore.setUUID(uuid == null ? Normal.EMPTY : uuid);
-                    osStore.setFreeSpace(file.getFreeSpace());
-                    osStore.setUsableSpace(file.getUsableSpace());
-                    osStore.setTotalSpace(file.getTotalSpace());
-                    osStore.setFreeInodes(fs[f].f_ffree);
-                    osStore.setTotalInodes(fs[f].f_files);
-                    fsList.add(osStore);
+                    fsList.add(new MacOSFileStore(name, volume, name, path, options.toString(),
+                            uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
+                            file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
                 }
                 daVolumeNameKey.release();
                 // Close DA session
@@ -257,47 +244,20 @@ public class MacFileSystem extends AbstractFileSystem {
         return fsList;
     }
 
-    /**
-     * <p>
-     * updateFileStoreStats.
-     * </p>
-     *
-     * @param osFileStore a {@link OSFileStore} object.
-     * @return a boolean.
-     */
-    public static boolean updateFileStoreStats(OSFileStore osFileStore) {
-        for (OSFileStore fileStore : getFileStoreMatching(osFileStore.getName())) {
-            if (osFileStore.getVolume().equals(fileStore.getVolume())
-                    && osFileStore.getMount().equals(fileStore.getMount())) {
-                osFileStore.setLogicalVolume(fileStore.getLogicalVolume());
-                osFileStore.setDescription(fileStore.getDescription());
-                osFileStore.setType(fileStore.getType());
-                osFileStore.setFreeSpace(fileStore.getFreeSpace());
-                osFileStore.setUsableSpace(fileStore.getUsableSpace());
-                osFileStore.setTotalSpace(fileStore.getTotalSpace());
-                osFileStore.setFreeInodes(fileStore.getFreeInodes());
-                osFileStore.setTotalInodes(fileStore.getTotalInodes());
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
-    public OSFileStore[] getFileStores(boolean localOnly) {
+    public List<OSFileStore> getFileStores(boolean localOnly) {
         // List of file systems
-        List<OSFileStore> fsList = getFileStoreMatching(null, localOnly);
-        return fsList.toArray(new OSFileStore[0]);
+        return getFileStoreMatching(null, localOnly);
     }
 
     @Override
     public long getOpenFileDescriptors() {
-        return Sysctl.sysctl("kern.num_files", 0);
+        return SysctlKit.sysctl("kern.num_files", 0);
     }
 
     @Override
     public long getMaxFileDescriptors() {
-        return Sysctl.sysctl("kern.maxfiles", 0);
+        return SysctlKit.sysctl("kern.maxfiles", 0);
     }
 
 }

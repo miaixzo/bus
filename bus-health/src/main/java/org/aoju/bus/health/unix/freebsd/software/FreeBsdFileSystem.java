@@ -32,7 +32,8 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
-import org.aoju.bus.health.unix.freebsd.BsdSysctl;
+import org.aoju.bus.health.linux.software.LinuxOSFileStore;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.io.File;
 import java.util.*;
@@ -53,37 +54,8 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
     // System path mounted as tmpfs
     private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
 
-    /**
-     * <p>
-     * updateFileStoreStats.
-     * </p>
-     *
-     * @param osFileStore a {@link OSFileStore} object.
-     * @return a boolean.
-     */
-    public static boolean updateFileStoreStats(OSFileStore osFileStore) {
-        // Just as fast to query all of them
-        for (OSFileStore fileStore : new FreeBsdFileSystem().getFileStores()) {
-            if (osFileStore.getName().equals(fileStore.getName())
-                    && osFileStore.getVolume().equals(fileStore.getVolume())
-                    && osFileStore.getMount().equals(fileStore.getMount())) {
-                osFileStore.setLogicalVolume(fileStore.getLogicalVolume());
-                osFileStore.setDescription(fileStore.getDescription());
-                osFileStore.setType(fileStore.getType());
-                osFileStore.setUUID(fileStore.getUUID());
-                osFileStore.setFreeSpace(fileStore.getFreeSpace());
-                osFileStore.setUsableSpace(fileStore.getUsableSpace());
-                osFileStore.setTotalSpace(fileStore.getTotalSpace());
-                osFileStore.setFreeInodes(fileStore.getFreeInodes());
-                osFileStore.setTotalInodes(fileStore.getTotalInodes());
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
-    public OSFileStore[] getFileStores(boolean localOnly) {
+    public List<OSFileStore> getFileStores(boolean localOnly) {
         // Find any partition UUIDs and map them
         Map<String, String> uuidMap = new HashMap<>();
         // Now grab dmssg output
@@ -170,34 +142,21 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             // Match UUID
             String uuid = uuidMap.getOrDefault(name, Normal.EMPTY);
 
-            // Add to the list
-            OSFileStore osStore = new OSFileStore();
-            osStore.setName(name);
-            osStore.setVolume(volume);
-            osStore.setLabel(name);
-            osStore.setMount(path);
-            osStore.setDescription(description);
-            osStore.setType(type);
-            osStore.setOptions(options);
-            osStore.setUUID(uuid);
-            osStore.setFreeSpace(freeSpace);
-            osStore.setUsableSpace(usableSpace);
-            osStore.setTotalSpace(totalSpace);
-            osStore.setFreeInodes(inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L);
-            osStore.setTotalInodes(inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L);
-            fsList.add(osStore);
+            fsList.add(new LinuxOSFileStore(name, volume, name, path, options, uuid, Normal.EMPTY, description, type, freeSpace,
+                    usableSpace, totalSpace, inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
+                    inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
         }
-        return fsList.toArray(new OSFileStore[0]);
+        return fsList;
     }
 
     @Override
     public long getOpenFileDescriptors() {
-        return BsdSysctl.sysctl("kern.openfiles", 0);
+        return BsdSysctlKit.sysctl("kern.openfiles", 0);
     }
 
     @Override
     public long getMaxFileDescriptors() {
-        return BsdSysctl.sysctl("kern.maxfiles", 0);
+        return BsdSysctlKit.sysctl("kern.maxfiles", 0);
     }
 
 }

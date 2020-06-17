@@ -29,8 +29,10 @@ import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
+import org.aoju.bus.health.builtin.hardware.SoundCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -63,7 +65,7 @@ final class MacSoundCard extends AbstractSoundCard {
      *
      * @return List of {@link MacSoundCard} objects.
      */
-    public static List<MacSoundCard> getSoundCards() {
+    public static List<SoundCard> getSoundCards() {
         List<MacSoundCard> soundCards = new ArrayList<>();
 
         // /System/Library/Extensions/AppleHDA.kext/Contents/Info.plist
@@ -93,7 +95,7 @@ final class MacSoundCard extends AbstractSoundCard {
         }
         soundCards.add(new MacSoundCard(kernelVersion, manufacturer, codec));
 
-        return soundCards;
+        return Collections.unmodifiableList(soundCards);
     }
 
 }

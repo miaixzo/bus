@@ -24,117 +24,19 @@
  ********************************************************************************/
 package org.aoju.bus.health.builtin.software;
 
-import org.aoju.bus.core.annotation.NotThreadSafe;
-import org.aoju.bus.logger.Logger;
-
-import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
+import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.windows.drivers.Win32ProcessCached;
 
 /**
- * A process is an instance of a computer program that is being executed. It
- * contains the program code and its current activity. Depending on the
- * operating system (OS), a process may be made up of multiple threads of
- * execution that execute instructions concurrently.
+ * Represents a Process on the operating system, which may contain multiple
+ * threads.
  *
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
-@NotThreadSafe
-public class OSProcess {
-
-    private final OperatingSystem operatingSystem;
-    private String name = "";
-    private String path = "";
-    private String commandLine = "";
-    private String currentWorkingDirectory = "";
-    private String user = "";
-    private String userID = "";
-    private String group = "";
-    private String groupID = "";
-    private State state = State.OTHER;
-    private int processID;
-    private int parentProcessID;
-    private int threadCount;
-    private int priority;
-    private long virtualSize;
-    private long residentSetSize;
-    private long kernelTime;
-    private long userTime;
-    private long startTime;
-    private long upTime;
-    private final Supplier<Double> cumulativeCpuLoad = memoize(this::queryCumulativeCpuLoad);
-    private long bytesRead;
-    private long bytesWritten;
-    private long openFiles;
-    private int bitness;
-    // cache calculation for sorting
-    private double cpuPercent = -1d;
-
-    /**
-     * <p>
-     * Constructor for OSProcess.
-     * </p>
-     *
-     * @param operatingSystem a {@link OperatingSystem} instance
-     */
-    public OSProcess(OperatingSystem operatingSystem) {
-        this.operatingSystem = operatingSystem;
-    }
-
-    /**
-     * <p>
-     * Constructor for OSProcess given a Process ID. Instantiates an object with
-     * current statistics for that process ID, and is equivalent to
-     * {@link OperatingSystem#getProcess(int)}.
-     * </p>
-     * <p>
-     * If a process with that ID does not exist, this constructor will throw an
-     * {@link java.lang.InstantiationException}.
-     * </p>
-     *
-     * @param operatingSystem a {@link OperatingSystem} instance
-     * @param processID       process ID
-     * @throws InstantiationException If a process by that ID does not exist.
-     */
-    public OSProcess(OperatingSystem operatingSystem, int processID) throws InstantiationException {
-        this.processID = processID;
-        this.operatingSystem = operatingSystem;
-        if (!updateAttributes(false)) {
-            throw new InstantiationException("A process with ID " + processID + " does not exist.");
-        }
-    }
-
-    /**
-     * Attempts to updates all process attributes. Returns false if the update
-     * fails, which will occur if the process no longer exists.
-     *
-     * @return True if the update was successful, false if the update failed
-     */
-    public boolean updateAttributes() {
-        return updateAttributes(true);
-    }
-
-    /**
-     * Attempts to updates all process attributes. Returns false if the update
-     * fails, which will occur if the process no longer exists.
-     *
-     * @param slowFields If false, skip fields that are slow to retrieve (e.g., group
-     *                   information on Windows, open files on Unix and Linux). If true,
-     *                   include all fields, regardless of how long it takes to retrieve
-     *                   the data.
-     * @return True if the update was successful, false if the update failed
-     */
-    public boolean updateAttributes(boolean slowFields) {
-        OSProcess process = operatingSystem.getProcess(this.processID, slowFields);
-        if (process == null) {
-            Logger.debug("No process found: {}", this.processID);
-            return false;
-        }
-        copyValuesToThisProcess(process);
-        return true;
-    }
+@ThreadSafe
+public interface OSProcess {
 
     /**
      * <p>
@@ -143,18 +45,7 @@ public class OSProcess {
      *
      * @return Returns the name of the process.
      */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * Set the name of the process.
-     *
-     * @param name process name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+    String getName();
 
     /**
      * <p>
@@ -163,18 +54,7 @@ public class OSProcess {
      *
      * @return Returns the full path of the executing process.
      */
-    public String getPath() {
-        return this.path;
-    }
-
-    /**
-     * Set the full path of the executing process.
-     *
-     * @param path process path
-     */
-    public void setPath(String path) {
-        this.path = path;
-    }
+    String getPath();
 
     /**
      * <p>
@@ -187,21 +67,17 @@ public class OSProcess {
      * On Linux and macOS systems, the string is null-character-delimited,
      * to permit the end user to parse the executable and arguments if
      * desired. Further, the macOS variant may include environment variables
-     * which the end user may wish to exclude from display. On Solaris, the
-     * string is truncated to 80 characters.
+     * which the end user may wish to exclude from display.
+     * <p>
+     * On Solaris, the string is truncated to 80 characters.
+     * <p>
+     * On Windows, by default, performs a single WMI query for this process,
+     * with some latency. If this method will be frequently called for
+     * multiple processes, see the configuration file to enable a batch
+     * query mode leveraging {@link Win32ProcessCached#getCommandLine} to
+     * improve performance.
      */
-    public String getCommandLine() {
-        return this.commandLine;
-    }
-
-    /**
-     * Sets the process command line.
-     *
-     * @param commandLine The commandLine to set.
-     */
-    public void setCommandLine(String commandLine) {
-        this.commandLine = commandLine;
-    }
+    String getCommandLine();
 
     /**
      * <p>
@@ -212,18 +88,7 @@ public class OSProcess {
      * <p>
      * On Windows, this value is only populated for the current process.
      */
-    public String getCurrentWorkingDirectory() {
-        return this.currentWorkingDirectory;
-    }
-
-    /**
-     * Sets the process current working directory
-     *
-     * @param currentWorkingDirectory The currentWorkingDirectory to set.
-     */
-    public void setCurrentWorkingDirectory(String currentWorkingDirectory) {
-        this.currentWorkingDirectory = currentWorkingDirectory;
-    }
+    String getCurrentWorkingDirectory();
 
     /**
      * <p>
@@ -233,18 +98,7 @@ public class OSProcess {
      * @return Returns the user name. On Windows systems, also returns the domain
      * prepended to the username.
      */
-    public String getUser() {
-        return this.user;
-    }
-
-    /**
-     * Sets the user.
-     *
-     * @param user The user to set.
-     */
-    public void setUser(String user) {
-        this.user = user;
-    }
+    String getUser();
 
     /**
      * <p>
@@ -253,18 +107,7 @@ public class OSProcess {
      *
      * @return Returns the userID. On Windows systems, returns the Security ID (SID)
      */
-    public String getUserID() {
-        return this.userID;
-    }
-
-    /**
-     * Sets the User ID.
-     *
-     * @param userID The userID to set.
-     */
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
+    String getUserID();
 
     /**
      * <p>
@@ -276,23 +119,10 @@ public class OSProcess {
      * On Windows systems, populating this value for processes other than
      * the current user requires administrative privileges (and still may
      * fail for some system processes) and can incur significant latency.
-     * The value is only calculated for single process queries using
-     * {@link OperatingSystem#getProcess(int)}. When
-     * successful, returns a comma-delimited list of groups with access to
-     * this process, corresponding to the SIDs in {@link #getGroupID()}.
+     * When successful, returns a the default primary group with access to
+     * this process, corresponding to the SID in {@link #getGroupID()}.
      */
-    public String getGroup() {
-        return this.group;
-    }
-
-    /**
-     * Sets the group.
-     *
-     * @param group The group to set.
-     */
-    public void setGroup(String group) {
-        this.group = group;
-    }
+    String getGroup();
 
     /**
      * <p>
@@ -304,23 +134,10 @@ public class OSProcess {
      * On Windows systems, populating this value for processes other than
      * the current user requires administrative privileges (and still may
      * fail for some system processes) and can incur significant latency.
-     * The value is only calculated for single process queries using
-     * {@link OperatingSystem#getProcess(int)}. When
-     * successful, returns a comma-delimited list of group SIDs with access
-     * to this process, corresponding to the names in {@link #getGroup()}.
+     * When successful, returns the default primary group SID with access to
+     * this process, corresponding to the name in {@link #getGroup()}.
      */
-    public String getGroupID() {
-        return this.groupID;
-    }
-
-    /**
-     * Sets the Group ID.
-     *
-     * @param groupID The groupID to set.
-     */
-    public void setGroupID(String groupID) {
-        this.groupID = groupID;
-    }
+    String getGroupID();
 
     /**
      * <p>
@@ -329,18 +146,7 @@ public class OSProcess {
      *
      * @return Returns the execution state of the process.
      */
-    public State getState() {
-        return this.state;
-    }
-
-    /**
-     * Set the execution state of the process.
-     *
-     * @param state execution state
-     */
-    public void setState(State state) {
-        this.state = state;
-    }
+    State getState();
 
     /**
      * <p>
@@ -349,18 +155,7 @@ public class OSProcess {
      *
      * @return Returns the processID.
      */
-    public int getProcessID() {
-        return this.processID;
-    }
-
-    /**
-     * Set the processID.
-     *
-     * @param processID process ID
-     */
-    public void setProcessID(int processID) {
-        this.processID = processID;
-    }
+    int getProcessID();
 
     /**
      * <p>
@@ -369,18 +164,7 @@ public class OSProcess {
      *
      * @return Returns the parentProcessID, if any; 0 otherwise.
      */
-    public int getParentProcessID() {
-        return this.parentProcessID;
-    }
-
-    /**
-     * Set the parentProcessID.
-     *
-     * @param parentProcessID parent process ID
-     */
-    public void setParentProcessID(int parentProcessID) {
-        this.parentProcessID = parentProcessID;
-    }
+    int getParentProcessID();
 
     /**
      * <p>
@@ -389,18 +173,7 @@ public class OSProcess {
      *
      * @return Returns the number of threads in this process.
      */
-    public int getThreadCount() {
-        return this.threadCount;
-    }
-
-    /**
-     * Set the number of threads in this process.
-     *
-     * @param threadCount number of threads
-     */
-    public void setThreadCount(int threadCount) {
-        this.threadCount = threadCount;
-    }
+    int getThreadCount();
 
     /**
      * <p>
@@ -424,31 +197,7 @@ public class OSProcess {
      * real-time threads, which are treated differently than other threads
      * by the scheduler.
      */
-    public int getPriority() {
-        return this.priority;
-    }
-
-    /**
-     * Set the priority of this process.
-     * <p>
-     * For Linux, priority is a value in the range -20 to 19 (20 on some systems).
-     * The default priority is 0; lower priorities cause more favorable scheduling.
-     * <p>
-     * For Windows, priority values can range from 0 (lowest priority) to 31
-     * (highest priority).
-     * <p>
-     * Mac OS X has 128 priority levels, ranging from 0 (lowest priority) to 127
-     * (highest priority). They are divided into several major bands: 0 through 51
-     * are the normal levels; the default priority is 31. 52 through 79 are the
-     * highest priority regular threads; 80 through 95 are for kernel mode threads;
-     * and 96 through 127 correspond to real-time threads, which are treated
-     * differently than other threads by the scheduler.
-     *
-     * @param priority priority
-     */
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
+    int getPriority();
 
     /**
      * <p>
@@ -459,20 +208,7 @@ public class OSProcess {
      * the process can access, including memory that is swapped out and
      * memory that is from shared libraries.
      */
-    public long getVirtualSize() {
-        return this.virtualSize;
-    }
-
-    /**
-     * Set the Virtual Memory Size (VSZ). It includes all memory that the process
-     * can access, including memory that is swapped out and memory that is from
-     * shared libraries.
-     *
-     * @param virtualSize virtual size
-     */
-    public void setVirtualSize(long virtualSize) {
-        this.virtualSize = virtualSize;
-    }
+    long getVirtualSize();
 
     /**
      * <p>
@@ -486,22 +222,7 @@ public class OSProcess {
      * the pages from those libraries are actually in memory. It does
      * include all stack and heap memory.
      */
-    public long getResidentSetSize() {
-        return this.residentSetSize;
-    }
-
-    /**
-     * Set the Resident Set Size (RSS). It is used to show how much memory is
-     * allocated to that process and is in RAM. It does not include memory that is
-     * swapped out. It does include memory from shared libraries as long as the
-     * pages from those libraries are actually in memory. It does include all stack
-     * and heap memory.
-     *
-     * @param residentSetSize resident set size
-     */
-    public void setResidentSetSize(long residentSetSize) {
-        this.residentSetSize = residentSetSize;
-    }
+    long getResidentSetSize();
 
     /**
      * <p>
@@ -511,18 +232,7 @@ public class OSProcess {
      * @return Returns the number of milliseconds the process has executed in
      * kernel/system mode.
      */
-    public long getKernelTime() {
-        return this.kernelTime;
-    }
-
-    /**
-     * Set the number of milliseconds the process has executed in kernel mode.
-     *
-     * @param kernelTime kernel time
-     */
-    public void setKernelTime(long kernelTime) {
-        this.kernelTime = kernelTime;
-    }
+    long getKernelTime();
 
     /**
      * <p>
@@ -532,18 +242,7 @@ public class OSProcess {
      * @return Returns the number of milliseconds the process has executed in user
      * mode.
      */
-    public long getUserTime() {
-        return this.userTime;
-    }
-
-    /**
-     * Set the number of milliseconds the process has executed in user mode.
-     *
-     * @param userTime user time
-     */
-    public void setUserTime(long userTime) {
-        this.userTime = userTime;
-    }
+    long getUserTime();
 
     /**
      * <p>
@@ -552,18 +251,7 @@ public class OSProcess {
      *
      * @return Returns the number of milliseconds since the process started.
      */
-    public long getUpTime() {
-        return this.upTime;
-    }
-
-    /**
-     * Set the number of milliseconds since the process started.
-     *
-     * @param upTime up time
-     */
-    public void setUpTime(long upTime) {
-        this.upTime = upTime;
-    }
+    long getUpTime();
 
     /**
      * <p>
@@ -573,19 +261,7 @@ public class OSProcess {
      * @return Returns the start time of the process in number of milliseconds since
      * January 1, 1970.
      */
-    public long getStartTime() {
-        return this.startTime;
-    }
-
-    /**
-     * Set the start time of the process in number of milliseconds since January 1,
-     * 1970.
-     *
-     * @param startTime start time
-     */
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
+    long getStartTime();
 
     /**
      * <p>
@@ -594,18 +270,7 @@ public class OSProcess {
      *
      * @return Returns the number of bytes the process has read from disk.
      */
-    public long getBytesRead() {
-        return this.bytesRead;
-    }
-
-    /**
-     * Set the number of bytes the process has read from disk.
-     *
-     * @param bytesRead number of bytes read
-     */
-    public void setBytesRead(long bytesRead) {
-        this.bytesRead = bytesRead;
-    }
+    long getBytesRead();
 
     /**
      * <p>
@@ -614,18 +279,7 @@ public class OSProcess {
      *
      * @return Returns the number of bytes the process has written to disk.
      */
-    public long getBytesWritten() {
-        return this.bytesWritten;
-    }
-
-    /**
-     * Set the number of bytes the process has written to disk.
-     *
-     * @param bytesWritten number of bytes written
-     */
-    public void setBytesWritten(long bytesWritten) {
-        this.bytesWritten = bytesWritten;
-    }
+    long getBytesWritten();
 
     /**
      * Sets the number of open file handles (or network connections) that belongs to
@@ -636,126 +290,85 @@ public class OSProcess {
      *
      * @return open files or -1 if unknown or not supported
      */
-    public long getOpenFiles() {
-        return this.openFiles;
-    }
-
-    /**
-     * Sets the number of open file handles (or network connections) that belongs to
-     * the process
-     *
-     * @param count The number of handles
-     */
-    public void setOpenFiles(long count) {
-        this.openFiles = count;
-    }
+    long getOpenFiles();
 
     /**
      * Gets cumulative CPU usage of this process.
+     * <p>
+     * This calculation sums CPU ticks across all processors and may exceed 100% for
+     * multi-threaded processes. This is consistent with the cumulative CPU
+     * presented by the "top" command on Linux/Unix machines.
      *
      * @return The proportion of up time that the process was executing in kernel or
      * user mode.
      */
-    public double getProcessCpuLoadCumulative() {
-        return cumulativeCpuLoad.get();
-    }
-
-    private double queryCumulativeCpuLoad() {
-        return (this.kernelTime + this.userTime) / (double) this.upTime;
-    }
+    double getProcessCpuLoadCumulative();
 
     /**
      * Gets CPU usage of this process since a previous snapshot of the same process,
      * provided as a parameter.
+     * <p>
+     * This calculation sums CPU ticks across all processors and may exceed 100% for
+     * multi-threaded processes. This is consistent with process usage calulations
+     * on Linux/Unix machines, but should be divided by the number of logical
+     * processors to match the value displayed by the Windows Task Manager.
      * <p>
      * The accuracy of this calculation is dependent on both the number of threads
      * on which the process is executing, and the precision of the Operating
      * System's tick counters. A polling interval of at least a few seconds is
      * recommended.
      *
-     * @param priorSnapshot An {@link OSProcess} object containing statistics for this same
-     *                      process collected at a prior point in time. May be null.
+     * @param proc An {@link OSProcess} object containing statistics for this same
+     *             process collected at a prior point in time. May be null.
      * @return If the prior snapshot is for the same process at a prior point in
      * time, the proportion of elapsed up time between the current process
      * snapshot and the previous one that the process was executing in
      * kernel or user mode. Returns cumulative load otherwise.
      */
-    public double getProcessCpuLoadBetweenTicks(OSProcess priorSnapshot) {
-        if (priorSnapshot != null && this.processID == priorSnapshot.processID && this.upTime > priorSnapshot.upTime) {
-            return (this.userTime - priorSnapshot.userTime + this.kernelTime - priorSnapshot.kernelTime)
-                    / (double) (this.upTime - priorSnapshot.upTime);
-        }
-        return getProcessCpuLoadCumulative();
-    }
+    double getProcessCpuLoadBetweenTicks(OSProcess proc);
 
     /**
      * Attempts to get the bitness (32 or 64) of the process.
      *
      * @return The bitness, if able to be determined, 0 otherwise.
      */
-    public int getBitness() {
-        return this.bitness;
-    }
+    int getBitness();
 
     /**
+     * Retrieves the process affinity mask for this process.
      * <p>
-     * Setter for the field <code>bitness</code>.
-     * </p>
+     * On Windows systems with more than 64 processors, if the threads of the
+     * calling process are in a single processor group, returns the process affinity
+     * mask for that group (which may be zero if the specified process is running in
+     * a different group). If the calling process contains threads in multiple
+     * groups, returns zero.
+     * <p>
+     * Because macOS does not export interfaces that identify processors or control
+     * thread placement, explicit thread to processor binding is not supported and
+     * this method will return a bitmask of all logical processors.
+     * <p>
+     * If the Operating System fails to retrieve an affinity mask (e.g., the process
+     * has terminated), returns zero.
      *
-     * @param bitness The bitness to set.
+     * @return a bit vector in which each bit represents the processors that a
+     * process is allowed to run on.
      */
-    public void setBitness(int bitness) {
-        this.bitness = bitness;
-    }
+    long getAffinityMask();
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("OSProcess@");
-        builder.append(Integer.toHexString(hashCode()));
-        builder.append("[processID=").append(this.processID);
-        builder.append(", name=").append(this.name).append(']');
-        return builder.toString();
-    }
-
-    private void copyValuesToThisProcess(OSProcess sourceProcess) {
-        this.name = sourceProcess.name;
-        this.path = sourceProcess.path;
-        if (!sourceProcess.commandLine.isEmpty()) {
-            this.commandLine = sourceProcess.commandLine;
-        }
-        this.currentWorkingDirectory = sourceProcess.currentWorkingDirectory;
-        this.user = sourceProcess.user;
-        this.userID = sourceProcess.userID;
-        if (!sourceProcess.group.isEmpty()) {
-            this.group = sourceProcess.group;
-        }
-        if (!sourceProcess.groupID.isEmpty()) {
-            this.groupID = sourceProcess.groupID;
-        }
-        this.state = sourceProcess.state;
-        this.processID = sourceProcess.processID;
-        this.parentProcessID = sourceProcess.parentProcessID;
-        this.threadCount = sourceProcess.threadCount;
-        this.priority = sourceProcess.priority;
-        this.virtualSize = sourceProcess.virtualSize;
-        this.residentSetSize = sourceProcess.residentSetSize;
-        this.kernelTime = sourceProcess.kernelTime;
-        this.userTime = sourceProcess.userTime;
-        this.startTime = sourceProcess.startTime;
-        this.upTime = sourceProcess.upTime;
-        this.bytesRead = sourceProcess.bytesRead;
-        this.bytesWritten = sourceProcess.bytesWritten;
-        if (sourceProcess.openFiles > 0) {
-            this.openFiles = sourceProcess.openFiles;
-        }
-        this.bitness = sourceProcess.bitness;
-        this.cpuPercent = sourceProcess.cpuPercent;
-    }
+    /**
+     * Attempts to updates process attributes. Returns false if the update fails,
+     * which will occur if the process no longer exists.
+     *
+     * @return {@code true} if the update was successful, false if the update
+     * failed. In addition, on a failued update the process state will be
+     * changed to {@link State#INVALID}.
+     */
+    boolean updateAttributes();
 
     /**
      * Process Execution States
      */
-    public enum State {
+    enum State {
         /**
          * Intermediate state in process creation
          */
@@ -783,7 +396,12 @@ public class OSProcess {
         /**
          * Other or unknown states not defined
          */
-        OTHER
+        OTHER,
+        /**
+         * The state resulting if the process fails to update statistics, probably due
+         * to termination.
+         */
+        INVALID
     }
 
 }

@@ -56,7 +56,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     private final Supplier<String> serialNumber = memoize(LinuxComputerSystem::querySerialNumber);
 
     private static String queryManufacturer() {
-        String result = null;
+        String result;
         if ((result = queryManufacturerFromSysfs()) == null && (result = queryManufacturerFromProcCpu()) == null) {
             return Normal.UNKNOWN;
         }
@@ -64,7 +64,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private static String queryModel() {
-        String result = null;
+        String result;
         if ((result = queryModelFromSysfs()) == null && (result = queryModelFromDeviceTree()) == null
                 && (result = queryModelFromLshw()) == null) {
             return Normal.UNKNOWN;
@@ -73,7 +73,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private static String querySerialNumber() {
-        String result = null;
+        String result;
         if ((result = querySerialFromSysfs()) == null && (result = querySerialFromDmiDecode()) == null
                 && (result = querySerialFromLshal()) == null && (result = querySerialFromLshw()) == null) {
             return Normal.UNKNOWN;
@@ -231,4 +231,5 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     public Baseboard createBaseboard() {
         return new LinuxBaseboard();
     }
+
 }

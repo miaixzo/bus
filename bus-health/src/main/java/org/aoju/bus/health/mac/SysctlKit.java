@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.health.unix.freebsd;
+package org.aoju.bus.health.mac;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
@@ -32,19 +32,20 @@ import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.logger.Logger;
 
+
 /**
- * 提供对FreeBSD上的sysctl调用的访问
+ * 提供对OS X上的sysctl调用的访问
  *
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class BsdSysctl {
+public final class SysctlKit {
 
     private static final String SYSCTL_FAIL = "Failed syctl call: {}, Error code: {}";
 
-    private BsdSysctl() {
+    private SysctlKit() {
     }
 
     /**
@@ -52,12 +53,12 @@ public final class BsdSysctl {
      *
      * @param name 系统的名称
      * @param def  默认int值
-     * @return 如果调用成功，则返回调用的int结果;否则默认
+     * @return 如果调用成功，则调用的int结果;否则默认
      */
     public static int sysctl(String name, int def) {
-        IntByReference size = new IntByReference(FreeBsdLibc.INT_SIZE);
+        IntByReference size = new IntByReference(SystemB.INT_SIZE);
         Pointer p = new Memory(size.getValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
             Logger.error("Failed sysctl call: {}, Error code: {}", name, Native.getLastError());
             return def;
         }
@@ -68,14 +69,14 @@ public final class BsdSysctl {
      * 执行带有长结果的sysctl调用
      *
      * @param name 系统的名称
-     * @param def  默认长整型值
-     * @return 如果调用成功，则返回调用的长整型结果;否则默认
+     * @param def  默认的长整型值
+     * @return 如果调用成功，则调用返回的长整型结果;否则默认
      */
     public static long sysctl(String name, long def) {
-        IntByReference size = new IntByReference(FreeBsdLibc.UINT64_SIZE);
+        IntByReference size = new IntByReference(SystemB.UINT64_SIZE);
         Pointer p = new Memory(size.getValue());
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
-            Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
+            Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
         return p.getLong(0);
@@ -86,19 +87,19 @@ public final class BsdSysctl {
      *
      * @param name 系统的名称
      * @param def  默认字符串值
-     * @return 如果调用成功，则返回调用的字符串结果;否则默认
+     * @return 如果调用成功，则调用返回的字符串结果;否则默认
      */
     public static String sysctl(String name, String def) {
-        // Call first time with null pointer to get value of size
+        // 第一次调用空指针来获取大小值
         IntByReference size = new IntByReference();
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
-            Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
+            Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
-        // Add 1 to size for null terminated string
+        // 为空终止字符串的大小添加1
         Pointer p = new Memory(size.getValue() + 1L);
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
-            Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, 0)) {
+            Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return def;
         }
         return p.getString(0);
@@ -112,8 +113,7 @@ public final class BsdSysctl {
      * @return 如果结构成功填充为真，则为假
      */
     public static boolean sysctl(String name, Structure struct) {
-        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, struct.getPointer(), new IntByReference(struct.size()), null,
-                0)) {
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, struct.getPointer(), new IntByReference(struct.size()), null, 0)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return false;
         }

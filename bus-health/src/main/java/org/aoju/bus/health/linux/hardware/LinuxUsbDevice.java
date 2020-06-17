@@ -25,15 +25,12 @@
 package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
 import org.aoju.bus.health.linux.Udev;
 import org.aoju.bus.health.linux.Udev.UdevDevice;
 import org.aoju.bus.health.linux.Udev.UdevEnumerate;
 import org.aoju.bus.health.linux.Udev.UdevListEntry;
-import org.aoju.bus.health.mac.hardware.MacUsbDevice;
 
 import java.util.*;
 
@@ -47,21 +44,8 @@ import java.util.*;
 @Immutable
 public class LinuxUsbDevice extends AbstractUsbDevice {
 
-    /**
-     * <p>
-     * Constructor for LinuxUsbDevice.
-     * </p>
-     *
-     * @param name             a {@link java.lang.String} object.
-     * @param vendor           a {@link java.lang.String} object.
-     * @param vendorId         a {@link java.lang.String} object.
-     * @param productId        a {@link java.lang.String} object.
-     * @param serialNumber     a {@link java.lang.String} object.
-     * @param uniqueDeviceId   a {@link java.lang.String} object.
-     * @param connectedDevices an array of {@link UsbDevice} objects.
-     */
     public LinuxUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                          String uniqueDeviceId, UsbDevice[] connectedDevices) {
+                          String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
@@ -71,8 +55,8 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
      * @param tree a boolean.
      * @return an array of {@link UsbDevice} objects.
      */
-    public static UsbDevice[] getUsbDevices(boolean tree) {
-        UsbDevice[] devices = getUsbDevices();
+    public static List<UsbDevice> getUsbDevices(boolean tree) {
+        List<UsbDevice> devices = getUsbDevices();
         if (tree) {
             return devices;
         }
@@ -81,15 +65,16 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         // their connected devices will be
         for (UsbDevice device : devices) {
             deviceList.add(new LinuxUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                    device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(), new MacUsbDevice[0]));
+                    device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
+                    Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
-        return deviceList.toArray(new UsbDevice[0]);
+        return deviceList;
     }
 
-    private static UsbDevice[] getUsbDevices() {
+    private static List<UsbDevice> getUsbDevices() {
         // Enumerate all usb devices and build information maps
-        Udev.UdevHandle udev = Udev.INSTANCE.udev_new();
+        Udev.UdevContext udev = Udev.INSTANCE.udev_new();
         // Create a list of the devices in the 'usb' subsystem.
         UdevEnumerate enumerate = Udev.INSTANCE.udev_enumerate_new(udev);
         Udev.INSTANCE.udev_enumerate_add_match_subsystem(enumerate, "usb");
@@ -162,11 +147,11 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
             controllerDevices.add(getDeviceAndChildren(controller, "0000", "0000", nameMap, vendorMap, vendorIdMap,
                     productIdMap, serialMap, hubMap));
         }
-        return controllerDevices.toArray(new UsbDevice[0]);
+        return controllerDevices;
     }
 
-    private static void addDevicesToList(List<UsbDevice> deviceList, UsbDevice[] connectedDevices) {
-        for (UsbDevice device : connectedDevices) {
+    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
+        for (UsbDevice device : list) {
             deviceList.add(device);
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
@@ -179,12 +164,12 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
      * @param devPath      The device node path.
      * @param vid          The default (parent) vendor ID
      * @param pid          The default (parent) product ID
-     * @param nameMap
-     * @param vendorMap
-     * @param vendorIdMap
-     * @param productIdMap
-     * @param serialMap
-     * @param hubMap
+     * @param nameMap      the map of names
+     * @param vendorMap    the map of vendors
+     * @param vendorIdMap  the map of vendorIds
+     * @param productIdMap the map of productIds
+     * @param serialMap    the map of serial numbers
+     * @param hubMap       the map of hubs
      * @return A LinuxUsbDevice corresponding to this device
      */
     private static LinuxUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
@@ -193,15 +178,15 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
         List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
-        List<LinuxUsbDevice> usbDevices = new ArrayList<>();
+        List<UsbDevice> usbDevices = new ArrayList<>();
         for (String path : childPaths) {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorMap, vendorIdMap,
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
-                usbDevices.toArray(new UsbDevice[usbDevices.size()]));
+        return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+                vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
+                usbDevices);
     }
 
 }

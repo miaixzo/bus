@@ -35,6 +35,7 @@ import org.aoju.bus.health.unix.solaris.hardware.SolarisPowerSource;
 import org.aoju.bus.health.windows.hardware.WindowsPowerSource;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * 电源支持
@@ -97,7 +98,7 @@ public abstract class AbstractPowerSource implements PowerSource {
         this.temperature = temperature;
     }
 
-    private static PowerSource[] getPowerSources() {
+    private static List<PowerSource> getPowerSources() {
         switch (Platform.getCurrentOs()) {
             case WINDOWS:
                 return WindowsPowerSource.getPowerSources();
@@ -110,7 +111,7 @@ public abstract class AbstractPowerSource implements PowerSource {
             case FREEBSD:
                 return FreeBsdPowerSource.getPowerSources();
             default:
-                throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
+                throw new UnsupportedOperationException("Operating system not supported: " + Platform.getOSType());
         }
     }
 
@@ -240,7 +241,7 @@ public abstract class AbstractPowerSource implements PowerSource {
 
     @Override
     public boolean updateAttributes() {
-        PowerSource[] psArr = getPowerSources();
+        List<PowerSource> psArr = getPowerSources();
         for (PowerSource ps : psArr) {
             if (ps.getName().equals(this.name)) {
                 this.name = ps.getName();

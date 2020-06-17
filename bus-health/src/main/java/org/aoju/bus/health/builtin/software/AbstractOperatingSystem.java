@@ -26,11 +26,10 @@ package org.aoju.bus.health.builtin.software;
 
 import com.sun.jna.Platform;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.health.Config;
+import org.aoju.bus.health.unix.Who;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static org.aoju.bus.health.Memoize.memoize;
@@ -42,6 +41,8 @@ import static org.aoju.bus.health.Memoize.memoize;
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {
 
+    public static final String OSHI_OS_UNIX_WHOCOMMAND = "health.os.unix.whoCommand";
+    protected static final boolean USE_WHO_COMMAND = Config.get(OSHI_OS_UNIX_WHOCOMMAND, false);
     /*
      * Comparators for use in processSort().
      */
@@ -173,35 +174,25 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     }
 
     @Override
-    public OSProcess[] getProcesses() {
-        return getProcesses(0, null, false);
+    public List<OSSession> getSessions() {
+        return Collections.unmodifiableList(Who.queryWho());
     }
 
     @Override
-    public OSProcess[] getProcesses(int limit, ProcessSort sort) {
-        return getProcesses(limit, sort, false);
+    public List<OSProcess> getProcesses() {
+        return getProcesses(0, null);
     }
 
     @Override
     public List<OSProcess> getProcesses(Collection<Integer> pids) {
-        return getProcesses(pids, true);
-    }
-
-    @Override
-    public List<OSProcess> getProcesses(Collection<Integer> pids, boolean slowFields) {
         List<OSProcess> returnValue = new ArrayList<>(pids.size());
         for (Integer pid : pids) {
-            OSProcess process = getProcess(pid, slowFields);
+            OSProcess process = getProcess(pid);
             if (process != null) {
                 returnValue.add(process);
             }
         }
-        return returnValue;
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        return getProcess(pid, true);
+        return Collections.unmodifiableList(returnValue);
     }
 
     @Override

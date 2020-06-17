@@ -45,6 +45,9 @@ import org.aoju.bus.health.windows.PowrProf.SystemBatteryState;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A Power Source
@@ -88,11 +91,8 @@ public final class WindowsPowerSource extends AbstractPowerSource {
      *
      * @return An array of PowerSource objects representing batteries, etc.
      */
-    public static PowerSource[] getPowerSources() {
-        // Windows provides a single unnamed battery
-        WindowsPowerSource[] psArray = new WindowsPowerSource[1];
-        psArray[0] = getPowerSource("System Battery");
-        return psArray;
+    public static List<PowerSource> getPowerSources() {
+        return Collections.unmodifiableList(Arrays.asList(getPowerSource("System Battery")));
     }
 
     private static WindowsPowerSource getPowerSource(String name) {
@@ -152,8 +152,9 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         HANDLE hdev = SetupApi.INSTANCE.SetupDiGetClassDevs(GUID_DEVCLASS_BATTERY, null, null,
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (WinBase.INVALID_HANDLE_VALUE != hdev) {
+            boolean batteryFound = false;
             // Limit search to 100 batteries max
-            for (int idev = 0; idev < 100; idev++) {
+            for (int idev = 0; !batteryFound && idev < 100; idev++) {
                 SP_DEVICE_INTERFACE_DATA did = new SP_DEVICE_INTERFACE_DATA();
                 did.cbSize = did.size();
 
@@ -293,7 +294,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                 }
                                             }
                                             // Exit loop
-                                            break;
+                                            batteryFound = true;
                                         }
                                     }
                                 }

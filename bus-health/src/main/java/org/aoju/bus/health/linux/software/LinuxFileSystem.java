@@ -60,7 +60,8 @@ public class LinuxFileSystem extends AbstractFileSystem {
     // System path mounted as tmpfs
     private static final List<String> TMP_FS_PATHS = Arrays.asList("/run", "/sys", "/proc", ProcPath.PROC);
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap) {
+    // called from LinuxOSFileStore
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap) {
         return getFileStoreMatching(nameToMatch, uuidMap, false);
     }
 
@@ -163,55 +164,37 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 Logger.error("Failed to get file counts from statvfs. {}", e.getMessage());
             }
 
-            OSFileStore osStore = new OSFileStore();
-            osStore.setName(name);
-            osStore.setVolume(volume);
-            osStore.setLabel(name);
-            osStore.setMount(path);
-            osStore.setDescription(description);
-            osStore.setType(type);
-            osStore.setOptions(options);
-            osStore.setUUID(uuid);
-            osStore.setFreeSpace(freeSpace);
-            osStore.setUsableSpace(usableSpace);
-            osStore.setTotalSpace(totalSpace);
-            osStore.setFreeInodes(freeInodes);
-            osStore.setTotalInodes(totalInodes);
-            osStore.setLogicalVolume(logicalVolume);
-
-            fsList.add(osStore);
+            fsList.add(new LinuxOSFileStore(name, volume, name, path, options, uuid, logicalVolume, description, type,
+                    freeSpace, usableSpace, totalSpace, freeInodes, totalInodes));
         }
         return fsList;
     }
 
     /**
-     * <p>
-     * updateFileStoreStats.
-     * </p>
+     * Returns a value from the Linux system file /proc/sys/fs/file-nr.
      *
-     * @param osFileStore a {@link OSFileStore} object.
-     * @return a boolean.
+     * @param index The index of the value to retrieve. 0 returns the total allocated
+     *              file descriptors. 1 returns the number of used file descriptors
+     *              for kernel 2.4, or the number of unused file descriptors for
+     *              kernel 2.6. 2 returns the maximum number of file descriptors that
+     *              can be allocated.
+     * @return Corresponding file descriptor value from the Linux system file.
      */
-    public static boolean updateFileStoreStats(OSFileStore osFileStore) {
-        for (OSFileStore fileStore : getFileStoreMatching(osFileStore.getName(), null)) {
-            if (osFileStore.getVolume().equals(fileStore.getVolume())
-                    && osFileStore.getMount().equals(fileStore.getMount())) {
-                osFileStore.setLogicalVolume(fileStore.getLogicalVolume());
-                osFileStore.setDescription(fileStore.getDescription());
-                osFileStore.setType(fileStore.getType());
-                osFileStore.setFreeSpace(fileStore.getFreeSpace());
-                osFileStore.setUsableSpace(fileStore.getUsableSpace());
-                osFileStore.setTotalSpace(fileStore.getTotalSpace());
-                osFileStore.setFreeInodes(fileStore.getFreeInodes());
-                osFileStore.setTotalInodes(fileStore.getTotalInodes());
-                return true;
-            }
+    private static long getFileDescriptors(int index) {
+        String filename = ProcPath.SYS_FS_FILE_NR;
+        if (index < 0 || index > 2) {
+            throw new IllegalArgumentException("Index must be between 0 and 2.");
         }
-        return false;
+        List<String> osDescriptors = FileKit.readLines(filename);
+        if (!osDescriptors.isEmpty()) {
+            String[] splittedLine = osDescriptors.get(0).split("\\D+");
+            return Builder.parseLongOrDefault(splittedLine[index], 0L);
+        }
+        return 0L;
     }
 
     @Override
-    public OSFileStore[] getFileStores(boolean localOnly) {
+    public List<OSFileStore> getFileStores(boolean localOnly) {
         // Map uuids with device path as key
         Map<String, String> uuidMap = new HashMap<>();
         File uuidDir = new File("/dev/disk/by-uuid");
@@ -227,9 +210,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
         }
 
         // List file systems
-        List<OSFileStore> fsList = getFileStoreMatching(null, uuidMap, localOnly);
-
-        return fsList.toArray(new OSFileStore[0]);
+        return getFileStoreMatching(null, uuidMap, localOnly);
     }
 
     @Override
@@ -240,29 +221,6 @@ public class LinuxFileSystem extends AbstractFileSystem {
     @Override
     public long getMaxFileDescriptors() {
         return getFileDescriptors(2);
-    }
-
-    /**
-     * Returns a value from the Linux system file /proc/sys/fs/file-nr.
-     *
-     * @param index The index of the value to retrieve. 0 returns the total allocated
-     *              file descriptors. 1 returns the number of used file descriptors
-     *              for kernel 2.4, or the number of unused file descriptors for
-     *              kernel 2.6. 2 returns the maximum number of file descriptors that
-     *              can be allocated.
-     * @return Corresponding file descriptor value from the Linux system file.
-     */
-    private long getFileDescriptors(int index) {
-        String filename = ProcPath.SYS_FS_FILE_NR;
-        if (index < 0 || index > 2) {
-            throw new IllegalArgumentException("Index must be between 0 and 2.");
-        }
-        List<String> osDescriptors = FileKit.readLines(filename);
-        if (!osDescriptors.isEmpty()) {
-            String[] splittedLine = osDescriptors.get(0).split("\\D+");
-            return Builder.parseLongOrDefault(splittedLine[index], 0L);
-        }
-        return 0L;
     }
 
 }

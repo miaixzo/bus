@@ -70,7 +70,7 @@ public final class Win32LogicalDisk {
      * Logical disk properties.
      */
     public enum LogicalDiskProperty {
-        DESCRIPTION, DRIVETYPE, FILESYSTEM, FREESPACE, NAME, PROVIDERNAME, SIZE, VOLUMENAME
+        ACCESS, DESCRIPTION, DRIVETYPE, FILESYSTEM, FREESPACE, NAME, PROVIDERNAME, SIZE, VOLUMENAME
     }
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -43,6 +43,7 @@ import org.aoju.bus.setting.dialect.Props;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
@@ -67,9 +68,10 @@ import java.util.regex.Pattern;
 @ThreadSafe
 public final class Builder {
 
+    public static final String BUS_HEALTH_PROPERTIES = "bus-health.properties";
     public static final String BUS_HEALTH_ARCH_PROPERTIES = "bus-health-arch.properties";
     public static final String BUS_HEALTH_ADDR_PROPERTIES = "bus-health-addr.properties";
-    public static final String BUS_HEALTH_PROPERTIES = "bus-health.properties";
+    public static final String BUS_HEALTH_MACOS_PROPERTIES = "bus-health-macos.properties";
 
     /**
      * The official/approved path for sysfs information. Note: /sys/class/dmi/id
@@ -119,7 +121,7 @@ public final class Builder {
     private static final Map<String, Long> multipliers;
     // PDH timestamps are 1601 epoch, local time
     // Constants to convert to UTC millis
-    private static final long EPOCH_DIFF = 11644473600000L;
+    private static final long EPOCH_DIFF = 11_644_473_600_000L;
     private static final int TZ_OFFSET = TimeZone.getDefault().getOffset(System.currentTimeMillis());
     // Fast decimal exponentiation: pow(10,y) --> POWERS_OF_10[y]
     private static final long[] POWERS_OF_TEN = {1L, 10L, 100L, 1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L,
@@ -131,31 +133,9 @@ public final class Builder {
     // Format returned by WMI for DateTime
     private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ",
             Locale.US);
+
     private static final String READING_LOG = "Reading file {}";
     private static final String READ_LOG = "Read {}";
-    /**
-     * Binary prefixes, used in IEC Standard for naming bytes.
-     * (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission)
-     * <p>
-     * Should be used for most representations of bytes
-     */
-    private static final long KIBI = 1L << 10;
-    private static final long MEBI = 1L << 20;
-    private static final long GIBI = 1L << 30;
-    private static final long TEBI = 1L << 40;
-    private static final long PEBI = 1L << 50;
-    private static final long EXBI = 1L << 60;
-    private static final long ZXBI = 1L << 70;
-    /**
-     * Decimal prefixes, used for Hz and other metric units and for bytes by hard
-     * drive manufacturers
-     */
-    private static final long KILO = 1_000L;
-    private static final long MEGA = 1_000_000L;
-    private static final long GIGA = 1_000_000_000L;
-    private static final long TERA = 1_000_000_000_000L;
-    private static final long PETA = 1_000_000_000_000_000L;
-    private static final long EXA = 1_000_000_000_000_000_000L;
 
     private static final Platform platform;
     /**
@@ -452,83 +432,19 @@ public final class Builder {
     }
 
     /**
-     * Format bytes into a rounded string representation using IEC standard (matches
-     * Mac/Linux). For hard drive capacities, use @link
+     * Gets current working directory info
      *
-     * @param bytes Bytes.
-     * @return Rounded string representation of the byte size.
+     * @param pid a process ID
+     * @return the current working directory for that process.
      */
-    public static String formatBytes(long bytes) {
-        if (bytes == 1L) {
-            return String.format("%d byte", bytes);
-        } else if (bytes < KIBI || bytes < KILO) {
-            return String.format("%d bytes", bytes);
-        } else if (bytes < MEBI) { // KiB
-            return formatUnits(bytes, KIBI, "KiB");
-        } else if (bytes < GIBI) { // MiB
-            return formatUnits(bytes, MEBI, "MiB");
-        } else if (bytes < TEBI) { // GiB
-            return formatUnits(bytes, GIBI, "GiB");
-        } else if (bytes < PEBI) { // TiB
-            return formatUnits(bytes, TEBI, "TiB");
-        } else if (bytes < EXBI) { // PiB
-            return formatUnits(bytes, PEBI, "PiB");
-        } else if (bytes < ZXBI) { // EiB
-            return formatUnits(bytes, EXBI, "EiB");
+    public static String getCwd(int pid) {
+        List<String> lsof = Executor.runNative("lsof -Fn -d cwd -p " + pid);
+        for (String line : lsof) {
+            if (!line.isEmpty() && line.charAt(0) == 'n') {
+                return line.substring(1).trim();
+            }
         }
-        return formatValue(bytes, "B");
-    }
-
-    /**
-     * Format units as exact integer or fractional decimal based on the prefix,
-     * appending the appropriate units
-     *
-     * @param value  The value to format
-     * @param prefix The divisor of the unit multiplier
-     * @param unit   A string representing the units
-     * @return A string with the value
-     */
-    private static String formatUnits(long value, long prefix, String unit) {
-        if (value % prefix == 0) {
-            return String.format("%d %s", value / prefix, unit);
-        }
-        return String.format("%.1f %s", (double) value / prefix, unit);
-    }
-
-    /**
-     * Format arbitrary units into a string to a rounded string representation.
-     *
-     * @param value The value
-     * @param unit  Units to append metric prefix to
-     * @return Rounded string representation of the value with metric prefix to
-     * extension
-     */
-    public static String formatValue(long value, String unit) {
-        if (value < KILO) {
-            return String.format("%d %s", value, unit);
-        } else if (value < MEGA) { // K
-            return formatUnits(value, KILO, "K" + unit);
-        } else if (value < GIGA) { // M
-            return formatUnits(value, MEGA, "M" + unit);
-        } else if (value < TERA) { // G
-            return formatUnits(value, GIGA, "G" + unit);
-        } else if (value < PETA) { // T
-            return formatUnits(value, TERA, "T" + unit);
-        } else if (value < EXA) { // P
-            return formatUnits(value, PETA, "P" + unit);
-        } else { // E
-            return formatUnits(value, EXA, "E" + unit);
-        }
-    }
-
-    /**
-     * Translate an integer error code to its hex notation
-     *
-     * @param errorCode The error code
-     * @return A string representing the error as 0x....
-     */
-    public static String formatError(int errorCode) {
-        return String.format(Normal.HEX_ERROR, errorCode);
+        return Normal.EMPTY;
     }
 
     /**
@@ -851,14 +767,14 @@ public final class Builder {
                     sb.append("\n  Monitor Name: ").append(getDescriptorText(b));
                     break;
                 case 0xfb:
-                    sb.append("\n  White Point Data: ").append(Builder.byteArrayToHexString(b));
+                    sb.append("\n  White Point Data: ").append(byteArrayToHexString(b));
                     break;
                 case 0xfa:
-                    sb.append("\n  Standard Timing ID: ").append(Builder.byteArrayToHexString(b));
+                    sb.append("\n  Standard Timing ID: ").append(byteArrayToHexString(b));
                     break;
                 default:
                     if (getDescriptorType(b) <= 0x0f && getDescriptorType(b) >= 0x00) {
-                        sb.append("\n  Manufacturer Data: ").append(Builder.byteArrayToHexString(b));
+                        sb.append("\n  Manufacturer Data: ").append(byteArrayToHexString(b));
                     } else {
                         sb.append("\n  Preferred Timing: ").append(getTimingDescriptor(b));
                     }
@@ -1100,7 +1016,7 @@ public final class Builder {
         // then drop any copies of the sign bit, to prevent the value being
         // considered a negative one by Java if it is set
         long longValue = unsignedValue;
-        return longValue & 0xffffffffL;
+        return longValue & 0xffff_ffffL;
     }
 
     /**
@@ -1195,13 +1111,13 @@ public final class Builder {
         if (m.matches()) {
             long milliseconds = 0L;
             if (m.group(1) != null) {
-                milliseconds += parseLongOrDefault(m.group(1), 0L) * 86400000L;
+                milliseconds += parseLongOrDefault(m.group(1), 0L) * 86_400_000L;
             }
             if (m.group(2) != null) {
-                milliseconds += parseLongOrDefault(m.group(2), 0L) * 3600000L;
+                milliseconds += parseLongOrDefault(m.group(2), 0L) * 3_600_000L;
             }
             if (m.group(3) != null) {
-                milliseconds += parseLongOrDefault(m.group(3), 0L) * 60000L;
+                milliseconds += parseLongOrDefault(m.group(3), 0L) * 60_000L;
             }
             milliseconds += parseLongOrDefault(m.group(4), 0L) * 1000L;
             milliseconds += (long) (1000 * parseDoubleOrDefault("0." + m.group(5), 0d));
@@ -1232,17 +1148,7 @@ public final class Builder {
      * @return the value contained between single tick marks
      */
     public static String getSingleQuoteStringValue(String line) {
-        return getStringBetween(line, '\'');
-    }
-
-    /**
-     * Parse a string key = "value" (string)
-     *
-     * @param line the entire string
-     * @return the value contained between double tick marks
-     */
-    public static String getDoubleQuoteStringValue(String line) {
-        return getStringBetween(line, Symbol.C_DOUBLE_QUOTES);
+        return getStringBetween(line, Symbol.C_SINGLE_QUOTE);
     }
 
     /**
@@ -1384,7 +1290,7 @@ public final class Builder {
                 // Doesn't impact parsing, ignore
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
-                if (power > 18 || power == 17 && c == '9' && parsed[parsedIndex] > 223372036854775807L) {
+                if (power > 18 || power == 17 && c == '9' && parsed[parsedIndex] > 223_372_036_854_775_807L) {
                     parsed[parsedIndex] = Long.MAX_VALUE;
                 } else {
                     parsed[parsedIndex] += (c - '0') * Builder.POWERS_OF_TEN[power++];
@@ -1498,7 +1404,7 @@ public final class Builder {
      * @return Equivalent milliseconds since the epoch
      */
     public static long filetimeToUtcMs(long filetime, boolean local) {
-        return filetime / 10000L - EPOCH_DIFF - (local ? TZ_OFFSET : 0L);
+        return filetime / 10_000L - EPOCH_DIFF - (local ? TZ_OFFSET : 0L);
     }
 
     /**
@@ -1710,6 +1616,76 @@ public final class Builder {
      */
     public static void append(StringBuilder builder, String caption, Object value) {
         builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append("\n");
+    }
+
+    /**
+     * Parse an integer array to an IPv4 or IPv6 as appropriate.
+     * <p>
+     * Intended for use on Utmp structures's {@code ut_addr_v6} element.
+     *
+     * @param utAddrV6 An array of 4 integers representing an IPv6 address. IPv4 address
+     *                 uses just utAddrV6[0]
+     * @return A string representation of the IP address.
+     */
+    public static String parseUtAddrV6toIP(int[] utAddrV6) {
+        if (utAddrV6.length != 4) {
+            throw new IllegalArgumentException("ut_addr_v6 must have exactly 4 elements");
+        }
+        // IPv4 has only first element
+        if (utAddrV6[1] == 0 && utAddrV6[2] == 0 && utAddrV6[3] == 0) {
+            // Special case for all 0's
+            if (utAddrV6[0] == 0) {
+                return "::";
+            }
+            // Parse using InetAddress
+            byte[] ipv4 = ByteBuffer.allocate(4).putInt(utAddrV6[0]).array();
+            try {
+                return InetAddress.getByAddress(ipv4).getHostAddress();
+            } catch (UnknownHostException e) {
+                // Shouldn't happen with length 4 or 16
+                return Normal.UNKNOWN;
+            }
+        }
+        // Parse all 16 bytes
+        byte[] ipv6 = ByteBuffer.allocate(16).putInt(utAddrV6[0]).putInt(utAddrV6[1]).putInt(utAddrV6[2])
+                .putInt(utAddrV6[3]).array();
+        try {
+            return InetAddress.getByAddress(ipv6).getHostAddress()
+                    .replaceAll("((?:(?:^|:)0+\\b){2,}):?(?!\\S*\\b\\1:0+\\b)(\\S*)", "::$2");
+        } catch (UnknownHostException e) {
+            // Shouldn't happen with length 4 or 16
+            return Normal.UNKNOWN;
+        }
+    }
+
+    /**
+     * Gets open files
+     *
+     * @param pid The process ID
+     * @return the number of open files.
+     */
+    public static long getOpenFiles(int pid) {
+        // subtract 1 from size for header
+        return Executor.runNative(String.format("lsof -p %d", pid)).size() - 1L;
+    }
+
+    /**
+     * Tests if a String matches another String with a wildcard pattern.
+     *
+     * @param text    The String to test
+     * @param pattern The String containing a wildcard pattern where ? represents a
+     *                single character and * represents any number of characters. If the
+     *                first character of the pattern is a carat (^) the test is
+     *                performed against the remaining characters and the result of the
+     *                test is the opposite.
+     * @return True if the String matches or if the first character is ^ and the
+     * remainder of the String does not match.
+     */
+    public static boolean wildcardMatch(String text, String pattern) {
+        if (pattern.length() > 0 && pattern.charAt(0) == Symbol.C_CARET) {
+            return !wildcardMatch(text, pattern.substring(1));
+        }
+        return text.matches(pattern.replace(Symbol.QUESTION_MARK, Symbol.DOT + Symbol.QUESTION_MARK).replace(Symbol.STAR, Symbol.DOT + Symbol.STAR + Symbol.QUESTION_MARK));
     }
 
 }

@@ -32,13 +32,10 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
-import org.aoju.bus.health.windows.WmiQuery;
+import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32Bios;
-import org.aoju.bus.health.windows.drivers.Win32Bios.BiosSerialProperty;
 import org.aoju.bus.health.windows.drivers.Win32ComputerSystem;
-import org.aoju.bus.health.windows.drivers.Win32ComputerSystem.ComputerSystemProperty;
 import org.aoju.bus.health.windows.drivers.Win32ComputerSystemProduct;
-import org.aoju.bus.health.windows.drivers.Win32ComputerSystemProduct.ComputerSystemProductProperty;
 
 import java.util.function.Supplier;
 
@@ -61,10 +58,10 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
     private static Pair<String, String> queryManufacturerModel() {
         String manufacturer = null;
         String model = null;
-        WmiResult<ComputerSystemProperty> win32ComputerSystem = Win32ComputerSystem.queryComputerSystem();
+        WmiResult<Win32ComputerSystem.ComputerSystemProperty> win32ComputerSystem = Win32ComputerSystem.queryComputerSystem();
         if (win32ComputerSystem.getResultCount() > 0) {
-            manufacturer = WmiQuery.getString(win32ComputerSystem, ComputerSystemProperty.MANUFACTURER, 0);
-            model = WmiQuery.getString(win32ComputerSystem, ComputerSystemProperty.MODEL, 0);
+            manufacturer = WmiKit.getString(win32ComputerSystem, Win32ComputerSystem.ComputerSystemProperty.MANUFACTURER, 0);
+            model = WmiKit.getString(win32ComputerSystem, Win32ComputerSystem.ComputerSystemProperty.MODEL, 0);
         }
         return Pair.of(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model);
@@ -80,18 +77,18 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
     }
 
     private static String querySerialFromBios() {
-        WmiResult<BiosSerialProperty> serialNum = Win32Bios.querySerialNumber();
+        WmiResult<Win32Bios.BiosSerialProperty> serialNum = Win32Bios.querySerialNumber();
         if (serialNum.getResultCount() > 0) {
-            return WmiQuery.getString(serialNum, BiosSerialProperty.SERIALNUMBER, 0);
+            return WmiKit.getString(serialNum, Win32Bios.BiosSerialProperty.SERIALNUMBER, 0);
         }
         return null;
     }
 
     private static String querySerialFromCsProduct() {
-        WmiResult<ComputerSystemProductProperty> identifyingNumber = Win32ComputerSystemProduct
+        WmiResult<Win32ComputerSystemProduct.ComputerSystemProductProperty> identifyingNumber = Win32ComputerSystemProduct
                 .queryIdentifyingNumber();
         if (identifyingNumber.getResultCount() > 0) {
-            return WmiQuery.getString(identifyingNumber, ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
+            return WmiKit.getString(identifyingNumber, Win32ComputerSystemProduct.ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
         }
         return null;
     }

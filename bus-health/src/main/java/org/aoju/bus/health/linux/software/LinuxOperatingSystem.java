@@ -31,28 +31,21 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
+import org.aoju.bus.health.builtin.software.OSProcess.State;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.CpuStat;
 import org.aoju.bus.health.linux.drivers.ProcessStat;
 import org.aoju.bus.health.linux.drivers.UpTime;
+import org.aoju.bus.health.linux.drivers.Who;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.aoju.bus.health.builtin.software.OSService.State.RUNNING;
@@ -70,24 +63,20 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
 @ThreadSafe
 public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
+    // Package private for access from LinuxOSProcess
+    static final long BOOTTIME;
     private static final String OS_RELEASE_LOG = "os-release: {}";
     private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
     private static final String LSB_RELEASE_LOG = "lsb-release: {}";
     private static final String RELEASE_DELIM = " release ";
     private static final String DOUBLE_QUOTES = "^\"|\"$";
-    private static final String LS_F_PROC_PID_FD = "ls -f " + ProcPath.PID_FD;
-
-    private static final long BOOTTIME;
-    // Get a list of orders to pass to ParseUtil
-    private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
-    // 2.6 Kernel has 44 elements, 3.3 has 47, and 3.5 has 52.
-    // Check /proc/self/stat to find its length
-    private static final int PROC_PID_STAT_LENGTH;
-    // Jiffies per second, used for process time counters.
+    /**
+     * Jiffies per second, used for process time counters.
+     */
     private static final long USER_HZ = Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"),
             100L);
-    // Boot time in MS.
-    private static final long BOOT_TIME;
+    // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
+    private static final int[] PPID_INDEX = {3};
 
     static {
         long tempBT = CpuStat.getBootTime();
@@ -98,45 +87,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         BOOTTIME = tempBT;
     }
 
-    static {
-        for (ProcPidStat stat : ProcPidStat.values()) {
-            // The PROC_PID_STAT enum indices are 1-indexed.
-            // Subtract one to get a zero-based index
-            PROC_PID_STAT_ORDERS[stat.ordinal()] = stat.getOrder() - 1;
-        }
-    }
-
-    static {
-        String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
-        if (!stat.isEmpty() && stat.contains(Symbol.PARENTHESE_RIGHT)) {
-            // add 3 to account for pid, process name in prarenthesis, and state
-            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, Symbol.C_SPACE) + 3;
-        } else {
-            // Default assuming recent kernel
-            PROC_PID_STAT_LENGTH = 52;
-        }
-    }
-
-    static {
-        // Uptime is only in hundredths of seconds but we need thousandths.
-        // We can grab uptime twice and take average to reduce error, getting
-        // current time in between
-        double uptime = UpTime.getSystemUptimeSeconds();
-        long now = System.currentTimeMillis();
-        uptime += UpTime.getSystemUptimeSeconds();
-        // Uptime is now 2x seconds, so divide by 2, but
-        // we want milliseconds so multiply by 1000
-        // Ultimately multiply by 1000/2 = 500
-        BOOT_TIME = now - (long) (500d * uptime + 0.5);
-        // Cast/truncation is effectively rounding. Boot time could
-        // be +/- 5 ms due to System Uptime rounding to nearest 10ms.
-    }
-
-    // Resident Set Size is given as number of pages the process has in real
-    // memory.
-    // To get the actual size in bytes we need to multiply that with page size.
-    private final int memoryPageSize;
-
     /**
      * <p>
      * Constructor for LinuxOperatingSystem.
@@ -144,9 +94,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public LinuxOperatingSystem() {
         super.getVersionInfo();
-        // The above call may also populate versionId and codeName
-        // to pass to version constructor
-        this.memoryPageSize = Builder.parseIntOrDefault(Executor.getFirstAnswer("getconf PAGESIZE"), 4096);
     }
 
     private static int getParentPidFromProcFile(int pid) {
@@ -155,8 +102,9 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         if (stat.isEmpty()) {
             return 0;
         }
-        long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
-        return (int) statArray[ProcPidStat.PPID.ordinal()];
+        // Grab PPID
+        long[] statArray = Builder.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, ' ');
+        return (int) statArray[0];
     }
 
     private static Triple<String, String, String> queryFamilyVersionCodenameFromReleaseFiles() {
@@ -224,7 +172,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     /**
      * Attempts to read /etc/os-release
      *
-     * @return a Triple with the parsed family, versionID and codeName if file
+     * @return a triplet with the parsed family, versionID and codeName if file
      * successfully read and NAME= found, null otherwise
      */
     private static Triple<String, String, String> readOsRelease() {
@@ -552,171 +500,53 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSProcess[] getProcesses(int limit, ProcessSort sort, boolean slowFields) {
+    public List<OSSession> getSessions() {
+        return Collections.unmodifiableList(USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent());
+    }
+
+    @Override
+    public List<OSProcess> getProcesses(int limit, ProcessSort sort) {
         List<OSProcess> procs = new ArrayList<>();
         File[] pids = ProcessStat.getPidFiles();
-        LinuxUserGroupInfo userGroupInfo = new LinuxUserGroupInfo();
 
         // now for each file (with digit name) get process info
         for (File pidFile : pids) {
             int pid = Builder.parseIntOrDefault(pidFile.getName(), 0);
-            OSProcess proc = getProcess(pid, userGroupInfo, slowFields);
-            if (proc != null) {
+            OSProcess proc = new LinuxOSProcess(pid);
+            if (!proc.getState().equals(State.INVALID)) {
                 procs.add(proc);
             }
         }
         // Sort
         List<OSProcess> sorted = processSort(procs, limit, sort);
-        return sorted.toArray(new OSProcess[0]);
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override
-    public OSProcess getProcess(int pid, boolean slowFields) {
-        return getProcess(pid, new LinuxUserGroupInfo(), slowFields);
-    }
-
-    private OSProcess getProcess(int pid, LinuxUserGroupInfo userGroupInfo, boolean slowFields) {
-        String path = "";
-        String procPidExe = String.format(ProcPath.PID_EXE, pid);
-        try {
-            Path link = Paths.get(procPidExe);
-            path = Files.readSymbolicLink(link).toString();
-            int index = path.indexOf(" (deleted)");
-            if (index != -1) {
-                path = path.substring(0, index);
-            }
-        } catch (InvalidPathException | IOException | UnsupportedOperationException | SecurityException e) {
-            Logger.debug("Unable to open symbolic link {}", procPidExe);
+    public OSProcess getProcess(int pid) {
+        OSProcess proc = new LinuxOSProcess(pid);
+        if (!proc.getState().equals(State.INVALID)) {
+            return proc;
         }
-        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_IO, pid), Symbol.COLON);
-        // See man proc for how to parse /proc/[pid]/stat
-        long now = System.currentTimeMillis();
-        String stat = Builder.getStringFromFile(String.format(ProcPath.PID_STAT, pid));
-        // A race condition may leave us with an empty string
-        if (stat.isEmpty()) {
-            return null;
-        }
-        // We can get name and status more easily from /proc/pid/status which we
-        // call later, so just get the numeric bits here
-        long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
-        // Fetch cached process if it exists
-        OSProcess proc = new OSProcess(this);
-        proc.setProcessID(pid);
-        // The /proc/pid/cmdline value is null-delimited
-        proc.setCommandLine(Builder.getStringFromFile(String.format(ProcPath.PID_CMDLINE, pid)));
-        long startTime = BOOT_TIME + statArray[ProcPidStat.START_TIME.ordinal()] * 1000L / USER_HZ;
-        // BOOT_TIME could be up to 5ms off. In rare cases when a process has
-        // started within 5ms of boot it is possible to get negative uptime.
-        if (startTime >= now) {
-            startTime = now - 1;
-        }
-        proc.setStartTime(startTime);
-        proc.setParentProcessID((int) statArray[ProcPidStat.PPID.ordinal()]);
-        proc.setThreadCount((int) statArray[ProcPidStat.THREAD_COUNT.ordinal()]);
-        proc.setPriority((int) statArray[ProcPidStat.PRIORITY.ordinal()]);
-        proc.setVirtualSize(statArray[ProcPidStat.VSZ.ordinal()]);
-        proc.setResidentSetSize(statArray[ProcPidStat.RSS.ordinal()] * this.memoryPageSize);
-        proc.setKernelTime(statArray[ProcPidStat.KERNEL_TIME.ordinal()] * 1000L / USER_HZ);
-        proc.setUserTime(statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / USER_HZ);
-        proc.setUpTime(now - proc.getStartTime());
-        // See man proc for how to parse /proc/[pid]/io
-        proc.setBytesRead(Builder.parseLongOrDefault(io.getOrDefault("read_bytes", ""), 0L));
-        proc.setBytesWritten(Builder.parseLongOrDefault(io.getOrDefault("write_bytes", ""), 0L));
-
-        // gets the open files count
-        if (slowFields) {
-            List<String> openFilesList = Executor.runNative(String.format(LS_F_PROC_PID_FD, pid));
-            proc.setOpenFiles(openFilesList.size() - 1L);
-
-            // get 5th byte of file for 64-bit check
-            // https://en.wikipedia.org/wiki/Executable_and_Linkable_Format#File_header
-            byte[] buffer = new byte[5];
-            if (!path.isEmpty()) {
-                try (InputStream is = new FileInputStream(path)) {
-                    if (is.read(buffer) == buffer.length) {
-                        proc.setBitness(buffer[4] == 1 ? 32 : 64);
-                    }
-                } catch (IOException e) {
-                    Logger.warn("Failed to read process file: {}", path);
-                }
-            }
-        }
-
-        Map<String, String> status = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_STATUS, pid), Symbol.COLON);
-        proc.setName(status.getOrDefault("Name", ""));
-        proc.setPath(path);
-        switch (status.getOrDefault("State", "U").charAt(0)) {
-            case 'R':
-                proc.setState(OSProcess.State.RUNNING);
-                break;
-            case 'S':
-                proc.setState(OSProcess.State.SLEEPING);
-                break;
-            case 'D':
-                proc.setState(OSProcess.State.WAITING);
-                break;
-            case 'Z':
-                proc.setState(OSProcess.State.ZOMBIE);
-                break;
-            case 'T':
-                proc.setState(OSProcess.State.STOPPED);
-                break;
-            default:
-                proc.setState(OSProcess.State.OTHER);
-                break;
-        }
-        proc.setUserID(RegEx.SPACES.split(status.getOrDefault("Uid", ""))[0]);
-        proc.setGroupID(RegEx.SPACES.split(status.getOrDefault("Gid", ""))[0]);
-        Pair<String, String> user = userGroupInfo.getUser(proc.getUserID());
-        proc.setUser(user.getRight());
-        proc.setGroup(userGroupInfo.getGroupName(proc.getGroupID()));
-
-        try {
-            String cwdLink = String.format(ProcPath.PID_CWD, pid);
-            String cwd = new File(cwdLink).getCanonicalPath();
-            if (!cwd.equals(cwdLink)) {
-                proc.setCurrentWorkingDirectory(cwd);
-            }
-        } catch (IOException e) {
-            Logger.trace("Couldn't find cwd for pid {}: {}", pid, e.getMessage());
-        }
-        return proc;
+        return null;
     }
 
     @Override
-    public OSProcess[] getChildProcesses(int parentPid, int limit, ProcessSort sort) {
+    public List<OSProcess> getChildProcesses(int parentPid, int limit, ProcessSort sort) {
         List<OSProcess> procs = new ArrayList<>();
         File[] procFiles = ProcessStat.getPidFiles();
-        LinuxUserGroupInfo userGroupInfo = new LinuxUserGroupInfo();
-
         // now for each file (with digit name) get process info
         for (File procFile : procFiles) {
             int pid = Builder.parseIntOrDefault(procFile.getName(), 0);
             if (parentPid == getParentPidFromProcFile(pid)) {
-                OSProcess proc = getProcess(pid, userGroupInfo, true);
-                if (proc != null) {
+                OSProcess proc = new LinuxOSProcess(pid);
+                if (!proc.getState().equals(State.INVALID)) {
                     procs.add(proc);
                 }
             }
         }
         List<OSProcess> sorted = processSort(procs, limit, sort);
-        return sorted.toArray(new OSProcess[0]);
-    }
-
-    @Override
-    public long getProcessAffinityMask(int processId) {
-        // Would prefer to use native sched_getaffinity call but variable sizing is
-        // kernel-dependent and requires C macros, so we use command line instead.
-        String mask = Executor.getFirstAnswer("taskset -p " + processId);
-        // Output:
-        // pid 3283's current affinity mask: 3
-        // pid 9726's current affinity mask: f
-        String[] split = RegEx.SPACES.split(mask);
-        try {
-            return new BigInteger(split[split.length - 1], 16).longValue();
-        } catch (NumberFormatException e) {
-            return 0;
-        }
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override
@@ -804,23 +634,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return services.toArray(new OSService[0]);
-    }
-
-    // Order the field is in /proc/pid/stat
-    enum ProcPidStat {
-        // The parsing implementation in ParseUtil requires these to be declared
-        // in increasing order
-        PPID(4), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20), START_TIME(22), VSZ(23), RSS(24);
-
-        private int order;
-
-        ProcPidStat(int order) {
-            this.order = order;
-        }
-
-        public int getOrder() {
-            return this.order;
-        }
     }
 
 }

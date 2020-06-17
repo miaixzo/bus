@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class Smc {
+public final class SmcKit {
 
     public static final String SMC_KEY_FAN_NUM = "FNum";
     public static final String SMC_KEY_FAN_SPEED = "F%dAc";
@@ -59,7 +59,6 @@ public final class Smc {
     public static final byte SMC_CMD_READ_BYTES = 5;
     public static final byte SMC_CMD_READ_KEYINFO = 9;
     public static final int KERNEL_INDEX_SMC = 2;
-
     private static final IOKit IO = IOKit.INSTANCE;
     /**
      * 用于匹配返回类型的字节数组
@@ -72,7 +71,7 @@ public final class Smc {
      */
     private static Map<Integer, SMCKeyDataKeyInfo> keyInfoCache = new ConcurrentHashMap<>();
 
-    private Smc() {
+    private SmcKit() {
     }
 
     /**
@@ -206,7 +205,6 @@ public final class Smc {
         }
         return result;
     }
-
 
     /**
      * 调用SMC

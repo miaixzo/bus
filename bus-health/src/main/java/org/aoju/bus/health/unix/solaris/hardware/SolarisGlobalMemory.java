@@ -60,12 +60,12 @@ final class SolarisGlobalMemory extends AbstractGlobalMemory {
 
     @Override
     public long getAvailable() {
-        return availTotal.get().getLeft();
+        return availTotal.get().getLeft() * getPageSize();
     }
 
     @Override
     public long getTotal() {
-        return availTotal.get().getRight();
+        return availTotal.get().getRight() * getPageSize();
     }
 
     @Override

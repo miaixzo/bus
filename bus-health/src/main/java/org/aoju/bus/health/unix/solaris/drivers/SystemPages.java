@@ -24,18 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.drivers;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import com.sun.jna.platform.unix.solaris.LibKstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
-import org.aoju.bus.health.unix.solaris.KstatCtl;
-import org.aoju.bus.health.unix.solaris.KstatCtl.KstatChain;
+import org.aoju.bus.health.unix.solaris.KstatKit;
+import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 /**
  * Utility to query geom part list
- *
- * @author Kimi Liu
- * @version 6.0.0
- * @since JDK 1.8+
  */
 @ThreadSafe
 public final class SystemPages {
@@ -54,12 +50,12 @@ public final class SystemPages {
         long memAvailable = 0;
         long memTotal = 0;
         // Get first result
-        try (KstatChain kc = KstatCtl.openChain()) {
-            Kstat ksp = kc.lookup(null, -1, "system_pages");
+        try (KstatChain kc = KstatKit.openChain()) {
+            LibKstat.Kstat ksp = kc.lookup(null, -1, "system_pages");
             // Set values
             if (ksp != null && kc.read(ksp)) {
-                memAvailable = KstatCtl.dataLookupLong(ksp, "availrmem"); // not a typo
-                memTotal = KstatCtl.dataLookupLong(ksp, "physmem");
+                memAvailable = KstatKit.dataLookupLong(ksp, "availrmem"); // not a typo
+                memTotal = KstatKit.dataLookupLong(ksp, "physmem");
             }
         }
         return Pair.of(memAvailable, memTotal);

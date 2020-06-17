@@ -123,7 +123,7 @@ public class WmiQueryHandler {
             result = query.execute(wmiTimeout);
         } catch (COMException e) {
             // Ignore any exceptions with OpenHardwareMonitor
-            if (!WmiQuery.OHM_NAMESPACE.equals(query.getNameSpace())) {
+            if (!WmiKit.OHM_NAMESPACE.equals(query.getNameSpace())) {
                 final int hresult = e.getHresult() == null ? -1 : e.getHresult().intValue();
                 switch (hresult) {
                     case Wbemcli.WBEM_E_INVALID_NAMESPACE:
@@ -133,7 +133,7 @@ public class WmiQueryHandler {
                         Logger.warn("COM exception: Invalid Class {}", query.getWmiClassName());
                         break;
                     case Wbemcli.WBEM_E_INVALID_QUERY:
-                        Logger.warn("COM exception: Invalid Query: {}", WmiQuery.queryToString(query));
+                        Logger.warn("COM exception: Invalid Query: {}", WmiKit.queryToString(query));
                         break;
                     default:
                         handleComException(query, e);
@@ -142,7 +142,7 @@ public class WmiQueryHandler {
                 failedWmiClassNames.add(query.getWmiClassName());
             }
         } catch (TimeoutException e) {
-            Logger.error("WMI query timed out after {} ms: {}", wmiTimeout, WmiQuery.queryToString(query));
+            Logger.error("WMI query timed out after {} ms: {}", wmiTimeout, WmiKit.queryToString(query));
         }
         if (comInit) {
             unInitCOM();

@@ -30,9 +30,8 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
-import org.aoju.bus.health.windows.WmiQuery;
+import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32Bios;
-import org.aoju.bus.health.windows.drivers.Win32Bios.BiosProperty;
 
 import java.util.function.Supplier;
 
@@ -57,13 +56,13 @@ final class WindowsFirmware extends AbstractFirmware {
         String description = null;
         String version = null;
         String releaseDate = null;
-        WmiResult<BiosProperty> win32BIOS = Win32Bios.queryBiosInfo();
+        WmiResult<Win32Bios.BiosProperty> win32BIOS = Win32Bios.queryBiosInfo();
         if (win32BIOS.getResultCount() > 0) {
-            manufacturer = WmiQuery.getString(win32BIOS, BiosProperty.MANUFACTURER, 0);
-            name = WmiQuery.getString(win32BIOS, BiosProperty.NAME, 0);
-            description = WmiQuery.getString(win32BIOS, BiosProperty.DESCRIPTION, 0);
-            version = WmiQuery.getString(win32BIOS, BiosProperty.VERSION, 0);
-            releaseDate = WmiQuery.getDateString(win32BIOS, BiosProperty.RELEASEDATE, 0);
+            manufacturer = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.MANUFACTURER, 0);
+            name = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.NAME, 0);
+            description = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.DESCRIPTION, 0);
+            version = WmiKit.getString(win32BIOS, Win32Bios.BiosProperty.VERSION, 0);
+            releaseDate = WmiKit.getDateString(win32BIOS, Win32Bios.BiosProperty.RELEASEDATE, 0);
         }
         return new Quintet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(name) ? Normal.UNKNOWN : name,

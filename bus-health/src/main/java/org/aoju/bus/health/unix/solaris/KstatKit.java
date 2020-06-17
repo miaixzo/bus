@@ -27,65 +27,69 @@ package org.aoju.bus.health.unix.solaris;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.solaris.LibKstat;
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Formats;
 import org.aoju.bus.logger.Logger;
 
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 提供对Solaris上的kstat信息的访问
+ * Provides access to kstat information on Solaris
  *
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class KstatCtl {
+public final class KstatKit {
 
     private static final LibKstat KS = LibKstat.INSTANCE;
 
-    // 打开kstat链。自动关闭在退出。任何时候只有一个线程可以访问这个链，
-    // 所以我们将这个对象封装在KstatChain类中，这个类会一直锁定这个类直到关闭.
-    private static final LibKstat.KstatCtl KC = KS.kstat_open();
+    // Opens the kstat chain. Automatically closed on exit.
+    // Only one thread may access the chain at any time, so we wrap this object in
+    // the KstatChain class which locks the class until closed.
+    private static final KstatCtl KC = KS.kstat_open();
     private static final ReentrantLock CHAIN = new ReentrantLock();
 
-    private KstatCtl() {
+    private KstatKit() {
     }
 
     /**
-     * 创建Kstat链的副本并将其锁定，以供该对象使用
+     * Create a copy of the Kstat chain and lock it for use by this object.
      *
-     * @return 一个锁上的链的副本。当您使用{@link KstatChain#close()}完成时，它应该被解锁/释放
+     * @return A locked copy of the chain. It should be unlocked/released when you
+     * are done with it with {@link KstatChain#close()}.
      */
     public static KstatChain openChain() {
         return new KstatChain();
     }
 
     /**
-     * 方便的方法{@link LibKstat#kstat_data_lookup}与字符串返回值
-     * 在kstat的data部分中搜索具有指定名称的记录。此操作仅对已命名数据记录的kstat类型有效
-     * 目前，只有KSTAT_TYPE_NAMED和KSTAT_TYPE_TIMER kstats有命名数据记录.
+     * Convenience method for {@link LibKstat#kstat_data_lookup} with String return
+     * values. Searches the kstat's data section for the record with the specified
+     * name. This operation is valid only for kstat types which have named data
+     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
+     * have named data records.
      *
-     * @param ksp  要搜索的kstat
-     * @param name 名称-值对的键，或计时器的名称(如适用)
-     * @return 字符串值
+     * @param ksp  The kstat to search
+     * @param name The key for the name-value pair, or name of the timer as
+     *             applicable
+     * @return The value as a String.
      */
-    public static String dataLookupString(Kstat ksp, String name) {
+    public static String dataLookupString(LibKstat.Kstat ksp, String name) {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
         Pointer p = KS.kstat_data_lookup(ksp, name);
         if (p == null) {
             Logger.error("Failed lo lookup kstat value for key {}", name);
-            return Normal.EMPTY;
+            return "";
         }
         KstatNamed data = new KstatNamed(p);
         switch (data.data_type) {
@@ -94,29 +98,33 @@ public final class KstatCtl {
             case LibKstat.KSTAT_DATA_INT32:
                 return Integer.toString(data.value.i32);
             case LibKstat.KSTAT_DATA_UINT32:
-                return toUnsignedString(data.value.ui32);
+                return Formats.toUnsignedString(data.value.ui32);
             case LibKstat.KSTAT_DATA_INT64:
                 return Long.toString(data.value.i64);
             case LibKstat.KSTAT_DATA_UINT64:
-                return toUnsignedString(data.value.ui64);
+                return Formats.toUnsignedString(data.value.ui64);
             case LibKstat.KSTAT_DATA_STRING:
                 return data.value.str.addr.getString(0);
             default:
                 Logger.error("Unimplemented kstat data type {}", data.data_type);
-                return Normal.EMPTY;
+                return "";
         }
     }
 
     /**
-     * 具有数字返回值的{@link LibKstat#kstat_data_lookup}的便利方法
-     * 在kstat的data部分中搜索具有指定名称的记录。此操作仅对已命名数据记录的kstat类型有效
-     * 目前，只有KSTAT_TYPE_NAMED和KSTAT_TYPE_TIMER kstats有命名数据记录。
+     * Convenience method for {@link LibKstat#kstat_data_lookup} with numeric return
+     * values. Searches the kstat's data section for the record with the specified
+     * name. This operation is valid only for kstat types which have named data
+     * records. Currently, only the KSTAT_TYPE_NAMED and KSTAT_TYPE_TIMER kstats
+     * have named data records.
      *
-     * @param ksp  要搜索的kstat
-     * @param name 名称-值对的键，或计时器的名称(如适用)
-     * @return 长整型的值。如果数据类型是字符或字符串类型，则返回0并记录错误。
+     * @param ksp  The kstat to search
+     * @param name The key for the name-value pair, or name of the timer as
+     *             applicable
+     * @return The value as a long. If the data type is a character or string type,
+     * returns 0 and logs an error.
      */
-    public static long dataLookupLong(Kstat ksp, String name) {
+    public static long dataLookupLong(LibKstat.Kstat ksp, String name) {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
@@ -134,7 +142,7 @@ public final class KstatCtl {
             case LibKstat.KSTAT_DATA_INT32:
                 return data.value.i32;
             case LibKstat.KSTAT_DATA_UINT32:
-                return Builder.getUnsignedInt(data.value.ui32);
+                return Formats.getUnsignedInt(data.value.ui32);
             case LibKstat.KSTAT_DATA_INT64:
                 return data.value.i64;
             case LibKstat.KSTAT_DATA_UINT64:
@@ -146,41 +154,14 @@ public final class KstatCtl {
     }
 
     /**
-     * Represent a 32 bit value as if it were an unsigned integer.
+     * A copy of the Kstat chain, encapsulating a {@code kstat_ctl_t} object. Only
+     * one thread may actively use this object at any time.
      * <p>
-     * This is a Java 7 implementation of Java 8's Integer.toUnsignedString.
-     *
-     * @param i a 32 bit value
-     * @return the string representation of the unsigned integer
-     */
-    public static String toUnsignedString(int i) {
-        if (i >= 0) {
-            return Integer.toString(i);
-        }
-        return Long.toString(Builder.getUnsignedInt(i));
-    }
-
-    /**
-     * Represent a 64 bit value as if it were an unsigned long.
-     * <p>
-     * This is a Java 7 implementation of Java 8's Long.toUnsignedString.
-     *
-     * @param l a 64 bit value
-     * @return the string representation of the unsigned long
-     */
-    public static String toUnsignedString(long l) {
-        if (l >= 0) {
-            return Long.toString(l);
-        }
-        return BigInteger.valueOf(l).add(BigInteger.ONE.shiftLeft(64)).toString();
-    }
-
-    /**
-     * Kstat链的一个副本，它封装了一个{@code kstat_ctl_t}对象
-     * 任何时候只有一个线程可以积极地使用这个对象
-     * 实例化这个对象是使用{@link KstatCtl#openChain}方法完成的。它锁定和更新链
-     * 相当于调用{@link LibKstat#kstat_open}。控件对象应该使用{@link #close}关闭
-     * 这相当于调用{@link LibKstat#kstat_close}。
+     * Instantiating this object is accomplished using the
+     * {@link KstatKit#openChain} method. It locks and updates the chain and is the
+     * equivalent of calling {@link LibKstat#kstat_open}. The control object should
+     * be closed with {@link #close}, the equivalent of calling
+     * {@link LibKstat#kstat_close}
      */
     public static final class KstatChain implements AutoCloseable {
 
@@ -190,15 +171,18 @@ public final class KstatCtl {
         }
 
         /**
-         * {@link LibKstat#kstat_read}的便利方法，它从内核获取由{@code ksp}指向的kstat的数据
-         * {@code ksp.ks_data}被自动分配(或重新分配)到足够大以容纳所有数据。
-         * {@code ksp.ks_data}设置为数据字段的数量{@code ksp.ks_data_size}设置为
-         * 数据的总大小和ksp。ks_snaptime设置为拍摄数据快照的高分辨率时间
+         * Convenience method for {@link LibKstat#kstat_read} which gets data from the
+         * kernel for the kstat pointed to by {@code ksp}. {@code ksp.ks_data} is
+         * automatically allocated (or reallocated) to be large enough to hold all of
+         * the data. {@code ksp.ks_ndata} is set to the number of data fields,
+         * {@code ksp.ks_data_size} is set to the total size of the data, and
+         * ksp.ks_snaptime is set to the high-resolution time at which the data snapshot
+         * was taken.
          *
-         * @param ksp 要从中检索数据的kstat
-         * @return {@code true}如果成功;{@code false}
+         * @param ksp The kstat from which to retrieve data
+         * @return {@code true} if successful; {@code false} otherwise
          */
-        public boolean read(Kstat ksp) {
+        public boolean read(LibKstat.Kstat ksp) {
             int retry = 0;
             while (0 > KS.kstat_read(KC, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
@@ -215,34 +199,39 @@ public final class KstatCtl {
         }
 
         /**
-         * 方便的方法{@link LibKstat#kstat_lookup}。遍历kstat链，使用相同的
-         * {@code module}、{@code instance}和{@code name}字段搜索kstat;这个三元组唯
-         * 一地标识一个kstat，如果{@code module}是{@code null}， {@code instance}是-1
-         * 或者{@code name}是{@code null}，那么这些字段将在搜索中被忽略。
+         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
+         * chain, searching for a kstat with the same {@code module}, {@code instance},
+         * and {@code name} fields; this triplet uniquely identifies a kstat. If
+         * {@code module} is {@code null}, {@code instance} is -1, or {@code name} is
+         * {@code null}, then those fields will be ignored in the search.
          *
-         * @param module   模块，或忽略null
-         * @param instance 实例，或者忽略-1
-         * @param name     名称，或忽略null
-         * @return 如果找到请求的Kstat结构的第一个匹配项，或者{@code null}
+         * @param module   The module, or null to ignore
+         * @param instance The instance, or -1 to ignore
+         * @param name     The name, or null to ignore
+         * @return The first match of the requested Kstat structure if found, or
+         * {@code null}
          */
-        public Kstat lookup(String module, int instance, String name) {
+        public LibKstat.Kstat lookup(String module, int instance, String name) {
             return KS.kstat_lookup(KC, module, instance, name);
         }
 
         /**
-         * 方便的方法{@link LibKstat#kstat_lookup}。遍历kstat链，使用相同的
-         * {@code module}、{@code instance}和{@code name}字段搜索所有kstats;
-         * 这个三元组唯一地标识一个kstat。如果{@code module}是{@code null}，
-         * {@code instance}是-1，或者{@code name}是{@code null}，那么这些字段将在搜索中被忽略
+         * Convenience method for {@link LibKstat#kstat_lookup}. Traverses the kstat
+         * chain, searching for all kstats with the same {@code module},
+         * {@code instance}, and {@code name} fields; this triplet uniquely identifies a
+         * kstat. If {@code module} is {@code null}, {@code instance} is -1, or
+         * {@code name} is {@code null}, then those fields will be ignored in the
+         * search.
          *
-         * @param module   模块，或忽略null
-         * @param instance 实例，或者忽略-1
-         * @param name     名称，或忽略null
-         * @return 如果找到所请求的Kstat结构的所有匹配项，则为空列表
+         * @param module   The module, or null to ignore
+         * @param instance The instance, or -1 to ignore
+         * @param name     The name, or null to ignore
+         * @return All matches of the requested Kstat structure if found, or an empty
+         * list otherwise
          */
-        public List<Kstat> lookupAll(String module, int instance, String name) {
-            List<Kstat> kstats = new ArrayList<>();
-            for (Kstat ksp = KS.kstat_lookup(KC, module, instance, name); ksp != null; ksp = ksp.next()) {
+        public List<LibKstat.Kstat> lookupAll(String module, int instance, String name) {
+            List<LibKstat.Kstat> kstats = new ArrayList<>();
+            for (LibKstat.Kstat ksp = KS.kstat_lookup(KC, module, instance, name); ksp != null; ksp = ksp.next()) {
                 if ((module == null || module.equals(new String(ksp.ks_module, StandardCharsets.US_ASCII).trim()))
                         && (instance < 0 || instance == ksp.ks_instance)
                         && (name == null || name.equals(new String(ksp.ks_name, StandardCharsets.US_ASCII).trim()))) {
@@ -253,22 +242,26 @@ public final class KstatCtl {
         }
 
         /**
-         * 方便的方法{@link LibKstat#kstat_chain_update}。使这个kstat头链与内核的头链同步。
+         * Convenience method for {@link LibKstat#kstat_chain_update}. Brings this kstat
+         * header chain in sync with that of the kernel.
+         * <p>
+         * This function compares the kernel's current kstat chain ID(KCID), which is
+         * incremented every time the kstat chain changes, to this object's KCID.
          *
-         * @return 如果kstat链已经更改，则为0，如果没有更改，则为-1
+         * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or -1 on
+         * failure.
          */
         public int update() {
             return KS.kstat_chain_update(KC);
         }
 
         /**
-         * 解开链条上的锁
+         * Release the lock on the chain.
          */
         @Override
         public void close() {
             CHAIN.unlock();
         }
-
     }
 
 }

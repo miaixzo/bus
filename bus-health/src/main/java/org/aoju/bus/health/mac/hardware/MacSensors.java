@@ -27,7 +27,7 @@ package org.aoju.bus.health.mac.hardware;
 import com.sun.jna.platform.mac.IOKit.IOConnect;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractSensors;
-import org.aoju.bus.health.mac.Smc;
+import org.aoju.bus.health.mac.SmcKit;
 
 /**
  * Sensors from SMC
@@ -44,9 +44,9 @@ final class MacSensors extends AbstractSensors {
 
     @Override
     public double queryCpuTemperature() {
-        IOConnect conn = Smc.smcOpen();
-        double temp = Smc.smcGetFloat(conn, Smc.SMC_KEY_CPU_TEMP);
-        Smc.smcClose(conn);
+        IOConnect conn = SmcKit.smcOpen();
+        double temp = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_TEMP);
+        SmcKit.smcClose(conn);
         if (temp > 0d) {
             return temp;
         }
@@ -56,23 +56,23 @@ final class MacSensors extends AbstractSensors {
     @Override
     public int[] queryFanSpeeds() {
         // If we don't have fan # try to get it
-        IOConnect conn = Smc.smcOpen();
+        IOConnect conn = SmcKit.smcOpen();
         if (this.numFans == 0) {
-            this.numFans = (int) Smc.smcGetLong(conn, Smc.SMC_KEY_FAN_NUM);
+            this.numFans = (int) SmcKit.smcGetLong(conn, SmcKit.SMC_KEY_FAN_NUM);
         }
         int[] fanSpeeds = new int[this.numFans];
         for (int i = 0; i < this.numFans; i++) {
-            fanSpeeds[i] = (int) Smc.smcGetFloat(conn, String.format(Smc.SMC_KEY_FAN_SPEED, i));
+            fanSpeeds[i] = (int) SmcKit.smcGetFloat(conn, String.format(SmcKit.SMC_KEY_FAN_SPEED, i));
         }
-        Smc.smcClose(conn);
+        SmcKit.smcClose(conn);
         return fanSpeeds;
     }
 
     @Override
     public double queryCpuVoltage() {
-        IOConnect conn = Smc.smcOpen();
-        double volts = Smc.smcGetFloat(conn, Smc.SMC_KEY_CPU_VOLTAGE) / 1000d;
-        Smc.smcClose(conn);
+        IOConnect conn = SmcKit.smcOpen();
+        double volts = SmcKit.smcGetFloat(conn, SmcKit.SMC_KEY_CPU_VOLTAGE) / 1000d;
+        SmcKit.smcClose(conn);
         return volts;
     }
 

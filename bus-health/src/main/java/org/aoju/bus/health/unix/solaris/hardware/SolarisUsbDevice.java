@@ -60,7 +60,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
      * @param connectedDevices an array of {@link UsbDevice} objects.
      */
     public SolarisUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                            String uniqueDeviceId, UsbDevice[] connectedDevices) {
+                            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
@@ -70,8 +70,8 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
      * @param tree a boolean.
      * @return an array of {@link UsbDevice} objects.
      */
-    public static UsbDevice[] getUsbDevices(boolean tree) {
-        UsbDevice[] devices = getUsbDevices();
+    public static List<UsbDevice> getUsbDevices(boolean tree) {
+        List<UsbDevice> devices = getUsbDevices();
         if (tree) {
             return devices;
         }
@@ -81,13 +81,13 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
         for (UsbDevice device : devices) {
             deviceList.add(new SolarisUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
                     device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                    new SolarisUsbDevice[0]));
+                    Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
-        return deviceList.toArray(new UsbDevice[0]);
+        return deviceList;
     }
 
-    private static UsbDevice[] getUsbDevices() {
+    private static List<UsbDevice> getUsbDevices() {
         Map<String, String> nameMap = new HashMap<>();
         Map<String, String> vendorIdMap = new HashMap<>();
         Map<String, String> productIdMap = new HashMap<>();
@@ -97,7 +97,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
         // Enumerate all usb devices and build information maps
         List<String> devices = Executor.runNative("prtconf -pv");
         if (devices.isEmpty()) {
-            return new SolarisUsbDevice[0];
+            return Collections.emptyList();
         }
         // For each item enumerated, store information in the maps
         Map<Integer, String> lastParent = new HashMap<>();
@@ -161,11 +161,11 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
                         getDeviceAndChildren(controller, "0000", "0000", nameMap, vendorIdMap, productIdMap, hubMap));
             }
         }
-        return controllerDevices.toArray(new UsbDevice[0]);
+        return controllerDevices;
     }
 
-    private static void addDevicesToList(List<UsbDevice> deviceList, UsbDevice[] connectedDevices) {
-        for (UsbDevice device : connectedDevices) {
+    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
+        for (UsbDevice device : list) {
             deviceList.add(device);
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
@@ -178,10 +178,10 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
      * @param devPath      The device node path.
      * @param vid          The default (parent) vendor ID
      * @param pid          The default (parent) product ID
-     * @param nameMap
-     * @param vendorIdMap
-     * @param productIdMap
-     * @param hubMap
+     * @param nameMap      the map of names
+     * @param vendorIdMap  the map of vendorIds
+     * @param productIdMap the map of productIds
+     * @param hubMap       the map of hubs
      * @return A SolarisUsbDevice corresponding to this device
      */
     private static SolarisUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
@@ -190,13 +190,13 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
         List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
-        List<SolarisUsbDevice> usbDevices = new ArrayList<>();
+        List<UsbDevice> usbDevices = new ArrayList<>();
         for (String path : childPaths) {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorIdMap, productIdMap, hubMap));
         }
         Collections.sort(usbDevices);
         return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId), Normal.EMPTY, vendorId, productId,
-                Normal.EMPTY, devPath, usbDevices.toArray(new UsbDevice[0]));
+                Normal.EMPTY, devPath, usbDevices);
     }
 
 }

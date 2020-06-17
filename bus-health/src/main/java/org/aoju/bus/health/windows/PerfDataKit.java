@@ -25,15 +25,19 @@
 package org.aoju.bus.health.windows;
 
 import com.sun.jna.platform.win32.BaseTSD.DWORD_PTR;
-import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Pdh;
 import com.sun.jna.platform.win32.Pdh.PDH_RAW_COUNTER;
+import com.sun.jna.platform.win32.PdhMsg;
+import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import com.sun.jna.platform.win32.WinDef.LONGLONGByReference;
+import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Formats;
 import org.aoju.bus.logger.Logger;
 
 
@@ -45,7 +49,7 @@ import org.aoju.bus.logger.Logger;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class PerfDataCounter {
+public final class PerfDataKit {
 
     private static final DWORD_PTR PZERO = new DWORD_PTR(0);
     private static final DWORDByReference PDH_FMT_RAW = new DWORDByReference(new DWORD(Pdh.PDH_FMT_RAW));
@@ -53,7 +57,7 @@ public final class PerfDataCounter {
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
-    private PerfDataCounter() {
+    private PerfDataKit() {
     }
 
     /**
@@ -88,7 +92,7 @@ public final class PerfDataCounter {
         }
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.get().isWarn()) {
-                Logger.warn("Failed to update counter. Error code: {}", String.format(Builder.formatError(ret)));
+                Logger.warn("Failed to update counter. Error code: {}", String.format(Formats.formatError(ret)));
             }
             return 0L;
         }
@@ -107,7 +111,7 @@ public final class PerfDataCounter {
         int ret = PDH.PdhOpenQuery(null, PZERO, q);
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.get().isError()) {
-                Logger.error("Failed to open PDH Query. Error code: {}", String.format(Builder.formatError(ret)));
+                Logger.error("Failed to open PDH Query. Error code: {}", String.format(Formats.formatError(ret)));
             }
             return false;
         }
@@ -135,7 +139,7 @@ public final class PerfDataCounter {
         int ret = PDH.PdhGetRawCounterValue(counter.getValue(), PDH_FMT_RAW, counterValue);
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.get().isWarn()) {
-                Logger.warn("Failed to get counter. Error code: {}", String.format(Builder.formatError(ret)));
+                Logger.warn("Failed to get counter. Error code: {}", String.format(Formats.formatError(ret)));
             }
             return ret;
         }
@@ -156,7 +160,7 @@ public final class PerfDataCounter {
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.get().isWarn()) {
                 Logger.warn("Failed to add PDH Counter: {}, Error code: {}", path,
-                        String.format(Builder.formatError(ret)));
+                        String.format(Formats.formatError(ret)));
             }
             return false;
         }

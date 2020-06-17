@@ -42,7 +42,7 @@ import java.time.OffsetDateTime;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class WmiQuery {
+public final class WmiKit {
 
     /**
      * The namespace where Open Hardware Monitor publishes to WMI,
@@ -54,7 +54,7 @@ public final class WmiQuery {
 
     private static final String CLASS_CAST_MSG = "%s is not a %s type. CIM Type is %d and VT type is %d";
 
-    private WmiQuery() {
+    private WmiKit() {
     }
 
     /**

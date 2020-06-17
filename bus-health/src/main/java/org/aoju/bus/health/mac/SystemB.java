@@ -25,6 +25,8 @@
 package org.aoju.bus.health.mac;
 
 import com.sun.jna.Native;
+import com.sun.jna.Structure;
+import com.sun.jna.Structure.FieldOrder;
 import org.aoju.bus.health.unix.CLibrary;
 
 /**
@@ -35,8 +37,36 @@ import org.aoju.bus.health.unix.CLibrary;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public interface SystemB extends CLibrary, com.sun.jna.platform.mac.SystemB {
+public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
 
     SystemB INSTANCE = Native.load("System", SystemB.class);
+
+    int UTX_USERSIZE = 256;
+    int UTX_LINESIZE = 32;
+    int UTX_IDSIZE = 4;
+    int UTX_HOSTSIZE = 256;
+
+    /**
+     * Reads a line from the current file position in the utmp file. It returns a
+     * pointer to a structure containing the fields of the line.
+     * <p>
+     * Not thread safe
+     *
+     * @return a {@link MacUtmpx} on success, and NULL on failure (which includes
+     * the "record not found" case)
+     */
+    MacUtmpx getutxent();
+
+    @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad"})
+    class MacUtmpx extends Structure {
+        public byte[] ut_user = new byte[UTX_USERSIZE]; // login name
+        public byte[] ut_id = new byte[UTX_IDSIZE]; // id
+        public byte[] ut_line = new byte[UTX_LINESIZE]; // tty name
+        public int ut_pid; // process id creating the entry
+        public short ut_type; // type of this entry
+        public Timeval ut_tv; // time entry was created
+        public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
+        public byte[] ut_pad = new byte[16]; // reserved for future use
+    }
 
 }

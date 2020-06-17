@@ -36,7 +36,8 @@ import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
-import org.aoju.bus.health.unix.freebsd.BsdSysctl;
+import org.aoju.bus.health.builtin.hardware.CentralProcessor;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc.CpTime;
 import org.aoju.bus.logger.Logger;
@@ -59,8 +60,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     private static final Pattern CPUMASK = Pattern.compile(".*<cpu\\s.*mask=\"(?:0x)?(\\p{XDigit}+)\".*>.*</cpu>.*");
 
-    private static List<LogicalProcessor> parseTopology() {
-        String[] topology = BsdSysctl.sysctl("kern.sched.topology_spec", Normal.EMPTY).split("\\n|\\r");
+    private static List<CentralProcessor.LogicalProcessor> parseTopology() {
+        String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", "").split("\\n|\\r");
         /*-
          * Sample output:
 
@@ -117,8 +118,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return matchBitmasks(group1, group2, group3);
     }
 
-    private static List<LogicalProcessor> matchBitmasks(long group1, List<Long> group2, List<Long> group3) {
-        List<LogicalProcessor> logProcs = new ArrayList<>();
+    private static List<CentralProcessor.LogicalProcessor> matchBitmasks(long group1, List<Long> group2, List<Long> group3) {
+        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         // Lowest and Highest set bits, indexing from 0
         int lowBit = Long.numberOfTrailingZeros(group1);
         int hiBit = 63 - Long.numberOfLeadingZeros(group1);
@@ -126,7 +127,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         for (int i = lowBit; i <= hiBit; i++) {
             if ((group1 & (1L << i)) > 0) {
                 int numaNode = 0;
-                LogicalProcessor logProc = new LogicalProcessor(i, getMatchingBitmask(group3, i),
+                CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(i, getMatchingBitmask(group3, i),
                         getMatchingBitmask(group2, i), numaNode);
                 logProcs.add(logProc);
             }
@@ -143,14 +144,36 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return 0;
     }
 
+    /**
+     * Fetches the ProcessorID from dmidecode (if possible with root permissions),
+     * otherwise uses the values from /var/run/dmesg.boot
+     *
+     * @param processorID The processorID as a long
+     * @return The ProcessorID string
+     */
+    private static String getProcessorIDfromDmiDecode(long processorID) {
+        boolean procInfo = false;
+        String marker = "Processor Information";
+        for (String checkLine : Executor.runNative("dmidecode -t system")) {
+            if (!procInfo && checkLine.contains(marker)) {
+                marker = "ID:";
+                procInfo = true;
+            } else if (procInfo && checkLine.contains(marker)) {
+                return checkLine.split(marker)[1].trim();
+            }
+        }
+        // If we've gotten this far, dmidecode failed. Used the passed-in values
+        return String.format("%016X", processorID);
+    }
+
     @Override
-    protected ProcessorIdentifier queryProcessorId() {
+    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         final Pattern identifierPattern = Pattern
                 .compile("Origin=\"([^\"]*)\".*Id=(\\S+).*Family=(\\S+).*Model=(\\S+).*Stepping=(\\S+).*");
         final Pattern featuresPattern = Pattern.compile("Features=(\\S+)<.*");
 
         String cpuVendor = Normal.EMPTY;
-        String cpuName = BsdSysctl.sysctl("hw.model", Normal.EMPTY);
+        String cpuName = BsdSysctlKit.sysctl("hw.model", Normal.EMPTY);
         String cpuFamily = Normal.EMPTY;
         String cpuModel = Normal.EMPTY;
         String cpuStepping = Normal.EMPTY;
@@ -187,40 +210,40 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         cpu64bit = Executor.getFirstAnswer("uname -m").trim().contains("64");
         processorID = getProcessorIDfromDmiDecode(processorIdBits);
 
-        return new ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
     }
 
     @Override
-    protected LogicalProcessor[] initProcessorCounts() {
-        List<LogicalProcessor> logProcs = parseTopology();
+    protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
+        List<CentralProcessor.LogicalProcessor> logProcs = parseTopology();
         // Force at least one processor
         if (logProcs.isEmpty()) {
-            logProcs.add(new LogicalProcessor(0, 0, 0));
+            logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
         }
-        return logProcs.toArray(new LogicalProcessor[0]);
+        return logProcs;
     }
 
     @Override
     public long[] querySystemCpuLoadTicks() {
-        long[] ticks = new long[TickType.values().length];
+        long[] ticks = new long[CentralProcessor.TickType.values().length];
         CpTime cpTime = new CpTime();
-        BsdSysctl.sysctl("kern.cp_time", cpTime);
-        ticks[TickType.USER.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_USER];
-        ticks[TickType.NICE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_NICE];
-        ticks[TickType.SYSTEM.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_SYS];
-        ticks[TickType.IRQ.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_INTR];
-        ticks[TickType.IDLE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_IDLE];
+        BsdSysctlKit.sysctl("kern.cp_time", cpTime);
+        ticks[CentralProcessor.TickType.USER.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_USER];
+        ticks[CentralProcessor.TickType.NICE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_NICE];
+        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_SYS];
+        ticks[CentralProcessor.TickType.IRQ.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_INTR];
+        ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpTime.cpu_ticks[FreeBsdLibc.CP_IDLE];
         return ticks;
     }
 
     @Override
     public long[] queryCurrentFreq() {
-        long freq = BsdSysctl.sysctl("dev.cpu.0.freq", -1L);
+        long freq = BsdSysctlKit.sysctl("dev.cpu.0.freq", -1L);
         if (freq > 0) {
             // If success, value is in MHz
             freq *= 1_000_000L;
         } else {
-            freq = BsdSysctl.sysctl("machdep.tsc_freq", -1L);
+            freq = BsdSysctlKit.sysctl("machdep.tsc_freq", -1L);
         }
         long[] freqs = new long[getLogicalProcessorCount()];
         Arrays.fill(freqs, freq);
@@ -230,7 +253,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryMaxFreq() {
         long max = -1L;
-        String freqLevels = BsdSysctl.sysctl("dev.cpu.0.freq_levels", Normal.EMPTY);
+        String freqLevels = BsdSysctlKit.sysctl("dev.cpu.0.freq_levels", Normal.EMPTY);
         // MHz/Watts pairs like: 2501/32000 2187/27125 2000/24000
         for (String s : RegEx.SPACES.split(freqLevels)) {
             long freq = Builder.parseLongOrDefault(s.split(Symbol.SLASH)[0], -1L);
@@ -242,7 +265,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             // If success, value is in MHz
             max *= 1_000_000;
         } else {
-            max = BsdSysctl.sysctl("machdep.tsc_freq", -1L);
+            max = BsdSysctlKit.sysctl("machdep.tsc_freq", -1L);
         }
         return max;
     }
@@ -264,7 +287,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
-        long[][] ticks = new long[getLogicalProcessorCount()][TickType.values().length];
+        long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
 
         // Allocate memory for array of CPTime
         long size = new CpTime().size();
@@ -278,39 +301,17 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         }
         // p now points to the data; need to copy each element
         for (int cpu = 0; cpu < getLogicalProcessorCount(); cpu++) {
-            ticks[cpu][TickType.USER.getIndex()] = p
+            ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = p
                     .getLong(size * cpu + FreeBsdLibc.CP_USER * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][TickType.NICE.getIndex()] = p
+            ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = p
                     .getLong(size * cpu + FreeBsdLibc.CP_NICE * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][TickType.SYSTEM.getIndex()] = p
+            ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = p
                     .getLong(size * cpu + FreeBsdLibc.CP_SYS * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][TickType.IRQ.getIndex()] = p.getLong(size * cpu + FreeBsdLibc.CP_INTR * FreeBsdLibc.UINT64_SIZE); // lgtm
-            ticks[cpu][TickType.IDLE.getIndex()] = p
+            ticks[cpu][CentralProcessor.TickType.IRQ.getIndex()] = p.getLong(size * cpu + FreeBsdLibc.CP_INTR * FreeBsdLibc.UINT64_SIZE); // lgtm
+            ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = p
                     .getLong(size * cpu + FreeBsdLibc.CP_IDLE * FreeBsdLibc.UINT64_SIZE); // lgtm
         }
         return ticks;
-    }
-
-    /**
-     * Fetches the ProcessorID from dmidecode (if possible with root permissions),
-     * otherwise uses the values from /var/run/dmesg.boot
-     *
-     * @param processorID
-     * @return The ProcessorID string
-     */
-    private String getProcessorIDfromDmiDecode(long processorID) {
-        boolean procInfo = false;
-        String marker = "Processor Information";
-        for (String checkLine : Executor.runNative("dmidecode -t system")) {
-            if (!procInfo && checkLine.contains(marker)) {
-                marker = "ID:";
-                procInfo = true;
-            } else if (procInfo && checkLine.contains(marker)) {
-                return checkLine.split(marker)[1].trim();
-            }
-        }
-        // If we've gotten this far, dmidecode failed. Used the passed-in values
-        return String.format("%016X", processorID);
     }
 
     @Override

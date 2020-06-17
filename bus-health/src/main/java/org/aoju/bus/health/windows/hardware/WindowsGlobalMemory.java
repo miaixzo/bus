@@ -34,12 +34,12 @@ import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.PhysicalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
-import org.aoju.bus.health.windows.WmiQuery;
+import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32PhysicalMemory;
-import org.aoju.bus.health.windows.drivers.Win32PhysicalMemory.PhysicalMemoryProperty;
-import org.aoju.bus.health.windows.drivers.Win32PhysicalMemory.PhysicalMemoryPropertyWin8;
 import org.aoju.bus.logger.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static org.aoju.bus.health.Memoize.defaultExpiration;
@@ -230,34 +230,32 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
     }
 
     @Override
-    public PhysicalMemory[] getPhysicalMemory() {
-        PhysicalMemory[] physicalMemoryArray;
+    public List<PhysicalMemory> getPhysicalMemory() {
+        List<PhysicalMemory> physicalMemoryList = new ArrayList<>();
         if (IS_WINDOWS10_OR_GREATER) {
-            WmiResult<PhysicalMemoryProperty> bankMap = Win32PhysicalMemory.queryphysicalMemory();
-            physicalMemoryArray = new PhysicalMemory[bankMap.getResultCount()];
+            WmiResult<Win32PhysicalMemory.PhysicalMemoryProperty> bankMap = Win32PhysicalMemory.queryphysicalMemory();
             for (int index = 0; index < bankMap.getResultCount(); index++) {
-                String bankLabel = WmiQuery.getString(bankMap, PhysicalMemoryProperty.BANKLABEL, index);
-                long capacity = WmiQuery.getUint64(bankMap, PhysicalMemoryProperty.CAPACITY, index);
-                long speed = WmiQuery.getUint32(bankMap, PhysicalMemoryProperty.SPEED, index) * 1_000_000L;
-                String manufacturer = WmiQuery.getString(bankMap, PhysicalMemoryProperty.MANUFACTURER, index);
+                String bankLabel = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.BANKLABEL, index);
+                long capacity = WmiKit.getUint64(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.CAPACITY, index);
+                long speed = WmiKit.getUint32(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.SPEED, index) * 1_000_000L;
+                String manufacturer = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.MANUFACTURER, index);
                 String memoryType = smBiosMemoryType(
-                        WmiQuery.getUint32(bankMap, PhysicalMemoryProperty.SMBIOSMEMORYTYPE, index));
-                physicalMemoryArray[index] = new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType);
+                        WmiKit.getUint32(bankMap, Win32PhysicalMemory.PhysicalMemoryProperty.SMBIOSMEMORYTYPE, index));
+                physicalMemoryList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType));
             }
         } else {
-            WmiResult<PhysicalMemoryPropertyWin8> bankMap = Win32PhysicalMemory.queryphysicalMemoryWin8();
-            physicalMemoryArray = new PhysicalMemory[bankMap.getResultCount()];
+            WmiResult<Win32PhysicalMemory.PhysicalMemoryPropertyWin8> bankMap = Win32PhysicalMemory.queryphysicalMemoryWin8();
             for (int index = 0; index < bankMap.getResultCount(); index++) {
-                String bankLabel = WmiQuery.getString(bankMap, PhysicalMemoryPropertyWin8.BANKLABEL, index);
-                long capacity = WmiQuery.getUint64(bankMap, PhysicalMemoryPropertyWin8.CAPACITY, index);
-                long speed = WmiQuery.getUint32(bankMap, PhysicalMemoryPropertyWin8.SPEED, index) * 1_000_000L;
-                String manufacturer = WmiQuery.getString(bankMap, PhysicalMemoryPropertyWin8.MANUFACTURER, index);
+                String bankLabel = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.BANKLABEL, index);
+                long capacity = WmiKit.getUint64(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.CAPACITY, index);
+                long speed = WmiKit.getUint32(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.SPEED, index) * 1_000_000L;
+                String manufacturer = WmiKit.getString(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.MANUFACTURER, index);
                 String memoryType = memoryType(
-                        WmiQuery.getUint16(bankMap, PhysicalMemoryPropertyWin8.MEMORYTYPE, index));
-                physicalMemoryArray[index] = new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType);
+                        WmiKit.getUint16(bankMap, Win32PhysicalMemory.PhysicalMemoryPropertyWin8.MEMORYTYPE, index));
+                physicalMemoryList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType));
             }
         }
-        return physicalMemoryArray;
+        return physicalMemoryList;
     }
 
 }

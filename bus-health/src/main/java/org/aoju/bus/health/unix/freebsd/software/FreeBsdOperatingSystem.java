@@ -24,9 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.freebsd.software;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -34,16 +31,13 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
-import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.freebsd.BsdSysctl;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
+import org.aoju.bus.health.unix.freebsd.drivers.Who;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.*;
-
-import static org.aoju.bus.health.builtin.software.OSService.State.RUNNING;
-import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
 
 /**
  * FreeBSD is a free and open-source Unix-like operating system descended from
@@ -51,23 +45,42 @@ import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
  * The first version of FreeBSD was released in 1993. In 2005, FreeBSD was the
  * most popular open-source BSD operating system, accounting for more than
  * three-quarters of all installed simply, permissively licensed BSD systems.
- *
- * @author Kimi Liu
- * @version 6.0.0
- * @since JDK 1.8+
  */
 @ThreadSafe
 public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     private static final long BOOTTIME = querySystemBootTime();
 
+    private static List<OSProcess> getProcessListFromPS(int pid) {
+        List<OSProcess> procs = new ArrayList<>();
+        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,args";
+        if (pid >= 0) {
+            psCommand += " -p " + pid;
+        }
+        List<String> procList = Executor.runNative(psCommand);
+        if (procList.isEmpty() || procList.size() < 2) {
+            return procs;
+        }
+        // remove header row
+        procList.remove(0);
+        // Fill list
+        for (String proc : procList) {
+            String[] split = RegEx.SPACES.split(proc.trim(), 16);
+            // Elements should match ps command order
+            if (split.length == 16) {
+                procs.add(new FreeBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
+            }
+        }
+        return procs;
+    }
+
     private static long querySystemBootTime() {
-        CLibrary.Timeval tv = new CLibrary.Timeval();
-        if (!BsdSysctl.sysctl("kern.boottime", tv) || tv.tv_sec == 0) {
+        FreeBsdLibc.Timeval tv = new FreeBsdLibc.Timeval();
+        if (!BsdSysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec == 0) {
             // Usually this works. If it doesn't, fall back to text parsing.
             // Boot time will be the first consecutive string of digits.
             return Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
+                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
                     System.currentTimeMillis() / 1000);
         }
         // tv now points to a 128-bit timeval structure for boot time.
@@ -82,13 +95,13 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public FamilyVersionInfo queryFamilyVersionInfo() {
-        String family = BsdSysctl.sysctl("kern.ostype", "FreeBSD");
+        String family = BsdSysctlKit.sysctl("kern.ostype", "FreeBSD");
 
-        String version = BsdSysctl.sysctl("kern.osrelease", Normal.EMPTY);
-        String versionInfo = BsdSysctl.sysctl("kern.version", Normal.EMPTY);
+        String version = BsdSysctlKit.sysctl("kern.osrelease", Normal.EMPTY);
+        String versionInfo = BsdSysctlKit.sysctl("kern.version", Normal.EMPTY);
         String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
 
-        return new FamilyVersionInfo(family, new OSVersionInfo(version, null, buildNumber));
+        return new FamilyVersionInfo(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
 
     @Override
@@ -115,19 +128,20 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSProcess[] getProcesses(int limit, ProcessSort sort, boolean slowFields) {
-        List<OSProcess> procs = getProcessListFromPS(
-                "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,args", -1,
-                slowFields);
-        List<OSProcess> sorted = processSort(procs, limit, sort);
-        return sorted.toArray(new OSProcess[0]);
+    public List<OSSession> getSessions() {
+        return Collections.unmodifiableList(USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent());
     }
 
     @Override
-    public OSProcess getProcess(int pid, boolean slowFields) {
-        List<OSProcess> procs = getProcessListFromPS(
-                "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,args -p ", pid,
-                slowFields);
+    public List<OSProcess> getProcesses(int limit, OperatingSystem.ProcessSort sort) {
+        List<OSProcess> procs = getProcessListFromPS(-1);
+        List<OSProcess> sorted = processSort(procs, limit, sort);
+        return Collections.unmodifiableList(sorted);
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        List<OSProcess> procs = getProcessListFromPS(pid);
         if (procs.isEmpty()) {
             return null;
         }
@@ -135,7 +149,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSProcess[] getChildProcesses(int parentPid, int limit, ProcessSort sort) {
+    public List<OSProcess> getChildProcesses(int parentPid, int limit, OperatingSystem.ProcessSort sort) {
         List<OSProcess> procs = new ArrayList<>();
         for (OSProcess p : getProcesses(0, null)) {
             if (p.getParentProcessID() == parentPid) {
@@ -143,120 +157,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             }
         }
         List<OSProcess> sorted = processSort(procs, limit, sort);
-        return sorted.toArray(new OSProcess[0]);
-    }
-
-    private List<OSProcess> getProcessListFromPS(String psCommand, int pid, boolean slowFields) {
-        Map<Integer, String> cwdMap = Builder.getCwdMap(pid);
-        List<OSProcess> procs = new ArrayList<>();
-        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
-        if (procList.isEmpty() || procList.size() < 2) {
-            return procs;
-        }
-        // remove header row
-        procList.remove(0);
-        // Fill list
-        for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), 16);
-            // Elements should match ps command order
-            if (split.length < 16) {
-                continue;
-            }
-            long now = System.currentTimeMillis();
-            OSProcess fproc = new OSProcess(this);
-            switch (split[0].charAt(0)) {
-                case 'R':
-                    fproc.setState(OSProcess.State.RUNNING);
-                    break;
-                case 'I':
-                case 'S':
-                    fproc.setState(OSProcess.State.SLEEPING);
-                    break;
-                case 'D':
-                case 'L':
-                case 'U':
-                    fproc.setState(OSProcess.State.WAITING);
-                    break;
-                case 'Z':
-                    fproc.setState(OSProcess.State.ZOMBIE);
-                    break;
-                case 'T':
-                    fproc.setState(OSProcess.State.STOPPED);
-                    break;
-                default:
-                    fproc.setState(OSProcess.State.OTHER);
-                    break;
-            }
-            fproc.setProcessID(Builder.parseIntOrDefault(split[1], 0));
-            fproc.setParentProcessID(Builder.parseIntOrDefault(split[2], 0));
-            fproc.setUser(split[3]);
-            fproc.setUserID(split[4]);
-            fproc.setGroup(split[5]);
-            fproc.setGroupID(split[6]);
-            fproc.setThreadCount(Builder.parseIntOrDefault(split[7], 0));
-            fproc.setPriority(Builder.parseIntOrDefault(split[8], 0));
-            // These are in KB, multiply
-            fproc.setVirtualSize(Builder.parseLongOrDefault(split[9], 0) * 1024);
-            fproc.setResidentSetSize(Builder.parseLongOrDefault(split[10], 0) * 1024);
-            // Avoid divide by zero for processes up less than a second
-            long elapsedTime = Builder.parseDHMSOrDefault(split[11], 0L);
-            fproc.setUpTime(elapsedTime < 1L ? 1L : elapsedTime);
-            fproc.setStartTime(now - fproc.getUpTime());
-            fproc.setKernelTime(Builder.parseDHMSOrDefault(split[12], 0L));
-            fproc.setUserTime(Builder.parseDHMSOrDefault(split[13], 0L) - fproc.getKernelTime());
-            fproc.setPath(split[14]);
-            fproc.setName(fproc.getPath().substring(fproc.getPath().lastIndexOf(Symbol.C_SLASH) + 1));
-            fproc.setCommandLine(split[15]);
-            fproc.setCurrentWorkingDirectory(cwdMap.getOrDefault(fproc.getProcessID(), Normal.EMPTY));
-
-            if (slowFields) {
-                List<String> openFilesList = Executor.runNative(String.format("lsof -p %d", pid));
-                fproc.setOpenFiles(openFilesList.size() - 1L);
-
-                // Get process abi vector
-                int[] mib = new int[4];
-                mib[0] = 1; // CTL_KERN
-                mib[1] = 14; // KERN_PROC
-                mib[2] = 9; // KERN_PROC_SV_NAME
-                mib[3] = pid;
-                // Allocate memory for arguments
-                Pointer abi = new Memory(32);
-                IntByReference size = new IntByReference(32);
-                // Fetch abi vector
-                if (0 == FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, abi, size, null, 0)) {
-                    String elf = abi.getString(0);
-                    if (elf.contains("ELF32")) {
-                        fproc.setBitness(32);
-                    } else if (elf.contains("ELF64")) {
-                        fproc.setBitness(64);
-                    }
-                }
-            }
-            procs.add(fproc);
-        }
-        return procs;
-    }
-
-    @Override
-    public long getProcessAffinityMask(int processId) {
-        long bitMask = 0L;
-        // Would prefer to use native cpuset_getaffinity call but variable sizing is
-        // kernel-dependent and requires C macros, so we use commandline instead.
-        String cpuset = Executor.getFirstAnswer("cpuset -gp " + processId);
-        // Sample output:
-        // pid 8 mask: 0, 1
-        // cpuset: getaffinity: No such process
-        String[] split = cpuset.split(Symbol.COLON);
-        if (split.length > 1) {
-            String[] bits = split[1].split(Symbol.COMMA);
-            for (String bit : bits) {
-                int bitToSet = Builder.parseIntOrDefault(bit.trim(), -1);
-                if (bitToSet >= 0) {
-                    bitMask |= 1L << bitToSet;
-                }
-            }
-        }
-        return bitMask;
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override
@@ -303,8 +204,8 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, 0, ProcessSort.PID)) {
-            OSService s = new OSService(p.getName(), p.getProcessID(), RUNNING);
+        for (OSProcess p : getChildProcesses(1, 0, OperatingSystem.ProcessSort.PID)) {
+            OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());
         }
@@ -315,7 +216,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             for (File f : listFiles) {
                 String name = f.getName();
                 if (!running.contains(name)) {
-                    OSService s = new OSService(name, 0, STOPPED);
+                    OSService s = new OSService(name, 0, OSService.State.STOPPED);
                     services.add(s);
                 }
             }

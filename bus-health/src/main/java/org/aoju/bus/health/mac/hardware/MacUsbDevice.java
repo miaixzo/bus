@@ -66,7 +66,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param connectedDevices an array of {@link UsbDevice} objects.
      */
     public MacUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                        String uniqueDeviceId, UsbDevice[] connectedDevices) {
+                        String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
@@ -76,8 +76,8 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param tree a boolean.
      * @return an array of {@link UsbDevice} objects.
      */
-    public static UsbDevice[] getUsbDevices(boolean tree) {
-        UsbDevice[] devices = getUsbDevices();
+    public static List<UsbDevice> getUsbDevices(boolean tree) {
+        List<UsbDevice> devices = getUsbDevices();
         if (tree) {
             return devices;
         }
@@ -87,10 +87,10 @@ public class MacUsbDevice extends AbstractUsbDevice {
         for (UsbDevice device : devices) {
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
-        return deviceList.toArray(new UsbDevice[0]);
+        return deviceList;
     }
 
-    private static UsbDevice[] getUsbDevices() {
+    private static List<UsbDevice> getUsbDevices() {
         // Maps to store information using RegistryEntryID as the key
         Map<Long, String> nameMap = new HashMap<>();
         Map<Long, String> vendorMap = new HashMap<>();
@@ -192,13 +192,14 @@ public class MacUsbDevice extends AbstractUsbDevice {
             controllerDevices.add(getDeviceAndChildren(controller, "0000", "0000", nameMap, vendorMap, vendorIdMap,
                     productIdMap, serialMap, hubMap));
         }
-        return controllerDevices.toArray(new UsbDevice[0]);
+        return controllerDevices;
     }
 
-    private static void addDevicesToList(List<UsbDevice> deviceList, UsbDevice[] connectedDevices) {
-        for (UsbDevice device : connectedDevices) {
-            deviceList.add(new MacUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
-                    device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(), new MacUsbDevice[0]));
+    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
+        for (UsbDevice device : list) {
+            deviceList.add(
+                    new MacUsbDevice(device.getName(), device.getVendor(), device.getVendorId(), device.getProductId(),
+                            device.getSerialNumber(), device.getUniqueDeviceId(), Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
     }
@@ -212,8 +213,8 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param locationId         The locationID of this controller returned from the registry
      * @param locationIDKey      A pointer to the locationID string
      * @param ioPropertyMatchKey A pointer to the IOPropertyMatch string
-     * @param productIdMap
-     * @param vendorIdMap
+     * @param productIdMap       the map of productIds
+     * @param vendorIdMap        the map of vendorIds
      */
     private static void getControllerIdByLocation(long id, CFTypeRef locationId, CFStringRef locationIDKey,
                                                   CFStringRef ioPropertyMatchKey, Map<Long, String> vendorIdMap, Map<Long, String> productIdMap) {
@@ -270,12 +271,12 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param registryEntryId The device unique registry id.
      * @param vid             The default (parent) vendor ID
      * @param pid             The default (parent) product ID
-     * @param nameMap
-     * @param vendorMap
-     * @param vendorIdMap
-     * @param productIdMap
-     * @param serialMap
-     * @param hubMap
+     * @param nameMap         the map of names
+     * @param vendorMap       the map of vendors
+     * @param vendorIdMap     the map of vendorIds
+     * @param productIdMap    the map of productIds
+     * @param serialMap       the map of serial numbers
+     * @param hubMap          the map of hubs
      * @return A MacUsbDevice corresponding to this device
      */
     private static MacUsbDevice getDeviceAndChildren(Long registryEntryId, String vid, String pid,
@@ -283,8 +284,8 @@ public class MacUsbDevice extends AbstractUsbDevice {
                                                      Map<Long, String> productIdMap, Map<Long, String> serialMap, Map<Long, List<Long>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(registryEntryId, vid);
         String productId = productIdMap.getOrDefault(registryEntryId, pid);
-        List<Long> childIds = hubMap.getOrDefault(registryEntryId, new ArrayList<Long>());
-        List<MacUsbDevice> usbDevices = new ArrayList<>();
+        List<Long> childIds = hubMap.getOrDefault(registryEntryId, new ArrayList<>());
+        List<UsbDevice> usbDevices = new ArrayList<>();
         for (Long id : childIds) {
             usbDevices.add(getDeviceAndChildren(id, vendorId, productId, nameMap, vendorMap, vendorIdMap, productIdMap,
                     serialMap, hubMap));
@@ -292,8 +293,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
         Collections.sort(usbDevices);
         return new MacUsbDevice(nameMap.getOrDefault(registryEntryId, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(registryEntryId, Normal.EMPTY), vendorId, productId,
-                serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId),
-                usbDevices.toArray(new UsbDevice[0]));
+                serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId), usbDevices);
     }
 
 }

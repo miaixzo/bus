@@ -34,7 +34,6 @@ import org.aoju.bus.health.linux.ProcPath;
 import java.io.File;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Utility to read process statistics from {@code /proc/[pid]/stat}
@@ -46,7 +45,22 @@ import java.util.regex.Pattern;
 @ThreadSafe
 public final class ProcessStat {
 
-    private static final Pattern DIGITS = Pattern.compile("\\d+");
+    /**
+     * Constant defining the number of integer values in {@code /proc/pid/stat}. 2.6
+     * Kernel has 44 elements, 3.3 has 47, and 3.5 has 52.
+     */
+    public static final int PROC_PID_STAT_LENGTH;
+
+    static {
+        String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
+        if (!stat.isEmpty() && stat.contains(")")) {
+            // add 3 to account for pid, process name in prarenthesis, and state
+            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, ' ') + 3;
+        } else {
+            // Default assuming recent kernel
+            PROC_PID_STAT_LENGTH = 52;
+        }
+    }
 
     private ProcessStat() {
     }
@@ -85,6 +99,32 @@ public final class ProcessStat {
     }
 
     /**
+     * Reads the statistics in {@code /proc/[pid]/statm} and returns the results.
+     *
+     * @param pid The process ID for which to fetch stats
+     * @return An EnumMap where the numeric values in {@link PidStatM} are mapped to
+     * a {@link Long} value.
+     * <p>
+     * If the process doesn't exist, returns null.
+     */
+    public static Map<PidStatM, Long> getPidStatM(int pid) {
+        String statm = Builder.getStringFromFile(String.format(ProcPath.PID_STATM, pid));
+        if (statm.isEmpty()) {
+            // If pid doesn't exist
+            return null;
+        }
+        // Split the fields
+        String[] split = RegEx.SPACES.split(statm);
+
+        Map<PidStatM, Long> statmMap = new EnumMap<>(PidStatM.class);
+        PidStatM[] enumArray = PidStatM.class.getEnumConstants();
+        for (int i = 0; i < enumArray.length && i < split.length; i++) {
+            statmMap.put(enumArray[i], Builder.parseLongOrDefault(split[i], 0L));
+        }
+        return statmMap;
+    }
+
+    /**
      * Gets an array of files in the /proc directory with only numeric digit
      * filenames, corresponding to processes
      *
@@ -92,7 +132,7 @@ public final class ProcessStat {
      */
     public static File[] getPidFiles() {
         File procdir = new File(ProcPath.PROC);
-        File[] pids = procdir.listFiles(f -> DIGITS.matcher(f.getName()).matches());
+        File[] pids = procdir.listFiles(f -> RegEx.NUMBERS.matcher(f.getName()).matches());
         return pids != null ? pids : new File[0];
     }
 
@@ -381,4 +421,39 @@ public final class ProcessStat {
          */
         EXIT_CODE;
     }
+
+    /**
+     * Enum corresponding to the fields in the output of {@code /proc/[pid]/statm}
+     */
+    public enum PidStatM {
+        /**
+         * Total program size
+         */
+        SIZE,
+        /**
+         * Resident set size
+         */
+        RESIDENT,
+        /**
+         * Number of resident shared pages (i.e., backed by a file)
+         */
+        SHARED,
+        /**
+         * Text (code)
+         */
+        TEXT,
+        /**
+         * Library (unused since Linux 2.6; always 0)
+         */
+        LIB,
+        /**
+         * Data + stack
+         */
+        DATA,
+        /**
+         * Dirty pages (unused since Linux 2.6; always 0)
+         */
+        DT
+    }
+
 }

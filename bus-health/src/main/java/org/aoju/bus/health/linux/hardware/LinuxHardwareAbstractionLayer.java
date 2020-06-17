@@ -60,7 +60,7 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     }
 
     @Override
-    public PowerSource[] getPowerSources() {
+    public List<PowerSource> getPowerSources() {
         return LinuxPowerSource.getPowerSources();
     }
 
@@ -70,7 +70,7 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     }
 
     @Override
-    public Display[] getDisplays() {
+    public List<Display> getDisplays() {
         return LinuxDisplay.getDisplays();
     }
 
@@ -80,18 +80,18 @@ public final class LinuxHardwareAbstractionLayer extends AbstractHardwareAbstrac
     }
 
     @Override
-    public UsbDevice[] getUsbDevices(boolean tree) {
+    public List<UsbDevice> getUsbDevices(boolean tree) {
         return LinuxUsbDevice.getUsbDevices(tree);
     }
 
     @Override
-    public SoundCard[] getSoundCards() {
-        return LinuxSoundCard.getSoundCards().toArray(new SoundCard[0]);
+    public List<SoundCard> getSoundCards() {
+        return LinuxSoundCard.getSoundCards();
     }
 
     @Override
-    public GraphicsCard[] getGraphicsCards() {
-        return LinuxGraphicsCard.getGraphicsCards().toArray(new GraphicsCard[0]);
+    public List<GraphicsCard> getGraphicsCards() {
+        return LinuxGraphicsCard.getGraphicsCards();
     }
 
 }

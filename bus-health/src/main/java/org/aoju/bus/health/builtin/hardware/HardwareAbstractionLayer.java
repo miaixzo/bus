@@ -70,7 +70,7 @@ public interface HardwareAbstractionLayer {
      * @return An array of PowerSource objects or an empty array if none are
      * present.
      */
-    PowerSource[] getPowerSources();
+    List<PowerSource> getPowerSources();
 
     /**
      * Instantiates an {@code UnmodifiableList} of {@link HWDiskStore}
@@ -95,7 +95,7 @@ public interface HardwareAbstractionLayer {
      *
      * @return An array of Display objects or an empty array if none are present.
      */
-    Display[] getDisplays();
+    List<Display> getDisplays();
 
     /**
      * Instantiates a {@link Sensors} object, representing CPU
@@ -120,7 +120,7 @@ public interface HardwareAbstractionLayer {
      * Controllers and devices connected to them, or an empty array if none
      * are present
      */
-    UsbDevice[] getUsbDevices(boolean tree);
+    List<UsbDevice> getUsbDevices(boolean tree);
 
     /**
      * Instantiates an array of {@link SoundCard} objects,
@@ -128,7 +128,7 @@ public interface HardwareAbstractionLayer {
      *
      * @return An array of SoundCard objects or an empty array if none are present.
      */
-    SoundCard[] getSoundCards();
+    List<SoundCard> getSoundCards();
 
     /**
      * Instantiates an array of {@link GraphicsCard} objects,
@@ -137,6 +137,6 @@ public interface HardwareAbstractionLayer {
      * @return An array of GraphicsCard objects or an empty array if none are
      * present.
      */
-    GraphicsCard[] getGraphicsCards();
+    List<GraphicsCard> getGraphicsCards();
 
 }

@@ -39,7 +39,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
-import org.aoju.bus.health.mac.drivers.Disk;
+import org.aoju.bus.health.mac.drivers.DiskKit;
 import org.aoju.bus.health.mac.drivers.Fsstat;
 import org.aoju.bus.logger.Logger;
 
@@ -82,7 +82,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
      */
     public static List<HWDiskStore> getDisks() {
         Map<String, String> mountPointMap = Fsstat.queryPartitionToMountMap();
-        Map<String, String> logicalVolumeMap = Disk.queryLogicalVolumeMap();
+        Map<String, String> logicalVolumeMap = DiskKit.queryLogicalVolumeMap();
         Map<CFKey, CFStringRef> cfKeyMap = mapCFKeys();
 
         List<HWDiskStore> diskList = new ArrayList<>();
@@ -260,7 +260,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         Map<CFKey, CFStringRef> cfKeyMap = mapCFKeys();
         // Execute the update
         boolean diskFound = updateDiskStats(session, Fsstat.queryPartitionToMountMap(),
-                Disk.queryLogicalVolumeMap(), cfKeyMap);
+                DiskKit.queryLogicalVolumeMap(), cfKeyMap);
         // Release the session and CFStrings
         session.release();
         for (CFTypeRef value : cfKeyMap.values()) {

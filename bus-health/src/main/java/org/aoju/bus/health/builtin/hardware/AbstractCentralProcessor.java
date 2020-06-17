@@ -29,7 +29,9 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.logger.Logger;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -62,15 +64,15 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     private final int logicalProcessorCount;
 
     // 处理器信息，在构造函数中初始化
-    private final LogicalProcessor[] logicalProcessors;
+    private final List<LogicalProcessor> logicalProcessors;
 
     /**
      * 创建一个处理器
      */
     public AbstractCentralProcessor() {
         // 填充逻辑处理器阵列
-        this.logicalProcessors = initProcessorCounts();
-        // 初始化处理器数
+        this.logicalProcessors = Collections.unmodifiableList(initProcessorCounts());
+        // I初始化处理器数
         Set<String> physProcPkgs = new HashSet<>();
         Set<Integer> physPkgs = new HashSet<>();
         for (LogicalProcessor logProc : this.logicalProcessors) {
@@ -78,7 +80,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
             physProcPkgs.add(logProc.getPhysicalProcessorNumber() + Symbol.COLON + pkg);
             physPkgs.add(pkg);
         }
-        this.logicalProcessorCount = this.logicalProcessors.length;
+        this.logicalProcessorCount = this.logicalProcessors.size();
         this.physicalProcessorCount = physProcPkgs.size();
         this.physicalPackageCount = physPkgs.size();
     }
@@ -210,7 +212,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
      *
      * @return 初始化的逻辑处理器数组
      */
-    protected abstract LogicalProcessor[] initProcessorCounts();
+    protected abstract List<LogicalProcessor> initProcessorCounts();
 
     /**
      * 更新逻辑和物理处理器的数量和阵列
@@ -273,7 +275,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     protected abstract long queryInterrupts();
 
     @Override
-    public LogicalProcessor[] getLogicalProcessors() {
+    public List<LogicalProcessor> getLogicalProcessors() {
         return this.logicalProcessors;
     }
 

@@ -30,11 +30,9 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
+import org.aoju.bus.health.builtin.hardware.SoundCard;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Solaris Sound Card.
@@ -67,7 +65,7 @@ final class SolarisSoundCard extends AbstractSoundCard {
      *
      * @return a {@link java.util.List} object.
      */
-    public static List<SolarisSoundCard> getSoundCards() {
+    public static List<SoundCard> getSoundCards() {
         Map<String, String> vendorMap = new HashMap<>();
         Map<String, String> productMap = new HashMap<>();
         List<String> sounds = new ArrayList<>();
@@ -82,18 +80,18 @@ final class SolarisSoundCard extends AbstractSoundCard {
                         && DEFAULT_AUDIO_DRIVER.equals(Builder.getSingleQuoteStringValue(line))) {
                     sounds.add(key);
                 } else if (line.contains("info.product")) {
-                    productMap.put(key, Builder.getStringBetween(line, '\''));
+                    productMap.put(key, Builder.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
                 } else if (line.contains("info.vendor")) {
-                    vendorMap.put(key, Builder.getStringBetween(line, '\''));
+                    vendorMap.put(key, Builder.getStringBetween(line, Symbol.C_SINGLE_QUOTE));
                 }
             }
         }
-        List<SolarisSoundCard> soundCards = new ArrayList<>();
+        List<SoundCard> soundCards = new ArrayList<>();
         for (String _key : sounds) {
             soundCards.add(new SolarisSoundCard(productMap.get(_key) + Symbol.SPACE + DEFAULT_AUDIO_DRIVER,
                     vendorMap.get(_key) + Symbol.SPACE + productMap.get(_key), productMap.get(_key)));
         }
-        return soundCards;
+        return Collections.unmodifiableList(soundCards);
     }
 
 }

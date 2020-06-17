@@ -37,7 +37,7 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.PhysicalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
-import org.aoju.bus.health.mac.Sysctl;
+import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
 
     private static long queryPhysMem() {
-        return Sysctl.sysctl("hw.memsize", 0L);
+        return SysctlKit.sysctl("hw.memsize", 0L);
     }
 
     private static long queryPageSize() {
@@ -96,7 +96,7 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
     }
 
     @Override
-    public PhysicalMemory[] getPhysicalMemory() {
+    public List<PhysicalMemory> getPhysicalMemory() {
         List<PhysicalMemory> pmList = new ArrayList<>();
         List<String> sp = Executor.runNative("system_profiler SPMemoryDataType");
         int bank = 0;
@@ -140,7 +140,7 @@ final class MacGlobalMemory extends AbstractGlobalMemory {
         }
         pmList.add(new PhysicalMemory(bankLabel, capacity, speed, manufacturer, memoryType));
 
-        return pmList.toArray(new PhysicalMemory[0]);
+        return pmList;
     }
 
     private long queryVmStats() {

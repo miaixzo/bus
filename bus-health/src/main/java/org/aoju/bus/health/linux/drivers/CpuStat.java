@@ -168,4 +168,5 @@ public final class CpuStat {
         }
         return 0;
     }
+
 }

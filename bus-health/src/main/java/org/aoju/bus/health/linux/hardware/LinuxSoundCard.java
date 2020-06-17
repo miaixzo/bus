@@ -30,11 +30,13 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
+import org.aoju.bus.health.builtin.hardware.SoundCard;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -169,12 +171,12 @@ final class LinuxSoundCard extends AbstractSoundCard {
      *
      * @return List of {@link LinuxSoundCard} objects.
      */
-    public static List<LinuxSoundCard> getSoundCards() {
+    public static List<SoundCard> getSoundCards() {
         List<LinuxSoundCard> soundCards = new ArrayList<>();
         for (File cardFile : getCardFolders()) {
             soundCards.add(new LinuxSoundCard(getSoundCardVersion(), getCardName(cardFile), getCardCodec(cardFile)));
         }
-        return soundCards;
+        return Collections.unmodifiableList(soundCards);
     }
 
 }

@@ -25,69 +25,61 @@
 package org.aoju.bus.health.mac.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.software.OSSession;
+import org.aoju.bus.health.mac.SystemB;
+import org.aoju.bus.health.mac.SystemB.MacUtmpx;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.aoju.bus.health.unix.CLibrary.LOGIN_PROCESS;
+import static org.aoju.bus.health.unix.CLibrary.USER_PROCESS;
 
 /**
- * Utility to query diskutil
+ * Utility to query logged in users.
  *
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class Disk {
+public final class Who {
 
-    private static final String DISKUTIL_CS_LIST = "diskutil cs list";
-    private static final String LOGICAL_VOLUME_FAMILY = "Logical Volume Family";
-    private static final String LOGICAL_VOLUME_GROUP = "Logical Volume Group";
+    private static final SystemB SYS = SystemB.INSTANCE;
 
-    private Disk() {
+    private Who() {
     }
 
     /**
-     * Query diskutil to map logical volumes
+     * Query {@code getutxent} to get logged in users.
      *
-     * @return A map with physical volume as the key and logical volume as the value
+     * @return A list of logged in user sessions
      */
-    public static Map<String, String> queryLogicalVolumeMap() {
-        Map<String, String> logicalVolumeMap = new HashMap<>();
-        // Parse `diskutil cs list` to populate logical volume map
-        Set<String> physicalVolumes = new HashSet<>();
-        boolean logicalVolume = false;
-        for (String line : Executor.runNative(DISKUTIL_CS_LIST)) {
-            if (line.contains(LOGICAL_VOLUME_GROUP)) {
-                // Logical Volume Group defines beginning of grouping which will
-                // list multiple physical volumes followed by the logical volume
-                // they are associated with. Each physical volume will be a key
-                // with the logical volume as its value, but since the value
-                // doesn't appear until the end we collect the keys in a list
-                physicalVolumes.clear();
-                logicalVolume = false;
-            } else if (line.contains(LOGICAL_VOLUME_FAMILY)) {
-                // Done collecting physical volumes, prepare to store logical
-                // volume
-                logicalVolume = true;
-            } else if (line.contains("Disk:")) {
-                String volume = Builder.parseLastString(line);
-                if (logicalVolume) {
-                    // Store this disk as the logical volume value for all the
-                    // physical volume keys
-                    for (String pv : physicalVolumes) {
-                        logicalVolumeMap.put(pv, volume);
+    public static synchronized List<OSSession> queryUtxent() {
+        List<OSSession> whoList = new ArrayList<>();
+        MacUtmpx ut;
+        // Rewind
+        SYS.setutxent();
+        try { // Iterate
+            while ((ut = SYS.getutxent()) != null) {
+                if (ut.ut_type == USER_PROCESS || ut.ut_type == LOGIN_PROCESS) {
+                    String user = new String(ut.ut_user, StandardCharsets.US_ASCII).trim();
+                    String device = new String(ut.ut_line, StandardCharsets.US_ASCII).trim();
+                    String host = new String(ut.ut_host, StandardCharsets.US_ASCII).trim();
+                    long loginTime = ut.ut_tv.tv_sec.longValue() * 1000L + ut.ut_tv.tv_usec / 1000L;
+                    // Sanity check. If errors, default to who command line
+                    if (user.isEmpty() || device.isEmpty() || loginTime < 0 || loginTime > System.currentTimeMillis()) {
+                        return org.aoju.bus.health.unix.Who.queryWho();
                     }
-                    physicalVolumes.clear();
-                } else {
-                    physicalVolumes.add(Builder.parseLastString(line));
+                    whoList.add(new OSSession(user, device, loginTime, host));
                 }
             }
+        } finally {
+            // Close
+            SYS.endutxent();
         }
-        return logicalVolumeMap;
+        return whoList;
     }
 
 }

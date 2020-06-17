@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -82,7 +83,7 @@ public interface CentralProcessor {
      *
      * @return 逻辑处理器阵列
      */
-    LogicalProcessor[] getLogicalProcessors();
+    List<LogicalProcessor> getLogicalProcessors();
 
     /**
      * 通过计算来自{@link #getSystemCpuLoadTicks()}的滴答声与来自先

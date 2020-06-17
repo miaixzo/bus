@@ -27,7 +27,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
-import org.aoju.bus.health.unix.freebsd.BsdSysctl;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.util.function.Supplier;
 
@@ -50,11 +50,11 @@ final class FreeBsdGlobalMemory extends AbstractGlobalMemory {
     private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
 
     private static long queryPhysMem() {
-        return BsdSysctl.sysctl("hw.physmem", 0L);
+        return BsdSysctlKit.sysctl("hw.physmem", 0L);
     }
 
     private static long queryPageSize() {
-        return BsdSysctl.sysctl("hw.pagesize", 4096L);
+        return BsdSysctlKit.sysctl("hw.pagesize", 4096L);
     }
 
     @Override
@@ -78,9 +78,9 @@ final class FreeBsdGlobalMemory extends AbstractGlobalMemory {
     }
 
     private long queryVmStats() {
-        long inactive = BsdSysctl.sysctl("vm.stats.vm.v_inactive_count", 0L);
-        long cache = BsdSysctl.sysctl("vm.stats.vm.v_cache_count", 0L);
-        long free = BsdSysctl.sysctl("vm.stats.vm.v_free_count", 0L);
+        long inactive = BsdSysctlKit.sysctl("vm.stats.vm.v_inactive_count", 0L);
+        long cache = BsdSysctlKit.sysctl("vm.stats.vm.v_cache_count", 0L);
+        long free = BsdSysctlKit.sysctl("vm.stats.vm.v_free_count", 0L);
         return (inactive + cache + free) * getPageSize();
     }
 

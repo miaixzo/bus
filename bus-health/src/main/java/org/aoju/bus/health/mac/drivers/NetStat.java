@@ -30,6 +30,7 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.IFmsgHdr;
 import com.sun.jna.platform.mac.SystemB.IFmsgHdr2;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.logger.Logger;
 
@@ -114,6 +115,7 @@ public final class NetStat {
     /**
      * Class to encapsulate IF data for method return
      */
+    @Immutable
     public static class IFdata {
         private final int ifType;
         private final long oPackets;

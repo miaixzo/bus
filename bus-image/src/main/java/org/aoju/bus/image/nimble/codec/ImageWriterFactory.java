@@ -235,8 +235,8 @@ public class ImageWriterFactory implements Serializable {
         @Override
         public String toString() {
             return "ImageWriterParam{" +
-                    "formatName='" + formatName + '\'' +
-                    ", className='" + className + '\'' +
+                    "formatName='" + formatName + Symbol.C_SINGLE_QUOTE +
+                    ", className='" + className + Symbol.C_SINGLE_QUOTE +
                     ", patchJPEGLS=" + patchJPEGLS +
                     ", imageWriterParam=" + Arrays.toString(imageWriteParams) +
                     '}';

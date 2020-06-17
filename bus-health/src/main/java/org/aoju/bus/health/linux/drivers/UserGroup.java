@@ -22,49 +22,75 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.health.linux.software;
+package org.aoju.bus.health.linux.drivers;
 
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Executor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+import static org.aoju.bus.health.Memoize.memoize;
 
 /**
- * LinuxUserGroupInfo class.
+ * Utility class to temporarily cache the userID and group maps in Linux, for
+ * parsing process ownership. Cache expires after one minute.
  *
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class LinuxUserGroupInfo {
+@ThreadSafe
+public final class UserGroup {
 
-    // Temporarily cache users and groups, populated by constructor
-    private final Map<String, Pair<String, String>> usersIdMap;
-    private final Map<String, String> groupsIdMap;
+    // Temporarily cache users and groups, update each minute
+    private static final Supplier<Map<String, String>> usersIdMap = memoize(UserGroup::getUserMap,
+            TimeUnit.MINUTES.toNanos(1));
+    private static final Supplier<Map<String, String>> groupsIdMap = memoize(UserGroup::getGroupMap,
+            TimeUnit.MINUTES.toNanos(1));
 
-    public LinuxUserGroupInfo() {
-        usersIdMap = getUserMap();
-        groupsIdMap = getGroupMap();
+    private UserGroup() {
     }
 
-    private static Map<String, Pair<String, String>> getUserMap() {
-        HashMap<String, Pair<String, String>> userMap = new HashMap<>();
+    /**
+     * Gets a user from their ID
+     *
+     * @param userId a user ID
+     * @return a pair containing that user id as the first element and the user name
+     * as the second
+     */
+    public static String getUser(String userId) {
+        return usersIdMap.get().getOrDefault(userId, Normal.UNKNOWN);
+    }
+
+    /**
+     * Gets the group name for a given ID
+     *
+     * @param groupId a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String getGroupName(String groupId) {
+        return groupsIdMap.get().getOrDefault(groupId, Normal.UNKNOWN);
+    }
+
+    private static Map<String, String> getUserMap() {
+        HashMap<String, String> userMap = new HashMap<>();
         List<String> passwd = Executor.runNative("getent passwd");
         // see man 5 passwd for the fields
         for (String entry : passwd) {
             String[] split = entry.split(Symbol.COLON);
-            if (split.length < 3) {
-                continue;
+            if (split.length > 2) {
+                String userName = split[0];
+                String uid = split[2];
+                // it is allowed to have multiple entries for the same userId,
+                // we use the first one
+                userMap.putIfAbsent(uid, userName);
             }
-            String userName = split[0];
-            String uid = split[2];
-            // it is allowed to have multiple entries for the same userId,
-            // we use the first one
-            userMap.putIfAbsent(uid, Pair.of(uid, userName));
         }
         return userMap;
     }
@@ -82,29 +108,6 @@ public class LinuxUserGroupInfo {
             }
         }
         return groupMap;
-    }
-
-    /**
-     * Gets a user from their ID
-     *
-     * @param userId a user ID
-     * @return a pair containing that user id as the first element and the user name
-     * as the second
-     */
-    public Pair<String, String> getUser(String userId) {
-        return this.usersIdMap.getOrDefault(userId, Pair.of(userId, Normal.UNKNOWN));
-    }
-
-    /**
-     * <p>
-     * getGroupName.
-     * </p>
-     *
-     * @param groupId a {@link java.lang.String} object.
-     * @return a {@link java.lang.String} object.
-     */
-    public String getGroupName(String groupId) {
-        return this.groupsIdMap.getOrDefault(groupId, Normal.UNKNOWN);
     }
 
 }

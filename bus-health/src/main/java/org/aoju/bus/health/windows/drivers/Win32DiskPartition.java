@@ -59,6 +59,7 @@ public final class Win32DiskPartition {
      * Disk partition properties
      */
     public enum DiskPartitionProperty {
-        INDEX, DESCRIPTION, DEVICEID, DISKINDEX, NAME, SIZE, TYPE;
+        INDEX, DESCRIPTION, DEVICEID, DISKINDEX, NAME, SIZE, TYPE
     }
+
 }

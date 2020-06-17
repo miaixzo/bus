@@ -25,7 +25,7 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Formats;
 
 /**
  * The PhysicalMemory class represents a physical memory device located on a
@@ -104,8 +104,8 @@ public class PhysicalMemory {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Bank label: " + getBankLabel());
-        sb.append(", Capacity: " + Builder.formatBytes(getCapacity()));
-        sb.append(", Clock speed: " + Builder.formatValue(getClockSpeed(), "Hz"));
+        sb.append(", Capacity: " + Formats.formatBytes(getCapacity()));
+        sb.append(", Clock speed: " + Formats.formatHertz(getClockSpeed()));
         sb.append(", Manufacturer: " + getManufacturer());
         sb.append(", Memory type: " + getMemoryType());
         return sb.toString();

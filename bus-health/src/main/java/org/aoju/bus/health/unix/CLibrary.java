@@ -41,53 +41,65 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public interface CLibrary extends LibCAPI, Library {
 
-    /**
-     * 常量 <code>AI_CANONNAME=2</code>
-     */
     int AI_CANONNAME = 2;
 
+    int UT_LINESIZE = 32;
+    int UT_NAMESIZE = 32;
+    int UT_HOSTSIZE = 256;
+    int LOGIN_PROCESS = 6; // Session leader of a logged in user.
+    int USER_PROCESS = 7; // Normal process.
+
     /**
-     * 返回调用进程的进程ID。ID保证是惟一的，对于构造临时文件名很有用
+     * Returns the process ID of the calling process. The ID is guaranteed to be
+     * unique and is useful for constructing temporary file names.
      *
-     * @return 调用进程的进程ID
+     * @return the process ID of the calling process.
      */
     int getpid();
 
     /**
-     * getaddrinfo()返回一个或多个addrinfo结构，其中每个结构
-     * 包含一个Internet地址，可以在绑定(2)或连接(2)的调用中指定
+     * Given node and service, which identify an Internet host and a service,
+     * getaddrinfo() returns one or more addrinfo structures, each of which contains
+     * an Internet address that can be specified in a call to bind(2) or connect(2).
      *
-     * @param node    一个数字网络地址或网络主机名，其网络地址被查找并解析
-     * @param service 设置每个返回地址结构中的端口
-     * @param hints   指定选择由res指向的列表中返回的套接字地址结构的条件
-     * @param res     返回地址结构
-     * @return 0成功;设置errno失败
+     * @param node    a numerical network address or a network hostname, whose network
+     *                addresses are looked up and resolved.
+     * @param service sets the port in each returned address structure.
+     * @param hints   specifies criteria for selecting the socket address structures
+     *                returned in the list pointed to by res.
+     * @param res     returned address structure
+     * @return 0 on success; sets errno on failure
      */
     int getaddrinfo(String node, String service, Addrinfo hints, PointerByReference res);
 
     /**
-     * 释放为动态分配的链表res分配的内存
+     * Frees the memory that was allocated for the dynamically allocated linked list
+     * res.
      *
-     * @param res 指向getaddrinfo返回的链表的指针
+     * @param res Pointer to linked list returned by getaddrinfo
      */
     void freeaddrinfo(Pointer res);
 
     /**
-     * 将getaddrinfo错误代码转换为人类可读的字符串，适合于错误报告
+     * Translates getaddrinfo error codes to a human readable string, suitable for
+     * error reporting.
      *
-     * @param e 来自getaddrinfo的错误代码
-     * @return 人类可读的错误代码版本
+     * @param e Error code from getaddrinfo
+     * @return A human-readable version of the error code
      */
     String gai_strerror(int e);
 
     /**
-     * 返回类型为BSD sysctl kernel .boottime
+     * Rewinds the file pointer to the beginning of the utmp file. It is generally a
+     * good idea to call it before any of the other functions.
      */
-    @FieldOrder({"tv_sec", "tv_usec"})
-    class Timeval extends Structure {
-        public long tv_sec; // seconds
-        public long tv_usec; // microseconds
-    }
+    void setutxent();
+
+    /**
+     * Closes the utmp file. It should be called when the user code is done
+     * accessing the file with the other functions.
+     */
+    void endutxent();
 
     @FieldOrder({"sa_family", "sa_data"})
     class Sockaddr extends Structure {
@@ -98,8 +110,8 @@ public interface CLibrary extends LibCAPI, Library {
         }
     }
 
-    @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr",
-            "ai_canonname", "ai_next"})
+    @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
+            "ai_next"})
     class Addrinfo extends Structure {
         public int ai_flags;
         public int ai_family;
@@ -123,7 +135,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     /**
-     * sysctl net. init .ip.stats的返回类型
+     * Return type for sysctl net.inet.ip.stats
      */
     @FieldOrder({"tcps_connattempt", "tcps_accepts", "tcps_connects", "tcps_drops", "tcps_conndrops", "tcps_closed",
             "tcps_segstimed", "tcps_rttupdated", "tcps_delack", "tcps_timeoutdrop", "tcps_rexmttimeo",
@@ -424,7 +436,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     /**
-     * sysctl net. init .ip.stats的返回类型
+     * Return type for sysctl net.inet.ip.stats
      */
     @FieldOrder({"ips_total", "ips_badsum", "ips_tooshort", "ips_toosmall", "ips_badhlen", "ips_badlen",
             "ips_fragments", "ips_fragdropped", "ips_fragtimeout", "ips_forward", "ips_fastforward", "ips_cantforward",
@@ -482,7 +494,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     /**
-     * sysctl net.inet6.ip6.stats的返回类型
+     * Return type for sysctl net.inet6.ip6.stats
      */
     @FieldOrder({"ip6s_total", "ip6s_tooshort", "ip6s_toosmall", "ip6s_fragments", "ip6s_fragdropped",
             "ip6s_fragtimeout", "ip6s_fragoverflow", "ip6s_forward", "ip6s_cantforward", "ip6s_redirectsent",
@@ -548,7 +560,7 @@ public interface CLibrary extends LibCAPI, Library {
     }
 
     /**
-     * sysctl net. init .udp.stats的返回类型
+     * Return type for sysctl net.inet.udp.stats
      */
     @FieldOrder({"udps_ipackets", "udps_hdrops", "udps_badsum", "udps_badlen", "udps_noport", "udps_noportbcast",
             "udps_fullsock", "udpps_pcbcachemiss", "udpps_pcbhashmiss", "udps_opackets", "udps_fastout", "udps_nosum",
