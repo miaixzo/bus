@@ -1896,14 +1896,9 @@ public class MathKit {
      * @return 每份的个数
      */
     public static int partValue(int total, int partCount, boolean isPlusOneWhenHasRem) {
-        int partValue;
-        if (total % partCount == 0) {
-            partValue = total / partCount;
-        } else {
-            partValue = (int) Math.floor(total / partCount);
-            if (isPlusOneWhenHasRem) {
-                partValue += 1;
-            }
+        int partValue = total / partCount;
+        if (isPlusOneWhenHasRem && total % partCount > 0) {
+            partValue++;
         }
         return partValue;
     }

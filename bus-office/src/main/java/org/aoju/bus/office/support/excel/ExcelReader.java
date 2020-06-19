@@ -27,8 +27,10 @@ package org.aoju.bus.office.support.excel;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
+import org.aoju.bus.office.support.excel.cell.CellHandler;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.extractor.ExcelExtractor;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -274,6 +276,43 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
+     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口
+     * 用户通过实现此接口，可以更加灵活的处理每个单元格的数据
+     *
+     * @param cellHandler 单元格处理器，用于处理读到的单元格及其数据
+     */
+    public void read(CellHandler cellHandler) {
+        read(0, Integer.MAX_VALUE, cellHandler);
+    }
+
+    /**
+     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口
+     * 用户通过实现此接口，可以更加灵活的处理每个单元格的数据
+     *
+     * @param startRowIndex 起始行（包含，从0开始计数）
+     * @param endRowIndex   结束行（包含，从0开始计数）
+     * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
+     */
+    public void read(int startRowIndex, int endRowIndex, CellHandler cellHandler) {
+        checkNotClosed();
+
+        startRowIndex = Math.max(startRowIndex, this.sheet.getFirstRowNum());// 读取起始行（包含）
+        endRowIndex = Math.min(endRowIndex, this.sheet.getLastRowNum());// 读取结束行（包含）
+
+        Row row;
+        short columnSize;
+        for (int y = startRowIndex; y <= endRowIndex; y++) {
+            row = this.sheet.getRow(y);
+            columnSize = row.getLastCellNum();
+            Cell cell;
+            for (short x = 0; x < columnSize; x++) {
+                cell = row.getCell(x);
+                cellHandler.handle(cell, CellKit.getCellValue(cell));
+            }
+        }
+    }
+
+    /**
      * 读取Excel为Map的列表,读取所有行,默认第一行做为标题,数据从第二行开始
      * Map表示一行,标题为key,单元格内容为value
      *
@@ -315,9 +354,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
                 // 跳过标题行
                 rowList = readRow(sheet.getRow(i));
                 if (CollKit.isNotEmpty(rowList) || false == ignoreEmptyRow) {
-                    if (null == rowList) {
-                        rowList = new ArrayList<>(0);
-                    }
                     result.add(IterKit.toMap(aliasHeader(headerList), rowList, true));
                 }
             }

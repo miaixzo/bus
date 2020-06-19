@@ -33,6 +33,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * @version 6.0.0
  * @since JDK 1.8+
  */
+@FunctionalInterface
 public interface CellEditor {
 
     /**
