@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.jms;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 
 import javax.interceptor.AroundInvoke;
@@ -54,7 +54,7 @@ public final class TraceMessageListener {
     }
 
     public TraceMessageListener() {
-        this(Builder.getBackend());
+        this(Tracer.getBackend());
     }
 
     @AroundInvoke
@@ -73,18 +73,18 @@ public final class TraceMessageListener {
     }
 
     public void beforeProcessing(final Message message) throws JMSException {
-        if (backend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.AsyncProcess)) {
-            final String encodedTraceContext = message.getStringProperty(TraceConsts.TPIC_HEADER);
+        if (backend.getConfiguration().shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
+            final String encodedTraceContext = message.getStringProperty(Builder.TPIC_HEADER);
             if (encodedTraceContext != null) {
                 final Map<String, String> contextFromMessage = httpHeaderSerialization.parse(Collections.singletonList(encodedTraceContext));
-                backend.putAll(backend.getConfiguration().filterDeniedParams(contextFromMessage, TraceFilterConfiguration.Channel.AsyncProcess));
+                backend.putAll(backend.getConfiguration().filterDeniedParams(contextFromMessage, TraceFilterConfig.Channel.AsyncProcess));
             }
         }
-        Builder.generateInvocationIdIfNecessary(backend);
+        org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
     }
 
     void cleanUp() {
-        if (backend.getConfiguration().shouldProcessContext(TraceFilterConfiguration.Channel.AsyncProcess)) {
+        if (backend.getConfiguration().shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
             backend.clear();
         }
     }

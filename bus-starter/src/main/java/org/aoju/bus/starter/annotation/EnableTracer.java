@@ -22,38 +22,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.tracer.config;
+package org.aoju.bus.starter.annotation;
 
-import java.util.Map;
+import org.aoju.bus.starter.tracer.TracerConfiguration;
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
+ * 开启跨域支持
+ *
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public interface TraceFilterConfiguration {
-
-    boolean shouldProcessParam(String paramName, Channel channel);
-
-    Map<String, String> filterDeniedParams(Map<String, String> unfiltered, Channel channel);
-
-    boolean shouldProcessContext(Channel channel);
-
-    boolean shouldGenerateInvocationId();
-
-    int generatedInvocationIdLength();
-
-    boolean shouldGenerateSessionId();
-
-    int generatedSessionIdLength();
-
-    enum Channel {
-        IncomingRequest,
-        OutgoingResponse,
-        OutgoingRequest,
-        IncomingResponse,
-        AsyncDispatch,
-        AsyncProcess
-    }
+@Inherited
+@Documented
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Import({TracerConfiguration.class})
+public @interface EnableTracer {
 
 }

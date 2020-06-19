@@ -22,10 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.tracer.binding.spring.boot;
+package org.aoju.bus.starter.tracer;
 
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,17 +35,16 @@ import java.util.regex.Pattern;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-@ConfigurationProperties(prefix = "tracer")
-public class TraceProperties {
+public class TracerProperties {
 
     private int sessionIdLength = 32;
 
     private int invocationIdLength = 32;
 
-    private Map<TraceFilterConfiguration.Channel, Pattern> filter = new HashMap<>();
+    private Map<TraceFilterConfig.Channel, Pattern> filter = new HashMap<>();
 
     private Map<String, Profile> profile = new HashMap<>();
-    private TraceFilterConfiguration delegate = new TraceFilterConfiguration() {
+    private TraceFilterConfig delegate = new TraceFilterConfig() {
         @Override
         public boolean shouldProcessParam(String paramName, Channel channel) {
             return true;
@@ -99,11 +97,11 @@ public class TraceProperties {
         this.invocationIdLength = invocationIdLength;
     }
 
-    public Map<TraceFilterConfiguration.Channel, Pattern> getFilter() {
+    public Map<TraceFilterConfig.Channel, Pattern> getFilter() {
         return filter;
     }
 
-    public void setFilter(Map<TraceFilterConfiguration.Channel, Pattern> filter) {
+    public void setFilter(Map<TraceFilterConfig.Channel, Pattern> filter) {
         this.filter = filter;
     }
 
@@ -115,20 +113,20 @@ public class TraceProperties {
         this.profile = profile;
     }
 
-    public TraceFilterConfiguration getAsFilterConfiguration() {
+    public TraceFilterConfig getAsFilterConfiguration() {
         return delegate;
     }
 
 
     public static class Profile {
 
-        private Map<TraceFilterConfiguration.Channel, Pattern> filter;
+        private Map<TraceFilterConfig.Channel, Pattern> filter;
 
-        public Map<TraceFilterConfiguration.Channel, Pattern> getFilter() {
+        public Map<TraceFilterConfig.Channel, Pattern> getFilter() {
             return filter;
         }
 
-        public void setFilter(Map<TraceFilterConfiguration.Channel, Pattern> filter) {
+        public void setFilter(Map<TraceFilterConfig.Channel, Pattern> filter) {
             this.filter = filter;
         }
     }

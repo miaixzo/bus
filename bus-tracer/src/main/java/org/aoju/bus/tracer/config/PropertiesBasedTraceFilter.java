@@ -27,7 +27,7 @@ package org.aoju.bus.tracer.config;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Builder;
 
 import java.io.IOException;
 import java.util.*;
@@ -43,11 +43,11 @@ import java.util.regex.PatternSyntaxException;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public final class PropertiesBasedTraceFilterConfiguration implements TraceFilterConfiguration {
+public final class PropertiesBasedTraceFilter implements TraceFilterConfig {
 
     static final String Trace_CONFIG_PREFIX = "Builder.";
     static final String PROFILED_PREFIX = Trace_CONFIG_PREFIX + "profile.";
-    static final String Trace_DEFAULT_PROFILE_PREFIX = Trace_CONFIG_PREFIX + TraceConsts.DEFAULT + Symbol.DOT;
+    static final String Trace_DEFAULT_PROFILE_PREFIX = Trace_CONFIG_PREFIX + Builder.DEFAULT + Symbol.DOT;
     static final String GENERATE_INVOCATION_ID = "invocationIdLength";
     static final String GENERATE_SESSION_ID = "sessionIdLength";
 
@@ -55,12 +55,12 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
     private final String profileName;
     private final Map<String, List<Pattern>> patternCache = new ConcurrentHashMap<>();
 
-    public PropertiesBasedTraceFilterConfiguration(PropertyChain propertyChain) {
+    public PropertiesBasedTraceFilter(PropertyChain propertyChain) {
         this(propertyChain, null);
     }
 
-    public PropertiesBasedTraceFilterConfiguration(PropertyChain propertyChain,
-                                                   String profileName) {
+    public PropertiesBasedTraceFilter(PropertyChain propertyChain,
+                                      String profileName) {
         this.propertyChain = propertyChain;
         this.profileName = profileName;
     }
@@ -77,8 +77,8 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
      */
     public static PropertyChain loadPropertyChain() {
         try {
-            final Properties TraceDefaultFileProperties = new TracePropertiesFileLoader().loadTraceProperties(TracePropertiesFileLoader.Trace_DEFAULT_PROPERTIES_FILE);
-            final Properties TraceFileProperties = new TracePropertiesFileLoader().loadTraceProperties(TracePropertiesFileLoader.Trace_PROPERTIES_FILE);
+            final Properties TraceDefaultFileProperties = new TracePropertiesFileLoader().loadTraceProperties(Builder.TRACE_DEFAULT_PROPERTIES_FILE);
+            final Properties TraceFileProperties = new TracePropertiesFileLoader().loadTraceProperties(Builder.TRACE_PROPERTIES_FILE);
             return PropertyChain.build(System.getProperties(), TraceFileProperties, TraceDefaultFileProperties);
         } catch (IOException ioe) {
             throw new IllegalStateException("Could not load TraceProperties: " + ioe.getMessage(), ioe);
@@ -86,7 +86,7 @@ public final class PropertiesBasedTraceFilterConfiguration implements TraceFilte
     }
 
     private String getProfiledOrDefaultProperty(final String propertyName) {
-        if (profileName != null && !TraceConsts.DEFAULT.equals(profileName)) {
+        if (profileName != null && !Builder.DEFAULT.equals(profileName)) {
             final String profiledProperty = propertyChain.getProperty(PROFILED_PREFIX + profileName + Symbol.C_DOT + propertyName);
             if (profiledProperty != null)
                 return profiledProperty;

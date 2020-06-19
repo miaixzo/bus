@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.apache.cxf.interceptor;
 
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.Backend;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.aoju.bus.tracer.transport.SoapHeaderTransport;
 import org.apache.cxf.binding.soap.SoapMessage;
@@ -50,10 +50,10 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
     protected final Backend backend;
     private final HttpHeaderTransport httpJsonSerializer;
     private final SoapHeaderTransport httpSoapSerializer;
-    private final TraceFilterConfiguration.Channel channel;
+    private final TraceFilterConfig.Channel channel;
     private String profile;
 
-    public AbstractTraceInInterceptor(String phase, TraceFilterConfiguration.Channel channel, Backend backend,
+    public AbstractTraceInInterceptor(String phase, TraceFilterConfig.Channel channel, Backend backend,
                                       String profile) {
         super(phase);
         this.channel = channel;
@@ -68,7 +68,7 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
     @Override
     public void handleMessage(final Message message) {
         if (shouldHandleMessage(message)) {
-            final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
+            final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
 
             Logger.debug("Interceptor handles message!");
             if (filterConfiguration.shouldProcessContext(channel)) {
@@ -85,10 +85,10 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
         }
     }
 
-    private void handleHttpMessage(final Message message, final TraceFilterConfiguration filterConfiguration) {
+    private void handleHttpMessage(final Message message, final TraceFilterConfig filterConfiguration) {
         final Map<String, List<String>> requestHeaders = CastUtils.cast((Map<?, ?>) message.get(Message.PROTOCOL_HEADERS));
         if (requestHeaders != null && !requestHeaders.isEmpty()) {
-            final List<String> TraceHeader = requestHeaders.get(TraceConsts.TPIC_HEADER);
+            final List<String> TraceHeader = requestHeaders.get(Builder.TPIC_HEADER);
 
             if (TraceHeader != null && !TraceHeader.isEmpty()) {
                 final Map<String, String> parsedContext = httpJsonSerializer.parse(TraceHeader);
@@ -97,8 +97,8 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
         }
     }
 
-    private void handleSoapMessage(final SoapMessage message, final TraceFilterConfiguration filterConfiguration) {
-        final Header soapHeader = message.getHeader(TraceConsts.SOAP_HEADER_QNAME);
+    private void handleSoapMessage(final SoapMessage message, final TraceFilterConfig filterConfiguration) {
+        final Header soapHeader = message.getHeader(Builder.SOAP_HEADER_QNAME);
         if (soapHeader != null) {
             final Map<String, String> parsedContext = httpSoapSerializer.parseTpicHeader((Element) soapHeader.getObject());
             backend.putAll(filterConfiguration.filterDeniedParams(parsedContext, channel));

@@ -25,10 +25,10 @@
 package org.aoju.bus.tracer.backend;
 
 import org.aoju.bus.tracer.Backend;
-import org.aoju.bus.tracer.config.PropertiesBasedTraceFilterConfiguration;
+import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.config.PropertiesBasedTraceFilter;
 import org.aoju.bus.tracer.config.PropertyChain;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,19 +41,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class AbstractBackend implements Backend {
 
     private PropertyChain _lazyPropertyChain;
-    private Map<String, TraceFilterConfiguration> configurationCache = new ConcurrentHashMap<>();
+    private Map<String, TraceFilterConfig> configurationCache = new ConcurrentHashMap<>();
 
     @Override
-    public final TraceFilterConfiguration getConfiguration() {
+    public final TraceFilterConfig getConfiguration() {
         return getConfiguration(null);
     }
 
     @Override
-    public final TraceFilterConfiguration getConfiguration(String profileName) {
-        final String lookupProfile = profileName == null ? TraceConsts.DEFAULT : profileName;
-        TraceFilterConfiguration filterConfiguration = configurationCache.get(lookupProfile);
+    public final TraceFilterConfig getConfiguration(String profileName) {
+        final String lookupProfile = profileName == null ? Builder.DEFAULT : profileName;
+        TraceFilterConfig filterConfiguration = configurationCache.get(lookupProfile);
         if (filterConfiguration == null) {
-            filterConfiguration = new PropertiesBasedTraceFilterConfiguration(getPropertyChain(), lookupProfile);
+            filterConfiguration = new PropertiesBasedTraceFilter(getPropertyChain(), lookupProfile);
             configurationCache.put(lookupProfile, filterConfiguration);
         }
         return filterConfiguration;
@@ -61,17 +61,17 @@ public abstract class AbstractBackend implements Backend {
 
     @Override
     public String getInvocationId() {
-        return get(TraceConsts.INVOCATION_ID_KEY);
+        return get(Builder.INVOCATION_ID_KEY);
     }
 
     @Override
     public String getSessionId() {
-        return get(TraceConsts.SESSION_ID_KEY);
+        return get(Builder.SESSION_ID_KEY);
     }
 
     private PropertyChain getPropertyChain() {
         if (_lazyPropertyChain == null) {
-            _lazyPropertyChain = PropertiesBasedTraceFilterConfiguration.loadPropertyChain();
+            _lazyPropertyChain = PropertiesBasedTraceFilter.loadPropertyChain();
         }
         return _lazyPropertyChain;
     }

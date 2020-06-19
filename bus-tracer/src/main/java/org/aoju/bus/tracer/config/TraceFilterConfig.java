@@ -22,22 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.tracer.binding.spring.boot;
+package org.aoju.bus.tracer.config;
 
-import org.aoju.bus.tracer.Builder;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.core.task.AsyncTaskExecutor;
+import java.util.Map;
 
 /**
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
-@ConditionalOnClass(Builder.class)
-@ConditionalOnBean(AsyncTaskExecutor.class)
-@AutoConfigureBefore(TraceContextAutoConfiguration.class)
-public class TraceSpringAsyncAutoConfiguration {
+public interface TraceFilterConfig {
+
+    boolean shouldProcessParam(String paramName, Channel channel);
+
+    Map<String, String> filterDeniedParams(Map<String, String> unfiltered, Channel channel);
+
+    boolean shouldProcessContext(Channel channel);
+
+    boolean shouldGenerateInvocationId();
+
+    int generatedInvocationIdLength();
+
+    boolean shouldGenerateSessionId();
+
+    int generatedSessionIdLength();
+
+    enum Channel {
+        IncomingRequest,
+        OutgoingResponse,
+        OutgoingRequest,
+        IncomingResponse,
+        AsyncDispatch,
+        AsyncProcess
+    }
 
 }

@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.apache.httpclient;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -49,11 +49,11 @@ public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
     private final String profile;
 
     public TraceHttpResponseInterceptor() {
-        this(TraceConsts.DEFAULT);
+        this(Builder.DEFAULT);
     }
 
     public TraceHttpResponseInterceptor(String profile) {
-        this(Builder.getBackend(), profile);
+        this(Tracer.getBackend(), profile);
     }
 
     TraceHttpResponseInterceptor(Backend backend, String profile) {
@@ -64,16 +64,16 @@ public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
 
     @Override
     public final void process(HttpResponse response, HttpContext context) {
-        final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
-        final Header[] responseHeaders = response.getHeaders(TraceConsts.TPIC_HEADER);
+        final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
+        final Header[] responseHeaders = response.getHeaders(Builder.TPIC_HEADER);
         if (responseHeaders != null && responseHeaders.length > 0
-                && filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.IncomingResponse)) {
+                && filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.IncomingResponse)) {
             final List<String> stringTraceHeaders = new ArrayList<>();
             for (Header header : responseHeaders) {
                 stringTraceHeaders.add(header.getValue());
             }
             backend.putAll(filterConfiguration.filterDeniedParams(transportSerialization.parse(stringTraceHeaders),
-                    TraceFilterConfiguration.Channel.IncomingResponse));
+                    TraceFilterConfig.Channel.IncomingResponse));
         }
     }
 

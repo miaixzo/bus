@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.spring.web;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -50,12 +50,12 @@ public final class TraceInterceptor implements HandlerInterceptor {
 
     private final Backend backend;
     private final HttpHeaderTransport httpHeaderSerialization;
-    private String outgoingHeaderName = TraceConsts.TPIC_HEADER;
-    private String incomingHeaderName = TraceConsts.TPIC_HEADER;
+    private String outgoingHeaderName = Builder.TPIC_HEADER;
+    private String incomingHeaderName = Builder.TPIC_HEADER;
     private String profileName;
 
     public TraceInterceptor() {
-        this(Builder.getBackend());
+        this(Tracer.getBackend());
     }
 
     public TraceInterceptor(Backend backend) {
@@ -66,21 +66,21 @@ public final class TraceInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object o) {
 
-        final TraceFilterConfiguration configuration = backend.getConfiguration(profileName);
+        final TraceFilterConfig configuration = backend.getConfiguration(profileName);
 
-        if (configuration.shouldProcessContext(TraceFilterConfiguration.Channel.IncomingRequest)) {
+        if (configuration.shouldProcessContext(TraceFilterConfig.Channel.IncomingRequest)) {
             final Enumeration<String> headers = request.getHeaders(incomingHeaderName);
             if (headers != null && headers.hasMoreElements()) {
                 final Map<String, String> parsedContext = httpHeaderSerialization.parse(Collections.list(headers));
-                backend.putAll(configuration.filterDeniedParams(parsedContext, TraceFilterConfiguration.Channel.IncomingResponse));
+                backend.putAll(configuration.filterDeniedParams(parsedContext, TraceFilterConfig.Channel.IncomingResponse));
             }
         }
 
-        Builder.generateInvocationIdIfNecessary(backend);
+        org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
 
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            Builder.generateSessionIdIfNecessary(backend, session.getId());
+            org.aoju.bus.tracer.Builder.generateSessionIdIfNecessary(backend, session.getId());
         }
 
         writeHeaderIfUncommitted(response);
@@ -104,10 +104,10 @@ public final class TraceInterceptor implements HandlerInterceptor {
 
     private void writeHeaderIfUncommitted(HttpServletResponse response) {
         if (!response.isCommitted() && !backend.isEmpty()) {
-            final TraceFilterConfiguration configuration = backend.getConfiguration(profileName);
+            final TraceFilterConfig configuration = backend.getConfiguration(profileName);
 
-            if (configuration.shouldProcessContext(TraceFilterConfiguration.Channel.OutgoingResponse)) {
-                final Map<String, String> filteredContext = configuration.filterDeniedParams(backend.copyToMap(), TraceFilterConfiguration.Channel.OutgoingResponse);
+            if (configuration.shouldProcessContext(TraceFilterConfig.Channel.OutgoingResponse)) {
+                final Map<String, String> filteredContext = configuration.filterDeniedParams(backend.copyToMap(), TraceFilterConfig.Channel.OutgoingResponse);
                 response.setHeader(outgoingHeaderName, httpHeaderSerialization.render(filteredContext));
             }
         }

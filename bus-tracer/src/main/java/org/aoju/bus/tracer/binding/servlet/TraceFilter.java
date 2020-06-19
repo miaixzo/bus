@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.servlet;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 
 import javax.servlet.*;
@@ -47,13 +47,13 @@ public class TraceFilter implements Filter {
 
     public static final String PROFILE_INIT_PARAM = "profile";
 
-    private static final String HTTP_HEADER_NAME = TraceConsts.TPIC_HEADER;
+    private static final String HTTP_HEADER_NAME = Builder.TPIC_HEADER;
     private final Backend backend;
     private final HttpHeaderTransport transportSerialization;
-    private String profile = TraceConsts.DEFAULT;
+    private String profile = Builder.DEFAULT;
 
     public TraceFilter() {
-        this(Builder.getBackend(), new HttpHeaderTransport());
+        this(Tracer.getBackend(), new HttpHeaderTransport());
     }
 
     TraceFilter(Backend backend, HttpHeaderTransport transportSerialization) {
@@ -74,7 +74,7 @@ public class TraceFilter implements Filter {
     final void doFilterHttp(final HttpServletRequest request, final HttpServletResponse response,
                             final FilterChain filterChain) throws IOException, ServletException {
 
-        final TraceFilterConfiguration configuration = backend.getConfiguration(profile);
+        final TraceFilterConfig configuration = backend.getConfiguration(profile);
 
         try {
             writeContextToResponse(response, configuration);
@@ -86,9 +86,9 @@ public class TraceFilter implements Filter {
         }
     }
 
-    private void writeContextToResponse(final HttpServletResponse response, final TraceFilterConfiguration configuration) {
-        if (!backend.isEmpty() && configuration.shouldProcessContext(TraceFilterConfiguration.Channel.OutgoingResponse)) {
-            final Map<String, String> filteredContext = backend.getConfiguration(profile).filterDeniedParams(backend.copyToMap(), TraceFilterConfiguration.Channel.OutgoingResponse);
+    private void writeContextToResponse(final HttpServletResponse response, final TraceFilterConfig configuration) {
+        if (!backend.isEmpty() && configuration.shouldProcessContext(TraceFilterConfig.Channel.OutgoingResponse)) {
+            final Map<String, String> filteredContext = backend.getConfiguration(profile).filterDeniedParams(backend.copyToMap(), TraceFilterConfig.Channel.OutgoingResponse);
             response.setHeader(HTTP_HEADER_NAME, transportSerialization.render(filteredContext));
         }
     }

@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.apache.cxf.interceptor;
 
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.tracer.Backend;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.aoju.bus.tracer.transport.jaxb.TpicMap;
 import org.apache.cxf.binding.soap.SoapMessage;
@@ -53,11 +53,11 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
     protected final Backend backend;
 
     private final HttpHeaderTransport httpSerializer;
-    private final TraceFilterConfiguration.Channel channel;
+    private final TraceFilterConfig.Channel channel;
 
     private String profile;
 
-    public AbstractTraceOutInterceptor(String phase, TraceFilterConfiguration.Channel channel, Backend backend, String profile) {
+    public AbstractTraceOutInterceptor(String phase, TraceFilterConfig.Channel channel, Backend backend, String profile) {
         super(phase);
         this.channel = channel;
         this.backend = backend;
@@ -68,7 +68,7 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
     @Override
     public void handleMessage(final Message message) {
         if (shouldHandleMessage(message)) {
-            final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
+            final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
             if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(channel)) {
                 final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(), channel);
 
@@ -81,7 +81,7 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
                     }
 
                     final String contextAsHeader = httpSerializer.render(filteredParams);
-                    responseHeaders.put(TraceConsts.TPIC_HEADER, Collections.singletonList(contextAsHeader));
+                    responseHeaders.put(Builder.TPIC_HEADER, Collections.singletonList(contextAsHeader));
                 } else {
                     try {
                         final SoapMessage soapMessage = (SoapMessage) message;
@@ -96,7 +96,7 @@ abstract class AbstractTraceOutInterceptor extends AbstractPhaseInterceptor<Mess
 
     private void addSoapHeader(Map<String, String> filteredParams, SoapMessage soapMessage) {
         try {
-            final Header tpicHeader = new Header(TraceConsts.SOAP_HEADER_QNAME, TpicMap.wrap(filteredParams),
+            final Header tpicHeader = new Header(Builder.SOAP_HEADER_QNAME, TpicMap.wrap(filteredParams),
                     new JAXBDataBinding(TpicMap.class));
             soapMessage.getHeaders().add(tpicHeader);
         } catch (JAXBException e) {

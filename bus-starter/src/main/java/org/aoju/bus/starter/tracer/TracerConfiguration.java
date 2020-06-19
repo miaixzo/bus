@@ -22,36 +22,99 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.tracer.binding.spring.http;
-
+package org.aoju.bus.starter.tracer;
 
 import org.aoju.bus.tracer.Backend;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.binding.spring.context.PostTpicAsyncBeanPostProcessor;
+import org.aoju.bus.tracer.binding.spring.context.PreTpicAsyncBeanPostProcessor;
+import org.aoju.bus.tracer.binding.spring.http.TraceClientHttpRequestInterceptor;
+import org.aoju.bus.tracer.binding.spring.web.TraceInterceptor;
+import org.aoju.bus.tracer.binding.spring.web.TraceResponseBodyAdvice;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Role;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Kimi Liu
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class TraceSpringWebConfiguration {
+@ConditionalOnWebApplication
+@ConditionalOnClass({Tracer.class, RestTemplate.class})
+@ConditionalOnBean({AsyncTaskExecutor.class, RestTemplate.class})
+@EnableConfigurationProperties(TracerProperties.class)
+@AutoConfigureAfter(WebMvcAutoConfiguration.class)
+public class TracerConfiguration {
+
+    @Autowired
+    TracerProperties TracerProperties;
+
+    @Autowired
+    Backend backend;
+
+    @Bean
+    WebMvcConfigurer traceSpringMvcWebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(new TraceInterceptor(backend));
+            }
+        };
+    }
+
+    @Bean
+    public PreTpicAsyncBeanPostProcessor preTpicAsyncBeanPostProcessor(AsyncTaskExecutor executor, Backend backend) {
+        return new PreTpicAsyncBeanPostProcessor(executor, backend);
+    }
+
+    @Bean
+    public PostTpicAsyncBeanPostProcessor postTpicAsyncBeanPostProcessor(AsyncTaskExecutor executor, Backend backend) {
+        return new PostTpicAsyncBeanPostProcessor(executor, backend);
+    }
+
+    @Bean
+    TraceResponseBodyAdvice TraceSpringMvcResponseBodyAdvice() {
+        return new TraceResponseBodyAdvice();
+    }
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
     TraceClientHttpRequestInterceptor TraceClientHttpRequestInterceptor(Backend Backend) {
-        return new TraceClientHttpRequestInterceptor(Backend, new HttpHeaderTransport(), TraceConsts.DEFAULT);
+        return new TraceClientHttpRequestInterceptor(Backend, new HttpHeaderTransport(), Builder.DEFAULT);
     }
 
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     @Bean
     BeanPostProcessor restTemplatePostProcessor(TraceClientHttpRequestInterceptor TraceClientHttpRequestInterceptor) {
         return new RestTemplatePostProcessor(TraceClientHttpRequestInterceptor);
+    }
+
+    @ConditionalOnMissingBean(TraceFilterConfig.class)
+    public static class TracePropertiesConfig {
+
+        @Role(BeanDefinition.ROLE_SUPPORT)
+        @Bean
+        public TraceFilterConfig filterConfiguration(TracerProperties TracerProperties) {
+            return TracerProperties.getAsFilterConfiguration();
+        }
     }
 
     private static class RestTemplatePostProcessor implements BeanPostProcessor {

@@ -25,8 +25,8 @@
 package org.aoju.bus.tracer.binding.apache.cxf.interceptor;
 
 import org.aoju.bus.tracer.Backend;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
@@ -40,11 +40,11 @@ import org.apache.cxf.phase.Phase;
 public class TraceResponseOutInterceptor extends AbstractTraceOutInterceptor {
 
     public TraceResponseOutInterceptor(Backend backend) {
-        this(backend, TraceConsts.DEFAULT);
+        this(backend, Builder.DEFAULT);
     }
 
     public TraceResponseOutInterceptor(Backend backend, String profile) {
-        super(Phase.USER_LOGICAL, TraceFilterConfiguration.Channel.OutgoingResponse, backend, profile);
+        super(Phase.USER_LOGICAL, TraceFilterConfig.Channel.OutgoingResponse, backend, profile);
     }
 
     @Override

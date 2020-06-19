@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.spring.http;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -50,11 +50,11 @@ public final class TraceClientHttpRequestInterceptor implements ClientHttpReques
     private final String profile;
 
     public TraceClientHttpRequestInterceptor() {
-        this(Builder.getBackend(), new HttpHeaderTransport(), TraceConsts.DEFAULT);
+        this(Tracer.getBackend(), new HttpHeaderTransport(), Builder.DEFAULT);
     }
 
     public TraceClientHttpRequestInterceptor(String profile) {
-        this(Builder.getBackend(), new HttpHeaderTransport(), profile);
+        this(Tracer.getBackend(), new HttpHeaderTransport(), profile);
     }
 
     public TraceClientHttpRequestInterceptor(Backend backend, HttpHeaderTransport transportSerialization, String profile) {
@@ -72,20 +72,20 @@ public final class TraceClientHttpRequestInterceptor implements ClientHttpReques
     }
 
     private void preRequest(final HttpRequest request) {
-        final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
-        if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.OutgoingRequest)) {
-            final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(), TraceFilterConfiguration.Channel.OutgoingRequest);
-            request.getHeaders().add(TraceConsts.TPIC_HEADER, transportSerialization.render(filteredParams));
+        final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
+        if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.OutgoingRequest)) {
+            final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(), TraceFilterConfig.Channel.OutgoingRequest);
+            request.getHeaders().add(Builder.TPIC_HEADER, transportSerialization.render(filteredParams));
         }
     }
 
     private void postResponse(ClientHttpResponse response) {
-        final List<String> headers = response.getHeaders().get(TraceConsts.TPIC_HEADER);
+        final List<String> headers = response.getHeaders().get(Builder.TPIC_HEADER);
         if (headers != null) {
-            final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
+            final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
 
-            if (filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.IncomingResponse)) {
-                backend.putAll(filterConfiguration.filterDeniedParams(transportSerialization.parse(headers), TraceFilterConfiguration.Channel.IncomingResponse));
+            if (filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.IncomingResponse)) {
+                backend.putAll(filterConfiguration.filterDeniedParams(transportSerialization.parse(headers), TraceFilterConfig.Channel.IncomingResponse));
             }
         }
     }
