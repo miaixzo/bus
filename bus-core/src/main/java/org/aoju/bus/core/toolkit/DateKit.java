@@ -819,7 +819,8 @@ public class DateKit {
     }
 
     /**
-     * 格式化为中文日期格式，如果isUppercase为false，则返回类似：2018年10月24日，否则返回二〇一八年十月二十四日
+     * 格式化为中文日期格式，如果isUppercase为false
+     * 则返回：2018年10月24日，否则,返回二〇一八年十月二十四日
      *
      * @param date        被格式化的日期
      * @param isUppercase 是否采用大写形式
