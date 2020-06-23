@@ -183,4 +183,20 @@ public class NumberChinese {
         return chineseStr;
     }
 
+    /**
+     * 数字字符转中文，非数字字符原样返回
+     *
+     * @param c                数字字符
+     * @param isUseTraditional 是否繁体
+     * @return 中文字符
+     */
+    public static String toChinese(char c, boolean isUseTraditional) {
+        String[] numArray = isUseTraditional ? Normal.TRADITIONAL_DIGITS : Normal.SIMPLE_DIGITS;
+        int index = c - 48;
+        if (index < 0 || index >= numArray.length) {
+            return String.valueOf(c);
+        }
+        return numArray[index];
+    }
+
 }

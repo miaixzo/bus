@@ -287,12 +287,17 @@ public class MediaType {
     /**
      * "multipart/related;type=application/dicom"
      */
-    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
+    public final static String MULTIPART_RELATED_APPLICATION_DICOM = "multipart/related;type=\"application/dicom\"";
+    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE =
+            new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
 
     /**
-     * "multipart/related;type=application/dicom+xml"
+     * "multipart/related;type=\"application/dicom+xml\""
      */
-    public static final MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
+    public final static String MULTIPART_RELATED_APPLICATION_DICOM_XML = "multipart/related;type=\"application/dicom+xml\"";
+    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE =
+            new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
+
 
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
     public static final String QUOTED = "\"([^\"]*)\"";
