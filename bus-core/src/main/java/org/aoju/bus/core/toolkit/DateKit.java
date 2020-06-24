@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import org.aoju.bus.core.convert.Convert;
+import org.aoju.bus.core.convert.NumberChinese;
 import org.aoju.bus.core.date.Between;
 import org.aoju.bus.core.date.Boundary;
 import org.aoju.bus.core.date.DateTime;
@@ -824,65 +824,70 @@ public class DateKit {
      *
      * @param date        被格式化的日期
      * @param isUppercase 是否采用大写形式
+     * @param withTime    是否包含时间部分
      * @return 中文日期字符串
      */
-    public static String formatCNDate(Date date, boolean isUppercase) {
+    public static String formatCNDate(Date date, boolean isUppercase, boolean withTime) {
         if (null == date) {
             return null;
         }
 
-        String format = Fields.NORM_DATE_CN_FORMAT.format(date);
-        if (isUppercase) {
-            final StringBuilder builder = StringKit.builder(format.length());
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(0, 1)), false));
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(1, 2)), false));
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(2, 3)), false));
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(3, 4)), false));
-            builder.append(format, 4, 5);
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(5, 7)), false));
-            builder.append(format, 7, 8);
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(8, 10)), false));
-            builder.append(format.substring(10));
-            format = builder.toString().replace('零', '〇');
+        if (false == isUppercase) {
+            return (withTime ? Fields.NORM_CN_DATE_TIME_FORMAT : Fields.NORM_DATE_CN_FORMAT).format(date);
         }
-        return format;
+
+        return formatCNDate(calendar(date), withTime);
     }
 
     /**
-     * 格式化为中文日期格式，如果isUppercase为false
-     * 则返回：2018年10月24日 12时13分14秒，
-     * 否则,二〇一八年十月二十四日 十二时十三分十四秒
+     * 将指定Calendar时间格式化为纯中文形式
      *
-     * @param date        被格式化的日期
-     * @param isUppercase 是否采用大写形式
-     * @return 中文日期字符串
+     * <pre>
+     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日（withTime为false）
+     *     2018-02-24 12:13:14 转换为 二〇一八年二月二十四日一十二时一十三分一十四秒（withTime为true）
+     * </pre>
+     *
+     * @param calendar {@link Calendar}
+     * @param withTime 是否包含时间部分
+     * @return 格式化后的字符串
      */
-    public static String formatCNDateTime(Date date, boolean isUppercase) {
-        if (null == date) {
-            return null;
+    public static String formatCNDate(Calendar calendar, boolean withTime) {
+        final StringBuilder result = StringKit.builder();
+
+        // 年
+        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        final int length = year.length();
+        for (int i = 0; i < length; i++) {
+            result.append(NumberChinese.toChinese(year.charAt(i), false));
+        }
+        result.append('年');
+
+        // 月
+        int month = calendar.get(Calendar.MONTH) + 1;
+        result.append(NumberChinese.format(month, false));
+        result.append('月');
+
+        // 日
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        result.append(NumberChinese.format(day, false));
+        result.append('日');
+
+        if (withTime) {
+            // 时
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            result.append(NumberChinese.format(hour, false));
+            result.append('时');
+            // 分
+            int minute = calendar.get(Calendar.MINUTE);
+            result.append(NumberChinese.format(minute, false));
+            result.append('分');
+            // 秒
+            int second = calendar.get(Calendar.SECOND);
+            result.append(NumberChinese.format(second, false));
+            result.append('秒');
         }
 
-        String format = Fields.NORM_CN_DATE_TIME_FORMAT.format(date);
-        if (isUppercase) {
-            final StringBuilder builder = StringKit.builder(format.length());
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(0, 1)), false));
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(1, 2)), false));
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(2, 3)), false));
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(3, 4)), false));
-            builder.append(format, 4, 5);
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(5, 7)), false));
-            builder.append(format, 7, 8);
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(8, 10)), false));
-            builder.append(format, 10, 11);
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(11, 13)), false));
-            builder.append(format, 13, 14);
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(14, 16)), false));
-            builder.append(format, 16, 17);
-            builder.append(Convert.numberToChinese(Integer.parseInt(format.substring(17, 19)), false));
-            builder.append(format.substring(19));
-            format = builder.toString().replace('零', '〇');
-        }
-        return format;
+        return result.toString().replace('零', '〇');
     }
 
     /**
@@ -1456,6 +1461,22 @@ public class DateKit {
     }
 
     /**
+     * 比较两个日期是否为同一天
+     *
+     * @param cal1 日期1
+     * @param cal2 日期2
+     * @return 是否为同一天
+     */
+    public static boolean isSameDay(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA);
+    }
+
+    /**
      * 获取某年的开始时间
      *
      * @param calendar 日期 {@link Calendar}
@@ -1842,50 +1863,24 @@ public class DateKit {
     }
 
     /**
-     * 生日转为年龄,计算法定年龄
-     *
-     * @param birthDay 生日
-     * @return 年龄
-     */
-    public static int getAge(Date birthDay) {
-        return getAge(birthDay, date());
-    }
-
-    /**
      * 出生日期转年龄
      *
      * @param birthday 时间戳字符串
      * @return int 年龄
      */
     public static int getAge(String birthday) {
-        Date birthDay = new Date(Long.parseLong(birthday));
-        Calendar cal = Calendar.getInstance();
+        return getAge(Long.parseLong(birthday), Calendar.getInstance().getTimeInMillis());
+    }
 
-        if (cal.before(birthDay)) {
-            throw new IllegalArgumentException("The birthDay is before Now.It's unbelievable!");
-        }
-
-        int yearNow = cal.get(Calendar.YEAR);
-        int monthNow = cal.get(Calendar.MONTH);
-        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH);
-        cal.setTime(birthDay);
-
-        int yearBirth = cal.get(Calendar.YEAR);
-        int monthBirth = cal.get(Calendar.MONTH);
-        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
-
-        int age = yearNow - yearBirth;
-
-        if (monthNow <= monthBirth) {
-            if (monthNow == monthBirth) {
-                if (dayOfMonthNow < dayOfMonthBirth) {
-                    age--;
-                }
-            } else {
-                age--;
-            }
-        }
-        return age;
+    /**
+     * 计算相对于dateToCompare的年龄，长用于计算指定生日在某年的年龄
+     *
+     * @param birthday      生日
+     * @param dateToCompare 需要对比的日期
+     * @return 年龄
+     */
+    public static int getAge(Calendar birthday, Calendar dateToCompare) {
+        return getAge(birthday.getTimeInMillis(), dateToCompare.getTimeInMillis());
     }
 
     /**
@@ -1895,24 +1890,25 @@ public class DateKit {
      * @param dateToCompare 需要对比的日期
      * @return 年龄
      */
-    public static int getAge(Date birthDay, Date dateToCompare) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(dateToCompare);
-
-        if (cal.before(birthDay)) {
-            throw new IllegalArgumentException(StringKit.format("Birthday is after date {}!", formatDate(dateToCompare)));
+    public static int getAge(long birthDay, long dateToCompare) {
+        if (birthDay > dateToCompare) {
+            throw new IllegalArgumentException("Birthday is after dateToCompare!");
         }
+
+        final Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(dateToCompare);
 
         final int year = cal.get(Calendar.YEAR);
         final int month = cal.get(Calendar.MONTH);
         final int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
         final boolean isLastDayOfMonth = dayOfMonth == cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        cal.setTime(birthDay);
+        cal.setTimeInMillis(birthDay);
         int age = year - cal.get(Calendar.YEAR);
 
         final int monthBirth = cal.get(Calendar.MONTH);
         if (month == monthBirth) {
+
             final int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
             final boolean isLastDayOfMonthBirth = dayOfMonthBirth == cal.getActualMaximum(Calendar.DAY_OF_MONTH);
             if ((false == isLastDayOfMonth || false == isLastDayOfMonthBirth) && dayOfMonth < dayOfMonthBirth) {
