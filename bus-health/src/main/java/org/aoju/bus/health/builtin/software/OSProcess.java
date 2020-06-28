@@ -27,6 +27,8 @@ package org.aoju.bus.health.builtin.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.windows.drivers.Win32ProcessCached;
 
+import java.util.List;
+
 /**
  * Represents a Process on the operating system, which may contain multiple
  * threads.
@@ -189,7 +191,7 @@ public interface OSProcess {
      * For Windows, priority values can range from 0 (lowest priority) to 31
      * (highest priority).
      * <p>
-     * Mac OS X has 128 priority levels, ranging from 0 (lowest priority) to
+     * Mac OS has 128 priority levels, ranging from 0 (lowest priority) to
      * 127 (highest priority). They are divided into several major bands: 0
      * through 51 are the normal levels; the default priority is 31. 52
      * through 79 are the highest priority regular threads; 80 through 95
@@ -364,6 +366,39 @@ public interface OSProcess {
      * changed to {@link State#INVALID}.
      */
     boolean updateAttributes();
+
+    /**
+     * Retrieves the threads of the process and their details.
+     * <p>
+     * The amount of returned information is operating-system dependent and may
+     * incur some latency.
+     *
+     * @return a list of threads
+     */
+    List<OSThread> getThreadDetails();
+
+    /**
+     * The number of minor (soft) faults the process has made which have not
+     * required loading a memory page from disk. Sometimes called reclaims.
+     * <p>
+     * Not available on Solaris. On Windows, this includes the total of major and
+     * minor faults.
+     *
+     * @return minor page faults (reclaims).
+     */
+    long getMinorFaults();
+
+    /**
+     * The number of major (hard) faults the process has made which have required
+     * loading a memory page from disk.
+     * <p>
+     * Not available on Solaris. Windows does not distinguish major and minor faults
+     * at the process level, so this value returns 0 and major faults are included
+     * in {@link #getMinorFaults()}.
+     *
+     * @return major page faults.
+     */
+    long getMajorFaults();
 
     /**
      * Process Execution States

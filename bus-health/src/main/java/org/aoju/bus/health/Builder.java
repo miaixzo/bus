@@ -1688,4 +1688,21 @@ public final class Builder {
         return text.matches(pattern.replace(Symbol.QUESTION_MARK, Symbol.DOT + Symbol.QUESTION_MARK).replace(Symbol.STAR, Symbol.DOT + Symbol.STAR + Symbol.QUESTION_MARK));
     }
 
+    /**
+     * Parses a string of hex digits to long value.
+     *
+     * @param hexString    A sequence of hex digits
+     * @param defaultValue default value to return if parsefails
+     * @return The corresponding long value
+     */
+    public static long hexStringToLong(String hexString, long defaultValue) {
+        try {
+            return new BigInteger(hexString, 16).longValue();
+        } catch (NumberFormatException e) {
+            Logger.trace(MESSAGE, hexString, e);
+            // Hex failed to parse, just return the default long
+            return defaultValue;
+        }
+    }
+
 }

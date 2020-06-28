@@ -25,10 +25,10 @@
 package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.BaseTSD.ULONG_PTRByReference;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.ptr.IntByReference;
@@ -36,22 +36,22 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
+import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.windows.Advapi32Kit;
 import org.aoju.bus.health.windows.Kernel32;
 import org.aoju.bus.health.windows.WmiKit;
-import org.aoju.bus.health.windows.drivers.ProcessPerformanceData;
-import org.aoju.bus.health.windows.drivers.ProcessWtsData;
-import org.aoju.bus.health.windows.drivers.Win32Process;
-import org.aoju.bus.health.windows.drivers.Win32ProcessCached;
+import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
+import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
@@ -68,8 +68,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
     private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
 
-    private Supplier<Pair<String, String>> userInfo = memoize(this::queryUserInfo);
-    private Supplier<Pair<String, String>> groupInfo = memoize(this::queryGroupInfo);
+    private Supplier<Pair<String, String>> userInfo = Memoize.memoize(this::queryUserInfo);
+    private Supplier<Pair<String, String>> groupInfo = Memoize.memoize(this::queryGroupInfo);
     private String name;
     private String path;
     private String currentWorkingDirectory;
@@ -82,18 +82,19 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private long kernelTime;
     private long userTime;
     private long startTime;
-    private Supplier<String> commandLine = memoize(this::queryCommandLine);
+    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
     private long openFiles;
     private int bitness;
+    private long pageFaults;
 
-    public WindowsOSProcess(int pid, int myPid, int osBitness, Map<Integer, ProcessPerformanceData.PerfCounterBlock> processMap,
+    public WindowsOSProcess(int pid, WindowsOperatingSystem os, Map<Integer, ProcessPerformanceData.PerfCounterBlock> processMap,
                             Map<Integer, ProcessWtsData.WtsInfo> processWtsMap) {
         super(pid);
         // For executing process, set CWD
-        if (pid == myPid) {
+        if (pid == os.getProcessId()) {
             String cwd = new File(".").getAbsolutePath();
             // trim off trailing "."
             this.currentWorkingDirectory = cwd.isEmpty() ? "" : cwd.substring(0, cwd.length() - 1);
@@ -103,7 +104,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // State and possibly roll up.
         this.state = State.RUNNING;
         // Initially set to match OS bitness. If 64 will check later for 32-bit process
-        this.bitness = osBitness;
+        this.bitness = os.getBitness();
         updateAttributes(processMap.get(pid), processWtsMap.get(pid));
     }
 
@@ -231,8 +232,38 @@ public class WindowsOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public List<OSThread> getThreadDetails() {
+        // Get data from the registry if possible
+        Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
+                .buildThreadMapFromRegistry(Collections.singleton(getProcessID()));
+        // otherwise performance counters with WMI backup
+        if (threads != null) {
+            threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(Collections.singleton(this.getProcessID()));
+        }
+        if (threads == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(threads.entrySet().stream()
+                .map(entry -> new WindowsOSThread(getProcessID(), entry.getKey(), this.name, entry.getValue()))
+                .collect(Collectors.toList()));
+    }
+
+    @Override
+    public long getMinorFaults() {
+        return this.pageFaults;
+    }
+
+    @Override
     public boolean updateAttributes() {
-        return true;
+        Set<Integer> pids = Collections.singleton(this.getProcessID());
+        // Get data from the registry if possible
+        Map<Integer, ProcessPerformanceData.PerfCounterBlock> pcb = ProcessPerformanceData.buildProcessMapFromRegistry(null);
+        // otherwise performance counters with WMI backup
+        if (pcb == null) {
+            pcb = ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
+        }
+        Map<Integer, ProcessWtsData.WtsInfo> wts = ProcessWtsData.queryProcessWtsMap(pids);
+        return updateAttributes(pcb.get(this.getProcessID()), wts.get(this.getProcessID()));
     }
 
     private boolean updateAttributes(ProcessPerformanceData.PerfCounterBlock pcb, ProcessWtsData.WtsInfo wts) {
@@ -250,6 +281,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         this.bytesRead = pcb.getBytesRead();
         this.bytesWritten = pcb.getBytesWritten();
         this.openFiles = wts.getOpenFiles();
+        this.pageFaults = pcb.getPageFaults();
 
         // Get a handle to the process for various extended info. Only gets
         // current user unless running as administrator
@@ -301,8 +333,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
         final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
             final HANDLEByReference phToken = new HANDLEByReference();
-            if (com.sun.jna.platform.win32.Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
-                Account account = Advapi32Kit.getTokenAccount(phToken.getValue());
+            if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
+                Account account = Advapi32Util.getTokenAccount(phToken.getValue());
                 pair = Pair.of(account.name, account.sidString);
             } else {
                 int error = Kernel32.INSTANCE.GetLastError();
@@ -329,7 +361,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
             final HANDLEByReference phToken = new HANDLEByReference();
-            if (com.sun.jna.platform.win32.Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
+            if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
                 Account account = Advapi32Kit.getTokenPrimaryGroup(phToken.getValue());
                 pair = Pair.of(account.name, account.sidString);
             } else {

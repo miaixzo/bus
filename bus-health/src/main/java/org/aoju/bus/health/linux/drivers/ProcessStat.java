@@ -29,11 +29,12 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.linux.ProcPath;
 
 import java.io.File;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Utility to read process statistics from {@code /proc/[pid]/stat}
@@ -134,6 +135,55 @@ public final class ProcessStat {
         File procdir = new File(ProcPath.PROC);
         File[] pids = procdir.listFiles(f -> RegEx.NUMBERS.matcher(f.getName()).matches());
         return pids != null ? pids : new File[0];
+    }
+
+    /**
+     * Gets an List of thread ids for a process from the {@code /proc/[pid]/task/}
+     * directory with only numeric digit filenames, corresponding to the threads.
+     *
+     * @param pid process id
+     * @return A list of thread id.
+     */
+    public static List<Integer> getThreadIds(int pid) {
+        File threadDir = new File(String.format(ProcPath.TASK_PATH, pid));
+        File[] threads = threadDir
+                .listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches() && Integer.valueOf(file.getName()) != pid);
+        return (threads != null) ? Arrays.stream(threads)
+                .map(thread -> Builder.parseIntOrDefault(thread.getName(), 0)).collect(Collectors.toList())
+                : Collections.emptyList();
+    }
+
+    /***
+     * Returns Enum STATE for the state value obtained from status file of any
+     * process/thread.
+     *
+     * @param stateValue
+     *            state value from the status file
+     * @return OSProcess.State
+     */
+    public static OSProcess.State getState(char stateValue) {
+        OSProcess.State state;
+        switch (stateValue) {
+            case 'R':
+                state = OSProcess.State.RUNNING;
+                break;
+            case 'S':
+                state = OSProcess.State.SLEEPING;
+                break;
+            case 'D':
+                state = OSProcess.State.WAITING;
+                break;
+            case 'Z':
+                state = OSProcess.State.ZOMBIE;
+                break;
+            case 'T':
+                state = OSProcess.State.STOPPED;
+                break;
+            default:
+                state = OSProcess.State.OTHER;
+                break;
+        }
+        return state;
     }
 
     /**

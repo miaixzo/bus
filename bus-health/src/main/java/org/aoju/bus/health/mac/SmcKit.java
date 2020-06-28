@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 提供对OS X上SMC调用的访问
+ * 提供对Mac OS上SMC调用的访问
  *
  * @author Kimi Liu
  * @version 6.0.0

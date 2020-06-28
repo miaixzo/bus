@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 /**
  * The Mac File System contains {@link OSFileStore}s which are
  * a storage pool, device, partition, volume, concrete file system or other
- * implementation specific means of file storage. In Mac OS X, these are found
+ * implementation specific means of file storage. In Mac OS, these are found
  * in the /Volumes directory.
  *
  * @author Kimi Liu

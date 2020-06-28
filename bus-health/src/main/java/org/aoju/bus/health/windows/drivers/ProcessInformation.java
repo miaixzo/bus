@@ -76,13 +76,14 @@ public final class ProcessInformation {
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
-        PRIORITY("Priority Base"), //
-        CREATIONDATE("Elapsed Time"), //
-        PROCESSID("ID Process"), //
-        PARENTPROCESSID("Creating Process ID"), //
-        READTRANSFERCOUNT("IO Read Bytes/sec"), //
-        WRITETRANSFERCOUNT("IO Write Bytes/sec"), //
-        PRIVATEPAGECOUNT("Working Set - Private");
+        PRIORITY("Priority Base"),
+        CREATIONDATE("Elapsed Time"),
+        PROCESSID("ID Process"),
+        PARENTPROCESSID("Creating Process ID"),
+        READTRANSFERCOUNT("IO Read Bytes/sec"),
+        WRITETRANSFERCOUNT("IO Write Bytes/sec"),
+        PRIVATEPAGECOUNT("Working Set - Private"),
+        PAGEFAULTSPERSEC("Page Faults/sec");
 
         private final String counter;
 

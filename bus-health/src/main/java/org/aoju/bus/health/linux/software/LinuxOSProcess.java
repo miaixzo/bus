@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
+import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.ProcessStat;
 import org.aoju.bus.health.linux.drivers.UserGroup;
@@ -43,8 +44,11 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static org.aoju.bus.health.Memoize.memoize;
 
@@ -62,7 +66,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private static final int PAGE_SIZE = Builder
             .parseIntOrDefault(Executor.getFirstAnswer("getconf PAGESIZE"), 4096);
 
-    // Get a list of orders to pass to ParseUtil
+    // Get a list of orders to pass to Builder
     private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
 
     static {
@@ -93,6 +97,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
+    private long minorFaults;
+    private long majorFaults;
 
     public LinuxOSProcess(int pid) {
         super(pid);
@@ -210,6 +216,16 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public long getMinorFaults() {
+        return this.minorFaults;
+    }
+
+    @Override
+    public long getMajorFaults() {
+        return this.majorFaults;
+    }
+
+    @Override
     public long getOpenFiles() {
         // subtract 1 from size for header
         return Executor.runNative(String.format(LS_F_PROC_PID_FD, getProcessID())).size() - 1L;
@@ -250,6 +266,13 @@ public class LinuxOSProcess extends AbstractOSProcess {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    @Override
+    public List<OSThread> getThreadDetails() {
+        List<OSThread> threadDetails = ProcessStat.getThreadIds(getProcessID()).stream()
+                .map(id -> new LinuxOSThread(getProcessID(), id)).collect(Collectors.toList());
+        return Collections.unmodifiableList(threadDetails);
     }
 
     @Override
@@ -302,6 +325,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.residentSetSize = statArray[ProcPidStat.RSS.ordinal()] * PAGE_SIZE;
         this.kernelTime = statArray[ProcPidStat.KERNEL_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
         this.userTime = statArray[ProcPidStat.USER_TIME.ordinal()] * 1000L / LinuxOperatingSystem.getHz();
+        this.minorFaults = statArray[ProcPidStat.MINOR_FAULTS.ordinal()];
+        this.majorFaults = statArray[ProcPidStat.MAJOR_FAULTS.ordinal()];
         this.upTime = now - startTime;
 
         // See man proc for how to parse /proc/[pid]/io
@@ -315,26 +340,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", ""))[0];
         this.group = UserGroup.getGroupName(groupID);
         this.name = status.getOrDefault("Name", "");
-        switch (status.getOrDefault("State", "U").charAt(0)) {
-            case 'R':
-                this.state = State.RUNNING;
-                break;
-            case 'S':
-                this.state = State.SLEEPING;
-                break;
-            case 'D':
-                this.state = State.WAITING;
-                break;
-            case 'Z':
-                this.state = State.ZOMBIE;
-                break;
-            case 'T':
-                this.state = State.STOPPED;
-                break;
-            default:
-                this.state = State.OTHER;
-                break;
-        }
+        this.state = ProcessStat.getState(status.getOrDefault("State", "U").charAt(0));
         return true;
     }
 
@@ -343,9 +349,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * numeric order of the stat in /proc/pid/stat per the man file.
      */
     private enum ProcPidStat {
-        // The parsing implementation in ParseUtil requires these to be declared
+        // The parsing implementation in Builder requires these to be declared
         // in increasing order
-        PPID(4), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20), START_TIME(22), VSZ(23), RSS(24);
+        PPID(4), MINOR_FAULTS(10), MAJOR_FAULTS(12), USER_TIME(14), KERNEL_TIME(15), PRIORITY(18), THREAD_COUNT(20),
+        START_TIME(22), VSZ(23), RSS(24);
 
         private int order;
 

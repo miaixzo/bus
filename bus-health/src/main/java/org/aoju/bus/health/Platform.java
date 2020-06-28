@@ -522,7 +522,7 @@ public class Platform {
          */
         LINUX,
         /**
-         * macOS (OS X)
+         * Mac OS
          */
         MACOSX,
         /**

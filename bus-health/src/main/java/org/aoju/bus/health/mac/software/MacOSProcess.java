@@ -31,12 +31,16 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.*;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
+import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.mac.SysctlKit;
+import org.aoju.bus.health.mac.ThreadInfo;
 import org.aoju.bus.logger.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -53,7 +57,7 @@ public class MacOSProcess extends AbstractOSProcess {
     // 64-bit flag
     private static final int P_LP64 = 0x4;
     /*
-     * OS X States:
+     * Mac OS States:
      */
     private static final int SSLEEP = 1; // sleeping on high priority
     private static final int SWAIT = 2; // sleeping on low priority
@@ -66,8 +70,8 @@ public class MacOSProcess extends AbstractOSProcess {
 
     private Supplier<String> commandLine = memoize(this::queryCommandLine);
 
-    private String name = "";
-    private String path = "";
+    private String name = Normal.EMPTY;
+    private String path = Normal.EMPTY;
     private String currentWorkingDirectory;
     private String user;
     private String userID;
@@ -87,6 +91,8 @@ public class MacOSProcess extends AbstractOSProcess {
     private long bytesWritten;
     private long openFiles;
     private int bitness;
+    private long minorFaults;
+    private long majorFaults;
 
     public MacOSProcess(int pid, int minor) {
         super(pid);
@@ -263,6 +269,33 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public List<OSThread> getThreadDetails() {
+        long now = System.currentTimeMillis();
+        List<MacOSThread> details = new ArrayList<>();
+        List<ThreadInfo.ThreadStats> stats = ThreadInfo.queryTaskThreads(getProcessID());
+        for (ThreadInfo.ThreadStats stat : stats) {
+            // For long running threads the start time calculation can overestimate
+            long start = now - stat.getUpTime();
+            if (start < this.getStartTime()) {
+                start = this.getStartTime();
+            }
+            details.add(new MacOSThread(getProcessID(), stat.getThreadId(), stat.getState(), stat.getSystemTime(),
+                    stat.getUserTime(), start, now - start, stat.getPriority()));
+        }
+        return Collections.unmodifiableList(details);
+    }
+
+    @Override
+    public long getMinorFaults() {
+        return this.minorFaults;
+    }
+
+    @Override
+    public long getMajorFaults() {
+        return this.majorFaults;
+    }
+
+    @Override
     public boolean updateAttributes() {
         long now = System.currentTimeMillis();
         ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
@@ -335,6 +368,10 @@ public class MacOSProcess extends AbstractOSProcess {
         this.upTime = now - this.startTime;
         this.openFiles = taskAllInfo.pbsd.pbi_nfiles;
         this.bitness = (taskAllInfo.pbsd.pbi_flags & P_LP64) == 0 ? 32 : 64;
+        this.majorFaults = taskAllInfo.ptinfo.pti_pageins;
+        // testing using getrusage confirms pti_faults includes both major and minor
+        this.minorFaults = taskAllInfo.ptinfo.pti_faults - taskAllInfo.ptinfo.pti_pageins;
+
         if (this.minorVersion >= 9) {
             RUsageInfoV2 rUsageInfoV2 = new RUsageInfoV2();
             if (0 == SystemB.INSTANCE.proc_pid_rusage(getProcessID(), SystemB.RUSAGE_INFO_V2, rUsageInfoV2)) {

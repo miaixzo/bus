@@ -280,7 +280,7 @@ public final class HkeyPerformance {
             String[] counterText = Advapi32Util.registryGetStringArray(WinReg.HKEY_LOCAL_MACHINE, HKEY_PERFORMANCE_TEXT,
                     COUNTER);
             for (int i = 1; i < counterText.length; i += 2) {
-                indexMap.put(counterText[i], Integer.parseInt(counterText[i - 1]));
+                indexMap.putIfAbsent(counterText[i], Integer.parseInt(counterText[i - 1]));
             }
         } catch (Win32Exception we) {
             Logger.error(

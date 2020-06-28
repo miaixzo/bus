@@ -69,7 +69,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
     private static final int SECTORSIZE = 512;
 
-    // Get a list of orders to pass to ParseUtil
+    // Get a list of orders to pass to Builder
     private static final int[] UDEV_STAT_ORDERS = new int[UdevStat.values().length];
     // There are at least 11 elements in udev stat output or sometimes 15. We want
     // the rightmost 11 or 15 if there is leading text.
@@ -275,7 +275,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
 
     // Order the field is in udev stats
     enum UdevStat {
-        // The parsing implementation in ParseUtil requires these to be declared
+        // The parsing implementation in Builder requires these to be declared
         // in increasing order. Use 0-ordered index here
         READS(0), READ_BYTES(2), WRITES(4), WRITE_BYTES(6), QUEUE_LENGTH(8), ACTIVE_MS(9);
 

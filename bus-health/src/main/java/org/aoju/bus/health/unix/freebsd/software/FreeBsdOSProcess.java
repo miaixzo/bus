@@ -32,8 +32,10 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
+import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -68,6 +70,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private long upTime;
     private long bytesRead;
     private long bytesWritten;
+    private long minorFaults;
+    private long majorFaults;
 
     public FreeBsdOSProcess(int pid, String[] split) {
         super(pid);
@@ -229,14 +233,48 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     @Override
+    public List<OSThread> getThreadDetails() {
+        List<OSThread> threads = new ArrayList<>();
+        String psCommand = "ps -awwxo tdname,lwp,state,etimes,systime,time,tdaddr,nivcsw,nvcsw,majflt,minflt,pri -H";
+        if (getProcessID() >= 0) {
+            psCommand += " -p " + getProcessID();
+        }
+        List<String> threadList = Executor.runNative(psCommand);
+        if (threadList.isEmpty() || threadList.size() < 2) {
+            return threads;
+        }
+        // remove header row
+        threadList.remove(0);
+        // Fill list
+        for (String thread : threadList) {
+            String[] split = RegEx.SPACES.split(thread.trim(), 12);
+            // Elements should match ps command order
+            if (split.length == 10) {
+                threads.add(new FreeBsdOSThread(getProcessID(), split));
+            }
+        }
+        return threads;
+    }
+
+    @Override
+    public long getMinorFaults() {
+        return this.minorFaults;
+    }
+
+    @Override
+    public long getMajorFaults() {
+        return this.majorFaults;
+    }
+
+    @Override
     public boolean updateAttributes() {
-        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,args -p "
+        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,args,majflt,minflt -p "
                 + getProcessID();
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            String[] split = RegEx.SPACES.split(procList.get(1).trim(), 16);
-            if (split.length == 16) {
+            String[] split = RegEx.SPACES.split(procList.get(1).trim(), 18);
+            if (split.length == 18) {
                 return updateAttributes(split);
             }
         }
@@ -288,6 +326,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.path = split[14];
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
         this.commandLine = split[15];
+        this.minorFaults = Builder.parseLongOrDefault(split[16], 0L);
+        this.majorFaults = Builder.parseLongOrDefault(split[17], 0L);
 
         return true;
     }

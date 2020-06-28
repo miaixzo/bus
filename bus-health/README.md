@@ -1,6 +1,6 @@
 Supported platforms 
 --------------------------- 
-Windows • Linux • Mac OS X • Unix (Solaris, FreeBSD) 
+Windows • Linux • Mac OS • Unix (Solaris, FreeBSD) 
 
 Supported features 
 --------------------------
