@@ -53,7 +53,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ √ ]|bus-base|基础功能及base相关功能,实体类(Entity),服务(Service),接口(Controller)|
 |[ √ ]|bus-bom|包含所有组建信息,当然可以通过配置按需加载等|
 |[ × ]|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
-|[ √ ]|bus-core|核心功能及工具类,包括常量、线程、类加载器、字符集编码、反射、集合、日期等常用工具|
+|[ √ ]|bus-core|核心功能及工具类,包括常量、线程、类加载器、反射、集合、日期等常用工具|
 |[ √ ]|bus-cron|定时器及定时任务等功能|
 |[ √ ]|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
 |[ √ ]|bus-extra|扩展功能及文件操作,FTP/文件/二维码/短信相关支持|
