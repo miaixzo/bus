@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.servlet;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 
 import javax.servlet.ServletRequest;
@@ -48,7 +48,7 @@ import java.util.Map;
 @WebListener("TraceServletRequestListener to read incoming TPICs into Builder backend")
 public final class TraceServletRequestListener implements ServletRequestListener {
 
-    private static final String HTTP_HEADER_NAME = TraceConsts.TPIC_HEADER;
+    private static final String HTTP_HEADER_NAME = Builder.TPIC_HEADER;
 
     private final Backend backend;
 
@@ -60,7 +60,7 @@ public final class TraceServletRequestListener implements ServletRequestListener
     }
 
     public TraceServletRequestListener() {
-        this(Builder.getBackend(), new HttpHeaderTransport());
+        this(Tracer.getBackend(), new HttpHeaderTransport());
     }
 
     @Override
@@ -77,22 +77,22 @@ public final class TraceServletRequestListener implements ServletRequestListener
     }
 
     private void httpRequestInitialized(final HttpServletRequest request) {
-        final TraceFilterConfiguration configuration = backend.getConfiguration();
+        final TraceFilterConfig configuration = backend.getConfiguration();
 
-        if (configuration.shouldProcessContext(TraceFilterConfiguration.Channel.IncomingRequest)) {
+        if (configuration.shouldProcessContext(TraceFilterConfig.Channel.IncomingRequest)) {
             final Enumeration<String> headers = request.getHeaders(HTTP_HEADER_NAME);
 
             if (headers != null && headers.hasMoreElements()) {
                 final Map<String, String> contextMap = transportSerialization.parse(Collections.list(headers));
-                backend.putAll(backend.getConfiguration().filterDeniedParams(contextMap, TraceFilterConfiguration.Channel.IncomingRequest));
+                backend.putAll(backend.getConfiguration().filterDeniedParams(contextMap, TraceFilterConfig.Channel.IncomingRequest));
             }
         }
 
-        Builder.generateInvocationIdIfNecessary(backend);
+        org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
 
         final HttpSession session = request.getSession(false);
         if (session != null) {
-            Builder.generateSessionIdIfNecessary(backend, session.getId());
+            org.aoju.bus.tracer.Builder.generateSessionIdIfNecessary(backend, session.getId());
         }
     }
 

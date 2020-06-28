@@ -26,15 +26,14 @@ package org.aoju.bus.tracer;
 
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.tracer.backend.TraceBackendProvider;
-import org.aoju.bus.tracer.consts.TraceConsts;
 
+import javax.xml.namespace.QName;
 import java.nio.charset.UnsupportedCharsetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -44,42 +43,31 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public final class Builder {
 
-    public static Backend getBackend() {
-        return getBackend(new Resolver());
-    }
+    public static final String TRACE_PROPERTIES_FILE = "/tracer.properties";
+    public static final String TRACE_DEFAULT_PROPERTIES_FILE = Normal.META_DATA_INF + "/tracer/tracer.default.properties";
 
-    protected static Backend getBackend(final Resolver resolver) {
-        final Set<TraceBackendProvider> backendProviders;
-        try {
-            backendProviders = resolver.getBackendProviders();
-        } catch (RuntimeException e) {
-            throw new InstrumentException("Unable to load available backend providers", e);
-        }
-        if (backendProviders.isEmpty()) {
-            final Set<TraceBackendProvider> defaultProvider = resolver.getDefaultTraceBackendProvider();
-            if (defaultProvider.isEmpty()) {
-                throw new InstrumentException("Unable to find a Builder backend provider. Make sure that you have " +
-                        "Builder-core (for slf4j) or any other backend implementation on the classpath.");
-            }
-            return defaultProvider.iterator().next().provideBackend();
-        }
-        if (backendProviders.size() > 1) {
-            final List<Class<?>> providerClasses = new ArrayList<>(backendProviders.size());
-            for (TraceBackendProvider backendProvider : backendProviders) {
-                providerClasses.add(backendProvider.getClass());
-            }
-            final String providerClassNames = Arrays.toString(providerClasses.toArray());
-            throw new InstrumentException("Multiple Builder backend providers found. Don't know which one of the following to use: "
-                    + providerClassNames);
-        }
-        return backendProviders.iterator().next().provideBackend();
-    }
+    public static final String TPIC_HEADER = "TPIC";
+
+    public static final String SOAP_HEADER_NAMESPACE = "https://www.aoju.org/tpic/1.0";
+
+    public static final QName SOAP_HEADER_QNAME = new QName(SOAP_HEADER_NAMESPACE, TPIC_HEADER);
+
+    public static final String SESSION_ID_KEY = "TPIC.sessionId";
+    public static final String INVOCATION_ID_KEY = "TPIC.invocationId";
+    public static final char[] ALPHANUMERICS = Normal.UPPER_LOWER_NUMBER.toCharArray();
+
+    public static final String DEFAULT = "default";
+    public static final String HIDE_INBOUND = "HideInbound";
+    public static final String HIDE_OUTBOUND = "HideOutbound";
+    public static final String DISABLE_INBOUND = "DisableInbound";
+    public static final String DISABLE_OUTBOUND = "DisableOutbound";
+    public static final String DISABLED = "Disabled";
 
     public static String createRandomAlphanumeric(final int length) {
         final Random r = ThreadLocalRandom.current();
         final char[] randomChars = new char[length];
         for (int i = 0; i < length; ++i) {
-            randomChars[i] = TraceConsts.ALPHANUMERICS[r.nextInt(TraceConsts.ALPHANUMERICS.length)];
+            randomChars[i] = ALPHANUMERICS[r.nextInt(ALPHANUMERICS.length)];
         }
         return new String(randomChars);
     }
@@ -103,14 +91,14 @@ public final class Builder {
     }
 
     public static void generateInvocationIdIfNecessary(final Backend backend) {
-        if (backend != null && !backend.containsKey(TraceConsts.INVOCATION_ID_KEY) && backend.getConfiguration().shouldGenerateInvocationId()) {
-            backend.put(TraceConsts.INVOCATION_ID_KEY, createRandomAlphanumeric(backend.getConfiguration().generatedInvocationIdLength()));
+        if (backend != null && !backend.containsKey(INVOCATION_ID_KEY) && backend.getConfiguration().shouldGenerateInvocationId()) {
+            backend.put(INVOCATION_ID_KEY, createRandomAlphanumeric(backend.getConfiguration().generatedInvocationIdLength()));
         }
     }
 
     public static void generateSessionIdIfNecessary(final Backend backend, final String sessionId) {
-        if (backend != null && !backend.containsKey(TraceConsts.SESSION_ID_KEY) && backend.getConfiguration().shouldGenerateSessionId()) {
-            backend.put(TraceConsts.SESSION_ID_KEY, createAlphanumericHash(sessionId, backend.getConfiguration().generatedSessionIdLength()));
+        if (backend != null && !backend.containsKey(SESSION_ID_KEY) && backend.getConfiguration().shouldGenerateSessionId()) {
+            backend.put(SESSION_ID_KEY, createAlphanumericHash(sessionId, backend.getConfiguration().generatedSessionIdLength()));
         }
     }
 

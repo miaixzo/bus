@@ -26,7 +26,7 @@ package org.aoju.bus.tracer.binding.servlet;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
@@ -47,7 +47,7 @@ public class TraceSessionListener implements HttpSessionListener {
     private final Backend backend;
 
     public TraceSessionListener() {
-        this(Builder.getBackend());
+        this(Tracer.getBackend());
     }
 
     protected TraceSessionListener(Backend backend) {
@@ -56,12 +56,12 @@ public class TraceSessionListener implements HttpSessionListener {
 
     @Override
     public final void sessionCreated(HttpSessionEvent httpSessionEvent) {
-        Builder.generateSessionIdIfNecessary(backend, httpSessionEvent.getSession().getId());
+        org.aoju.bus.tracer.Builder.generateSessionIdIfNecessary(backend, httpSessionEvent.getSession().getId());
     }
 
     @Override
     public final void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
-        backend.remove(TraceConsts.SESSION_ID_KEY);
+        backend.remove(Builder.SESSION_ID_KEY);
     }
 
 }

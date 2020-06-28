@@ -33,58 +33,57 @@ import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
-import org.aoju.bus.health.mac.Sysctl;
+import org.aoju.bus.health.builtin.hardware.CentralProcessor;
+import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A CPU.
- *
- * @author Kimi Liu
- * @version 6.0.0
- * @since JDK 1.8+
  */
 @ThreadSafe
 final class MacCentralProcessor extends AbstractCentralProcessor {
 
     @Override
-    protected ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = Sysctl.sysctl("machdep.cpu.vendor", Normal.EMPTY);
-        String cpuName = Sysctl.sysctl("machdep.cpu.brand_string", Normal.EMPTY);
-        int i = Sysctl.sysctl("machdep.cpu.stepping", -1);
+    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
+        String cpuVendor = SysctlKit.sysctl("machdep.cpu.vendor", Normal.EMPTY);
+        String cpuName = SysctlKit.sysctl("machdep.cpu.brand_string", Normal.EMPTY);
+        int i = SysctlKit.sysctl("machdep.cpu.stepping", -1);
         String cpuStepping = i < 0 ? Normal.EMPTY : Integer.toString(i);
-        i = Sysctl.sysctl("machdep.cpu.model", -1);
+        i = SysctlKit.sysctl("machdep.cpu.model", -1);
         String cpuModel = i < 0 ? Normal.EMPTY : Integer.toString(i);
-        i = Sysctl.sysctl("machdep.cpu.family", -1);
+        i = SysctlKit.sysctl("machdep.cpu.family", -1);
         String cpuFamily = i < 0 ? Normal.EMPTY : Integer.toString(i);
         long processorIdBits = 0L;
-        processorIdBits |= Sysctl.sysctl("machdep.cpu.signature", 0);
-        processorIdBits |= (Sysctl.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
+        processorIdBits |= SysctlKit.sysctl("machdep.cpu.signature", 0);
+        processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
         String processorID = String.format("%016X", processorIdBits);
-        boolean cpu64bit = Sysctl.sysctl("hw.cpu64bit_capable", 0) != 0;
+        boolean cpu64bit = SysctlKit.sysctl("hw.cpu64bit_capable", 0) != 0;
 
-        return new ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
     }
 
     @Override
-    protected LogicalProcessor[] initProcessorCounts() {
-        int logicalProcessorCount = Sysctl.sysctl("hw.logicalcpu", 1);
-        int physicalProcessorCount = Sysctl.sysctl("hw.physicalcpu", 1);
-        int physicalPackageCount = Sysctl.sysctl("hw.packages", 1);
-
-        LogicalProcessor[] logProcs = new LogicalProcessor[logicalProcessorCount];
-        for (int i = 0; i < logProcs.length; i++) {
-            logProcs[i] = new LogicalProcessor(i, i * physicalProcessorCount / logicalProcessorCount,
-                    i * physicalPackageCount / logicalProcessorCount);
+    protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
+        int logicalProcessorCount = SysctlKit.sysctl("hw.logicalcpu", 1);
+        int physicalProcessorCount = SysctlKit.sysctl("hw.physicalcpu", 1);
+        int physicalPackageCount = SysctlKit.sysctl("hw.packages", 1);
+        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>(logicalProcessorCount);
+        for (int i = 0; i < logicalProcessorCount; i++) {
+            logProcs.add(new CentralProcessor.LogicalProcessor(i, i * physicalProcessorCount / logicalProcessorCount,
+                    i * physicalPackageCount / logicalProcessorCount));
         }
         return logProcs;
     }
 
     @Override
     public long[] querySystemCpuLoadTicks() {
-        long[] ticks = new long[TickType.values().length];
+        long[] ticks = new long[CentralProcessor.TickType.values().length];
         int machPort = SystemB.INSTANCE.mach_host_self();
         HostCpuLoadInfo cpuLoadInfo = new HostCpuLoadInfo();
         if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo,
@@ -93,10 +92,10 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             return ticks;
         }
 
-        ticks[TickType.USER.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER];
-        ticks[TickType.NICE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE];
-        ticks[TickType.SYSTEM.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM];
-        ticks[TickType.IDLE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE];
+        ticks[CentralProcessor.TickType.USER.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER];
+        ticks[CentralProcessor.TickType.NICE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE];
+        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM];
+        ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE];
         // Leave IOWait and IRQ values as 0
         return ticks;
     }
@@ -104,13 +103,13 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long[] queryCurrentFreq() {
         long[] freqs = new long[getLogicalProcessorCount()];
-        Arrays.fill(freqs, Sysctl.sysctl("hw.cpufrequency", -1L));
+        Arrays.fill(freqs, SysctlKit.sysctl("hw.cpufrequency", -1L));
         return freqs;
     }
 
     @Override
     public long queryMaxFreq() {
-        return Sysctl.sysctl("hw.cpufrequency_max", -1L);
+        return SysctlKit.sysctl("hw.cpufrequency_max", -1L);
     }
 
     @Override
@@ -128,7 +127,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
-        long[][] ticks = new long[getLogicalProcessorCount()][TickType.values().length];
+        long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
 
         int machPort = SystemB.INSTANCE.mach_host_self();
 
@@ -144,11 +143,11 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
         for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
             int offset = cpu * SystemB.CPU_STATE_MAX;
-            ticks[cpu][TickType.USER.getIndex()] = Builder.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
-            ticks[cpu][TickType.NICE.getIndex()] = Builder.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
-            ticks[cpu][TickType.SYSTEM.getIndex()] = Builder
+            ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
+            ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
+            ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = Formats
                     .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_SYSTEM]);
-            ticks[cpu][TickType.IDLE.getIndex()] = Builder.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
+            ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
         }
         return ticks;
     }

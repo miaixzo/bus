@@ -194,6 +194,8 @@ public final class HkeyPerformance {
      * Looks up the counter index values for the given counter object and the enum
      * of counter names.
      *
+     * @param <T>         An enum containing the counters, whose class is passed as
+     *                    {@code counterEnum}
      * @param objectName  The counter object to look up the index for
      * @param counterEnum The {@link Enum} containing counters to look up the indices for.
      *                    The first Enum value will be ignored.

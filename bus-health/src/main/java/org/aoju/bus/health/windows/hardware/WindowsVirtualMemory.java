@@ -32,9 +32,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.windows.drivers.MemoryInformation;
-import org.aoju.bus.health.windows.drivers.MemoryInformation.PageSwapProperty;
 import org.aoju.bus.health.windows.drivers.PagingFile;
-import org.aoju.bus.health.windows.drivers.PagingFile.PagingPercentProperty;
 import org.aoju.bus.logger.Logger;
 
 import java.util.Map;
@@ -73,7 +71,7 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
     }
 
     private static long querySwapUsed() {
-        return PagingFile.querySwapUsed().getOrDefault(PagingPercentProperty.PERCENTUSAGE, 0L);
+        return PagingFile.querySwapUsed().getOrDefault(PagingFile.PagingPercentProperty.PERCENTUSAGE, 0L);
     }
 
     private static Triple<Long, Long, Long> querySwapTotalVirtMaxVirtUsed() {
@@ -83,13 +81,13 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
             return Triple.of(0L, 0L, 0L);
         }
         return Triple.of(perfInfo.CommitLimit.longValue() - perfInfo.PhysicalTotal.longValue(),
-                perfInfo.CommitLimit.longValue(), perfInfo.CommitLimit.longValue() - perfInfo.CommitTotal.longValue());
+                perfInfo.CommitLimit.longValue(), perfInfo.CommitTotal.longValue());
     }
 
     private static Pair<Long, Long> queryPageSwaps() {
-        Map<PageSwapProperty, Long> valueMap = MemoryInformation.queryPageSwaps();
-        return Pair.of(valueMap.getOrDefault(PageSwapProperty.PAGESINPUTPERSEC, 0L),
-                valueMap.getOrDefault(PageSwapProperty.PAGESOUTPUTPERSEC, 0L));
+        Map<MemoryInformation.PageSwapProperty, Long> valueMap = MemoryInformation.queryPageSwaps();
+        return Pair.of(valueMap.getOrDefault(MemoryInformation.PageSwapProperty.PAGESINPUTPERSEC, 0L),
+                valueMap.getOrDefault(MemoryInformation.PageSwapProperty.PAGESOUTPUTPERSEC, 0L));
     }
 
     @Override

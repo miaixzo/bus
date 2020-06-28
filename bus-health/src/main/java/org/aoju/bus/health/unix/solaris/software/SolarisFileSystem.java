@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.software;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import com.sun.jna.platform.unix.solaris.LibKstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -33,8 +33,8 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
-import org.aoju.bus.health.unix.solaris.KstatCtl;
-import org.aoju.bus.health.unix.solaris.KstatCtl.KstatChain;
+import org.aoju.bus.health.unix.solaris.KstatKit;
+import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 import java.io.File;
 import java.util.*;
@@ -55,7 +55,8 @@ public class SolarisFileSystem extends AbstractFileSystem {
     // System path mounted as tmpfs
     private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
 
-    private static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
+    // Called by SolarisOSFileStore
+    static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
         return getFileStoreMatching(nameToMatch, false);
     }
 
@@ -139,66 +140,25 @@ public class SolarisFileSystem extends AbstractFileSystem {
                 description = "Mount Point";
             }
 
-            // Add to the list
-            OSFileStore osStore = new OSFileStore();
-            osStore.setName(name);
-            osStore.setVolume(volume);
-            osStore.setLabel(name);
-            osStore.setMount(path);
-            osStore.setDescription(description);
-            osStore.setType(type);
-            osStore.setOptions(options);
-            osStore.setUUID(Normal.EMPTY); // No UUID info on Solaris
-            osStore.setFreeSpace(freeSpace);
-            osStore.setUsableSpace(usableSpace);
-            osStore.setTotalSpace(totalSpace);
-            osStore.setFreeInodes(inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L);
-            osStore.setTotalInodes(inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L);
-            fsList.add(osStore);
+            fsList.add(new SolarisOSFileStore(name, volume, name, path, options, "", "", description, type, freeSpace,
+                    usableSpace, totalSpace, inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
+                    inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
         }
         return fsList;
     }
 
-    /**
-     * <p>
-     * updateFileStoreStats.
-     * </p>
-     *
-     * @param osFileStore a {@link OSFileStore} object.
-     * @return a boolean.
-     */
-    public static boolean updateFileStoreStats(OSFileStore osFileStore) {
-        for (OSFileStore fileStore : getFileStoreMatching(osFileStore.getName())) {
-            if (osFileStore.getVolume().equals(fileStore.getVolume())
-                    && osFileStore.getMount().equals(fileStore.getMount())) {
-                osFileStore.setLogicalVolume(fileStore.getLogicalVolume());
-                osFileStore.setDescription(fileStore.getDescription());
-                osFileStore.setType(fileStore.getType());
-                osFileStore.setFreeSpace(fileStore.getFreeSpace());
-                osFileStore.setUsableSpace(fileStore.getUsableSpace());
-                osFileStore.setTotalSpace(fileStore.getTotalSpace());
-                osFileStore.setFreeInodes(fileStore.getFreeInodes());
-                osFileStore.setTotalInodes(fileStore.getTotalInodes());
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
-    public OSFileStore[] getFileStores(boolean localOnly) {
-        List<OSFileStore> fsList = getFileStoreMatching(null, localOnly);
-
-        return fsList.toArray(new OSFileStore[0]);
+    public List<OSFileStore> getFileStores(boolean localOnly) {
+        return getFileStoreMatching(null, localOnly);
     }
 
     @Override
     public long getOpenFileDescriptors() {
-        try (KstatChain kc = KstatCtl.openChain()) {
-            Kstat ksp = kc.lookup(null, -1, "file_cache");
+        try (KstatChain kc = KstatKit.openChain()) {
+            com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp = kc.lookup(null, -1, "file_cache");
             // Set values
             if (ksp != null && kc.read(ksp)) {
-                return KstatCtl.dataLookupLong(ksp, "buf_inuse");
+                return KstatKit.dataLookupLong(ksp, "buf_inuse");
             }
         }
         return 0L;
@@ -206,11 +166,11 @@ public class SolarisFileSystem extends AbstractFileSystem {
 
     @Override
     public long getMaxFileDescriptors() {
-        try (KstatChain kc = KstatCtl.openChain()) {
-            Kstat ksp = kc.lookup(null, -1, "file_cache");
+        try (KstatChain kc = KstatKit.openChain()) {
+            LibKstat.Kstat ksp = kc.lookup(null, -1, "file_cache");
             // Set values
             if (ksp != null && kc.read(ksp)) {
-                return KstatCtl.dataLookupLong(ksp, "buf_max");
+                return KstatKit.dataLookupLong(ksp, "buf_max");
             }
         }
         return 0L;

@@ -24,12 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.hardware;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
-import org.aoju.bus.health.unix.solaris.KstatCtl;
-import org.aoju.bus.health.unix.solaris.KstatCtl.KstatChain;
+import org.aoju.bus.health.unix.solaris.KstatKit;
+import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -125,21 +124,21 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
 
     @Override
     public boolean updateAttributes() {
-        try (KstatChain kc = KstatCtl.openChain()) {
-            Kstat ksp = kc.lookup("link", -1, getName());
+        try (KstatChain kc = KstatKit.openChain()) {
+            com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp = kc.lookup("link", -1, getName());
             if (ksp == null) { // Solaris 10 compatibility
                 ksp = kc.lookup(null, -1, getName());
             }
             if (ksp != null && kc.read(ksp)) {
-                this.bytesSent = KstatCtl.dataLookupLong(ksp, "obytes64");
-                this.bytesRecv = KstatCtl.dataLookupLong(ksp, "rbytes64");
-                this.packetsSent = KstatCtl.dataLookupLong(ksp, "opackets64");
-                this.packetsRecv = KstatCtl.dataLookupLong(ksp, "ipackets64");
-                this.outErrors = KstatCtl.dataLookupLong(ksp, "oerrors");
-                this.inErrors = KstatCtl.dataLookupLong(ksp, "ierrors");
-                this.collisions = KstatCtl.dataLookupLong(ksp, "collisions");
-                this.inDrops = KstatCtl.dataLookupLong(ksp, "dl_idrops");
-                this.speed = KstatCtl.dataLookupLong(ksp, "ifspeed");
+                this.bytesSent = KstatKit.dataLookupLong(ksp, "obytes64");
+                this.bytesRecv = KstatKit.dataLookupLong(ksp, "rbytes64");
+                this.packetsSent = KstatKit.dataLookupLong(ksp, "opackets64");
+                this.packetsRecv = KstatKit.dataLookupLong(ksp, "ipackets64");
+                this.outErrors = KstatKit.dataLookupLong(ksp, "oerrors");
+                this.inErrors = KstatKit.dataLookupLong(ksp, "ierrors");
+                this.collisions = KstatKit.dataLookupLong(ksp, "collisions");
+                this.inDrops = KstatKit.dataLookupLong(ksp, "dl_idrops");
+                this.speed = KstatKit.dataLookupLong(ksp, "ifspeed");
                 // Snap time in ns; convert to ms
                 this.timeStamp = ksp.ks_snaptime / 1_000_000L;
                 return true;

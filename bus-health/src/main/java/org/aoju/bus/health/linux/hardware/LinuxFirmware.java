@@ -27,7 +27,6 @@ package org.aoju.bus.health.linux.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -51,14 +50,13 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class LinuxFirmware extends AbstractFirmware {
 
-    // Jan 13 2013 16:24:29
     private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter.ofPattern("MMM d uuuu HH:mm:ss",
             Locale.ENGLISH);
     private final Supplier<VcGenCmdStrings> vcGenCmd = memoize(this::queryVcGenCmd);
     private final Supplier<String> manufacturer = memoize(this::queryManufacturer);
     private final Supplier<String> description = memoize(this::queryDescription);
     private final Supplier<String> releaseDate = memoize(this::queryReleaseDate);
-    private final Supplier<BiosStrings> bios = memoize(this::queryBios);
+    private final Supplier<BiosStrings> bios = memoize(LinuxFirmware::queryBios);
     private final Supplier<String> version = memoize(this::queryVersion);
     private final Supplier<String> name = memoize(this::queryName);
 
@@ -84,6 +82,30 @@ final class LinuxFirmware extends AbstractFirmware {
             return Builder.parseMmDdYyyyToYyyyMmDD(biosDate);
         }
         return null;
+    }
+
+    private static BiosStrings queryBios() {
+        String biosName = null;
+        String revision = null;
+
+        final String biosMarker = "SMBIOS";
+        final String revMarker = "Bios Revision:";
+
+        // Requires root, may not return anything
+        for (final String checkLine : Executor.runNative("dmidecode -t bios")) {
+            if (checkLine.contains(biosMarker)) {
+                String[] biosArr = RegEx.SPACES.split(checkLine);
+                if (biosArr.length >= 2) {
+                    biosName = biosArr[0] + " " + biosArr[1];
+                }
+            }
+            if (checkLine.contains(revMarker)) {
+                revision = checkLine.split(revMarker)[1].trim();
+                // SMBIOS should be first line so if we're here we are done iterating
+                break;
+            }
+        }
+        return new BiosStrings(biosName, revision);
     }
 
     @Override
@@ -119,14 +141,6 @@ final class LinuxFirmware extends AbstractFirmware {
         return result;
     }
 
-    private String queryDescription() {
-        String result = null;
-        if ((result = queryDescriptionFromSysfs()) == null && (result = vcGenCmd.get().description) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
-    }
-
     // $ ls /sys/devices/virtual/dmi/id/
     // bios_date board_vendor chassis_version product_version
     // bios_vendor board_version modalias subsystem
@@ -135,8 +149,16 @@ final class LinuxFirmware extends AbstractFirmware {
     // board_name chassis_type product_serial
     // board_serial chassis_vendor product_uuid
 
+    private String queryDescription() {
+        String result;
+        if ((result = queryDescriptionFromSysfs()) == null && (result = vcGenCmd.get().description) == null) {
+            return Normal.UNKNOWN;
+        }
+        return result;
+    }
+
     private String queryVersion() {
-        String result = null;
+        String result;
         if ((result = queryVersionFromSysfs()) == null && (result = vcGenCmd.get().version) == null) {
             return Normal.UNKNOWN;
         }
@@ -144,7 +166,7 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryReleaseDate() {
-        String result = null;
+        String result;
         if ((result = queryReleaseDateFromSysfs()) == null && (result = vcGenCmd.get().releaseDate) == null) {
             return Normal.UNKNOWN;
         }
@@ -152,20 +174,11 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryName() {
-        String result = null;
+        String result;
         if ((result = bios.get().biosName) == null && (result = vcGenCmd.get().name) == null) {
             return Normal.UNKNOWN;
         }
         return result;
-    }
-
-    private String queryVersionFromSysfs() {
-        final String biosVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_version").trim();
-        if (!biosVersion.isEmpty()) {
-            String biosRevision = this.bios.get().biosRevision;
-            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + ")");
-        }
-        return null;
     }
 
     // $ sudo dmidecode -t bios
@@ -205,34 +218,19 @@ final class LinuxFirmware extends AbstractFirmware {
     // BIOS Revision: 4.6
     // Firmware Revision: 0.0
 
-    private BiosStrings queryBios() {
-        String biosName = null;
-        String revision = null;
-
-        final String biosMarker = "SMBIOS";
-        final String revMarker = "Bios Revision:";
-
-        // Requires root, may not return anything
-        for (final String checkLine : Executor.runNative("dmidecode -t bios")) {
-            if (checkLine.contains(biosMarker)) {
-                String[] biosArr = RegEx.SPACES.split(checkLine);
-                if (biosArr.length >= 2) {
-                    biosName = biosArr[0] + Symbol.SPACE + biosArr[1];
-                }
-            }
-            if (checkLine.contains(revMarker)) {
-                revision = checkLine.split(revMarker)[1].trim();
-                // SMBIOS should be first line so if we're here we are done iterating
-                break;
-            }
+    private String queryVersionFromSysfs() {
+        final String biosVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_version").trim();
+        if (!biosVersion.isEmpty()) {
+            String biosRevision = this.bios.get().biosRevision;
+            return biosVersion + (StringKit.isBlank(biosRevision) ? "" : " (revision " + biosRevision + ")");
         }
-        return new BiosStrings(biosName, revision);
+        return null;
     }
 
     private VcGenCmdStrings queryVcGenCmd() {
-        String vcReleaseDate = null;
-        String vcManufacturer = null;
-        String vcVersion = null;
+        String vcReleaseDate;
+        String vcManufacturer;
+        String vcVersion;
 
         List<String> vcgencmd = Executor.runNative("vcgencmd version");
         if (vcgencmd.size() >= 3) {

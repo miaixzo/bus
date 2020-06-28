@@ -28,7 +28,6 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import org.aoju.bus.health.mac.drivers.NetStat;
-import org.aoju.bus.health.mac.drivers.NetStat.IFdata;
 
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -58,7 +57,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
 
-    public MacNetworkIF(NetworkInterface netint, Map<Integer, IFdata> data) {
+    public MacNetworkIF(NetworkInterface netint, Map<Integer, NetStat.IFdata> data) {
         super(netint);
         updateNetworkStats(data);
     }
@@ -71,7 +70,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
      */
     public static List<NetworkIF> getNetworks() {
         // One time fetch of stats
-        final Map<Integer, IFdata> data = NetStat.queryIFdata(-1);
+        final Map<Integer, NetStat.IFdata> data = NetStat.queryIFdata(-1);
         return Collections.unmodifiableList(
                 getNetworkInterfaces().stream().map(ni -> new MacNetworkIF(ni, data)).collect(Collectors.toList()));
     }
@@ -144,10 +143,10 @@ public final class MacNetworkIF extends AbstractNetworkIF {
      * @param data A map of network interface statistics with the index as the key
      * @return {@code true} if the update was successful, {@code false} otherwise.
      */
-    private boolean updateNetworkStats(Map<Integer, IFdata> data) {
+    private boolean updateNetworkStats(Map<Integer, NetStat.IFdata> data) {
         int index = queryNetworkInterface().getIndex();
         if (data.containsKey(index)) {
-            IFdata ifData = data.get(index);
+            NetStat.IFdata ifData = data.get(index);
             // Update data
             this.ifType = ifData.getIfType();
             this.bytesSent = ifData.getOBytes();

@@ -28,6 +28,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Formats;
 import org.aoju.bus.logger.Logger;
 
 import java.net.InetAddress;
@@ -213,15 +214,25 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         sb.append("Name: ").append(getName()).append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT).append("\n");
         sb.append("  MAC Address: ").append(getMacaddr()).append("\n");
         sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append("\n");
-        sb.append("  IPv4: ").append(Arrays.toString(getIPv4addr())).append("\n");
-        sb.append("  Netmask:  ").append(Arrays.toString(getSubnetMasks())).append("\n");
-        sb.append("  IPv6: ").append(Arrays.toString(getIPv6addr())).append("\n");
-        sb.append("  Prefix Lengths:  ").append(Arrays.toString(getPrefixLengths())).append("\n");
+        String[] ipv4withmask = getIPv4addr();
+        if (this.ipv4.length == this.subnetMasks.length) {
+            for (int i = 0; i < this.subnetMasks.length; i++) {
+                ipv4withmask[i] += Symbol.SLASH + this.subnetMasks[i];
+            }
+        }
+        sb.append("  IPv4: ").append(Arrays.toString(ipv4withmask)).append("\n");
+        String[] ipv6withprefixlength = getIPv6addr();
+        if (this.ipv6.length == this.prefixLengths.length) {
+            for (int j = 0; j < this.prefixLengths.length; j++) {
+                ipv6withprefixlength[j] += Symbol.SLASH + this.prefixLengths[j];
+            }
+        }
+        sb.append("  IPv6: ").append(Arrays.toString(ipv6withprefixlength)).append("\n");
         sb.append("  Traffic: received ").append(getPacketsRecv()).append(" packets/")
-                .append(Builder.formatBytes(getBytesRecv())).append(" (" + getInErrors() + " err, ")
+                .append(Formats.formatBytes(getBytesRecv())).append(" (" + getInErrors() + " err, ")
                 .append(getInDrops() + " drop);");
         sb.append(" transmitted ").append(getPacketsSent()).append(" packets/")
-                .append(Builder.formatBytes(getBytesSent())).append(" (" + getOutErrors() + " err, ")
+                .append(Formats.formatBytes(getBytesSent())).append(" (" + getOutErrors() + " err, ")
                 .append(getCollisions() + " coll);");
         return sb.toString();
     }

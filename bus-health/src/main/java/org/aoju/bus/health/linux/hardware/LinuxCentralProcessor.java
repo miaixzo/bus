@@ -33,6 +33,7 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
+import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.drivers.CpuStat;
 import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
@@ -52,7 +53,7 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
 final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
     // See https://www.kernel.org/doc/Documentation/cpu-freq/user-guide.txt
-    private static final String CPUFREQ_PATH = "health.cpu.path";
+    private static final String CPUFREQ_PATH = "health.cpu.freq.path";
 
     private static Map<Integer, Integer> mapNumaNodes() {
         Map<Integer, Integer> numaNodeMap = new HashMap<>();
@@ -80,11 +81,11 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
      * the cpuid command (if installed) or by encoding the stepping, model, family,
      * and feature flags.
      *
-     * @param vendor
-     * @param stepping
-     * @param model
-     * @param family
-     * @param flags
+     * @param vendor   The vendor
+     * @param stepping The stepping
+     * @param model    The model
+     * @param family   The family
+     * @param flags    The flags
      * @return The Processor ID string
      */
     private static String getProcessorID(String vendor, String stepping, String model, String family, String[] flags) {
@@ -151,7 +152,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    protected ProcessorIdentifier queryProcessorId() {
+    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         String cpuVendor = Normal.EMPTY;
         String cpuName = Normal.EMPTY;
         String cpuFamily = Normal.EMPTY;
@@ -218,14 +219,14 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 }
             }
         }
-        return new ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
     }
 
     @Override
-    protected LogicalProcessor[] initProcessorCounts() {
+    protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
         List<String> procCpu = FileKit.readLines(CPUINFO);
-        List<LogicalProcessor> logProcs = new ArrayList<>();
+        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         int currentProcessor = 0;
         int currentCore = 0;
         int currentPackage = 0;
@@ -234,7 +235,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             // Count logical processors
             if (cpu.startsWith("processor")) {
                 if (!first) {
-                    logProcs.add(new LogicalProcessor(currentProcessor, currentCore, currentPackage,
+                    logProcs.add(new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
                             numaNodeMap.getOrDefault(currentProcessor, 0)));
                 } else {
                     first = false;
@@ -247,10 +248,10 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 currentPackage = Builder.parseLastInt(cpu, 0);
             }
         }
-        logProcs.add(new LogicalProcessor(currentProcessor, currentCore, currentPackage,
+        logProcs.add(new CentralProcessor.LogicalProcessor(currentProcessor, currentCore, currentPackage,
                 numaNodeMap.getOrDefault(currentProcessor, 0)));
 
-        return logProcs.toArray(new LogicalProcessor[0]);
+        return logProcs;
     }
 
     @Override
@@ -358,4 +359,5 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     public long queryInterrupts() {
         return CpuStat.getInterrupts();
     }
+
 }

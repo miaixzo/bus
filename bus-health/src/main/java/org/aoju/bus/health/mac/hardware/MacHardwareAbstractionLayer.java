@@ -60,7 +60,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     @Override
-    public PowerSource[] getPowerSources() {
+    public List<PowerSource> getPowerSources() {
         return MacPowerSource.getPowerSources();
     }
 
@@ -70,7 +70,7 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     @Override
-    public Display[] getDisplays() {
+    public List<Display> getDisplays() {
         return MacDisplay.getDisplays();
     }
 
@@ -80,18 +80,18 @@ public final class MacHardwareAbstractionLayer extends AbstractHardwareAbstracti
     }
 
     @Override
-    public UsbDevice[] getUsbDevices(boolean tree) {
+    public List<UsbDevice> getUsbDevices(boolean tree) {
         return MacUsbDevice.getUsbDevices(tree);
     }
 
     @Override
-    public SoundCard[] getSoundCards() {
-        return MacSoundCard.getSoundCards().toArray(new SoundCard[0]);
+    public List<SoundCard> getSoundCards() {
+        return MacSoundCard.getSoundCards();
     }
 
     @Override
-    public GraphicsCard[] getGraphicsCards() {
-        return MacGraphicsCard.getGraphicsCards().toArray(new GraphicsCard[0]);
+    public List<GraphicsCard> getGraphicsCards() {
+        return MacGraphicsCard.getGraphicsCards();
     }
 
 }

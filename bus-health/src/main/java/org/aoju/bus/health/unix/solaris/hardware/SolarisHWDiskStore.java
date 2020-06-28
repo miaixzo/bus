@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.hardware;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import com.sun.jna.platform.unix.solaris.LibKstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -33,8 +33,8 @@ import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
-import org.aoju.bus.health.unix.solaris.KstatCtl;
-import org.aoju.bus.health.unix.solaris.KstatCtl.KstatChain;
+import org.aoju.bus.health.unix.solaris.KstatKit;
+import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 import org.aoju.bus.health.unix.solaris.drivers.Iostat;
 import org.aoju.bus.health.unix.solaris.drivers.Lshal;
 import org.aoju.bus.health.unix.solaris.drivers.Prtvtoc;
@@ -150,8 +150,8 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
 
     @Override
     public boolean updateAttributes() {
-        try (KstatChain kc = KstatCtl.openChain()) {
-            Kstat ksp = kc.lookup(null, 0, getName());
+        try (KstatChain kc = KstatKit.openChain()) {
+            LibKstat.Kstat ksp = kc.lookup(null, 0, getName());
             if (ksp != null && kc.read(ksp)) {
                 KstatIO data = new KstatIO(ksp.ks_data);
                 this.reads = data.reads;

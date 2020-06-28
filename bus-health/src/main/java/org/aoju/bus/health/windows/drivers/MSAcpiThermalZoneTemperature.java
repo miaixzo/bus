@@ -60,7 +60,7 @@ public final class MSAcpiThermalZoneTemperature {
      * Current temperature property.
      */
     public enum TemperatureProperty {
-        CURRENTTEMPERATURE;
+        CURRENTTEMPERATURE
     }
 
 }

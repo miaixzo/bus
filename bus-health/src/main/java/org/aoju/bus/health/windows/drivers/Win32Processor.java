@@ -90,14 +90,14 @@ public final class Win32Processor {
      * Processor voltage properties.
      */
     public enum VoltProperty {
-        CURRENTVOLTAGE, VOLTAGECAPS;
+        CURRENTVOLTAGE, VOLTAGECAPS
     }
 
     /**
      * Processor ID property
      */
     public enum ProcessorIdProperty {
-        PROCESSORID;
+        PROCESSORID
     }
 
     /**

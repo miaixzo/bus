@@ -32,16 +32,14 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
+import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Graphics Card info obtained from pciconf
- *
- * @author Kimi Liu
- * @version 6.0.0
- * @since JDK 1.8+
  */
 @Immutable
 final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
@@ -66,16 +64,14 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
      * {@link AbstractHardwareAbstractionLayer} to access the
      * graphics cards.
      *
-     * @return List of
-     * {@link FreeBsdGraphicsCard}
-     * objects.
+     * @return List of {@link FreeBsdGraphicsCard}objects.
      */
-    public static List<FreeBsdGraphicsCard> getGraphicsCards() {
+    public static List<GraphicsCard> getGraphicsCards() {
         List<FreeBsdGraphicsCard> cardList = new ArrayList<>();
         // Enumerate all devices and add if required
         List<String> devices = Executor.runNative("pciconf -lv");
         if (devices.isEmpty()) {
-            return cardList;
+            return Collections.emptyList();
         }
         String name = Normal.UNKNOWN;
         String vendorId = Normal.UNKNOWN;
@@ -131,7 +127,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                     vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
                     versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
         }
-        return cardList;
+        return Collections.unmodifiableList(cardList);
     }
 
 }

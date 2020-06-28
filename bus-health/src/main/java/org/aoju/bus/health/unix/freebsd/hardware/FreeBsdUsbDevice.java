@@ -26,7 +26,6 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
@@ -45,7 +44,7 @@ import java.util.*;
 public class FreeBsdUsbDevice extends AbstractUsbDevice {
 
     public FreeBsdUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                            String uniqueDeviceId, UsbDevice[] connectedDevices) {
+                            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
@@ -55,8 +54,8 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
      * @param tree a boolean.
      * @return an array of {@link UsbDevice} objects.
      */
-    public static UsbDevice[] getUsbDevices(boolean tree) {
-        UsbDevice[] devices = getUsbDevices();
+    public static List<UsbDevice> getUsbDevices(boolean tree) {
+        List<UsbDevice> devices = getUsbDevices();
         if (tree) {
             return devices;
         }
@@ -66,13 +65,13 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
         for (UsbDevice device : devices) {
             deviceList.add(new FreeBsdUsbDevice(device.getName(), device.getVendor(), device.getVendorId(),
                     device.getProductId(), device.getSerialNumber(), device.getUniqueDeviceId(),
-                    new FreeBsdUsbDevice[0]));
+                    Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
-        return deviceList.toArray(new UsbDevice[0]);
+        return deviceList;
     }
 
-    private static UsbDevice[] getUsbDevices() {
+    private static List<UsbDevice> getUsbDevices() {
         // Maps to store information using node # as the key
         Map<String, String> nameMap = new HashMap<>();
         Map<String, String> vendorMap = new HashMap<>();
@@ -88,7 +87,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
         // results with those
         List<String> devices = Executor.runNative("lshal");
         if (devices.isEmpty()) {
-            return new FreeBsdUsbDevice[0];
+            return Collections.emptyList();
         }
         // For each item enumerated, store information in the maps
         String key = Normal.EMPTY;
@@ -144,11 +143,11 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
             controllerDevices.add(getDeviceAndChildren(parent, "0000", "0000", nameMap, vendorMap, vendorIdMap,
                     productIdMap, serialMap, hubMap));
         }
-        return controllerDevices.toArray(new UsbDevice[0]);
+        return controllerDevices;
     }
 
-    private static void addDevicesToList(List<UsbDevice> deviceList, UsbDevice[] connectedDevices) {
-        for (UsbDevice device : connectedDevices) {
+    private static void addDevicesToList(List<UsbDevice> deviceList, List<UsbDevice> list) {
+        for (UsbDevice device : list) {
             deviceList.add(device);
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
@@ -161,11 +160,12 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
      * @param devPath      The device node path.
      * @param vid          The default (parent) vendor ID
      * @param pid          The default (parent) product ID
-     * @param nameMap
-     * @param vendorMap
-     * @param vendorIdMap
-     * @param productIdMap
-     * @param hubMap
+     * @param nameMap      the map of names
+     * @param vendorMap    the map of vendors
+     * @param vendorIdMap  the map of vendorIds
+     * @param productIdMap the map of productIds
+     * @param serialMap    the map of serial numbers
+     * @param hubMap       the map of hubs
      * @return A SolarisUsbDevice corresponding to this device
      */
     private static FreeBsdUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
@@ -174,15 +174,15 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
         List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
-        List<FreeBsdUsbDevice> usbDevices = new ArrayList<>();
+        List<UsbDevice> usbDevices = new ArrayList<>();
         for (String path : childPaths) {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorMap, vendorIdMap,
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
-                usbDevices.toArray(new UsbDevice[0]));
+        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+                vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
+                usbDevices);
     }
 
 }

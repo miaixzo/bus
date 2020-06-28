@@ -24,9 +24,10 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.drivers;
 
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.windows.WmiQuery;
+import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.WmiQueryHandler;
 
 /**
@@ -54,7 +55,7 @@ public final class OhmHardware {
     public static WmiResult<IdentifierProperty> queryHwIdentifier(String typeToQuery, String typeName) {
         StringBuilder sb = new StringBuilder(HARDWARE);
         sb.append(" WHERE ").append(typeToQuery).append("Type=\"").append(typeName).append('\"');
-        com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery cpuIdentifierQuery = new com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery(WmiQuery.OHM_NAMESPACE, sb.toString(),
+        WmiQuery<IdentifierProperty> cpuIdentifierQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, sb.toString(),
                 IdentifierProperty.class);
         return WmiQueryHandler.createInstance().queryWMI(cpuIdentifierQuery);
     }
@@ -63,7 +64,7 @@ public final class OhmHardware {
      * HW Identifier Property
      */
     public enum IdentifierProperty {
-        IDENTIFIER;
+        IDENTIFIER
     }
 
 }

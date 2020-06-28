@@ -28,8 +28,8 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Envelope;
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.support.DefaultMessagePropertiesConverter;
 
@@ -47,11 +47,11 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
     private final String profile;
 
     public TraceMessagePropertiesConverter() {
-        this(Builder.getBackend(), TraceConsts.DEFAULT);
+        this(Tracer.getBackend(), Builder.DEFAULT);
     }
 
     public TraceMessagePropertiesConverter(String profile) {
-        this(Builder.getBackend(), profile);
+        this(Tracer.getBackend(), profile);
     }
 
     TraceMessagePropertiesConverter(Backend backend, String profile) {
@@ -63,15 +63,15 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
     public MessageProperties toMessageProperties(AMQP.BasicProperties source, Envelope envelope, String charset) {
         final MessageProperties messageProperties = super.toMessageProperties(source, envelope, charset);
 
-        final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
-        if (filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.AsyncProcess)) {
+        final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
+        if (filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
             final Map<String, String> TraceContextMap = transformToTraceContextMap(
-                    (Map<String, ?>) messageProperties.getHeaders().get(TraceConsts.TPIC_HEADER));
+                    (Map<String, ?>) messageProperties.getHeaders().get(Builder.TPIC_HEADER));
             if (TraceContextMap != null && !TraceContextMap.isEmpty()) {
-                backend.putAll(filterConfiguration.filterDeniedParams(TraceContextMap, TraceFilterConfiguration.Channel.AsyncProcess));
+                backend.putAll(filterConfiguration.filterDeniedParams(TraceContextMap, TraceFilterConfig.Channel.AsyncProcess));
             }
         }
-        Builder.generateInvocationIdIfNecessary(backend);
+        org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
         return messageProperties;
     }
 
@@ -87,10 +87,10 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
 
     @Override
     public AMQP.BasicProperties fromMessageProperties(MessageProperties source, String charset) {
-        final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
-        if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.AsyncDispatch)) {
-            final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(), TraceFilterConfiguration.Channel.AsyncDispatch);
-            source.getHeaders().put(TraceConsts.TPIC_HEADER, filteredParams);
+        final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
+        if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.AsyncDispatch)) {
+            final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(), TraceFilterConfig.Channel.AsyncDispatch);
+            source.getHeaders().put(Builder.TPIC_HEADER, filteredParams);
         }
         return super.fromMessageProperties(source, charset);
     }

@@ -26,6 +26,8 @@ package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 
+import java.util.List;
+
 /**
  * The GlobalMemory class tracks information about the use of a computer's
  * physical memory (RAM) as well as any available virtual memory.
@@ -73,6 +75,6 @@ public interface GlobalMemory {
      *
      * @return A list of PhysicalMemory objects.
      */
-    PhysicalMemory[] getPhysicalMemory();
+    List<PhysicalMemory> getPhysicalMemory();
 
 }

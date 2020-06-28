@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.tracer;
 
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 
 import java.util.Map;
 
@@ -37,9 +37,9 @@ import java.util.Map;
  */
 public interface Backend {
 
-    TraceFilterConfiguration getConfiguration(String profileName);
+    TraceFilterConfig getConfiguration(String profileName);
 
-    TraceFilterConfiguration getConfiguration();
+    TraceFilterConfig getConfiguration();
 
     boolean containsKey(String key);
 

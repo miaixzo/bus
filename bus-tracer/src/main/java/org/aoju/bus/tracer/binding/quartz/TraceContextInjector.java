@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.quartz;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
@@ -44,11 +44,11 @@ public class TraceContextInjector {
     private final String profile;
 
     public TraceContextInjector() {
-        this(Builder.getBackend(), TraceConsts.DEFAULT);
+        this(Tracer.getBackend(), Builder.DEFAULT);
     }
 
     public TraceContextInjector(final String profile) {
-        this(Builder.getBackend(), profile);
+        this(Tracer.getBackend(), profile);
     }
 
     TraceContextInjector(final Backend backend, final String profile) {
@@ -65,11 +65,11 @@ public class TraceContextInjector {
     }
 
     public void injectContext(JobDataMap jobDataMap) {
-        final TraceFilterConfiguration configuration = backend.getConfiguration(profile);
-        if (!backend.isEmpty() && configuration.shouldProcessContext(TraceFilterConfiguration.Channel.AsyncDispatch)) {
-            jobDataMap.put(TraceConsts.TPIC_HEADER,
+        final TraceFilterConfig configuration = backend.getConfiguration(profile);
+        if (!backend.isEmpty() && configuration.shouldProcessContext(TraceFilterConfig.Channel.AsyncDispatch)) {
+            jobDataMap.put(Builder.TPIC_HEADER,
                     backend.getConfiguration(profile).filterDeniedParams(backend.copyToMap(),
-                            TraceFilterConfiguration.Channel.AsyncDispatch));
+                            TraceFilterConfig.Channel.AsyncDispatch));
         }
     }
 

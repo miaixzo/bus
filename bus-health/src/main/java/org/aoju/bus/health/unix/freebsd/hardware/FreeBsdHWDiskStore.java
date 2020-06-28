@@ -33,7 +33,7 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
-import org.aoju.bus.health.unix.freebsd.BsdSysctl;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 import org.aoju.bus.health.unix.freebsd.drivers.GeomDiskList;
 import org.aoju.bus.health.unix.freebsd.drivers.GeomPartList;
 
@@ -42,10 +42,6 @@ import java.util.stream.Collectors;
 
 /**
  * FreeBSD hard disk implementation.
- *
- * @author Kimi Liu
- * @version 6.0.0
- * @since JDK 1.8+
  */
 @ThreadSafe
 public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
@@ -80,7 +76,7 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
         Map<String, Triple<String, String, Long>> diskInfoMap = GeomDiskList.queryDisks();
 
         // Get list of disks from sysctl
-        List<String> devices = Arrays.asList(RegEx.SPACES.split(BsdSysctl.sysctl("kern.disks", Normal.EMPTY)));
+        List<String> devices = Arrays.asList(RegEx.SPACES.split(BsdSysctlKit.sysctl("kern.disks", Normal.EMPTY)));
 
         // Run iostat -Ix to enumerate disks by name and get kb r/w
         List<String> iostat = Executor.runNative("iostat -Ix");

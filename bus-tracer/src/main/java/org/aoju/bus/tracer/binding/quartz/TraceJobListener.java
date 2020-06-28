@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.quartz;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.listeners.JobListenerSupport;
@@ -46,11 +46,11 @@ public class TraceJobListener extends JobListenerSupport {
     private final String profile;
 
     public TraceJobListener() {
-        this(Builder.getBackend(), TraceConsts.DEFAULT);
+        this(Tracer.getBackend(), Builder.DEFAULT);
     }
 
     public TraceJobListener(final String profile) {
-        this(Builder.getBackend(), profile);
+        this(Tracer.getBackend(), profile);
     }
 
     TraceJobListener(final Backend backend, final String profile) {
@@ -65,18 +65,18 @@ public class TraceJobListener extends JobListenerSupport {
 
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
-        final TraceFilterConfiguration configuration = backend.getConfiguration(profile);
+        final TraceFilterConfig configuration = backend.getConfiguration(profile);
 
-        if (configuration.shouldProcessContext(TraceFilterConfiguration.Channel.AsyncProcess)) {
-            final Map<String, String> TraceContext = (Map<String, String>) context.getMergedJobDataMap().get(TraceConsts.TPIC_HEADER);
+        if (configuration.shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
+            final Map<String, String> TraceContext = (Map<String, String>) context.getMergedJobDataMap().get(Builder.TPIC_HEADER);
 
             if (TraceContext != null && !TraceContext.isEmpty()) {
-                final Map<String, String> filteredContext = configuration.filterDeniedParams(TraceContext, TraceFilterConfiguration.Channel.AsyncProcess);
+                final Map<String, String> filteredContext = configuration.filterDeniedParams(TraceContext, TraceFilterConfig.Channel.AsyncProcess);
                 backend.putAll(filteredContext);
             }
         }
 
-        Builder.generateInvocationIdIfNecessary(backend);
+        org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
     }
 
     @Override

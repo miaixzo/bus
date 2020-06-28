@@ -221,6 +221,15 @@ public class Fields {
     public static final FormatBuilder JDK_DATETIME_FORMAT = FormatBuilder.getInstance(JDK_DATETIME_PATTERN, Locale.US);
 
     /**
+     * 中文日期格式: M月d日
+     */
+    public static final String ORM_MONTH_CN_PATTERN = "M月d日";
+    /**
+     * 中文日期格式: {@link FormatBuilder} M月d日
+     */
+    public static final FormatBuilder NORM_MONTH_CN_FORMAT = FormatBuilder.getInstance(ORM_MONTH_CN_PATTERN);
+
+    /**
      * 中文日期格式: yyyy年M月d日
      */
     public static final String NORM_DATE_CN_PATTERN = "yyyy年M月d日";
@@ -230,13 +239,13 @@ public class Fields {
     public static final FormatBuilder NORM_DATE_CN_FORMAT = FormatBuilder.getInstance(NORM_DATE_CN_PATTERN);
 
     /**
-     * 中文日期格式: M月d日
+     * 标准日期格式：yyyy年MM月dd日 HH时mm分ss秒
      */
-    public static final String ORM_MONTH_CN_PATTERN = "M月d日";
+    public static final String NORM_CN_DATE_TIME_PATTERN = "yyyy年MM月dd日HH时mm分ss秒";
     /**
-     * 中文日期格式: {@link FormatBuilder} M月d日
+     * 标准日期格式 {@link FastDateFormat}：yyyy年MM月dd日HH时mm分ss秒
      */
-    public static final FormatBuilder NORM_MONTH_CN_FORMAT = FormatBuilder.getInstance(ORM_MONTH_CN_PATTERN);
+    public static final FormatBuilder NORM_CN_DATE_TIME_FORMAT = FormatBuilder.getInstance(NORM_CN_DATE_TIME_PATTERN);
 
     /**
      * UTC时间: yyyy-MM-dd'T'HH:mm:ss'Z'

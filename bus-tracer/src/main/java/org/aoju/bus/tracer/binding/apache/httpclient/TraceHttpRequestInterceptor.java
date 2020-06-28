@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.apache.httpclient;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -47,11 +47,11 @@ public class TraceHttpRequestInterceptor implements HttpRequestInterceptor {
     private final String profile;
 
     public TraceHttpRequestInterceptor() {
-        this(TraceConsts.DEFAULT);
+        this(Builder.DEFAULT);
     }
 
     public TraceHttpRequestInterceptor(String profile) {
-        this(Builder.getBackend(), profile);
+        this(Tracer.getBackend(), profile);
     }
 
     TraceHttpRequestInterceptor(Backend backend, String profile) {
@@ -62,11 +62,11 @@ public class TraceHttpRequestInterceptor implements HttpRequestInterceptor {
 
     @Override
     public final void process(final HttpRequest httpRequest, final HttpContext httpContext) {
-        final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
-        if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.OutgoingRequest)) {
+        final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
+        if (!backend.isEmpty() && filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.OutgoingRequest)) {
             final Map<String, String> filteredParams = filterConfiguration.filterDeniedParams(backend.copyToMap(),
-                    TraceFilterConfiguration.Channel.OutgoingRequest);
-            httpRequest.setHeader(TraceConsts.TPIC_HEADER, transportSerialization.render(filteredParams));
+                    TraceFilterConfig.Channel.OutgoingRequest);
+            httpRequest.setHeader(Builder.TPIC_HEADER, transportSerialization.render(filteredParams));
         }
     }
 

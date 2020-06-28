@@ -27,16 +27,13 @@ package org.aoju.bus.health.mac.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
-import org.aoju.bus.health.mac.Sysctl;
+import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.unix.CLibrary;
+import org.aoju.bus.health.unix.NetStatTcp;
 
-import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * @author Kimi Liu
@@ -47,14 +44,13 @@ import static org.aoju.bus.health.Memoize.memoize;
 public class MacInternetProtocolStats implements InternetProtocolStats {
 
     private boolean isElevated;
-    private Supplier<Pair<Long, Long>> establishedv4v6 = memoize(MacInternetProtocolStats::queryTcpnetstat,
-            defaultExpiration());
-    private Supplier<CLibrary.Tcpstat> tcpstat = memoize(MacInternetProtocolStats::queryTcpstat, defaultExpiration());
-    private Supplier<CLibrary.Udpstat> udpstat = memoize(MacInternetProtocolStats::queryUdpstat, defaultExpiration());
+    private Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStatTcp::queryTcpnetstat, Memoize.defaultExpiration());
+    private Supplier<CLibrary.Tcpstat> tcpstat = Memoize.memoize(MacInternetProtocolStats::queryTcpstat, Memoize.defaultExpiration());
+    private Supplier<CLibrary.Udpstat> udpstat = Memoize.memoize(MacInternetProtocolStats::queryUdpstat, Memoize.defaultExpiration());
     // With elevated permissions use tcpstat only
     // Backup estimate get ipstat and subtract off udp
-    private Supplier<CLibrary.Ipstat> ipstat = memoize(MacInternetProtocolStats::queryIpstat, defaultExpiration());
-    private Supplier<CLibrary.Ip6stat> ip6stat = memoize(MacInternetProtocolStats::queryIp6stat, defaultExpiration());
+    private Supplier<CLibrary.Ipstat> ipstat = Memoize.memoize(MacInternetProtocolStats::queryIpstat, Memoize.defaultExpiration());
+    private Supplier<CLibrary.Ip6stat> ip6stat = Memoize.memoize(MacInternetProtocolStats::queryIp6stat, Memoize.defaultExpiration());
 
     public MacInternetProtocolStats(boolean elevated) {
         this.isElevated = elevated;
@@ -62,42 +58,26 @@ public class MacInternetProtocolStats implements InternetProtocolStats {
 
     private static CLibrary.Tcpstat queryTcpstat() {
         CLibrary.Tcpstat tcpstat = new CLibrary.Tcpstat();
-        Sysctl.sysctl("net.inet.tcp.stats", tcpstat);
+        SysctlKit.sysctl("net.inet.tcp.stats", tcpstat);
         return tcpstat;
     }
 
     private static CLibrary.Ipstat queryIpstat() {
         CLibrary.Ipstat ipstat = new CLibrary.Ipstat();
-        Sysctl.sysctl("net.inet.ip.stats", ipstat);
+        SysctlKit.sysctl("net.inet.ip.stats", ipstat);
         return ipstat;
     }
 
     private static CLibrary.Ip6stat queryIp6stat() {
         CLibrary.Ip6stat ip6stat = new CLibrary.Ip6stat();
-        Sysctl.sysctl("net.inet6.ip6.stats", ip6stat);
+        SysctlKit.sysctl("net.inet6.ip6.stats", ip6stat);
         return ip6stat;
     }
 
     private static CLibrary.Udpstat queryUdpstat() {
         CLibrary.Udpstat udpstat = new CLibrary.Udpstat();
-        Sysctl.sysctl("net.inet.udp.stats", udpstat);
+        SysctlKit.sysctl("net.inet.udp.stats", udpstat);
         return udpstat;
-    }
-
-    private static Pair<Long, Long> queryTcpnetstat() {
-        long tcp4 = 0L;
-        long tcp6 = 0L;
-        List<String> activeConns = Executor.runNative("netstat -n -p tcp");
-        for (String s : activeConns) {
-            if (s.endsWith("ESTABLISHED")) {
-                if (s.startsWith("tcp4")) {
-                    tcp4++;
-                } else if (s.startsWith("tcp6")) {
-                    tcp6++;
-                }
-            }
-        }
-        return Pair.of(tcp4, tcp6);
     }
 
     @Override

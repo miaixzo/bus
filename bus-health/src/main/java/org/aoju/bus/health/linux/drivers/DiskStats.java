@@ -163,6 +163,7 @@ public final class DiskStats {
         /**
          * The total number of milliseconds spent by all flush requests.
          */
-        FLUSHES_MS;
+        FLUSHES_MS
     }
+
 }

@@ -31,8 +31,10 @@ import com.sun.jna.platform.win32.WinReg;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
+import org.aoju.bus.health.builtin.hardware.SoundCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,7 +71,7 @@ final class WindowsSoundCard extends AbstractSoundCard {
      *
      * @return List of sound cards
      */
-    public static List<WindowsSoundCard> getSoundCards() {
+    public static List<SoundCard> getSoundCards() {
         List<WindowsSoundCard> soundCards = new ArrayList<>();
         String[] keys = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, REGISTRY_SOUNDCARDS);
         for (String key : keys) {
@@ -77,7 +79,7 @@ final class WindowsSoundCard extends AbstractSoundCard {
             try {
                 if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")) {
                     soundCards.add(new WindowsSoundCard(
-                            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver") + Symbol.SPACE
+                            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver") + " "
                                     + Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
                                     "DriverVersion"),
                             Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "ProviderName")
@@ -93,7 +95,7 @@ final class WindowsSoundCard extends AbstractSoundCard {
                 }
             }
         }
-        return soundCards;
+        return Collections.unmodifiableList(soundCards);
     }
 
 }

@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Formats;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ import java.util.List;
 public abstract class AbstractGlobalMemory implements GlobalMemory {
 
     @Override
-    public PhysicalMemory[] getPhysicalMemory() {
+    public List<PhysicalMemory> getPhysicalMemory() {
         // dmidecode需要sudo权限，但在Linux和Unix上是唯一的选择
         List<PhysicalMemory> pmList = new ArrayList<>();
         List<String> dmi = Executor.runNative("dmidecode --type 17");
@@ -97,16 +98,16 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
         if (capacity > 0) {
             pmList.add(new PhysicalMemory(bankLabel + locator, capacity, speed, manufacturer, memoryType));
         }
-        return pmList.toArray(new PhysicalMemory[0]);
+        return pmList;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Available: ");
-        sb.append(Builder.formatBytes(getAvailable()));
+        sb.append(Formats.formatBytes(getAvailable()));
         sb.append(Symbol.SLASH);
-        sb.append(Builder.formatBytes(getTotal()));
+        sb.append(Formats.formatBytes(getTotal()));
         return sb.toString();
     }
 

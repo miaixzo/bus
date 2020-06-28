@@ -32,8 +32,10 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
+import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,13 +69,13 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @return List of {@link LinuxGraphicsCard}
      * objects.
      */
-    public static List<LinuxGraphicsCard> getGraphicsCards() {
+    public static List<GraphicsCard> getGraphicsCards() {
         List<LinuxGraphicsCard> cardList = getGraphicsCardsFromLspci();
         if (cardList.isEmpty()) {
             cardList = getGraphicsCardsFromLshw();
         }
 
-        return cardList;
+        return Collections.unmodifiableList(cardList);
     }
 
     // Faster, use as primary

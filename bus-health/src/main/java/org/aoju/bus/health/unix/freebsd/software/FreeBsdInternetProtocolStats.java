@@ -27,56 +27,31 @@ package org.aoju.bus.health.unix.freebsd.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.freebsd.BsdSysctl;
+import org.aoju.bus.health.unix.NetStatTcp;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
-/**
- * @author Kimi Liu
- * @version 6.0.0
- * @since JDK 1.8+
- */
 @ThreadSafe
 public class FreeBsdInternetProtocolStats implements InternetProtocolStats {
 
-    private Supplier<Pair<Long, Long>> establishedv4v6 = memoize(FreeBsdInternetProtocolStats::queryTcpnetstat,
-            defaultExpiration());
-    private Supplier<CLibrary.Tcpstat> tcpstat = memoize(FreeBsdInternetProtocolStats::queryTcpstat, defaultExpiration());
-    private Supplier<CLibrary.Udpstat> udpstat = memoize(FreeBsdInternetProtocolStats::queryUdpstat, defaultExpiration());
+    private Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStatTcp::queryTcpnetstat, Memoize.defaultExpiration());
+    private Supplier<CLibrary.Tcpstat> tcpstat = Memoize.memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoize.defaultExpiration());
+    private Supplier<CLibrary.Udpstat> udpstat = Memoize.memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoize.defaultExpiration());
 
     private static CLibrary.Tcpstat queryTcpstat() {
         CLibrary.Tcpstat tcpstat = new CLibrary.Tcpstat();
-        BsdSysctl.sysctl("net.inet.tcp.stats", tcpstat);
+        BsdSysctlKit.sysctl("net.inet.tcp.stats", tcpstat);
         return tcpstat;
     }
 
     private static CLibrary.Udpstat queryUdpstat() {
         CLibrary.Udpstat udpstat = new CLibrary.Udpstat();
-        BsdSysctl.sysctl("net.inet.udp.stats", udpstat);
+        BsdSysctlKit.sysctl("net.inet.udp.stats", udpstat);
         return udpstat;
-    }
-
-    private static Pair<Long, Long> queryTcpnetstat() {
-        long tcp4 = 0L;
-        long tcp6 = 0L;
-        List<String> activeConns = Executor.runNative("netstat -n -p tcp");
-        for (String s : activeConns) {
-            if (s.endsWith("ESTABLISHED")) {
-                if (s.startsWith("tcp4")) {
-                    tcp4++;
-                } else if (s.startsWith("tcp6")) {
-                    tcp6++;
-                }
-            }
-        }
-        return Pair.of(tcp4, tcp6);
     }
 
     @Override

@@ -53,7 +53,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ √ ]|bus-base|基础功能及base相关功能,实体类(Entity),服务(Service),接口(Controller)|
 |[ √ ]|bus-bom|包含所有组建信息,当然可以通过配置按需加载等|
 |[ × ]|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
-|[ √ ]|bus-core|核心功能及工具类,包括常量、线程、类加载器、字符集编码、反射、集合、日期等常用工具|
+|[ √ ]|bus-core|核心功能及工具类,包括常量、线程、类加载器、反射、集合、日期等常用工具|
 |[ √ ]|bus-cron|定时器及定时任务等功能|
 |[ √ ]|bus-crypto|加密解密，支持支持AES/DES/REA/MD5等常用加密算法|
 |[ √ ]|bus-extra|扩展功能及文件操作,FTP/文件/二维码/短信相关支持|
@@ -135,13 +135,13 @@ implementation 'org.aoju:bus-all:6.0.0'
 | 分支       | 作用                                                          |
 |-----------|---------------------------------------------------------------|
 | master    | 主分支，即稳定版本使用的分支，与中央库提交的jar一致，不接收任何PR或修改 |
-| develop   | 开发分支，默认为下个版本的更新或者修复等，接受修改或PR              |
+| develop   | 开发分支，默认为下个版本的更新或者修复等，接受[修改](ISSUE.md)或[PR](PULL.md)             |
 
 ## 意见建议
 
 All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are welcome.
 
-欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 bugs 的报告。
+欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 BUG 的报告。
 
 ## 许可证(license)
 
@@ -157,4 +157,4 @@ Thanks JetBrains for the OpenSource license.
 感谢JetBrains提供IDEA免费license
 
 ##
-源码永远是最好的教程，善于读源码和debug朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"talk is cheap show me the code"，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。
+源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"Talk is cheap, Show me the code."，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。

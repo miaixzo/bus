@@ -32,6 +32,7 @@ import org.aoju.bus.health.builtin.hardware.Display;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -59,12 +60,12 @@ final class FreeBsdDisplay extends AbstractDisplay {
      *
      * @return An array of Display objects representing monitors, etc.
      */
-    public static Display[] getDisplays() {
+    public static List<Display> getDisplays() {
         List<String> xrandr = Executor.runNative("xrandr --verbose");
         // xrandr reports edid in multiple lines. After seeing a line containing
         // EDID, read subsequent lines of hex until 256 characters are reached
         if (xrandr.isEmpty()) {
-            return new Display[0];
+            return Collections.emptyList();
         }
         List<Display> displays = new ArrayList<>();
         StringBuilder sb = null;
@@ -85,7 +86,7 @@ final class FreeBsdDisplay extends AbstractDisplay {
                 sb = null;
             }
         }
-        return displays.toArray(new Display[0]);
+        return Collections.unmodifiableList(displays);
     }
 
 }

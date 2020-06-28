@@ -86,27 +86,27 @@ final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
         List<String> procMemInfo = FileKit.readLines(ProcPath.MEMINFO);
         for (String checkLine : procMemInfo) {
-            String[] memorySplit = RegEx.SPACES.split(checkLine);
+            String[] memorySplit = RegEx.SPACES.split(checkLine, 2);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
                     case "MemTotal:":
-                        memTotal = parseMeminfo(memorySplit);
+                        memTotal = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "MemAvailable:":
-                        memAvailable = parseMeminfo(memorySplit);
+                        memAvailable = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         // We're done!
                         return Pair.of(memAvailable, memTotal);
                     case "MemFree:":
-                        memFree = parseMeminfo(memorySplit);
+                        memFree = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "Active(file):":
-                        activeFile = parseMeminfo(memorySplit);
+                        activeFile = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "Inactive(file):":
-                        inactiveFile = parseMeminfo(memorySplit);
+                        inactiveFile = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     case "SReclaimable:":
-                        sReclaimable = parseMeminfo(memorySplit);
+                        sReclaimable = Builder.parseDecimalMemorySizeToBinary(memorySplit[1]);
                         break;
                     default:
                         // do nothing with other lines
@@ -116,23 +116,6 @@ final class LinuxGlobalMemory extends AbstractGlobalMemory {
         }
         // We didn't find MemAvailable so we estimate from other fields
         return Pair.of(memFree + activeFile + inactiveFile + sReclaimable, memTotal);
-    }
-
-    /**
-     * Parses lines from the display of /proc/meminfo
-     *
-     * @param memorySplit Array of Strings representing the 3 columns of /proc/meminfo
-     * @return value, multiplied by 1024 if kB is specified
-     */
-    private static long parseMeminfo(String[] memorySplit) {
-        if (memorySplit.length < 2) {
-            return 0L;
-        }
-        long memory = Builder.parseLongOrDefault(memorySplit[1], 0L);
-        if (memorySplit.length > 2 && "kB".equals(memorySplit[2])) {
-            memory *= 1024;
-        }
-        return memory;
     }
 
     @Override

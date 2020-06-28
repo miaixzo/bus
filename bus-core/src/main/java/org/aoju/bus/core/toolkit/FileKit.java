@@ -1880,6 +1880,50 @@ public class FileKit {
     }
 
     /**
+     * 获取文件后缀名，扩展名不带“.”
+     *
+     * @param file 文件
+     * @return 扩展名
+     * @see #extName(File)
+     */
+    public static String getSuffix(File file) {
+        return extName(file);
+    }
+
+    /**
+     * 获得文件后缀名，扩展名不带“.”
+     *
+     * @param fileName 文件名
+     * @return 扩展名
+     * @see #extName(File)
+     */
+    public static String getSuffix(String fileName) {
+        return extName(fileName);
+    }
+
+    /**
+     * 返回主文件名
+     *
+     * @param file 文件
+     * @return 主文件名
+     * @see #mainName(File)
+     */
+    public static String getPrefix(File file) {
+        return mainName(file);
+    }
+
+    /**
+     * 返回主文件名
+     *
+     * @param fileName 完整文件名
+     * @return 主文件名
+     * @see #mainName(File)
+     */
+    public static String getPrefix(String fileName) {
+        return mainName(fileName);
+    }
+
+    /**
      * 获取文件扩展名,扩展名不带“.”
      *
      * @param file 文件

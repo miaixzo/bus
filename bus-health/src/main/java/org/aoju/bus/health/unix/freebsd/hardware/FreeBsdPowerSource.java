@@ -31,12 +31,10 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
-import org.aoju.bus.health.unix.freebsd.BsdSysctl;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A Power Source
@@ -65,10 +63,8 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
      *
      * @return An array of PowerSource objects representing batteries, etc.
      */
-    public static PowerSource[] getPowerSources() {
-        FreeBsdPowerSource[] ps = new FreeBsdPowerSource[1];
-        ps[0] = getPowerSource("BAT0");
-        return ps;
+    public static List<PowerSource> getPowerSources() {
+        return Collections.unmodifiableList(Arrays.asList(getPowerSource("BAT0")));
     }
 
     private static FreeBsdPowerSource getPowerSource(String name) {
@@ -91,11 +87,11 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
         double psTemperature = 0d;
 
         // state 0=full, 1=discharging, 2=charging
-        int state = BsdSysctl.sysctl("hw.acpi.battery.state", 0);
+        int state = BsdSysctlKit.sysctl("hw.acpi.battery.state", 0);
         if (state == 2) {
             psCharging = true;
         } else {
-            int time = BsdSysctl.sysctl("hw.acpi.battery.time", -1);
+            int time = BsdSysctlKit.sysctl("hw.acpi.battery.time", -1);
             // time is in minutes
             psTimeRemainingEstimated = time < 0 ? -1d : 60d * time;
             if (state == 1) {
@@ -103,7 +99,7 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
             }
         }
         // life is in percent
-        int life = BsdSysctl.sysctl("hw.acpi.battery.life", -1);
+        int life = BsdSysctlKit.sysctl("hw.acpi.battery.life", -1);
         if (life > 0) {
             psRemainingCapacityPercent = life / 100d;
         }

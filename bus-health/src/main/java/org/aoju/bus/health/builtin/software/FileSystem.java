@@ -26,6 +26,8 @@ package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 
+import java.util.List;
+
 /**
  * The File System is a logical arrangement, usually in a hierarchial tree,
  * where files are placed for storage and retrieval. It may consist of one or
@@ -41,27 +43,29 @@ public interface FileSystem {
     /**
      * Get file stores on this machine
      * <p>
-     * Instantiates an array of {@link OSFileStore} objects,
-     * representing a storage pool, device, partition, volume, concrete file system
-     * or other implementation specific means of file storage.
+     * Instantiates an {@code UnmodifiableList} of
+     * {@link OSFileStore} objects, representing a storage pool,
+     * device, partition, volume, concrete file system or other implementation
+     * specific means of file storage.
      *
-     * @return An array of OSFileStore objects or an empty array if none are
-     * present.
+     * @return An {@code UnmodifiableList} of {@link OSFileStore}
+     * objects or an empty array if none are present.
      */
-    OSFileStore[] getFileStores();
+    List<OSFileStore> getFileStores();
 
     /**
      * Get file stores on this machine
      * <p>
-     * Instantiates an array of {@link OSFileStore} objects,
-     * representing a storage pool, device, partition, volume, concrete file system
-     * or other implementation specific means of file storage.
+     * Instantiates an {@code UnmodifiableList} of
+     * {@link OSFileStore} objects, representing a storage pool,
+     * device, partition, volume, concrete file system or other implementation
+     * specific means of file storage.
      *
      * @param localOnly If true, filters the list to only local file stores.
-     * @return An array of OSFileStore objects or an empty array if none are
-     * present.
+     * @return An {@code UnmodifiableList} of {@link OSFileStore}
+     * objects or an empty array if none are present.
      */
-    OSFileStore[] getFileStores(boolean localOnly);
+    List<OSFileStore> getFileStores(boolean localOnly);
 
     /**
      * The current number of open file descriptors. A file descriptor is an abstract

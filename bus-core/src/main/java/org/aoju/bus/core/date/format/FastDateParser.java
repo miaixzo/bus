@@ -770,7 +770,8 @@ public class FastDateParser extends AbstractFormater implements DateParser {
                 final char c = pattern.charAt(currentIdx);
                 if (!activeQuote && isFormatLetter(c)) {
                     break;
-                } else if (c == '\'' && (++currentIdx == pattern.length() || pattern.charAt(currentIdx) != '\'')) {
+                } else if (c == Symbol.C_SINGLE_QUOTE && (++currentIdx == pattern.length()
+                        || pattern.charAt(currentIdx) != Symbol.C_SINGLE_QUOTE)) {
                     activeQuote = !activeQuote;
                     continue;
                 }

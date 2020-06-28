@@ -33,11 +33,12 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
 import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
-import org.aoju.bus.health.windows.WmiQuery;
+import org.aoju.bus.health.builtin.hardware.GraphicsCard;
+import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32VideoController;
-import org.aoju.bus.health.windows.drivers.Win32VideoController.VideoControllerProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -73,16 +74,16 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
      * @return List of {@link WindowsGraphicsCard}
      * objects.
      */
-    public static List<WindowsGraphicsCard> getGraphicsCards() {
+    public static List<GraphicsCard> getGraphicsCards() {
         List<WindowsGraphicsCard> cardList = new ArrayList<>();
         if (IS_VISTA_OR_GREATER) {
-            WmiResult<VideoControllerProperty> cards = Win32VideoController.queryVideoController();
+            WmiResult<Win32VideoController.VideoControllerProperty> cards = Win32VideoController.queryVideoController();
             for (int index = 0; index < cards.getResultCount(); index++) {
-                String name = WmiQuery.getString(cards, VideoControllerProperty.NAME, index);
+                String name = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.NAME, index);
                 Pair<String, String> idPair = Builder.parsePnPDeviceIdToVendorProductId(
-                        WmiQuery.getString(cards, VideoControllerProperty.PNPDEVICEID, index));
+                        WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.PNPDEVICEID, index));
                 String deviceId = idPair == null ? Normal.UNKNOWN : idPair.getRight();
-                String vendor = WmiQuery.getString(cards, VideoControllerProperty.ADAPTERCOMPATIBILITY, index);
+                String vendor = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.ADAPTERCOMPATIBILITY, index);
                 if (idPair != null) {
                     if (StringKit.isBlank(vendor)) {
                         deviceId = idPair.getLeft();
@@ -90,18 +91,18 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                         vendor = vendor + " (" + idPair.getLeft() + ")";
                     }
                 }
-                String versionInfo = WmiQuery.getString(cards, VideoControllerProperty.DRIVERVERSION, index);
+                String versionInfo = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.DRIVERVERSION, index);
                 if (!StringKit.isBlank(versionInfo)) {
                     versionInfo = "DriverVersion=" + versionInfo;
                 } else {
                     versionInfo = Normal.UNKNOWN;
                 }
-                long vram = WmiQuery.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
+                long vram = WmiKit.getUint32asLong(cards, Win32VideoController.VideoControllerProperty.ADAPTERRAM, index);
                 cardList.add(new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
                         StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram));
             }
         }
-        return cardList;
+        return Collections.unmodifiableList(cardList);
     }
 
 }

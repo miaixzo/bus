@@ -26,8 +26,8 @@ package org.aoju.bus.tracer.binding.apache.httpclient5;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
-import org.aoju.bus.tracer.config.TraceFilterConfiguration;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Tracer;
+import org.aoju.bus.tracer.config.TraceFilterConfig;
 import org.aoju.bus.tracer.transport.HttpHeaderTransport;
 import org.apache.hc.core5.http.EntityDetails;
 import org.apache.hc.core5.http.Header;
@@ -51,11 +51,11 @@ public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
     private final String profile;
 
     public TraceHttpResponseInterceptor() {
-        this(TraceConsts.DEFAULT);
+        this(Builder.DEFAULT);
     }
 
     public TraceHttpResponseInterceptor(String profile) {
-        this(Builder.getBackend(), profile);
+        this(Tracer.getBackend(), profile);
     }
 
     TraceHttpResponseInterceptor(Backend backend, String profile) {
@@ -66,16 +66,16 @@ public class TraceHttpResponseInterceptor implements HttpResponseInterceptor {
 
     @Override
     public final void process(final HttpResponse response, final EntityDetails entityDetails, final HttpContext httpContext) {
-        final TraceFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
-        final Iterator<Header> headerIterator = response.headerIterator(TraceConsts.TPIC_HEADER);
+        final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
+        final Iterator<Header> headerIterator = response.headerIterator(Builder.TPIC_HEADER);
         if (headerIterator != null && headerIterator.hasNext()
-                && filterConfiguration.shouldProcessContext(TraceFilterConfiguration.Channel.IncomingResponse)) {
+                && filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.IncomingResponse)) {
             final List<String> stringTraceHeaders = new ArrayList<>();
             while (headerIterator.hasNext()) {
                 stringTraceHeaders.add(headerIterator.next().getValue());
             }
             backend.putAll(filterConfiguration.filterDeniedParams(transportSerialization.parse(stringTraceHeaders),
-                    TraceFilterConfiguration.Channel.IncomingResponse));
+                    TraceFilterConfig.Channel.IncomingResponse));
         }
     }
 

@@ -25,7 +25,7 @@
 package org.aoju.bus.tracer.transport;
 
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.tracer.consts.TraceConsts;
+import org.aoju.bus.tracer.Builder;
 import org.aoju.bus.tracer.transport.jaxb.TpicMap;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -59,7 +59,7 @@ public class SoapHeaderTransport {
     }
 
     public Map<String, String> parseSoapHeader(final Element soapHeader) {
-        final NodeList tpicHeaders = soapHeader.getElementsByTagNameNS(TraceConsts.SOAP_HEADER_NAMESPACE, TraceConsts.TPIC_HEADER);
+        final NodeList tpicHeaders = soapHeader.getElementsByTagNameNS(Builder.SOAP_HEADER_NAMESPACE, Builder.TPIC_HEADER);
         final HashMap<String, String> contextMap = new HashMap<>();
         if (tpicHeaders != null && tpicHeaders.getLength() > 0) {
             final int items = tpicHeaders.getLength();

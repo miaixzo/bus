@@ -30,9 +30,8 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
-import org.aoju.bus.health.windows.WmiQuery;
+import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32BaseBoard;
-import org.aoju.bus.health.windows.drivers.Win32BaseBoard.BaseBoardProperty;
 
 import java.util.function.Supplier;
 
@@ -40,10 +39,6 @@ import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Baseboard data obtained from WMI
- *
- * @author Kimi Liu
- * @version 6.0.0
- * @since JDK 1.8+
  */
 @Immutable
 final class WindowsBaseboard extends AbstractBaseboard {
@@ -56,12 +51,12 @@ final class WindowsBaseboard extends AbstractBaseboard {
         String model = null;
         String version = null;
         String serialNumber = null;
-        WmiResult<BaseBoardProperty> win32BaseBoard = Win32BaseBoard.queryBaseboardInfo();
+        WmiResult<Win32BaseBoard.BaseBoardProperty> win32BaseBoard = Win32BaseBoard.queryBaseboardInfo();
         if (win32BaseBoard.getResultCount() > 0) {
-            manufacturer = WmiQuery.getString(win32BaseBoard, BaseBoardProperty.MANUFACTURER, 0);
-            model = WmiQuery.getString(win32BaseBoard, BaseBoardProperty.MODEL, 0);
-            version = WmiQuery.getString(win32BaseBoard, BaseBoardProperty.VERSION, 0);
-            serialNumber = WmiQuery.getString(win32BaseBoard, BaseBoardProperty.SERIALNUMBER, 0);
+            manufacturer = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.MANUFACTURER, 0);
+            model = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.MODEL, 0);
+            version = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.VERSION, 0);
+            serialNumber = WmiKit.getString(win32BaseBoard, Win32BaseBoard.BaseBoardProperty.SERIALNUMBER, 0);
         }
         return new Quartet<>(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,

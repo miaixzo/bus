@@ -26,11 +26,11 @@ package org.aoju.bus.tracer.binding.apache.cxf;
 
 import org.aoju.bus.tracer.Backend;
 import org.aoju.bus.tracer.Builder;
+import org.aoju.bus.tracer.Tracer;
 import org.aoju.bus.tracer.binding.apache.cxf.interceptor.TraceRequestInInterceptor;
 import org.aoju.bus.tracer.binding.apache.cxf.interceptor.TraceRequestOutInterceptor;
 import org.aoju.bus.tracer.binding.apache.cxf.interceptor.TraceResponseInInterceptor;
 import org.aoju.bus.tracer.binding.apache.cxf.interceptor.TraceResponseOutInterceptor;
-import org.aoju.bus.tracer.consts.TraceConsts;
 import org.apache.cxf.Bus;
 import org.apache.cxf.feature.AbstractFeature;
 import org.apache.cxf.interceptor.InterceptorProvider;
@@ -46,7 +46,7 @@ public class TraceCxfFeature extends AbstractFeature {
     private Backend backend;
 
     public TraceCxfFeature() {
-        this(Builder.getBackend(), TraceConsts.DEFAULT);
+        this(Tracer.getBackend(), Builder.DEFAULT);
     }
 
     TraceCxfFeature(Backend backend, String profile) {
@@ -55,7 +55,7 @@ public class TraceCxfFeature extends AbstractFeature {
     }
 
     public TraceCxfFeature(String profile) {
-        this(Builder.getBackend(), profile);
+        this(Tracer.getBackend(), profile);
     }
 
     @Override

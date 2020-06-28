@@ -3181,6 +3181,39 @@ public class StringKit {
     }
 
     /**
+     * 移除字符串中所有给定字符串
+     * 例：removeAll("aa-bb-cc-dd", "-") - aabbccdd
+     *
+     * @param str         字符串
+     * @param strToRemove 被移除的字符串
+     * @return 移除后的字符串
+     */
+    public static String removeAll(CharSequence str, CharSequence strToRemove) {
+        if (isEmpty(str)) {
+            return toString(str);
+        }
+        return str.toString().replace(strToRemove, Normal.EMPTY);
+    }
+
+    /**
+     * 移除字符串中所有给定字符串，当某个字符串出现多次，则全部移除
+     * 例：removeAny("aa-bb-cc-dd", "a", "b") - --cc-dd
+     *
+     * @param str          字符串
+     * @param strsToRemove 被移除的字符串
+     * @return 移除后的字符串
+     */
+    public static String removeAny(CharSequence str, CharSequence... strsToRemove) {
+        String result = toString(str);
+        if (isNotEmpty(str)) {
+            for (CharSequence strToRemove : strsToRemove) {
+                result = removeAll(str, strToRemove);
+            }
+        }
+        return result;
+    }
+
+    /**
      * 替换字符串中的指定字符串.
      * <p>
      * StringKit.removeFirst(null, *)      = null
@@ -5262,11 +5295,11 @@ public class StringKit {
         if (null == str) {
             return null;
         }
-        if ((str.length() + 3) <= maxLength) {
+        if (str.length() <= maxLength) {
             return str.toString();
         }
         int w = maxLength / 2;
-        int l = str.length();
+        int l = str.length() + 3;
 
         final String str2 = str.toString();
         return format("{}...{}", str2.substring(0, maxLength - w), str2.substring(l - w));
