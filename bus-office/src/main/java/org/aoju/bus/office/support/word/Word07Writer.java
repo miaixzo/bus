@@ -68,7 +68,7 @@ public class Word07Writer implements Closeable {
      * @param destFile 写出的文件
      */
     public Word07Writer(File destFile) {
-        this(DocKit.create(destFile), destFile);
+        this(WordKit.create(destFile), destFile);
     }
 
     /**
