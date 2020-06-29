@@ -45,7 +45,7 @@ import org.aoju.bus.oauth.magic.Property;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class WeChatMpProvider extends DefaultProvider {
+public class WeChatMpProvider extends AbstractProvider {
 
     public WeChatMpProvider(Context context) {
         super(context, Registry.WECHAT_MP);
@@ -58,44 +58,45 @@ public class WeChatMpProvider extends DefaultProvider {
     /**
      * 微信的特殊性，此时返回的信息同时包含 openid 和 access_token
      *
-     * @param authCallback 回调返回的参数
+     * @param callback 回调返回的参数
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        return this.getToken(accessTokenUrl(authCallback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        String openId = token.getOpenId();
+    public Property getUserInfo(AccToken accToken) {
+        String openId = accToken.getOpenId();
 
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
         this.checkResponse(object);
 
         String location = String.format("%s-%s-%s", object.getString("country"), object.getString("province"), object.getString("city"));
 
         if (object.containsKey("unionid")) {
-            token.setUnionId(object.getString("unionid"));
+            accToken.setUnionId(object.getString("unionid"));
         }
 
         return Property.builder()
+                .rawJson(object)
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))
                 .avatar(object.getString("headimgurl"))
                 .location(location)
                 .uuid(openId)
                 .gender(Normal.Gender.getGender(object.getString("sex")))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
 
     @Override
-    public Message refresh(AccToken token) {
+    public Message refresh(AccToken accToken) {
         return Message.builder()
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .data(this.getToken(refreshTokenUrl(token.getRefreshToken())))
+                .data(this.getToken(refreshTokenUrl(accToken.getRefreshToken())))
                 .build();
     }
 
@@ -154,7 +155,7 @@ public class WeChatMpProvider extends DefaultProvider {
      * @return 返回获取accessToken的url
      */
     @Override
-    protected String accessTokenUrl(String code) {
+    public String accessTokenUrl(String code) {
         return Builder.fromUrl(source.accessToken())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("secret", context.getAppSecret())
@@ -170,7 +171,7 @@ public class WeChatMpProvider extends DefaultProvider {
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("openid", accToken.getOpenId())
@@ -185,7 +186,7 @@ public class WeChatMpProvider extends DefaultProvider {
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String refreshTokenUrl(String refreshToken) {
+    public String refreshTokenUrl(String refreshToken) {
         return Builder.fromUrl(source.refresh())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("grant_type", "refresh_token")

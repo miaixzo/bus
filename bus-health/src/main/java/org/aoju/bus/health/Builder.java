@@ -27,6 +27,7 @@ package org.aoju.bus.health;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.instance.Instances;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
@@ -131,7 +132,7 @@ public final class Builder {
     // Fast hex character lookup
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     // Format returned by WMI for DateTime
-    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ",
+    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern(Fields.PURE_DATETIME_ICE_PATTERN,
             Locale.US);
 
     private static final String READING_LOG = "Reading file {}";

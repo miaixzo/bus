@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.provider;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -50,9 +51,9 @@ import org.aoju.bus.oauth.magic.Property;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class AlipayProvider extends DefaultProvider {
+public class AlipayProvider extends AbstractProvider {
 
-    private AlipayClient alipayClient;
+    private final AlipayClient alipayClient;
 
     public AlipayProvider(Context context) {
         super(context, Registry.ALIPAY);
@@ -67,10 +68,10 @@ public class AlipayProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
+    public AccToken getAccessToken(Callback callback) {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setGrantType("authorization_code");
-        request.setCode(Callback.getAuth_code());
+        request.setCode(callback.getAuth_code());
         AlipaySystemOauthTokenResponse response;
         try {
             response = this.alipayClient.execute(request);
@@ -89,30 +90,31 @@ public class AlipayProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        String accessToken = token.getAccessToken();
+    public Property getUserInfo(AccToken accToken) {
+        String accessToken = accToken.getAccessToken();
         AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
-        AlipayUserInfoShareResponse response;
+        AlipayUserInfoShareResponse object;
         try {
-            response = this.alipayClient.execute(request, accessToken);
+            object = this.alipayClient.execute(request, accessToken);
         } catch (AlipayApiException e) {
             throw new AuthorizedException(e.getErrMsg(), e);
         }
-        if (!response.isSuccess()) {
-            throw new AuthorizedException(response.getSubMsg());
+        if (!object.isSuccess()) {
+            throw new AuthorizedException(object.getSubMsg());
         }
 
-        String province = response.getProvince(), city = response.getCity();
+        String province = object.getProvince(), city = object.getCity();
         String location = String.format("%s %s", StringKit.isEmpty(province) ? Normal.EMPTY : province, StringKit.isEmpty(city) ? Normal.EMPTY : city);
 
         return Property.builder()
-                .uuid(response.getUserId())
-                .username(StringKit.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())
-                .nickname(response.getNickName())
-                .avatar(response.getAvatar())
+                .rawJson(JSONObject.parseObject(JSONObject.toJSONString(object)))
+                .uuid(object.getUserId())
+                .username(StringKit.isEmpty(object.getUserName()) ? object.getNickName() : object.getUserName())
+                .nickname(object.getNickName())
+                .avatar(object.getAvatar())
                 .location(location)
-                .gender(Normal.Gender.getGender(response.getGender()))
-                .token(token)
+                .gender(Normal.Gender.getGender(object.getGender()))
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }

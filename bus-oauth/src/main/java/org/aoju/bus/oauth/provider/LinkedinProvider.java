@@ -51,7 +51,7 @@ import java.util.Map;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class LinkedinProvider extends DefaultProvider {
+public class LinkedinProvider extends AbstractProvider {
 
     public LinkedinProvider(Context context) {
         super(context, Registry.LINKEDIN);
@@ -62,20 +62,20 @@ public class LinkedinProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        return this.getToken(accessTokenUrl(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        String accessToken = token.getAccessToken();
+    public Property getUserInfo(AccToken accToken) {
+        String accessToken = accToken.getAccessToken();
 
         Map<String, String> header = new HashMap<>();
         header.put("Host", "api.linkedin.com");
         header.put("Connection", "Keep-Alive");
         header.put("Authorization", "Bearer " + accessToken);
 
-        String response = Httpx.get(userInfoUrl(token), null, header);
+        String response = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
@@ -88,14 +88,58 @@ public class LinkedinProvider extends DefaultProvider {
         // 获取用户邮箱地址
         String email = this.getUserEmail(accessToken);
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(userName)
                 .nickname(userName)
                 .avatar(avatar)
                 .email(email)
-                .token(token)
+                .token(accToken)
                 .gender(Normal.Gender.UNKNOWN)
                 .source(source.toString())
+                .build();
+    }
+
+    @Override
+    public Message refresh(AccToken oldToken) {
+        String refreshToken = oldToken.getRefreshToken();
+        if (StringKit.isEmpty(refreshToken)) {
+            throw new AuthorizedException(Builder.ErrorCode.UNSUPPORTED.getCode());
+        }
+        String refreshTokenUrl = refreshTokenUrl(refreshToken);
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .data(this.getToken(refreshTokenUrl))
+                .build();
+    }
+
+    /**
+     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
+     *
+     * @param state state 验证授权流程的参数,可以防止csrf
+     * @return 返回授权地址
+     */
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(source.authorize())
+                .queryParam("response_type", "code")
+                .queryParam("client_id", context.getAppKey())
+                .queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("scope", "r_liteprofile%20r_emailaddress%20w_member_social")
+                .queryParam("state", getRealState(state))
+                .build();
+    }
+
+    /**
+     * 返回获取userInfo的url
+     *
+     * @param token 用户授权后的token
+     * @return 返回获取userInfo的url
+     */
+    @Override
+    public String userInfoUrl(AccToken token) {
+        return Builder.fromUrl(source.userInfo())
+                .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
                 .build();
     }
 
@@ -129,17 +173,27 @@ public class LinkedinProvider extends DefaultProvider {
      * @return 用户的头像地址
      */
     private String getAvatar(JSONObject userInfoObject) {
-        String avatar = null;
         JSONObject profilePictureObject = userInfoObject.getJSONObject("profilePicture");
-        if (profilePictureObject.containsKey("displayImage~")) {
-            JSONArray displayImageElements = profilePictureObject.getJSONObject("displayImage~")
-                    .getJSONArray("elements");
-            if (null != displayImageElements && displayImageElements.size() > 0) {
-                JSONObject largestImageObj = displayImageElements.getJSONObject(displayImageElements.size() - 1);
-                avatar = largestImageObj.getJSONArray("identifiers").getJSONObject(0).getString("identifier");
-            }
+        if (null == profilePictureObject || !profilePictureObject.containsKey("displayImage~")) {
+            return null;
         }
-        return avatar;
+        JSONObject displayImageObject = profilePictureObject.getJSONObject("displayImage~");
+        if (null == displayImageObject || !displayImageObject.containsKey("elements")) {
+            return null;
+        }
+        JSONArray displayImageElements = displayImageObject.getJSONArray("elements");
+        if (null == displayImageElements || displayImageElements.isEmpty()) {
+            return null;
+        }
+        JSONObject largestImageObj = displayImageElements.getJSONObject(displayImageElements.size() - 1);
+        if (null == largestImageObj || !largestImageObj.containsKey("identifiers")) {
+            return null;
+        }
+        JSONArray identifiers = largestImageObj.getJSONArray("identifiers");
+        if (null == identifiers || identifiers.isEmpty()) {
+            return null;
+        }
+        return identifiers.getJSONObject(0).getString("identifier");
     }
 
     /**
@@ -172,19 +226,6 @@ public class LinkedinProvider extends DefaultProvider {
         return firstName;
     }
 
-    @Override
-    public Message refresh(AccToken oldToken) {
-        String refreshToken = oldToken.getRefreshToken();
-        if (StringKit.isEmpty(refreshToken)) {
-            throw new AuthorizedException(Builder.ErrorCode.UNSUPPORTED.getCode());
-        }
-        String refreshTokenUrl = refreshTokenUrl(refreshToken);
-        return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .data(this.getToken(refreshTokenUrl))
-                .build();
-    }
-
     /**
      * 检查响应内容是否正确
      *
@@ -215,36 +256,6 @@ public class LinkedinProvider extends DefaultProvider {
                 .accessToken(object.getString("access_token"))
                 .expireIn(object.getIntValue("expires_in"))
                 .refreshToken(object.getString("refresh_token"))
-                .build();
-    }
-
-    /**
-     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
-     *
-     * @param state state 验证授权流程的参数,可以防止csrf
-     * @return 返回授权地址
-     */
-    @Override
-    public String authorize(String state) {
-        return Builder.fromUrl(source.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", "r_liteprofile%20r_emailaddress%20w_member_social")
-                .queryParam("state", getRealState(state))
-                .build();
-    }
-
-    /**
-     * 返回获取userInfo的url
-     *
-     * @param token 用户授权后的token
-     * @return 返回获取userInfo的url
-     */
-    @Override
-    protected String userInfoUrl(AccToken token) {
-        return Builder.fromUrl(source.userInfo())
-                .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
                 .build();
     }
 

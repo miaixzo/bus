@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.magic;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.*;
 import org.aoju.bus.core.lang.Normal;
 
@@ -89,5 +90,9 @@ public class Property {
      * 用户授权的token信息
      */
     private AccToken token;
+    /**
+     * 第三方平台返回的原始用户信息
+     */
+    private JSONObject rawJson;
 
 }

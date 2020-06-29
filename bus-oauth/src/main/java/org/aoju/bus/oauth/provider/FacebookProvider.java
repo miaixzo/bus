@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Property;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class FacebookProvider extends DefaultProvider {
+public class FacebookProvider extends AbstractProvider {
 
     public FacebookProvider(Context context) {
         super(context, Registry.FACEBOOK);
@@ -53,8 +53,8 @@ public class FacebookProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(callback.getCode()));
         this.checkResponse(object);
         return AccToken.builder()
                 .accessToken(object.getString("access_token"))
@@ -64,10 +64,11 @@ public class FacebookProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
         this.checkResponse(object);
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("name"))
                 .nickname(object.getString("name"))
@@ -75,7 +76,7 @@ public class FacebookProvider extends DefaultProvider {
                 .location(object.getString("locale"))
                 .email(object.getString("email"))
                 .gender(Normal.Gender.getGender(object.getString("gender")))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
@@ -95,13 +96,13 @@ public class FacebookProvider extends DefaultProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param token 用户token
+     * @param accToken 用户token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(source.userInfo())
-                .queryParam("access_token", token.getAccessToken())
+                .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("fields", "id,name,birthday,gender,hometown,email,devices,picture.width(400)")
                 .build();
     }

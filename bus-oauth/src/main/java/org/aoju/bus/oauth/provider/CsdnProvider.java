@@ -41,7 +41,7 @@ import org.aoju.bus.oauth.magic.Property;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class CsdnProvider extends DefaultProvider {
+public class CsdnProvider extends AbstractProvider {
 
     public CsdnProvider(Context context) {
         super(context, Registry.CSDN);
@@ -52,23 +52,24 @@ public class CsdnProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(callback.getCode()));
         this.checkResponse(object);
         return AccToken.builder().accessToken(object.getString("access_token")).build();
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
         this.checkResponse(object);
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("username"))
                 .username(object.getString("username"))
                 .remark(object.getString("description"))
                 .blog(object.getString("website"))
                 .gender(Normal.Gender.UNKNOWN)
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }

@@ -55,6 +55,30 @@ public enum Registry implements Complex {
         }
     },
     /**
+     * 阿里云
+     */
+    ALIYUN {
+        @Override
+        public String authorize() {
+            return "https://signin.aliyun.com/oauth2/v1/auth";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://oauth.aliyun.com/v1/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://oauth.aliyun.com/v1/userinfo";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://oauth.aliyun.com/v1/token";
+        }
+    },
+    /**
      * 百度
      */
     BAIDU {

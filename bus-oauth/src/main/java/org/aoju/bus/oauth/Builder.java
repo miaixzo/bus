@@ -30,10 +30,11 @@ import lombok.Setter;
 import lombok.ToString;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.MapKit;
-import org.aoju.bus.oauth.provider.DefaultProvider;
+import org.aoju.bus.core.toolkit.*;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,6 +64,44 @@ public class Builder {
         return builder;
     }
 
+    /**
+     * 如果给定字符串{@code str}中不包含{@code appendStr},则在{@code str}后追加{@code appendStr}；
+     * 如果已包含{@code appendStr},则在{@code str}后追加{@code otherwise}
+     *
+     * @param str       给定的字符串
+     * @param appendStr 需要追加的内容
+     * @param otherwise 当{@code appendStr}不满足时追加到{@code str}后的内容
+     * @return 追加后的字符串
+     */
+    public static String appendIfNotContain(String str, String appendStr, String otherwise) {
+        if (StringKit.isEmpty(str) || StringKit.isEmpty(appendStr)) {
+            return str;
+        }
+        if (str.contains(appendStr)) {
+            return str.concat(otherwise);
+        }
+        return str.concat(appendStr);
+    }
+
+    /**
+     * map转字符串,转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param params 待转换的map
+     * @param encode 是否转码
+     * @return str
+     */
+    public static String parseMapToString(Map<String, Object> params, boolean encode) {
+        List<String> paramList = new ArrayList<>();
+        params.forEach((k, v) -> {
+            if (ObjectKit.isNull(v)) {
+                paramList.add(k + Symbol.EQUAL);
+            } else {
+                String valueString = v.toString();
+                paramList.add(k + Symbol.EQUAL + (encode ? UriKit.encode(valueString) : valueString));
+            }
+        });
+        return CollKit.join(paramList, Symbol.AND);
+    }
 
     /**
      * 添加参数
@@ -107,8 +146,8 @@ public class Builder {
         if (MapKit.isEmpty(this.params)) {
             return this.baseUrl;
         }
-        String baseUrl = DefaultProvider.appendIfNotContain(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
-        String paramString = DefaultProvider.parseMapToString(this.params, encode);
+        String baseUrl = appendIfNotContain(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
+        String paramString = parseMapToString(this.params, encode);
         return baseUrl + paramString;
     }
 

@@ -47,7 +47,7 @@ import java.util.Map;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class MeituanProvider extends DefaultProvider {
+public class MeituanProvider extends AbstractProvider {
 
     public MeituanProvider(Context context) {
         super(context, Registry.MEITUAN);
@@ -58,11 +58,11 @@ public class MeituanProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, Object> params = new HashMap<>();
         params.put("app_id", context.getAppKey());
         params.put("secret", context.getAppSecret());
-        params.put("code", Callback.getCode());
+        params.put("code", callback.getCode());
         params.put("grant_type", "authorization_code");
 
         String response = Httpx.post(source.accessToken(), params);
@@ -78,11 +78,11 @@ public class MeituanProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
+    public Property getUserInfo(AccToken accToken) {
         Map<String, Object> params = new HashMap<>();
         params.put("app_id", context.getAppKey());
         params.put("secret", context.getAppSecret());
-        params.put("access_token", token.getAccessToken());
+        params.put("access_token", accToken.getAccessToken());
 
         String response = Httpx.post(source.refresh(), params);
         JSONObject object = JSONObject.parseObject(response);
@@ -90,22 +90,23 @@ public class MeituanProvider extends DefaultProvider {
         this.checkResponse(object);
 
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("openid"))
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))
                 .avatar(object.getString("avatar"))
                 .gender(Normal.Gender.UNKNOWN)
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AccToken accToken) {
         Map<String, Object> params = new HashMap<>();
         params.put("app_id", context.getAppKey());
         params.put("secret", context.getAppSecret());
-        params.put("refresh_token", oldToken.getRefreshToken());
+        params.put("refresh_token", accToken.getRefreshToken());
         params.put("grant_type", "refresh_token");
 
         String response = Httpx.post(source.refresh(), params);
@@ -123,12 +124,6 @@ public class MeituanProvider extends DefaultProvider {
                 .build();
     }
 
-    private void checkResponse(JSONObject object) {
-        if (object.containsKey("error_code")) {
-            throw new AuthorizedException(object.getString("erroe_msg"));
-        }
-    }
-
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(source.authorize())
@@ -138,6 +133,12 @@ public class MeituanProvider extends DefaultProvider {
                 .queryParam("state", getRealState(state))
                 .queryParam("scope", Normal.EMPTY)
                 .build();
+    }
+
+    private void checkResponse(JSONObject object) {
+        if (object.containsKey("error_code")) {
+            throw new AuthorizedException(object.getString("erroe_msg"));
+        }
     }
 
 }

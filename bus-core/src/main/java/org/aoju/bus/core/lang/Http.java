@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.toolkit.StringKit;
+
 /**
  * HTTP 相关常量
  *
@@ -354,5 +356,31 @@ public class Http {
      * Window size in bytes.
      */
     public static final int INITIAL_WINDOW_SIZE = 7;
+
+    /**
+     * 是否为http协议
+     *
+     * @param url 待验证的url
+     * @return true: http协议, false: 非http协议
+     */
+    public static boolean isHttp(String url) {
+        if (StringKit.isEmpty(url)) {
+            return false;
+        }
+        return url.startsWith(Http.HTTP_PREFIX);
+    }
+
+    /**
+     * 是否为https协议
+     *
+     * @param url 待验证的url
+     * @return true: https协议, false: 非https协议
+     */
+    public static boolean isHttps(String url) {
+        if (StringKit.isEmpty(url)) {
+            return false;
+        }
+        return url.startsWith(Http.HTTPS_PREFIX);
+    }
 
 }

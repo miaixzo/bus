@@ -33,6 +33,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -53,7 +54,7 @@ import java.util.TreeMap;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class TwitterProvider extends DefaultProvider {
+public class TwitterProvider extends AbstractProvider {
 
     private static final String PREAMBLE = "OAuth";
 
@@ -96,14 +97,47 @@ public class TwitterProvider extends DefaultProvider {
     private static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
         TreeMap<String, Object> map = new TreeMap<>();
         for (Map.Entry<String, String> e : params.entrySet()) {
-            map.put(urlEncode(e.getKey()), e.getValue());
+            map.put(UriKit.encode(e.getKey()), e.getValue());
         }
-        String str = parseMapToString(map, true);
-        String baseStr = method.toUpperCase() + Symbol.AND + urlEncode(baseUrl) + Symbol.AND + urlEncode(str);
+        String str = Builder.parseMapToString(map, true);
+        String baseStr = method.toUpperCase() + Symbol.AND + UriKit.encode(baseUrl) + Symbol.AND + UriKit.encode(str);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? Normal.EMPTY : tokenSecret);
         byte[] signature = sign(signKey.getBytes(Charset.DEFAULT), baseStr.getBytes(Charset.DEFAULT), Algorithm.HmacSHA1);
 
         return new String(Base64.encode(signature, false));
+    }
+
+    /**
+     * Convert request token to access token
+     * https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
+     *
+     * @return access token
+     */
+    @Override
+    public AccToken getAccessToken(Callback callback) {
+        Map<String, String> oauthParams = buildOauthParams();
+        oauthParams.put("oauth_token", callback.getOauthToken());
+        oauthParams.put("oauth_verifier", callback.getOauthVerifier());
+        oauthParams.put("oauth_signature", sign(oauthParams, "POST", source.accessToken(), context.getAppSecret(), callback
+                .getOauthToken()));
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", buildHeader(oauthParams));
+        header.put("Content-Type", "application/x-www-form-urlencoded");
+
+        Map<String, Object> queryMap = new HashMap<>();
+        queryMap.put("oauth_verifier", callback.getOauthVerifier());
+
+        String response = Httpx.post(source.accessToken(), queryMap, header);
+
+        Map<String, String> requestToken = parseStringToMap(response, false);
+
+        return AccToken.builder()
+                .oauthToken(requestToken.get("oauth_token"))
+                .oauthTokenSecret(requestToken.get("oauth_token_secret"))
+                .userId(requestToken.get("user_id"))
+                .screenName(requestToken.get("screen_name"))
+                .build();
     }
 
     /**
@@ -121,7 +155,7 @@ public class TwitterProvider extends DefaultProvider {
     }
 
     @Override
-    protected String userInfoUrl(AccToken authToken) {
+    public String userInfoUrl(AccToken authToken) {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("user_id", authToken.getUserId())
                 .queryParam("screen_name", authToken.getScreenName())
@@ -129,70 +163,38 @@ public class TwitterProvider extends DefaultProvider {
                 .build();
     }
 
-    /**
-     * Convert request token to access token
-     * https://developer.twitter.com/en/docs/twitter-for-websites/log-in-with-twitter/guides/implementing-sign-in-with-twitter
-     *
-     * @return access token
-     */
     @Override
-    protected AccToken getAccessToken(Callback authCallback) {
-        Map<String, String> oauthParams = buildOauthParams();
-        oauthParams.put("oauth_token", authCallback.getOauthToken());
-        oauthParams.put("oauth_verifier", authCallback.getOauthVerifier());
-        oauthParams.put("oauth_signature", sign(oauthParams, "POST", source.accessToken(), context.getAppSecret(), authCallback
-                .getOauthToken()));
-
-        Map<String, String> header = new HashMap<>();
-        header.put("Authorization", buildHeader(oauthParams));
-        header.put("Content-Type", "application/x-www-form-urlencoded");
-
-        Map<String, Object> queryMap = new HashMap<>();
-        queryMap.put("oauth_verifier", authCallback.getOauthVerifier());
-
-        String response = Httpx.post(source.accessToken(), queryMap, header);
-
-        Map<String, String> requestToken = parseStringToMap(response, false);
-
-        return AccToken.builder()
-                .oauthToken(requestToken.get("oauth_token"))
-                .oauthTokenSecret(requestToken.get("oauth_token_secret"))
-                .userId(requestToken.get("user_id"))
-                .screenName(requestToken.get("screen_name"))
-                .build();
-    }
-
-    @Override
-    protected Property getUserInfo(AccToken authToken) {
+    public Property getUserInfo(AccToken accToken) {
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("user_id", authToken.getUserId());
-        queryParams.put("screen_name", authToken.getScreenName());
+        queryParams.put("user_id", accToken.getUserId());
+        queryParams.put("screen_name", accToken.getScreenName());
         queryParams.put("include_entities", Boolean.toString(true));
 
         Map<String, String> oauthParams = buildOauthParams();
-        oauthParams.put("oauth_token", authToken.getOauthToken());
+        oauthParams.put("oauth_token", accToken.getOauthToken());
 
         Map<String, String> params = new HashMap<>(oauthParams);
         params.putAll(queryParams);
-        oauthParams.put("oauth_signature", sign(params, "GET", source.userInfo(), context.getAppSecret(), authToken
+        oauthParams.put("oauth_signature", sign(params, "GET", source.userInfo(), context.getAppSecret(), accToken
                 .getOauthTokenSecret()));
         String header = buildHeader(oauthParams);
 
         Map<String, String> map = new HashMap<>();
         map.put("Authorization", header);
-        String response = Httpx.get(userInfoUrl(authToken), null, map);
-        JSONObject userInfo = JSONObject.parseObject(response);
+        String response = Httpx.get(userInfoUrl(accToken), null, map);
+        JSONObject object = JSONObject.parseObject(response);
 
         return Property.builder()
-                .uuid(userInfo.getString("id_str"))
-                .username(userInfo.getString("screen_name"))
-                .nickname(userInfo.getString("name"))
-                .remark(userInfo.getString("description"))
-                .avatar(userInfo.getString("profile_image_url_https"))
-                .blog(userInfo.getString("url"))
-                .location(userInfo.getString("location"))
+                .rawJson(object)
+                .uuid(object.getString("id_str"))
+                .username(object.getString("screen_name"))
+                .nickname(object.getString("name"))
+                .remark(object.getString("description"))
+                .avatar(object.getString("profile_image_url_https"))
+                .blog(object.getString("url"))
+                .location(object.getString("location"))
                 .source(source.toString())
-                .token(authToken)
+                .token(accToken)
                 .build();
     }
 
@@ -206,11 +208,11 @@ public class TwitterProvider extends DefaultProvider {
         return params;
     }
 
-    private String buildHeader(Map<String, String> oauthParams) {
+    private String buildHeader(Map<String, String> params) {
         final StringBuilder sb = new StringBuilder(PREAMBLE + " ");
 
-        for (Map.Entry<String, String> param : oauthParams.entrySet()) {
-            sb.append(param.getKey()).append("=\"").append(urlEncode(param.getValue())).append(Symbol.C_DOUBLE_QUOTES).append(", ");
+        for (Map.Entry<String, String> param : params.entrySet()) {
+            sb.append(param.getKey()).append("=\"").append(UriKit.encode(param.getValue())).append(Symbol.C_DOUBLE_QUOTES).append(", ");
         }
 
         return sb.deleteCharAt(sb.length() - 2).toString();

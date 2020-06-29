@@ -26,8 +26,10 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
@@ -43,7 +45,7 @@ import java.util.Map;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class GithubProvider extends DefaultProvider {
+public class GithubProvider extends AbstractProvider {
 
     public GithubProvider(Context context) {
         super(context, Registry.GITHUB);
@@ -54,25 +56,27 @@ public class GithubProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        Map<String, String> res = parseStringToMap(doPostAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
 
-        this.checkResponse(res.containsKey("error"), res.get("error_description"));
+        Map<String, String> paramMap = UriKit.decodeVal(doPostAuthorizationCode(callback.getCode()), Charset.DEFAULT_UTF_8);
+
+        this.checkResponse(paramMap.containsKey("error"), paramMap.get("error_description"));
 
         return AccToken.builder()
-                .accessToken(res.get("access_token"))
-                .scope(res.get("scope"))
-                .tokenType(res.get("token_type"))
+                .accessToken(paramMap.get("access_token"))
+                .scope(paramMap.get("scope"))
+                .tokenType(paramMap.get("token_type"))
                 .build();
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
 
         this.checkResponse(object.containsKey("error"), object.getString("error_description"));
 
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("login"))
                 .avatar(object.getString("avatar_url"))
@@ -83,7 +87,7 @@ public class GithubProvider extends DefaultProvider {
                 .email(object.getString("email"))
                 .remark(object.getString("bio"))
                 .gender(Normal.Gender.UNKNOWN)
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }

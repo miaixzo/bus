@@ -45,7 +45,7 @@ import org.aoju.bus.oauth.magic.Property;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class BaiduProvider extends DefaultProvider {
+public class BaiduProvider extends AbstractProvider {
 
     public BaiduProvider(Context context) {
         super(context, Registry.BAIDU);
@@ -56,30 +56,26 @@ public class BaiduProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        String response = doPostAuthorizationCode(Callback.getCode());
+    public AccToken getAccessToken(Callback callback) {
+        String response = doPostAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
         this.checkResponse(object);
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("userid"))
                 .username(object.getString("username"))
                 .nickname(object.getString("username"))
                 .avatar(getAvatar(object))
                 .remark(object.getString("userdetail"))
                 .gender(Normal.Gender.getGender(object.getString("sex")))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
-    }
-
-    private String getAvatar(JSONObject object) {
-        String protrait = object.getString("portrait");
-        return StringKit.isEmpty(protrait) ? null : String.format("http://himg.bdimg.com/sys/portrait/item/%s.jpg", protrait);
     }
 
     @Override
@@ -92,10 +88,10 @@ public class BaiduProvider extends DefaultProvider {
     }
 
     @Override
-    public Message refresh(AccToken token) {
+    public Message refresh(AccToken accToken) {
         String refreshUrl = Builder.fromUrl(this.source.refresh())
                 .queryParam("grant_type", "refresh_token")
-                .queryParam("refresh_token", token.getRefreshToken())
+                .queryParam("refresh_token", accToken.getRefreshToken())
                 .queryParam("client_id", this.context.getAppKey())
                 .queryParam("client_secret", this.context.getAppSecret())
                 .build();
@@ -134,14 +130,19 @@ public class BaiduProvider extends DefaultProvider {
         }
     }
 
-    private AccToken getAuthToken(String response) {
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
+    private String getAvatar(JSONObject object) {
+        String protrait = object.getString("portrait");
+        return StringKit.isEmpty(protrait) ? null : String.format("http://himg.bdimg.com/sys/portrait/item/%s.jpg", protrait);
+    }
+
+    private AccToken getAuthToken(String json) {
+        JSONObject object = JSONObject.parseObject(json);
+        this.checkResponse(object);
         return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .scope(accessTokenObject.getString("scope"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
+                .accessToken(object.getString("access_token"))
+                .refreshToken(object.getString("refresh_token"))
+                .scope(object.getString("scope"))
+                .expireIn(object.getIntValue("expires_in"))
                 .build();
     }
 

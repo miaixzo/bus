@@ -45,7 +45,7 @@ import org.aoju.bus.oauth.magic.Property;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class KujialeProvider extends DefaultProvider {
+public class KujialeProvider extends AbstractProvider {
 
     public KujialeProvider(Context context) {
         super(context, Registry.KUJIALE);
@@ -88,8 +88,38 @@ public class KujialeProvider extends DefaultProvider {
     }
 
     @Override
-    public AccToken getAccessToken(Callback Callback) {
-        return getAuthToken(doPostAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        return getAuthToken(doPostAuthorizationCode(callback.getCode()));
+    }
+
+    @Override
+    public Property getUserInfo(AccToken accToken) {
+        String openId = this.getOpenId(accToken);
+        String response = Httpx.get(Builder.fromUrl(source.userInfo())
+                .queryParam("access_token", accToken.getAccessToken())
+                .queryParam("open_id", openId)
+                .build());
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        if (!Symbol.ZERO.equals(jsonObject.getString("c"))) {
+            throw new AuthorizedException(jsonObject.getString("m"));
+        }
+        JSONObject object = jsonObject.getJSONObject("d");
+
+        return Property.builder()
+                .rawJson(object)
+                .username(object.getString("userName"))
+                .nickname(object.getString("userName"))
+                .avatar(object.getString("avatar"))
+                .uuid(object.getString("openId"))
+                .token(accToken)
+                .source(source.toString())
+                .build();
+    }
+
+    @Override
+    public Message refresh(AccToken accToken) {
+        String response = Httpx.post(refreshTokenUrl(accToken.getRefreshToken()));
+        return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
     private AccToken getAuthToken(String response) {
@@ -110,47 +140,18 @@ public class KujialeProvider extends DefaultProvider {
         return object;
     }
 
-    @Override
-    public Property getUserInfo(AccToken token) {
-        String openId = this.getOpenId(token);
-        String response = Httpx.get(Builder.fromUrl(source.userInfo())
-                .queryParam("access_token", token.getAccessToken())
-                .queryParam("open_id", openId)
-                .build());
-        JSONObject object = JSONObject.parseObject(response);
-        if (!Symbol.ZERO.equals(object.getString("c"))) {
-            throw new AuthorizedException(object.getString("m"));
-        }
-        JSONObject resultObject = object.getJSONObject("d");
-
-        return Property.builder()
-                .username(resultObject.getString("userName"))
-                .nickname(resultObject.getString("userName"))
-                .avatar(resultObject.getString("avatar"))
-                .uuid(resultObject.getString("openId"))
-                .token(token)
-                .source(source.toString())
-                .build();
-    }
-
     /**
      * 获取酷家乐的openId,此id在当前client范围内可以唯一识别授权用户
      *
-     * @param token 通过{@link KujialeProvider#getAccessToken(Callback)}获取到的{@code authToken}
+     * @param accToken 通过{@link KujialeProvider#getAccessToken(Callback)}获取到的{@code authToken}
      * @return openId
      */
-    private String getOpenId(AccToken token) {
+    private String getOpenId(AccToken accToken) {
         String response = Httpx.get(Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
-                .queryParam("access_token", token.getAccessToken())
+                .queryParam("access_token", accToken.getAccessToken())
                 .build());
         JSONObject accessTokenObject = checkResponse(response);
         return accessTokenObject.getString("d");
-    }
-
-    @Override
-    public Message refresh(AccToken token) {
-        String response = Httpx.post(refreshTokenUrl(token.getRefreshToken()));
-        return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
 }

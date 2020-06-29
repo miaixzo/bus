@@ -33,12 +33,10 @@ import org.aoju.bus.core.date.format.DateParser;
 import org.aoju.bus.core.date.format.DatePeriod;
 import org.aoju.bus.core.date.format.DatePrinter;
 import org.aoju.bus.core.date.format.FormatBuilder;
-import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
+import java.lang.System;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1863,6 +1861,26 @@ public class DateKit {
     }
 
     /**
+     * 生日转为年龄，计算法定年龄
+     *
+     * @param birthDay 生日，标准日期字符串
+     * @return 年龄
+     */
+    public static int ageOfNow(String birthDay) {
+        return ageOfNow(parse(birthDay));
+    }
+
+    /**
+     * 生日转为年龄，计算法定年龄
+     *
+     * @param birthDay 生日
+     * @return 年龄
+     */
+    public static int ageOfNow(Date birthDay) {
+        return getAge(birthDay, date());
+    }
+
+    /**
      * 出生日期转年龄
      *
      * @param birthday 时间戳字符串
@@ -1870,6 +1888,21 @@ public class DateKit {
      */
     public static int getAge(String birthday) {
         return getAge(Long.parseLong(birthday), Calendar.getInstance().getTimeInMillis());
+    }
+
+    /**
+     * 计算相对于dateToCompare的年龄，长用于计算指定生日在某年的年龄
+     *
+     * @param birthday      生日
+     * @param dateToCompare 需要对比的日期
+     * @return 年龄
+     */
+    public static int getAge(Date birthday, Date dateToCompare) {
+        Assert.notNull(birthday, "Birthday can not be null !");
+        if (null == dateToCompare) {
+            dateToCompare = date();
+        }
+        return getAge(birthday.getTime(), dateToCompare.getTime());
     }
 
     /**

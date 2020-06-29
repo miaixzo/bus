@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
@@ -161,7 +162,7 @@ public class HL7Segment implements Serializable {
     }
 
     public static String timeStamp(Date date) {
-        return new SimpleDateFormat("yyyyMMddHHmmss.SSS").format(date);
+        return new SimpleDateFormat(Fields.PURE_DATETIME_TIP_PATTERN).format(date);
     }
 
     public static HL7Segment makeMSH() {

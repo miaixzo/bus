@@ -445,7 +445,7 @@ public class CitizenIdKit {
      */
     public static int getAgeByIdCard(String idCard, Date dateToCompare) {
         String birth = getBirthByIdCard(idCard);
-        return DateKit.getAge(DateKit.parse(birth, "yyyyMMdd"), dateToCompare);
+        return DateKit.getAge(DateKit.parse(birth, Fields.PURE_DATE_PATTERN), dateToCompare);
     }
 
     /**

@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -48,7 +49,7 @@ import java.util.Map;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class FeishuProvider extends DefaultProvider {
+public class FeishuProvider extends AbstractProvider {
 
     public FeishuProvider(Context context) {
         super(context, Registry.FEISHU);
@@ -59,7 +60,7 @@ public class FeishuProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         JSONObject requestObject = new JSONObject();
         requestObject.put("app_id", context.getAppKey());
         requestObject.put("app_secret", context.getAppSecret());
@@ -79,18 +80,19 @@ public class FeishuProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken authToken) {
+    public Property getUserInfo(AccToken authToken) {
         String accessToken = authToken.getAccessToken();
 
         Map<String, String> map = new HashMap<>();
         map.put("Content-Type", MediaType.APPLICATION_JSON);
         map.put("Authorization", "Bearer " + accessToken);
         String response = Httpx.get(source.userInfo(), null, map);
-        JSONObject jsonObject = JSON.parseObject(response);
+        JSONObject object = JSON.parseObject(response);
         return Property.builder()
-                .avatar(jsonObject.getString("AvatarUrl"))
-                .username(jsonObject.getString("Mobile"))
-                .email(jsonObject.getString("Email"))
+                .rawJson(object)
+                .avatar(object.getString("AvatarUrl"))
+                .username(object.getString("Mobile"))
+                .email(object.getString("Email"))
                 .nickname("Name")
                 .build();
     }
@@ -123,7 +125,7 @@ public class FeishuProvider extends DefaultProvider {
     public String authorize(String state) {
         return Builder.fromUrl(source.authorize())
                 .queryParam("app_id", context.getAppKey())
-                .queryParam("redirect_uri", urlEncode(context.getRedirectUri()))
+                .queryParam("redirect_uri", UriKit.encode(context.getRedirectUri()))
                 .queryParam("state", getRealState(state))
                 .build();
     }

@@ -50,7 +50,7 @@ import java.util.Map;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class WeiboProvider extends DefaultProvider {
+public class WeiboProvider extends AbstractProvider {
 
     public WeiboProvider(Context context) {
         super(context, Registry.WEIBO);
@@ -70,8 +70,8 @@ public class WeiboProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(callback.getCode()));
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.getString("error_description"));
         }
@@ -84,19 +84,20 @@ public class WeiboProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
+    public Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "OAuth2 " + String.format("uid=%s&access_token=%s",
-                token.getUid(), token.getAccessToken()));
+                accToken.getUid(), accToken.getAccessToken()));
         header.put("API-RemoteIP", getLocalIp());
 
-        String response = Httpx.get(userInfoUrl(token), null, header);
+        String response = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.getString("error"));
         }
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("name"))
                 .avatar(object.getString("profile_image_url"))
@@ -106,7 +107,7 @@ public class WeiboProvider extends DefaultProvider {
                 .location(object.getString("location"))
                 .remark(object.getString("description"))
                 .gender(Normal.Gender.getGender(object.getString("gender")))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
@@ -114,20 +115,20 @@ public class WeiboProvider extends DefaultProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param token authToken
+     * @param accToken authToken
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(source.userInfo())
-                .queryParam("access_token", token.getAccessToken())
-                .queryParam("uid", token.getUid())
+                .queryParam("access_token", accToken.getAccessToken())
+                .queryParam("uid", accToken.getUid())
                 .build();
     }
 
     @Override
-    public Message revoke(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetRevoke(token));
+    public Message revoke(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetRevoke(accToken));
         if (object.containsKey("error")) {
             return Message.builder().errcode(Builder.ErrorCode.FAILURE.getCode()).errmsg(object.getString("error")).build();
         }

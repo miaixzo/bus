@@ -26,10 +26,12 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -48,7 +50,7 @@ import java.util.Map;
  * @version 6.0.0
  * @since JDK 1.8+
  */
-public class QqProvider extends DefaultProvider {
+public class QqProvider extends AbstractProvider {
 
     public QqProvider(Context context) {
         super(context, Registry.QQ);
@@ -59,20 +61,20 @@ public class QqProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        return getAuthToken(doGetAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        return getAuthToken(doGetAuthorizationCode(callback.getCode()));
     }
 
     @Override
-    public Message refresh(AccToken token) {
-        String response = Httpx.get(refreshTokenUrl(token.getRefreshToken()));
+    public Message refresh(AccToken accToken) {
+        String response = Httpx.get(refreshTokenUrl(accToken.getRefreshToken()));
         return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        String openId = this.getOpenId(token);
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        String openId = this.getOpenId(accToken);
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
         if (object.getIntValue("ret") != 0) {
             throw new AuthorizedException(object.getString("msg"));
         }
@@ -83,13 +85,14 @@ public class QqProvider extends DefaultProvider {
 
         String location = String.format("%s-%s", object.getString("province"), object.getString("city"));
         return Property.builder()
+                .rawJson(object)
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))
                 .avatar(avatar)
                 .location(location)
                 .uuid(openId)
                 .gender(Normal.Gender.getGender(object.getString("gender")))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
@@ -98,12 +101,12 @@ public class QqProvider extends DefaultProvider {
      * 获取QQ用户的OpenId,支持自定义是否启用查询unionid的功能,如果启用查询unionid的功能,
      * 那就需要开发者先通过邮件申请unionid功能,参考链接 {@see http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D}
      *
-     * @param token 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code authToken}
+     * @param accToken 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code authToken}
      * @return openId
      */
-    private String getOpenId(AccToken token) {
+    private String getOpenId(AccToken accToken) {
         String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
-                .queryParam("access_token", token.getAccessToken())
+                .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("unionid", context.isUnionId() ? 1 : 0)
                 .build());
 
@@ -114,37 +117,37 @@ public class QqProvider extends DefaultProvider {
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.get("error") + Symbol.COLON + object.get("error_description"));
         }
-        token.setOpenId(object.getString("openid"));
+        accToken.setOpenId(object.getString("openid"));
         if (object.containsKey("unionid")) {
-            token.setUnionId(object.getString("unionid"));
+            accToken.setUnionId(object.getString("unionid"));
         }
-        return StringKit.isEmpty(token.getUnionId()) ? token.getOpenId() : token.getUnionId();
+        return StringKit.isEmpty(accToken.getUnionId()) ? accToken.getOpenId() : accToken.getUnionId();
     }
 
     /**
      * 返回获取userInfo的url
      *
-     * @param token 用户授权token
+     * @param accToken 用户授权token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(source.userInfo())
-                .queryParam("access_token", token.getAccessToken())
+                .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("oauth_consumer_key", context.getAppKey())
-                .queryParam("openid", token.getOpenId())
+                .queryParam("openid", accToken.getOpenId())
                 .build();
     }
 
     private AccToken getAuthToken(String response) {
-        Map<String, String> accessTokenObject = parseStringToMap(response);
-        if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
-            throw new AuthorizedException(accessTokenObject.get("msg"));
+        Map<String, String> paramMap = UriKit.decodeVal(response, Charset.DEFAULT_UTF_8);
+        if (!paramMap.containsKey("access_token") || paramMap.containsKey("code")) {
+            throw new AuthorizedException(paramMap.get("msg"));
         }
         return AccToken.builder()
-                .accessToken(accessTokenObject.get("access_token"))
-                .expireIn(Integer.valueOf(accessTokenObject.get("expires_in")))
-                .refreshToken(accessTokenObject.get("refresh_token"))
+                .accessToken(paramMap.get("access_token"))
+                .expireIn(Integer.valueOf(paramMap.get("expires_in")))
+                .refreshToken(paramMap.get("refresh_token"))
                 .build();
     }
 
