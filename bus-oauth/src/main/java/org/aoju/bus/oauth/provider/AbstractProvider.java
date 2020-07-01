@@ -81,20 +81,23 @@ public abstract class AbstractProvider implements Provider {
     /**
      * 是否支持第三方登录
      *
-     * @param context context
-     * @param source  source
+     * @param context 上下文信息
+     * @param complex 当前授权平台
      * @return true or false
      */
-    public static boolean isSupportedAuth(Context context, Complex source) {
+    public static boolean isSupportedAuth(Context context, Complex complex) {
         boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
-        if (isSupported && Registry.ALIPAY == source) {
+        if (isSupported && Registry.ALIPAY == complex) {
             isSupported = StringKit.isNotEmpty(context.getPublicKey());
         }
-        if (isSupported && Registry.STACKOVERFLOW == source) {
+        if (isSupported && Registry.STACKOVERFLOW == complex) {
             isSupported = StringKit.isNotEmpty(context.getOverflowKey());
         }
-        if (isSupported && Registry.WECHAT_EE == source) {
+        if (isSupported && Registry.WECHAT_EE == complex) {
             isSupported = StringKit.isNotEmpty(context.getAgentId());
+        }
+        if (isSupported && Registry.CODING == complex) {
+            isSupported = StringKit.isNotEmpty(context.getCodingGroupName());
         }
         return isSupported;
     }
@@ -132,20 +135,20 @@ public abstract class AbstractProvider implements Provider {
     /**
      * 检查配置合法性 针对部分平台, 对redirect uri有特定要求 一般来说redirect uri都是http://,而对于facebook平台, redirect uri 必须是https的链接
      *
-     * @param context context
-     * @param source  source
+     * @param context 上下文信息
+     * @param complex 当前授权平台
      */
-    public static void checkContext(Context context, Complex source) {
+    public static void checkContext(Context context, Complex complex) {
         String redirectUri = context.getRedirectUri();
         if (!Http.isHttp(redirectUri) && !Http.isHttps(redirectUri)) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
         // facebook的回调地址必须为https的链接
-        if (Registry.FACEBOOK == source && !Http.isHttps(redirectUri)) {
+        if (Registry.FACEBOOK == complex && !Http.isHttps(redirectUri)) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
         // 支付宝在创建回调地址时,不允许使用localhost或者127.0.0.1
-        if (Registry.ALIPAY == source && isLocalHost(redirectUri)) {
+        if (Registry.ALIPAY == complex && isLocalHost(redirectUri)) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_REDIRECT_URI.getCode());
         }
     }
@@ -174,19 +177,42 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
+     * 校验回调传回的{@code state}，为空或者不存在
+     * {@code state}不存在的情况只有两种：
+     * 1. {@code state}已使用，被正常清除
+     * 2. {@code state}为前端伪造，本身就不存在
+     *
+     * @param state      一定不为空
+     * @param complex    当前授权平台
+     * @param oauthCache 缓存实现
+     */
+    public static void checkState(String state, Complex complex, ExtendCache oauthCache) {
+        // 推特平台不支持回调 code 和 state
+        if (complex == Registry.TWITTER) {
+            return;
+        }
+        if (StringKit.isEmpty(state) || ObjectKit.isEmpty(oauthCache.get(state))) {
+            throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_STATUS.getCode());
+        }
+    }
+
+    /**
      * 统一的登录入口 当通过{@link AbstractProvider#authorize(String)}授权成功后,会跳转到调用方的相关回调方法中
      * 方法的入参可以使用{@code AuthCallback},{@code AuthCallback}类中封装好了OAuth2授权回调所需要的参数
      *
-     * @param Callback 用于接收回调参数的实体
+     * @param callback 用于接收回调参数的实体
      * @return the Message
      */
     @Override
-    public Message login(Callback Callback) {
+    public Message login(Callback callback) {
         try {
-            this.checkCode(source, Callback);
-            this.checkState(Callback.getState());
+            checkCode(source, callback);
 
-            AccToken token = this.getAccessToken(Callback);
+            if (!context.isIgnoreCheckState()) {
+                checkState(callback.getState(), source, extendCache);
+            }
+
+            AccToken token = this.getAccessToken(callback);
             Property user = (Property) this.getUserInfo(token);
             return Message.builder().errcode(Builder.ErrorCode.SUCCESS.getCode()).data(user).build();
         } catch (Exception e) {
@@ -349,21 +375,6 @@ public abstract class AbstractProvider implements Provider {
      */
     protected String doGetRevoke(AccToken accToken) {
         return Httpx.get(revokeUrl(accToken));
-    }
-
-    /**
-     * 校验回调传回的state
-     *
-     * @param state {@code state}一定不为空
-     */
-    protected void checkState(String state) {
-        // 推特平台不支持回调 code 和 state
-        if (source == Registry.TWITTER) {
-            return;
-        }
-        if (StringKit.isEmpty(state) || ObjectKit.isEmpty(extendCache.get(state))) {
-            throw new AuthorizedException(Normal.EMPTY + Builder.ErrorCode.ILLEGAL_REQUEST);
-        }
     }
 
     /**

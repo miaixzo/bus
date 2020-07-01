@@ -85,4 +85,16 @@ public interface Complex {
         throw new AuthorizedException(Builder.ErrorCode.UNSUPPORTED.getCode());
     }
 
+    /**
+     * 获取Source的字符串名字
+     *
+     * @return name
+     */
+    default String getName() {
+        if (this instanceof Enum) {
+            return String.valueOf(this);
+        }
+        return this.getClass().getSimpleName();
+    }
+
 }

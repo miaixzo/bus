@@ -31,14 +31,12 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
-import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 
 import java.util.HashMap;
@@ -97,19 +95,6 @@ public class LinkedinProvider extends AbstractProvider {
                 .token(accToken)
                 .gender(Normal.Gender.UNKNOWN)
                 .source(source.toString())
-                .build();
-    }
-
-    @Override
-    public Message refresh(AccToken oldToken) {
-        String refreshToken = oldToken.getRefreshToken();
-        if (StringKit.isEmpty(refreshToken)) {
-            throw new AuthorizedException(Builder.ErrorCode.UNSUPPORTED.getCode());
-        }
-        String refreshTokenUrl = refreshTokenUrl(refreshToken);
-        return Message.builder()
-                .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .data(this.getToken(refreshTokenUrl))
                 .build();
     }
 

@@ -42,6 +42,7 @@ import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
+import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 
 /**
@@ -86,6 +87,37 @@ public class AlipayProvider extends AbstractProvider {
                 .uid(response.getUserId())
                 .expireIn(Integer.parseInt(response.getExpiresIn()))
                 .refreshToken(response.getRefreshToken())
+                .build();
+    }
+
+    /**
+     * 刷新access token （续期）
+     *
+     * @param accToken 登录成功后返回的Token信息
+     * @return the message
+     */
+    @Override
+    public Message refresh(AccToken accToken) {
+        AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
+        request.setGrantType("refresh_token");
+        request.setRefreshToken(accToken.getRefreshToken());
+        AlipaySystemOauthTokenResponse response;
+        try {
+            response = this.alipayClient.execute(request);
+        } catch (Exception e) {
+            throw new AuthorizedException(e);
+        }
+        if (!response.isSuccess()) {
+            throw new AuthorizedException(response.getSubMsg());
+        }
+        return Message.builder()
+                .errcode(Builder.ErrorCode.SUCCESS.getCode())
+                .data(AccToken.builder()
+                        .accessToken(response.getAccessToken())
+                        .uid(response.getUserId())
+                        .expireIn(Integer.parseInt(response.getExpiresIn()))
+                        .refreshToken(response.getRefreshToken())
+                        .build())
                 .build();
     }
 
