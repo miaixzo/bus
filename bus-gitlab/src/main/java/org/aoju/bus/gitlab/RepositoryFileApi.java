@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * See <a href="https://docs.gitlab.com/ce/api/repository_files.html">Repository Files API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class RepositoryFileApi extends AbstractApi {

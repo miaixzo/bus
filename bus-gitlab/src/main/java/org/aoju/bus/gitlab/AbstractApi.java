@@ -43,7 +43,7 @@ import java.net.URL;
  * delete(), get(), post() and put() that are re-used by all the sub-classes.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public abstract class AbstractApi implements Constants {

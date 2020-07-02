@@ -45,7 +45,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * 多个逻辑处理器(操作系统看到的内容，可能包括超线程内核)
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe

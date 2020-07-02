@@ -38,7 +38,7 @@ import java.util.Optional;
  * 当转换过程不再需要目标文件时，提供应用行为的接口.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class TargetFromOutputStreamProvider extends AbstractTargetProvider

@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * 用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class FastDateParser extends AbstractFormater implements DateParser {

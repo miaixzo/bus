@@ -37,7 +37,7 @@ import java.util.Map;
  * Utility to query Process Information performance counter
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe

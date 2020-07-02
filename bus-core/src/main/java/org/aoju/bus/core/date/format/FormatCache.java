@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentMap;
  * 日期格式化器缓存
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public abstract class FormatCache<F extends Format> {

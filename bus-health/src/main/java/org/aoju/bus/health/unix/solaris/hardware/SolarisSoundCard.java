@@ -38,7 +38,7 @@ import java.util.*;
  * Solaris Sound Card.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @Immutable

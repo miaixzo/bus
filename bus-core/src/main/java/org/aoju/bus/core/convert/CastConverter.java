@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  *
  * @param <T> 强制转换到的类型
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class CastConverter<T> extends AbstractConverter<T> {

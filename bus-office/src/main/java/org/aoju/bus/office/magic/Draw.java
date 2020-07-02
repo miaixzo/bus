@@ -31,7 +31,7 @@ import org.aoju.bus.office.Builder;
  * 使office draw文档(Drawing)更容易使用的实用函数集合
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public final class Draw {

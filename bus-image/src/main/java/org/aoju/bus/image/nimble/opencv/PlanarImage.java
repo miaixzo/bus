@@ -29,7 +29,7 @@ import org.opencv.core.Size;
 
 /**
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public interface PlanarImage extends ImageSize, AutoCloseable {

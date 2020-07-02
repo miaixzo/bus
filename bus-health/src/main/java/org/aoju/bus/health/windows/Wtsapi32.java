@@ -37,7 +37,7 @@ import org.aoju.bus.health.windows.WinNT.LARGE_INTEGER;
 
 /**
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public interface Wtsapi32 extends com.sun.jna.platform.win32.Wtsapi32 {

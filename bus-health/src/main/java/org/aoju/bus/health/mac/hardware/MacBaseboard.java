@@ -41,7 +41,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Baseboard data obtained from ioreg
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @Immutable
