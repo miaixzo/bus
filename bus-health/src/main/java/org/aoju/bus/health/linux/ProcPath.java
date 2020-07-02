@@ -35,7 +35,7 @@ import java.io.File;
  * 提供对Linux上某些/proc文件系统信息的访问
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -59,6 +59,9 @@ public final class ProcPath {
     public static final String SELF_STAT = PROC + "/self/stat";
     public static final String STAT = PROC + "/stat";
     public static final String SYS_FS_FILE_NR = PROC + "/sys/fs/file-nr";
+    public static final String TASK_PATH = PROC + "/%d/task";
+    public static final String TASK_STATUS = TASK_PATH + "/%d/status";
+    public static final String TASK_STAT = TASK_PATH + "/%d/stat";
     public static final String UPTIME = PROC + "/uptime";
     public static final String VERSION = PROC + "/version";
     public static final String VMSTAT = PROC + "/vmstat";

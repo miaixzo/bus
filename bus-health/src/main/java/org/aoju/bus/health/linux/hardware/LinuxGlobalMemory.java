@@ -44,24 +44,18 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Memory obtained by /proc/meminfo and sysinfo.totalram
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe
 final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
+    public static final long PAGE_SIZE = Builder
+            .parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
+
     private final Supplier<Pair<Long, Long>> availTotal = memoize(LinuxGlobalMemory::readMemInfo, defaultExpiration());
 
-    private final Supplier<Long> pageSize = memoize(LinuxGlobalMemory::queryPageSize);
-
     private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
-
-    private static long queryPageSize() {
-        // Ideally we would us sysconf(_SC_PAGESIZE) but the constant is platform
-        // dependent and would require parsing header files, etc. Since this is only
-        // read once at startup, command line is a reliable fallback.
-        return Builder.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
-    }
 
     /**
      * Updates instance variables from reading /proc/meminfo. While most of the
@@ -130,7 +124,7 @@ final class LinuxGlobalMemory extends AbstractGlobalMemory {
 
     @Override
     public long getPageSize() {
-        return pageSize.get();
+        return PAGE_SIZE;
     }
 
     @Override

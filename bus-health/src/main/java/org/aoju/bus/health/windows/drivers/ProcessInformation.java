@@ -37,7 +37,7 @@ import java.util.Map;
  * Utility to query Process Information performance counter
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -76,13 +76,14 @@ public final class ProcessInformation {
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
         // Remaining elements define counters
-        PRIORITY("Priority Base"), //
-        CREATIONDATE("Elapsed Time"), //
-        PROCESSID("ID Process"), //
-        PARENTPROCESSID("Creating Process ID"), //
-        READTRANSFERCOUNT("IO Read Bytes/sec"), //
-        WRITETRANSFERCOUNT("IO Write Bytes/sec"), //
-        PRIVATEPAGECOUNT("Working Set - Private");
+        PRIORITY("Priority Base"),
+        CREATIONDATE("Elapsed Time"),
+        PROCESSID("ID Process"),
+        PARENTPROCESSID("Creating Process ID"),
+        READTRANSFERCOUNT("IO Read Bytes/sec"),
+        WRITETRANSFERCOUNT("IO Write Bytes/sec"),
+        PRIVATEPAGECOUNT("Working Set - Private"),
+        PAGEFAULTSPERSEC("Page Faults/sec");
 
         private final String counter;
 

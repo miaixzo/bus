@@ -28,12 +28,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aoju.bus.oauth.magic.Callback;
 
 /**
  * 上下文配置类
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @Data
@@ -80,5 +81,31 @@ public class Context {
      * 参考链接：http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D
      */
     private boolean unionId;
+
+    /**
+     * 忽略校验 {@code state} 参数，默认不开启。当 {@code ignoreCheckState} 为 {@code true} 时，
+     * {@link org.aoju.bus.oauth.provider.AbstractProvider#login(Callback callback)} 将不会校验 {@code state} 的合法性。
+     * <p>
+     * 使用场景：当且仅当使用自实现 {@code state} 校验逻辑时开启
+     * <p>
+     * 以下场景使用方案仅作参考：
+     * 1. 授权、登录为同端，并且全部使用 JustAuth 实现时，该值建议设为 {@code false};
+     * 2. 授权和登录为不同端实现时，比如前端页面拼装 {@code authorizeUrl}，并且前端自行对{@code state}进行校验，
+     * 后端只负责使用{@code code}获取用户信息时，该值建议设为 {@code true};
+     *
+     * <strong>如非特殊需要，不建议开启这个配置</strong>
+     * <p>
+     * 该方案主要为了解决以下类似场景的问题：
+     *
+     * @see <a href="https://github.com/justauth/JustAuth/issues/83">https://github.com/justauth/JustAuth/issues/83</a>
+     */
+    private boolean ignoreCheckState;
+
+    /**
+     * 使用 Coding 登录时，需要传该值。
+     * <p>
+     * 团队域名前缀，比如以“ https://justauth.coding.net/ ”为例，{@code codingGroupName} = justauth
+     */
+    private String codingGroupName;
 
 }

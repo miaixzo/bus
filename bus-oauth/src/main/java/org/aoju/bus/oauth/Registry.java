@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.exception.AuthorizedException;
  * 内置的各api需要的url, 用枚举类分平台类型管理
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public enum Registry implements Complex {
@@ -52,6 +52,30 @@ public enum Registry implements Complex {
         @Override
         public String userInfo() {
             return "https://openapi.alipay.com/gateway.do";
+        }
+    },
+    /**
+     * 阿里云
+     */
+    ALIYUN {
+        @Override
+        public String authorize() {
+            return "https://signin.aliyun.com/oauth2/v1/auth";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://oauth.aliyun.com/v1/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://oauth.aliyun.com/v1/userinfo";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://oauth.aliyun.com/v1/token";
         }
     },
     /**

@@ -44,10 +44,10 @@ import java.util.Map;
  * 华为授权登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class HuaweiProvider extends DefaultProvider {
+public class HuaweiProvider extends AbstractProvider {
 
     public HuaweiProvider(Context context) {
         super(context, Registry.HUAWEI);
@@ -60,15 +60,15 @@ public class HuaweiProvider extends DefaultProvider {
     /**
      * 获取access token
      *
-     * @param Callback 授权成功后的回调参数
+     * @param callback 授权成功后的回调参数
      * @return token
-     * @see DefaultProvider#authorize(String)
+     * @see AbstractProvider#authorize(String)
      */
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, Object> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
-        params.put("code", Callback.getAuthorization_code());
+        params.put("code", callback.getAuthorization_code());
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());
         params.put("redirect_uri", context.getRedirectUri());
@@ -83,10 +83,10 @@ public class HuaweiProvider extends DefaultProvider {
      *
      * @param accToken token信息
      * @return 用户信息
-     * @see DefaultProvider#getAccessToken(Callback)
+     * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
-    protected Property getUserInfo(AccToken accToken) {
+    public Property getUserInfo(AccToken accToken) {
         Map<String, Object> params = new HashMap<>();
         params.put("nsp_ts", System.currentTimeMillis());
         params.put("access_token", accToken.getAccessToken());
@@ -99,6 +99,7 @@ public class HuaweiProvider extends DefaultProvider {
         this.checkResponse(object);
 
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("userID"))
                 .username(object.getString("userName"))
                 .nickname(object.getString("userName"))
@@ -112,15 +113,15 @@ public class HuaweiProvider extends DefaultProvider {
     /**
      * 刷新access token (续期)
      *
-     * @param token 登录成功后返回的Token信息
+     * @param accToken 登录成功后返回的Token信息
      * @return AuthResponse
      */
     @Override
-    public Message refresh(AccToken token) {
+    public Message refresh(AccToken accToken) {
         Map<String, Object> params = new HashMap<>();
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());
-        params.put("refresh_token", token.getRefreshToken());
+        params.put("refresh_token", accToken.getRefreshToken());
         params.put("grant_type", "refresh_token");
         Httpx.post(source.accessToken(), params);
         return Message.builder()
@@ -154,7 +155,7 @@ public class HuaweiProvider extends DefaultProvider {
      * @return 返回获取accessToken的url
      */
     @Override
-    protected String accessTokenUrl(String code) {
+    public String accessTokenUrl(String code) {
         return Builder.fromUrl(source.accessToken())
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("code", code)
@@ -167,14 +168,14 @@ public class HuaweiProvider extends DefaultProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param token token
+     * @param accToken token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("nsp_ts", System.currentTimeMillis())
-                .queryParam("access_token", token.getAccessToken())
+                .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("nsp_fmt", "JS")
                 .queryParam("nsp_svc", "OpenUP.User.getInfo")
                 .build();

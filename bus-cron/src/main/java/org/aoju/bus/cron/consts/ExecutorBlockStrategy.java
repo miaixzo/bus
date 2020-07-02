@@ -28,7 +28,7 @@ package org.aoju.bus.cron.consts;
  * 任务执行规则
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public enum ExecutorBlockStrategy {

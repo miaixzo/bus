@@ -42,10 +42,10 @@ import org.aoju.bus.oauth.magic.Property;
  * 微信登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class WeChatOPProvider extends DefaultProvider {
+public class WeChatOPProvider extends AbstractProvider {
 
     public WeChatOPProvider(Context context) {
         super(context, Registry.WECHAT_OP);
@@ -58,16 +58,16 @@ public class WeChatOPProvider extends DefaultProvider {
     /**
      * 微信的特殊性,此时返回的信息同时包含 openid 和 access_token
      *
-     * @param Callback 回调返回的参数
+     * @param callback 回调返回的参数
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        return this.getToken(accessTokenUrl(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
+    public Property getUserInfo(AccToken token) {
         String openId = token.getOpenId();
         JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
 
@@ -80,6 +80,7 @@ public class WeChatOPProvider extends DefaultProvider {
         }
 
         return Property.builder()
+                .rawJson(object)
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))
                 .avatar(object.getString("headimgurl"))
@@ -153,7 +154,7 @@ public class WeChatOPProvider extends DefaultProvider {
      * @return 返回获取accessToken的url
      */
     @Override
-    protected String accessTokenUrl(String code) {
+    public String accessTokenUrl(String code) {
         return Builder.fromUrl(source.accessToken())
                 .queryParam("code", code)
                 .queryParam("appid", context.getAppKey())
@@ -169,7 +170,7 @@ public class WeChatOPProvider extends DefaultProvider {
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken token) {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("openid", token.getOpenId())
@@ -184,7 +185,7 @@ public class WeChatOPProvider extends DefaultProvider {
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String refreshTokenUrl(String refreshToken) {
+    public String refreshTokenUrl(String refreshToken) {
         return Builder.fromUrl(source.refresh())
                 .queryParam("appid", context.getAppKey())
                 .queryParam("refresh_token", refreshToken)

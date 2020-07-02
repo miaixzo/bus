@@ -63,7 +63,7 @@ import static org.aoju.bus.health.builtin.software.OSService.State.*;
  * and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -399,7 +399,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             processMap = (pids == null) ? processMapFromPerfCounters.get()
                     : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
         }
-        int myPid = getProcessId();
 
         Map<Integer, WtsInfo> processWtsMap = ProcessWtsData.queryProcessWtsMap(pids);
 
@@ -408,7 +407,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
         List<OSProcess> processList = new ArrayList<>();
         for (Integer pid : mapKeys) {
-            processList.add(new WindowsOSProcess(pid, myPid, getBitness(), processMap, processWtsMap));
+            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap));
         }
         return processList;
     }

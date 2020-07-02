@@ -44,10 +44,10 @@ import java.util.Map;
  * Teambition授权登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class TeambitionProvider extends DefaultProvider {
+public class TeambitionProvider extends AbstractProvider {
 
     public TeambitionProvider(Context context) {
         super(context, Registry.TEAMBITION);
@@ -58,15 +58,15 @@ public class TeambitionProvider extends DefaultProvider {
     }
 
     /**
-     * @param Callback 回调返回的参数
+     * @param callback 回调返回的参数
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, Object> params = new HashMap<>();
         params.put("client_id", context.getAppKey());
         params.put("client_secret", context.getAppSecret());
-        params.put("code", Callback.getCode());
+        params.put("code", callback.getCode());
         params.put("grant_type", "code");
 
         String response = Httpx.post(source.accessToken(), params);
@@ -81,18 +81,19 @@ public class TeambitionProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
+    public Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "OAuth2 " + token.getAccessToken());
+        header.put("Authorization", "OAuth2 " + accToken.getAccessToken());
 
         String response = Httpx.post(source.userInfo(), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
 
-        token.setUid(object.getString("_id"));
+        accToken.setUid(object.getString("_id"));
 
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("_id"))
                 .username(object.getString("name"))
                 .nickname(object.getString("name"))
@@ -101,16 +102,16 @@ public class TeambitionProvider extends DefaultProvider {
                 .location(object.getString("location"))
                 .email(object.getString("email"))
                 .gender(Normal.Gender.UNKNOWN)
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AccToken accToken) {
         Map<String, Object> params = new HashMap<>();
-        params.put("_userId", oldToken.getUid());
-        params.put("refresh_token", oldToken.getRefreshToken());
+        params.put("_userId", accToken.getUid());
+        params.put("refresh_token", accToken.getRefreshToken());
 
         String response = Httpx.post(source.refresh(), params);
         JSONObject object = JSONObject.parseObject(response);

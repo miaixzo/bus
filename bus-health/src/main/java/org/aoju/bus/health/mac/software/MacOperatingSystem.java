@@ -41,12 +41,12 @@ import java.io.File;
 import java.util.*;
 
 /**
- * macOS, previously Mac OS X and later OS X) is a series of proprietary
+ * macOS, previously Mac Mac OS) is a series of proprietary
  * graphical operating systems developed and marketed by Apple Inc. since 2001.
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe

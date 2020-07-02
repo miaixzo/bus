@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -22,37 +22,66 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.office.support.word;
+package org.aoju.bus.health.windows;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.FileKit;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.tuple.Pair;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Word Document工具
+ * Utility to query Thread Information performance counter
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class DocKit {
+@ThreadSafe
+public final class ThreadInformation {
+
+    private static final String THREAD = "Thread";
+    private static final String WIN32_PERF_RAW_DATA_PERF_PROC_THREAD = "Win32_PerfRawData_PerfProc_Thread WHERE NOT Name LIKE \"%_Total\"";
+
+    private ThreadInformation() {
+    }
 
     /**
-     * 创建{@link XWPFDocument},如果文件已存在则读取之,否则创建新的
+     * Returns thread counters.
      *
-     * @param file docx文件
-     * @return {@link XWPFDocument}
+     * @return Thread counters for each thread.
      */
-    public static XWPFDocument create(File file) {
-        try {
-            return FileKit.exist(file) ? new XWPFDocument(OPCPackage.open(file)) : new XWPFDocument();
-        } catch (InvalidFormatException | IOException e) {
-            throw new InstrumentException(e);
+    public static Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> queryThreadCounters() {
+        return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class, THREAD,
+                WIN32_PERF_RAW_DATA_PERF_PROC_THREAD);
+    }
+
+    /**
+     * Thread performance counters
+     */
+    public enum ThreadPerformanceProperty implements PerfCounterWildcardQuery.PdhCounterWildcardProperty {
+        // First element defines WMI instance name field and PDH instance filter
+        NAME(PerfCounterQuery.NOT_TOTAL_INSTANCES),
+        // Remaining elements define counters
+        PERCENTUSERTIME("% User Time"),
+        PERCENTPRIVILEGEDTIME("% Privileged Time"),
+        ELAPSEDTIME("Elapsed Time"),
+        PRIORITYCURRENT("Priority Current"),
+        STARTADDRESS("Start Address"),
+        THREADSTATE("Thread State"),
+        IDPROCESS("ID Process"),
+        IDTHREAD("ID Thread"),
+        CONTEXTSWITCHESPERSEC("Context Switches/sec");
+
+        private final String counter;
+
+        ThreadPerformanceProperty(String counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
         }
     }
 

@@ -34,10 +34,10 @@ import org.aoju.bus.logger.Logger;
 
 
 /**
- * 提供对OS X上的sysctl调用的访问
+ * 提供对Mac OS上的sysctl调用的访问
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe

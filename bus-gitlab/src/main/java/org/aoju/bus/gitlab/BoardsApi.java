@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * a GET request on that group will result to a 404 status code.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @see <a href="https://docs.gitlab.com/ce/api/boards.html">GitLab Issue Boards API Documentaion</a>
  * @since JDK 1.8+
  */

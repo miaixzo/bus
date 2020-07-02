@@ -43,7 +43,7 @@ import java.io.*;
  * Word生成器
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class Word07Writer implements Closeable {
@@ -68,7 +68,7 @@ public class Word07Writer implements Closeable {
      * @param destFile 写出的文件
      */
     public Word07Writer(File destFile) {
-        this(DocKit.create(destFile), destFile);
+        this(WordKit.create(destFile), destFile);
     }
 
     /**

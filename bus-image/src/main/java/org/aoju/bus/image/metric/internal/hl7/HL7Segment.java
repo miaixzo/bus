@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 
@@ -38,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class HL7Segment implements Serializable {
@@ -161,7 +162,7 @@ public class HL7Segment implements Serializable {
     }
 
     public static String timeStamp(Date date) {
-        return new SimpleDateFormat("yyyyMMddHHmmss.SSS").format(date);
+        return new SimpleDateFormat(Fields.PURE_DATETIME_TIP_PATTERN).format(date);
     }
 
     public static HL7Segment makeMSH() {

@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class Fields {
@@ -138,6 +138,24 @@ public class Fields {
      * 格式化通配符: {@link FormatBuilder} yyyyMMddHHmmssSSS
      */
     public static final FormatBuilder PURE_DATETIME_MS_FORMAT = FormatBuilder.getInstance(PURE_DATETIME_MS_PATTERN);
+
+    /**
+     * 格式化通配符: yyyyMMddHHmmss.SSS
+     */
+    public static final String PURE_DATETIME_TIP_PATTERN = "yyyyMMddHHmmss.SSS";
+    /**
+     * 格式化通配符: {@link FormatBuilder} yyyyMMddHHmmss.SSS
+     */
+    public static final FormatBuilder PURE_DATETIME_TIP_FORMAT = FormatBuilder.getInstance(PURE_DATETIME_TIP_PATTERN);
+
+    /**
+     * 格式化通配符: yyyyMMddHHmmss.SSSSSSZZZZZ
+     */
+    public static final String PURE_DATETIME_ICE_PATTERN = "yyyyMMddHHmmss.SSSSSSZZZZZ";
+    /**
+     * 格式化通配符: {@link FormatBuilder} yyyyMMddHHmmss.SSSSSSZZZZZ
+     */
+    public static final FormatBuilder PURE_DATETIME_ICE_FORMAT = FormatBuilder.getInstance(PURE_DATETIME_ICE_PATTERN);
 
     /**
      * 标准时间格式: HH:mm:ss
@@ -243,7 +261,7 @@ public class Fields {
      */
     public static final String NORM_CN_DATE_TIME_PATTERN = "yyyy年MM月dd日HH时mm分ss秒";
     /**
-     * 标准日期格式 {@link FastDateFormat}：yyyy年MM月dd日HH时mm分ss秒
+     * 标准日期格式 {@link FormatBuilder}：yyyy年MM月dd日HH时mm分ss秒
      */
     public static final FormatBuilder NORM_CN_DATE_TIME_FORMAT = FormatBuilder.getInstance(NORM_CN_DATE_TIME_PATTERN);
 
@@ -695,7 +713,7 @@ public class Fields {
      * 与Calendar相应值对应
      *
      * @author Kimi Liu
-     * @version 6.0.0
+     * @version 6.0.1
      * @since JDK 1.8+
      */
     public enum DateField {
@@ -850,7 +868,7 @@ public class Fields {
      * 日期时间单位,每个单位都是以毫秒为基数
      *
      * @author Kimi Liu
-     * @version 6.0.0
+     * @version 6.0.1
      * @since JDK 1.8+
      */
     public enum Unit {
@@ -899,7 +917,7 @@ public class Fields {
      * 与Calendar中的月份int值对应
      *
      * @author Kimi Liu
-     * @version 6.0.0
+     * @version 6.0.1
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -1037,7 +1055,7 @@ public class Fields {
      * 季度枚举
      *
      * @author Kimi Liu
-     * @version 6.0.0
+     * @version 6.0.1
      * @since JDK 1.8+
      */
     public enum Quarter {
@@ -1100,7 +1118,7 @@ public class Fields {
      * 与Calendar中的星期int值对应
      *
      * @author Kimi Liu
-     * @version 6.0.0
+     * @version 6.0.1
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY

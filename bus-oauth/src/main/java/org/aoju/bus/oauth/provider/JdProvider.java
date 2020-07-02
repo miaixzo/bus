@@ -51,10 +51,10 @@ import java.util.TreeMap;
  * 京东账号登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class JdProvider extends DefaultProvider {
+public class JdProvider extends AbstractProvider {
 
     public JdProvider(Context context) {
         super(context, Registry.JD);
@@ -90,7 +90,7 @@ public class JdProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         JSONObject object = null;
         try {
             HttpResponse response = Httpz.post().url(source.accessToken())
@@ -116,8 +116,8 @@ public class JdProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken accToken) {
-        JSONObject object = null;
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject jsonObject = null;
         try {
             Builder urlBuilder = Builder.fromUrl(source.userInfo())
                     .queryParam("access_token", accToken.getAccessToken())
@@ -128,20 +128,21 @@ public class JdProvider extends DefaultProvider {
                     .queryParam("v", "2.0");
             urlBuilder.queryParam("sign", sign(urlBuilder.getReadParams()));
             HttpResponse response = Httpz.post().url(urlBuilder.build(true)).build().execute();
-            object = JSONObject.parseObject(response.body().string());
+            jsonObject = JSONObject.parseObject(response.body().string());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        this.checkResponse(object);
+        this.checkResponse(jsonObject);
 
-        JSONObject data = this.getUserDataJsonObject(object);
+        JSONObject object = this.getUserDataJsonObject(jsonObject);
 
         return Property.builder()
+                .rawJson(object)
                 .uuid(accToken.getOpenId())
-                .username(data.getString("nickname"))
-                .nickname(data.getString("nickname"))
-                .avatar(data.getString("imageUrl"))
+                .username(object.getString("nickname"))
+                .nickname(object.getString("nickname"))
+                .avatar(object.getString("imageUrl"))
                 .gender(getRealGender(object))
                 .token(accToken)
                 .source(source.toString())
@@ -149,7 +150,7 @@ public class JdProvider extends DefaultProvider {
     }
 
     @Override
-    public Message refresh(AccToken oldToken) {
+    public Message refresh(AccToken accToken) {
         JSONObject object = null;
         try {
             HttpResponse response = Httpz.post()
@@ -157,7 +158,7 @@ public class JdProvider extends DefaultProvider {
                     .addParams("app_key", context.getAppKey())
                     .addParams("app_secret", context.getAppSecret())
                     .addParams("grant_type", "refresh_token")
-                    .addParams("refresh_token", oldToken.getRefreshToken()).build().execute();
+                    .addParams("refresh_token", accToken.getRefreshToken()).build().execute();
 
             object = JSONObject.parseObject(response.body().string());
         } catch (Exception e) {

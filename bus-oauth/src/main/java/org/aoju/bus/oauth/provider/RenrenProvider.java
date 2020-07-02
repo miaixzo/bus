@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -44,10 +45,10 @@ import java.util.Objects;
  * 人人登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class RenrenProvider extends DefaultProvider {
+public class RenrenProvider extends AbstractProvider {
 
     public RenrenProvider(Context context) {
         super(context, Registry.RENREN);
@@ -58,30 +59,31 @@ public class RenrenProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        return this.getToken(accessTokenUrl(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token)).getJSONObject("response");
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken)).getJSONObject("response");
 
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("id"))
                 .avatar(getAvatarUrl(object))
                 .nickname(object.getString("name"))
                 .company(getCompany(object))
                 .gender(getGender(object))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
 
     @Override
-    public Message refresh(AccToken token) {
+    public Message refresh(AccToken accToken) {
         return Message.builder()
                 .errcode(Builder.ErrorCode.SUCCESS.getCode())
-                .data(getToken(this.refreshTokenUrl(token.getRefreshToken())))
+                .data(getToken(this.refreshTokenUrl(accToken.getRefreshToken())))
                 .build();
     }
 
@@ -94,8 +96,8 @@ public class RenrenProvider extends DefaultProvider {
         return AccToken.builder()
                 .tokenType(object.getString("token_type"))
                 .expireIn(object.getIntValue("expires_in"))
-                .accessToken(object.getString("access_token"))
-                .refreshToken(object.getString("refresh_token"))
+                .accessToken(UriKit.encode(object.getString("access_token")))
+                .refreshToken(UriKit.encode(object.getString("refresh_token")))
                 .openId(object.getJSONObject("user").getString("id"))
                 .build();
     }
@@ -131,7 +133,7 @@ public class RenrenProvider extends DefaultProvider {
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken token) {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("userId", token.getOpenId())

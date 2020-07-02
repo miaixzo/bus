@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -305,7 +305,7 @@ public class CollKit {
      * @return 交集的集合, 返回 {@link ArrayList}
      */
     public static <T> Collection<T> intersection(final Collection<T> coll1, final Collection<T> coll2) {
-        final ArrayList<T> list = new ArrayList<>();
+        final List<T> list = new ArrayList<>();
         if (isNotEmpty(coll1) && isNotEmpty(coll2)) {
             final Map<T, Integer> map1 = countMap(coll1);
             final Map<T, Integer> map2 = countMap(coll2);
@@ -345,6 +345,40 @@ public class CollKit {
             }
         }
         return intersection;
+    }
+
+    /**
+     * 多个集合的交集
+     * 针对一个集合中存在多个相同元素的情况，只保留一个
+     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
+     * 结果：[a, b, c],此结果中只保留了一个c
+     *
+     * @param <T>        集合元素类型
+     * @param coll1      集合1
+     * @param coll2      集合2
+     * @param otherColls 其它集合
+     * @return 并集的集合，返回 {@link LinkedHashSet}
+     */
+    public static <T> Set<T> intersectOne(Collection<T> coll1, Collection<T> coll2, Collection<T>... otherColls) {
+        final Set<T> result;
+        if (isEmpty(coll1)) {
+            result = new LinkedHashSet<>();
+        } else {
+            result = new LinkedHashSet<>(coll1);
+        }
+
+        if (isNotEmpty(coll2)) {
+            result.retainAll(coll2);
+        }
+
+        if (ArrayKit.isNotEmpty(otherColls)) {
+            for (Collection<T> otherColl : otherColls) {
+                if (isNotEmpty(otherColl)) {
+                    result.retainAll(otherColl);
+                }
+            }
+        }
+        return result;
     }
 
     /**

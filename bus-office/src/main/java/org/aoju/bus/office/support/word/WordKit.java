@@ -24,16 +24,38 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.word;
 
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Word工具类
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class WordKit {
+
+    /**
+     * 创建{@link XWPFDocument},如果文件已存在则读取之,否则创建新的
+     *
+     * @param file docx文件
+     * @return {@link XWPFDocument}
+     */
+    public static XWPFDocument create(File file) {
+        try {
+            return FileKit.exist(file) ? new XWPFDocument(OPCPackage.open(file)) : new XWPFDocument();
+        } catch (InvalidFormatException | IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
     /**
      * 创建Word 07格式的生成器
      *

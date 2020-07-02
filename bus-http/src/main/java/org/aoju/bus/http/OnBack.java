@@ -28,7 +28,7 @@ package org.aoju.bus.http;
  * 数据回调接口
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public interface OnBack<T> {

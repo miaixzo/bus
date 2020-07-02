@@ -27,6 +27,7 @@ package org.aoju.bus.health;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.instance.Instances;
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
@@ -62,7 +63,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -131,7 +132,7 @@ public final class Builder {
     // Fast hex character lookup
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     // Format returned by WMI for DateTime
-    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ",
+    private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern(Fields.PURE_DATETIME_ICE_PATTERN,
             Locale.US);
 
     private static final String READING_LOG = "Reading file {}";
@@ -1686,6 +1687,23 @@ public final class Builder {
             return !wildcardMatch(text, pattern.substring(1));
         }
         return text.matches(pattern.replace(Symbol.QUESTION_MARK, Symbol.DOT + Symbol.QUESTION_MARK).replace(Symbol.STAR, Symbol.DOT + Symbol.STAR + Symbol.QUESTION_MARK));
+    }
+
+    /**
+     * Parses a string of hex digits to long value.
+     *
+     * @param hexString    A sequence of hex digits
+     * @param defaultValue default value to return if parsefails
+     * @return The corresponding long value
+     */
+    public static long hexStringToLong(String hexString, long defaultValue) {
+        try {
+            return new BigInteger(hexString, 16).longValue();
+        } catch (NumberFormatException e) {
+            Logger.trace(MESSAGE, hexString, e);
+            // Hex failed to parse, just return the default long
+            return defaultValue;
+        }
     }
 
 }

@@ -36,7 +36,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -445,7 +445,7 @@ public class CitizenIdKit {
      */
     public static int getAgeByIdCard(String idCard, Date dateToCompare) {
         String birth = getBirthByIdCard(idCard);
-        return DateKit.getAge(DateKit.parse(birth, "yyyyMMdd"), dateToCompare);
+        return DateKit.getAge(DateKit.parse(birth, Fields.PURE_DATE_PATTERN), dateToCompare);
     }
 
     /**

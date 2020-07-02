@@ -44,10 +44,10 @@ import java.util.Map;
  * Google登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class GoogleProvider extends DefaultProvider {
+public class GoogleProvider extends AbstractProvider {
 
     public GoogleProvider(Context context) {
         super(context, Registry.GOOGLE);
@@ -58,8 +58,8 @@ public class GoogleProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(callback.getCode()));
         this.checkResponse(object);
         return AccToken.builder()
                 .accessToken(object.getString("access_token"))
@@ -71,15 +71,16 @@ public class GoogleProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
+    public Property getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Bearer " + token.getAccessToken());
+        header.put("Authorization", "Bearer " + accToken.getAccessToken());
 
-        String response = Httpx.post(userInfoUrl(token), null, header);
+        String response = Httpx.post(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("sub"))
                 .username(object.getString("email"))
                 .avatar(object.getString("picture"))
@@ -87,7 +88,7 @@ public class GoogleProvider extends DefaultProvider {
                 .location(object.getString("locale"))
                 .email(object.getString("email"))
                 .gender(Normal.Gender.UNKNOWN)
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
@@ -112,12 +113,12 @@ public class GoogleProvider extends DefaultProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param token 用户授权后的token
+     * @param accToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
-        return Builder.fromUrl(source.userInfo()).queryParam("access_token", token.getAccessToken()).build();
+    public String userInfoUrl(AccToken accToken) {
+        return Builder.fromUrl(source.userInfo()).queryParam("access_token", accToken.getAccessToken()).build();
     }
 
     /**
@@ -130,4 +131,5 @@ public class GoogleProvider extends DefaultProvider {
             throw new AuthorizedException(object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
         }
     }
+
 }

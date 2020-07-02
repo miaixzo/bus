@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API Environments API calls.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @see <a href="https://docs.gitlab.com/ce/api/environments.html">Environments API</a>
  * @since JDK 1.8+
  */

@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang;
  * 加解密算法类型
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class Algorithm {

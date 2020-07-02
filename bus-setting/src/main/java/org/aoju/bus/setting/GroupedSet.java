@@ -55,7 +55,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
@@ -304,7 +304,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     public boolean contains(String group, String value, String... otherValues) {
         if (ArrayKit.isNotEmpty(otherValues)) {
             // 需要测试多个值的情况
-            final List<String> valueList = Arrays.asList(otherValues);
+            final List<String> valueList = new ArrayList<>(Arrays.asList(otherValues));
             valueList.add(value);
             return contains(group, valueList);
         } else {

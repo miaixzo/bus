@@ -44,7 +44,7 @@ import java.util.List;
  * 然后它继续调用网络。最后，它从网络响应构建用户响应
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public final class BridgeInterceptor implements Interceptor {

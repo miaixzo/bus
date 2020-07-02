@@ -35,7 +35,7 @@ import java.util.Arrays;
  * 如果这些还不够,您可以子类化并实现自己的匹配器
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public abstract class StrMatcher {

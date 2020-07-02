@@ -39,10 +39,10 @@ import org.aoju.bus.oauth.magic.Property;
  * Cooding登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class CodingProvider extends DefaultProvider {
+public class CodingProvider extends AbstractProvider {
 
     public CodingProvider(Context context) {
         super(context, Registry.CODING);
@@ -53,8 +53,8 @@ public class CodingProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        JSONObject accessTokenObject = JSONObject.parseObject(doGetAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        JSONObject accessTokenObject = JSONObject.parseObject(doGetAuthorizationCode(callback.getCode()));
         this.checkResponse(accessTokenObject);
         return AccToken.builder()
                 .accessToken(accessTokenObject.getString("access_token"))
@@ -64,12 +64,13 @@ public class CodingProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
         this.checkResponse(object);
 
         object = object.getJSONObject("data");
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("name"))
                 .avatar("https://coding.net/" + object.getString("avatar"))
@@ -80,7 +81,7 @@ public class CodingProvider extends DefaultProvider {
                 .gender(Normal.Gender.getGender(object.getString("sex")))
                 .email(object.getString("email"))
                 .remark(object.getString("slogan"))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }

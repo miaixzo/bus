@@ -41,10 +41,10 @@ import org.aoju.bus.oauth.magic.Property;
  * 企业微信登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class WeChatEEProvider extends DefaultProvider {
+public class WeChatEEProvider extends AbstractProvider {
 
     public WeChatEEProvider(Context context) {
         super(context, Registry.WECHAT_EE);
@@ -57,44 +57,44 @@ public class WeChatEEProvider extends DefaultProvider {
     /**
      * 微信的特殊性,此时返回的信息同时包含 openid 和 access_token
      *
-     * @param Callback 回调返回的参数
+     * @param callback 回调返回的参数
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        String response = doGetAuthorizationCode(accessTokenUrl(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        String response = doGetAuthorizationCode(accessTokenUrl(callback.getCode()));
 
         JSONObject object = this.checkResponse(response);
 
         return AccToken.builder()
                 .accessToken(object.getString("access_token"))
                 .expireIn(object.getIntValue("expires_in"))
-                .code(Callback.getCode())
+                .code(callback.getCode())
                 .build();
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        String response = doGetUserInfo(token);
-        JSONObject object = this.checkResponse(response);
+    public Property getUserInfo(AccToken accToken) {
+        String response = doGetUserInfo(accToken);
+        JSONObject jsonObject = this.checkResponse(response);
 
         // 返回 OpenId 或其他,均代表非当前企业用户,不支持
-        if (!object.containsKey("UserId")) {
+        if (!jsonObject.containsKey("UserId")) {
             throw new AuthorizedException(Builder.ErrorCode.UNIDENTIFIED_PLATFORM.getCode());
         }
-        String userId = object.getString("UserId");
-        String userDetailResponse = getUserDetail(token.getAccessToken(), userId);
-        JSONObject userDetail = this.checkResponse(userDetailResponse);
+        String userId = jsonObject.getString("UserId");
+        JSONObject object = this.checkResponse(getUserDetail(accToken.getAccessToken(), userId));
 
         return Property.builder()
-                .username(userDetail.getString("name"))
-                .nickname(userDetail.getString("alias"))
-                .avatar(userDetail.getString("avatar"))
-                .location(userDetail.getString("address"))
-                .email(userDetail.getString("email"))
+                .rawJson(object)
+                .username(object.getString("name"))
+                .nickname(object.getString("alias"))
+                .avatar(object.getString("avatar"))
+                .location(object.getString("address"))
+                .email(object.getString("email"))
                 .uuid(userId)
                 .gender(Normal.Gender.getGender(object.getString("gender")))
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
@@ -137,7 +137,7 @@ public class WeChatEEProvider extends DefaultProvider {
      * @return 返回获取accessToken的url
      */
     @Override
-    protected String accessTokenUrl(String code) {
+    public String accessTokenUrl(String code) {
         return Builder.fromUrl(source.accessToken())
                 .queryParam("corpid", context.getAppKey())
                 .queryParam("corpsecret", context.getAppSecret())
@@ -147,14 +147,14 @@ public class WeChatEEProvider extends DefaultProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param token 用户授权后的token
+     * @param accToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(source.userInfo())
-                .queryParam("access_token", token.getAccessToken())
-                .queryParam("code", token.getCode())
+                .queryParam("access_token", accToken.getAccessToken())
+                .queryParam("code", accToken.getCode())
                 .build();
     }
 

@@ -44,7 +44,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {

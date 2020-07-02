@@ -46,7 +46,7 @@ import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
  * MacNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -38,10 +38,10 @@ import org.aoju.bus.oauth.magic.Property;
  * Gitee登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class GiteeProvider extends DefaultProvider {
+public class GiteeProvider extends AbstractProvider {
 
     public GiteeProvider(Context context) {
         super(context, Registry.GITEE);
@@ -52,8 +52,8 @@ public class GiteeProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(callback.getCode()));
         this.checkResponse(object);
         return AccToken.builder()
                 .accessToken(object.getString("access_token"))
@@ -65,10 +65,11 @@ public class GiteeProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
         this.checkResponse(object);
         return Property.builder()
+                .rawJson(object)
                 .uuid(object.getString("id"))
                 .username(object.getString("login"))
                 .avatar(object.getString("avatar_url"))
@@ -79,7 +80,7 @@ public class GiteeProvider extends DefaultProvider {
                 .email(object.getString("email"))
                 .remark(object.getString("bio"))
                 .gender(Normal.Gender.UNKNOWN)
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }

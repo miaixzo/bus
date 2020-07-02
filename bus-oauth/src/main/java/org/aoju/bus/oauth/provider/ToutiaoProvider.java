@@ -42,10 +42,10 @@ import org.aoju.bus.oauth.magic.Property;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class ToutiaoProvider extends DefaultProvider {
+public class ToutiaoProvider extends AbstractProvider {
 
     public ToutiaoProvider(Context context) {
         super(context, Registry.TOUTIAO);
@@ -56,8 +56,8 @@ public class ToutiaoProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        JSONObject object = JSONObject.parseObject(doGetAuthorizationCode(Callback.getCode()));
+    public AccToken getAccessToken(Callback callback) {
+        JSONObject object = JSONObject.parseObject(doGetAuthorizationCode(callback.getCode()));
 
         this.checkResponse(object);
 
@@ -69,24 +69,25 @@ public class ToutiaoProvider extends DefaultProvider {
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(token));
+    public Property getUserInfo(AccToken accToken) {
+        JSONObject jsonObject = JSONObject.parseObject(doGetUserInfo(accToken));
 
-        this.checkResponse(object);
+        this.checkResponse(jsonObject);
 
-        JSONObject user = object.getJSONObject("data");
+        JSONObject object = jsonObject.getJSONObject("data");
 
-        boolean isAnonymousUser = user.getIntValue("uid_type") == 14;
+        boolean isAnonymousUser = object.getIntValue("uid_type") == 14;
         String anonymousUserName = "匿名用户";
 
         return Property.builder()
-                .uuid(user.getString("uid"))
-                .username(isAnonymousUser ? anonymousUserName : user.getString("screen_name"))
-                .nickname(isAnonymousUser ? anonymousUserName : user.getString("screen_name"))
-                .avatar(user.getString("avatar_url"))
-                .remark(user.getString("description"))
-                .gender(Normal.Gender.getGender(user.getString("gender")))
-                .token(token)
+                .rawJson(object)
+                .uuid(object.getString("uid"))
+                .username(isAnonymousUser ? anonymousUserName : object.getString("screen_name"))
+                .nickname(isAnonymousUser ? anonymousUserName : object.getString("screen_name"))
+                .avatar(object.getString("avatar_url"))
+                .remark(object.getString("description"))
+                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
@@ -116,7 +117,7 @@ public class ToutiaoProvider extends DefaultProvider {
      * @return 返回获取accessToken的url
      */
     @Override
-    protected String accessTokenUrl(String code) {
+    public String accessTokenUrl(String code) {
         return Builder.fromUrl(source.accessToken())
                 .queryParam("code", code)
                 .queryParam("client_key", context.getAppKey())
@@ -128,14 +129,14 @@ public class ToutiaoProvider extends DefaultProvider {
     /**
      * 返回获取userInfo的url
      *
-     * @param token 用户授权后的token
+     * @param accToken 用户授权后的token
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken token) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("client_key", context.getAppKey())
-                .queryParam("access_token", token.getAccessToken())
+                .queryParam("access_token", accToken.getAccessToken())
                 .build();
     }
 
@@ -174,8 +175,8 @@ public class ToutiaoProvider extends DefaultProvider {
         EC21("21", "域名与登记域名不匹配"),
         EC999("999", "未知错误,请联系头条技术");
 
-        private String code;
-        private String desc;
+        private final String code;
+        private final String desc;
 
         public static Error getErrorCode(String errorCode) {
             Error[] errorCodes = Error.values();

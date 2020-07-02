@@ -50,7 +50,7 @@ import java.util.function.Supplier;
  * 操作系统信息支持
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
 public class Platform {
@@ -522,7 +522,7 @@ public class Platform {
          */
         LINUX,
         /**
-         * macOS (OS X)
+         * Mac OS
          */
         MACOSX,
         /**

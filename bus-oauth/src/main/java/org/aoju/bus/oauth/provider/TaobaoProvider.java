@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
+import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -39,10 +40,10 @@ import org.aoju.bus.oauth.magic.Property;
  * 淘宝登录
  *
  * @author Kimi Liu
- * @version 6.0.0
+ * @version 6.0.1
  * @since JDK 1.8+
  */
-public class TaobaoProvider extends DefaultProvider {
+public class TaobaoProvider extends AbstractProvider {
 
     public TaobaoProvider(Context context) {
         super(context, Registry.TAOBAO);
@@ -53,30 +54,31 @@ public class TaobaoProvider extends DefaultProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback Callback) {
-        return AccToken.builder().accessCode(Callback.getCode()).build();
+    public AccToken getAccessToken(Callback callback) {
+        return AccToken.builder().accessCode(callback.getCode()).build();
     }
 
     @Override
-    protected Property getUserInfo(AccToken token) {
-        String response = doPostAuthorizationCode(token.getAccessCode());
+    public Property getUserInfo(AccToken accToken) {
+        String response = doPostAuthorizationCode(accToken.getAccessCode());
         JSONObject object = JSONObject.parseObject(response);
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.getString("error_description"));
         }
-        token.setAccessToken(object.getString("access_token"));
-        token.setRefreshToken(object.getString("refresh_token"));
-        token.setExpireIn(object.getIntValue("expires_in"));
-        token.setUid(object.getString("taobao_user_id"));
-        token.setOpenId(object.getString("taobao_open_uid"));
+        accToken.setAccessToken(object.getString("access_token"));
+        accToken.setRefreshToken(object.getString("refresh_token"));
+        accToken.setExpireIn(object.getIntValue("expires_in"));
+        accToken.setUid(object.getString("taobao_user_id"));
+        accToken.setOpenId(object.getString("taobao_open_uid"));
 
-        String nick = urlDecode(object.getString("taobao_user_nick"));
+        String nick = UriKit.decode(object.getString("taobao_user_nick"));
         return Property.builder()
+                .rawJson(new JSONObject())
                 .uuid(object.getString("taobao_user_id"))
                 .username(nick)
                 .nickname(nick)
                 .gender(Normal.Gender.UNKNOWN)
-                .token(token)
+                .token(accToken)
                 .source(source.toString())
                 .build();
     }
