@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import java.lang.annotation.*;
 
 /**
- * 操作追踪
+ * 日志追溯
  *
  * @author Kimi Liu
  * @version 5.9.9
