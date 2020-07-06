@@ -29,7 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import java.lang.annotation.*;
 
 /**
- * 操作记录
+ * 操作追踪
  *
  * @author Kimi Liu
  * @version 5.9.9
@@ -38,7 +38,7 @@ import java.lang.annotation.*;
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Journal {
+public @interface Trace {
 
     /**
      * @return 标题
