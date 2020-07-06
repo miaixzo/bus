@@ -337,7 +337,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return null;
     }
 
-    private PlanarImage getNativeImage(ImageReadParam param) throws IOException {
+    public PlanarImage getNativeImage(ImageReadParam param) throws IOException {
         StreamSegment seg = StreamSegment.getStreamSegment(iis, param);
         ImageDescriptor desc = seg.getImageDescriptor();
 

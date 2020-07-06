@@ -38,6 +38,7 @@ import org.aoju.bus.image.nimble.codec.ImageReaderFactory;
 import org.aoju.bus.image.nimble.codec.TransferSyntaxType;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLSImageInputStream;
+import org.aoju.bus.image.nimble.opencv.NativeImageReader;
 import org.aoju.bus.image.nimble.stream.ImageInputStreamAdapter;
 import org.aoju.bus.image.nimble.stream.ImagePixelInputStream;
 import org.aoju.bus.image.nimble.stream.SegmentedImageStream;
@@ -833,6 +834,16 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         dispose();
     }
 
+    public double getPixelValue(int frameIndex, int row, int column) throws IOException {
+        readMetadata();
+        checkIndex(frameIndex);
+        openiis();
+        javax.imageio.stream.ImageInputStream iisOfFrame = iisOfFrame(frameIndex);
+        // Reading this up front sets the required values so that opencv succeeds - it is less than optimal performance wise
+        iisOfFrame.length();
+        decompressor.setInput(iisOfFrame);
+        return ((NativeImageReader) decompressor).getNativeImage(decompressParam(null)).get(row, column)[0];
+    }
     /**
      * @author Kimi Liu
      * @version 6.0.1
