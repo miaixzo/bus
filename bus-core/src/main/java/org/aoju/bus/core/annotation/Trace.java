@@ -41,19 +41,29 @@ import java.lang.annotation.*;
 public @interface Trace {
 
     /**
-     * @return 标题
+     * @return 业务标题
      */
     String value() default Normal.EMPTY;
 
     /**
-     * @return 模块
+     * @return 业务编号
+     */
+    String id() default Normal.EMPTY;
+
+    /**
+     * @return 业务模块
      */
     String module() default Normal.EMPTY;
 
     /**
-     * @return 业务
+     * @return 业务功能
      */
     String business() default Normal.EMPTY;
+
+    /**
+     * @return 参数信息
+     */
+    String params() default Normal.EMPTY;
 
     /**
      * @return 操作人类别
@@ -61,7 +71,12 @@ public @interface Trace {
     String operator() default Normal.EMPTY;
 
     /**
-     * @return 是否保存请求的参数
+     * @return 扩展信息
+     */
+    String extend() default Normal.EMPTY;
+
+    /**
+     * @return 是否保存请求参数
      */
     boolean isSaveRequest() default true;
 
