@@ -1278,7 +1278,7 @@ public class Fields {
         /**
          * 毫秒
          */
-        MILLSECOND("毫秒");
+        MILLISECOND("毫秒");
 
         /**
          * 级别名称

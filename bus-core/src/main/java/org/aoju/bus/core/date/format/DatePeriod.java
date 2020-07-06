@@ -105,8 +105,8 @@ public class DatePeriod {
                 sb.append(second).append(Fields.Level.SECOND.name);
                 levelCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != millisecond && level >= Fields.Level.MILLSECOND.ordinal()) {
-                sb.append(millisecond).append(Fields.Level.MILLSECOND.name);
+            if (isLevelCountValid(levelCount) && 0 != millisecond && level >= Fields.Level.MILLISECOND.ordinal()) {
+                sb.append(millisecond).append(Fields.Level.MILLISECOND.name);
                 levelCount++;
             }
         }

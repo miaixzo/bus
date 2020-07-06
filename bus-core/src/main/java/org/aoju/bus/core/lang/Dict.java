@@ -224,6 +224,11 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
         return get(attr, null);
     }
 
+    @Override
+    public void putAll(Map<? extends String, ?> m) {
+        m.forEach(this::put);
+    }
+
     /**
      * @param attr 字段名
      * @return 字段值

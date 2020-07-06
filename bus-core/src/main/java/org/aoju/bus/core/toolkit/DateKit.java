@@ -1763,7 +1763,7 @@ public class DateKit {
      * @return XX天XX小时XX分XX秒XX毫秒
      */
     public static String formatBetween(long betweenMs) {
-        return new DatePeriod(betweenMs, Fields.Level.MILLSECOND).format();
+        return new DatePeriod(betweenMs, Fields.Level.MILLISECOND).format();
     }
 
     /**
