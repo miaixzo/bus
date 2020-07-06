@@ -838,8 +838,8 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
      * 获取图片像素点的像素值,用于计算ct值
      *
      * @param frameIndex 图像在dcm文件中的索引
-     * @param row 像素点行号
-     * @param column 像素点列号
+     * @param row        像素点行号
+     * @param column     像素点列号
      * @return pixel value 像素值
      * @throws IOException io异常
      */
@@ -848,11 +848,11 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         checkIndex(frameIndex);
         openiis();
         javax.imageio.stream.ImageInputStream iisOfFrame = iisOfFrame(frameIndex);
-        // Reading this up front sets the required values so that opencv succeeds - it is less than optimal performance wise
         iisOfFrame.length();
         decompressor.setInput(iisOfFrame);
         return ((NativeImageReader) decompressor).getNativeImage(decompressParam(null)).get(row, column)[0];
     }
+
     /**
      * @author Kimi Liu
      * @version 6.0.1
@@ -943,4 +943,5 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         }
 
     }
+
 }
