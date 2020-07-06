@@ -834,6 +834,15 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         dispose();
     }
 
+    /**
+     * 获取图片像素点的像素值,用于计算ct值
+     *
+     * @param frameIndex 图像在dcm文件中的索引
+     * @param row 像素点行号
+     * @param column 像素点列号
+     * @return pixel value 像素值
+     * @throws IOException io异常
+     */
     public double getPixelValue(int frameIndex, int row, int column) throws IOException {
         readMetadata();
         checkIndex(frameIndex);
