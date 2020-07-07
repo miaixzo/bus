@@ -25,7 +25,7 @@
 package org.aoju.bus.setting.format;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.setting.Formatter;
+import org.aoju.bus.setting.Format;
 import org.aoju.bus.setting.magic.IniComment;
 import org.aoju.bus.setting.magic.IniElement;
 import org.aoju.bus.setting.magic.IniProperty;
@@ -44,7 +44,7 @@ import java.util.Objects;
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public class DefaultFormatter implements Formatter {
+public class DefaultFormatter implements Format {
 
     protected final ElementFormatter<IniComment> commentElementFormatter;
     protected final ElementFormatter<IniSection> sectionElementFormatter;

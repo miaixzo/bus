@@ -48,10 +48,10 @@ public interface Factory {
      * @param commentElementFormatter  a formatter for comment
      * @param sectionElementFormatter  a formatter for section
      * @param propertyElementFormatter a formatter for property
-     * @return an {@link Formatter}
+     * @return an {@link Format}
      */
-    Formatter apply(ElementFormatter<IniComment> commentElementFormatter,
-                    ElementFormatter<IniSection> sectionElementFormatter,
-                    ElementFormatter<IniProperty> propertyElementFormatter);
+    Format apply(ElementFormatter<IniComment> commentElementFormatter,
+                 ElementFormatter<IniSection> sectionElementFormatter,
+                 ElementFormatter<IniProperty> propertyElementFormatter);
 
 }

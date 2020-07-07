@@ -35,7 +35,7 @@ import java.io.Closeable;
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public interface Formatter extends Closeable {
+public interface Format extends Closeable {
 
     /**
      * format a line as a element

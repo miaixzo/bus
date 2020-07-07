@@ -33,6 +33,7 @@ import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.setting.format.*;
 import org.aoju.bus.setting.magic.*;
+import org.aoju.bus.setting.metric.GroupMap;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -265,9 +266,9 @@ public class Readers {
     /**
      * get a default formatter by factory
      *
-     * @return {@link Formatter}
+     * @return {@link Format}
      */
-    protected Formatter getFormatter() {
+    protected Format getFormatter() {
         return formatterFactory.apply(
                 commentElementFormatterSupplier.get(),
                 sectionElementFormatterSupplier.get(),
@@ -353,7 +354,7 @@ public class Readers {
      * @throws IOException io exception
      */
     protected IniSetting defaultFormat(java.io.Reader reader, int builderCapacity) throws IOException {
-        Formatter formatter = getFormatter();
+        Format format = getFormatter();
         List<IniElement> iniElements = new ArrayList<>();
         // new line split
         String newLineSplit = System.getProperty("line.separator", "\n");
@@ -366,7 +367,7 @@ public class Readers {
             // if new line
             if (nowStr.endsWith(newLineSplit)) {
                 // format and add
-                IniElement element = formatter.formatLine(nowStr);
+                IniElement element = format.formatLine(nowStr);
                 if (element != null) {
                     iniElements.add(element);
                 }
@@ -377,7 +378,7 @@ public class Readers {
         // the end of files, format again
         if (line.length() > 0) {
             // format and add
-            iniElements.add(formatter.formatLine(line.toString()));
+            iniElements.add(format.formatLine(line.toString()));
         }
 
         return new IniSetting(iniElements);

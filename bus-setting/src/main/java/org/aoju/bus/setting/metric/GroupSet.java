@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.setting;
+package org.aoju.bus.setting.metric;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
