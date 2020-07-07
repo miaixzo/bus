@@ -31,16 +31,15 @@ import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.setting.format.*;
+import org.aoju.bus.setting.magic.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Setting文件加载器
@@ -49,7 +48,7 @@ import java.util.Set;
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public class SettingLoader {
+public class Readers {
 
     /**
      * 注释符号(当有此符号在行首,表示此行为注释)
@@ -75,26 +74,43 @@ public class SettingLoader {
     /**
      * GroupedMap
      */
-    private GroupedMap groupedMap;
+    private GroupMap groupMap;
 
     /**
-     * 构造
-     *
-     * @param groupedMap GroupedMap
+     * ini line data formatter factory
      */
-    public SettingLoader(GroupedMap groupedMap) {
-        this(groupedMap, Charset.UTF_8, false);
+    private Factory formatterFactory;
+
+    private Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier = CommentFormatter::new;
+    private Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier = SectionFormatter::new;
+    private Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier = PropertyFormatter::new;
+
+    public Readers() {
+        this.formatterFactory = DefaultFormatter::new;
+    }
+
+    public Readers(Factory formatterFactory) {
+        this.formatterFactory = formatterFactory;
     }
 
     /**
      * 构造
      *
-     * @param groupedMap    GroupedMap
+     * @param groupMap GroupedMap
+     */
+    public Readers(GroupMap groupMap) {
+        this(groupMap, Charset.UTF_8, false);
+    }
+
+    /**
+     * 构造
+     *
+     * @param groupMap      GroupedMap
      * @param charset       编码
      * @param isUseVariable 是否使用变量
      */
-    public SettingLoader(GroupedMap groupedMap, java.nio.charset.Charset charset, boolean isUseVariable) {
-        this.groupedMap = groupedMap;
+    public Readers(GroupMap groupMap, java.nio.charset.Charset charset, boolean isUseVariable) {
+        this.groupMap = groupMap;
         this.charset = charset;
         this.isUseVariable = isUseVariable;
     }
@@ -127,7 +143,7 @@ public class SettingLoader {
      * @throws IOException IO异常
      */
     public boolean load(InputStream settingStream) throws IOException {
-        this.groupedMap.clear();
+        this.groupMap.clear();
         BufferedReader reader = null;
         try {
             reader = IoKit.getReader(settingStream, this.charset);
@@ -163,7 +179,7 @@ public class SettingLoader {
                 if (this.isUseVariable) {
                     value = replaceVar(group, value);
                 }
-                this.groupedMap.put(group, keyValue[0].trim(), value);
+                this.groupMap.put(group, keyValue[0].trim(), value);
             }
         } finally {
             IoKit.close(reader);
@@ -203,7 +219,7 @@ public class SettingLoader {
      * @param writer Writer
      */
     private void store(PrintWriter writer) {
-        for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupedMap.entrySet()) {
+        for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupMap.entrySet()) {
             writer.println(StringKit.format("{}{}{}", Symbol.BRACKET_LEFT, groupEntry.getKey(), Symbol.BRACKET_RIGHT));
             for (Entry<String, String> entry : groupEntry.getValue().entrySet()) {
                 writer.println(StringKit.format("{} {} {}", entry.getKey(), ASSIGN_FLAG, entry.getValue()));
@@ -226,7 +242,7 @@ public class SettingLoader {
             key = PatternKit.get(reg_var, var, 1);
             if (StringKit.isNotBlank(key)) {
                 // 查找变量名对应的值
-                String varValue = this.groupedMap.get(group, key);
+                String varValue = this.groupMap.get(group, key);
                 if (null != varValue) {
                     // 替换标识
                     value = value.replace(var, varValue);
@@ -234,7 +250,7 @@ public class SettingLoader {
                     // 跨分组查找
                     final List<String> groupAndKey = StringKit.split(key, Symbol.C_DOT, 2);
                     if (groupAndKey.size() > 1) {
-                        varValue = this.groupedMap.get(groupAndKey.get(0), groupAndKey.get(1));
+                        varValue = this.groupMap.get(groupAndKey.get(0), groupAndKey.get(1));
                         if (null != varValue) {
                             // 替换标识
                             value = value.replace(var, varValue);
@@ -244,6 +260,162 @@ public class SettingLoader {
             }
         }
         return value;
+    }
+
+    /**
+     * get a default formatter by factory
+     *
+     * @return {@link Formatter}
+     */
+    protected Formatter getFormatter() {
+        return formatterFactory.apply(
+                commentElementFormatterSupplier.get(),
+                sectionElementFormatterSupplier.get(),
+                propertyElementFormatterSupplier.get()
+        );
+    }
+
+    /**
+     * read ini data from an inputStream
+     *
+     * @param in an ini data inputStream
+     * @return ini bean
+     * @throws IOException io exception
+     * @see #read(java.io.Reader)
+     */
+    public IniSetting read(InputStream in) throws IOException {
+        return read(new InputStreamReader(in));
+    }
+
+    /**
+     * read ini file to bean
+     *
+     * @param file ini file
+     * @return ini bean
+     * @throws IOException io exception
+     * @see #read(java.io.Reader)
+     */
+    public IniSetting read(File file) throws IOException {
+        try (java.io.Reader reader = new FileReader(file)) {
+            return read(reader);
+        }
+    }
+
+    /**
+     * read ini file to bean
+     *
+     * @param path ini path(file)
+     * @return ini bean
+     * @throws IOException io exception
+     * @see #read(java.io.Reader)
+     */
+    public IniSetting read(Path path) throws IOException {
+        try (java.io.Reader reader = Files.newBufferedReader(path)) {
+            return read(reader);
+        }
+    }
+
+    /**
+     * to buffered and read
+     *
+     * @param reader ini data reader
+     * @return the object
+     * @throws IOException io exception
+     */
+    public IniSetting read(Reader reader) throws IOException {
+        BufferedReader bufReader;
+        if (reader instanceof BufferedReader) {
+            bufReader = (BufferedReader) reader;
+        } else {
+            bufReader = new BufferedReader(reader);
+        }
+        return bufferedRead(bufReader);
+    }
+
+    /**
+     * format reader to ini bean
+     *
+     * @param reader reader
+     * @return {@link IniSetting} bean
+     * @throws IOException io exception
+     * @see #defaultFormat(java.io.Reader, int)
+     */
+    protected IniSetting defaultFormat(java.io.Reader reader) throws IOException {
+        return defaultFormat(reader, 16);
+    }
+
+    /**
+     * format reader to ini bean
+     *
+     * @param reader          reader
+     * @param builderCapacity {@link StringBuilder} init param
+     * @return {@link IniSetting} bean
+     * @throws IOException io exception
+     */
+    protected IniSetting defaultFormat(java.io.Reader reader, int builderCapacity) throws IOException {
+        Formatter formatter = getFormatter();
+        List<IniElement> iniElements = new ArrayList<>();
+        // new line split
+        String newLineSplit = System.getProperty("line.separator", "\n");
+        StringBuilder line = new StringBuilder(builderCapacity);
+
+        int ch;
+        while ((ch = reader.read()) != -1) {
+            line.append((char) ch);
+            String nowStr = line.toString();
+            // if new line
+            if (nowStr.endsWith(newLineSplit)) {
+                // format and add
+                IniElement element = formatter.formatLine(nowStr);
+                if (element != null) {
+                    iniElements.add(element);
+                }
+                // init stringBuilder
+                line.delete(0, line.length());
+            }
+        }
+        // the end of files, format again
+        if (line.length() > 0) {
+            // format and add
+            iniElements.add(formatter.formatLine(line.toString()));
+        }
+
+        return new IniSetting(iniElements);
+    }
+
+    /**
+     * read buffered reader and parse to ini.
+     *
+     * @param reader BufferedReader
+     * @return Ini
+     * @throws IOException io exception
+     */
+    private IniSetting bufferedRead(BufferedReader reader) throws IOException {
+        return defaultFormat(reader);
+    }
+
+    public Supplier<ElementFormatter<IniComment>> getCommentElementFormatterSupplier() {
+        return commentElementFormatterSupplier;
+    }
+
+    public void setCommentElementFormatterSupplier(Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier) {
+        this.commentElementFormatterSupplier = commentElementFormatterSupplier;
+    }
+
+    public Supplier<ElementFormatter<IniSection>> getSectionElementFormatterSupplier() {
+        return sectionElementFormatterSupplier;
+    }
+
+    public void setSectionElementFormatterSupplier(Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier) {
+        this.sectionElementFormatterSupplier = sectionElementFormatterSupplier;
+    }
+
+    public Supplier<ElementFormatter<IniProperty>> getPropertyElementFormatterSupplier() {
+        return propertyElementFormatterSupplier;
+    }
+
+    public void setPropertyElementFormatterSupplier(Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier) {
+        this.propertyElementFormatterSupplier = propertyElementFormatterSupplier;
     }
 
 }

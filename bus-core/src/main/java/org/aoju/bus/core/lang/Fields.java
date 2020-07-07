@@ -284,6 +284,15 @@ public class Fields {
     public static final FormatBuilder MSEC_FORMAT = FormatBuilder.getInstance(MSEC_PATTERN, TimeZone.getTimeZone("UTC"));
 
     /**
+     * UTC时间：yyyy-MM-dd'T'HH:mm:ss
+     */
+    public static final String UTC_SIMPLE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+    /**
+     * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ss
+     */
+    public static final FormatBuilder UTC_SIMPLE_FORMAT = FormatBuilder.getInstance(UTC_SIMPLE_PATTERN, TimeZone.getTimeZone("UTC"));
+
+    /**
      * UTC时间: yyyy-MM-dd HH:mm:ss Z
      */
     public static final String SPACEY_PATTERN = "yyyy-MM-dd HH:mm:ss Z";

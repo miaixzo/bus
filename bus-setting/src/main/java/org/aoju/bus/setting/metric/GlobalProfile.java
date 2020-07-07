@@ -22,54 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.setting;
+package org.aoju.bus.setting.metric;
 
-import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.StringKit;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.aoju.bus.core.instance.Instances;
+import org.aoju.bus.setting.magic.PopSetting;
 
 /**
- * Setting工具类
- * 提供静态方法获取配置文件
+ * 全局的Profile配置中心
  *
  * @author Kimi Liu
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public class SettingKit {
+public class GlobalProfile {
+
+    private GlobalProfile() {
+    }
 
     /**
-     * 配置文件缓存
-     */
-    private static Map<String, Setting> settingMap = new ConcurrentHashMap<>();
-    private static Object lock = new Object();
-
-    /**
-     * 获取当前环境下的配置文件
-     * name可以为不包括扩展名的文件名(默认.setting为结尾),也可以是文件名全称
+     * 设置全局环境
      *
-     * @param name 文件名,如果没有扩展名,默认为.setting
-     * @return 当前环境下配置文件
+     * @param profile 环境
+     * @return {@link Profile}
      */
-    public static Setting get(String name) {
-        Setting setting = settingMap.get(name);
-        if (null == setting) {
-            synchronized (lock) {
-                setting = settingMap.get(name);
-                if (null == setting) {
-                    String filePath = name;
-                    String extName = FileKit.extName(filePath);
-                    if (StringKit.isEmpty(extName)) {
-                        filePath = filePath + ".setting";
-                    }
-                    setting = new Setting(filePath, true);
-                    settingMap.put(name, setting);
-                }
-            }
-        }
-        return setting;
+    public static Profile setProfile(String profile) {
+        return Instances.singletion(Profile.class, profile);
+    }
+
+    /**
+     * 获得全局的当前环境下对应的配置文件
+     *
+     * @param settingName 配置文件名,可以忽略默认后者(.setting)
+     * @return {@link PopSetting}
+     */
+    public static PopSetting getSetting(String settingName) {
+        return Instances.singletion(Profile.class).getSetting(settingName);
     }
 
 }

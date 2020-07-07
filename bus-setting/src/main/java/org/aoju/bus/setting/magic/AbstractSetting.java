@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.setting;
+package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
@@ -44,7 +44,7 @@ import java.lang.reflect.Type;
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public abstract class AbsSetting implements OptNullString<String>, Serializable {
+public abstract class AbstractSetting implements OptNullString<String>, Serializable {
 
     @Override
     public String getStr(String key, String defaultValue) {

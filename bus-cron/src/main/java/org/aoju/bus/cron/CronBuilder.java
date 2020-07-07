@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
-import org.aoju.bus.setting.Setting;
+import org.aoju.bus.setting.magic.PopSetting;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +54,7 @@ public final class CronBuilder {
     public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
 
     private static final Scheduler scheduler = new Scheduler();
-    private static Setting crontabSetting;
+    private static PopSetting crontabSetting;
 
     private CronBuilder() {
     }
@@ -64,7 +64,7 @@ public final class CronBuilder {
      *
      * @param cronSetting 定时任务配置文件
      */
-    public static void setCronSetting(Setting cronSetting) {
+    public static void setCronSetting(PopSetting cronSetting) {
         crontabSetting = cronSetting;
     }
 
@@ -75,7 +75,7 @@ public final class CronBuilder {
      */
     public static void setCronSetting(String cronSettingPath) {
         try {
-            crontabSetting = new Setting(cronSettingPath, Charset.UTF_8, false);
+            crontabSetting = new PopSetting(cronSettingPath, Charset.UTF_8, false);
         } catch (InstrumentException e) {
             // ignore setting file parse error and no config error
         }
@@ -131,7 +131,7 @@ public final class CronBuilder {
      *
      * @param cronSetting 定时任务设置文件
      */
-    public static void schedule(Setting cronSetting) {
+    public static void schedule(PopSetting cronSetting) {
         scheduler.schedule(cronSetting);
     }
 

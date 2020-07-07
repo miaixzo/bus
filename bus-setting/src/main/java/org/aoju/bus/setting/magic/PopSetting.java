@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.setting;
+package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.resource.ClassPathResource;
@@ -37,6 +37,8 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.setting.GroupMap;
+import org.aoju.bus.setting.Readers;
 import org.aoju.bus.setting.dialect.Props;
 
 import java.io.File;
@@ -48,7 +50,7 @@ import java.util.function.Consumer;
 
 /**
  * 设置工具类  用于支持设置(配置)文件
- * BasicSetting用于替换Properties类,提供功能更加强大的配置文件,同时对Properties文件向下兼容
+ * 用于替换Properties类,提供功能更加强大的配置文件,同时对Properties文件向下兼容
  *
  * <pre>
  *  1、支持变量,默认变量命名为 ${变量名},变量只能识别读入行的变量,例如第6行的变量在第三行无法读取
@@ -61,12 +63,12 @@ import java.util.function.Consumer;
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public class Setting extends AbsSetting implements Map<String, String> {
+public class PopSetting extends AbstractSetting implements Map<String, String> {
 
     /**
      * 附带分组的键值对存储
      */
-    private final GroupedMap groupedMap = new GroupedMap();
+    private final GroupMap groupMap = new GroupMap();
 
     /**
      * 本设置对象的字符集
@@ -81,13 +83,13 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     protected URL settingUrl;
 
-    private SettingLoader settingLoader;
+    private Readers readers;
     private WatchMonitor watchMonitor;
 
     /**
      * 空构造
      */
-    public Setting() {
+    public PopSetting() {
     }
 
     /**
@@ -95,7 +97,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @param path 相对路径或绝对路径
      */
-    public Setting(String path) {
+    public PopSetting(String path) {
         this(path, false);
     }
 
@@ -105,7 +107,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param path          相对路径或绝对路径
      * @param isUseVariable 是否使用变量
      */
-    public Setting(String path, boolean isUseVariable) {
+    public PopSetting(String path, boolean isUseVariable) {
         this(path, Charset.UTF_8, isUseVariable);
     }
 
@@ -116,7 +118,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(String path, java.nio.charset.Charset charset, boolean isUseVariable) {
+    public PopSetting(String path, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
         this.init(FileKit.getResourceObj(path), charset, isUseVariable);
     }
@@ -128,7 +130,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(File configFile, java.nio.charset.Charset charset, boolean isUseVariable) {
+    public PopSetting(File configFile, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notNull(configFile, "Null setting file define!");
         this.init(new FileResource(configFile), charset, isUseVariable);
     }
@@ -141,7 +143,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(String path, Class<?> clazz, java.nio.charset.Charset charset, boolean isUseVariable) {
+    public PopSetting(String path, Class<?> clazz, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notBlank(path, "Blank setting path !");
         this.init(new ClassPathResource(path, clazz), charset, isUseVariable);
     }
@@ -153,7 +155,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param charset       字符集
      * @param isUseVariable 是否使用变量
      */
-    public Setting(URL url, java.nio.charset.Charset charset, boolean isUseVariable) {
+    public PopSetting(URL url, java.nio.charset.Charset charset, boolean isUseVariable) {
         Assert.notNull(url, "Null setting url define!");
         this.init(new UriResource(url), charset, isUseVariable);
     }
@@ -183,10 +185,10 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 是否加载成功
      */
     synchronized public boolean load() {
-        if (null == this.settingLoader) {
-            settingLoader = new SettingLoader(this.groupedMap, this.charset, this.isUseVariable);
+        if (null == this.readers) {
+            readers = new Readers(this.groupMap, this.charset, this.isUseVariable);
         }
-        return settingLoader.load(new UriResource(this.settingUrl));
+        return readers.load(new UriResource(this.settingUrl));
     }
 
     /**
@@ -242,12 +244,12 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 键值总数
      */
     public int size() {
-        return this.groupedMap.size();
+        return this.groupMap.size();
     }
 
     @Override
     public String getByGroup(String key, String group) {
-        return this.groupedMap.get(group, key);
+        return this.groupMap.get(group, key);
     }
 
     /**
@@ -291,19 +293,19 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return map
      */
     public Map<String, String> getMap(String group) {
-        return this.groupedMap.get(group);
+        return this.groupMap.get(group);
     }
 
     /**
      * 获得group对应的子Setting
      *
      * @param group 分组
-     * @return {@link Setting}
+     * @return {@link PopSetting}
      */
-    public Setting getSetting(String group) {
-        final Setting setting = new Setting();
-        setting.putAll(this.getMap(group));
-        return setting;
+    public PopSetting getSetting(String group) {
+        final PopSetting popSetting = new PopSetting();
+        popSetting.putAll(this.getMap(group));
+        return popSetting;
     }
 
     /**
@@ -337,10 +339,10 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param absolutePath 设置文件的绝对路径
      */
     public void store(String absolutePath) {
-        if (null == this.settingLoader) {
-            settingLoader = new SettingLoader(this.groupedMap, this.charset, this.isUseVariable);
+        if (null == this.readers) {
+            readers = new Readers(this.groupMap, this.charset, this.isUseVariable);
         }
-        settingLoader.store(absolutePath);
+        readers.store(absolutePath);
     }
 
     /**
@@ -351,7 +353,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
     public Properties toProperties() {
         final Properties properties = new Properties();
         String group;
-        for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupedMap.entrySet()) {
+        for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupMap.entrySet()) {
             group = groupEntry.getKey();
             for (Entry<String, String> entry : groupEntry.getValue().entrySet()) {
                 properties.setProperty(StringKit.isEmpty(group) ? entry.getKey() : group + Symbol.DOT + entry.getKey(), entry.getValue());
@@ -365,8 +367,8 @@ public class Setting extends AbsSetting implements Map<String, String> {
      *
      * @return GroupedMap
      */
-    public GroupedMap getGroupedMap() {
-        return this.groupedMap;
+    public GroupMap getGroupMap() {
+        return this.groupMap;
     }
 
     /**
@@ -375,7 +377,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 获得所有分组名
      */
     public List<String> getGroups() {
-        return CollKit.newArrayList(this.groupedMap.keySet());
+        return CollKit.newArrayList(this.groupMap.keySet());
     }
 
     /**
@@ -385,10 +387,10 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param regex 正则
      */
     public void setVarRegex(String regex) {
-        if (null == this.settingLoader) {
+        if (null == this.readers) {
             throw new NullPointerException("SettingLoader is null !");
         }
-        this.settingLoader.setVarRegex(regex);
+        this.readers.setVarRegex(regex);
     }
 
     /**
@@ -398,7 +400,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 是否为空
      */
     public boolean isEmpty(String group) {
-        return this.groupedMap.isEmpty(group);
+        return this.groupMap.isEmpty(group);
     }
 
     /**
@@ -409,7 +411,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 是否包含key
      */
     public boolean containsKey(String group, String key) {
-        return this.groupedMap.containsKey(group, key);
+        return this.groupMap.containsKey(group, key);
     }
 
     /**
@@ -420,7 +422,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 是否包含值
      */
     public boolean containsValue(String group, String value) {
-        return this.groupedMap.containsValue(group, value);
+        return this.groupMap.containsValue(group, value);
     }
 
     /**
@@ -431,7 +433,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 值, 如果分组不存在或者值不存在则返回null
      */
     public String get(String group, String key) {
-        return this.groupedMap.get(group, key);
+        return this.groupMap.get(group, key);
     }
 
     /**
@@ -443,7 +445,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 此key之前存在的值, 如果没有返回null
      */
     public String put(String group, String key, String value) {
-        return this.groupedMap.put(group, key, value);
+        return this.groupMap.put(group, key, value);
     }
 
     /**
@@ -454,7 +456,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 被删除的值, 如果值不存在, 返回null
      */
     public String remove(String group, Object key) {
-        return this.groupedMap.remove(group, Convert.toString(key));
+        return this.groupMap.remove(group, Convert.toString(key));
     }
 
     /**
@@ -464,8 +466,8 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param m     键值对
      * @return this
      */
-    public Setting putAll(String group, Map<? extends String, ? extends String> m) {
-        this.groupedMap.putAll(group, m);
+    public PopSetting putAll(String group, Map<? extends String, ? extends String> m) {
+        this.groupMap.putAll(group, m);
         return this;
     }
 
@@ -475,8 +477,8 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param group 分组
      * @return this
      */
-    public Setting clear(String group) {
-        this.groupedMap.clear(group);
+    public PopSetting clear(String group) {
+        this.groupMap.clear(group);
         return this;
     }
 
@@ -487,7 +489,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 键Set
      */
     public Set<String> keySet(String group) {
-        return this.groupedMap.keySet(group);
+        return this.groupMap.keySet(group);
     }
 
     /**
@@ -497,7 +499,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 值
      */
     public Collection<String> values(String group) {
-        return this.groupedMap.values(group);
+        return this.groupMap.values(group);
     }
 
     /**
@@ -507,7 +509,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @return 键值对
      */
     public Set<Entry<String, String>> entrySet(String group) {
-        return this.groupedMap.entrySet(group);
+        return this.groupMap.entrySet(group);
     }
 
     /**
@@ -517,14 +519,14 @@ public class Setting extends AbsSetting implements Map<String, String> {
      * @param value 值
      * @return this
      */
-    public Setting set(String key, String value) {
-        this.groupedMap.put(Normal.EMPTY, key, value);
+    public PopSetting set(String key, String value) {
+        this.groupMap.put(Normal.EMPTY, key, value);
         return this;
     }
 
     @Override
     public boolean isEmpty() {
-        return this.groupedMap.isEmpty();
+        return this.groupMap.isEmpty();
     }
 
     /**
@@ -535,7 +537,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsKey(Object key) {
-        return this.groupedMap.containsKey(Normal.EMPTY, Convert.toString(key));
+        return this.groupMap.containsKey(Normal.EMPTY, Convert.toString(key));
     }
 
     /**
@@ -546,7 +548,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public boolean containsValue(Object value) {
-        return this.groupedMap.containsValue(Normal.EMPTY, Convert.toString(value));
+        return this.groupMap.containsValue(Normal.EMPTY, Convert.toString(value));
     }
 
     /**
@@ -557,7 +559,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String get(Object key) {
-        return this.groupedMap.get(Normal.EMPTY, Convert.toString(key));
+        return this.groupMap.get(Normal.EMPTY, Convert.toString(key));
     }
 
     /**
@@ -569,7 +571,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String put(String key, String value) {
-        return this.groupedMap.put(Normal.EMPTY, key, value);
+        return this.groupMap.put(Normal.EMPTY, key, value);
     }
 
     /**
@@ -580,7 +582,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public String remove(Object key) {
-        return this.groupedMap.remove(Normal.EMPTY, Convert.toString(key));
+        return this.groupMap.remove(Normal.EMPTY, Convert.toString(key));
     }
 
     /**
@@ -590,7 +592,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public void putAll(Map<? extends String, ? extends String> m) {
-        this.groupedMap.putAll(Normal.EMPTY, m);
+        this.groupMap.putAll(Normal.EMPTY, m);
     }
 
     /**
@@ -598,7 +600,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public void clear() {
-        this.groupedMap.clear(Normal.EMPTY);
+        this.groupMap.clear(Normal.EMPTY);
     }
 
     /**
@@ -608,7 +610,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public Set<String> keySet() {
-        return this.groupedMap.keySet(Normal.EMPTY);
+        return this.groupMap.keySet(Normal.EMPTY);
     }
 
     /**
@@ -618,7 +620,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public Collection<String> values() {
-        return this.groupedMap.values(Normal.EMPTY);
+        return this.groupMap.values(Normal.EMPTY);
     }
 
     /**
@@ -628,7 +630,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
      */
     @Override
     public Set<Entry<String, String>> entrySet() {
-        return this.groupedMap.entrySet(Normal.EMPTY);
+        return this.groupMap.entrySet(Normal.EMPTY);
     }
 
     @Override
@@ -636,7 +638,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((charset == null) ? 0 : charset.hashCode());
-        result = prime * result + groupedMap.hashCode();
+        result = prime * result + groupMap.hashCode();
         result = prime * result + (isUseVariable ? 1231 : 1237);
         result = prime * result + ((settingUrl == null) ? 0 : settingUrl.hashCode());
         return result;
@@ -653,7 +655,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Setting other = (Setting) obj;
+        PopSetting other = (PopSetting) obj;
         if (charset == null) {
             if (other.charset != null) {
                 return false;
@@ -661,7 +663,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
         } else if (false == charset.equals(other.charset)) {
             return false;
         }
-        if (false == groupedMap.equals(other.groupedMap)) {
+        if (false == groupMap.equals(other.groupMap)) {
             return false;
         }
         if (isUseVariable != other.isUseVariable) {
@@ -676,7 +678,7 @@ public class Setting extends AbsSetting implements Map<String, String> {
 
     @Override
     public String toString() {
-        return groupedMap.toString();
+        return groupMap.toString();
     }
 
 }

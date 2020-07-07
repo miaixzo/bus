@@ -27,7 +27,7 @@ package org.aoju.bus.extra.mail;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.setting.Setting;
+import org.aoju.bus.setting.magic.PopSetting;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -135,7 +135,7 @@ public class MailAccount implements Serializable {
      * @param settingPath 配置文件路径
      */
     public MailAccount(String settingPath) {
-        this(new Setting(settingPath));
+        this(new PopSetting(settingPath));
     }
 
     /**
@@ -143,7 +143,7 @@ public class MailAccount implements Serializable {
      *
      * @param setting 配置文件
      */
-    public MailAccount(Setting setting) {
+    public MailAccount(PopSetting setting) {
         setting.toBean(this);
     }
 

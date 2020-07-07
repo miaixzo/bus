@@ -22,41 +22,67 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.setting.profile;
+package org.aoju.bus.setting.format;
 
-import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.setting.Setting;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.setting.magic.IniProperty;
+import org.aoju.bus.setting.magic.IniPropertyImpl;
 
 /**
- * 全局的Profile配置中心
+ * 将字符串值格式设置为{@link IniProperty}
  *
  * @author Kimi Liu
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public class GlobalProfile {
+public class PropertyFormatter extends AbstractFormatter<IniProperty> {
 
-    private GlobalProfile() {
+    /**
+     * 键值分割字符串{@link Symbol＃C_EQUAL}
+     */
+    private char split;
+
+    public PropertyFormatter(CommentFormatter commentElementFormatter) {
+        super(commentElementFormatter);
+        this.split = Symbol.C_EQUAL;
+    }
+
+    public PropertyFormatter() {
+        this.split = Symbol.C_EQUAL;
+    }
+
+    public PropertyFormatter(char split, CommentFormatter commentElementFormatter) {
+        super(commentElementFormatter);
+        this.split = split;
+    }
+
+    public PropertyFormatter(char split) {
+        this.split = split;
+    }
+
+    @Override
+    public boolean check(String value) {
+        return value.indexOf(split) > 0;
     }
 
     /**
-     * 设置全局环境
+     * 此方法不会检查值，因此您应该首先{@link #check(String)}
+     * 但是，不检查并不一定会报告错误，但可能会导致违规
      *
-     * @param profile 环境
-     * @return {@link Profile}
+     * @param value a String value
+     * @param line  line number
+     * @return {@link IniProperty}, can not be null.
      */
-    public static Profile setProfile(String profile) {
-        return Instances.singletion(Profile.class, profile);
-    }
+    @Override
+    public IniProperty format(String value, int line) {
+        String[] split = value.split(String.valueOf(Symbol.C_EQUAL), 2);
+        if (split.length == 1) {
+            split = new String[]{split[0], null};
+        }
+        final String propKey = split[0];
+        final String propValue = split[1];
 
-    /**
-     * 获得全局的当前环境下对应的配置文件
-     *
-     * @param settingName 配置文件名,可以忽略默认后者(.setting)
-     * @return {@link Setting}
-     */
-    public static Setting getSetting(String settingName) {
-        return Instances.singletion(Profile.class).getSetting(settingName);
+        return new IniPropertyImpl(propKey, propValue, value, line);
     }
 
 }

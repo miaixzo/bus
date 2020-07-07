@@ -37,7 +37,7 @@ import java.util.Map.Entry;
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
+public class GroupMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
 
     private int size = -1;
 
@@ -97,7 +97,7 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @param m     键值对
      * @return this
      */
-    public GroupedMap putAll(String group, Map<? extends String, ? extends String> m) {
+    public GroupMap putAll(String group, Map<? extends String, ? extends String> m) {
         for (Entry<? extends String, ? extends String> entry : m.entrySet()) {
             this.put(group, entry.getKey(), entry.getValue());
         }
@@ -182,7 +182,7 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
      * @param group 分组
      * @return this
      */
-    public GroupedMap clear(String group) {
+    public GroupMap clear(String group) {
         group = StringKit.nullToEmpty(group).trim();
         final LinkedHashMap<String, String> valueMap = this.get(group);
         if (MapKit.isNotEmpty(valueMap)) {

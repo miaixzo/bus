@@ -42,23 +42,11 @@ import java.util.*;
  * 无分组的集合和`[]`分组集合会合并成员,重名的分组也会合并成员
  * 分组配置文件如下：
  *
- * <pre>
- * [group1]
- * aaa
- * bbb
- * ccc
- *
- * [group2]
- * aaa
- * ccc
- * ddd
- * </pre>
- *
  * @author Kimi Liu
  * @version 6.0.2
  * @since JDK 1.8+
  */
-public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
+public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
 
     /**
      * 注释符号(当有此符号在行首,表示此行为注释)
@@ -84,7 +72,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      *
      * @param charset 字符集
      */
-    public GroupedSet(java.nio.charset.Charset charset) {
+    public GroupSet(java.nio.charset.Charset charset) {
         this.charset = charset;
     }
 
@@ -94,7 +82,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      * @param pathBaseClassLoader 相对路径(相对于当前项目的classes路径)
      * @param charset             字符集
      */
-    public GroupedSet(String pathBaseClassLoader, java.nio.charset.Charset charset) {
+    public GroupSet(String pathBaseClassLoader, java.nio.charset.Charset charset) {
         if (null == pathBaseClassLoader) {
             pathBaseClassLoader = Normal.EMPTY;
         }
@@ -112,7 +100,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      * @param configFile 配置文件对象
      * @param charset    字符集
      */
-    public GroupedSet(File configFile, java.nio.charset.Charset charset) {
+    public GroupSet(File configFile, java.nio.charset.Charset charset) {
         if (configFile == null) {
             throw new RuntimeException("Null GroupSet file!");
         }
@@ -130,7 +118,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      * @param clazz   基准类
      * @param charset 字符集
      */
-    public GroupedSet(String path, Class<?> clazz, java.nio.charset.Charset charset) {
+    public GroupSet(String path, Class<?> clazz, java.nio.charset.Charset charset) {
         final URL url = UriKit.getURL(path, clazz);
         if (url == null) {
             throw new RuntimeException(StringKit.format("Can not find GroupSet file : [{}]", path));
@@ -144,7 +132,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      * @param url     设定文件的URL
      * @param charset 字符集
      */
-    public GroupedSet(URL url, java.nio.charset.Charset charset) {
+    public GroupSet(URL url, java.nio.charset.Charset charset) {
         if (url == null) {
             throw new RuntimeException("Null url define!");
         }
@@ -156,7 +144,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
      *
      * @param pathBaseClassLoader 相对路径(相对于当前项目的classes路径)
      */
-    public GroupedSet(String pathBaseClassLoader) {
+    public GroupSet(String pathBaseClassLoader) {
         this(pathBaseClassLoader, Charset.UTF_8);
     }
 

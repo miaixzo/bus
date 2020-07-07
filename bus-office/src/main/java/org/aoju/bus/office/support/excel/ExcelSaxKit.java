@@ -99,7 +99,11 @@ public class ExcelSaxKit {
                 }
                 break;
             case NUMBER:
-                result = getNumberValue(value, numFmtString);
+                try {
+                    result = getNumberValue(value, numFmtString);
+                } catch (NumberFormatException e) {
+                    result = value;
+                }
                 break;
             case DATE:
                 try {

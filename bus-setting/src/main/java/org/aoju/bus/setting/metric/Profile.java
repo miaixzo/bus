@@ -22,13 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.setting.profile;
+package org.aoju.bus.setting.metric;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.setting.Setting;
+import org.aoju.bus.setting.magic.PopSetting;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class Profile implements Serializable {
     /**
      * 配置文件缓存
      */
-    private Map<String, Setting> settingMap = new ConcurrentHashMap<>();
+    private Map<String, PopSetting> settingMap = new ConcurrentHashMap<>();
 
     /**
      * 默认构造,环境使用默认的：default,编码UTF-8,不使用变量
@@ -109,14 +109,14 @@ public class Profile implements Serializable {
      * @param name 文件名,如果没有扩展名,默认为.setting
      * @return 当前环境下配置文件
      */
-    public Setting getSetting(String name) {
+    public PopSetting getSetting(String name) {
         String nameForProfile = fixNameForProfile(name);
-        Setting setting = settingMap.get(nameForProfile);
-        if (null == setting) {
-            setting = new Setting(nameForProfile, charset, useVar);
-            settingMap.put(nameForProfile, setting);
+        PopSetting popSetting = settingMap.get(nameForProfile);
+        if (null == popSetting) {
+            popSetting = new PopSetting(nameForProfile, charset, useVar);
+            settingMap.put(nameForProfile, popSetting);
         }
-        return setting;
+        return popSetting;
     }
 
     /**

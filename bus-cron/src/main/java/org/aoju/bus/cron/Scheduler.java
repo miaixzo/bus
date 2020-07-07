@@ -36,7 +36,7 @@ import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.listener.TaskListener;
 import org.aoju.bus.cron.listener.TaskListenerManager;
 import org.aoju.bus.cron.pattern.CronPattern;
-import org.aoju.bus.setting.Setting;
+import org.aoju.bus.setting.magic.PopSetting;
 
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
@@ -214,10 +214,10 @@ public class Scheduler {
      * @param cronSetting 定时任务设置文件
      * @return this
      */
-    public Scheduler schedule(Setting cronSetting) {
+    public Scheduler schedule(PopSetting cronSetting) {
         if (CollKit.isNotEmpty(cronSetting)) {
             String group;
-            for (Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupedMap().entrySet()) {
+            for (Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupMap().entrySet()) {
                 group = groupedEntry.getKey();
                 for (Entry<String, String> entry : groupedEntry.getValue().entrySet()) {
                     String jobClass = entry.getKey();
