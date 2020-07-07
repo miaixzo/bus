@@ -143,6 +143,18 @@ All kinds of contributions (enhancements, new features, documentation & code imp
 
 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 BUG 的报告。
 
+### Issue:
+- [版本情况]：jdk-openjdk_8_201 bus-xxx-6.x.x（请确保最新版本尝试是否还存在问题）
+- [问题描述]：（包括截图）
+- [复现代码]：
+- [堆栈信息]：
+
+### Features:
+- [增加功能]： 内容
+- [修改描述]： 内容
+
+ 注意：测试涉及到的文件请脱敏
+  
 ## 许可证(license)
 
 ### MIT
