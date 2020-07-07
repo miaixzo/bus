@@ -44,7 +44,7 @@ import java.util.concurrent.TimeoutException;
  * 处理WMI查询
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe

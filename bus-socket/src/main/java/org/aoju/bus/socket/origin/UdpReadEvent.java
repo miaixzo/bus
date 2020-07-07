@@ -26,7 +26,7 @@ package org.aoju.bus.socket.origin;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 final class UdpReadEvent<Request> {

@@ -35,7 +35,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class WebSocketMessage extends AbstractBody implements WebSocketCover.Sockets.Message {

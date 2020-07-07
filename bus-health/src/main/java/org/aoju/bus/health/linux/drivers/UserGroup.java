@@ -42,7 +42,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * parsing process ownership. Cache expires after one minute.
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe

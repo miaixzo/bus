@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  * 通过日志打印方法的执行时间的切面
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class AspectjTimes extends AspectjSimple {

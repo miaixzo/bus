@@ -33,7 +33,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * FALSE 校验
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class FalseStrategy implements Matcher<Boolean, False> {

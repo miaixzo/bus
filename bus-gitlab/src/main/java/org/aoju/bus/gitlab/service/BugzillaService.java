@@ -28,7 +28,7 @@ import org.aoju.bus.gitlab.GitLabApiForm;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class BugzillaService extends NotificationService {

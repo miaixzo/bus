@@ -26,7 +26,7 @@ package org.aoju.bus.core.io;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public interface EventFactory<T> {

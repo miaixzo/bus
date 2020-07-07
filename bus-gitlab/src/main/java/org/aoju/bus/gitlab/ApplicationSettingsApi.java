@@ -36,7 +36,7 @@ import java.util.Iterator;
  * See <a href="https://docs.gitlab.com/ee/api/settings.html">Application Settings API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class ApplicationSettingsApi extends AbstractApi {

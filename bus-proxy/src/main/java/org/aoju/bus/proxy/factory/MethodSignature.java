@@ -32,7 +32,7 @@ import java.util.List;
  * 用于捕获方法签名的类
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class MethodSignature {

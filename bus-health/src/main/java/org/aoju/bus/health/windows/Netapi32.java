@@ -36,7 +36,7 @@ import com.sun.jna.win32.W32APITypeMapper;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public interface Netapi32 extends com.sun.jna.platform.win32.Netapi32 {

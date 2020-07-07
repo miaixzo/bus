@@ -22,16 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.cron.consts;
+package org.aoju.bus.cron;
 
 /**
  * 任务执行规则
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
-public enum ExecutorBlockStrategy {
+public enum ExecutorStrategy {
 
     /**
      * 串行
@@ -52,13 +52,13 @@ public enum ExecutorBlockStrategy {
 
     private String title;
 
-    ExecutorBlockStrategy(String title) {
+    ExecutorStrategy(String title) {
         this.title = title;
     }
 
-    public static ExecutorBlockStrategy match(String name, ExecutorBlockStrategy defaultItem) {
+    public static ExecutorStrategy match(String name, ExecutorStrategy defaultItem) {
         if (name != null) {
-            for (ExecutorBlockStrategy item : ExecutorBlockStrategy.values()) {
+            for (ExecutorStrategy item : ExecutorStrategy.values()) {
                 if (item.name().equals(name)) {
                     return item;
                 }

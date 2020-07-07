@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.tree;
  *
  * @param <T> 类型
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public interface Node<T> extends Comparable<Node<T>> {
