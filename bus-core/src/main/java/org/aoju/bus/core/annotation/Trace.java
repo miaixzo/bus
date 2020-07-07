@@ -22,57 +22,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.cron.consts;
+package org.aoju.bus.core.annotation;
+
+import org.aoju.bus.core.lang.Normal;
+
+import java.lang.annotation.*;
 
 /**
- * 任务执行规则
+ * 日志追溯
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 5.9.9
  * @since JDK 1.8+
  */
-public enum ExecutorBlockStrategy {
+@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Trace {
 
     /**
-     * 串行
+     * @return 业务标题
      */
-    SERIAL_EXECUTION("Serial execution"),
+    String value() default Normal.EMPTY;
+
     /**
-     * 并行
+     * @return 业务编号
      */
-    CONCURRENT_EXECUTION("Parallel flow"),
+    String id() default Normal.EMPTY;
+
     /**
-     * 丢弃
+     * @return 业务模块
      */
-    DISCARD_LATER("Discard Later"),
+    String module() default Normal.EMPTY;
+
     /**
-     * 覆盖
+     * @return 业务功能
      */
-    COVER_EARLY("Cover Early");
+    String business() default Normal.EMPTY;
 
-    private String title;
+    /**
+     * @return 参数信息
+     */
+    String params() default Normal.EMPTY;
 
-    ExecutorBlockStrategy(String title) {
-        this.title = title;
-    }
+    /**
+     * @return 操作人类别
+     */
+    String operator() default Normal.EMPTY;
 
-    public static ExecutorBlockStrategy match(String name, ExecutorBlockStrategy defaultItem) {
-        if (name != null) {
-            for (ExecutorBlockStrategy item : ExecutorBlockStrategy.values()) {
-                if (item.name().equals(name)) {
-                    return item;
-                }
-            }
-        }
-        return defaultItem;
-    }
+    /**
+     * @return 扩展信息
+     */
+    String extend() default Normal.EMPTY;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    /**
+     * @return 是否保存请求参数
+     */
+    boolean isSaveRequest() default true;
 
 }

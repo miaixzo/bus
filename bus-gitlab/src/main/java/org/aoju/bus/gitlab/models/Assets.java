@@ -33,7 +33,7 @@ import java.util.List;
  * This class is part of the Release class model.
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class Assets {

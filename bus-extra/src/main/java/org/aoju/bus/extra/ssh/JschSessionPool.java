@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Jsch会话池
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public enum JschSessionPool {

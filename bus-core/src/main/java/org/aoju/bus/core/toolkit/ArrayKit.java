@@ -41,7 +41,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class ArrayKit {
@@ -75,12 +75,13 @@ public class ArrayKit {
      * @return 是否为空
      */
     public static boolean isEmpty(Object array) {
-        if (null == array) {
-            return true;
-        } else if (isArray(array)) {
-            return 0 == Array.getLength(array);
+        if (array != null) {
+            if (isArray(array)) {
+                return 0 == Array.getLength(array);
+            }
+            return false;
         }
-        throw new InstrumentException("Object to provide is not a Array !");
+        return true;
     }
 
     /**

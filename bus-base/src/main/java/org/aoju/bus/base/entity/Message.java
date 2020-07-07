@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
  * 返回值公用类
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @Data

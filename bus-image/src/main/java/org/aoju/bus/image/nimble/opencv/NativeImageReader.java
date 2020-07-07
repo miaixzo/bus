@@ -51,7 +51,7 @@ import java.util.Iterator;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class NativeImageReader extends ImageReader implements Closeable {
@@ -337,7 +337,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         return null;
     }
 
-    private PlanarImage getNativeImage(ImageReadParam param) throws IOException {
+    public PlanarImage getNativeImage(ImageReadParam param) throws IOException {
         StreamSegment seg = StreamSegment.getStreamSegment(iis, param);
         ImageDescriptor desc = seg.getImageDescriptor();
 

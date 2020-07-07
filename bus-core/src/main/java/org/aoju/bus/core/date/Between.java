@@ -35,7 +35,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class Between {
@@ -190,7 +190,7 @@ public class Between {
 
     @Override
     public String toString() {
-        return toString(Fields.Level.MILLSECOND);
+        return toString(Fields.Level.MILLISECOND);
     }
 
 }

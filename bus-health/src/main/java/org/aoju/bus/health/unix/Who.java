@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * Utility to query logged in users.
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe

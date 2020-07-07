@@ -32,7 +32,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
@@ -59,9 +59,7 @@ public abstract class CustomKeyMap<K, V> extends MapWrapper<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
-            this.put(entry.getKey(), entry.getValue());
-        }
+        m.forEach(this::put);
     }
 
     @Override

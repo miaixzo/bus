@@ -33,7 +33,7 @@ import org.aoju.bus.health.windows.WinNT.TOKEN_PRIMARY_GROUP;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class Advapi32Kit extends com.sun.jna.platform.win32.Advapi32Util {

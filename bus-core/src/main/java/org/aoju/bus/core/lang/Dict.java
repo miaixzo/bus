@@ -39,7 +39,7 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
@@ -222,6 +222,11 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
     @Override
     public Date getDate(String attr) {
         return get(attr, null);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ?> m) {
+        m.forEach(this::put);
     }
 
     /**

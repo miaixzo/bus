@@ -39,7 +39,7 @@ import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
  * This class is used to filter merge requests when getting lists of them.
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class MergeRequestFilter {

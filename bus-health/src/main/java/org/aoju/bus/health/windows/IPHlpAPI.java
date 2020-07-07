@@ -32,7 +32,7 @@ import com.sun.jna.win32.W32APIOptions;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {

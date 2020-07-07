@@ -34,7 +34,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * 硬件信息特定于平台的实现所使用的公共字段或方法
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe

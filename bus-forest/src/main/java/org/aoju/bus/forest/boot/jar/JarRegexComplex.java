@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * Jar记录正则表达式规则
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class JarRegexComplex extends RegexComplex<JarArchiveEntry> implements Complex<JarArchiveEntry> {

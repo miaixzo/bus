@@ -45,7 +45,7 @@ import static org.aoju.bus.health.Memoize.memoize;
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe

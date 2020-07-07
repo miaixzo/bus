@@ -34,7 +34,7 @@ import java.io.Writer;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class HL7ContentHandler extends DefaultHandler {

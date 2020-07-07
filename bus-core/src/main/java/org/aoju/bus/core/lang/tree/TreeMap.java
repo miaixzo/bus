@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @param <T> ID类型
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T> {

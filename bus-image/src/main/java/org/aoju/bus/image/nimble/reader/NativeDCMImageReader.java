@@ -38,6 +38,7 @@ import org.aoju.bus.image.nimble.codec.ImageReaderFactory;
 import org.aoju.bus.image.nimble.codec.TransferSyntaxType;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.aoju.bus.image.nimble.codec.jpeg.PatchJPEGLSImageInputStream;
+import org.aoju.bus.image.nimble.opencv.NativeImageReader;
 import org.aoju.bus.image.nimble.stream.ImageInputStreamAdapter;
 import org.aoju.bus.image.nimble.stream.ImagePixelInputStream;
 import org.aoju.bus.image.nimble.stream.SegmentedImageStream;
@@ -59,7 +60,7 @@ import java.util.Set;
 
 /**
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class NativeDCMImageReader extends ImageReader implements Closeable {
@@ -834,8 +835,27 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
     }
 
     /**
+     * 获取图片像素点的像素值,用于计算ct值
+     *
+     * @param frameIndex 图像在dcm文件中的索引
+     * @param row        像素点行号
+     * @param column     像素点列号
+     * @return pixel value 像素值
+     * @throws IOException io异常
+     */
+    public double getPixelValue(int frameIndex, int row, int column) throws IOException {
+        readMetadata();
+        checkIndex(frameIndex);
+        openiis();
+        javax.imageio.stream.ImageInputStream iisOfFrame = iisOfFrame(frameIndex);
+        iisOfFrame.length();
+        decompressor.setInput(iisOfFrame);
+        return ((NativeImageReader) decompressor).getNativeImage(decompressParam(null)).get(row, column)[0];
+    }
+
+    /**
      * @author Kimi Liu
-     * @version 6.0.1
+     * @version 6.0.2
      * @since JDK 1.8+
      */
     public static class NativeDCMImageReadParam extends ImageReadParam {
@@ -923,4 +943,5 @@ public class NativeDCMImageReader extends ImageReader implements Closeable {
         }
 
     }
+
 }

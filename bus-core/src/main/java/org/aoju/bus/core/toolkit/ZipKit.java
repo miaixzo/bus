@@ -41,7 +41,7 @@ import java.util.zip.*;
  * 压缩工具类
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class ZipKit {
@@ -230,6 +230,7 @@ public class ZipKit {
                 // 调用递归压缩方法进行目录或文件压缩
                 zip(srcFile, srcRootDir, zipOutputStream, filter);
                 zipOutputStream.flush();
+                zipOutputStream.finish();
             }
         } catch (IOException e) {
             throw new InstrumentException(e);

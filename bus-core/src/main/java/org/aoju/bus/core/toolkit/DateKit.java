@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 6.0.1
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -1763,7 +1763,7 @@ public class DateKit {
      * @return XX天XX小时XX分XX秒XX毫秒
      */
     public static String formatBetween(long betweenMs) {
-        return new DatePeriod(betweenMs, Fields.Level.MILLSECOND).format();
+        return new DatePeriod(betweenMs, Fields.Level.MILLISECOND).format();
     }
 
     /**
