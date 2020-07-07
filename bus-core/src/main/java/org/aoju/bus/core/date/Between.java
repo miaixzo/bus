@@ -190,7 +190,7 @@ public class Between {
 
     @Override
     public String toString() {
-        return toString(Fields.Level.MILLSECOND);
+        return toString(Fields.Level.MILLISECOND);
     }
 
 }
