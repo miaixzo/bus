@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.freebsd.software;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -33,8 +34,6 @@ import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.unix.CLibrary;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.logger.Logger;
-
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * FreeBsdNetworkParams class.
@@ -70,7 +69,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != LIBC.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }

@@ -30,14 +30,13 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Hardware data obtained from ioreg.
@@ -49,7 +48,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class MacComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Triple<String, String, String>> manufacturerModelSerial = memoize(
+    private final Supplier<Triple<String, String, String>> manufacturerModelSerial = Memoize.memoize(
             MacComputerSystem::platformExpert);
 
     private static Triple<String, String, String> platformExpert() {

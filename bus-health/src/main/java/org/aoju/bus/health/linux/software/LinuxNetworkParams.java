@@ -26,6 +26,7 @@ package org.aoju.bus.health.linux.software;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
+import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -40,8 +41,6 @@ import org.aoju.bus.logger.Logger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
 
 /**
  * LinuxNetworkParams class.
@@ -85,7 +84,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != LibC.INSTANCE.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }

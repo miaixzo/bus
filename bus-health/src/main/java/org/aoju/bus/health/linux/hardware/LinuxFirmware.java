@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
 import java.time.format.DateTimeFormatter;
@@ -37,8 +38,6 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Firmware data obtained by sysfs.
@@ -52,13 +51,13 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter.ofPattern("MMM d uuuu HH:mm:ss",
             Locale.ENGLISH);
-    private final Supplier<VcGenCmdStrings> vcGenCmd = memoize(this::queryVcGenCmd);
-    private final Supplier<String> manufacturer = memoize(this::queryManufacturer);
-    private final Supplier<String> description = memoize(this::queryDescription);
-    private final Supplier<String> releaseDate = memoize(this::queryReleaseDate);
-    private final Supplier<BiosStrings> bios = memoize(LinuxFirmware::queryBios);
-    private final Supplier<String> version = memoize(this::queryVersion);
-    private final Supplier<String> name = memoize(this::queryName);
+    private final Supplier<VcGenCmdStrings> vcGenCmd = Memoize.memoize(this::queryVcGenCmd);
+    private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
+    private final Supplier<String> description = Memoize.memoize(this::queryDescription);
+    private final Supplier<String> releaseDate = Memoize.memoize(this::queryReleaseDate);
+    private final Supplier<BiosStrings> bios = Memoize.memoize(LinuxFirmware::queryBios);
+    private final Supplier<String> version = Memoize.memoize(this::queryVersion);
+    private final Supplier<String> name = Memoize.memoize(this::queryName);
 
     private static String queryManufacturerFromSysfs() {
         final String biosVendor = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_vendor").trim();

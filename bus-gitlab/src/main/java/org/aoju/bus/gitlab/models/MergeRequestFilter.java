@@ -32,9 +32,6 @@ import org.aoju.bus.gitlab.GitLabApiForm;
 import java.util.Date;
 import java.util.List;
 
-import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ALL;
-import static org.aoju.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
-
 /**
  * This class is used to filter merge requests when getting lists of them.
  *
@@ -373,7 +370,8 @@ public class MergeRequestFilter {
                 .withParam("in", in)
                 .withParam("wip", (wip == null ? null : wip ? "yes" : "no"));
 
-        if (authorId != null && (scope == ALL || scope == ASSIGNED_TO_ME)) {
+        if (authorId != null && (scope == Constants.MergeRequestScope.ALL
+                || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
             params.withParam("author_id", authorId);
         }
         return params;

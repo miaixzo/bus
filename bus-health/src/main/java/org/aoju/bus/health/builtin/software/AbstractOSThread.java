@@ -55,7 +55,7 @@ public abstract class AbstractOSThread implements OSThread {
     }
 
     private double queryCumulativeCpuLoad() {
-        return (getKernelTime() + getUserTime()) / (double) getUpTime();
+        return getUpTime() > 0d ? (getKernelTime() + getUserTime()) / (double) getUpTime() : 0d;
     }
 
     @Override

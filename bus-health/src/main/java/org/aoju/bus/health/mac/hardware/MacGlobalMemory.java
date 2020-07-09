@@ -34,6 +34,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.PhysicalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
@@ -43,9 +44,6 @@ import org.aoju.bus.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Memory obtained by host_statistics (vm_stat) and sysctl.
@@ -57,10 +55,10 @@ import static org.aoju.bus.health.Memoize.memoize;
 @ThreadSafe
 final class MacGlobalMemory extends AbstractGlobalMemory {
 
-    private final Supplier<Long> total = memoize(MacGlobalMemory::queryPhysMem);
-    private final Supplier<Long> pageSize = memoize(MacGlobalMemory::queryPageSize);
-    private final Supplier<Long> available = memoize(this::queryVmStats, defaultExpiration());
-    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
+    private final Supplier<Long> total = Memoize.memoize(MacGlobalMemory::queryPhysMem);
+    private final Supplier<Long> pageSize = Memoize.memoize(MacGlobalMemory::queryPageSize);
+    private final Supplier<Long> available = Memoize.memoize(this::queryVmStats, Memoize.defaultExpiration());
+    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
 
     private static long queryPhysMem() {
         return SysctlKit.sysctl("hw.memsize", 0L);

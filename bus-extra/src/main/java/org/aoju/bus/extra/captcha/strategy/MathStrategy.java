@@ -70,7 +70,7 @@ public class MathStrategy implements CodeStrategy {
                 .append(number1)
                 .append(RandomKit.randomChar(Symbol.PLUS + Symbol.HYPHEN + Symbol.STAR))
                 .append(number2)
-                .append('=').toString();
+                .append(Symbol.C_EQUAL).toString();
     }
 
     @Override

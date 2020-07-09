@@ -29,13 +29,12 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32BaseBoard;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Baseboard data obtained from WMI
@@ -43,7 +42,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class WindowsBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = memoize(
+    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = Memoize.memoize(
             WindowsBaseboard::queryManufModelVersSerial);
 
     private static Quartet<String, String, String, String> queryManufModelVersSerial() {

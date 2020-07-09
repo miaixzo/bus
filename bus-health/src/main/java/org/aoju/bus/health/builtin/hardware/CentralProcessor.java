@@ -30,14 +30,13 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Memoize;
 
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * 此类表示计算机*系统的整个中央处理单元(CPU)，其中可能包含一个
@@ -240,7 +239,7 @@ public interface CentralProcessor {
         SOFTIRQ(6),
         /**
          * Time which the hypervisor dedicated for other guests in the system. Only
-         * supported on Linux.
+         * supported on Linux and AIX
          */
         STEAL(7);
 
@@ -381,10 +380,16 @@ public interface CentralProcessor {
         private final boolean cpu64bit;
         private final long cpuVendorFreq;
 
-        private final Supplier<String> microArchictecture = memoize(this::queryMicroarchitecture);
+        private final Supplier<String> microArchictecture = Memoize.memoize(this::queryMicroarchitecture);
+
 
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
                                    String cpuStepping, String processorID, boolean cpu64bit) {
+            this(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit, -1L);
+        }
+
+        public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
+                                   String cpuStepping, String processorID, boolean cpu64bit, long vendorFreq) {
             this.cpuVendor = cpuVendor;
             this.cpuName = cpuName;
             this.cpuFamily = cpuFamily;
@@ -405,14 +410,18 @@ public interface CentralProcessor {
             sb.append(" Stepping ").append(cpuStepping);
             this.cpuIdentifier = sb.toString();
 
-            // Parse Freq from name string
-            Pattern pattern = Pattern.compile("@ (.*)$");
-            Matcher matcher = pattern.matcher(cpuName);
-            if (matcher.find()) {
-                String unit = matcher.group(1);
-                this.cpuVendorFreq = Builder.parseHertz(unit);
+            if (vendorFreq >= 0) {
+                this.cpuVendorFreq = vendorFreq;
             } else {
-                this.cpuVendorFreq = -1L;
+                // Parse Freq from name string
+                Pattern pattern = Pattern.compile("@ (.*)$");
+                Matcher matcher = pattern.matcher(cpuName);
+                if (matcher.find()) {
+                    String unit = matcher.group(1);
+                    this.cpuVendorFreq = Builder.parseHertz(unit);
+                } else {
+                    this.cpuVendorFreq = -1L;
+                }
             }
         }
 

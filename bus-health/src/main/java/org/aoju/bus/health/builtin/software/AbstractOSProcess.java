@@ -25,11 +25,9 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Memoize;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * A process is an instance of a computer program that is being executed. It
@@ -44,7 +42,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @ThreadSafe
 public abstract class AbstractOSProcess implements OSProcess {
 
-    private final Supplier<Double> cumulativeCpuLoad = memoize(this::queryCumulativeCpuLoad, defaultExpiration());
+    private final Supplier<Double> cumulativeCpuLoad = Memoize.memoize(this::queryCumulativeCpuLoad, Memoize.defaultExpiration());
 
     private int processID;
 
@@ -63,7 +61,7 @@ public abstract class AbstractOSProcess implements OSProcess {
     }
 
     private double queryCumulativeCpuLoad() {
-        return (getKernelTime() + getUserTime()) / (double) getUpTime();
+        return getUpTime() > 0d ? (getKernelTime() + getUserTime()) / (double) getUpTime() : 0d;
     }
 
     @Override

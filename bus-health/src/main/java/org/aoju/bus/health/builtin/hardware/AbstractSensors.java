@@ -25,12 +25,10 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Memoize;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * 来自WMI或Open Hardware Monitor的传感器
@@ -42,11 +40,11 @@ import static org.aoju.bus.health.Memoize.memoize;
 @ThreadSafe
 public abstract class AbstractSensors implements Sensors {
 
-    private final Supplier<Double> cpuTemperature = memoize(this::queryCpuTemperature, defaultExpiration());
+    private final Supplier<Double> cpuTemperature = Memoize.memoize(this::queryCpuTemperature, Memoize.defaultExpiration());
 
-    private final Supplier<int[]> fanSpeeds = memoize(this::queryFanSpeeds, defaultExpiration());
+    private final Supplier<int[]> fanSpeeds = Memoize.memoize(this::queryFanSpeeds, Memoize.defaultExpiration());
 
-    private final Supplier<Double> cpuVoltage = memoize(this::queryCpuVoltage, defaultExpiration());
+    private final Supplier<Double> cpuVoltage = Memoize.memoize(this::queryCpuVoltage, Memoize.defaultExpiration());
 
     @Override
     public double getCpuTemperature() {

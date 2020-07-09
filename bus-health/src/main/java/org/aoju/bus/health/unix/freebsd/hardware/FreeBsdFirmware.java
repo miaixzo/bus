@@ -30,11 +30,10 @@ import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Firmware information from dmidecode
@@ -46,7 +45,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class FreeBsdFirmware extends AbstractFirmware {
 
-    private final Supplier<Triple<String, String, String>> manufVersRelease = memoize(FreeBsdFirmware::readDmiDecode);
+    private final Supplier<Triple<String, String, String>> manufVersRelease = Memoize.memoize(FreeBsdFirmware::readDmiDecode);
 
     private static Triple<String, String, String> readDmiDecode() {
         String manufacturer = null;

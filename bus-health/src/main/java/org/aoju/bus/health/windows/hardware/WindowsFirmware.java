@@ -29,13 +29,12 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32Bios;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Firmware data obtained from WMI
@@ -47,7 +46,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class WindowsFirmware extends AbstractFirmware {
 
-    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = memoize(
+    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoize.memoize(
             WindowsFirmware::queryManufNameDescVersRelease);
 
     private static Quintet<String, String, String, String, String> queryManufNameDescVersRelease() {

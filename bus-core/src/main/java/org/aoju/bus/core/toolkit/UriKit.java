@@ -2190,11 +2190,11 @@ public class UriKit {
                 if (isFirst) {
                     isFirst = false;
                 } else {
-                    sb.append("&");
+                    sb.append(Symbol.AND);
                 }
                 key = entry.getKey();
                 if (StringKit.isNotEmpty(key)) {
-                    sb.append(encodeAll(StringKit.toString(key), charset)).append("=");
+                    sb.append(encodeAll(StringKit.toString(key), charset)).append(Symbol.EQUAL);
                     value = entry.getValue();
                     if (StringKit.isNotEmpty(value)) {
                         sb.append(encodeAll(StringKit.toString(value), charset));

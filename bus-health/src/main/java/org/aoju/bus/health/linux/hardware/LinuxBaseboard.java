@@ -30,13 +30,12 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
+import org.aoju.bus.health.linux.ProcPath;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
-import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
 
 /**
  * Baseboard data obtained by sysfs
@@ -48,13 +47,13 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
 @Immutable
 final class LinuxBaseboard extends AbstractBaseboard {
 
-    private final Supplier<String> manufacturer = memoize(LinuxBaseboard::queryManufacturer);
+    private final Supplier<String> manufacturer = Memoize.memoize(LinuxBaseboard::queryManufacturer);
 
-    private final Supplier<String> model = memoize(LinuxBaseboard::queryModel);
+    private final Supplier<String> model = Memoize.memoize(LinuxBaseboard::queryModel);
 
-    private final Supplier<String> version = memoize(LinuxBaseboard::queryVersion);
+    private final Supplier<String> version = Memoize.memoize(LinuxBaseboard::queryVersion);
 
-    private final Supplier<String> serialNumber = memoize(LinuxBaseboard::querySerialNumber);
+    private final Supplier<String> serialNumber = Memoize.memoize(LinuxBaseboard::querySerialNumber);
 
     private static String queryManufacturer() {
         String result;
@@ -137,7 +136,7 @@ final class LinuxBaseboard extends AbstractBaseboard {
         String pcVersion = null;
         String pcSerialNumber = null;
 
-        List<String> cpuInfo = FileKit.readLines(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
             if (splitLine.length < 2) {

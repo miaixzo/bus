@@ -31,7 +31,7 @@ import org.aoju.bus.health.builtin.software.OSSession;
 
 import java.time.LocalDateTime;
 import java.time.Year;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -83,9 +83,9 @@ public final class Who {
                 try {
                     whoList.add(new OSSession(m.group(1), m.group(2),
                             LocalDateTime.parse(m.group(3) + " " + m.group(4), WHO_DATE_FORMAT_LINUX)
-                                    .toEpochSecond(ZoneOffset.UTC) * 1000L,
+                                    .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                             m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
-                } catch (DateTimeParseException e) {
+                } catch (DateTimeParseException | NullPointerException e) {
                     // shouldn't happen if regex matches and OS is producing sensible dates
                 }
             } else {
@@ -99,10 +99,10 @@ public final class Who {
                         if (login.isAfter(LocalDateTime.now())) {
                             login = login.minus(1, ChronoUnit.YEARS);
                         }
-                        long millis = login.toEpochSecond(ZoneOffset.UTC) * 1000L;
+                        long millis = login.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                         whoList.add(
                                 new OSSession(m.group(1), m.group(2), millis, m.group(6) == null ? "" : m.group(6)));
-                    } catch (DateTimeParseException e) {
+                    } catch (DateTimeParseException | NullPointerException e) {
                         // shouldn't happen if regex matches and OS is producing sensible dates
                     }
                 }

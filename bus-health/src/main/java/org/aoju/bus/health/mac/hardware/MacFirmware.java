@@ -31,12 +31,11 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Firmware data obtained from ioreg.
@@ -48,7 +47,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class MacFirmware extends AbstractFirmware {
 
-    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = memoize(
+    private final Supplier<Quintet<String, String, String, String, String>> manufNameDescVersRelease = Memoize.memoize(
             MacFirmware::queryEfi);
 
     private static Quintet<String, String, String, String, String> queryEfi() {

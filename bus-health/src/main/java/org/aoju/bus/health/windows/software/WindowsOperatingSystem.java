@@ -37,6 +37,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
 import org.aoju.bus.health.windows.Kernel32;
@@ -52,10 +53,6 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-import static org.aoju.bus.health.builtin.software.OSService.State.*;
 
 /**
  * Microsoft Windows, commonly referred to as Windows, is a group of several
@@ -74,7 +71,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * Windows event log name
      */
-    private static Supplier<String> systemLog = memoize(WindowsOperatingSystem::querySystemLog,
+    private static Supplier<String> systemLog = Memoize.memoize(WindowsOperatingSystem::querySystemLog,
             TimeUnit.HOURS.toNanos(1));
 
     private static final long BOOTTIME = querySystemBootTime();
@@ -87,10 +84,10 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
      * Cache full process stats queries. Second query will only populate if first
      * one returns null.
      */
-    private Supplier<Map<Integer, PerfCounterBlock>> processMapFromRegistry = memoize(
-            WindowsOperatingSystem::queryProcessMapFromRegistry, defaultExpiration());
-    private Supplier<Map<Integer, PerfCounterBlock>> processMapFromPerfCounters = memoize(
-            WindowsOperatingSystem::queryProcessMapFromPerfCounters, defaultExpiration());
+    private Supplier<Map<Integer, PerfCounterBlock>> processMapFromRegistry = Memoize.memoize(
+            WindowsOperatingSystem::queryProcessMapFromRegistry, Memoize.defaultExpiration());
+    private Supplier<Map<Integer, PerfCounterBlock>> processMapFromPerfCounters = Memoize.memoize(
+            WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoize.defaultExpiration());
 
     private static String parseVersion(WmiResult<OSVersionProperty> versionInfo, int suiteMask, String buildNumber) {
         // Initialize a default, sane value
@@ -463,13 +460,13 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 State state;
                 switch (services[i].ServiceStatusProcess.dwCurrentState) {
                     case 1:
-                        state = STOPPED;
+                        state = OSService.State.STOPPED;
                         break;
                     case 4:
-                        state = RUNNING;
+                        state = OSService.State.RUNNING;
                         break;
                     default:
-                        state = OTHER;
+                        state = OSService.State.OTHER;
                         break;
                 }
                 svcArray[i] = new OSService(services[i].lpDisplayName, services[i].ServiceStatusProcess.dwProcessId,

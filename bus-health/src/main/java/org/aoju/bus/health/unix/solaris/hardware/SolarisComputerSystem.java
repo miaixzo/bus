@@ -29,13 +29,12 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Hardware data obtained from smbios.
@@ -47,7 +46,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class SolarisComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<SmbiosStrings> smbiosStrings = memoize(SolarisComputerSystem::readSmbios);
+    private final Supplier<SmbiosStrings> smbiosStrings = Memoize.memoize(SolarisComputerSystem::readSmbios);
 
     private static SmbiosStrings readSmbios() {
         String biosVendor = null;

@@ -35,12 +35,11 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.linux.LinuxLibc;
+import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.CpuStat;
 import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
 
 import java.util.*;
-
-import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
 
 /**
  * A CPU as defined in Linux /proc.
@@ -163,7 +162,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
         StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
         String[] flags = new String[0];
-        List<String> cpuInfo = FileKit.readLines(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
             if (splitLine.length < 2) {
@@ -225,7 +224,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
-        List<String> procCpu = FileKit.readLines(CPUINFO);
+        List<String> procCpu = FileKit.readLines(ProcPath.CPUINFO);
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         int currentProcessor = 0;
         int currentCore = 0;
@@ -289,7 +288,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
         // If unsuccessful, try from /proc/cpuinfo
         Arrays.fill(freqs, -1);
-        List<String> cpuInfo = FileKit.readLines(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
         int proc = 0;
         for (String s : cpuInfo) {
             if (s.toLowerCase().contains("cpu mhz")) {

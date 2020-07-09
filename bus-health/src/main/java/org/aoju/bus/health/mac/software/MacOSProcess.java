@@ -32,6 +32,8 @@ import com.sun.jna.platform.mac.SystemB.*;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.mac.SysctlKit;
@@ -43,8 +45,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * @author Kimi Liu
@@ -68,7 +68,7 @@ public class MacOSProcess extends AbstractOSProcess {
 
     private int minorVersion;
 
-    private Supplier<String> commandLine = memoize(this::queryCommandLine);
+    private Supplier<String> commandLine = Memoize.memoize(this::queryCommandLine);
 
     private String name = Normal.EMPTY;
     private String path = Normal.EMPTY;
@@ -308,7 +308,7 @@ public class MacOSProcess extends AbstractOSProcess {
         if (0 < SystemB.INSTANCE.proc_pidpath(getProcessID(), buf, SystemB.PROC_PIDPATHINFO_MAXSIZE)) {
             this.path = buf.getString(0).trim();
             // Overwrite name with last part of path
-            String[] pathSplit = this.path.split("/");
+            String[] pathSplit = this.path.split(Symbol.SLASH);
             if (pathSplit.length > 0) {
                 this.name = pathSplit[pathSplit.length - 1];
             }

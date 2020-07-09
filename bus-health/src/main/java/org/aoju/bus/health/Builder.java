@@ -88,6 +88,7 @@ public final class Builder {
      * Used for matching
      */
     private static final Pattern HERTZ_PATTERN = Pattern.compile("(\\d+(.\\d+)?) ?([kMGT]?Hz).*");
+    private static final Pattern BYTES_PATTERN = Pattern.compile("(\\d+) ?([kMGT]?B).*");
     /**
      * Pattern for [dd-[hh:[mm:[ss[.sss]]]]]
      */
@@ -1480,6 +1481,15 @@ public final class Builder {
      */
     public static long parseDecimalMemorySizeToBinary(String size) {
         String[] mem = RegEx.SPACES.split(size);
+        if (mem.length < 2) {
+            // If no spaces, use regexp
+            Matcher matcher = BYTES_PATTERN.matcher(size.trim());
+            if (matcher.find() && matcher.groupCount() == 2) {
+                mem = new String[2];
+                mem[0] = matcher.group(1);
+                mem[1] = matcher.group(2);
+            }
+        }
         long capacity = Builder.parseLongOrDefault(mem[0], 0L);
         if (mem.length == 2 && mem[1].length() > 1) {
             switch (mem[1].charAt(0)) {
@@ -1704,6 +1714,20 @@ public final class Builder {
             // Hex failed to parse, just return the default long
             return defaultValue;
         }
+    }
+
+    /**
+     * Parses a String "....foo" to "foo"
+     *
+     * @param dotPrefixedStr A string with possibly leading dots
+     * @return The string without the dots
+     */
+    public static String removeLeadingDots(String dotPrefixedStr) {
+        int pos = 0;
+        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == '.') {
+            pos++;
+        }
+        return pos < dotPrefixedStr.length() ? dotPrefixedStr.substring(pos) : "";
     }
 
 }

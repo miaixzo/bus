@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.software;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.windows.drivers.ThreadPerformanceData;
@@ -116,17 +117,17 @@ public class WindowsOSThread extends AbstractOSThread {
         if (threads == null) {
             threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(pids);
         }
-        return updateAttributes(this.name.split("/")[0], threads.get(getThreadId()));
+        return updateAttributes(this.name.split(Symbol.SLASH)[0], threads.get(getThreadId()));
     }
 
     private boolean updateAttributes(String procName, ThreadPerformanceData.PerfCounterBlock pcb) {
         if (pcb == null) {
             this.state = OSProcess.State.INVALID;
             return false;
-        } else if (pcb.getName().contains("/") || procName.isEmpty()) {
+        } else if (pcb.getName().contains(Symbol.SLASH) || procName.isEmpty()) {
             name = pcb.getName();
         } else {
-            this.name = procName + "/" + pcb.getName();
+            this.name = procName + Symbol.SLASH + pcb.getName();
         }
         switch (pcb.getThreadState()) {
             case 0:

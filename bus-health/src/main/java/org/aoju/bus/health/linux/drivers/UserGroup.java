@@ -28,14 +28,13 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Utility class to temporarily cache the userID and group maps in Linux, for
@@ -49,9 +48,9 @@ import static org.aoju.bus.health.Memoize.memoize;
 public final class UserGroup {
 
     // Temporarily cache users and groups, update each minute
-    private static final Supplier<Map<String, String>> usersIdMap = memoize(UserGroup::getUserMap,
+    private static final Supplier<Map<String, String>> usersIdMap = Memoize.memoize(UserGroup::getUserMap,
             TimeUnit.MINUTES.toNanos(1));
-    private static final Supplier<Map<String, String>> groupsIdMap = memoize(UserGroup::getGroupMap,
+    private static final Supplier<Map<String, String>> groupsIdMap = Memoize.memoize(UserGroup::getGroupMap,
             TimeUnit.MINUTES.toNanos(1));
 
     private UserGroup() {

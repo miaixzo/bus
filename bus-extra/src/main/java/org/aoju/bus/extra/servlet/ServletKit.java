@@ -450,7 +450,7 @@ public class ServletKit {
      * @param maxAgeInSeconds -1: 关闭浏览器清除Cookie. 0: 立即清除Cookie. &gt;0 : Cookie存在的秒数.
      */
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeInSeconds) {
-        addCookie(response, name, value, maxAgeInSeconds, "/", null);
+        addCookie(response, name, value, maxAgeInSeconds, Symbol.SLASH, null);
     }
 
     /**

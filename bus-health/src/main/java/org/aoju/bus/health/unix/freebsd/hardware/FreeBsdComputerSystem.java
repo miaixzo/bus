@@ -30,13 +30,12 @@ import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * Hardware data obtained from dmidecode.
@@ -48,7 +47,7 @@ import static org.aoju.bus.health.Memoize.memoize;
 @Immutable
 final class FreeBsdComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Quartet<String, String, String, String>> manufModelSerialVers = memoize(
+    private final Supplier<Quartet<String, String, String, String>> manufModelSerialVers = Memoize.memoize(
             FreeBsdComputerSystem::readDmiDecode);
 
     private static Quartet<String, String, String, String> readDmiDecode() {

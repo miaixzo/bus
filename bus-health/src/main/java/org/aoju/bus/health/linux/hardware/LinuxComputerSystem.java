@@ -29,15 +29,14 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
+import org.aoju.bus.health.linux.ProcPath;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
-import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
 
 /**
  * Hardware data obtained from sysfs.
@@ -49,11 +48,11 @@ import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
 @Immutable
 final class LinuxComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<String> manufacturer = memoize(LinuxComputerSystem::queryManufacturer);
+    private final Supplier<String> manufacturer = Memoize.memoize(LinuxComputerSystem::queryManufacturer);
 
-    private final Supplier<String> model = memoize(LinuxComputerSystem::queryModel);
+    private final Supplier<String> model = Memoize.memoize(LinuxComputerSystem::queryModel);
 
-    private final Supplier<String> serialNumber = memoize(LinuxComputerSystem::querySerialNumber);
+    private final Supplier<String> serialNumber = Memoize.memoize(LinuxComputerSystem::querySerialNumber);
 
     private static String queryManufacturer() {
         String result;
@@ -90,7 +89,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     }
 
     private static String queryManufacturerFromProcCpu() {
-        List<String> cpuInfo = FileKit.readLines(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
             if (line.startsWith("CPU implementer")) {
                 int part = Builder.parseLastInt(line, 0);

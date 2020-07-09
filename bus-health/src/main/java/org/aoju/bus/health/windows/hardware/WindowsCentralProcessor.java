@@ -41,6 +41,7 @@ import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.windows.PowrProf;
 import org.aoju.bus.health.windows.PowrProf.ProcessorPowerInformation;
 import org.aoju.bus.health.windows.WmiKit;
+import org.aoju.bus.health.windows.drivers.LogicalProcessorInformation;
 import org.aoju.bus.health.windows.drivers.ProcessorInformation;
 import org.aoju.bus.health.windows.drivers.SystemInformation;
 import org.aoju.bus.health.windows.drivers.Win32Processor;
@@ -180,9 +181,17 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
         if (VersionHelpers.IsWindows7OrGreater()) {
-            return getLogicalProcessorInformationEx();
+            List<LogicalProcessor> logProcs = LogicalProcessorInformation.getLogicalProcessorInformationEx();
+            // Save numaNode,Processor lookup for future PerfCounter instance lookup
+            this.numaNodeProcToLogicalProcMap = new HashMap<>();
+            int lp = 0;
+            for (LogicalProcessor logProc : logProcs) {
+                numaNodeProcToLogicalProcMap
+                        .put(String.format("%d,%d", logProc.getNumaNode(), logProc.getProcessorNumber()), lp++);
+            }
+            return logProcs;
         } else {
-            return getLogicalProcessorInformation();
+            return LogicalProcessorInformation.getLogicalProcessorInformation();
         }
     }
 
