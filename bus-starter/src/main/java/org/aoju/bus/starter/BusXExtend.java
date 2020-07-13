@@ -94,7 +94,7 @@ public class BusXExtend {
      */
     public static final String STORAGE = "extend.storage";
     /**
-     * 存储设置
+     * Swagger设置
      */
     public static final String SWAGGER = "extend.swagger";
     /**

@@ -360,24 +360,22 @@ public class CollKit {
      * @return 并集的集合，返回 {@link LinkedHashSet}
      */
     public static <T> Set<T> intersectOne(Collection<T> coll1, Collection<T> coll2, Collection<T>... otherColls) {
-        final Set<T> result;
-        if (isEmpty(coll1)) {
-            result = new LinkedHashSet<>();
-        } else {
-            result = new LinkedHashSet<>(coll1);
+        if (isEmpty(coll1) || isEmpty(coll2)) {
+            return new LinkedHashSet<>();
         }
 
-        if (isNotEmpty(coll2)) {
-            result.retainAll(coll2);
-        }
+        final Set<T> result = new LinkedHashSet<>(coll1);
 
         if (ArrayKit.isNotEmpty(otherColls)) {
             for (Collection<T> otherColl : otherColls) {
                 if (isNotEmpty(otherColl)) {
                     result.retainAll(otherColl);
+                } else {
+                    return new LinkedHashSet<>();
                 }
             }
         }
+        result.retainAll(coll2);
         return result;
     }
 
