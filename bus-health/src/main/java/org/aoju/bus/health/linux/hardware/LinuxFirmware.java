@@ -27,11 +27,12 @@ package org.aoju.bus.health.linux.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.health.Builder;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
+import org.aoju.bus.health.linux.drivers.Dmidecode;
+import org.aoju.bus.health.linux.drivers.Sysfs;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -51,60 +52,35 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter.ofPattern("MMM d uuuu HH:mm:ss",
             Locale.ENGLISH);
-    private final Supplier<VcGenCmdStrings> vcGenCmd = Memoize.memoize(this::queryVcGenCmd);
+    private final Supplier<VcGenCmdStrings> vcGenCmd = Memoize.memoize(LinuxFirmware::queryVcGenCmd);
     private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
     private final Supplier<String> description = Memoize.memoize(this::queryDescription);
     private final Supplier<String> releaseDate = Memoize.memoize(this::queryReleaseDate);
-    private final Supplier<BiosStrings> bios = Memoize.memoize(LinuxFirmware::queryBios);
+    private final Supplier<Pair<String, String>> biosNameRev = Memoize.memoize(Dmidecode::queryBiosNameRev);
     private final Supplier<String> version = Memoize.memoize(this::queryVersion);
     private final Supplier<String> name = Memoize.memoize(this::queryName);
 
-    private static String queryManufacturerFromSysfs() {
-        final String biosVendor = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_vendor").trim();
-        if (biosVendor.isEmpty()) {
-            return biosVendor;
-        }
-        return null;
-    }
+    private static VcGenCmdStrings queryVcGenCmd() {
+        String vcReleaseDate;
+        String vcManufacturer;
+        String vcVersion;
 
-    private static String queryDescriptionFromSysfs() {
-        final String modalias = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "modalias").trim();
-        if (!modalias.isEmpty()) {
-            return modalias;
-        }
-        return null;
-    }
-
-    private static String queryReleaseDateFromSysfs() {
-        final String biosDate = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_date").trim();
-        if (!biosDate.isEmpty()) {
-            return Builder.parseMmDdYyyyToYyyyMmDD(biosDate);
-        }
-        return null;
-    }
-
-    private static BiosStrings queryBios() {
-        String biosName = null;
-        String revision = null;
-
-        final String biosMarker = "SMBIOS";
-        final String revMarker = "Bios Revision:";
-
-        // Requires root, may not return anything
-        for (final String checkLine : Executor.runNative("dmidecode -t bios")) {
-            if (checkLine.contains(biosMarker)) {
-                String[] biosArr = RegEx.SPACES.split(checkLine);
-                if (biosArr.length >= 2) {
-                    biosName = biosArr[0] + " " + biosArr[1];
-                }
+        List<String> vcgencmd = Executor.runNative("vcgencmd version");
+        if (vcgencmd.size() >= 3) {
+            // First line is date
+            try {
+                vcReleaseDate = DateTimeFormatter.ISO_LOCAL_DATE.format(VCGEN_FORMATTER.parse(vcgencmd.get(0)));
+            } catch (DateTimeParseException e) {
+                vcReleaseDate = Normal.UNKNOWN;
             }
-            if (checkLine.contains(revMarker)) {
-                revision = checkLine.split(revMarker)[1].trim();
-                // SMBIOS should be first line so if we're here we are done iterating
-                break;
-            }
+            // Second line is copyright
+            String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
+            vcManufacturer = copyright[copyright.length - 1];
+            // Third line is version
+            vcVersion = vcgencmd.get(2).replace("version ", "");
+            return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
         }
-        return new BiosStrings(biosName, revision);
+        return new VcGenCmdStrings(null, null, null, null, null);
     }
 
     @Override
@@ -133,24 +109,16 @@ final class LinuxFirmware extends AbstractFirmware {
     }
 
     private String queryManufacturer() {
-        String result = null;
-        if ((result = queryManufacturerFromSysfs()) == null && (result = vcGenCmd.get().manufacturer) == null) {
+        String result;
+        if ((result = Sysfs.queryBiosVendor()) == null && (result = vcGenCmd.get().manufacturer) == null) {
             return Normal.UNKNOWN;
         }
         return result;
     }
 
-    // $ ls /sys/devices/virtual/dmi/id/
-    // bios_date board_vendor chassis_version product_version
-    // bios_vendor board_version modalias subsystem
-    // bios_version chassis_asset_tag power sys_vendor
-    // board_asset_tag chassis_serial product_name uevent
-    // board_name chassis_type product_serial
-    // board_serial chassis_vendor product_uuid
-
     private String queryDescription() {
         String result;
-        if ((result = queryDescriptionFromSysfs()) == null && (result = vcGenCmd.get().description) == null) {
+        if ((result = Sysfs.queryBiosDescription()) == null && (result = vcGenCmd.get().description) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -158,7 +126,9 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryVersion() {
         String result;
-        if ((result = queryVersionFromSysfs()) == null && (result = vcGenCmd.get().version) == null) {
+        if ((result = Sysfs.queryBiosVersion(
+                this.biosNameRev.get().getRight())) == null
+                && (result = vcGenCmd.get().version) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -166,7 +136,7 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryReleaseDate() {
         String result;
-        if ((result = queryReleaseDateFromSysfs()) == null && (result = vcGenCmd.get().releaseDate) == null) {
+        if ((result = Sysfs.queryBiosReleaseDate()) == null && (result = vcGenCmd.get().releaseDate) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -174,89 +144,10 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryName() {
         String result;
-        if ((result = bios.get().biosName) == null && (result = vcGenCmd.get().name) == null) {
+        if ((result = biosNameRev.get().getLeft()) == null && (result = vcGenCmd.get().name) == null) {
             return Normal.UNKNOWN;
         }
         return result;
-    }
-
-    // $ sudo dmidecode -t bios
-    // # dmidecode 2.11
-    // SMBIOS 2.4 present.
-    //
-    // Handle 0x0000, DMI type 0, 24 bytes
-    // BIOS Information
-    // Vendor: Phoenix Technologies LTD
-    // Version: 6.00
-    // Release Date: 07/02/2015
-    // Address: 0xEA5E0
-    // Runtime Size: 88608 bytes
-    // ROM Size: 64 kB
-    // Characteristics:
-    // ISA is supported
-    // PCI is supported
-    // PC Card (PCMCIA) is supported
-    // PNP is supported
-    // APM is supported
-    // BIOS is upgradeable
-    // BIOS shadowing is allowed
-    // ESCD support is available
-    // Boot from CD is supported
-    // Selectable boot is supported
-    // EDD is supported
-    // Print screen service is supported (int 5h)
-    // 8042 keyboard services are supported (int 9h)
-    // Serial services are supported (int 14h)
-    // Printer services are supported (int 17h)
-    // CGA/mono video services are supported (int 10h)
-    // ACPI is supported
-    // Smart battery is supported
-    // BIOS boot specification is supported
-    // Function key-initiated network boot is supported
-    // Targeted content distribution is supported
-    // BIOS Revision: 4.6
-    // Firmware Revision: 0.0
-
-    private String queryVersionFromSysfs() {
-        final String biosVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_version").trim();
-        if (!biosVersion.isEmpty()) {
-            String biosRevision = this.bios.get().biosRevision;
-            return biosVersion + (StringKit.isBlank(biosRevision) ? "" : " (revision " + biosRevision + ")");
-        }
-        return null;
-    }
-
-    private VcGenCmdStrings queryVcGenCmd() {
-        String vcReleaseDate;
-        String vcManufacturer;
-        String vcVersion;
-
-        List<String> vcgencmd = Executor.runNative("vcgencmd version");
-        if (vcgencmd.size() >= 3) {
-            // First line is date
-            try {
-                vcReleaseDate = DateTimeFormatter.ISO_LOCAL_DATE.format(VCGEN_FORMATTER.parse(vcgencmd.get(0)));
-            } catch (DateTimeParseException e) {
-                vcReleaseDate = Normal.UNKNOWN;
-            }
-            // Second line is copyright
-            String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
-            vcManufacturer = copyright[copyright.length - 1];
-            // Third line is version
-            vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);
-            return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
-        }
-        return new VcGenCmdStrings(null, null, null, null, null);
-    }
-
-    private static final class BiosStrings {
-        private final String biosName;
-        private final String biosRevision;
-
-        private BiosStrings(String biosName, String biosRevision) {
-            this.biosName = biosName;
-            this.biosRevision = biosRevision;
-        }
     }
 
     private static final class VcGenCmdStrings {

@@ -26,16 +26,12 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
-import org.aoju.bus.health.linux.ProcPath;
+import org.aoju.bus.health.linux.drivers.*;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -56,7 +52,7 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryManufacturer() {
         String result;
-        if ((result = queryManufacturerFromSysfs()) == null && (result = queryManufacturerFromProcCpu()) == null) {
+        if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -64,8 +60,8 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String queryModel() {
         String result;
-        if ((result = queryModelFromSysfs()) == null && (result = queryModelFromDeviceTree()) == null
-                && (result = queryModelFromLshw()) == null) {
+        if ((result = Sysfs.queryProductModel()) == null && (result = Devicetree.queryModel()) == null
+                && (result = Lshw.queryModel()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -73,137 +69,11 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private static String querySerialNumber() {
         String result;
-        if ((result = querySerialFromSysfs()) == null && (result = querySerialFromDmiDecode()) == null
-                && (result = querySerialFromLshal()) == null && (result = querySerialFromLshw()) == null) {
+        if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
+                && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
-    }
-
-    private static String queryManufacturerFromSysfs() {
-        final String sysVendor = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "sys_vendor").trim();
-        if (!sysVendor.isEmpty()) {
-            return sysVendor;
-        }
-        return null;
-    }
-
-    private static String queryManufacturerFromProcCpu() {
-        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
-        for (String line : cpuInfo) {
-            if (line.startsWith("CPU implementer")) {
-                int part = Builder.parseLastInt(line, 0);
-                switch (part) {
-                    case 0x41:
-                        return "ARM";
-                    case 0x42:
-                        return "Broadcom";
-                    case 0x43:
-                        return "Cavium";
-                    case 0x44:
-                        return "DEC";
-                    case 0x4e:
-                        return "Nvidia";
-                    case 0x50:
-                        return "APM";
-                    case 0x51:
-                        return "Qualcomm";
-                    case 0x53:
-                        return "Samsung";
-                    case 0x56:
-                        return "Marvell";
-                    case 0x66:
-                        return "Faraday";
-                    case 0x69:
-                        return "Intel";
-                    default:
-                        return null;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static String queryModelFromSysfs() {
-        final String productName = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "product_name").trim();
-        final String productVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "product_version")
-                .trim();
-        if (productName.isEmpty()) {
-            if (!productVersion.isEmpty()) {
-                return productVersion;
-            }
-        } else {
-            if (!productVersion.isEmpty() && !"None".equals(productVersion)) {
-                return productName + " (version: " + productVersion + ")";
-            } else {
-                return productName;
-            }
-        }
-        return null;
-    }
-
-    private static String queryModelFromDeviceTree() {
-        String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
-        if (!modelStr.isEmpty()) {
-            return modelStr.replace("Machine: ", Normal.EMPTY);
-        }
-        return null;
-    }
-
-    private static String queryModelFromLshw() {
-        String modelMarker = "product:";
-        for (String checkLine : Executor.runNative("lshw -C system")) {
-            if (checkLine.contains(modelMarker)) {
-                return checkLine.split(modelMarker)[1].trim();
-            }
-        }
-        return null;
-    }
-
-    private static String querySerialFromSysfs() {
-        // These sysfs files accessible by root, or can be chmod'd at boot time
-        // to enable access without root
-        String serial = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "product_serial");
-        if (serial.isEmpty() || "None".equals(serial)) {
-            serial = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "board_serial");
-            if (serial.isEmpty() || "None".equals(serial)) {
-                return null;
-            }
-            return serial;
-        }
-        return null;
-    }
-
-    private static String querySerialFromDmiDecode() {
-        // If root privileges this will work
-        String marker = "Serial Number:";
-        for (String checkLine : Executor.runNative("dmidecode -t system")) {
-            if (checkLine.contains(marker)) {
-                return checkLine.split(marker)[1].trim();
-            }
-        }
-        return null;
-    }
-
-    private static String querySerialFromLshal() {
-        // if lshal command available (HAL deprecated in newer linuxes)
-        String marker = "system.hardware.serial =";
-        for (String checkLine : Executor.runNative("lshal")) {
-            if (checkLine.contains(marker)) {
-                return Builder.getSingleQuoteStringValue(checkLine);
-            }
-        }
-        return null;
-    }
-
-    private static String querySerialFromLshw() {
-        String serialMarker = "serial:";
-        for (String checkLine : Executor.runNative("lshw -C system")) {
-            if (checkLine.contains(serialMarker)) {
-                return checkLine.split(serialMarker)[1].trim();
-            }
-        }
-        return null;
     }
 
     @Override
