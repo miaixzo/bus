@@ -118,23 +118,22 @@ public class StringKit {
     }
 
     /**
-     * 删除字符串两端的控制字符(char &lt;= 32)，如果字符串在修剪后为空("")，
-     * 或者如果字符串为{@code null}，则返回{@code null}.
-     *
+     * 删除字符串两端的空白字符(char &lt;= 32)，如果字符串在修剪后为空("")
+     * 或者如果字符串为{@code null}，则返回{@code null}
      * <pre>
-     * StringKit.trimToNull(null)          = null
-     * StringKit.trimToNull("")            = null
-     * StringKit.trimToNull("     ")       = null
-     * StringKit.trimToNull("abc")         = "abc"
-     * StringKit.trimToNull("    abc    ") = "abc"
+     * StringKit.trimToNull(null)           = null
+     * StringKit.trimToNull("")             = null
+     * StringKit.trimToNull("     ")        = null
+     * StringKit.trimToNull("abc")          = "abc"
+     * StringKit.trimToEmpty("    abc    ") = "abc"
      * </pre>
      *
-     * @param str 要被裁剪的字符串可能是空的
-     * @return 如果只包含字符 &lt;= 32，则为空字符串或空字符串输入
+     * @param str 字符串
+     * @return 去除两边空白符后的字符串, 如果为空返回null
      */
-    public static String trimToNull(final String str) {
-        final String ts = trim(str);
-        return isEmpty(ts) ? null : ts;
+    public static String trimToNull(CharSequence str) {
+        final String trimStr = trim(str);
+        return Normal.EMPTY.equals(trimStr) ? null : trimStr;
     }
 
     /**
