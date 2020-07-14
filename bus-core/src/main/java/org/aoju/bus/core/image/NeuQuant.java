@@ -461,4 +461,5 @@ public class NeuQuant {
         bias[bestpos] -= betagamma;
         return (bestbiaspos);
     }
+
 }
