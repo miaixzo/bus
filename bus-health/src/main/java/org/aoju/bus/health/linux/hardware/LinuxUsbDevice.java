@@ -24,13 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.hardware;
 
+import com.sun.jna.platform.linux.Udev;
+import com.sun.jna.platform.linux.Udev.UdevDevice;
+import com.sun.jna.platform.linux.Udev.UdevEnumerate;
+import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
-import org.aoju.bus.health.linux.Udev;
-import org.aoju.bus.health.linux.Udev.UdevDevice;
-import org.aoju.bus.health.linux.Udev.UdevEnumerate;
-import org.aoju.bus.health.linux.Udev.UdevListEntry;
 
 import java.util.*;
 

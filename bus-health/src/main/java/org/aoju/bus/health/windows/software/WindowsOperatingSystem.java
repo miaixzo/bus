@@ -40,7 +40,6 @@ import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
-import org.aoju.bus.health.windows.Kernel32;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.health.windows.drivers.ProcessPerformanceData.PerfCounterBlock;

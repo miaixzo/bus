@@ -26,6 +26,7 @@ package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.Wtsapi32;
 import com.sun.jna.platform.win32.Wtsapi32.WTS_PROCESS_INFO_EX;
@@ -33,7 +34,6 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.windows.Kernel32;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.logger.Logger;
 

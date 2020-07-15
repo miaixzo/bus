@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 
 /**
@@ -68,6 +69,21 @@ public final class Lshw {
             }
         }
         return null;
+    }
+
+    /**
+     * Query the CPU capacity (max frequency) from lshw
+     *
+     * @return The CPU capacity (max frequency) if available, -1 otherwise
+     */
+    public static long queryCpuCapacity() {
+        String capacityMarker = "capacity:";
+        for (String checkLine : Executor.runNative("lshw -class processor")) {
+            if (checkLine.contains(capacityMarker)) {
+                return Builder.parseHertz(checkLine.split(capacityMarker)[1].trim());
+            }
+        }
+        return -1L;
     }
 
 }

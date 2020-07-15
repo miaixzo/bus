@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.drivers;
 
+import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.Advapi32Util.InfoKey;
 import com.sun.jna.platform.win32.Win32Exception;
@@ -32,7 +33,6 @@ import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.OSSession;
-import org.aoju.bus.health.windows.Advapi32Kit;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -58,39 +58,39 @@ public final class HkeyUserData {
 
     public static List<OSSession> queryUserSessions() {
         List<OSSession> sessions = new ArrayList<>();
-        for (String sidKey : Advapi32Kit.registryGetKeys(WinReg.HKEY_USERS)) {
+        for (String sidKey : Advapi32Util.registryGetKeys(WinReg.HKEY_USERS)) {
             if (!sidKey.startsWith(".") && !sidKey.endsWith("_Classes")) {
                 try {
-                    Account a = Advapi32Kit.getAccountBySid(sidKey);
+                    Account a = Advapi32Util.getAccountBySid(sidKey);
                     String name = a.name;
                     String device = DEFAULT_DEVICE;
                     String host = a.domain; // temporary default
                     long loginTime = 0;
                     String keyPath = sidKey + "\\" + VOLATILE_ENV_SUBKEY;
-                    if (Advapi32Kit.registryKeyExists(WinReg.HKEY_USERS, keyPath)) {
-                        HKEY hKey = Advapi32Kit.registryGetKey(WinReg.HKEY_USERS, keyPath, WinNT.KEY_READ).getValue();
+                    if (Advapi32Util.registryKeyExists(WinReg.HKEY_USERS, keyPath)) {
+                        HKEY hKey = Advapi32Util.registryGetKey(WinReg.HKEY_USERS, keyPath, WinNT.KEY_READ).getValue();
                         // InfoKey write time is user login time
-                        InfoKey info = Advapi32Kit.registryQueryInfoKey(hKey, 0);
+                        InfoKey info = Advapi32Util.registryQueryInfoKey(hKey, 0);
                         loginTime = info.lpftLastWriteTime.toTime();
-                        for (String subKey : Advapi32Kit.registryGetKeys(hKey)) {
+                        for (String subKey : Advapi32Util.registryGetKeys(hKey)) {
                             String subKeyPath = keyPath + "\\" + subKey;
                             // Check for session and client name
-                            if (Advapi32Kit.registryValueExists(WinReg.HKEY_USERS, subKeyPath, SESSIONNAME)) {
-                                String session = Advapi32Kit.registryGetStringValue(WinReg.HKEY_USERS, subKeyPath,
+                            if (Advapi32Util.registryValueExists(WinReg.HKEY_USERS, subKeyPath, SESSIONNAME)) {
+                                String session = Advapi32Util.registryGetStringValue(WinReg.HKEY_USERS, subKeyPath,
                                         SESSIONNAME);
                                 if (!session.isEmpty()) {
                                     device = session;
                                 }
                             }
-                            if (Advapi32Kit.registryValueExists(WinReg.HKEY_USERS, subKeyPath, CLIENTNAME)) {
-                                String client = Advapi32Kit.registryGetStringValue(WinReg.HKEY_USERS, subKeyPath,
+                            if (Advapi32Util.registryValueExists(WinReg.HKEY_USERS, subKeyPath, CLIENTNAME)) {
+                                String client = Advapi32Util.registryGetStringValue(WinReg.HKEY_USERS, subKeyPath,
                                         CLIENTNAME);
                                 if (!client.isEmpty() && !DEFAULT_DEVICE.equals(client)) {
                                     host = client;
                                 }
                             }
                         }
-                        Advapi32Kit.registryCloseKey(hKey);
+                        Advapi32Util.registryCloseKey(hKey);
                     }
                     sessions.add(new OSSession(name, device, loginTime, host));
                 } catch (Win32Exception ex) {

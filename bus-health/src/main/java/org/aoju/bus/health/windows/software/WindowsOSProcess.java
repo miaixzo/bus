@@ -39,8 +39,6 @@ import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
-import org.aoju.bus.health.windows.Advapi32Kit;
-import org.aoju.bus.health.windows.Kernel32;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.logger.Logger;
@@ -362,7 +360,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         if (pHandle != null) {
             final HANDLEByReference phToken = new HANDLEByReference();
             if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
-                Account account = Advapi32Kit.getTokenPrimaryGroup(phToken.getValue());
+                Account account = Advapi32Util.getTokenPrimaryGroup(phToken.getValue());
                 pair = Pair.of(account.name, account.sidString);
             } else {
                 int error = Kernel32.INSTANCE.GetLastError();
