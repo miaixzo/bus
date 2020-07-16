@@ -654,7 +654,7 @@ public class CitizenIdKit {
             citizenInfo.setBirthYear(year);
             citizenInfo.setBirthMonth(month);
             citizenInfo.setBirthDay(day);
-            citizenInfo.setGender(Normal.Gender.getGender("" + getGenderByIdCard(idCard)).getDesc());
+            citizenInfo.setGender(Normal.Gender.getGender(Normal.EMPTY + getGenderByIdCard(idCard)).getDesc());
             citizenInfo.setZodiac(getZodiac(month, day));
             Calendar c = Calendar.getInstance();
             c.set(year, month, day);
