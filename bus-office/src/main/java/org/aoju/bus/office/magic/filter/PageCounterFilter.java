@@ -35,7 +35,7 @@ import org.aoju.bus.office.magic.*;
  * 此筛选器用于计算文档的页数.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class PageCounterFilter implements Filter {

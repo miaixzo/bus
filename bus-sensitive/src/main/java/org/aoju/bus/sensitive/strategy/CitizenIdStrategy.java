@@ -39,7 +39,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 只保留前6位和后2位,其他用*代替
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class CitizenIdStrategy extends AbstractProvider {

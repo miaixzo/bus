@@ -34,7 +34,7 @@ import java.io.Serializable;
  * 代表Java Implementation的信息
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class Java implements Serializable {

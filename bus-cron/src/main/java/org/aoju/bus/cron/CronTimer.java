@@ -33,7 +33,7 @@ import org.aoju.bus.logger.Logger;
  * 计时器线程每隔一分钟检查一次任务列表,一旦匹配到执行对应的Task
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class CronTimer extends Thread {

@@ -36,7 +36,7 @@ import java.util.Map;
  * 数据库方言 db2
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class Db2Dialect extends AbstractHelperDialect {

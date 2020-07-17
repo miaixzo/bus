@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe

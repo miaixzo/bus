@@ -36,7 +36,7 @@ import java.util.List;
  * This class is used to filter merge requests when getting lists of them.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class MergeRequestFilter {

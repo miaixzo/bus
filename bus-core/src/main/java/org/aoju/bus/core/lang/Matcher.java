@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang;
  *
  * @param <T> 匹配的对象类型
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public interface Matcher<T> {

@@ -35,7 +35,7 @@ import org.springframework.core.annotation.Order;
  * AOP切面切点
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Order(99)

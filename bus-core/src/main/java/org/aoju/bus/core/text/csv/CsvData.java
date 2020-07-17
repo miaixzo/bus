@@ -31,7 +31,7 @@ import java.util.List;
  * CSV数据,包括头部信息和行数据,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public final class CsvData {
