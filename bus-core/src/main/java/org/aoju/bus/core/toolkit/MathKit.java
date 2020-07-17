@@ -2758,7 +2758,8 @@ public class MathKit {
      * "20"   -- parses as "20 kilobytes" (where the {@code defaultUnit} is {@link Normal#CAPACITY_NAMES})
      * </pre>
      *
-     * @param text the text to parse
+     * @param text        the text to parse
+     * @param defaultUnit the default
      * @return the parsed {@link MathKit}
      */
     public static MathKit parse(CharSequence text, String defaultUnit) {
