@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
-import org.aoju.bus.setting.Setting;
+import org.aoju.bus.setting.magic.PopSetting;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +43,7 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public final class CronBuilder {
@@ -54,7 +54,7 @@ public final class CronBuilder {
     public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
 
     private static final Scheduler scheduler = new Scheduler();
-    private static Setting crontabSetting;
+    private static PopSetting crontabSetting;
 
     private CronBuilder() {
     }
@@ -64,7 +64,7 @@ public final class CronBuilder {
      *
      * @param cronSetting 定时任务配置文件
      */
-    public static void setCronSetting(Setting cronSetting) {
+    public static void setCronSetting(PopSetting cronSetting) {
         crontabSetting = cronSetting;
     }
 
@@ -75,7 +75,7 @@ public final class CronBuilder {
      */
     public static void setCronSetting(String cronSettingPath) {
         try {
-            crontabSetting = new Setting(cronSettingPath, Charset.UTF_8, false);
+            crontabSetting = new PopSetting(cronSettingPath, Charset.UTF_8, false);
         } catch (InstrumentException e) {
             // ignore setting file parse error and no config error
         }
@@ -131,7 +131,7 @@ public final class CronBuilder {
      *
      * @param cronSetting 定时任务设置文件
      */
-    public static void schedule(Setting cronSetting) {
+    public static void schedule(PopSetting cronSetting) {
         scheduler.schedule(cronSetting);
     }
 
@@ -269,7 +269,7 @@ public final class CronBuilder {
         Assert.isTrue(start < end, "Start date is later than end !");
 
         final List<Date> result = new ArrayList<>(count);
-        long step = isMatchSecond ? Fields.Unit.SECOND.getMillis() : Fields.Unit.MINUTE.getMillis();
+        long step = isMatchSecond ? Fields.Time.SECOND.getMillis() : Fields.Time.MINUTE.getMillis();
         for (long i = start; i < end; i += step) {
             if (pattern.match(i, isMatchSecond)) {
                 result.add(DateKit.date(i));

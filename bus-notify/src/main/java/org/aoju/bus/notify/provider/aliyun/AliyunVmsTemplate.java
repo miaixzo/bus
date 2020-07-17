@@ -33,7 +33,7 @@ import org.aoju.bus.notify.magic.Template;
  * 阿里云语音通知模版
  *
  * @author Justubborn
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK1.8+
  */
 

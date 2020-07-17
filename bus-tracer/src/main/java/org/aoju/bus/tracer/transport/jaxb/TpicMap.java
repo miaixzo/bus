@@ -31,7 +31,7 @@ import java.util.*;
 
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @XmlRootElement(name = Builder.TPIC_HEADER)

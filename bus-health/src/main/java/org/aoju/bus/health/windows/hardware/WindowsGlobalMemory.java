@@ -31,6 +31,7 @@ import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.PhysicalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
@@ -42,14 +43,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Memory obtained by Performance Info.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -57,10 +55,10 @@ final class WindowsGlobalMemory extends AbstractGlobalMemory {
 
     private static final boolean IS_WINDOWS10_OR_GREATER = VersionHelpers.IsWindows10OrGreater();
 
-    private final Supplier<Triple<Long, Long, Long>> availTotalSize = memoize(WindowsGlobalMemory::readPerfInfo,
-            defaultExpiration());
+    private final Supplier<Triple<Long, Long, Long>> availTotalSize = Memoize.memoize(WindowsGlobalMemory::readPerfInfo,
+            Memoize.defaultExpiration());
 
-    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
 
     /**
      * Convert memory type number to a human readable string

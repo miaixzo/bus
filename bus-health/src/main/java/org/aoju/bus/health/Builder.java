@@ -63,7 +63,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -72,7 +72,6 @@ public final class Builder {
     public static final String BUS_HEALTH_PROPERTIES = "bus-health.properties";
     public static final String BUS_HEALTH_ARCH_PROPERTIES = "bus-health-arch.properties";
     public static final String BUS_HEALTH_ADDR_PROPERTIES = "bus-health-addr.properties";
-    public static final String BUS_HEALTH_MACOS_PROPERTIES = "bus-health-macos.properties";
 
     /**
      * The official/approved path for sysfs information. Note: /sys/class/dmi/id
@@ -88,6 +87,7 @@ public final class Builder {
      * Used for matching
      */
     private static final Pattern HERTZ_PATTERN = Pattern.compile("(\\d+(.\\d+)?) ?([kMGT]?Hz).*");
+    private static final Pattern BYTES_PATTERN = Pattern.compile("(\\d+) ?([kMGT]?B).*");
     /**
      * Pattern for [dd-[hh:[mm:[ss[.sss]]]]]
      */
@@ -1480,6 +1480,15 @@ public final class Builder {
      */
     public static long parseDecimalMemorySizeToBinary(String size) {
         String[] mem = RegEx.SPACES.split(size);
+        if (mem.length < 2) {
+            // If no spaces, use regexp
+            Matcher matcher = BYTES_PATTERN.matcher(size.trim());
+            if (matcher.find() && matcher.groupCount() == 2) {
+                mem = new String[2];
+                mem[0] = matcher.group(1);
+                mem[1] = matcher.group(2);
+            }
+        }
         long capacity = Builder.parseLongOrDefault(mem[0], 0L);
         if (mem.length == 2 && mem[1].length() > 1) {
             switch (mem[1].charAt(0)) {
@@ -1704,6 +1713,20 @@ public final class Builder {
             // Hex failed to parse, just return the default long
             return defaultValue;
         }
+    }
+
+    /**
+     * Parses a String "....foo" to "foo"
+     *
+     * @param dotPrefixedStr A string with possibly leading dots
+     * @return The string without the dots
+     */
+    public static String removeLeadingDots(String dotPrefixedStr) {
+        int pos = 0;
+        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == Symbol.C_DOT) {
+            pos++;
+        }
+        return pos < dotPrefixedStr.length() ? dotPrefixedStr.substring(pos) : Normal.EMPTY;
     }
 
 }

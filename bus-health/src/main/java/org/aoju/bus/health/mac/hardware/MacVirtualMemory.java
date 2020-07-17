@@ -32,20 +32,18 @@ import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -53,9 +51,9 @@ final class MacVirtualMemory extends AbstractVirtualMemory {
 
     private final MacGlobalMemory global;
 
-    private final Supplier<Pair<Long, Long>> usedTotal = memoize(MacVirtualMemory::querySwapUsage, defaultExpiration());
+    private final Supplier<Pair<Long, Long>> usedTotal = Memoize.memoize(MacVirtualMemory::querySwapUsage, Memoize.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> inOut = memoize(MacVirtualMemory::queryVmStat, defaultExpiration());
+    private final Supplier<Pair<Long, Long>> inOut = Memoize.memoize(MacVirtualMemory::queryVmStat, Memoize.defaultExpiration());
 
     /**
      * Constructor for MacVirtualMemory.

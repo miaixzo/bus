@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Platform;
 import org.aoju.bus.health.linux.hardware.LinuxPowerSource;
 import org.aoju.bus.health.mac.hardware.MacPowerSource;
+import org.aoju.bus.health.unix.aix.hardware.AixPowerSource;
 import org.aoju.bus.health.unix.freebsd.hardware.FreeBsdPowerSource;
 import org.aoju.bus.health.unix.solaris.hardware.SolarisPowerSource;
 import org.aoju.bus.health.windows.hardware.WindowsPowerSource;
@@ -41,7 +42,7 @@ import java.util.List;
  * 电源支持
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -108,6 +109,8 @@ public abstract class AbstractPowerSource implements PowerSource {
                 return LinuxPowerSource.getPowerSources();
             case SOLARIS:
                 return SolarisPowerSource.getPowerSources();
+            case AIX:
+                return AixPowerSource.getPowerSources();
             case FREEBSD:
                 return FreeBsdPowerSource.getPowerSources();
             default:

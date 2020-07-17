@@ -30,6 +30,7 @@ import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.windows.drivers.MemoryInformation;
 import org.aoju.bus.health.windows.drivers.PagingFile;
@@ -38,14 +39,11 @@ import org.aoju.bus.logger.Logger;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Memory obtained from WMI
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -53,13 +51,13 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
 
     private final WindowsGlobalMemory global;
 
-    private final Supplier<Long> used = memoize(WindowsVirtualMemory::querySwapUsed, defaultExpiration());
+    private final Supplier<Long> used = Memoize.memoize(WindowsVirtualMemory::querySwapUsed, Memoize.defaultExpiration());
 
-    private final Supplier<Triple<Long, Long, Long>> totalVmaxVused = memoize(
-            WindowsVirtualMemory::querySwapTotalVirtMaxVirtUsed, defaultExpiration());
+    private final Supplier<Triple<Long, Long, Long>> totalVmaxVused = Memoize.memoize(
+            WindowsVirtualMemory::querySwapTotalVirtMaxVirtUsed, Memoize.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> swapInOut = memoize(WindowsVirtualMemory::queryPageSwaps,
-            defaultExpiration());
+    private final Supplier<Pair<Long, Long>> swapInOut = Memoize.memoize(WindowsVirtualMemory::queryPageSwaps,
+            Memoize.defaultExpiration());
 
     /**
      * Constructor for WindowsVirtualMemory.

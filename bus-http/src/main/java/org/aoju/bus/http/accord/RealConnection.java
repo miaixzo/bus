@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
  * 连接提供
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public final class RealConnection extends Http2Connection.Listener implements Connection {

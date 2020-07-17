@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 数字计算验证码生成器
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class MathStrategy implements CodeStrategy {
@@ -70,7 +70,7 @@ public class MathStrategy implements CodeStrategy {
                 .append(number1)
                 .append(RandomKit.randomChar(Symbol.PLUS + Symbol.HYPHEN + Symbol.STAR))
                 .append(number2)
-                .append('=').toString();
+                .append(Symbol.C_EQUAL).toString();
     }
 
     @Override

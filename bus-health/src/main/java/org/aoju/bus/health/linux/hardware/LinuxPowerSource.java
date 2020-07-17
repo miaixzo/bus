@@ -26,6 +26,7 @@ package org.aoju.bus.health.linux.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
@@ -39,7 +40,7 @@ import java.util.*;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -104,7 +105,7 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                     }
                     Map<String, String> psMap = new HashMap<>();
                     for (String line : psInfo) {
-                        String[] split = line.split("=");
+                        String[] split = line.split(Symbol.EQUAL);
                         if (split.length > 1 && !split[1].isEmpty()) {
                             psMap.put(split[0], split[1]);
                         }

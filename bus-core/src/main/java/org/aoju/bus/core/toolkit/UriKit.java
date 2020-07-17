@@ -38,7 +38,7 @@ import java.util.jar.JarFile;
  * URL相关工具
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class UriKit {
@@ -2190,11 +2190,11 @@ public class UriKit {
                 if (isFirst) {
                     isFirst = false;
                 } else {
-                    sb.append("&");
+                    sb.append(Symbol.AND);
                 }
                 key = entry.getKey();
                 if (StringKit.isNotEmpty(key)) {
-                    sb.append(encodeAll(StringKit.toString(key), charset)).append("=");
+                    sb.append(encodeAll(StringKit.toString(key), charset)).append(Symbol.EQUAL);
                     value = entry.getValue();
                     if (StringKit.isNotEmpty(value)) {
                         sb.append(encodeAll(StringKit.toString(value), charset));

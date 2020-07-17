@@ -25,6 +25,7 @@
 package org.aoju.bus.http.metric.http;
 
 import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Process;
 import org.aoju.bus.http.*;
@@ -49,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
@@ -678,20 +679,20 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private String buildUrl(String url) {
         StringBuilder sb = new StringBuilder(url);
-        if (url.contains("?")) {
-            if (!url.endsWith("?")) {
-                if (url.lastIndexOf("=") < url.lastIndexOf("?") + 2) {
+        if (url.contains(Symbol.QUESTION_MARK)) {
+            if (!url.endsWith(Symbol.QUESTION_MARK)) {
+                if (url.lastIndexOf(Symbol.EQUAL) < url.lastIndexOf(Symbol.QUESTION_MARK) + 2) {
                     throw new InstrumentException("URL format error，'？' Not found after '='");
                 }
-                if (!url.endsWith("&")) {
-                    sb.append('&');
+                if (!url.endsWith(Symbol.AND)) {
+                    sb.append(Symbol.C_AND);
                 }
             }
         } else {
-            sb.append('?');
+            sb.append(Symbol.C_QUESTION_MARK);
         }
         for (String name : urlParams.keySet()) {
-            sb.append(name).append('=').append(urlParams.get(name)).append('&');
+            sb.append(name).append(Symbol.C_EQUAL).append(urlParams.get(name)).append(Symbol.C_AND);
         }
         sb.delete(sb.length() - 1, sb.length());
         return sb.toString();

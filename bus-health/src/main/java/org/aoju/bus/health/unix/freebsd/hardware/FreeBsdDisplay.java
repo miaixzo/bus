@@ -24,25 +24,24 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.freebsd.hardware;
 
-import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Executor;
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractDisplay;
 import org.aoju.bus.health.builtin.hardware.Display;
+import org.aoju.bus.health.unix.Xrandr;
 import org.aoju.bus.logger.Logger;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A Display
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
-@Immutable
+@ThreadSafe
 final class FreeBsdDisplay extends AbstractDisplay {
 
     /**
@@ -61,32 +60,8 @@ final class FreeBsdDisplay extends AbstractDisplay {
      * @return An array of Display objects representing monitors, etc.
      */
     public static List<Display> getDisplays() {
-        List<String> xrandr = Executor.runNative("xrandr --verbose");
-        // xrandr reports edid in multiple lines. After seeing a line containing
-        // EDID, read subsequent lines of hex until 256 characters are reached
-        if (xrandr.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<Display> displays = new ArrayList<>();
-        StringBuilder sb = null;
-        for (String s : xrandr) {
-            if (s.contains("EDID")) {
-                sb = new StringBuilder();
-            } else if (sb != null) {
-                sb.append(s.trim());
-                if (sb.length() < 256) {
-                    continue;
-                }
-                String edidStr = sb.toString();
-                Logger.debug("Parsed EDID: {}", edidStr);
-                byte[] edid = Builder.hexStringToByteArray(edidStr);
-                if (edid.length >= 128) {
-                    displays.add(new FreeBsdDisplay(edid));
-                }
-                sb = null;
-            }
-        }
-        return Collections.unmodifiableList(displays);
+        return Collections.unmodifiableList(
+                Xrandr.getEdidArrays().stream().map(FreeBsdDisplay::new).collect(Collectors.toList()));
     }
 
 }

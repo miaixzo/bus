@@ -25,24 +25,23 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.health.Memoize;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * 计算机系统数据
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Immutable
 public abstract class AbstractComputerSystem implements ComputerSystem {
 
-    private final Supplier<Firmware> firmware = memoize(this::createFirmware);
+    private final Supplier<Firmware> firmware = Memoize.memoize(this::createFirmware);
 
-    private final Supplier<Baseboard> baseboard = memoize(this::createBaseboard);
+    private final Supplier<Baseboard> baseboard = Memoize.memoize(this::createBaseboard);
 
     @Override
     public Firmware getFirmware() {

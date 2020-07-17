@@ -25,29 +25,27 @@
 package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Memory obtained by sysctl vm.stats
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 final class FreeBsdGlobalMemory extends AbstractGlobalMemory {
 
-    private final Supplier<Long> total = memoize(FreeBsdGlobalMemory::queryPhysMem);
-    private final Supplier<Long> pageSize = memoize(FreeBsdGlobalMemory::queryPageSize);
-    private final Supplier<Long> available = memoize(this::queryVmStats, defaultExpiration());
-    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
+    private final Supplier<Long> total = Memoize.memoize(FreeBsdGlobalMemory::queryPhysMem);
+    private final Supplier<Long> pageSize = Memoize.memoize(FreeBsdGlobalMemory::queryPageSize);
+    private final Supplier<Long> available = Memoize.memoize(this::queryVmStats, Memoize.defaultExpiration());
+    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
 
     private static long queryPhysMem() {
         return BsdSysctlKit.sysctl("hw.physmem", 0L);

@@ -25,28 +25,27 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Memoize;
 
 import java.util.function.Supplier;
-
-import static org.aoju.bus.health.Memoize.memoize;
 
 /**
  * 硬件信息特定于平台的实现所使用的公共字段或方法
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstractionLayer {
 
-    private final Supplier<ComputerSystem> computerSystem = memoize(this::createComputerSystem);
+    private final Supplier<ComputerSystem> computerSystem = Memoize.memoize(this::createComputerSystem);
 
-    private final Supplier<CentralProcessor> processor = memoize(this::createProcessor);
+    private final Supplier<CentralProcessor> processor = Memoize.memoize(this::createProcessor);
 
-    private final Supplier<GlobalMemory> memory = memoize(this::createMemory);
+    private final Supplier<GlobalMemory> memory = Memoize.memoize(this::createMemory);
 
-    private final Supplier<Sensors> sensors = memoize(this::createSensors);
+    private final Supplier<Sensors> sensors = Memoize.memoize(this::createSensors);
 
     @Override
     public ComputerSystem getComputerSystem() {

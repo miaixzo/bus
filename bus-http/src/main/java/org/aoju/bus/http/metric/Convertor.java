@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Wapper;
 
 import java.io.ByteArrayInputStream;
@@ -35,7 +36,7 @@ import java.util.List;
  * 消息转换器接口
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public interface Convertor {
@@ -143,7 +144,7 @@ public interface Convertor {
             Wapper wapper = convertor.toMapper(new ByteArrayInputStream(data), charset);
             StringBuilder sb = new StringBuilder();
             for (String key : wapper.keySet()) {
-                sb.append(key).append('=').append(wapper.getString(key)).append('&');
+                sb.append(key).append(Symbol.C_EQUAL).append(wapper.getString(key)).append(Symbol.C_AND);
             }
             if (sb.length() > 1) {
                 sb.deleteCharAt(sb.length() - 1);

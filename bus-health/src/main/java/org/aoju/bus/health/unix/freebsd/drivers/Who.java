@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.freebsd.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.OSSession;
+import org.aoju.bus.health.unix.CLibrary;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc.FreeBsdUtmpx;
 
@@ -33,14 +34,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.aoju.bus.health.unix.CLibrary.LOGIN_PROCESS;
-import static org.aoju.bus.health.unix.CLibrary.USER_PROCESS;
-
 /**
  * Utility to query logged in users.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -64,7 +62,7 @@ public final class Who {
         try {
             // Iterate
             while ((ut = LIBC.getutxent()) != null) {
-                if (ut.ut_type == USER_PROCESS || ut.ut_type == LOGIN_PROCESS) {
+                if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
                     String user = new String(ut.ut_user, StandardCharsets.US_ASCII).trim();
                     String device = new String(ut.ut_line, StandardCharsets.US_ASCII).trim();
                     String host = new String(ut.ut_host, StandardCharsets.US_ASCII).trim();

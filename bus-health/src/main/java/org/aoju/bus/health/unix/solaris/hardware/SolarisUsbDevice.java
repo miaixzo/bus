@@ -38,7 +38,7 @@ import java.util.*;
  * Solaris Usb Device
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Immutable
@@ -73,7 +73,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
     public static List<UsbDevice> getUsbDevices(boolean tree) {
         List<UsbDevice> devices = getUsbDevices();
         if (tree) {
-            return devices;
+            return Collections.unmodifiableList(devices);
         }
         List<UsbDevice> deviceList = new ArrayList<>();
         // Top level is controllers; they won't be added to the list, but all
@@ -84,7 +84,7 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
                     Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
-        return deviceList;
+        return Collections.unmodifiableList(deviceList);
     }
 
     private static List<UsbDevice> getUsbDevices() {

@@ -33,13 +33,13 @@ yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm_langpack_zh-CN/RPMS/*.rpm
 
 > 结合bus-starter项目配套使用 
 ```
-@EnablePreview
+@EnableOffice
 ```
 
 > 具体使用如下：
 ```
     @Autowired
-    PreviewProviderService previewProviderService;
+    OfficeProviderService officeProviderService;
 
     @ApiOperation(value = "将传入的文档转换为指定的格式", notes = "文档转换")
     @PostMapping("/index")
@@ -67,7 +67,7 @@ yum install LibreOffice_6.3.4.2_Linux_x86-64_rpm_langpack_zh-CN/RPMS/*.rpm
             final Map<String, Object> storeProperties = new HashMap<>();
             decodeParameters(parameters, loadProperties, storeProperties);
 
-            Provider effectProvider = previewProviderService.get(Registry.LOCAL);
+            Provider effectProvider = officeProviderService.get(Registry.LOCAL);
             effectProvider.convert(inputStream)
                     .as(DefaultFormatRegistry.getFormatByExtension(FileKit.getExtension(filename)))
                     .to(outputStream)

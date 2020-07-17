@@ -36,7 +36,7 @@ import java.util.Map;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -654,7 +654,7 @@ public class CitizenIdKit {
             citizenInfo.setBirthYear(year);
             citizenInfo.setBirthMonth(month);
             citizenInfo.setBirthDay(day);
-            citizenInfo.setGender(Normal.Gender.getGender("" + getGenderByIdCard(idCard)).getDesc());
+            citizenInfo.setGender(Normal.Gender.getGender(Normal.EMPTY + getGenderByIdCard(idCard)).getDesc());
             citizenInfo.setZodiac(getZodiac(month, day));
             Calendar c = Calendar.getInstance();
             c.set(year, month, day);

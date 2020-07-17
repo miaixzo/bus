@@ -29,19 +29,17 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.OSSession;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.LinuxLibc.LinuxUtmpx;
+import org.aoju.bus.health.unix.CLibrary;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.aoju.bus.health.unix.CLibrary.LOGIN_PROCESS;
-import static org.aoju.bus.health.unix.CLibrary.USER_PROCESS;
-
 /**
  * Utility to query logged in users.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -65,7 +63,7 @@ public final class Who {
         try {
             // Iterate
             while ((ut = LIBC.getutxent()) != null) {
-                if (ut.ut_type == USER_PROCESS || ut.ut_type == LOGIN_PROCESS) {
+                if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
                     String user = new String(ut.ut_user, Charset.defaultCharset()).trim();
                     String device = new String(ut.ut_line, Charset.defaultCharset()).trim();
                     String host = Builder.parseUtAddrV6toIP(ut.ut_addr_v6);

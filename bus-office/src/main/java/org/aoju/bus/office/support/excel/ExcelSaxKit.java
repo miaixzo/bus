@@ -48,7 +48,7 @@ import java.io.InputStream;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class ExcelSaxKit {
@@ -99,7 +99,11 @@ public class ExcelSaxKit {
                 }
                 break;
             case NUMBER:
-                result = getNumberValue(value, numFmtString);
+                try {
+                    result = getNumberValue(value, numFmtString);
+                } catch (NumberFormatException e) {
+                    result = value;
+                }
                 break;
             case DATE:
                 try {

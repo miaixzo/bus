@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.GuardeBy;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.windows.WmiKit;
 
 import java.util.HashMap;
@@ -35,19 +36,17 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Utility to query WMI class {@code Win32_Process} using cache
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public final class Win32ProcessCached {
 
-    private static final Supplier<Win32ProcessCached> INSTANCE = memoize(Win32ProcessCached::createInstance);
+    private static final Supplier<Win32ProcessCached> INSTANCE = Memoize.memoize(Win32ProcessCached::createInstance);
 
     // Use a map to cache command line queries
     @GuardeBy("commandLineCacheLock")

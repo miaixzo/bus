@@ -47,7 +47,7 @@ import java.lang.annotation.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Documented

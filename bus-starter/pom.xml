@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-starter</artifactId>
-    <version>6.0.2</version>
+    <version>6.0.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -32,7 +32,7 @@
         <druid.version>1.1.22</druid.version>
         <dubbo.version>2.7.7</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>3.0.0</swagger.version>
     </properties>
 
     <dependencies>

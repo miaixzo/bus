@@ -30,20 +30,18 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import org.aoju.bus.health.linux.ProcPath;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Memory obtained by /proc/meminfo and /proc/vmstat
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -51,10 +49,10 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
 
     private final LinuxGlobalMemory global;
 
-    private final Supplier<Triple<Long, Long, Long>> usedTotalCommitLim = memoize(LinuxVirtualMemory::queryMemInfo,
-            defaultExpiration());
+    private final Supplier<Triple<Long, Long, Long>> usedTotalCommitLim = Memoize.memoize(LinuxVirtualMemory::queryMemInfo,
+            Memoize.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> inOut = memoize(LinuxVirtualMemory::queryVmStat, defaultExpiration());
+    private final Supplier<Pair<Long, Long>> inOut = Memoize.memoize(LinuxVirtualMemory::queryVmStat, Memoize.defaultExpiration());
 
     /**
      * Constructor for LinuxVirtualMemory.

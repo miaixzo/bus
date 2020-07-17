@@ -35,18 +35,19 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.linux.LinuxLibc;
+import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.CpuStat;
+import org.aoju.bus.health.linux.drivers.Lshw;
 import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
 
+import java.io.File;
 import java.util.*;
-
-import static org.aoju.bus.health.linux.ProcPath.CPUINFO;
 
 /**
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -163,7 +164,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
         StringBuilder armStepping = new StringBuilder(); // For ARM equivalent
         String[] flags = new String[0];
-        List<String> cpuInfo = FileKit.readLines(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
             String[] splitLine = RegEx.SPACES_COLON_SPACE.split(line);
             if (splitLine.length < 2) {
@@ -225,7 +226,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
-        List<String> procCpu = FileKit.readLines(CPUINFO);
+        List<String> procCpu = FileKit.readLines(ProcPath.CPUINFO);
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         int currentProcessor = 0;
         int currentCore = 0;
@@ -272,9 +273,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         // Attempt to fill array from cpu-freq source
         long max = 0L;
         for (int i = 0; i < freqs.length; i++) {
-            freqs[i] = Builder.getLongFromFile(cpuFreqPath + i + "/cpufreq/scaling_cur_freq");
+            freqs[i] = Builder.getLongFromFile(cpuFreqPath + "/cpu" + i + "/cpufreq/scaling_cur_freq");
             if (freqs[i] == 0) {
-                freqs[i] = Builder.getLongFromFile(cpuFreqPath + i + "/cpufreq/cpuinfo_cur_freq");
+                freqs[i] = Builder.getLongFromFile(cpuFreqPath + "/cpu" + i + "/cpufreq/cpuinfo_cur_freq");
             }
             if (max < freqs[i]) {
                 max = freqs[i];
@@ -289,7 +290,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         }
         // If unsuccessful, try from /proc/cpuinfo
         Arrays.fill(freqs, -1);
-        List<String> cpuInfo = FileKit.readLines(CPUINFO);
+        List<String> cpuInfo = FileKit.readLines(ProcPath.CPUINFO);
         int proc = 0;
         for (String s : cpuInfo) {
             if (s.toLowerCase().contains("cpu mhz")) {
@@ -305,19 +306,32 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryMaxFreq() {
         String cpuFreqPath = Config.get(CPUFREQ_PATH, Normal.EMPTY);
-        long max = 0L;
-        for (int i = 0; i < getLogicalProcessorCount(); i++) {
-            long freq = Builder.getLongFromFile(cpuFreqPath + i + "/cpufreq/scaling_max_freq");
-            if (freq == 0) {
-                freq = Builder.getLongFromFile(cpuFreqPath + i + "/cpufreq/cpuinfo_max_freq");
-            }
-            if (max < freq) {
-                max = freq;
+        long max = Arrays.stream(this.getCurrentFreq()).max().orElse(-1L);
+        // Iterating CPUs only gets the existing policy, so we need to iterate the
+        // policy directories to find the system-wide policy max
+        File cpufreqdir = new File(cpuFreqPath + "/cpufreq");
+        File[] policies = cpufreqdir.listFiles();
+        if (policies != null) {
+            for (int i = 0; i < policies.length; i++) {
+                File f = policies[i];
+                if (f.getName().startsWith("policy")) {
+                    long freq = Builder.getLongFromFile(cpuFreqPath + "/cpufreq/" + f.getName() + "/scaling_max_freq");
+                    if (freq == 0) {
+                        freq = Builder.getLongFromFile(cpuFreqPath + "/cpufreq/" + f.getName() + "/cpuinfo_max_freq");
+                    }
+                    if (max < freq) {
+                        max = freq;
+                    }
+                }
             }
         }
         if (max > 0L) {
             // If successful, value is in KHz.
-            return max * 1000L;
+            max *= 1000L;
+            // Cpufreq result assumes intel pstates and is unreliable for AMD processors.
+            // Check lshw as a backup
+            long lshwMax = Lshw.queryCpuCapacity();
+            return lshwMax > max ? lshwMax : max;
         }
         return -1L;
     }

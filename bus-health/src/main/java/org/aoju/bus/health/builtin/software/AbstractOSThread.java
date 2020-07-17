@@ -31,7 +31,7 @@ import java.util.function.Supplier;
 
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public abstract class AbstractOSThread implements OSThread {
@@ -55,7 +55,7 @@ public abstract class AbstractOSThread implements OSThread {
     }
 
     private double queryCumulativeCpuLoad() {
-        return (getKernelTime() + getUserTime()) / (double) getUpTime();
+        return getUpTime() > 0d ? (getKernelTime() + getUserTime()) / (double) getUpTime() : 0d;
     }
 
     @Override

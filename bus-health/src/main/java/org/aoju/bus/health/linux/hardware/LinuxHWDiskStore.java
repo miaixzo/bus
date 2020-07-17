@@ -24,6 +24,11 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.hardware;
 
+import com.sun.jna.platform.linux.Udev;
+import com.sun.jna.platform.linux.Udev.UdevContext;
+import com.sun.jna.platform.linux.Udev.UdevDevice;
+import com.sun.jna.platform.linux.Udev.UdevEnumerate;
+import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -34,11 +39,6 @@ import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
 import org.aoju.bus.health.linux.ProcPath;
-import org.aoju.bus.health.linux.Udev;
-import org.aoju.bus.health.linux.Udev.UdevContext;
-import org.aoju.bus.health.linux.Udev.UdevDevice;
-import org.aoju.bus.health.linux.Udev.UdevEnumerate;
-import org.aoju.bus.health.linux.Udev.UdevListEntry;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe

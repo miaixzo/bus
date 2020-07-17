@@ -27,16 +27,15 @@ package org.aoju.bus.health.builtin.software;
 import com.sun.jna.Platform;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Config;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.unix.Who;
 
 import java.util.*;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {
@@ -57,11 +56,11 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
             .comparingInt(OSProcess::getParentProcessID);
     private static final Comparator<OSProcess> NAME_ASC_SORT = Comparator.comparing(OSProcess::getName,
             String.CASE_INSENSITIVE_ORDER);
-    private final Supplier<String> manufacturer = memoize(this::queryManufacturer);
-    private final Supplier<FamilyVersionInfo> familyVersionInfo = memoize(this::queryFamilyVersionInfo);
-    private final Supplier<Integer> bitness = memoize(this::queryPlatformBitness);
+    private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
+    private final Supplier<FamilyVersionInfo> familyVersionInfo = Memoize.memoize(this::queryFamilyVersionInfo);
+    private final Supplier<Integer> bitness = Memoize.memoize(this::queryPlatformBitness);
     // Test if sudo or admin privileges: 1 = unknown, 0 = no, 1 = yes
-    private final Supplier<Boolean> elevated = memoize(this::queryElevated);
+    private final Supplier<Boolean> elevated = Memoize.memoize(this::queryElevated);
 
     @Override
     public String getManufacturer() {

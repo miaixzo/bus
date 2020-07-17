@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.logger.Logger;
 
 import java.net.InetAddress;
@@ -38,19 +39,17 @@ import java.net.SocketException;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public abstract class AbstractNetworkIF implements NetworkIF {
 
-    private final Supplier<Properties> vmMacAddrProps = memoize(AbstractNetworkIF::queryVmMacAddrProps);
+    private final Supplier<Properties> vmMacAddrProps = Memoize.memoize(AbstractNetworkIF::queryVmMacAddrProps);
     private NetworkInterface networkInterface;
     private int mtu;
     private String mac;

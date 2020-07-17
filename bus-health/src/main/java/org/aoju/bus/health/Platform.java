@@ -34,6 +34,8 @@ import org.aoju.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
 import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
 import org.aoju.bus.health.mac.hardware.MacHardwareAbstractionLayer;
 import org.aoju.bus.health.mac.software.MacOperatingSystem;
+import org.aoju.bus.health.unix.aix.hardware.AixHardwareAbstractionLayer;
+import org.aoju.bus.health.unix.aix.software.AixOperatingSystem;
 import org.aoju.bus.health.unix.freebsd.hardware.FreeBsdHardwareAbstractionLayer;
 import org.aoju.bus.health.unix.freebsd.software.FreeBsdOperatingSystem;
 import org.aoju.bus.health.unix.solaris.hardware.SolarisHardwareAbstractionLayer;
@@ -50,7 +52,7 @@ import java.util.function.Supplier;
  * 操作系统信息支持
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class Platform {
@@ -68,6 +70,8 @@ public class Platform {
             OS_CURRENT_PLATFORM = OS.SOLARIS;
         } else if (com.sun.jna.Platform.isFreeBSD()) {
             OS_CURRENT_PLATFORM = OS.FREEBSD;
+        } else if (com.sun.jna.Platform.isAIX()) {
+            OS_CURRENT_PLATFORM = OS.AIX;
         } else {
             OS_CURRENT_PLATFORM = OS.UNKNOWN;
         }
@@ -242,6 +246,9 @@ public class Platform {
                 break;
             case com.sun.jna.Platform.KFREEBSD:
                 osPrefix = "kfreebsd-" + arch;
+                break;
+            case com.sun.jna.Platform.AIX:
+                osPrefix = "aix-" + arch;
                 break;
             default:
                 osPrefix = name.toLowerCase();
@@ -476,6 +483,8 @@ public class Platform {
                 return new SolarisOperatingSystem();
             case FREEBSD:
                 return new FreeBsdOperatingSystem();
+            case AIX:
+                return new AixOperatingSystem();
             default:
                 throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
         }
@@ -504,6 +513,8 @@ public class Platform {
                 return new SolarisHardwareAbstractionLayer();
             case FREEBSD:
                 return new FreeBsdHardwareAbstractionLayer();
+            case AIX:
+                return new AixHardwareAbstractionLayer();
             default:
                 throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
         }
@@ -529,6 +540,10 @@ public class Platform {
          * Solaris (SunOS)
          */
         SOLARIS,
+        /**
+         * IBM AIX
+         */
+        AIX,
         /**
          * FreeBSD
          */

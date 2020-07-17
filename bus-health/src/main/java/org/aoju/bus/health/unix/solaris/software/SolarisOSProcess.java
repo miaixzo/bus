@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
@@ -40,17 +41,15 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class SolarisOSProcess extends AbstractOSProcess {
 
-    private Supplier<Integer> bitness = memoize(this::queryBitness);
+    private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
 
     private String name;
     private String path = "";
@@ -110,7 +109,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
                 prstatThreadInfo.stream().skip(1).forEach(threadInfo -> {
                     String[] splitPrstat = RegEx.SPACES.split(threadInfo.trim());
                     if (splitPrstat.length == 15) {
-                        int idxAfterForwardSlash = splitPrstat[14].lastIndexOf("/") + 1; // format is process/lwpid
+                        int idxAfterForwardSlash = splitPrstat[14].lastIndexOf(Symbol.C_SLASH) + 1; // format is process/lwpid
                         if (idxAfterForwardSlash > 0 && idxAfterForwardSlash < splitPrstat[14].length()) {
                             String threadId = splitPrstat[14].substring(idxAfterForwardSlash); // getting the thread id
                             String[] existingSplit = map.get(Integer.parseInt(threadId));
@@ -365,7 +364,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
         this.kernelTime = 0L;
         this.userTime = Builder.parseDHMSOrDefault(split[12], 0L);
         this.path = split[13];
-        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         this.commandLine = split[14];
 
         return true;

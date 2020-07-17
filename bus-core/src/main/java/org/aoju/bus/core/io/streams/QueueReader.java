@@ -34,7 +34,7 @@ import java.util.LinkedList;
  * 队列InputStream
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class QueueReader extends Reader {

@@ -29,6 +29,7 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
@@ -39,21 +40,19 @@ import org.aoju.bus.health.windows.drivers.Win32ComputerSystemProduct;
 
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Hardware data obtained from WMI.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Immutable
 final class WindowsComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Pair<String, String>> manufacturerModel = memoize(
+    private final Supplier<Pair<String, String>> manufacturerModel = Memoize.memoize(
             WindowsComputerSystem::queryManufacturerModel);
-    private final Supplier<String> serialNumber = memoize(WindowsComputerSystem::querySystemSerialNumber);
+    private final Supplier<String> serialNumber = Memoize.memoize(WindowsComputerSystem::querySystemSerialNumber);
 
     private static Pair<String, String> queryManufacturerModel() {
         String manufacturer = null;

@@ -28,6 +28,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.linux.ProcPath;
@@ -50,11 +51,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -79,7 +78,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     private String name;
     private String path = "";
-    private Supplier<Integer> bitness = memoize(this::queryBitness);
+    private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private String commandLine;
     private String user;
     private String userID;

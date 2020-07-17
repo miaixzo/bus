@@ -29,8 +29,10 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
@@ -39,17 +41,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class FreeBsdOSProcess extends AbstractOSProcess {
 
-    private Supplier<Integer> bitness = memoize(this::queryBitness);
+    private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
 
     private String name;
     private String path = "";
@@ -324,7 +324,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.kernelTime = Builder.parseDHMSOrDefault(split[12], 0L);
         this.userTime = Builder.parseDHMSOrDefault(split[13], 0L) - this.kernelTime;
         this.path = split[14];
-        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         this.commandLine = split[15];
         this.minorFaults = Builder.parseLongOrDefault(split[16], 0L);
         this.majorFaults = Builder.parseLongOrDefault(split[17], 0L);

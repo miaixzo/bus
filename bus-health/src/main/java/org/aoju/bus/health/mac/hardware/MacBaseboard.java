@@ -30,24 +30,23 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Baseboard data obtained from ioreg
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Immutable
 final class MacBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = memoize(
+    private final Supplier<Quartet<String, String, String, String>> manufModelVersSerial = Memoize.memoize(
             MacBaseboard::queryPlatform);
 
     private static Quartet<String, String, String, String> queryPlatform() {

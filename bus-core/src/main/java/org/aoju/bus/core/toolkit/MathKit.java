@@ -38,12 +38,15 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 数学计算
+ * 计量标准
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -52,6 +55,19 @@ public class MathKit {
      * 默认除法运算精度
      */
     private static final int DEFAUT_DIV_SCALE = 10;
+    /**
+     * bytes 长度
+     */
+    private static long bytes;
+
+    /**
+     * 构造函数
+     *
+     * @param bytes 长度
+     */
+    private MathKit(long bytes) {
+        this.bytes = bytes;
+    }
 
     /**
      * 提供精确的加法运算
@@ -2636,6 +2652,193 @@ public class MathKit {
      */
     public static List<String[]> combinationSelect(String[] datas, int m) {
         return new Combination(datas).select(m);
+    }
+
+
+    /**
+     * 获得对应bytes的{@link MathKit}
+     *
+     * @param bytes bytes大小，可正可负
+     * @return a {@link MathKit}
+     */
+    public static MathKit ofBytes(long bytes) {
+        return new MathKit(bytes);
+    }
+
+    /**
+     * 获得对应kilobytes的{@link MathKit}
+     *
+     * @param kilobytes kilobytes大小，可正可负
+     * @return a {@link MathKit}
+     */
+    public static MathKit ofKilobytes(long kilobytes) {
+        return new MathKit(Math.multiplyExact(kilobytes, Normal.BYTES_PER_KB));
+    }
+
+    /**
+     * 获得对应megabytes的{@link MathKit}
+     *
+     * @param megabytes megabytes大小，可正可负
+     * @return a {@link MathKit}
+     */
+    public static MathKit ofMegabytes(long megabytes) {
+        return new MathKit(Math.multiplyExact(megabytes, Normal.BYTES_PER_MB));
+    }
+
+    /**
+     * 获得对应gigabytes的{@link MathKit}
+     *
+     * @param gigabytes gigabytes大小，可正可负
+     * @return a {@link MathKit}
+     */
+    public static MathKit ofGigabytes(long gigabytes) {
+        return new MathKit(Math.multiplyExact(gigabytes, Normal.BYTES_PER_GB));
+    }
+
+    /**
+     * 获得对应terabytes的{@link MathKit}
+     *
+     * @param terabytes terabytes大小，可正可负
+     * @return a {@link MathKit}
+     */
+    public static MathKit ofTerabytes(long terabytes) {
+        return new MathKit(Math.multiplyExact(terabytes, Normal.BYTES_PER_TB));
+    }
+
+    /**
+     * 获取指定数据大小文本对应的{@link MathKit}对象，如果无单位指定，默认获取{@link Normal#CAPACITY_NAMES}
+     * <p>
+     * 例如：
+     * <pre>
+     * "12KB" -- parses as "12 kilobytes"
+     * "5MB"  -- parses as "5 megabytes"
+     * "20"   -- parses as "20 bytes"
+     * </pre>
+     *
+     * @param text the text to parse
+     * @return the parsed {@link MathKit}
+     */
+    public static MathKit parse(CharSequence text) {
+        return parse(text, null);
+    }
+
+    /**
+     * 解析数据大小字符串，转换为bytes大小
+     *
+     * @param text 数据大小字符串，类似于：12KB, 5MB等
+     * @return bytes大小
+     */
+    public static long parse(String text) {
+        return MathKit.parse(text, null).toBytes();
+    }
+
+    /**
+     * 可读的文件大小
+     *
+     * @param size Long类型大小
+     * @return 大小
+     */
+    public static String format(long size) {
+        if (size <= 0) {
+            return "0";
+        }
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.##")
+                .format(size / Math.pow(1024, digitGroups)) + " " + Normal.CAPACITY_NAMES[digitGroups];
+    }
+
+    /**
+     * Obtain a {@link MathKit} from a text string such as {@code 12MB} using
+     * the specified default {@link Normal#CAPACITY_NAMES} if no unit is specified.
+     * <p>
+     * Examples:
+     * <pre>
+     * "12KB" -- parses as "12 kilobytes"
+     * "5MB"  -- parses as "5 megabytes"
+     * "20"   -- parses as "20 kilobytes" (where the {@code defaultUnit} is {@link Normal#CAPACITY_NAMES})
+     * </pre>
+     *
+     * @param text        the text to parse
+     * @param defaultUnit the default
+     * @return the parsed {@link MathKit}
+     */
+    public static MathKit parse(CharSequence text, String defaultUnit) {
+        Assert.notNull(text, "Text must not be null");
+        try {
+            Matcher matcher = Pattern.compile("^([+\\-]?\\d+)([a-zA-Z]{0,2})$").matcher(text);
+            Assert.state(matcher.matches(), "Does not match data size pattern");
+            String unit = determineDataUnit(matcher.group(2), defaultUnit);
+            long amount = Long.parseLong(matcher.group(1));
+            return new MathKit(Math.multiplyExact(amount, bytes));
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("'" + text + "' is not a valid data size", ex);
+        }
+    }
+
+    /**
+     * 决定数据单位，后缀不识别时使用默认单位
+     *
+     * @param suffix      后缀
+     * @param defaultUnit 默认单位
+     * @return {@link String}
+     */
+    private static String determineDataUnit(String suffix, String defaultUnit) {
+        String defaultUnitToUse = (defaultUnit != null ? defaultUnit : Normal.CAPACITY_NAMES[0]);
+        return (StringKit.isNotEmpty(suffix) ? Normal.getCapacity(suffix) : defaultUnitToUse);
+    }
+
+    /**
+     * 是否为负数，不包括0
+     *
+     * @return 负数返回true，否则false
+     */
+    public boolean isNegative() {
+        return this.bytes < 0;
+    }
+
+    /**
+     * 返回bytes大小
+     *
+     * @return bytes大小
+     */
+    public long toBytes() {
+        return this.bytes;
+    }
+
+    /**
+     * 返回KB大小
+     *
+     * @return KB大小
+     */
+    public long toKilobytes() {
+        return this.bytes / Normal.BYTES_PER_KB;
+    }
+
+    /**
+     * 返回MB大小
+     *
+     * @return MB大小
+     */
+    public long toMegabytes() {
+        return this.bytes / Normal.BYTES_PER_MB;
+    }
+
+    /**
+     * 返回GB大小
+     *
+     * @return GB大小
+     */
+    public long toGigabytes() {
+        return this.bytes / Normal.BYTES_PER_GB;
+    }
+
+    /**
+     * 返回TB大小
+     *
+     * @return TB大小
+     */
+    public long toTerabytes() {
+        return this.bytes / Normal.BYTES_PER_TB;
     }
 
 }

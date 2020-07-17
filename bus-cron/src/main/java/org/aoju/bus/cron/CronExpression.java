@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.*;
@@ -33,7 +35,7 @@ import java.util.*;
  * Crontab表达式提供了指定复杂时间组合的能力
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public final class CronExpression implements Serializable, Cloneable {
@@ -277,7 +279,7 @@ public final class CronExpression implements Serializable, Cloneable {
             }
 
             if (exprOn <= YEAR) {
-                storeExpressionVals(0, "*", YEAR);
+                storeExpressionVals(0, Symbol.STAR, YEAR);
             }
 
             TreeSet<Integer> dow = getSet(DAY_OF_WEEK);
@@ -377,7 +379,7 @@ public final class CronExpression implements Serializable, Cloneable {
             return (i + 3);
         }
 
-        if (c == '?') {
+        if (c == Symbol.C_QUESTION_MARK) {
             i++;
             if ((i + 1) < s.length()
                     && (s.charAt(i) != ' ' && s.charAt(i + 1) != '\t')) {
@@ -402,11 +404,11 @@ public final class CronExpression implements Serializable, Cloneable {
             return i;
         }
 
-        if (c == '*' || c == '/') {
+        if (c == '*' || c == Symbol.C_SLASH) {
             if (c == '*' && (i + 1) >= s.length()) {
                 addToSet(ALL_SPEC_INT, -1, incr, type);
                 return i + 1;
-            } else if (c == '/'
+            } else if (c == Symbol.C_SLASH
                     && ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s
                     .charAt(i + 1) == '\t')) {
                 throw new ParseException("'/' must be followed by an integer.", i);
@@ -414,7 +416,7 @@ public final class CronExpression implements Serializable, Cloneable {
                 i++;
             }
             c = s.charAt(i);
-            if (c == '/') { // is an increment specified?
+            if (c == Symbol.C_SLASH) { // is an increment specified?
                 i++;
                 if (i >= s.length()) {
                     throw new ParseException("Unexpected end of string.", i);
@@ -574,7 +576,7 @@ public final class CronExpression implements Serializable, Cloneable {
                 end = vs.value;
                 i = vs.pos;
             }
-            if (i < s.length() && ((c = s.charAt(i)) == '/')) {
+            if (i < s.length() && ((c = s.charAt(i)) == Symbol.C_SLASH)) {
                 i++;
                 c = s.charAt(i);
                 int v2 = Integer.parseInt(String.valueOf(c));
@@ -600,7 +602,7 @@ public final class CronExpression implements Serializable, Cloneable {
             }
         }
 
-        if (c == '/') {
+        if (c == Symbol.C_SLASH) {
             if ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s.charAt(i + 1) == '\t') {
                 throw new ParseException("'/' must be followed by an integer.", i);
             }
@@ -679,10 +681,10 @@ public final class CronExpression implements Serializable, Cloneable {
     protected String getExpressionSetSummary(java.util.Set<Integer> set) {
 
         if (set.contains(NO_SPEC)) {
-            return "?";
+            return Symbol.QUESTION_MARK;
         }
         if (set.contains(ALL_SPEC)) {
-            return "*";
+            return Symbol.STAR;
         }
 
         StringBuilder buf = new StringBuilder();
@@ -705,10 +707,10 @@ public final class CronExpression implements Serializable, Cloneable {
     protected String getExpressionSetSummary(java.util.ArrayList<Integer> list) {
 
         if (list.contains(NO_SPEC)) {
-            return "?";
+            return Symbol.QUESTION_MARK;
         }
         if (list.contains(ALL_SPEC)) {
-            return "*";
+            return Symbol.STAR;
         }
 
         StringBuilder buf = new StringBuilder();

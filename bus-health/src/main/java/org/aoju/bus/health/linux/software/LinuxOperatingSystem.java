@@ -48,16 +48,13 @@ import org.aoju.bus.logger.Logger;
 import java.io.File;
 import java.util.*;
 
-import static org.aoju.bus.health.builtin.software.OSService.State.RUNNING;
-import static org.aoju.bus.health.builtin.software.OSService.State.STOPPED;
-
 /**
  * Linux is a family of open source Unix-like operating systems based on the
  * Linux kernel, an operating system kernel first released on September 17,
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -595,7 +592,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
         for (OSProcess p : getChildProcesses(1, 0, ProcessSort.PID)) {
-            OSService s = new OSService(p.getName(), p.getProcessID(), RUNNING);
+            OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());
         }
@@ -609,7 +606,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 int index = name.lastIndexOf(Symbol.C_DOT);
                 String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
                 if (!running.contains(name) && !running.contains(shortName)) {
-                    OSService s = new OSService(name, 0, STOPPED);
+                    OSService s = new OSService(name, 0, OSService.State.STOPPED);
                     services.add(s);
                     systemctlFound = true;
                 }
@@ -625,7 +622,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                     int index = name.lastIndexOf(Symbol.C_DOT);
                     String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
                     if (!running.contains(name) && !running.contains(shortName)) {
-                        OSService s = new OSService(name, 0, STOPPED);
+                        OSService s = new OSService(name, 0, OSService.State.STOPPED);
                         services.add(s);
                     }
                 }

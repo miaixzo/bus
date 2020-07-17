@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-health</artifactId>
-    <version>6.0.2</version>
+    <version>6.0.3</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <jna.version>5.5.0</jna.version>
+        <jna.version>5.6.0</jna.version>
     </properties>
 
     <dependencies>

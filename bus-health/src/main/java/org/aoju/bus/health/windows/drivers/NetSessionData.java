@@ -25,12 +25,12 @@
 package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.Netapi32;
+import com.sun.jna.platform.win32.Netapi32.SESSION_INFO_10;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.OSSession;
-import org.aoju.bus.health.windows.Netapi32;
-import org.aoju.bus.health.windows.Netapi32.SESSION_INFO_10;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import java.util.List;
  * backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe

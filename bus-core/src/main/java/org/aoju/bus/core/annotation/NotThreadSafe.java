@@ -30,7 +30,7 @@ import java.lang.annotation.*;
  * 线程不安全安全注解
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Documented

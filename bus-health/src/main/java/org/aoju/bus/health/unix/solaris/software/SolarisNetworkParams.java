@@ -25,18 +25,17 @@
 package org.aoju.bus.health.unix.solaris.software;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.LibCAPI;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.health.unix.solaris.SolarisLibc;
 
-import static com.sun.jna.platform.unix.LibCAPI.HOST_NAME_MAX;
-
 /**
  * SolarisNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -46,7 +45,7 @@ final class SolarisNetworkParams extends AbstractNetworkParams {
 
     @Override
     public String getHostName() {
-        byte[] hostnameBuffer = new byte[HOST_NAME_MAX + 1];
+        byte[] hostnameBuffer = new byte[LibCAPI.HOST_NAME_MAX + 1];
         if (0 != LIBC.gethostname(hostnameBuffer, hostnameBuffer.length)) {
             return super.getHostName();
         }

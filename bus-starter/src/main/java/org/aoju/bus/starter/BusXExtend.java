@@ -28,7 +28,7 @@ package org.aoju.bus.starter;
  * 全局扩展配置
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class BusXExtend {
@@ -94,7 +94,7 @@ public class BusXExtend {
      */
     public static final String STORAGE = "extend.storage";
     /**
-     * 存储设置
+     * Swagger设置
      */
     public static final String SWAGGER = "extend.swagger";
     /**

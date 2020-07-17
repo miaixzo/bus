@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractGlobalMemory;
 import org.aoju.bus.health.builtin.hardware.VirtualMemory;
 import org.aoju.bus.health.linux.ProcPath;
@@ -37,14 +38,11 @@ import org.aoju.bus.health.linux.ProcPath;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.aoju.bus.health.Memoize.defaultExpiration;
-import static org.aoju.bus.health.Memoize.memoize;
-
 /**
  * Memory obtained by /proc/meminfo and sysinfo.totalram
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -53,9 +51,9 @@ final class LinuxGlobalMemory extends AbstractGlobalMemory {
     public static final long PAGE_SIZE = Builder
             .parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
 
-    private final Supplier<Pair<Long, Long>> availTotal = memoize(LinuxGlobalMemory::readMemInfo, defaultExpiration());
+    private final Supplier<Pair<Long, Long>> availTotal = Memoize.memoize(LinuxGlobalMemory::readMemInfo, Memoize.defaultExpiration());
 
-    private final Supplier<VirtualMemory> vm = memoize(this::createVirtualMemory);
+    private final Supplier<VirtualMemory> vm = Memoize.memoize(this::createVirtualMemory);
 
     /**
      * Updates instance variables from reading /proc/meminfo. While most of the
