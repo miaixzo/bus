@@ -41,11 +41,11 @@ public class CronTimer extends Thread {
     /**
      * 定时单元：秒
      */
-    private final long TIMER_UNIT_SECOND = Fields.Unit.SECOND.getMillis();
+    private final long TIMER_UNIT_SECOND = Fields.Time.SECOND.getMillis();
     /**
      * 定时单元：分
      */
-    private final long TIMER_UNIT_MINUTE = Fields.Unit.MINUTE.getMillis();
+    private final long TIMER_UNIT_MINUTE = Fields.Time.MINUTE.getMillis();
     private final Scheduler scheduler;
     /**
      * 定时任务是否已经被强制关闭

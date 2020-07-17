@@ -68,7 +68,6 @@ public final class ProcessPerformanceData {
             return null;
         }
         List<Map<ProcessInformation.ProcessPerformanceProperty, Object>> processInstanceMaps = processData.getLeft();
-        long perfTime100nSec = processData.getMiddle(); // 1601
         long now = processData.getRight(); // 1970 epoch
 
         // Create a map and fill it
@@ -78,18 +77,24 @@ public final class ProcessPerformanceData {
             int pid = ((Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PROCESSID)).intValue();
             String name = (String) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.NAME);
             if ((pids == null || pids.contains(pid)) && !"_Total".equals(name)) {
-                long upTime = (perfTime100nSec - (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.CREATIONDATE))
-                        / 10_000L;
+                // if creation time value is less than current millis, it's in 1970 epoch,
+                // otherwise it's 1601 epoch and we must convert
+                long ctime = (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.CREATIONDATE);
+                if (ctime > now) {
+                    ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
+                }
+                long upTime = now - ctime;
                 if (upTime < 1L) {
                     upTime = 1L;
                 }
-                processMap.put(pid, new PerfCounterBlock(name,
-                        (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PARENTPROCESSID),
-                        (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIORITY),
-                        (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIVATEPAGECOUNT), now - upTime,
-                        upTime, (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.READTRANSFERCOUNT),
-                        (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.WRITETRANSFERCOUNT),
-                        (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PAGEFAULTSPERSEC)));
+                processMap.put(pid,
+                        new PerfCounterBlock(name,
+                                (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PARENTPROCESSID),
+                                (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIORITY),
+                                (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PRIVATEPAGECOUNT), ctime,
+                                upTime, (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.READTRANSFERCOUNT),
+                                (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.WRITETRANSFERCOUNT),
+                                (Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PAGEFAULTSPERSEC)));
             }
         }
         return processMap;
@@ -128,9 +133,13 @@ public final class ProcessPerformanceData {
                 if (ctime > now) {
                     ctime = WinBase.FILETIME.filetimeToDate((int) (ctime >> 32), (int) (ctime & 0xffffffffL)).getTime();
                 }
+                long upTime = now - ctime;
+                if (upTime < 1L) {
+                    upTime = 1L;
+                }
                 processMap.put(pid,
                         new PerfCounterBlock(instances.get(inst), ppidList.get(inst).intValue(),
-                                priorityList.get(inst).intValue(), workingSetSizeList.get(inst), ctime, now - ctime,
+                                priorityList.get(inst).intValue(), workingSetSizeList.get(inst), ctime, upTime,
                                 ioReadList.get(inst), ioWriteList.get(inst), pageFaultsList.get(inst).intValue()));
             }
         }

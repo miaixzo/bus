@@ -115,7 +115,7 @@ public class Between {
      * @param unit 相差的单位
      * @return 时长差
      */
-    public long between(Fields.Unit unit) {
+    public long between(Fields.Time unit) {
         long diff = end.getTime() - begin.getTime();
         return diff / unit.getMillis();
     }
@@ -185,7 +185,7 @@ public class Between {
      * @return 字符串
      */
     public String toString(Fields.Level level) {
-        return DateKit.formatBetween(between(Fields.Unit.MS), level);
+        return DateKit.formatBetween(between(Fields.Time.MS), level);
     }
 
     @Override

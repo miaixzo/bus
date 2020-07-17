@@ -269,7 +269,7 @@ public final class CronBuilder {
         Assert.isTrue(start < end, "Start date is later than end !");
 
         final List<Date> result = new ArrayList<>(count);
-        long step = isMatchSecond ? Fields.Unit.SECOND.getMillis() : Fields.Unit.MINUTE.getMillis();
+        long step = isMatchSecond ? Fields.Time.SECOND.getMillis() : Fields.Time.MINUTE.getMillis();
         for (long i = start; i < end; i += step) {
             if (pattern.match(i, isMatchSecond)) {
                 result.add(DateKit.date(i));

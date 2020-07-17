@@ -106,7 +106,8 @@ public final class HkeyPerformance {
         // Store timestamp
         PERF_DATA_BLOCK perfData = new PERF_DATA_BLOCK(pPerfData.share(0));
         long perfTime100nSec = perfData.PerfTime100nSec.getValue(); // 1601
-        long now = System.currentTimeMillis(); // 1970 epoch
+        long now = WinBase.FILETIME.filetimeToDate((int) (perfTime100nSec >> 32), (int) (perfTime100nSec & 0xffffffffL))
+                .getTime(); // 1970
 
         // Iterate object types.
         long perfObjectOffset = perfData.HeaderLength;

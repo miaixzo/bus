@@ -80,10 +80,10 @@ public class DatePeriod {
     public String format() {
         final StringBuilder sb = new StringBuilder();
         if (betweenMs > 0) {
-            long day = betweenMs / Fields.Unit.DAY.getMillis();
-            long hour = betweenMs / Fields.Unit.HOUR.getMillis() - day * 24;
-            long minute = betweenMs / Fields.Unit.MINUTE.getMillis() - day * 24 * 60 - hour * 60;
-            long second = betweenMs / Fields.Unit.SECOND.getMillis() - ((day * 24 + hour) * 60 + minute) * 60;
+            long day = betweenMs / Fields.Time.DAY.getMillis();
+            long hour = betweenMs / Fields.Time.HOUR.getMillis() - day * 24;
+            long minute = betweenMs / Fields.Time.MINUTE.getMillis() - day * 24 * 60 - hour * 60;
+            long second = betweenMs / Fields.Time.SECOND.getMillis() - ((day * 24 + hour) * 60 + minute) * 60;
             long millisecond = betweenMs - (((day * 24 + hour) * 60 + minute) * 60 + second) * 1000;
 
             final int level = this.level.ordinal();

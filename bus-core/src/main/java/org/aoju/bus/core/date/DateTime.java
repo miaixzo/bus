@@ -694,10 +694,10 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date 对比的日期
-     * @param unit 单位 {@link Fields.Unit}
+     * @param unit 单位 {@link Fields.Time}
      * @return 相差时长
      */
-    public long between(Date date, Fields.Unit unit) {
+    public long between(Date date, Fields.Time unit) {
         return new Between(this, date).between(unit);
     }
 
@@ -705,11 +705,11 @@ public class DateTime extends Date {
      * 计算相差时长
      *
      * @param date        对比的日期
-     * @param unit        单位 {@link  Fields.Unit}
+     * @param unit        单位 {@link  Fields.Time}
      * @param formatLevel 格式化级别
      * @return 相差时长
      */
-    public String between(Date date, Fields.Unit unit, Fields.Level formatLevel) {
+    public String between(Date date, Fields.Time unit, Fields.Level formatLevel) {
         return new Between(this, date).toString(formatLevel);
     }
 
