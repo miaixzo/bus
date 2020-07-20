@@ -40,7 +40,6 @@ import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
-import org.aoju.bus.health.windows.Kernel32;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.health.windows.drivers.ProcessPerformanceData.PerfCounterBlock;
@@ -60,7 +59,7 @@ import java.util.function.Supplier;
  * and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -100,7 +99,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         int minor = verSplit.length > 1 ? Builder.parseIntOrDefault(verSplit[1], 0) : 0;
 
         // see
-        // http://msdn.microsoft.com/en-us/library/windows/desktop/ms724833%28v=vs.85%29.aspx
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/ms724833%28v=vs.85%29.aspx
         boolean ntWorkstation = WmiKit.getUint32(versionInfo, OSVersionProperty.PRODUCTTYPE,
                 0) == WinNT.VER_NT_WORKSTATION;
         switch (major) {

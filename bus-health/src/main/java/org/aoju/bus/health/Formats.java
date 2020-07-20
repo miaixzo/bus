@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * 用于附加单元或在数字类型之间转换的格式化实用程序
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -46,7 +46,7 @@ public final class Formats {
     public static final String HEX_ERROR = "0x%08X";
     /**
      * Binary prefixes, used in IEC Standard for naming bytes.
-     * (http://en.wikipedia.org/wiki/International_Electrotechnical_Commission)
+     * (https://en.wikipedia.org/wiki/International_Electrotechnical_Commission)
      * <p>
      * Should be used for most representations of bytes
      */

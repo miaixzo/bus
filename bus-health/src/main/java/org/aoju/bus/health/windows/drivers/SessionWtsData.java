@@ -25,19 +25,15 @@
 package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.WinBase;
-import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Wtsapi32.WTSINFO;
+import com.sun.jna.platform.win32.Wtsapi32.WTS_CLIENT_ADDRESS;
+import com.sun.jna.platform.win32.Wtsapi32.WTS_SESSION_INFO;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.OSSession;
-import org.aoju.bus.health.windows.IPHlpAPI;
-import org.aoju.bus.health.windows.Wtsapi32;
-import org.aoju.bus.health.windows.Wtsapi32.WTSINFO;
-import org.aoju.bus.health.windows.Wtsapi32.WTS_CLIENT_ADDRESS;
-import org.aoju.bus.health.windows.Wtsapi32.WTS_SESSION_INFO;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -53,7 +49,7 @@ import java.util.List;
  * backup from Performance Counters or WMI
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe

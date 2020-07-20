@@ -22,36 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.health.windows;
+package org.aoju.bus.health.linux.drivers;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.win32.W32APIOptions;
+import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Builder;
 
 /**
- * 提供进程相关支持
+ * Utility to read info from the devicetree
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
-public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
+@ThreadSafe
+public final class Devicetree {
 
-    Kernel32 INSTANCE = Native.load("kernel32", Kernel32.class, W32APIOptions.DEFAULT_OPTIONS);
+    private Devicetree() {
+    }
 
     /**
-     * 检索指定进程的进程关联掩码和系统的系统关联掩码
+     * Query the model from the devicetree
      *
-     * @param hProcess              进程的句柄，需要它的关联掩码
-     *                              该句柄必须具有{@link WinNT#PROCESS_QUERY_INFORMATION}
-     *                              或{@link WinNT#PROCESS_QUERY_LIMITED_INFORMATION}访问权限
-     * @param lpProcessAffinityMask 指向接收指定进程的关联掩码的变量的指针
-     * @param lpSystemAffinityMask  指向接收系统关联掩码的变量的指针
-     * @return 如果函数成功，则返回{@code true}，并将{@code lpProcessAffinityMask}
-     * 和{@code lpSystemAffinityMask}所指向的变量设置为适当的关联掩码
+     * @return The model if available, null otherwise
      */
-    boolean GetProcessAffinityMask(HANDLE hProcess,
-                                   ULONG_PTRByReference lpProcessAffinityMask,
-                                   ULONG_PTRByReference lpSystemAffinityMask);
+    public static String queryModel() {
+        String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
+        if (!modelStr.isEmpty()) {
+            return modelStr.replace("Machine: ", "");
+        }
+        return null;
+    }
 
 }

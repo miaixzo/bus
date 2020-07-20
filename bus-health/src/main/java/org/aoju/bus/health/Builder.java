@@ -63,7 +63,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -72,7 +72,6 @@ public final class Builder {
     public static final String BUS_HEALTH_PROPERTIES = "bus-health.properties";
     public static final String BUS_HEALTH_ARCH_PROPERTIES = "bus-health-arch.properties";
     public static final String BUS_HEALTH_ADDR_PROPERTIES = "bus-health-addr.properties";
-    public static final String BUS_HEALTH_MACOS_PROPERTIES = "bus-health-macos.properties";
 
     /**
      * The official/approved path for sysfs information. Note: /sys/class/dmi/id
@@ -1724,10 +1723,10 @@ public final class Builder {
      */
     public static String removeLeadingDots(String dotPrefixedStr) {
         int pos = 0;
-        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == '.') {
+        while (pos < dotPrefixedStr.length() && dotPrefixedStr.charAt(pos) == Symbol.C_DOT) {
             pos++;
         }
-        return pos < dotPrefixedStr.length() ? dotPrefixedStr.substring(pos) : "";
+        return pos < dotPrefixedStr.length() ? dotPrefixedStr.substring(pos) : Normal.EMPTY;
     }
 
 }

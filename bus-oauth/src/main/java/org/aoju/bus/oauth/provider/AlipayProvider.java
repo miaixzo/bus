@@ -49,7 +49,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 支付宝登录
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class AlipayProvider extends AbstractProvider {

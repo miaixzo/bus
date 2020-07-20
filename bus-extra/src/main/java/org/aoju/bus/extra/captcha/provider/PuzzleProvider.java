@@ -32,7 +32,7 @@ import java.awt.*;
  * 滑动验证码
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class PuzzleProvider extends AbstractProvider {

@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
  * 将类或方法标记为异步
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

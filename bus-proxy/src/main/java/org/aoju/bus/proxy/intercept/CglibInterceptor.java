@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
  * Cglib实现的动态代理切面
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class CglibInterceptor implements MethodInterceptor {

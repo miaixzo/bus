@@ -41,7 +41,7 @@ import java.util.Set;
  * BaseInsertProvider实现类,基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class BaseInsertProvider extends MapperTemplate {

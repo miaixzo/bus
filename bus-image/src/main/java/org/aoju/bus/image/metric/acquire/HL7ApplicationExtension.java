@@ -30,7 +30,7 @@ import java.io.Serializable;
 
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class HL7ApplicationExtension implements Serializable {

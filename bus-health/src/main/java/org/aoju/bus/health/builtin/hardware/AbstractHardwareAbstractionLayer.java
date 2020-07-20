@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * 硬件信息特定于平台的实现所使用的公共字段或方法
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe

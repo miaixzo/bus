@@ -40,14 +40,14 @@ import java.util.function.Supplier;
  * A CPU.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
 public abstract class AbstractCentralProcessor implements CentralProcessor {
 
     private final Supplier<ProcessorIdentifier> cpuid = Memoize.memoize(this::queryProcessorId);
-    private final Supplier<Long> maxFreq = Memoize.memoize(this::queryMaxFreq);
+    private final Supplier<Long> maxFreq = Memoize.memoize(this::queryMaxFreq, Memoize.defaultExpiration());
     private final Supplier<long[]> currentFreq = Memoize.memoize(this::queryCurrentFreq, Memoize.defaultExpiration());
     private final Supplier<Long> contextSwitches = Memoize.memoize(this::queryContextSwitches, Memoize.defaultExpiration());
     private final Supplier<Long> interrupts = Memoize.memoize(this::queryInterrupts, Memoize.defaultExpiration());

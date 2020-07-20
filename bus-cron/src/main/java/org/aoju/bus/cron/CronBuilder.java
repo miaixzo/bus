@@ -43,7 +43,7 @@ import java.util.List;
  * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式,如果为true,则定时任务表达式中的第一位为秒,否则为分,默认是分
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public final class CronBuilder {
@@ -269,7 +269,7 @@ public final class CronBuilder {
         Assert.isTrue(start < end, "Start date is later than end !");
 
         final List<Date> result = new ArrayList<>(count);
-        long step = isMatchSecond ? Fields.Unit.SECOND.getMillis() : Fields.Unit.MINUTE.getMillis();
+        long step = isMatchSecond ? Fields.Time.SECOND.getMillis() : Fields.Time.MINUTE.getMillis();
         for (long i = start; i < end; i += step) {
             if (pattern.match(i, isMatchSecond)) {
                 result.add(DateKit.date(i));

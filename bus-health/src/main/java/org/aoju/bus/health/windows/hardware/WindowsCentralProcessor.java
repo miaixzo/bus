@@ -54,7 +54,7 @@ import java.util.*;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -356,7 +356,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long queryMaxFreq() {
         long[] freqs = queryNTPower(1); // Max is field index 1
-        return Arrays.stream(freqs).max().getAsLong();
+        return Arrays.stream(freqs).max().orElse(-1L);
     }
 
     /**

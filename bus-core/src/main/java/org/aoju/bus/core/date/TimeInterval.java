@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.DateKit;
  * 计算某个过程花费的时间,精确到毫秒
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class TimeInterval {
@@ -102,7 +102,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔秒数, 取绝对值
      */
     public long intervalSecond() {
-        return intervalMs() / Fields.Unit.SECOND.getMillis();
+        return intervalMs() / Fields.Time.SECOND.getMillis();
     }
 
     /**
@@ -111,7 +111,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔分钟数, 取绝对值
      */
     public long intervalMinute() {
-        return intervalMs() / Fields.Unit.MINUTE.getMillis();
+        return intervalMs() / Fields.Time.MINUTE.getMillis();
     }
 
     /**
@@ -120,7 +120,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔小时数, 取绝对值
      */
     public long intervalHour() {
-        return intervalMs() / Fields.Unit.HOUR.getMillis();
+        return intervalMs() / Fields.Time.HOUR.getMillis();
     }
 
     /**
@@ -129,7 +129,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔天数, 取绝对值
      */
     public long intervalDay() {
-        return intervalMs() / Fields.Unit.DAY.getMillis();
+        return intervalMs() / Fields.Time.DAY.getMillis();
     }
 
     /**
@@ -138,7 +138,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔周数, 取绝对值
      */
     public long intervalWeek() {
-        return intervalMs() / Fields.Unit.WEEK.getMillis();
+        return intervalMs() / Fields.Time.WEEK.getMillis();
     }
 
 }

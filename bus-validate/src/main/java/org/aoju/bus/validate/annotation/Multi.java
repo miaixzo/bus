@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * 多重校验器, 可以配置多个校验器
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Documented

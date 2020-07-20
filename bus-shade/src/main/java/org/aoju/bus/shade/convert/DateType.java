@@ -28,7 +28,7 @@ package org.aoju.bus.shade.convert;
  * 数据库时间类型 到 实体类时间类型 对应策略
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public enum DateType {

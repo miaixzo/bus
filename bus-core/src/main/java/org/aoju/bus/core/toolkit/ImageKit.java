@@ -55,7 +55,7 @@ import java.util.Random;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class ImageKit {
@@ -1520,11 +1520,18 @@ public class ImageKit {
      * @return 图片
      */
     public static BufferedImage read(File imageFile) {
+        BufferedImage result;
         try {
-            return ImageIO.read(imageFile);
+            result = ImageIO.read(imageFile);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+
+        if (null == result) {
+            throw new IllegalArgumentException("Image type of file [" + imageFile.getName() + "] is not supported!");
+        }
+
+        return result;
     }
 
     /**
@@ -1544,11 +1551,18 @@ public class ImageKit {
      * @return 图片
      */
     public static BufferedImage read(InputStream imageStream) {
+        BufferedImage result;
         try {
-            return ImageIO.read(imageStream);
+            result = ImageIO.read(imageStream);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+
+        if (null == result) {
+            throw new IllegalArgumentException("Image type is not supported!");
+        }
+
+        return result;
     }
 
     /**
@@ -1558,11 +1572,18 @@ public class ImageKit {
      * @return 图片
      */
     public static BufferedImage read(ImageInputStream imageStream) {
+        BufferedImage result;
         try {
-            return ImageIO.read(imageStream);
+            result = ImageIO.read(imageStream);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+
+        if (null == result) {
+            throw new IllegalArgumentException("Image type is not supported!");
+        }
+
+        return result;
     }
 
     /**
@@ -1572,11 +1593,18 @@ public class ImageKit {
      * @return 图片
      */
     public static BufferedImage read(URL imageUrl) {
+        BufferedImage result;
         try {
-            return ImageIO.read(imageUrl);
+            result = ImageIO.read(imageUrl);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+
+        if (null == result) {
+            throw new IllegalArgumentException("Image type of [" + imageUrl.toString() + "] is not supported!");
+        }
+
+        return result;
     }
 
     /**
@@ -1587,11 +1615,18 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static ImageOutputStream getImageOutputStream(OutputStream out) throws InstrumentException {
+        ImageOutputStream result;
         try {
-            return ImageIO.createImageOutputStream(out);
+            result = ImageIO.createImageOutputStream(out);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+
+        if (null == result) {
+            throw new IllegalArgumentException("Image type is not supported!");
+        }
+
+        return result;
     }
 
     /**
@@ -1602,11 +1637,18 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static ImageOutputStream getImageOutputStream(File outFile) throws InstrumentException {
+        ImageOutputStream result;
         try {
-            return ImageIO.createImageOutputStream(outFile);
+            result = ImageIO.createImageOutputStream(outFile);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+
+        if (null == result) {
+            throw new IllegalArgumentException("Image type of file [" + outFile.getName() + "] is not supported!");
+        }
+
+        return result;
     }
 
     /**
@@ -1617,11 +1659,18 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static ImageInputStream getImageInputStream(InputStream in) throws InstrumentException {
+        ImageOutputStream result;
         try {
-            return ImageIO.createImageInputStream(in);
+            result = ImageIO.createImageOutputStream(in);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+
+        if (null == result) {
+            throw new IllegalArgumentException("Image type is not supported!");
+        }
+
+        return result;
     }
 
     /**

@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab Todos API.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class TodosApi extends AbstractApi {

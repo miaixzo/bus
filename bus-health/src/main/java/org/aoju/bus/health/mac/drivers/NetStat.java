@@ -41,7 +41,7 @@ import java.util.Map;
  * Utility to query NetStat.
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -65,7 +65,7 @@ public final class NetStat {
      */
     public static Map<Integer, IFdata> queryIFdata(int index) {
         // Ported from source code of "netstat -ir". See
-        // http://opensource.apple.com/source/network_cmds/network_cmds-457/netstat.tproj/if.c
+        // https://opensource.apple.com/source/network_cmds/network_cmds-457/netstat.tproj/if.c
         Map<Integer, IFdata> data = new HashMap<>();
         // Get buffer of all interface information
         int[] mib = {CTL_NET, PF_ROUTE, 0, 0, NET_RT_IFLIST2, 0};

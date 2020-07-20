@@ -30,7 +30,7 @@ package org.aoju.bus.crypto;
  * 需要在最后一个分组中填充一些数据使其凑满一个分组的长度。
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public enum Padding {

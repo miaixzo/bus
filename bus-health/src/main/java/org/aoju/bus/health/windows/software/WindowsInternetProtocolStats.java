@@ -24,15 +24,15 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.software;
 
+import com.sun.jna.platform.win32.IPHlpAPI;
+import com.sun.jna.platform.win32.IPHlpAPI.MIB_TCPSTATS;
+import com.sun.jna.platform.win32.IPHlpAPI.MIB_UDPSTATS;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
-import org.aoju.bus.health.windows.IPHlpAPI;
-import org.aoju.bus.health.windows.IPHlpAPI.MIB_TCPSTATS;
-import org.aoju.bus.health.windows.IPHlpAPI.MIB_UDPSTATS;
 
 /**
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe

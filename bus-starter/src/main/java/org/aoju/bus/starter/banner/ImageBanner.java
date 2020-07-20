@@ -41,7 +41,7 @@ import java.util.Map.Entry;
  * ASCII艺术产生的图像文件
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class ImageBanner {

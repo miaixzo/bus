@@ -28,7 +28,7 @@ package org.aoju.bus.http.cache;
  * 允许Httpd检测(@link java.net.ResponseCache)的接口(@link Cache)
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public interface CacheContainer {

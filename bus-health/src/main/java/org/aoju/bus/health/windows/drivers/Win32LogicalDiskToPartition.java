@@ -33,7 +33,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query WMI class {@code Win32_LogicalDiskToPartition}
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -59,7 +59,7 @@ public final class Win32LogicalDiskToPartition {
      * Links disk drives to partitions
      */
     public enum DiskToPartitionProperty {
-        ANTECEDENT, DEPENDENT
+        ANTECEDENT, DEPENDENT, ENDINGADDRESS, STARTINGADDRESS
     }
 
 }

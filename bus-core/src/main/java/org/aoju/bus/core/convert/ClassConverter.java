@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.ClassKit;
  * 将类名转换为类
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class ClassConverter extends AbstractConverter<Class<?>> {

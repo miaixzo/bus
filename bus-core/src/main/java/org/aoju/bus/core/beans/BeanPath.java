@@ -50,7 +50,7 @@ import java.util.*;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class BeanPath implements Serializable {
@@ -125,16 +125,16 @@ public class BeanPath implements Serializable {
             } else if (ArrayKit.isArray(bean)) {
                 return ArrayKit.get(bean, Convert.convert(int[].class, keys));
             } else {
-                final String[] unwrapedKeys = new String[keys.size()];
-                for (int i = 0; i < unwrapedKeys.length; i++) {
-                    unwrapedKeys[i] = StringKit.unWrap(keys.get(i), Symbol.C_SINGLE_QUOTE);
+                final String[] unWrappedKeys = new String[keys.size()];
+                for (int i = 0; i < unWrappedKeys.length; i++) {
+                    unWrappedKeys[i] = StringKit.unWrap(keys.get(i), Symbol.C_SINGLE_QUOTE);
                 }
                 if (bean instanceof Map) {
                     // 只支持String为key的Map
-                    MapKit.getAny((Map<String, ?>) bean, unwrapedKeys);
+                    MapKit.getAny((Map<String, ?>) bean, unWrappedKeys);
                 } else {
                     final Map<String, Object> map = BeanKit.beanToMap(bean);
-                    MapKit.getAny(map, unwrapedKeys);
+                    MapKit.getAny(map, unWrappedKeys);
                 }
             }
         } else {

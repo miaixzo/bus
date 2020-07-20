@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class Fields {
@@ -720,10 +720,6 @@ public class Fields {
     /**
      * 日期各个部分的枚举
      * 与Calendar相应值对应
-     *
-     * @author Kimi Liu
-     * @version 6.0.2
-     * @since JDK 1.8+
      */
     public enum DateField {
 
@@ -874,13 +870,9 @@ public class Fields {
     }
 
     /**
-     * 日期时间单位,每个单位都是以毫秒为基数
-     *
-     * @author Kimi Liu
-     * @version 6.0.2
-     * @since JDK 1.8+
+     * 时间单位,每个单位都是以毫秒为基数
      */
-    public enum Unit {
+    public enum Time {
 
         /**
          * 一毫秒
@@ -909,7 +901,7 @@ public class Fields {
 
         private long millis;
 
-        Unit(long millis) {
+        Time(long millis) {
             this.millis = millis;
         }
 
@@ -925,8 +917,6 @@ public class Fields {
      * 月份枚举
      * 与Calendar中的月份int值对应
      *
-     * @author Kimi Liu
-     * @version 6.0.2
      * @see Calendar#JANUARY
      * @see Calendar#FEBRUARY
      * @see Calendar#MARCH
@@ -940,7 +930,6 @@ public class Fields {
      * @see Calendar#NOVEMBER
      * @see Calendar#DECEMBER
      * @see Calendar#UNDECIMBER
-     * @since JDK 1.8+
      */
     public enum Month {
 
@@ -1062,10 +1051,6 @@ public class Fields {
 
     /**
      * 季度枚举
-     *
-     * @author Kimi Liu
-     * @version 6.0.2
-     * @since JDK 1.8+
      */
     public enum Quarter {
 
@@ -1126,8 +1111,6 @@ public class Fields {
      * 星期枚举
      * 与Calendar中的星期int值对应
      *
-     * @author Kimi Liu
-     * @version 6.0.2
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY
@@ -1135,7 +1118,6 @@ public class Fields {
      * @see #THURSDAY
      * @see #FRIDAY
      * @see #SATURDAY
-     * @since JDK 1.8+
      */
     public enum Week {
 

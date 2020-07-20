@@ -50,7 +50,7 @@ import java.util.List;
  * swagger配置
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {SwaggerProperties.class})

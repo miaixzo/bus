@@ -56,7 +56,7 @@ import java.util.Map;
  * 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class ResponseBodyAdvice extends BaseAdvice

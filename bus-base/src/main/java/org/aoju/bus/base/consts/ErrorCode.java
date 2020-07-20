@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 系统响应码
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class ErrorCode {

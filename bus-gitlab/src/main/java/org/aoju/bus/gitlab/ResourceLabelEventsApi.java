@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab Resource label events API
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @see <a href="https://docs.gitlab.com/ce/api/resource_label_events.html">Resource label events API at GitLab</a>
  * @since JDK 1.8+
  */

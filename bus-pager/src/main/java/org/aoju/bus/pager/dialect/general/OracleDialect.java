@@ -36,7 +36,7 @@ import java.util.Map;
  * 数据库方言 oracle
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 public class OracleDialect extends AbstractHelperDialect {

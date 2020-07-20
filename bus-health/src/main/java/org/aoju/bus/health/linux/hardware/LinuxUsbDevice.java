@@ -24,13 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.hardware;
 
+import com.sun.jna.platform.linux.Udev;
+import com.sun.jna.platform.linux.Udev.UdevDevice;
+import com.sun.jna.platform.linux.Udev.UdevEnumerate;
+import com.sun.jna.platform.linux.Udev.UdevListEntry;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
-import org.aoju.bus.health.linux.Udev;
-import org.aoju.bus.health.linux.Udev.UdevDevice;
-import org.aoju.bus.health.linux.Udev.UdevEnumerate;
-import org.aoju.bus.health.linux.Udev.UdevListEntry;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ import java.util.*;
  * Linux Usb Device
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 @Immutable

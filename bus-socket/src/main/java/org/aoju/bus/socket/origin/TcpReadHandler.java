@@ -35,7 +35,7 @@ import java.util.concurrent.Semaphore;
  * 读写事件回调处理类
  *
  * @author Kimi Liu
- * @version 6.0.2
+ * @version 6.0.3
  * @since JDK 1.8+
  */
 class TcpReadHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
