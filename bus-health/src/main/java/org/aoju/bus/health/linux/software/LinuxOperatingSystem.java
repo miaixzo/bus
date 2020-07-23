@@ -66,7 +66,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
     private static final String LSB_RELEASE_LOG = "lsb-release: {}";
     private static final String RELEASE_DELIM = " release ";
-    private static final String DOUBLE_QUOTES = "^\"|\"$";
+    private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
     /**
      * Jiffies per second, used for process time counters.
      */
