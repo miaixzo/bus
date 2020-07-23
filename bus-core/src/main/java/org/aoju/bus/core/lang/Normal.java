@@ -993,7 +993,15 @@ public class Normal {
      * Bytes per Terabyte(TB).
      */
     public static final long BYTES_PER_TB = BYTES_PER_GB * 1024;
-
+    /**
+     * <pre>
+     *     byte        1B     1
+     *     kilobyte    1KB    1,024
+     *     megabyte    1MB    1,048,576
+     *     gigabyte    1GB    1,073,741,824
+     *     terabyte    1TB    1,099,511,627,776
+     * </pre>
+     */
     public static final String[] CAPACITY_NAMES = new String[]{"B", "KB", "MB", "GB", "TB", "EB"};
 
     /**
