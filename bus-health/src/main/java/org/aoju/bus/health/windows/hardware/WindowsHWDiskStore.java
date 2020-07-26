@@ -169,8 +169,8 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             mAnt = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.ANTECEDENT, i));
             mDep = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.DEPENDENT, i));
             if (mAnt.matches() && mDep.matches()) {
-                maps.driveToPartitionMap
-                        .computeIfAbsent(mAnt.group(1).replaceAll("\\\\\\\\", "\\\\"), x -> new ArrayList<>())
+                maps.driveToPartitionMap.computeIfAbsent(mAnt.group(1).replace("\\\\", "\\"),
+                        x -> new ArrayList<>())
                         .add(mDep.group(1));
             }
         }
@@ -280,7 +280,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
 
     @Override
     public boolean updateAttributes() {
-        String index = null;
+        String index;
         List<HWPartition> partitions = getPartitions();
         if (!partitions.isEmpty()) {
             // If a partition exists on this drive, the major property
