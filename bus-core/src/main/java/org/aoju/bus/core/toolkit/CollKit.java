@@ -2868,6 +2868,40 @@ public class CollKit {
     }
 
     /**
+     * 填充List，以达到最小长度
+     *
+     * @param list   列表
+     * @param minLen 最小长度
+     * @param padObj 填充的对象
+     * @param <T>    集合元素类型
+     */
+    public static <T> void padLeft(List<T> list, int minLen, T padObj) {
+        Objects.requireNonNull(list);
+        if (list.isEmpty()) {
+            padRight(list, minLen, padObj);
+            return;
+        }
+        for (int i = list.size(); i < minLen; i++) {
+            list.add(0, padObj);
+        }
+    }
+
+    /**
+     * 填充List，以达到最小长度
+     *
+     * @param list   列表
+     * @param minLen 最小长度
+     * @param padObj 填充的对象
+     * @param <T>    集合元素类型
+     */
+    public static <T> void padRight(Collection<T> list, int minLen, T padObj) {
+        Objects.requireNonNull(list);
+        for (int i = list.size(); i < minLen; i++) {
+            list.add(padObj);
+        }
+    }
+
+    /**
      * 针对一个参数做相应的操作
      *
      * @param <T> 处理参数类型

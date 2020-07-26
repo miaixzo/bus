@@ -3206,7 +3206,7 @@ public class StringKit {
         String result = toString(str);
         if (isNotEmpty(str)) {
             for (CharSequence strToRemove : strsToRemove) {
-                result = removeAll(str, strToRemove);
+                result = removeAll(result, strToRemove);
             }
         }
         return result;
