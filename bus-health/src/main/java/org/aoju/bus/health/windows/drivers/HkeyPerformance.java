@@ -40,7 +40,7 @@ import java.util.*;
  * Utility to read HKEY_PERFORMANCE_DATA information.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -106,8 +106,7 @@ public final class HkeyPerformance {
         // Store timestamp
         PERF_DATA_BLOCK perfData = new PERF_DATA_BLOCK(pPerfData.share(0));
         long perfTime100nSec = perfData.PerfTime100nSec.getValue(); // 1601
-        long now = WinBase.FILETIME.filetimeToDate((int) (perfTime100nSec >> 32), (int) (perfTime100nSec & 0xffffffffL))
-                .getTime(); // 1970
+        long now = System.currentTimeMillis(); // 1970 epoch
 
         // Iterate object types.
         long perfObjectOffset = perfData.HeaderLength;

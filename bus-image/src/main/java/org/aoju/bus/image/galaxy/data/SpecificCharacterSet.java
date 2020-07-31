@@ -25,7 +25,6 @@
 package org.aoju.bus.image.galaxy.data;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
 import org.aoju.bus.logger.Logger;
@@ -43,7 +42,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class SpecificCharacterSet {
@@ -90,7 +89,7 @@ public class SpecificCharacterSet {
         for (String code : codes) {
             if (code != null && !code.isEmpty() && !code.startsWith("ISO 2022")) {
                 Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]",
-                        Property.concat(codes, Symbol.C_BACKSLASH), Property.maskNull(codes[0], Normal.EMPTY));
+                        Property.concat(codes, Symbol.C_BACKSLASH), Property.maskNull(codes[0], ""));
                 return new String[]{codes[0]};
             }
         }

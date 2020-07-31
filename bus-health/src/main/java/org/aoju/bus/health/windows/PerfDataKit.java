@@ -25,11 +25,14 @@
 package org.aoju.bus.health.windows;
 
 import com.sun.jna.platform.win32.BaseTSD.DWORD_PTR;
-import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Pdh;
 import com.sun.jna.platform.win32.Pdh.PDH_RAW_COUNTER;
+import com.sun.jna.platform.win32.PdhMsg;
+import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import com.sun.jna.platform.win32.WinDef.LONGLONGByReference;
+import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
@@ -42,7 +45,7 @@ import org.aoju.bus.logger.Logger;
  * 帮助类来集中PDH计数器设置的样板部分，并允许应用程序轻松地添加、查询和删除计数器
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe

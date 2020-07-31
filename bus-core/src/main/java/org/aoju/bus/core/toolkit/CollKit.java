@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -360,22 +360,24 @@ public class CollKit {
      * @return 并集的集合，返回 {@link LinkedHashSet}
      */
     public static <T> Set<T> intersectOne(Collection<T> coll1, Collection<T> coll2, Collection<T>... otherColls) {
-        if (isEmpty(coll1) || isEmpty(coll2)) {
-            return new LinkedHashSet<>();
+        final Set<T> result;
+        if (isEmpty(coll1)) {
+            result = new LinkedHashSet<>();
+        } else {
+            result = new LinkedHashSet<>(coll1);
         }
 
-        final Set<T> result = new LinkedHashSet<>(coll1);
+        if (isNotEmpty(coll2)) {
+            result.retainAll(coll2);
+        }
 
         if (ArrayKit.isNotEmpty(otherColls)) {
             for (Collection<T> otherColl : otherColls) {
                 if (isNotEmpty(otherColl)) {
                     result.retainAll(otherColl);
-                } else {
-                    return new LinkedHashSet<>();
                 }
             }
         }
-        result.retainAll(coll2);
         return result;
     }
 

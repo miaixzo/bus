@@ -40,6 +40,7 @@ import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
+import org.aoju.bus.health.windows.Kernel32;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.health.windows.drivers.ProcessPerformanceData.PerfCounterBlock;
@@ -59,7 +60,7 @@ import java.util.function.Supplier;
  * and marketed by Microsoft.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe

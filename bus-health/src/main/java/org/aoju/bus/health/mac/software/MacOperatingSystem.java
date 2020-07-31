@@ -29,7 +29,6 @@ import com.sun.jna.platform.mac.SystemB.ProcTaskAllInfo;
 import com.sun.jna.platform.mac.SystemB.ProcTaskInfo;
 import com.sun.jna.platform.mac.SystemB.Timeval;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -47,7 +46,7 @@ import java.util.*;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -63,7 +62,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             // Usually this works. If it doesn't, fall back to text parsing.
             // Boot time will be the first consecutive string of digits.
             BOOTTIME = Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
+                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
                     System.currentTimeMillis() / 1000);
         } else {
             // tv now points to a 64-bit timeval structure for boot time.
@@ -103,50 +102,17 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     public FamilyVersionInfo queryFamilyVersionInfo() {
         String family = this.major == 10 && this.minor >= 12 ? "macOS" : System.getProperty("os.name");
         String codeName = parseCodeName();
-        String buildNumber = SysctlKit.sysctl("kern.osversion", Normal.EMPTY);
+        String buildNumber = SysctlKit.sysctl("kern.osversion", "");
         return new FamilyVersionInfo(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
     private String parseCodeName() {
         if (this.major == 10) {
-            switch (this.minor) {
-                case 15:
-                    return "Catalina";
-                case 14:
-                    return "Mojave";
-                case 13:
-                    return "High Sierra";
-                case 12:
-                    return "Sierra";
-                case 11:
-                    return "El Capitan";
-                case 10:
-                    return "Yosemite";
-                case 9:
-                    return "Mavericks";
-                case 8:
-                    return "Mountain Lion";
-                case 7:
-                    return "Lion";
-                case 6:
-                    return "Snow Leopard";
-                case 5:
-                    return "Leopard";
-                case 4:
-                    return "Tiger";
-                case 3:
-                    return "Panther";
-                case 2:
-                    return "Jaguar";
-                case 1:
-                    return "Puma";
-                case 0:
-                    return "Cheetah";
-                default:
-            }
+            Properties verProps = Builder.readProperties(Builder.BUS_HEALTH_MACOS_PROPERTIES);
+            return verProps.getProperty(this.major + "." + this.minor);
         }
         Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
-        return Normal.EMPTY;
+        return "";
     }
 
     @Override

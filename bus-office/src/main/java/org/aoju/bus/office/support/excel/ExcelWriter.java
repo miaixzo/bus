@@ -51,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -315,9 +315,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return 单元格样式
      */
     public CellStyle getCellStyle() {
-        if (null == this.styleSet) {
-            return null;
-        }
         return this.styleSet.cellStyle;
     }
 

@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -1648,7 +1648,7 @@ public class DateKit {
      * @param unit      相差的单位
      * @return 日期差
      */
-    public static long between(Date beginDate, Date endDate, Fields.Time unit) {
+    public static long between(Date beginDate, Date endDate, Fields.Unit unit) {
         return between(beginDate, endDate, unit, true);
     }
 
@@ -1661,7 +1661,7 @@ public class DateKit {
      * @param isAbs     日期间隔是否只保留绝对值正数
      * @return 日期差
      */
-    public static long between(Date beginDate, Date endDate, Fields.Time unit, boolean isAbs) {
+    public static long between(Date beginDate, Date endDate, Fields.Unit unit, boolean isAbs) {
         return new Between(beginDate, endDate, isAbs).between(unit);
     }
 
@@ -1673,7 +1673,7 @@ public class DateKit {
      * @return 日期差
      */
     public static long betweenMs(Date beginDate, Date endDate) {
-        return new Between(beginDate, endDate).between(Fields.Time.MS);
+        return new Between(beginDate, endDate).between(Fields.Unit.MS);
     }
 
     /**
@@ -1696,7 +1696,7 @@ public class DateKit {
             beginDate = beginOfDay(beginDate);
             endDate = beginOfDay(endDate);
         }
-        return between(beginDate, endDate, Fields.Time.DAY);
+        return between(beginDate, endDate, Fields.Unit.DAY);
     }
 
     /**
@@ -1734,7 +1734,7 @@ public class DateKit {
      * @return XX天XX小时XX分XX秒
      */
     public static String formatBetween(Date beginDate, Date endDate, Fields.Level level) {
-        return formatBetween(between(beginDate, endDate, Fields.Time.MS), level);
+        return formatBetween(between(beginDate, endDate, Fields.Unit.MS), level);
     }
 
     /**
@@ -1745,7 +1745,7 @@ public class DateKit {
      * @return XX天XX小时XX分XX秒
      */
     public static String formatBetween(Date beginDate, Date endDate) {
-        return formatBetween(between(beginDate, endDate, Fields.Time.MS));
+        return formatBetween(between(beginDate, endDate, Fields.Unit.MS));
     }
 
     /**
@@ -2609,16 +2609,16 @@ public class DateKit {
         }
         long diff = System.currentTimeMillis() - date.getTime();
         long r;
-        if (diff > Fields.Time.DAY.getMillis()) {
-            r = (diff / Fields.Time.DAY.getMillis());
+        if (diff > Fields.Unit.DAY.getMillis()) {
+            r = (diff / Fields.Unit.DAY.getMillis());
             return r + "天前";
         }
-        if (diff > Fields.Time.HOUR.getMillis()) {
-            r = (diff / Fields.Time.HOUR.getMillis());
+        if (diff > Fields.Unit.HOUR.getMillis()) {
+            r = (diff / Fields.Unit.HOUR.getMillis());
             return r + "个小时前";
         }
-        if (diff > Fields.Time.MINUTE.getMillis()) {
-            r = (diff / Fields.Time.MINUTE.getMillis());
+        if (diff > Fields.Unit.MINUTE.getMillis()) {
+            r = (diff / Fields.Unit.MINUTE.getMillis());
             return r + "分钟前";
         }
         return "刚刚";

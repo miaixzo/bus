@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.aix.hardware;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
@@ -42,7 +41,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from lsattr
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.2
  * @since JDK 1.8+
  */
 @Immutable
@@ -80,7 +79,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
         for (final String checkLine : Executor.runNative("lsattr -El sys0")) {
             if (checkLine.startsWith(fwVersionMarker)) {
                 fwVersion = checkLine.split(fwVersionMarker)[1].trim();
-                int comma = fwVersion.indexOf(Symbol.C_COMMA);
+                int comma = fwVersion.indexOf(',');
                 if (comma > 0 && fwVersion.length() > comma) {
                     fwVendor = fwVersion.substring(0, comma);
                     fwVersion = fwVersion.substring(comma + 1);
@@ -88,7 +87,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
                 fwVersion = RegEx.SPACES.split(fwVersion)[0];
             } else if (checkLine.startsWith(modelMarker)) {
                 model = checkLine.split(modelMarker)[1].trim();
-                int comma = model.indexOf(Symbol.C_COMMA);
+                int comma = model.indexOf(',');
                 if (comma > 0 && model.length() > comma) {
                     manufacturer = model.substring(0, comma);
                     model = model.substring(comma + 1);
