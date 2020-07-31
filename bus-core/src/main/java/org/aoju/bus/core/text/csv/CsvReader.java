@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -250,6 +251,32 @@ public final class CsvReader {
      */
     private CsvParser parse(Reader reader) throws InstrumentException {
         return new CsvParser(reader, config);
+    }
+
+    /**
+     * 从Reader中读取CSV数据并转换为Bean列表，读取后关闭Reader
+     * 此方法默认识别首行为标题行
+     *
+     * @param <T>            Bean类型
+     * @param reader         Reader
+     * @param startLineIndex 起始行号
+     * @param clazz          Bean类型
+     * @return Bean列表
+     */
+    public <T> List<T> read(Reader reader, int startLineIndex, Class<T> clazz) {
+        if (startLineIndex < 0) {
+            throw new IndexOutOfBoundsException(StringKit.format("start line index {} is lower than first row index 0.", startLineIndex));
+        }
+        // 此方法必须包含标题
+        this.config.setContainsHeader(true);
+
+        final List<T> result = new ArrayList<>();
+        read(reader, (row) -> {
+            if (row.getOriginalLineNumber() >= startLineIndex) {
+                result.add(row.toBean(clazz));
+            }
+        });
+        return result;
     }
 
 }
