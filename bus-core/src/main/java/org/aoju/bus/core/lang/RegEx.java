@@ -127,7 +127,7 @@ public class RegEx {
     /**
      * 移动电话
      */
-    public static final String MOBILE_PATTERN = "(?:0|86|\\+86)?1[3456789]\\d{9}";
+    public static final String MOBILE_PATTERN = "(?:0|86|\\+86)?1[3-9]\\d{9}";
     public static final Pattern MOBILE = Pattern.compile(MOBILE_PATTERN);
     /**
      * 18位身份证号码

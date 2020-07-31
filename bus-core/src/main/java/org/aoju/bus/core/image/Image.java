@@ -82,6 +82,28 @@ public class Image implements Serializable {
     }
 
     /**
+     * 构造
+     *
+     * @param srcImage  来源图片
+     * @param imageType 目标图片类型，null则读取来源图片类型
+     */
+    public Image(BufferedImage srcImage, String imageType) {
+        this.srcImage = srcImage;
+        if (null == targetImageType) {
+            if (srcImage.getType() == BufferedImage.TYPE_INT_ARGB
+                    || srcImage.getType() == BufferedImage.TYPE_INT_ARGB_PRE
+                    || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR
+                    || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR_PRE
+            ) {
+                targetImageType = FileType.TYPE_PNG;
+            } else {
+                targetImageType = FileType.TYPE_JPG;
+            }
+        }
+        this.targetImageType = imageType;
+    }
+
+    /**
      * 从Path读取图片并开始处理
      *
      * @param imagePath 图片文件路径

@@ -579,53 +579,6 @@ public abstract class Builder {
         return builder.build();
     }
 
-    public abstract void addLenient(Headers.Builder builder,
-                                    String line);
-
-    public abstract void addLenient(Headers.Builder builder,
-                                    String name,
-                                    String value);
-
-    public abstract void setCache(Httpd.Builder builder,
-                                  InternalCache internalCache);
-
-    public abstract RealConnection get(ConnectionPool pool,
-                                       Address address,
-                                       StreamAllocation streamAllocation,
-                                       Route route);
-
-    public abstract boolean equalsNonHost(Address a,
-                                          Address b);
-
-    public abstract Socket deduplicate(
-            ConnectionPool pool,
-            Address address,
-            StreamAllocation streamAllocation);
-
-    public abstract void put(ConnectionPool pool,
-                             RealConnection connection);
-
-    public abstract boolean connectionBecameIdle(ConnectionPool pool,
-                                                 RealConnection connection);
-
-    public abstract RouteDatabase routeDatabase(ConnectionPool connectionPool);
-
-    public abstract int code(Response.Builder responseBuilder);
-
-    public abstract void apply(ConnectionSuite tlsConfiguration,
-                               SSLSocket sslSocket,
-                               boolean isFallback);
-
-    public abstract boolean isInvalidHttpUrlHost(IllegalArgumentException e);
-
-    public abstract StreamAllocation streamAllocation(NewCall call);
-
-    public abstract IOException timeoutExit(NewCall call,
-                                            IOException e);
-
-    public abstract NewCall newWebSocketCall(Httpd client,
-                                             Request request);
-
     /**
      * 解析User-Agent
      *
@@ -714,5 +667,52 @@ public abstract class Builder {
         }
         return Divice.UNKNOWN;
     }
+
+    public abstract void addLenient(Headers.Builder builder,
+                                    String line);
+
+    public abstract void addLenient(Headers.Builder builder,
+                                    String name,
+                                    String value);
+
+    public abstract void setCache(Httpd.Builder builder,
+                                  InternalCache internalCache);
+
+    public abstract RealConnection get(ConnectionPool pool,
+                                       Address address,
+                                       StreamAllocation streamAllocation,
+                                       Route route);
+
+    public abstract boolean equalsNonHost(Address a,
+                                          Address b);
+
+    public abstract Socket deduplicate(
+            ConnectionPool pool,
+            Address address,
+            StreamAllocation streamAllocation);
+
+    public abstract void put(ConnectionPool pool,
+                             RealConnection connection);
+
+    public abstract boolean connectionBecameIdle(ConnectionPool pool,
+                                                 RealConnection connection);
+
+    public abstract RouteDatabase routeDatabase(ConnectionPool connectionPool);
+
+    public abstract int code(Response.Builder responseBuilder);
+
+    public abstract void apply(ConnectionSuite tlsConfiguration,
+                               SSLSocket sslSocket,
+                               boolean isFallback);
+
+    public abstract boolean isInvalidHttpUrlHost(IllegalArgumentException e);
+
+    public abstract StreamAllocation streamAllocation(NewCall call);
+
+    public abstract IOException timeoutExit(NewCall call,
+                                            IOException e);
+
+    public abstract NewCall newWebSocketCall(Httpd client,
+                                             Request request);
 
 }

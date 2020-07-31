@@ -3911,7 +3911,6 @@ public class StringKit {
         return builder.toString();
     }
 
-
     /**
      * 清理空白字符
      *
@@ -3934,7 +3933,6 @@ public class StringKit {
         }
         return sb.toString();
     }
-
 
     /**
      * 包装指定字符串
@@ -4659,7 +4657,6 @@ public class StringKit {
             return str.concat(new String(padding));
         }
     }
-
 
     /**
      * 向右填充指定字符的字符串
@@ -5995,6 +5992,30 @@ public class StringKit {
         Arrays.sort(strArray);
 
         return String.valueOf(strArray);
+    }
+
+    /**
+     * 制定字符覆盖原字符串。
+     * 注意参数:
+     * StringKit.hide()是  开始位置,到结束位置
+     * StringKit.cover()是 开始位置,指定长度
+     *
+     * @param str       原字符串
+     * @param start     开始位置
+     * @param len       覆盖的长度
+     * @param character 覆盖的符号
+     * @return 返回值类型        符号覆盖字符后的字符串
+     */
+    public CharSequence cover(String str, int start, int len, Character character) {
+        if (start < 0 || len > str.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        int end = start + len;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            sb.append((start <= i && i < end) ? character : str.charAt(i));
+        }
+        return sb;
     }
 
 }
