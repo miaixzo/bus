@@ -2011,7 +2011,7 @@ public class DateKit {
      * @param str           日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param lenient       日期时间解析是否使用严格模式
-     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
+     * @param parsePatterns 需要尝试的日期时间格式数组，非空
      * @return 解析后的 {@link Calendar}
      * @see java.util.Calendar#isLenient()
      */
