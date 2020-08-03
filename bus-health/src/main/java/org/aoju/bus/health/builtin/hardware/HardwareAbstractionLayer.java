@@ -33,7 +33,7 @@ import java.util.List;
  * processors, memory, battery, and disks.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @ThreadSafe

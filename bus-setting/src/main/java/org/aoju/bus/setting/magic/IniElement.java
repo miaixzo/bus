@@ -32,7 +32,7 @@ import java.util.function.Function;
  * they all can be like {@link String} .
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public interface IniElement extends CharSequence, java.io.Serializable {

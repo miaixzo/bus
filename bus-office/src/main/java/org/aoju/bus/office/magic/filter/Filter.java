@@ -31,7 +31,7 @@ import org.aoju.bus.office.Context;
  * 表示转换文档的步骤.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public interface Filter {

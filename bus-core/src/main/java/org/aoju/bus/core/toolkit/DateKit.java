@@ -29,21 +29,20 @@ import org.aoju.bus.core.date.Between;
 import org.aoju.bus.core.date.Boundary;
 import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.date.TimeInterval;
-import org.aoju.bus.core.date.format.DateParser;
-import org.aoju.bus.core.date.format.DatePeriod;
-import org.aoju.bus.core.date.format.DatePrinter;
-import org.aoju.bus.core.date.format.FormatBuilder;
+import org.aoju.bus.core.date.format.*;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.lang.System;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -53,7 +52,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -1478,6 +1477,26 @@ public class DateKit {
     }
 
     /**
+     * 检查两个Calendar时间戳是否相同
+     * 此方法检查两个Calendar的毫秒数时间戳是否相同
+     *
+     * @param date1 时间1
+     * @param date2 时间2
+     * @return 两个Calendar时间戳是否相同。如果两个时间都为
+     * {@code null}返回true，否则有{@code null}返回false
+     */
+    public static boolean isSameInstant(Calendar date1, Calendar date2) {
+        if (null == date1) {
+            return null == date2;
+        }
+        if (null == date2) {
+            return false;
+        }
+
+        return date1.getTimeInMillis() == date2.getTimeInMillis();
+    }
+
+    /**
      * 获取某年的开始时间
      *
      * @param calendar 日期 {@link Calendar}
@@ -1957,6 +1976,69 @@ public class DateKit {
         }
 
         return age;
+    }
+
+
+    /**
+     * 通过给定的日期格式解析日期时间字符串
+     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
+     *
+     * @param str           日期时间字符串，非空
+     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
+     * @return 解析后的 {@link Calendar}
+     */
+    public static Calendar parseByPatterns(String str, String... parsePatterns) {
+        return parseByPatterns(str, null, parsePatterns);
+    }
+
+    /**
+     * 通过给定的日期格式解析日期时间字符串
+     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
+     *
+     * @param str           日期时间字符串，非空
+     * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
+     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
+     * @return 解析后的 {@link Calendar}
+     */
+    public static Calendar parseByPatterns(String str, Locale locale, String... parsePatterns) {
+        return parseByPatterns(str, locale, true, parsePatterns);
+    }
+
+    /**
+     * 通过给定的日期格式解析日期时间字符串
+     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
+     *
+     * @param str           日期时间字符串，非空
+     * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
+     * @param lenient       日期时间解析是否使用严格模式
+     * @param parsePatterns 需要尝试的日期时间格式数组，非空
+     * @return 解析后的 {@link Calendar}
+     * @see java.util.Calendar#isLenient()
+     */
+    public static Calendar parseByPatterns(String str, Locale locale, boolean lenient, String... parsePatterns) {
+        if (str == null || parsePatterns == null) {
+            throw new IllegalArgumentException("Date and Patterns must not be null");
+        }
+
+        final TimeZone tz = TimeZone.getDefault();
+        final Locale lcl = ObjectKit.defaultIfNull(locale, Locale.getDefault());
+        final ParsePosition pos = new ParsePosition(0);
+        final Calendar calendar = Calendar.getInstance(tz, lcl);
+        calendar.setLenient(lenient);
+
+        for (final String parsePattern : parsePatterns) {
+            final FastDateParser fdp = new FastDateParser(parsePattern, tz, lcl);
+            calendar.clear();
+            try {
+                if (fdp.parse(str, pos, calendar) && pos.getIndex() == str.length()) {
+                    return calendar;
+                }
+            } catch (final IllegalArgumentException ignore) {
+                // leniency is preventing calendar from being set
+            }
+            pos.setIndex(0);
+        }
+        throw new InstrumentException("Unable to parse the date: {}", str);
     }
 
     /**

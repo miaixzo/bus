@@ -28,7 +28,7 @@ package org.aoju.bus.forest.algorithm;
  * 对称密钥
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public final class SymmetricSecureKey extends SecureKey implements SymmetricKey {

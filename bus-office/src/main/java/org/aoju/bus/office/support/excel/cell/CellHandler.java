@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Cell;
  * 单元格处理器接口
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @FunctionalInterface

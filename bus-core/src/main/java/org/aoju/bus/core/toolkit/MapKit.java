@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.map.*;
 
@@ -37,7 +38,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class MapKit {
@@ -821,6 +822,18 @@ public class MapKit {
     }
 
     /**
+     * 获取Map指定key的值，并转换为Double
+     *
+     * @param map          Map
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static Double getDouble(Map<?, ?> map, Object key, Double defaultValue) {
+        return get(map, key, Double.class, defaultValue);
+    }
+
+    /**
      * 获取Map指定key的值,并转换为Float
      *
      * @param map Map
@@ -829,6 +842,18 @@ public class MapKit {
      */
     public static Float getFloat(Map<?, ?> map, Object key) {
         return get(map, key, Float.class);
+    }
+
+    /**
+     * 获取Map指定key的值，并转换为Float
+     *
+     * @param map          Map
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static Float getFloat(Map<?, ?> map, Object key, Float defaultValue) {
+        return get(map, key, Float.class, defaultValue);
     }
 
     /**
@@ -843,6 +868,18 @@ public class MapKit {
     }
 
     /**
+     * 获取Map指定key的值，并转换为Short
+     *
+     * @param map          Map
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static Short getShort(Map<?, ?> map, Object key, Short defaultValue) {
+        return get(map, key, Short.class, defaultValue);
+    }
+
+    /**
      * 获取Map指定key的值,并转换为Bool
      *
      * @param map Map
@@ -851,6 +888,18 @@ public class MapKit {
      */
     public static Boolean getBool(Map<?, ?> map, Object key) {
         return get(map, key, Boolean.class);
+    }
+
+    /**
+     * 获取Map指定key的值，并转换为Bool
+     *
+     * @param map          Map
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static Boolean getBool(Map<?, ?> map, Object key, Boolean defaultValue) {
+        return get(map, key, Boolean.class, defaultValue);
     }
 
     /**
@@ -865,6 +914,18 @@ public class MapKit {
     }
 
     /**
+     * 获取Map指定key的值，并转换为Character
+     *
+     * @param map          Map
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static Character getChar(Map<?, ?> map, Object key, Character defaultValue) {
+        return get(map, key, Character.class, defaultValue);
+    }
+
+    /**
      * 获取Map指定key的值,并转换为Long
      *
      * @param map Map
@@ -873,6 +934,18 @@ public class MapKit {
      */
     public static Long getLong(Map<?, ?> map, Object key) {
         return get(map, key, Long.class);
+    }
+
+    /**
+     * 获取Map指定key的值，并转换为Long
+     *
+     * @param map          Map
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static Long getLong(Map<?, ?> map, Object key, Long defaultValue) {
+        return get(map, key, Long.class, defaultValue);
     }
 
     /**
@@ -887,6 +960,18 @@ public class MapKit {
     }
 
     /**
+     * 获取Map指定key的值，并转换为{@link Date}
+     *
+     * @param map          Map
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static Date getDate(Map<?, ?> map, Object key, Date defaultValue) {
+        return get(map, key, Date.class, defaultValue);
+    }
+
+    /**
      * 获取Map指定key的值,并转换为指定类型
      *
      * @param <T>  目标值类型
@@ -897,6 +982,34 @@ public class MapKit {
      */
     public static <T> T get(Map<?, ?> map, Object key, Class<T> type) {
         return null == map ? null : Convert.convert(type, map.get(key));
+    }
+
+    /**
+     * 获取Map指定key的值，并转换为指定类型
+     *
+     * @param <T>          目标值类型
+     * @param map          Map
+     * @param key          键
+     * @param type         值类型
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static <T> T get(Map<?, ?> map, Object key, Types<T> type, T defaultValue) {
+        return null == map ? null : Convert.convert(type, map.get(key), defaultValue);
+    }
+
+    /**
+     * 获取Map指定key的值，并转换为指定类型
+     *
+     * @param <T>          目标值类型
+     * @param map          Map
+     * @param key          键
+     * @param type         值类型
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static <T> T get(Map<?, ?> map, Object key, Class<T> type, T defaultValue) {
+        return null == map ? null : Convert.convert(type, map.get(key), defaultValue);
     }
 
     /**

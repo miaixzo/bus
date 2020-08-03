@@ -32,7 +32,7 @@ import org.aoju.bus.sensitive.provider.AbstractProvider;
  * 不脱敏
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class NoneStrategy extends AbstractProvider {

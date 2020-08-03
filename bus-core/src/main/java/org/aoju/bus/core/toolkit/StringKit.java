@@ -25,16 +25,15 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.System;
 import java.nio.ByteBuffer;
+import java.util.Locale;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +43,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -3206,7 +3205,7 @@ public class StringKit {
         String result = toString(str);
         if (isNotEmpty(str)) {
             for (CharSequence strToRemove : strsToRemove) {
-                result = removeAll(str, strToRemove);
+                result = removeAll(result, strToRemove);
             }
         }
         return result;
@@ -3911,7 +3910,6 @@ public class StringKit {
         return builder.toString();
     }
 
-
     /**
      * 清理空白字符
      *
@@ -3919,22 +3917,8 @@ public class StringKit {
      * @return 清理后的字符串
      */
     public static String cleanBlank(CharSequence str) {
-        if (str == null) {
-            return null;
-        }
-
-        int len = str.length();
-        final StringBuilder sb = new StringBuilder(len);
-        char c;
-        for (int i = 0; i < len; i++) {
-            c = str.charAt(i);
-            if (false == CharKit.isBlankChar(c)) {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
+        return filter(str, c -> !CharKit.isBlankChar(c));
     }
-
 
     /**
      * 包装指定字符串
@@ -4659,7 +4643,6 @@ public class StringKit {
             return str.concat(new String(padding));
         }
     }
-
 
     /**
      * 向右填充指定字符的字符串
@@ -5995,6 +5978,54 @@ public class StringKit {
         Arrays.sort(strArray);
 
         return String.valueOf(strArray);
+    }
+
+    /**
+     * 过滤字符串
+     *
+     * @param str    字符串
+     * @param filter 过滤器
+     * @return 过滤后的字符串
+     */
+    public static String filter(CharSequence str, Filter<Character> filter) {
+        if (str == null || filter == null) {
+            return toString(str);
+        }
+
+        int len = str.length();
+        final StringBuilder sb = new StringBuilder(len);
+        char c;
+        for (int i = 0; i < len; i++) {
+            c = str.charAt(i);
+            if (filter.accept(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 制定字符覆盖原字符串。
+     * 注意参数:
+     * StringKit.hide()是  开始位置,到结束位置
+     * StringKit.cover()是 开始位置,指定长度
+     *
+     * @param str       原字符串
+     * @param start     开始位置
+     * @param len       覆盖的长度
+     * @param character 覆盖的符号
+     * @return 返回值类型        符号覆盖字符后的字符串
+     */
+    public CharSequence cover(String str, int start, int len, Character character) {
+        if (start < 0 || len > str.length()) {
+            throw new IndexOutOfBoundsException();
+        }
+        int end = start + len;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            sb.append((start <= i && i < end) ? character : str.charAt(i));
+        }
+        return sb;
     }
 
 }

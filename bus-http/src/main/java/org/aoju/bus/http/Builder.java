@@ -30,8 +30,11 @@ import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.io.Source;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.PatternKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.accord.*;
 import org.aoju.bus.http.cache.InternalCache;
+import org.aoju.bus.http.metric.anget.*;
 import org.aoju.bus.http.metric.http.HttpHeaders;
 
 import javax.net.ssl.SSLSocket;
@@ -55,7 +58,7 @@ import java.util.regex.Pattern;
  * 实用方法工具
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public abstract class Builder {
@@ -574,6 +577,95 @@ public abstract class Builder {
             Builder.instance.addLenient(builder, headers.name.utf8(), headers.value.utf8());
         }
         return builder.build();
+    }
+
+    /**
+     * 解析User-Agent
+     *
+     * @param agentStr User-Agent字符串
+     * @return {@link UserAgent}
+     */
+    public static UserAgent of(String agentStr) {
+        if (StringKit.isBlank(agentStr)) {
+            return null;
+        }
+        final UserAgent userAgent = new UserAgent();
+
+        final Browser browser = parseBrowser(agentStr);
+        userAgent.setBrowser(parseBrowser(agentStr));
+        userAgent.setVersion(browser.getVersion(agentStr));
+
+        final Engine engine = parseEngine(agentStr);
+        userAgent.setEngine(engine);
+        userAgent.setNOS(parseNOS(agentStr));
+        final Divice divice = parseDevice(agentStr);
+        userAgent.setDivice(divice);
+        userAgent.setMobile(divice.isMobile() || browser.isMobile());
+
+        return userAgent;
+    }
+
+    /**
+     * 解析浏览器类型
+     *
+     * @param agentStr User-Agent字符串
+     * @return 浏览器类型
+     */
+    private static Browser parseBrowser(String agentStr) {
+        for (Browser browser : Browser.BROWERS) {
+            if (browser.isMatch(agentStr)) {
+                return browser;
+            }
+        }
+        return Browser.UNKNOWN;
+    }
+
+    /**
+     * 解析引擎类型
+     *
+     * @param agentStr User-Agent字符串
+     * @return 引擎类型
+     */
+    private static Engine parseEngine(String agentStr) {
+        for (Engine engine : Engine.ENGINES) {
+            if (engine.isMatch(agentStr)) {
+                final String regexp = engine.getName() + "[/\\- ]([\\d\\w.\\-]+)";
+                final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE);
+                engine.setEngineVersion(PatternKit.getGroup1(pattern, agentStr));
+                return engine;
+            }
+        }
+        return Engine.UNKNOWN;
+    }
+
+    /**
+     * 解析系统类型
+     *
+     * @param agentStr User-Agent字符串
+     * @return 系统类型
+     */
+    private static NOS parseNOS(String agentStr) {
+        for (NOS NOS : NOS.OSES) {
+            if (NOS.isMatch(agentStr)) {
+                return NOS;
+            }
+        }
+        return NOS.UNKNOWN;
+    }
+
+    /**
+     * 解析设备类型
+     *
+     * @param agentStr User-Agent字符串
+     * @return 平台类型
+     */
+    private static Divice parseDevice(String agentStr) {
+        for (Divice divice : Divice.DIVICES) {
+            if (divice.isMatch(agentStr)) {
+                return divice;
+            }
+        }
+        return Divice.UNKNOWN;
     }
 
     public abstract void addLenient(Headers.Builder builder,

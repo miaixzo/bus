@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.Charset;
  * 编码对象转换器
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class CharsetConverter extends AbstractConverter<java.nio.charset.Charset> {

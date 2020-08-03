@@ -54,7 +54,7 @@ import java.util.*;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -66,7 +66,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static final String LSB_RELEASE_A_LOG = "lsb_release -a: {}";
     private static final String LSB_RELEASE_LOG = "lsb-release: {}";
     private static final String RELEASE_DELIM = " release ";
-    private static final String DOUBLE_QUOTES = "^\"|\"$";
+    private static final String DOUBLE_QUOTES = "(?:^\")|(?:\"$)";
     /**
      * Jiffies per second, used for process time counters.
      */
@@ -113,7 +113,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // Some systems are still using the lsb standard which parses a
         // variety of /etc/*-release files and is most easily accessed via
         // the commandline lsb_release -a, see here:
-        // http://linux.die.net/man/1/lsb_release
+        // https://linux.die.net/man/1/lsb_release
         // In this case, the /etc/lsb-release file (if it exists) has
         // optional overrides to the information in the /etc/distrib-release
         // files, which show: "Distributor release x.x (Codename)"

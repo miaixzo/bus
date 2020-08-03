@@ -49,7 +49,7 @@ import java.util.*;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -85,7 +85,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             // Exclude pseudo file systems
-            String path = split[1].replaceAll(UNICODE_SPACE, Symbol.SPACE);
+            String path = split[1].replace(UNICODE_SPACE, Symbol.SPACE);
             String type = split[2];
             if ((localOnly && NETWORK_FS_TYPES.contains(type)) // Skip non-local drives if requested
                     || PSEUDO_FS_TYPES.contains(type) // exclude non-fs types
@@ -97,7 +97,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
             String options = split[3];
 
-            String name = split[0].replaceAll(UNICODE_SPACE, Symbol.SPACE);
+            String name = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
             if (path.equals(Symbol.SLASH)) {
                 name = Symbol.SLASH;
             }
@@ -107,7 +107,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 continue;
             }
 
-            String volume = split[0].replaceAll(UNICODE_SPACE, Symbol.SPACE);
+            String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
             String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], "") : "";
 
             String description;
@@ -149,9 +149,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 if (0 == LibC.INSTANCE.statvfs(path, vfsStat)) {
                     totalInodes = vfsStat.f_files.longValue();
                     freeInodes = vfsStat.f_ffree.longValue();
-                    totalSpace = vfsStat.f_blocks.longValue() * vfsStat.f_bsize.longValue();
-                    usableSpace = vfsStat.f_bavail.longValue() * vfsStat.f_bsize.longValue();
-                    freeSpace = vfsStat.f_bfree.longValue() * vfsStat.f_bsize.longValue();
+                    totalSpace = vfsStat.f_blocks.longValue() * vfsStat.f_frsize.longValue();
+                    usableSpace = vfsStat.f_bavail.longValue() * vfsStat.f_frsize.longValue();
+                    freeSpace = vfsStat.f_bfree.longValue() * vfsStat.f_frsize.longValue();
                 } else {
                     File tmpFile = new File(path);
                     totalSpace = tmpFile.getTotalSpace();

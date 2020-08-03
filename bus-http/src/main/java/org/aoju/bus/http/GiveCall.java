@@ -28,7 +28,7 @@ import org.aoju.bus.http.metric.Cancelable;
 
 /**
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public interface GiveCall extends Cancelable {

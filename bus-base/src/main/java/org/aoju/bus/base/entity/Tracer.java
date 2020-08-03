@@ -34,7 +34,7 @@ import javax.persistence.Transient;
  * 访问链路跟踪
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @Data

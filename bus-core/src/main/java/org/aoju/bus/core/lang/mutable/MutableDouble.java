@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>double</code> 类型
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @see Double
  * @since JDK 1.8+
  */

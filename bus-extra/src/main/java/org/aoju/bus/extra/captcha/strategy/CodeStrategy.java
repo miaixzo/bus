@@ -28,7 +28,7 @@ package org.aoju.bus.extra.captcha.strategy;
  * 验证码文字生成器
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public interface CodeStrategy {

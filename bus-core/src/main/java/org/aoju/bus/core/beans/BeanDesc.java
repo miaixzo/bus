@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
 import org.aoju.bus.core.toolkit.*;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -50,7 +51,7 @@ import java.util.Map;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class BeanDesc implements Serializable {
@@ -440,6 +441,27 @@ public class BeanDesc implements Serializable {
                 ReflectKit.setFieldValue(bean, this.field, value);
             }
             return this;
+        }
+
+        /**
+         * 字段和Getter方法是否为Transient关键字修饰的
+         *
+         * @return 是否为Transient关键字修饰的
+         */
+        public boolean isTransient() {
+            boolean isTransient = BeanKit.hasModifier(this.field, BeanKit.ModifierType.TRANSIENT);
+
+            // 检查Getter方法
+            if (false == isTransient && null != this.getter) {
+                isTransient = BeanKit.hasModifier(this.getter, BeanKit.ModifierType.TRANSIENT);
+
+                // 检查注解
+                if (false == isTransient) {
+                    isTransient = null != AnnoKit.getAnnotation(this.getter, Transient.class);
+                }
+            }
+
+            return isTransient;
         }
 
         /**

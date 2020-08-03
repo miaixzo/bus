@@ -50,7 +50,7 @@ import java.nio.file.Path;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -79,6 +79,28 @@ public class Image implements Serializable {
      */
     public Image(BufferedImage srcImage) {
         this.srcImage = srcImage;
+    }
+
+    /**
+     * 构造
+     *
+     * @param srcImage  来源图片
+     * @param imageType 目标图片类型，null则读取来源图片类型
+     */
+    public Image(BufferedImage srcImage, String imageType) {
+        this.srcImage = srcImage;
+        if (null == targetImageType) {
+            if (srcImage.getType() == BufferedImage.TYPE_INT_ARGB
+                    || srcImage.getType() == BufferedImage.TYPE_INT_ARGB_PRE
+                    || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR
+                    || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR_PRE
+            ) {
+                targetImageType = FileType.TYPE_PNG;
+            } else {
+                targetImageType = FileType.TYPE_JPG;
+            }
+        }
+        this.targetImageType = imageType;
     }
 
     /**

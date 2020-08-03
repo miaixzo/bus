@@ -41,7 +41,7 @@ import java.lang.reflect.Type;
  * Setting抽象类
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public abstract class AbstractSetting implements OptNullString<String>, Serializable {

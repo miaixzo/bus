@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -2864,6 +2864,40 @@ public class CollKit {
             if (isNotEmpty(collection)) {
                 collection.clear();
             }
+        }
+    }
+
+    /**
+     * 填充List，以达到最小长度
+     *
+     * @param list   列表
+     * @param minLen 最小长度
+     * @param padObj 填充的对象
+     * @param <T>    集合元素类型
+     */
+    public static <T> void padLeft(List<T> list, int minLen, T padObj) {
+        Objects.requireNonNull(list);
+        if (list.isEmpty()) {
+            padRight(list, minLen, padObj);
+            return;
+        }
+        for (int i = list.size(); i < minLen; i++) {
+            list.add(0, padObj);
+        }
+    }
+
+    /**
+     * 填充List，以达到最小长度
+     *
+     * @param list   列表
+     * @param minLen 最小长度
+     * @param padObj 填充的对象
+     * @param <T>    集合元素类型
+     */
+    public static <T> void padRight(Collection<T> list, int minLen, T padObj) {
+        Objects.requireNonNull(list);
+        for (int i = list.size(); i < minLen; i++) {
+            list.add(padObj);
         }
     }
 

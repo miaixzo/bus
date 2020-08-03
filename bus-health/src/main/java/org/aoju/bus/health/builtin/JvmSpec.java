@@ -33,7 +33,7 @@ import java.io.Serializable;
  * 代表Java Virutal Machine Specification的信息
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class JvmSpec implements Serializable {

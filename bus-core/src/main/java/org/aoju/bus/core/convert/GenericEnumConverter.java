@@ -28,7 +28,7 @@ package org.aoju.bus.core.convert;
  * 泛型枚举转换器
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E> {
