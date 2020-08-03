@@ -28,7 +28,7 @@ package org.aoju.bus.office.process;
  * 用于FreeBSD的{@link ProcessManager}实现
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class FreeBSDProcessManager extends UnixProcessManager {

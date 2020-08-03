@@ -30,7 +30,7 @@ package org.aoju.bus.core.lang.tree;
  * 类树节点实体: 包含key，父Key.不限于这些属性的可以构造成一颗树的实体对象
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class TreeNode<T> implements Node<T> {

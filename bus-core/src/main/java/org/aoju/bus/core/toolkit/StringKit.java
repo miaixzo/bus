@@ -25,16 +25,15 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.StrBuilder;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.System;
 import java.nio.ByteBuffer;
+import java.util.Locale;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +43,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -3918,20 +3917,7 @@ public class StringKit {
      * @return 清理后的字符串
      */
     public static String cleanBlank(CharSequence str) {
-        if (str == null) {
-            return null;
-        }
-
-        int len = str.length();
-        final StringBuilder sb = new StringBuilder(len);
-        char c;
-        for (int i = 0; i < len; i++) {
-            c = str.charAt(i);
-            if (false == CharKit.isBlankChar(c)) {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
+        return filter(str, c -> !CharKit.isBlankChar(c));
     }
 
     /**
@@ -5992,6 +5978,30 @@ public class StringKit {
         Arrays.sort(strArray);
 
         return String.valueOf(strArray);
+    }
+
+    /**
+     * 过滤字符串
+     *
+     * @param str    字符串
+     * @param filter 过滤器
+     * @return 过滤后的字符串
+     */
+    public static String filter(CharSequence str, Filter<Character> filter) {
+        if (str == null || filter == null) {
+            return toString(str);
+        }
+
+        int len = str.length();
+        final StringBuilder sb = new StringBuilder(len);
+        char c;
+        for (int i = 0; i < len; i++) {
+            c = str.charAt(i);
+            if (filter.accept(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     /**

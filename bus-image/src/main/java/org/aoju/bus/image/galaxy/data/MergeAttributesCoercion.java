@@ -26,7 +26,7 @@ package org.aoju.bus.image.galaxy.data;
 
 /**
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class MergeAttributesCoercion implements AttributesCoercion {

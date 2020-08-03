@@ -28,7 +28,7 @@ package org.aoju.bus.notify;
  * 通知注册器
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public enum Registry {

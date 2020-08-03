@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  * 用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class FastDateParser extends AbstractFormater implements DateParser {
@@ -110,7 +110,7 @@ public class FastDateParser extends AbstractFormater implements DateParser {
      * @param timeZone 非空时区
      * @param locale   非空地区
      */
-    protected FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale) {
+    public FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale) {
         this(pattern, timeZone, locale, null);
     }
 
@@ -122,7 +122,7 @@ public class FastDateParser extends AbstractFormater implements DateParser {
      * @param locale       非空地区
      * @param centuryStart 本世纪初为2位数年解析
      */
-    protected FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
+    public FastDateParser(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
         super(pattern, timeZone, locale);
         final Calendar definingCalendar = Calendar.getInstance(timeZone, locale);
 

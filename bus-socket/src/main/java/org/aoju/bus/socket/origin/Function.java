@@ -26,7 +26,7 @@ package org.aoju.bus.socket.origin;
 
 /**
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 interface Function<F, T> {

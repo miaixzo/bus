@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
  * key = value
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @Component

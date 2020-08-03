@@ -41,7 +41,7 @@ import java.util.List;
  * 逻辑双向流.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public final class Http2Stream {

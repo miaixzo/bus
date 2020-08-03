@@ -29,7 +29,7 @@ import org.aoju.bus.proxy.invoker.ProxyChain;
 
 /**
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public abstract class AbstractReader {

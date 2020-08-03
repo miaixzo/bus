@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentMap;
  * {@link java.text.SimpleDateFormat} 的线程安全版本,用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class FastDatePrinter extends AbstractFormater implements DatePrinter {
@@ -62,7 +62,7 @@ public class FastDatePrinter extends AbstractFormater implements DatePrinter {
      * @param timeZone 非空时区{@link TimeZone}
      * @param locale   非空{@link Locale} 日期地理位置
      */
-    protected FastDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
+    public FastDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
         super(pattern, timeZone, locale);
         init();
     }

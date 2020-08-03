@@ -37,7 +37,7 @@ import org.aoju.bus.setting.magic.IniSection;
  * {@link IniProperty}
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public interface Factory {

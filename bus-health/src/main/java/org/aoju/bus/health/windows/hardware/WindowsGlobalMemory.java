@@ -47,7 +47,7 @@ import java.util.function.Supplier;
  * Memory obtained by Performance Info.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @ThreadSafe

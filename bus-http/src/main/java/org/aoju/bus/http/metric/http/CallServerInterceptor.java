@@ -46,7 +46,7 @@ import java.net.ProtocolException;
  * 它对服务器进行网络调用
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public final class CallServerInterceptor implements Interceptor {

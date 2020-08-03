@@ -38,7 +38,7 @@ import java.math.BigDecimal;
  * 数据长度校验
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class CompareStrategy implements Matcher<Object, Compare> {

@@ -34,7 +34,7 @@ import java.util.List;
  * Utility to query TCP connections
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 @ThreadSafe

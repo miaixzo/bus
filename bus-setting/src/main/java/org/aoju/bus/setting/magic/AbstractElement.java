@@ -28,7 +28,7 @@ package org.aoju.bus.setting.magic;
  * an abstract class for {@link IniElement}.
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public abstract class AbstractElement implements IniElement {

@@ -30,7 +30,7 @@ import org.aoju.bus.core.toolkit.BooleanKit;
  * 波尔转换器
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class BooleanConverter extends AbstractConverter<Boolean> {

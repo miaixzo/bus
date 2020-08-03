@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 酷家乐授权登录
  *
  * @author Kimi Liu
- * @version 6.0.3
+ * @version 6.0.5
  * @since JDK 1.8+
  */
 public class KujialeProvider extends AbstractProvider {
