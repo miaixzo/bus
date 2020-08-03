@@ -1981,12 +1981,11 @@ public class DateKit {
 
     /**
      * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，
-     * 返回{@link Calendar}对象，否则抛出{@link DateException}异常
+     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
      * @param str           日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Calendar
+     * @return 解析后的 {@link Calendar}
      */
     public static Calendar parseByPatterns(String str, String... parsePatterns) {
         return parseByPatterns(str, null, parsePatterns);
@@ -1994,13 +1993,12 @@ public class DateKit {
 
     /**
      * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，
-     * 返回{@link Calendar}对象，否则抛出{@link DateException}异常。
+     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
      * @param str           日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Calendar
+     * @return 解析后的 {@link Calendar}
      */
     public static Calendar parseByPatterns(String str, Locale locale, String... parsePatterns) {
         return parseByPatterns(str, locale, true, parsePatterns);
@@ -2008,14 +2006,13 @@ public class DateKit {
 
     /**
      * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，
-     * 返回{@link Calendar}对象，否则抛出{@link DateException}异常
+     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link Calendar}对象
      *
      * @param str           日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
      * @param lenient       日期时间解析是否使用严格模式
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Calendar
+     * @return 解析后的 {@link Calendar}
      * @see java.util.Calendar#isLenient()
      */
     public static Calendar parseByPatterns(String str, Locale locale, boolean lenient, String... parsePatterns) {
@@ -2041,7 +2038,6 @@ public class DateKit {
             }
             pos.setIndex(0);
         }
-
         throw new InstrumentException("Unable to parse the date: {}", str);
     }
 
