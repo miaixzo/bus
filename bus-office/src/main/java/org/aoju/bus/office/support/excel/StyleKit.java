@@ -55,7 +55,7 @@ public class StyleKit {
      * @return {@link CellStyle}
      */
     public static CellStyle cloneCellStyle(Workbook workbook, CellStyle cellStyle) {
-        final CellStyle newCellStyle = workbook.createCellStyle();
+        final CellStyle newCellStyle = createCellStyle(workbook);
         newCellStyle.cloneStyleFrom(cellStyle);
         return newCellStyle;
     }
@@ -172,7 +172,7 @@ public class StyleKit {
      * @return {@link CellStyle}
      */
     public static CellStyle createDefaultCellStyle(Workbook workbook) {
-        final CellStyle cellStyle = workbook.createCellStyle();
+        final CellStyle cellStyle = createCellStyle(workbook);
         setAlign(cellStyle, HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
         setBorder(cellStyle, BorderStyle.THIN, IndexedColors.BLACK);
         return cellStyle;
@@ -185,10 +185,25 @@ public class StyleKit {
      * @return {@link CellStyle}
      */
     public static CellStyle createHeadCellStyle(Workbook workbook) {
-        final CellStyle cellStyle = workbook.createCellStyle();
+        final CellStyle cellStyle = createCellStyle(workbook);
         setAlign(cellStyle, HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
         setBorder(cellStyle, BorderStyle.THIN, IndexedColors.BLACK);
         setColor(cellStyle, IndexedColors.GREY_25_PERCENT, FillPatternType.SOLID_FOREGROUND);
         return cellStyle;
     }
+
+    /**
+     * 创建单元格样式
+     *
+     * @param workbook {@link Workbook} 工作簿
+     * @return {@link CellStyle}
+     * @see Workbook#createCellStyle()
+     */
+    public static CellStyle createCellStyle(Workbook workbook) {
+        if (null == workbook) {
+            return null;
+        }
+        return workbook.createCellStyle();
+    }
+
 }

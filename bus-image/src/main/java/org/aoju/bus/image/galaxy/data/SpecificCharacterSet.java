@@ -57,208 +57,6 @@ public class SpecificCharacterSet {
         return DEFAULT;
     }
 
-    private static final class ISO2022 extends SpecificCharacterSet {
-
-        private ISO2022(Codec[] charsetInfos, String... codes) {
-            super(charsetInfos, codes);
-        }
-
-        @Override
-        public byte[] encode(String val, String delimiters) {
-            int strlen = val.length();
-            CharBuffer cb = CharBuffer.wrap(val.toCharArray());
-            Encoder enc1 = encoder(cachedEncoder1, codecs[0]);
-            byte[] buf = new byte[strlen];
-            ByteBuffer bb = ByteBuffer.wrap(buf);
-            // try to encode whole string value with character set specified
-            // by value1 of (0008,0005) Specific Character Set
-            if (!enc1.encode(cb, bb, 0, CodingErrorAction.REPORT)) {
-                // split whole string value according VR specific delimiters
-                // and try to encode each component separately
-                Encoder[] encs = new Encoder[codecs.length];
-                encs[0] = enc1;
-                encs[1] = encoder(cachedEncoder2, codecs[1]);
-                StringTokenizer comps = new StringTokenizer(val, delimiters, true);
-                buf = new byte[2 * strlen + 4 * (comps.countTokens() + 1)];
-                bb = ByteBuffer.wrap(buf);
-                int[] cur = {0, 0};
-                while (comps.hasMoreTokens()) {
-                    String comp = comps.nextToken();
-                    if (comp.length() == 1 && delimiters.indexOf(comp.charAt(0)) >= 0) { // if delimiter
-                        activateInitialCharacterSet(bb, cur);
-                        bb.put((byte) comp.charAt(0));
-                        continue;
-                    }
-                    cb = CharBuffer.wrap(comp.toCharArray());
-                    encodeComponent(encs, cb, bb, cur);
-                }
-                activateInitialCharacterSet(bb, cur);
-            }
-            return Arrays.copyOf(buf, bb.position());
-        }
-
-        private void encodeComponent(Encoder[] encs, CharBuffer cb, ByteBuffer bb, int[] cur) {
-            // try to encode component with current active character of G1
-            if (codecs[cur[1]].getEscSeq1() != 0 && encs[cur[1]].encode(cb, bb, 0, CodingErrorAction.REPORT))
-                return;
-
-            // try to encode component with current active character set of G0, if different to G1
-            if ((codecs[cur[1]].getEscSeq1() == 0 || codecs[cur[1]].getEscSeq0() != codecs[cur[0]].getEscSeq0())
-                    && encs[cur[0]].encode(cb, bb, 0, CodingErrorAction.REPORT))
-                return;
-
-            int next = encs.length;
-            while (--next >= 0) {
-                if (encs[next] == null)
-                    encs[next] = new Encoder(codecs[next]);
-                if (codecs[next].getEscSeq1() != 0) {
-                    if (encs[next].encode(cb, bb, codecs[next].getEscSeq1(), CodingErrorAction.REPORT)) {
-                        cur[1] = next;
-                        break;
-                    }
-                } else {
-                    if (encs[next].encode(cb, bb, codecs[next].getEscSeq0(), CodingErrorAction.REPORT)) {
-                        cur[0] = next;
-                        break;
-                    }
-                }
-            }
-            if (next < 0) {
-                if (cb.length() > 1) {
-                    for (int i = 0; i < cb.length(); i++) {
-                        encodeComponent(encs, cb.subSequence(i, i + 1), bb, cur);
-                    }
-                } else {
-                    // character could not be encoded with any of the
-                    // specified character sets, encode it with the
-                    // current character set of G0, using the default
-                    // replacement of the character set decoder
-                    // for characters which cannot be encoded
-                    bb.put(encs[cur[0]].replacement());
-                }
-            }
-        }
-
-        private void activateInitialCharacterSet(ByteBuffer bb, int[] cur) {
-            if (cur[0] != 0) {
-                Encoder.escSeq(bb, codecs[0].getEscSeq0());
-                cur[0] = 0;
-            }
-            if (cur[1] != 0) {
-                Encoder.escSeq(bb, codecs[0].getEscSeq1());
-                cur[1] = 0;
-            }
-        }
-
-        @Override
-        public String decode(byte[] b) {
-            Codec[] codec = {codecs[0], codecs[0]};
-            int g = 0;
-            int off = 0;
-            int cur = 0;
-            StringBuilder sb = new StringBuilder(b.length);
-            while (cur < b.length) {
-                if (b[cur] == 0x1b && cur + 2 < b.length) { // ESC
-                    if (off < cur) {
-                        sb.append(codec[g].decode(b, off, cur - off));
-                    }
-                    int esc0 = cur++;
-                    int esc1 = cur++;
-                    int esc2 = cur++;
-                    switch (((b[esc1] & 255) << 8) + (b[esc2] & 255)) {
-                        case 0x2428:
-                            if (cur < b.length && b[cur++] == 0x44) {
-                                codec[0] = Codec.JIS_X_212;
-                            } else { // decode invalid ESC sequence as chars
-                                sb.append(codec[0].decode(b, esc0, cur - esc0));
-                            }
-                            break;
-                        case 0x2429:
-                            switch (cur < b.length ? b[cur++] : -1) {
-                                case 0x41:
-                                    switchCodec(codec, 1, Codec.GB2312);
-                                    break;
-                                case 0x43:
-                                    switchCodec(codec, 1, Codec.KS_X_1001);
-                                    break;
-                                default: // decode invalid ESC sequence as chars
-                                    sb.append(codec[0].decode(b, esc0, cur - esc0));
-                            }
-                            break;
-                        case 0x2442:
-                            codec[0] = Codec.JIS_X_208;
-                            break;
-                        case 0x2842:
-                            switchCodec(codec, 0, Codec.ISO_646);
-                            break;
-                        case 0x284a:
-                            codec[0] = Codec.JIS_X_201;
-                            if (codec[1].getEscSeq1() == 0)
-                                codec[1] = codec[0];
-                            break;
-                        case 0x2949:
-                            codec[1] = Codec.JIS_X_201;
-                            break;
-                        case 0x2d41:
-                            switchCodec(codec, 1, Codec.ISO_8859_1);
-                            break;
-                        case 0x2d42:
-                            switchCodec(codec, 1, Codec.ISO_8859_2);
-                            break;
-                        case 0x2d43:
-                            switchCodec(codec, 1, Codec.ISO_8859_3);
-                            break;
-                        case 0x2d44:
-                            switchCodec(codec, 1, Codec.ISO_8859_4);
-                            break;
-                        case 0x2d46:
-                            switchCodec(codec, 1, Codec.ISO_8859_7);
-                            break;
-                        case 0x2d47:
-                            switchCodec(codec, 1, Codec.ISO_8859_6);
-                            break;
-                        case 0x2d48:
-                            switchCodec(codec, 1, Codec.ISO_8859_8);
-                            break;
-                        case 0x2d4c:
-                            switchCodec(codec, 1, Codec.ISO_8859_5);
-                            break;
-                        case 0x2d4d:
-                            switchCodec(codec, 1, Codec.ISO_8859_9);
-                            break;
-                        case 0x2d54:
-                            switchCodec(codec, 1, Codec.TIS_620);
-                            break;
-                        default: // decode invalid ESC sequence as chars
-                            sb.append(codec[0].decode(b, esc0, cur - esc0));
-                    }
-                    off = cur;
-                } else {
-                    if (codec[0] != codec[1] && g == (b[cur] < 0 ? 0 : 1)) {
-                        if (off < cur) {
-                            sb.append(codec[g].decode(b, off, cur - off));
-                        }
-                        off = cur;
-                        g = 1 - g;
-                    }
-                    int bytesPerChar = codec[g].getBytesPerChar();
-                    cur += bytesPerChar > 0 ? bytesPerChar : b[cur] < 0 ? 2 : 1;
-                }
-            }
-            if (off < cur) {
-                sb.append(codec[g].decode(b, off, Math.min(cur, b.length) - off));
-            }
-            return sb.toString();
-        }
-
-        private void switchCodec(Codec[] codecs, int i, Codec codec) {
-            codecs[i] = codec;
-            if (codecs[0].getEscSeq0() == codecs[1].getEscSeq0())
-                codecs[0] = codecs[1];
-        }
-
-    }
-
     public static void setDefaultCharacterSet(String code) {
         SpecificCharacterSet cs = code != null ? valueOf(code) : ASCII;
         if (!cs.containsASCII())
@@ -663,6 +461,208 @@ public class SpecificCharacterSet {
         }
     }
 
+    private static final class ISO2022 extends SpecificCharacterSet {
+
+        private ISO2022(Codec[] charsetInfos, String... codes) {
+            super(charsetInfos, codes);
+        }
+
+        @Override
+        public byte[] encode(String val, String delimiters) {
+            int strlen = val.length();
+            CharBuffer cb = CharBuffer.wrap(val.toCharArray());
+            Encoder enc1 = encoder(cachedEncoder1, codecs[0]);
+            byte[] buf = new byte[strlen];
+            ByteBuffer bb = ByteBuffer.wrap(buf);
+            // try to encode whole string value with character set specified
+            // by value1 of (0008,0005) Specific Character Set
+            if (!enc1.encode(cb, bb, 0, CodingErrorAction.REPORT)) {
+                // split whole string value according VR specific delimiters
+                // and try to encode each component separately
+                Encoder[] encs = new Encoder[codecs.length];
+                encs[0] = enc1;
+                encs[1] = encoder(cachedEncoder2, codecs[1]);
+                StringTokenizer comps = new StringTokenizer(val, delimiters, true);
+                buf = new byte[2 * strlen + 4 * (comps.countTokens() + 1)];
+                bb = ByteBuffer.wrap(buf);
+                int[] cur = {0, 0};
+                while (comps.hasMoreTokens()) {
+                    String comp = comps.nextToken();
+                    if (comp.length() == 1 && delimiters.indexOf(comp.charAt(0)) >= 0) { // if delimiter
+                        activateInitialCharacterSet(bb, cur);
+                        bb.put((byte) comp.charAt(0));
+                        continue;
+                    }
+                    cb = CharBuffer.wrap(comp.toCharArray());
+                    encodeComponent(encs, cb, bb, cur);
+                }
+                activateInitialCharacterSet(bb, cur);
+            }
+            return Arrays.copyOf(buf, bb.position());
+        }
+
+        private void encodeComponent(Encoder[] encs, CharBuffer cb, ByteBuffer bb, int[] cur) {
+            // try to encode component with current active character of G1
+            if (codecs[cur[1]].getEscSeq1() != 0 && encs[cur[1]].encode(cb, bb, 0, CodingErrorAction.REPORT))
+                return;
+
+            // try to encode component with current active character set of G0, if different to G1
+            if ((codecs[cur[1]].getEscSeq1() == 0 || codecs[cur[1]].getEscSeq0() != codecs[cur[0]].getEscSeq0())
+                    && encs[cur[0]].encode(cb, bb, 0, CodingErrorAction.REPORT))
+                return;
+
+            int next = encs.length;
+            while (--next >= 0) {
+                if (encs[next] == null)
+                    encs[next] = new Encoder(codecs[next]);
+                if (codecs[next].getEscSeq1() != 0) {
+                    if (encs[next].encode(cb, bb, codecs[next].getEscSeq1(), CodingErrorAction.REPORT)) {
+                        cur[1] = next;
+                        break;
+                    }
+                } else {
+                    if (encs[next].encode(cb, bb, codecs[next].getEscSeq0(), CodingErrorAction.REPORT)) {
+                        cur[0] = next;
+                        break;
+                    }
+                }
+            }
+            if (next < 0) {
+                if (cb.length() > 1) {
+                    for (int i = 0; i < cb.length(); i++) {
+                        encodeComponent(encs, cb.subSequence(i, i + 1), bb, cur);
+                    }
+                } else {
+                    // character could not be encoded with any of the
+                    // specified character sets, encode it with the
+                    // current character set of G0, using the default
+                    // replacement of the character set decoder
+                    // for characters which cannot be encoded
+                    bb.put(encs[cur[0]].replacement());
+                }
+            }
+        }
+
+        private void activateInitialCharacterSet(ByteBuffer bb, int[] cur) {
+            if (cur[0] != 0) {
+                Encoder.escSeq(bb, codecs[0].getEscSeq0());
+                cur[0] = 0;
+            }
+            if (cur[1] != 0) {
+                Encoder.escSeq(bb, codecs[0].getEscSeq1());
+                cur[1] = 0;
+            }
+        }
+
+        @Override
+        public String decode(byte[] b) {
+            Codec[] codec = {codecs[0], codecs[0]};
+            int g = 0;
+            int off = 0;
+            int cur = 0;
+            StringBuilder sb = new StringBuilder(b.length);
+            while (cur < b.length) {
+                if (b[cur] == 0x1b && cur + 2 < b.length) { // ESC
+                    if (off < cur) {
+                        sb.append(codec[g].decode(b, off, cur - off));
+                    }
+                    int esc0 = cur++;
+                    int esc1 = cur++;
+                    int esc2 = cur++;
+                    switch (((b[esc1] & 255) << 8) + (b[esc2] & 255)) {
+                        case 0x2428:
+                            if (cur < b.length && b[cur++] == 0x44) {
+                                codec[0] = Codec.JIS_X_212;
+                            } else { // decode invalid ESC sequence as chars
+                                sb.append(codec[0].decode(b, esc0, cur - esc0));
+                            }
+                            break;
+                        case 0x2429:
+                            switch (cur < b.length ? b[cur++] : -1) {
+                                case 0x41:
+                                    switchCodec(codec, 1, Codec.GB2312);
+                                    break;
+                                case 0x43:
+                                    switchCodec(codec, 1, Codec.KS_X_1001);
+                                    break;
+                                default: // decode invalid ESC sequence as chars
+                                    sb.append(codec[0].decode(b, esc0, cur - esc0));
+                            }
+                            break;
+                        case 0x2442:
+                            codec[0] = Codec.JIS_X_208;
+                            break;
+                        case 0x2842:
+                            switchCodec(codec, 0, Codec.ISO_646);
+                            break;
+                        case 0x284a:
+                            codec[0] = Codec.JIS_X_201;
+                            if (codec[1].getEscSeq1() == 0)
+                                codec[1] = codec[0];
+                            break;
+                        case 0x2949:
+                            codec[1] = Codec.JIS_X_201;
+                            break;
+                        case 0x2d41:
+                            switchCodec(codec, 1, Codec.ISO_8859_1);
+                            break;
+                        case 0x2d42:
+                            switchCodec(codec, 1, Codec.ISO_8859_2);
+                            break;
+                        case 0x2d43:
+                            switchCodec(codec, 1, Codec.ISO_8859_3);
+                            break;
+                        case 0x2d44:
+                            switchCodec(codec, 1, Codec.ISO_8859_4);
+                            break;
+                        case 0x2d46:
+                            switchCodec(codec, 1, Codec.ISO_8859_7);
+                            break;
+                        case 0x2d47:
+                            switchCodec(codec, 1, Codec.ISO_8859_6);
+                            break;
+                        case 0x2d48:
+                            switchCodec(codec, 1, Codec.ISO_8859_8);
+                            break;
+                        case 0x2d4c:
+                            switchCodec(codec, 1, Codec.ISO_8859_5);
+                            break;
+                        case 0x2d4d:
+                            switchCodec(codec, 1, Codec.ISO_8859_9);
+                            break;
+                        case 0x2d54:
+                            switchCodec(codec, 1, Codec.TIS_620);
+                            break;
+                        default: // decode invalid ESC sequence as chars
+                            sb.append(codec[0].decode(b, esc0, cur - esc0));
+                    }
+                    off = cur;
+                } else {
+                    if (codec[0] != codec[1] && g == (b[cur] < 0 ? 0 : 1)) {
+                        if (off < cur) {
+                            sb.append(codec[g].decode(b, off, cur - off));
+                        }
+                        off = cur;
+                        g = 1 - g;
+                    }
+                    int bytesPerChar = codec[g].getBytesPerChar();
+                    cur += bytesPerChar > 0 ? bytesPerChar : b[cur] < 0 ? 2 : 1;
+                }
+            }
+            if (off < cur) {
+                sb.append(codec[g].decode(b, off, Math.min(cur, b.length) - off));
+            }
+            return sb.toString();
+        }
+
+        private void switchCodec(Codec[] codecs, int i, Codec codec) {
+            codecs[i] = codec;
+            if (codecs[0].getEscSeq0() == codecs[1].getEscSeq0())
+                codecs[0] = codecs[1];
+        }
+
+    }
+
     private static final class Encoder {
         final Codec codec;
         final CharsetEncoder encoder;
@@ -670,6 +670,18 @@ public class SpecificCharacterSet {
         public Encoder(Codec codec) {
             this.codec = codec;
             this.encoder = java.nio.charset.Charset.forName(codec.charsetName()).newEncoder();
+        }
+
+        private static void escSeq(ByteBuffer bb, int seq) {
+            if (seq == 0)
+                return;
+
+            bb.put((byte) 0x1b);
+            int b1 = seq >> 16;
+            if (b1 != 0)
+                bb.put((byte) b1);
+            bb.put((byte) (seq >> 8));
+            bb.put((byte) seq);
         }
 
         public boolean encode(CharBuffer cb, ByteBuffer bb, int escSeq,
@@ -693,18 +705,6 @@ public class SpecificCharacterSet {
                 return false;
             }
             return true;
-        }
-
-        private static void escSeq(ByteBuffer bb, int seq) {
-            if (seq == 0)
-                return;
-
-            bb.put((byte) 0x1b);
-            int b1 = seq >> 16;
-            if (b1 != 0)
-                bb.put((byte) b1);
-            bb.put((byte) (seq >> 8));
-            bb.put((byte) seq);
         }
 
         public byte[] replacement() {

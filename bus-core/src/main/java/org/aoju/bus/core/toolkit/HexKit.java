@@ -99,7 +99,7 @@ public class HexKit {
     }
 
     /**
-     * 将字节数组转换为十六进制字符串,结果为小写
+     * 将符串转换为十六进制字符串,结果为小写
      *
      * @param data    被编码的字符串
      * @param charset 编码
@@ -110,7 +110,7 @@ public class HexKit {
     }
 
     /**
-     * 将字节数组转换为十六进制字符串,结果为小写,默认编码是UTF-8
+     * 将符串转换为十六进制字符串,结果为小写,默认编码是UTF-8
      *
      * @param data 被编码的字符串
      * @return 十六进制String

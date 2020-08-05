@@ -322,6 +322,16 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
+     * 创建单元格样式
+     *
+     * @return {@link CellStyle}
+     * @see Workbook#createCellStyle()
+     */
+    public CellStyle createCellStyle() {
+        return StyleKit.createCellStyle(this.workbook);
+    }
+
+    /**
      * 获取总行数,计算方法为：
      *
      * <pre>
