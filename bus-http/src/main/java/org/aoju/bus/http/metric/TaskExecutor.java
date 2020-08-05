@@ -158,8 +158,9 @@ public final class TaskExecutor {
         Throwable lastCause = throwable.getCause();
         if (lastCause != null) {
             initRootCause(lastCause, cause);
+        } else {
+            throwable.initCause(cause);
         }
-        throwable.initCause(cause);
     }
 
     /**
