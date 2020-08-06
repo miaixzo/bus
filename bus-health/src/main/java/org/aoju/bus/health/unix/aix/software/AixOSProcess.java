@@ -25,6 +25,7 @@
 package org.aoju.bus.health.unix.aix.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -50,7 +51,7 @@ public class AixOSProcess extends AbstractOSProcess {
     private final Supplier<Long> affinityMask = Memoize.memoize(PerfstatCpu::queryCpuAffinityMask, Memoize.defaultExpiration());
     private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private String name;
-    private String path = "";
+    private String path = Normal.EMPTY;
     private String commandLine;
     private String user;
     private String userID;

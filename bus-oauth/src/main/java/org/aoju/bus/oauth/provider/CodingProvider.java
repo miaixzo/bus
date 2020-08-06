@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -99,7 +100,7 @@ public class CodingProvider extends AbstractProvider {
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Coding.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Coding.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

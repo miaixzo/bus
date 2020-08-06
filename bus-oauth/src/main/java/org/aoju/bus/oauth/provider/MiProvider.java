@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
@@ -142,7 +143,7 @@ public class MiProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("skip_confirm", "false")
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Mi.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Mi.values())))
                 .build();
     }
 

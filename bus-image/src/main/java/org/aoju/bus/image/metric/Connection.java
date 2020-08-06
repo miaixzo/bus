@@ -834,7 +834,7 @@ public class Connection implements Serializable {
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
-        String indent2 = indent + "  ";
+        String indent2 = indent + Symbol.SPACE;
         Property.appendLine(sb, indent, "Connection[cn: ", commonName);
         Property.appendLine(sb, indent2, "host: ", hostname);
         Property.appendLine(sb, indent2, "port: ", port);

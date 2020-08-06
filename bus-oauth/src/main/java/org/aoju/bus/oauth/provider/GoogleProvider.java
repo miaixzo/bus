@@ -104,7 +104,7 @@ public class GoogleProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
-                .queryParam("scope", this.getScopes(" ", false, getScopes(true, OauthScope.Google.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, getScopes(true, OauthScope.Google.values())))
                 .queryParam("prompt", "select_account")
                 .build();
     }

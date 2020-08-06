@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.oauth.Builder;
@@ -103,7 +104,7 @@ public class GithubProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Github.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Github.values())))
                 .build();
     }
 

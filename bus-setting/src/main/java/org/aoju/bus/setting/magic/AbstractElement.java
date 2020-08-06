@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.setting.magic;
 
+import org.aoju.bus.core.lang.Symbol;
+
 /**
  * an abstract class for {@link IniElement}.
  *
@@ -180,7 +182,7 @@ public abstract class AbstractElement implements IniElement {
      */
     @Override
     public String toCompleteString() {
-        return comment == null ? originalValue : originalValue + " " + comment;
+        return comment == null ? originalValue : originalValue + Symbol.SPACE + comment;
     }
 
     //**************** implements from String ****************//

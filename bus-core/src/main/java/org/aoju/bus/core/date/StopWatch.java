@@ -345,8 +345,8 @@ public class StopWatch {
             pf.setMinimumIntegerDigits(3);
             pf.setGroupingUsed(false);
             for (TaskInfo task : getTaskInfo()) {
-                sb.append(nf.format(task.getTimeNanos())).append("  ");
-                sb.append(pf.format((double) task.getTimeNanos() / getTotalTimeNanos())).append("  ");
+                sb.append(nf.format(task.getTimeNanos())).append(Symbol.SPACE);
+                sb.append(pf.format((double) task.getTimeNanos() / getTotalTimeNanos())).append(Symbol.SPACE);
                 sb.append(task.getTaskName()).append(FileKit.getLineSeparator());
             }
         }

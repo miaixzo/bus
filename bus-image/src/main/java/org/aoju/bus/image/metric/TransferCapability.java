@@ -213,7 +213,7 @@ public class TransferCapability implements Serializable {
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
-        String indent2 = indent + "  ";
+        String indent2 = indent + Symbol.SPACE;
         Property.appendLine(sb, indent, "TransferCapability[cn: ", commonName);
         Property.appendLine(sb, indent2, "role: ", role);
         sb.append(indent2).append("as: ");

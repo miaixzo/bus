@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 
@@ -177,7 +178,7 @@ public final class Sysfs {
     public static String queryBiosVersion(String biosRevision) {
         final String biosVersion = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "bios_version").trim();
         if (!biosVersion.isEmpty()) {
-            return biosVersion + (StringKit.isBlank(biosRevision) ? "" : " (revision " + biosRevision + ")");
+            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + ")");
         }
         return null;
     }

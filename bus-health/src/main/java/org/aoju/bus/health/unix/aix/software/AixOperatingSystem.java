@@ -26,6 +26,7 @@ package org.aoju.bus.health.unix.aix.software;
 
 import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -146,7 +147,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
 
     private List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
         Perfstat.perfstat_process_t[] perfstat = procCpu.get();
-        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? "" : pid));
+        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
         if (procList.isEmpty() || procList.size() < 2) {
             return Collections.emptyList();
         }

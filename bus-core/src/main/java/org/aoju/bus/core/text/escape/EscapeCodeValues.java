@@ -238,7 +238,7 @@ public class EscapeCodeValues {
         UNESCAPE_JAVA_MAP.put("\\\\", Symbol.BACKSLASH);
         UNESCAPE_JAVA_MAP.put("\\\"", Symbol.DOUBLE_QUOTES);
         UNESCAPE_JAVA_MAP.put("\\'", Symbol.SINGLE_QUOTE);
-        UNESCAPE_JAVA_MAP.put(Symbol.BACKSLASH, "");
+        UNESCAPE_JAVA_MAP.put(Symbol.BACKSLASH, Normal.EMPTY);
 
         HTML40_ESCAPE_MAP.put("\u0192", "&fnof;"); // latin small f with hook = function= florin, U+0192 ISOtech
         HTML40_ESCAPE_MAP.put("\u0391", "&Alpha;"); // greek capital letter alpha, U+0391

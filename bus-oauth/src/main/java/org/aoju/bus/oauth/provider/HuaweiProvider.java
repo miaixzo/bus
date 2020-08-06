@@ -141,7 +141,7 @@ public class HuaweiProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Huawei.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Huawei.values())))
                 .build();
     }
 

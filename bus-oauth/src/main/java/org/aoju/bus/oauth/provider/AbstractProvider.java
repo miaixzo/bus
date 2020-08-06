@@ -413,13 +413,13 @@ public abstract class AbstractProvider implements Provider {
         List<String> scopes = context.getScopes();
         if (null == scopes || scopes.isEmpty()) {
             if (null == defaultScopes || defaultScopes.isEmpty()) {
-                return "";
+                return Normal.EMPTY;
             }
             scopes = defaultScopes;
         }
         if (null == separator) {
             // 默认为空格
-            separator = " ";
+            separator = Symbol.SPACE;
         }
         String scopeStr = String.join(separator, scopes);
         return encode ? UriKit.encode(scopeStr) : scopeStr;

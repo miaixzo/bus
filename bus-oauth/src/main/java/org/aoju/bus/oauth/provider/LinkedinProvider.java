@@ -108,7 +108,7 @@ public class LinkedinProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(" ", false, getScopes(true, OauthScope.Linkedin.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, false, getScopes(true, OauthScope.Linkedin.values())))
                 .build();
     }
 

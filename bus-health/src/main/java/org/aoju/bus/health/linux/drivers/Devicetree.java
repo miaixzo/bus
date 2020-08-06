@@ -25,6 +25,7 @@
 package org.aoju.bus.health.linux.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 
 /**
@@ -48,7 +49,7 @@ public final class Devicetree {
     public static String queryModel() {
         String modelStr = Builder.getStringFromFile("/sys/firmware/devicetree/base/model");
         if (!modelStr.isEmpty()) {
-            return modelStr.replace("Machine: ", "");
+            return modelStr.replace("Machine: ", Normal.EMPTY);
         }
         return null;
     }

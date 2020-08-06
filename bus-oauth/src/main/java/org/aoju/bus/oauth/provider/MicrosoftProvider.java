@@ -154,7 +154,7 @@ public class MicrosoftProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("response_mode", "query")
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Microsoft.values())))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Microsoft.values())))
                 .build();
     }
 
