@@ -127,25 +127,6 @@ public enum Registry implements Complex {
         }
     },
     /**
-     * csdn
-     */
-    CSDN {
-        @Override
-        public String authorize() {
-            return "https://api.csdn.net/oauth2/authorize";
-        }
-
-        @Override
-        public String accessToken() {
-            return "https://api.csdn.net/oauth2/access_token";
-        }
-
-        @Override
-        public String userInfo() {
-            return "https://api.csdn.net/user/getinfo";
-        }
-    },
-    /**
      * 钉钉
      */
     DINGTALK {

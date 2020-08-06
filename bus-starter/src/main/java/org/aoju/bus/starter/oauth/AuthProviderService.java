@@ -31,7 +31,7 @@ import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Provider;
 import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.oauth.metric.OauthCache;
+import org.aoju.bus.oauth.metric.cache.OauthDefaultCache;
 import org.aoju.bus.oauth.provider.*;
 
 import java.util.Map;
@@ -54,7 +54,7 @@ public class AuthProviderService {
     public ExtendCache extendCache;
 
     public AuthProviderService(AuthProperties properties) {
-        this(properties, OauthCache.INSTANCE);
+        this(properties, OauthDefaultCache.INSTANCE);
     }
 
     public AuthProviderService(AuthProperties properties, ExtendCache extendCache) {
@@ -93,8 +93,6 @@ public class AuthProviderService {
             return new BaiduProvider(context, extendCache);
         } else if (Registry.CODING.equals(type)) {
             return new CodingProvider(context, extendCache);
-        } else if (Registry.CSDN.equals(type)) {
-            return new CsdnProvider(context, extendCache);
         } else if (Registry.DINGTALK.equals(type)) {
             return new DingTalkProvider(context, extendCache);
         } else if (Registry.DOUYIN.equals(type)) {

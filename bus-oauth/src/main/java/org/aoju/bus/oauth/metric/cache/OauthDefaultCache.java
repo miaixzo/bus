@@ -22,67 +22,64 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.oauth.provider;
+package org.aoju.bus.oauth.metric.cache;
 
-import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.cache.metric.ExtendCache;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.oauth.Context;
-import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.oauth.magic.AccToken;
-import org.aoju.bus.oauth.magic.Callback;
-import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.cache.CacheX;
+import org.aoju.bus.cache.metric.MemoryCache;
+import org.aoju.bus.oauth.metric.OauthCache;
 
 /**
- * CSDN登录
+ * 默认缓存实现
  *
  * @author Kimi Liu
  * @version 6.0.5
  * @since JDK 1.8+
  */
-public class CsdnProvider extends AbstractProvider {
+public enum OauthDefaultCache implements OauthCache {
 
-    public CsdnProvider(Context context) {
-        super(context, Registry.CSDN);
-    }
+    /**
+     * 当前实例
+     */
+    INSTANCE;
 
-    public CsdnProvider(Context context, ExtendCache extendCache) {
-        super(context, Registry.CSDN, extendCache);
-    }
+    private CacheX cache;
 
-    @Override
-    public AccToken getAccessToken(Callback callback) {
-        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(callback.getCode()));
-        this.checkResponse(object);
-        return AccToken.builder().accessToken(object.getString("access_token")).build();
-    }
-
-    @Override
-    public Property getUserInfo(AccToken accToken) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
-        this.checkResponse(object);
-        return Property.builder()
-                .rawJson(object)
-                .uuid(object.getString("username"))
-                .username(object.getString("username"))
-                .remark(object.getString("description"))
-                .blog(object.getString("website"))
-                .gender(Normal.Gender.UNKNOWN)
-                .token(accToken)
-                .source(source.toString())
-                .build();
+    OauthDefaultCache() {
+        cache = new MemoryCache();
     }
 
     /**
-     * 检查响应内容是否正确
+     * 存入缓存
      *
-     * @param object 请求响应内容
+     * @param key   缓存key
+     * @param value 缓存内容
      */
-    private void checkResponse(JSONObject object) {
-        if (object.containsKey("error_code")) {
-            throw new AuthorizedException(object.getString("error"));
-        }
+    @Override
+    public void cache(String key, String value) {
+        cache.write(key, value, 3 * 60 * 1000);
+    }
+
+    /**
+     * 存入缓存
+     *
+     * @param key     缓存key
+     * @param value   缓存内容
+     * @param timeout 指定缓存过期时间(毫秒)
+     */
+    @Override
+    public void cache(String key, String value, long timeout) {
+        cache.write(key, value, timeout);
+    }
+
+    /**
+     * 获取缓存内容
+     *
+     * @param key 缓存key
+     * @return 缓存内容
+     */
+    @Override
+    public Object get(String key) {
+        return cache.read(key);
     }
 
 }

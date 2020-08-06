@@ -36,6 +36,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.scope.HuaweiScope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -131,37 +132,16 @@ public class HuaweiProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url,授权回调时会带上这个{@code state}
+     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
      *
-     * @param state state 验证授权流程的参数,可以防止csrf
+     * @param state state 验证授权流程的参数，可以防止csrf
      * @return 返回授权地址
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(source.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
-                .queryParam("scope", "https%3A%2F%2Fwww.huawei.com%2Fauth%2Faccount%2Fbase.profile")
-                .queryParam("state", getRealState(state))
-                .build();
-    }
-
-    /**
-     * 返回获取accessToken的url
-     *
-     * @param code 授权码
-     * @return 返回获取accessToken的url
-     */
-    @Override
-    public String accessTokenUrl(String code) {
-        return Builder.fromUrl(source.accessToken())
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("code", code)
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, HuaweiScope.values())))
                 .build();
     }
 

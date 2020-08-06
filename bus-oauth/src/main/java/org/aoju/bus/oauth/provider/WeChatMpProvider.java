@@ -143,8 +143,8 @@ public class WeChatMpProvider extends AbstractProvider {
                 .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("response_type", "code")
-                .queryParam("scope", "snsapi_userinfo")
                 .queryParam("state", getRealState(state).concat("#wechat_redirect"))
+                .queryParam("scope", this.getScopes(",", false, getScopes(false)))
                 .build();
     }
 

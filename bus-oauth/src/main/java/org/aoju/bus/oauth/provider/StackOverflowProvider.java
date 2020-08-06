@@ -106,12 +106,8 @@ public class StackOverflowProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(source.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", "read_inbox")
-                .queryParam("state", getRealState(state))
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(",", false, getScopes(false)))
                 .build();
     }
 

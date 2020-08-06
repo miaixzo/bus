@@ -37,6 +37,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.scope.MiScope;
 
 import java.text.MessageFormat;
 
@@ -139,13 +140,9 @@ public class MiProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(source.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", "user/profile%20user/openIdV2%20user/phoneAndEmail")
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("skip_confirm", "false")
-                .queryParam("state", getRealState(state))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, MiScope.values())))
                 .build();
     }
 

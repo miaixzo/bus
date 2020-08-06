@@ -140,4 +140,11 @@ public class RenrenProvider extends AbstractProvider {
                 .build();
     }
 
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(",", false, getScopes(false)))
+                .build();
+    }
+
 }

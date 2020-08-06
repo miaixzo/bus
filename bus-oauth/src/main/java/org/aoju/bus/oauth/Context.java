@@ -30,6 +30,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.aoju.bus.oauth.magic.Callback;
 
+import java.util.List;
+
 /**
  * 上下文配置类
  *
@@ -107,5 +109,10 @@ public class Context {
      * 团队域名前缀，比如以“ https://justauth.coding.net/ ”为例，{@code codingGroupName} = justauth
      */
     private String codingGroupName;
+
+    /**
+     * 支持自定义授权平台的 scope 内容
+     */
+    private List<String> scopes;
 
 }
