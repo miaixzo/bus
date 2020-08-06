@@ -37,6 +37,7 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +108,7 @@ public class StackOverflowProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(false)))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.StackOverflow.values())))
                 .build();
     }
 

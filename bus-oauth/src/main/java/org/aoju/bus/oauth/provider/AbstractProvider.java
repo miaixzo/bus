@@ -40,8 +40,8 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthCache;
 import org.aoju.bus.oauth.metric.OauthScope;
-import org.aoju.bus.oauth.metric.cache.OauthDefaultCache;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -67,7 +67,7 @@ public abstract class AbstractProvider implements Provider {
     public ExtendCache extendCache;
 
     public AbstractProvider(Context context, Complex source) {
-        this(context, source, OauthDefaultCache.INSTANCE);
+        this(context, source, OauthCache.INSTANCE);
     }
 
     public AbstractProvider(Context context, Complex source, ExtendCache extendCache) {
@@ -200,24 +200,24 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 从 {@link  OauthScope} 数组中获取实际的 scope 字符串
+     * 从 {@link  OauthScope.Scope} 数组中获取实际的 scope 字符串
      *
-     * @param scopes 可变参数，支持传任意 {@link  OauthScope}
+     * @param scopes 可变参数，支持传任意 {@link  OauthScope.Scope}
      * @return List
      */
-    public static List<String> getScopes(boolean defaultScope, OauthScope... scopes) {
+    public static List<String> getScopes(boolean defaultScope, OauthScope.Scope... scopes) {
         if (null == scopes || scopes.length == 0) {
             return null;
         }
 
         if (defaultScope) {
             return Arrays.stream(scopes)
-                    .filter(OauthScope::isDefault)
-                    .map(OauthScope::getScope)
+                    .filter(OauthScope.Scope::isDefault)
+                    .map(OauthScope.Scope::getScope)
                     .collect(Collectors.toList());
         }
 
-        return Arrays.stream(scopes).map(OauthScope::getScope).collect(Collectors.toList());
+        return Arrays.stream(scopes).map(OauthScope.Scope::getScope).collect(Collectors.toList());
     }
 
     /**

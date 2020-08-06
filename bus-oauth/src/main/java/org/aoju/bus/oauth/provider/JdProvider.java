@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.JdScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -186,7 +186,7 @@ public class JdProvider extends AbstractProvider {
                 .queryParam("app_key", context.getAppKey())
                 .queryParam("response_type", "code")
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, JdScope.values())))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Jd.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

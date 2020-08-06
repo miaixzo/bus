@@ -34,6 +34,7 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * Gitee登录
@@ -95,7 +96,7 @@ public class GiteeProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(" ", true, getScopes(false)))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Gitee.values())))
                 .build();
     }
 

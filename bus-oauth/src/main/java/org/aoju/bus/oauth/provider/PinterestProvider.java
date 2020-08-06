@@ -36,7 +36,7 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.PinterestScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.util.Objects;
 
@@ -105,7 +105,7 @@ public class PinterestProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, PinterestScope.values())))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Pinterest.values())))
                 .build();
     }
 

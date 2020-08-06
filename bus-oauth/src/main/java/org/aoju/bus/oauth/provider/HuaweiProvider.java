@@ -36,7 +36,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.HuaweiScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -141,7 +141,7 @@ public class HuaweiProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("access_type", "offline")
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, HuaweiScope.values())))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Huawei.values())))
                 .build();
     }
 

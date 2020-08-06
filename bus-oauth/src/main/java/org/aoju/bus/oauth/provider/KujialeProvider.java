@@ -36,7 +36,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.KujialeScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * 酷家乐授权登录
@@ -77,7 +77,7 @@ public class KujialeProvider extends AbstractProvider {
      */
     public String authorize(String state, String scopeStr) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, KujialeScope.values())))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Kujiale.values())))
                 .build();
     }
 

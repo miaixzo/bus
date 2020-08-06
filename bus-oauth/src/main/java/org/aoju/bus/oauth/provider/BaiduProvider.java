@@ -37,7 +37,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.BaiduScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * 百度账号登录
@@ -112,7 +112,7 @@ public class BaiduProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("display", "popup")
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, BaiduScope.values())))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Baidu.values())))
                 .build();
     }
 

@@ -39,7 +39,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.MicrosoftScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -154,7 +154,7 @@ public class MicrosoftProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("response_mode", "query")
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, MicrosoftScope.values())))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Microsoft.values())))
                 .build();
     }
 

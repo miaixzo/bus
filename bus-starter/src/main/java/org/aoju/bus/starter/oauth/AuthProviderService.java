@@ -31,7 +31,7 @@ import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Provider;
 import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.oauth.metric.cache.OauthDefaultCache;
+import org.aoju.bus.oauth.metric.OauthCache;
 import org.aoju.bus.oauth.provider.*;
 
 import java.util.Map;
@@ -54,7 +54,7 @@ public class AuthProviderService {
     public ExtendCache extendCache;
 
     public AuthProviderService(AuthProperties properties) {
-        this(properties, OauthDefaultCache.INSTANCE);
+        this(properties, OauthCache.INSTANCE);
     }
 
     public AuthProviderService(AuthProperties properties, ExtendCache extendCache) {

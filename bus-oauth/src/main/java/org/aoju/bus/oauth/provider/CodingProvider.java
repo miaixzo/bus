@@ -34,7 +34,7 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.CodingScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * Cooding登录
@@ -99,7 +99,7 @@ public class CodingProvider extends AbstractProvider {
                 .queryParam("response_type", "code")
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, CodingScope.values())))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Coding.values())))
                 .queryParam("state", getRealState(state))
                 .build();
     }

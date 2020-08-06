@@ -37,7 +37,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
-import org.aoju.bus.oauth.metric.scope.MiScope;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.text.MessageFormat;
 
@@ -142,7 +142,7 @@ public class MiProvider extends AbstractProvider {
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("skip_confirm", "false")
-                .queryParam("scope", this.getScopes(" ", true, getScopes(true, MiScope.values())))
+                .queryParam("scope", this.getScopes(" ", true, getScopes(true, OauthScope.Mi.values())))
                 .build();
     }
 
