@@ -40,9 +40,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * 默认的,我们读取${classpath}/default下的配置文件(*.setting文件),当调用setProfile方法时,指定一个profile,即可读取其目录下的配置文件
  * 比如我们定义几个profile：test,develop,production,分别代表测试环境、开发环境和线上环境,我希望读取数据库配置文件db.setting,那么：
  * <ol>
- * <li>test =》 ${classpath}/test/db.setting</li>
- * <li>develop =》 ${classpath}/develop/db.setting</li>
- * <li>production =》 ${classpath}/production/db.setting</li>
+ * <li>test =  ${classpath}/test/db.setting</li>
+ * <li>develop =  ${classpath}/develop/db.setting</li>
+ * <li>production =  ${classpath}/production/db.setting</li>
  * </ol>
  *
  * @author Kimi Liu

@@ -165,10 +165,13 @@ public class BeanDesc implements Serializable {
      * @return this
      */
     private BeanDesc init() {
+        final Method[] methods = ReflectKit.getMethods(this.beanClass);
+        PropDesc prop;
         for (Field field : ReflectKit.getFields(this.beanClass)) {
             if (false == BeanKit.isStatic(field)) {
                 //只针对非static属性
-                this.propMap.put(ReflectKit.getFieldName(field), createProp(field));
+                prop = createProp(field, methods);
+                this.propMap.put(prop.getFieldName(), prop);
             }
         }
         return this;
@@ -176,7 +179,7 @@ public class BeanDesc implements Serializable {
 
     /**
      * 根据字段创建属性描述
-     * 查找Getter和Setter方法时会：
+     * 查找Getter和Setter方法
      *
      * <pre>
      * 1. 忽略字段和方法名的大小写
@@ -185,20 +188,44 @@ public class BeanDesc implements Serializable {
      * 4. Setter忽略参数值与字段值不匹配的情况,因此有多个参数类型的重载时,会调用首次匹配的
      * </pre>
      *
-     * @param field 字段
+     * @param field   字段
+     * @param methods 类中所有的方法
      * @return {@link PropDesc}
      */
-    private PropDesc createProp(Field field) {
+    private PropDesc createProp(Field field, Method[] methods) {
+        final PropDesc prop = findProp(field, methods, false);
+        // 忽略大小写重新匹配一次
+        if (null == prop.getter || null == prop.setter) {
+            final PropDesc propIgnoreCase = findProp(field, methods, true);
+            if (null == prop.getter) {
+                prop.getter = propIgnoreCase.getter;
+            }
+            if (null == prop.setter) {
+                prop.setter = propIgnoreCase.setter;
+            }
+        }
+
+        return prop;
+    }
+
+    /**
+     * 查找字段对应的Getter和Setter方法
+     *
+     * @param field      字段
+     * @param methods    类中所有的方法
+     * @param ignoreCase 是否忽略大小写匹配
+     * @return PropDesc
+     */
+    private PropDesc findProp(Field field, Method[] methods, boolean ignoreCase) {
         final String fieldName = field.getName();
         final Class<?> fieldType = field.getType();
-        final boolean isBooeanField = BooleanKit.isBoolean(fieldType);
+        final boolean isBooleanField = BooleanKit.isBoolean(fieldType);
 
         Method getter = null;
         Method setter = null;
-
         String methodName;
         Class<?>[] parameterTypes;
-        for (Method method : ReflectKit.getMethods(this.beanClass)) {
+        for (Method method : methods) {
             parameterTypes = method.getParameterTypes();
             if (parameterTypes.length > 1) {
                 // 多于1个参数说明非Getter或Setter
@@ -207,45 +234,51 @@ public class BeanDesc implements Serializable {
 
             methodName = method.getName();
             if (parameterTypes.length == 0) {
-                // 无参数,可能为Getter方法
-                if (isMatchGetter(methodName, fieldName, isBooeanField)) {
-                    // 方法名与字段名匹配,则为Getter方法
+                // 无参数，可能为Getter方法
+                if (isMatchGetter(methodName, fieldName, isBooleanField, ignoreCase)) {
+                    // 方法名与字段名匹配，则为Getter方法
                     getter = method;
                 }
-            } else if (isMatchSetter(methodName, fieldName, isBooeanField)) {
-                // 只有一个参数的情况下方法名与字段名对应匹配,则为Setter方法
+            } else if (isMatchSetter(methodName, fieldName, isBooleanField, ignoreCase)) {
+                // 只有一个参数的情况下方法名与字段名对应匹配，则为Setter方法
                 setter = method;
             }
             if (null != getter && null != setter) {
-                // 如果Getter和Setter方法都找到了,不再继续寻找
+                // 如果Getter和Setter方法都找到了，不再继续寻找
                 break;
             }
         }
+
         return new PropDesc(field, getter, setter);
     }
 
     /**
      * 方法是否为Getter方法
-     * 匹配规则如下(忽略大小写)：
+     * 匹配规则如下（忽略大小写
      *
      * <pre>
-     * 字段名    -》 方法名
-     * isName  -》 isName
-     * isName  -》 isIsName
-     * isName  -》 getIsName
-     * name     -》 isName
-     * name     -》 getName
+     * 字段名     方法名
+     * isName  - isName
+     * isName  - isIsName
+     * isName  - getIsName
+     * name    - isName
+     * name    - getName
      * </pre>
      *
-     * @param methodName    方法名
-     * @param fieldName     字段名
-     * @param isBooeanField 是否为Boolean类型字段
+     * @param methodName     方法名
+     * @param fieldName      字段名
+     * @param isBooleanField 是否为Boolean类型字段
+     * @param ignoreCase     匹配是否忽略大小写
      * @return 是否匹配
      */
-    private boolean isMatchGetter(String methodName, String fieldName, boolean isBooeanField) {
-        // 全部转为小写,忽略大小写比较
-        methodName = methodName.toLowerCase();
-        fieldName = fieldName.toLowerCase();
+    private boolean isMatchGetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
+        // 全部转为小写，忽略大小写比较
+        if (ignoreCase) {
+            methodName = methodName.toLowerCase();
+            fieldName = fieldName.toLowerCase();
+        } else {
+            fieldName = StringKit.upperFirst(fieldName);
+        }
 
         if (false == methodName.startsWith(Normal.GET) && false == methodName.startsWith(Normal.IS)) {
             // 非标准Getter方法
@@ -257,22 +290,22 @@ public class BeanDesc implements Serializable {
         }
 
         // 针对Boolean类型特殊检查
-        if (isBooeanField) {
+        if (isBooleanField) {
             if (fieldName.startsWith(Normal.IS)) {
                 // 字段已经是is开头
-                if (methodName.equals(fieldName) // isName -》 isName
-                        || methodName.equals(Normal.GET + fieldName)// isName -》 getIsName
-                        || methodName.equals(Normal.IS + fieldName)// isName -》 isIsName
+                if (methodName.equals(fieldName) // isName - isName
+                        || methodName.equals(Normal.GET + fieldName)// isName - getIsName
+                        || methodName.equals(Normal.IS + fieldName)// isName - isIsName
                 ) {
                     return true;
                 }
             } else if (methodName.equals(Normal.IS + fieldName)) {
-                // 字段非is开头, name -》 isName
+                // 字段非is开头, name -> isName
                 return true;
             }
         }
 
-        // 包括boolean的任何类型只有一种匹配情况：name -》 getName
+        // 包括boolean的任何类型只有一种匹配情况：name - getName
         return methodName.equals(Normal.GET + fieldName);
     }
 
@@ -281,21 +314,29 @@ public class BeanDesc implements Serializable {
      * 匹配规则如下(忽略大小写)：
      *
      * <pre>
-     * 字段名    -》 方法名
-     * isName  -》 setName
-     * isName  -》 setIsName
-     * name     -》 setName
+     * 字段名   - 方法名
+     * isName  - setName
+     * isName  - setIsName
+     * name    - setName
      * </pre>
      *
-     * @param methodName    方法名
-     * @param fieldName     字段名
-     * @param isBooeanField 是否为Boolean类型字段
+     * @param methodName     方法名
+     * @param fieldName      字段名
+     * @param isBooleanField 是否为Boolean类型字段
+     * @param ignoreCase     匹配是否忽略大小写
      * @return 是否匹配
      */
-    private boolean isMatchSetter(String methodName, String fieldName, boolean isBooeanField) {
-        // 全部转为小写,忽略大小写比较
+    private boolean isMatchSetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
+        // 全部转为小写，忽略大小写比较
         methodName = methodName.toLowerCase();
         fieldName = fieldName.toLowerCase();
+
+        if (ignoreCase) {
+            methodName = methodName.toLowerCase();
+            fieldName = fieldName.toLowerCase();
+        } else {
+            fieldName = StringKit.upperFirst(fieldName);
+        }
 
         // 非标准Setter方法跳过
         if (false == methodName.startsWith(Normal.SET)) {
@@ -303,16 +344,16 @@ public class BeanDesc implements Serializable {
         }
 
         // 针对Boolean类型特殊检查
-        if (isBooeanField && fieldName.startsWith(Normal.IS)) {
+        if (isBooleanField && fieldName.startsWith(Normal.IS)) {
             // 字段是is开头
-            if (methodName.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS))// isName -》 setName
-                    || methodName.equals(Normal.SET + fieldName)// isName -》 setIsName
+            if (methodName.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS))// isName - setName
+                    || methodName.equals(Normal.SET + fieldName)// isName - setIsName
             ) {
                 return true;
             }
         }
 
-        // 包括boolean的任何类型只有一种匹配情况：name -》 setName
+        // 包括boolean的任何类型只有一种匹配情况：name - setName
         return methodName.equals(Normal.SET + fieldName);
     }
 

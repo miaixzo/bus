@@ -39,9 +39,9 @@ import java.util.Map;
 /**
  * Bean转换器,支持：
  * <pre>
- * Map =》 Bean
- * Bean =》 Bean
- * ValueProvider =》 Bean
+ * Map = Bean
+ * Bean = Bean
+ * ValueProvider = Bean
  * </pre>
  *
  * @param <T> Bean类型

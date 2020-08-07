@@ -57,7 +57,7 @@ import java.util.*;
 public class ClassKit {
 
     /**
-     * 原始类型名和其class对应表,例如：int =》 int.class
+     * 原始类型名和其class对应表,例如：int = int.class
      */
     private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
     private static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new HashMap<>();
@@ -1187,7 +1187,7 @@ public class ClassKit {
             try {
                 clazz = Class.forName(name, isInitialized, classLoader);
             } catch (ClassNotFoundException ex) {
-                // 尝试获取内部类,例如java.lang.Thread.State =》java.lang.Thread$State
+                // 尝试获取内部类,例如java.lang.Thread.State = java.lang.Thread$State
                 clazz = tryLoadInnerClass(name, classLoader, isInitialized);
                 if (null == clazz) {
                     throw new InstrumentException(ex);
@@ -1272,7 +1272,7 @@ public class ClassKit {
     }
 
     /**
-     * 尝试转换并加载内部类,例如java.lang.Thread.State =》java.lang.Thread$State
+     * 尝试转换并加载内部类,例如java.lang.Thread.State = java.lang.Thread$State
      *
      * @param name          类名
      * @param classLoader   {@link ClassLoader},{@code null} 则使用系统默认ClassLoader
@@ -1280,7 +1280,7 @@ public class ClassKit {
      * @return 类名对应的类
      */
     private static Class<?> tryLoadInnerClass(String name, ClassLoader classLoader, boolean isInitialized) {
-        // 尝试获取内部类,例如java.lang.Thread.State =》java.lang.Thread$State
+        // 尝试获取内部类,例如java.lang.Thread.State = java.lang.Thread$State
         final int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
         if (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位,因此>0
             final String innerClassName = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);

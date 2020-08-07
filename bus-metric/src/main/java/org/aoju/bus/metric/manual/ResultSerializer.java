@@ -22,64 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.oauth.metric.cache;
-
-import org.aoju.bus.cache.CacheX;
-import org.aoju.bus.cache.metric.MemoryCache;
-import org.aoju.bus.oauth.metric.OauthCache;
+package org.aoju.bus.metric.manual;
 
 /**
- * 默认缓存实现
+ * 对象序列化
  *
  * @author Kimi Liu
  * @version 6.0.5
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
-public enum OauthDefaultCache implements OauthCache {
+public interface ResultSerializer {
 
     /**
-     * 当前实例
-     */
-    INSTANCE;
-
-    private CacheX cache;
-
-    OauthDefaultCache() {
-        cache = new MemoryCache();
-    }
-
-    /**
-     * 存入缓存
+     * 序列化
      *
-     * @param key   缓存key
-     * @param value 缓存内容
+     * @param obj 对象
+     * @return 返回序列化后的结果
      */
-    @Override
-    public void cache(String key, String value) {
-        cache.write(key, value, 3 * 60 * 1000);
-    }
-
-    /**
-     * 存入缓存
-     *
-     * @param key     缓存key
-     * @param value   缓存内容
-     * @param timeout 指定缓存过期时间(毫秒)
-     */
-    @Override
-    public void cache(String key, String value, long timeout) {
-        cache.write(key, value, timeout);
-    }
-
-    /**
-     * 获取缓存内容
-     *
-     * @param key 缓存key
-     * @return 缓存内容
-     */
-    @Override
-    public Object get(String key) {
-        return cache.read(key);
-    }
+    String serialize(Object obj);
 
 }
