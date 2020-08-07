@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class OauthScope {
 
     /**
-     * 百度平台 OAuth 授权范围
+     * 百度 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -67,7 +67,7 @@ public class OauthScope {
     }
 
     /**
-     * Coding平台 OAuth 授权范围
+     * Coding 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -94,7 +94,7 @@ public class OauthScope {
     }
 
     /**
-     * Facebook 平台 OAuth 授权范围
+     * Facebook 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -129,7 +129,7 @@ public class OauthScope {
     }
 
     /**
-     * Gitee 平台 OAuth 授权范围
+     * Gitee 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -161,7 +161,7 @@ public class OauthScope {
     }
 
     /**
-     * Github 平台 OAuth 授权范围
+     * Github 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -211,7 +211,7 @@ public class OauthScope {
     }
 
     /**
-     * Gitlab 平台 OAuth 授权范围
+     * Gitlab 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -243,7 +243,7 @@ public class OauthScope {
     }
 
     /**
-     * Google 平台 OAuth 授权范围
+     * Google 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -703,7 +703,7 @@ public class OauthScope {
     }
 
     /**
-     * 华为平台 OAuth 授权范围
+     * 华为 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -742,7 +742,7 @@ public class OauthScope {
     }
 
     /**
-     * 京东平台 OAuth 授权范围
+     * 京东 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -764,7 +764,7 @@ public class OauthScope {
     }
 
     /**
-     * 酷家乐平台 OAuth 授权范围
+     * 酷家乐 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -788,7 +788,7 @@ public class OauthScope {
     }
 
     /**
-     * 领英平台 OAuth 授权范围
+     * 领英 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -827,7 +827,7 @@ public class OauthScope {
     }
 
     /**
-     * 微软平台 OAuth 授权范围
+     * 微软 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -889,7 +889,7 @@ public class OauthScope {
     }
 
     /**
-     * 小米平台 OAuth 授权范围
+     * 小米 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -913,7 +913,7 @@ public class OauthScope {
     }
 
     /**
-     * Pinterest 平台 OAuth 授权范围
+     * Pinterest 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -938,7 +938,7 @@ public class OauthScope {
     }
 
     /**
-     * QQ 平台 OAuth 授权范围
+     * QQ 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -969,7 +969,7 @@ public class OauthScope {
     }
 
     /**
-     * 人人平台 OAuth 授权范围
+     * 人人 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -1019,7 +1019,7 @@ public class OauthScope {
     }
 
     /**
-     * Stackoverflow 平台 OAuth 授权范围
+     * Stackoverflow 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -1044,7 +1044,7 @@ public class OauthScope {
     }
 
     /**
-     * 微信公众平台 OAuth 授权范围
+     * 微信公众平台 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
@@ -1067,7 +1067,7 @@ public class OauthScope {
     }
 
     /**
-     * 微博平台 OAuth 授权范围
+     * 微博 授权范围
      *
      * @author Kimi Liu
      * @version 6.0.5
