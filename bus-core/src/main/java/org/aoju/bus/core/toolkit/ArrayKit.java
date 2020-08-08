@@ -613,6 +613,17 @@ public class ArrayKit {
     }
 
     /**
+     * 多个字段是否全部不为null
+     *
+     * @param <T>   数组元素类型
+     * @param array 被检查的数组
+     * @return 多个字段是否全部不为null
+     */
+    public static <T> boolean isAllNotNull(T... array) {
+        return false == hasNull(array);
+    }
+
+    /**
      * 返回数组中第一个非空元素
      *
      * @param <T>   数组元素类型
