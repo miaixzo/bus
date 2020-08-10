@@ -24,17 +24,25 @@
  ********************************************************************************/
 package org.aoju.bus.starter;
 
-import org.springframework.beans.BeansException;
+import org.aoju.bus.core.lang.Types;
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
- * 以静态变量保存Spring ApplicationContext,
- * 可在任何代码任何地方任何时候中取出ApplicaitonContext.
+ * Spring ApplicationContext 封装
+ *
+ * <pre>
+ * 1. Spring IOC容器中的bean对象获取
+ * 2. ApplicaitonContext 对象获取
+ * </pre>
  *
  * @author Kimi Liu
  * @version 6.0.5
@@ -46,12 +54,11 @@ public class SpringAware implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     /**
-     * 取得存储在静态变量中的ApplicationContext.
+     * 获取applicationContext
      *
-     * @return 上下文信息
+     * @return ApplicationContext
      */
     public static ApplicationContext getApplicationContext() {
-        isApplicationContext();
         return applicationContext;
     }
 
@@ -62,46 +69,73 @@ public class SpringAware implements ApplicationContextAware {
     }
 
     /**
-     * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
+     * 通过name获取 Bean
      *
-     * @param <T>  对象
-     * @param name 名称
-     * @return the object
+     * @param <T>  Bean类型
+     * @param name Bean名称
+     * @return Bean对象
      */
     public static <T> T getBean(String name) {
-        isApplicationContext();
         return (T) applicationContext.getBean(name);
     }
 
     /**
-     * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
-     * 如果有多个Bean符合Class, 取出第一个.
+     * 通过class获取Bean
      *
-     * @param <T>   对象
-     * @param clazz 对象
-     * @return the object
+     * @param <T>   Bean类型
+     * @param clazz Bean类
+     * @return Bean对象
      */
     public static <T> T getBean(Class<T> clazz) {
-        isApplicationContext();
-        Map beanMaps = applicationContext.getBeansOfType(clazz);
-        if (beanMaps != null && !beanMaps.isEmpty()) {
-            return (T) beanMaps.values().iterator().next();
-        } else {
-            return null;
-        }
+        return applicationContext.getBean(clazz);
     }
 
     /**
-     * 依据类型获取所有子类(key为spring的id,value为对象实例)
+     * 通过name,以及Clazz返回指定的Bean
      *
-     * @param <T>          对象
-     * @param requiredType 类型
-     * @return the object
-     * @throws BeansException 异常
+     * @param <T>   bean类型
+     * @param name  Bean名称
+     * @param clazz bean类型
+     * @return Bean对象
      */
-    public static <T> Map<String, T> getBeanOfType(Class<T> requiredType) throws BeansException {
-        isApplicationContext();
-        return applicationContext.getBeansOfType(requiredType);
+    public static <T> T getBean(String name, Class<T> clazz) {
+        return applicationContext.getBean(name, clazz);
+    }
+
+    /**
+     * 通过类型参考返回带泛型参数的Bean
+     *
+     * @param reference 类型参考，用于持有转换后的泛型类型
+     * @param <T>       Bean类型
+     * @return 带泛型参数的Bean对象
+     */
+    public static <T> T getBean(Types<T> reference) {
+        final ParameterizedType parameterizedType = (ParameterizedType) reference.getType();
+        final Class<T> rawType = (Class<T>) parameterizedType.getRawType();
+        final Class<?>[] genericTypes = Arrays.stream(parameterizedType.getActualTypeArguments()).map(type -> (Class<?>) type).toArray(Class[]::new);
+        final String[] beanNames = applicationContext.getBeanNamesForType(ResolvableType.forClassWithGenerics(rawType, genericTypes));
+        return getBean(beanNames[0], rawType);
+    }
+
+    /**
+     * 获取指定类型对应的所有Bean，包括子类
+     *
+     * @param <T>  Bean类型
+     * @param type 类、接口，null表示获取所有bean
+     * @return 类型对应的bean，key是bean注册的name，value是Bean
+     */
+    public static <T> Map<String, T> getBeansOfType(Class<T> type) {
+        return applicationContext.getBeansOfType(type);
+    }
+
+    /**
+     * 获取指定类型对应的Bean名称，包括子类
+     *
+     * @param type 类、接口，null表示获取所有bean名称
+     * @return bean名称
+     */
+    public static String[] getBeanNamesForType(Class<?> type) {
+        return applicationContext.getBeanNamesForType(type);
     }
 
     /**
@@ -110,26 +144,43 @@ public class SpringAware implements ApplicationContextAware {
      * @param annType 指定注解类型
      * @return 结果map
      */
-    public static Map<String, Object> getBeansWithAnnotation(Class<? extends Annotation> annType) {
-        isApplicationContext();
+    public static Map<String, Object> getBeanWithAnnotation(Class<? extends Annotation> annType) {
         return applicationContext.getBeansWithAnnotation(annType);
     }
 
     /**
-     * 获取当前profile
-     * 默认获取第一个
+     * 获取配置文件配置项的值
      *
-     * @return profile
+     * @param key 配置项 key
+     * @return 属性值
+     */
+    public static String getProperty(String key) {
+        return applicationContext.getEnvironment().getProperty(key);
+    }
+
+    /**
+     * 获取当前的环境配置，无配置返回null
+     *
+     * @return 当前的环境配置
+     */
+    public static String[] getActiveProfiles() {
+        return applicationContext.getEnvironment().getActiveProfiles();
+    }
+
+    /**
+     * 获取当前的环境配置，当有多个环境配置时，只获取第一个
+     *
+     * @return 当前的环境配置
      */
     public static String getActiveProfile() {
-        isApplicationContext();
-        return applicationContext.getEnvironment().getActiveProfiles()[0];
+        final String[] activeProfiles = getActiveProfiles();
+        return ArrayKit.isNotEmpty(activeProfiles) ? activeProfiles[0] : null;
     }
 
     /**
      * 当前是否开发/测试模式
      *
-     * @return boolean true|false
+     * @return true|false
      */
     public static boolean isDemoMode() {
         return isTestMode() || isDevMode();
@@ -138,7 +189,7 @@ public class SpringAware implements ApplicationContextAware {
     /**
      * 当前是否开发环境
      *
-     * @return boolean
+     * @return true|false
      */
     public static boolean isDevMode() {
         return "dev".equalsIgnoreCase(getActiveProfile());
@@ -147,21 +198,10 @@ public class SpringAware implements ApplicationContextAware {
     /**
      * 当前是否测试环境
      *
-     * @return boolean
+     * @return true|false
      */
     public static boolean isTestMode() {
         return "test".equalsIgnoreCase(getActiveProfile());
-    }
-
-    /**
-     * 检查上下文信息.
-     *
-     * @return true/false
-     */
-    private static void isApplicationContext() {
-        if (applicationContext == null) {
-            throw new IllegalStateException("请配置注解扫描,或者定义SpringContextAware");
-        }
     }
 
 }

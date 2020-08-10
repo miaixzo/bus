@@ -50,13 +50,13 @@ import java.util.concurrent.ExecutorService;
  * 调度器启动流程：
  *
  * <pre>
- * 启动Timer =》 启动TaskLauncher =》 启动TaskExecutor
+ * 启动Timer -  启动TaskLauncher -  启动TaskExecutor
  * </pre>
  * <p>
  * 调度器关闭流程:
  *
  * <pre>
- * 关闭Timer =》 关闭所有运行中的TaskLauncher =》 关闭所有运行中的TaskExecutor
+ * 关闭Timer -  关闭所有运行中的TaskLauncher -  关闭所有运行中的TaskExecutor
  * </pre>
  * <p>
  * 其中：

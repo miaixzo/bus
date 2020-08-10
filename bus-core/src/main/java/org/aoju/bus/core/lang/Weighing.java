@@ -54,14 +54,12 @@ public class Weighing<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private TreeMap<Double, T> weightMap;
-    private Random random;
 
     /**
      * 构造
      */
     public Weighing() {
         weightMap = new TreeMap<>();
-        random = RandomKit.getRandom();
     }
 
     /**
@@ -156,6 +154,7 @@ public class Weighing<T> implements Serializable {
         if (MapKit.isEmpty(this.weightMap)) {
             return null;
         }
+        final Random random = RandomKit.getRandom();
         double randomWeight = this.weightMap.lastKey() * random.nextDouble();
         final SortedMap<Double, T> tailMap = this.weightMap.tailMap(randomWeight, false);
         return this.weightMap.get(tailMap.firstKey());

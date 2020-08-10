@@ -61,7 +61,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     private static final Pattern CPUMASK = Pattern.compile(".*<cpu\\s.*mask=\"(?:0x)?(\\p{XDigit}+)\".*>.*</cpu>.*");
 
     private static List<CentralProcessor.LogicalProcessor> parseTopology() {
-        String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", "").split("\\n|\\r");
+        String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", Normal.EMPTY).split("\\n|\\r");
         /*-
          * Sample output:
 

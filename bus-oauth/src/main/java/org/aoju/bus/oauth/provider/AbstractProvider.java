@@ -41,6 +41,7 @@ import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.OauthCache;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -48,7 +49,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 默认的request处理类
@@ -194,6 +197,27 @@ public abstract class AbstractProvider implements Provider {
         if (StringKit.isEmpty(state) || ObjectKit.isEmpty(oauthCache.get(state))) {
             throw new AuthorizedException(Builder.ErrorCode.ILLEGAL_STATUS.getCode());
         }
+    }
+
+    /**
+     * 从 {@link  OauthScope.Scope} 数组中获取实际的 scope 字符串
+     *
+     * @param scopes 可变参数，支持传任意 {@link  OauthScope.Scope}
+     * @return List
+     */
+    public static List<String> getScopes(boolean defaultScope, OauthScope.Scope... scopes) {
+        if (null == scopes || scopes.length == 0) {
+            return null;
+        }
+
+        if (defaultScope) {
+            return Arrays.stream(scopes)
+                    .filter(OauthScope.Scope::isDefault)
+                    .map(OauthScope.Scope::getScope)
+                    .collect(Collectors.toList());
+        }
+
+        return Arrays.stream(scopes).map(OauthScope.Scope::getScope).collect(Collectors.toList());
     }
 
     /**
@@ -375,6 +399,30 @@ public abstract class AbstractProvider implements Provider {
      */
     protected String doGetRevoke(AccToken accToken) {
         return Httpx.get(revokeUrl(accToken));
+    }
+
+    /**
+     * 获取以 {@code separator}分割过后的 scope 信息
+     *
+     * @param separator     多个 {@code scope} 间的分隔符
+     * @param encode        是否 encode 编码
+     * @param defaultScopes 默认的 scope， 当客户端没有配置 {@code scopes} 时启用
+     * @return String
+     */
+    protected String getScopes(String separator, boolean encode, List<String> defaultScopes) {
+        List<String> scopes = context.getScopes();
+        if (null == scopes || scopes.isEmpty()) {
+            if (null == defaultScopes || defaultScopes.isEmpty()) {
+                return Normal.EMPTY;
+            }
+            scopes = defaultScopes;
+        }
+        if (null == separator) {
+            // 默认为空格
+            separator = Symbol.SPACE;
+        }
+        String scopeStr = String.join(separator, scopes);
+        return encode ? UriKit.encode(scopeStr) : scopeStr;
     }
 
     /**

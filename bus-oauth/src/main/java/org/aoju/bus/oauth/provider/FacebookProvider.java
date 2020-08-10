@@ -34,6 +34,7 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * Facebook登录
@@ -104,6 +105,19 @@ public class FacebookProvider extends AbstractProvider {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", accToken.getAccessToken())
                 .queryParam("fields", "id,name,birthday,gender,hometown,email,devices,picture.width(400)")
+                .build();
+    }
+
+    /**
+     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     *
+     * @param state state 验证授权流程的参数，可以防止csrf
+     * @return 返回授权地址
+     */
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Facebook.values())))
                 .build();
     }
 

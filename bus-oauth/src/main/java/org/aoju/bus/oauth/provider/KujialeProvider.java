@@ -28,7 +28,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -37,6 +36,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * 酷家乐授权登录
@@ -76,15 +76,9 @@ public class KujialeProvider extends AbstractProvider {
      * @return authorize url
      */
     public String authorize(String state, String scopeStr) {
-        Builder builder = Builder.fromUrl(source.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state));
-        if (StringKit.isNotEmpty(scopeStr)) {
-            builder.queryParam("scope", scopeStr);
-        }
-        return builder.build();
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Kujiale.values())))
+                .build();
     }
 
     @Override

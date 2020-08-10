@@ -105,15 +105,23 @@ public class Transcoder implements Closeable {
     private BufferedImage bi2;
     private String pixelDataBulkDataURI;
     private byte[] buffer;
+    private int bitsCompressed = 0;
+    private boolean nullifyPixelData;
+    private Attributes fileMetaInformation;
     private final ImageInputHandler imageInputHandler = new ImageInputHandler() {
         @Override
         public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
             int tag = dis.tag();
             if (dis.level() == 0 && tag == Tag.PixelData) {
-                imageDescriptor = new ImageDescriptor(attrs);
-                initOutputStream();
-                processPixelData();
-                postPixelData = new Attributes(dis.bigEndian());
+                if (nullifyPixelData) {
+                    dataset.setNull(Tag.PixelData, dis.vr());
+                    skipPixelData();
+                } else {
+                    imageDescriptor = new ImageDescriptor(attrs, bitsCompressed);
+                    initOutputStream();
+                    processPixelData();
+                    postPixelData = new Attributes(dis.bigEndian());
+                }
             } else {
                 dis.readValue(dis, attrs);
                 if (postPixelData != null && dis.level() == 0)
@@ -129,7 +137,10 @@ public class Transcoder implements Closeable {
         @Override
         public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
             if (dos == null) {
-                dis.readValue(dis, frags);
+                if (nullifyPixelData)
+                    StreamKit.skipFully(dis, dis.length());
+                else
+                    dis.readValue(dis, frags);
             } else {
                 int length = dis.length();
                 dos.writeHeader(Tag.Item, null, length);
@@ -138,12 +149,12 @@ public class Transcoder implements Closeable {
         }
 
         @Override
-        public void startDataset(ImageInputStream dis) throws IOException {
+        public void startDataset(ImageInputStream dis) {
 
         }
 
         @Override
-        public void endDataset(ImageInputStream dis) throws IOException {
+        public void endDataset(ImageInputStream dis) {
 
         }
     };
@@ -171,12 +182,25 @@ public class Transcoder implements Closeable {
         destTransferSyntaxType = srcTransferSyntaxType;
     }
 
+    private static byte[] to16BitsAllocated(byte[] b, int off, int len, byte[] buf, int j0) {
+        for (int i = 0, j = j0; i < len; i++, j++, j++) {
+            buf[j] = b[off + i];
+        }
+        return buf;
+    }
+
     private static void bgr2rgb(byte[] bs) {
         for (int i = 0, j = 2; j < bs.length; i += 3, j += 3) {
             byte b = bs[i];
             bs[i] = bs[j];
             bs[j] = b;
         }
+    }
+
+    private static short[] toShortData(DataBuffer db) {
+        return db.getDataType() == DataBuffer.TYPE_SHORT
+                ? ((DataBufferShort) db).getData()
+                : ((DataBufferUShort) db).getData();
     }
 
     public void setEncodingOptions(ImageEncodingOptions encOpts) {
@@ -263,9 +287,9 @@ public class Transcoder implements Closeable {
         this.lossyCompression = TransferSyntaxType.isLossyCompression(tsuid);
         this.destTransferSyntax = tsuid;
 
-        if (srcTransferSyntaxType != TransferSyntaxType.NATIVE)
+        if (srcTransferSyntaxType.isPixeldataEncapsulated())
             initDecompressor();
-        if (destTransferSyntaxType != TransferSyntaxType.NATIVE)
+        if (destTransferSyntaxType.isPixeldataEncapsulated())
             initCompressor(tsuid);
     }
 
@@ -281,55 +305,16 @@ public class Transcoder implements Closeable {
         return dis.getBulkDataFiles();
     }
 
-    private void initDecompressor() {
-        decompressorParam = ImageReaderFactory.getImageReaderParam(srcTransferSyntax);
-        if (decompressorParam == null)
-            throw new UnsupportedOperationException(
-                    "Unsupported Transfer Syntax: " + srcTransferSyntax);
-
-        this.decompressor = ImageReaderFactory.getImageReader(decompressorParam);
-        Logger.debug("Decompressor: {}", decompressor.getClass().getName());
-
-        this.decompressParam = decompressor.getDefaultReadParam();
+    public boolean isNullifyPixelData() {
+        return nullifyPixelData;
     }
 
-    private void initCompressor(String tsuid) {
-        compressorParam = ImageWriterFactory.getImageWriterParam(tsuid);
-        if (compressorParam == null)
-            throw new UnsupportedOperationException(
-                    "Unsupported Transfer Syntax: " + tsuid);
-
-        this.compressor = ImageWriterFactory.getImageWriter(compressorParam);
-        Logger.debug("Compressor: {}", compressor.getClass().getName());
-
-        this.compressParam = compressor.getDefaultWriteParam();
+    public void setNullifyPixelData(boolean nullifyPixelData) {
+        this.nullifyPixelData = nullifyPixelData;
     }
 
-    public void setCompressParams(Property[] imageWriteParams) {
-        int count = 0;
-        for (Property property : cat(compressorParam.getImageWriteParams(), imageWriteParams)) {
-            String name = property.getName();
-            if (name.equals("maxPixelValueError"))
-                this.maxPixelValueError = ((Number) property.getValue()).intValue();
-            else if (name.equals("avgPixelValueBlockSize"))
-                this.avgPixelValueBlockSize = ((Number) property.getValue()).intValue();
-            else {
-                if (count++ == 0)
-                    compressParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                property.setAt(compressParam);
-            }
-        }
-        if (maxPixelValueError >= 0) {
-            ImageReaderFactory.ImageReaderParam readerParam =
-                    ImageReaderFactory.getImageReaderParam(destTransferSyntax);
-            if (readerParam == null)
-                throw new UnsupportedOperationException(
-                        "Unsupported Transfer Syntax: " + destTransferSyntax);
-
-            this.verifier = ImageReaderFactory.getImageReader(readerParam);
-            this.verifyParam = verifier.getDefaultReadParam();
-            Logger.debug("Verifier: {}", verifier.getClass().getName());
-        }
+    public Attributes getFileMetaInformation() {
+        return fileMetaInformation;
     }
 
     @Override
@@ -365,6 +350,18 @@ public class Transcoder implements Closeable {
             dos.writeDataset(null, postPixelData);
     }
 
+    private void initDecompressor() {
+        decompressorParam = ImageReaderFactory.getImageReaderParam(srcTransferSyntax);
+        if (decompressorParam == null)
+            throw new UnsupportedOperationException(
+                    "Unsupported Transfer Syntax: " + srcTransferSyntax);
+
+        this.decompressor = ImageReaderFactory.getImageReader(decompressorParam);
+        Logger.debug("Decompressor: {}", decompressor.getClass().getName());
+
+        this.decompressParam = decompressor.getDefaultReadParam();
+    }
+
     private void processPixelData() throws IOException {
         if (decompressor != null)
             initEncapsulatedPixelData();
@@ -398,6 +395,19 @@ public class Transcoder implements Closeable {
         }
         if (padding != 0)
             dos.write(0);
+    }
+
+    private void initCompressor(String tsuid) {
+        compressorParam = ImageWriterFactory.getImageWriterParam(tsuid);
+        if (compressorParam == null)
+            throw new UnsupportedOperationException(
+                    "Unsupported Transfer Syntax: " + tsuid);
+
+        this.compressor = ImageWriterFactory.getImageWriter(compressorParam);
+        Logger.debug("Compressor: {}", compressor.getClass().getName());
+
+        this.compressParam = compressor.getDefaultWriteParam();
+        setCompressParams(compressorParam.getImageWriteParams());
     }
 
     private void copyPixelData() throws IOException {
@@ -445,41 +455,32 @@ public class Transcoder implements Closeable {
             dataset.setValue(Tag.PixelData, vr, new BulkData(null, pixelDataBulkDataURI, false));
     }
 
-    private void adjustDataset() {
-        Photometric pmi = imageDescriptor.getPhotometric();
-        if (decompressor != null && imageDescriptor.getSamples() == 3) {
-            if (pmi.isYBR() && TransferSyntaxType.isYBRCompression(srcTransferSyntax)) {
-                pmi = Photometric.RGB;
-                dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmi.toString());
+    public void setCompressParams(Property... imageWriteParams) {
+        if (compressorParam == null) return;
+        for (Property property : imageWriteParams) {
+            String name = property.getName();
+            if (name.equals("maxPixelValueError"))
+                this.maxPixelValueError = ((Number) property.getValue()).intValue();
+            else if (name.equals("avgPixelValueBlockSize"))
+                this.avgPixelValueBlockSize = ((Number) property.getValue()).intValue();
+            else if (name.equals("bitsCompressed"))
+                this.bitsCompressed = ((Number) property.getValue()).intValue();
+            else {
+                if (compressParam.getCompressionMode() != ImageWriteParam.MODE_EXPLICIT)
+                    compressParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                property.setAt(compressParam);
             }
-            dataset.setInt(Tag.PlanarConfiguration, VR.US, srcTransferSyntaxType.getPlanarConfiguration());
         }
-        if (compressor != null) {
-            if (pmi == Photometric.PALETTE_COLOR && lossyCompression) {
-                palette2rgb = true;
-                dataset.removeSelected(cmTags);
-                dataset.setInt(Tag.SamplesPerPixel, VR.US, 3);
-                dataset.setInt(Tag.BitsAllocated, VR.US, 8);
-                dataset.setInt(Tag.BitsStored, VR.US, 8);
-                dataset.setInt(Tag.HighBit, VR.US, 7);
-                pmi = Photometric.RGB;
-                Logger.warn("Converting PALETTE_COLOR model into a lossy format is not recommended, prefer a lossless format");
-            } else if ((pmi.isSubSampled() && srcTransferSyntaxType == TransferSyntaxType.NATIVE)
-                    || (pmi == Photometric.YBR_FULL
-                    && TransferSyntaxType.isYBRCompression(destTransferSyntax))) {
-                ybr2rgb = true;
-                pmi = Photometric.RGB;
-                Logger.debug("Conversion to an RGB color model is required before compression.");
-            }
-            dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmiForCompression(pmi).toString());
-            compressorImageDescriptor = new ImageDescriptor(dataset);
-            pmi = pmi.compress(destTransferSyntax);
-            dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmi.toString());
-            if (dataset.getInt(Tag.SamplesPerPixel, 1) > 1)
-                dataset.setInt(Tag.PlanarConfiguration, VR.US, destTransferSyntaxType.getPlanarConfiguration());
-            if (lossyCompression) {
-                dataset.setString(Tag.LossyImageCompression, VR.CS, "01");
-            }
+        if (maxPixelValueError >= 0) {
+            ImageReaderFactory.ImageReaderParam readerParam =
+                    ImageReaderFactory.getImageReaderParam(destTransferSyntax);
+            if (readerParam == null)
+                throw new UnsupportedOperationException(
+                        "Unsupported Transfer Syntax: " + destTransferSyntax);
+
+            this.verifier = ImageReaderFactory.getImageReader(readerParam);
+            this.verifyParam = verifier.getDefaultReadParam();
+            Logger.debug("Verifier: {}", verifier.getClass().getName());
         }
     }
 
@@ -505,17 +506,12 @@ public class Transcoder implements Closeable {
         }
     }
 
-    private void nullifyUnusedBits() {
-        if (imageDescriptor.getBitsStored() < imageDescriptor.getBitsAllocated()) {
-            DataBuffer db = originalBi.getRaster().getDataBuffer();
-            switch (db.getDataType()) {
-                case DataBuffer.TYPE_USHORT:
-                    nullifyUnusedBits(((DataBufferUShort) db).getData());
-                    break;
-                case DataBuffer.TYPE_SHORT:
-                    nullifyUnusedBits(((DataBufferShort) db).getData());
-                    break;
-            }
+    private void skipPixelData() throws IOException {
+        int length = dis.length();
+        if (length == -1) {
+            dis.readValue(dis, dataset);
+        } else {
+            StreamKit.skipFully(dis, length);
         }
     }
 
@@ -523,6 +519,64 @@ public class Transcoder implements Closeable {
         int mask = (1 << imageDescriptor.getBitsStored()) - 1;
         for (int i = 0; i < data.length; i++)
             data[i] &= mask;
+    }
+
+    private void adjustDataset() {
+        Photometric pmi = imageDescriptor.getPhotometric();
+        if (decompressor != null) {
+            if (imageDescriptor.getSamples() == 3) {
+                if (pmi.isYBR() && TransferSyntaxType.isYBRCompression(srcTransferSyntax)) {
+                    pmi = Photometric.RGB;
+                    dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmi.toString());
+                }
+                dataset.setInt(Tag.PlanarConfiguration, VR.US, srcTransferSyntaxType.getPlanarConfiguration());
+            } else {
+                if (srcTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
+                    Logger.info("Adjust invalid Bits Stored: {} of {} to 12",
+                            imageDescriptor.getBitsStored(), srcTransferSyntaxType);
+                }
+            }
+        }
+        if (compressor != null) {
+            if (pmi == Photometric.PALETTE_COLOR && lossyCompression) {
+                palette2rgb = true;
+                dataset.removeSelected(cmTags);
+                dataset.setInt(Tag.SamplesPerPixel, VR.US, 3);
+                dataset.setInt(Tag.BitsAllocated, VR.US, 8);
+                dataset.setInt(Tag.BitsStored, VR.US, 8);
+                dataset.setInt(Tag.HighBit, VR.US, 7);
+                pmi = Photometric.RGB;
+                Logger.warn("Converting PALETTE_COLOR model into a lossy format is not recommended, prefer a lossless format");
+            } else if ((pmi.isSubSampled() && !srcTransferSyntaxType.isPixeldataEncapsulated())
+                    || (pmi == Photometric.YBR_FULL
+                    && TransferSyntaxType.isYBRCompression(destTransferSyntax))) {
+                ybr2rgb = true;
+                pmi = Photometric.RGB;
+                Logger.debug("Conversion to an RGB color model is required before compression.");
+            } else {
+                if (destTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
+                    Logger.debug("Adjust Bits Stored: {} for {} to 12",
+                            imageDescriptor.getBitsStored(), destTransferSyntaxType);
+                }
+            }
+            dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmiForCompression(pmi).toString());
+            compressorImageDescriptor = new ImageDescriptor(dataset, bitsCompressed);
+            pmi = pmi.compress(destTransferSyntax);
+            dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmi.toString());
+            if (dataset.getInt(Tag.SamplesPerPixel, 1) > 1)
+                dataset.setInt(Tag.PlanarConfiguration, VR.US, destTransferSyntaxType.getPlanarConfiguration());
+            if (lossyCompression) {
+                dataset.setString(Tag.LossyImageCompression, VR.CS, "01");
+                if ("jpeg2000-cv".equals(compressorParam.formatName)) {
+                    for (Property p : compressorParam.getImageWriteParams()) {
+                        if ("compressionRatiofactor".equals(p.getName())) {
+                            dataset.setFloat(Tag.LossyImageCompressionRatio, VR.DS, ((Double) p.getValue()).floatValue());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private BufferedImage decompressFrame(int frameIndex) throws IOException {
@@ -666,6 +720,26 @@ public class Transcoder implements Closeable {
         }
     }
 
+    private void nullifyUnusedBits() {
+        if (imageDescriptor.getBitsStored() < imageDescriptor.getBitsAllocated()) {
+            DataBuffer db = originalBi.getRaster().getDataBuffer();
+            switch (db.getDataType()) {
+                case DataBuffer.TYPE_USHORT:
+                    nullifyUnusedBits(((DataBufferUShort) db).getData());
+                    break;
+                case DataBuffer.TYPE_SHORT:
+                    extendSignUnusedBits(((DataBufferShort) db).getData());
+                    break;
+            }
+        }
+    }
+
+    private void extendSignUnusedBits(short[] data) {
+        int unused = 32 - imageDescriptor.getBitsStored();
+        for (int i = 0; i < data.length; i++)
+            data[i] = (short) ((data[i] << unused) >> unused);
+    }
+
     private void write(SampleModel sm, byte[][] bankData) throws IOException {
         int h = sm.getHeight();
         int w = sm.getWidth();
@@ -674,9 +748,18 @@ public class Transcoder implements Closeable {
         int stride = csm.getScanlineStride();
         if (csm.getBandOffsets()[0] != 0)
             bgr2rgb(bankData[0]);
-        for (byte[] b : bankData)
-            for (int y = 0, off = 0; y < h; ++y, off += stride)
-                dos.write(b, off, len);
+        if (imageDescriptor.getBitsAllocated() == 16) {
+            byte[] buf = new byte[len << 1];
+            int j0 = dos.isBigEndian() ? 1 : 0;
+            for (byte[] b : bankData)
+                for (int y = 0, off = 0; y < h; ++y, off += stride) {
+                    dos.write(to16BitsAllocated(b, off, len, buf, j0));
+                }
+        } else {
+            for (byte[] b : bankData)
+                for (int y = 0, off = 0; y < h; ++y, off += stride)
+                    dos.write(b, off, len);
+        }
     }
 
     private void write(SampleModel sm, short[] data) throws IOException {
@@ -727,17 +810,7 @@ public class Transcoder implements Closeable {
                 fmi.setString(Tag.TransferSyntaxUID, VR.UI, destTransferSyntax);
         }
         dos.writeDataset(fmi, dataset);
-    }
-
-    private Property[] cat(Property[] a, Property[] b) {
-        if (a.length == 0)
-            return b;
-        if (b.length == 0)
-            return a;
-        Property[] c = new Property[a.length + b.length];
-        System.arraycopy(a, 0, c, 0, a.length);
-        System.arraycopy(b, 0, c, a.length, b.length);
-        return c;
+        fileMetaInformation = fmi;
     }
 
     private void initBufferedImage() {
@@ -813,20 +886,9 @@ public class Transcoder implements Closeable {
                 }
             return maxDiff / samples.length;
         }
-        switch (db.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                return maxDiff(csm, ((DataBufferByte) db).getBankData(),
-                        csm2, ((DataBufferByte) db2).getBankData());
-            case DataBuffer.TYPE_USHORT:
-                return maxDiff(csm, ((DataBufferUShort) db).getData(),
-                        csm2, ((DataBufferUShort) db2).getData());
-            case DataBuffer.TYPE_SHORT:
-                return maxDiff(csm, ((DataBufferShort) db).getData(),
-                        csm2, ((DataBufferShort) db2).getData());
-            default:
-                throw new UnsupportedOperationException(
-                        "Unsupported Datatype: " + db.getDataType());
-        }
+        return (db.getDataType() == DataBuffer.TYPE_BYTE)
+                ? maxDiff(csm, ((DataBufferByte) db).getBankData(), csm2, ((DataBufferByte) db2).getBankData())
+                : maxDiff(csm, toShortData(db), csm2, toShortData(db2));
     }
 
     private int sum(int[] samples) {
@@ -885,4 +947,5 @@ public class Transcoder implements Closeable {
     public interface Handler {
         OutputStream newOutputStream(Transcoder transcoder, Attributes dataset) throws IOException;
     }
+
 }

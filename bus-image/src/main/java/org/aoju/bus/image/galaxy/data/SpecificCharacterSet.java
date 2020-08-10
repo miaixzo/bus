@@ -24,20 +24,13 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.data;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.image.galaxy.Property;
-import org.aoju.bus.logger.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CoderResult;
-import java.nio.charset.CodingErrorAction;
+import java.nio.charset.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -71,6 +64,93 @@ public class SpecificCharacterSet {
         DEFAULT = cs;
     }
 
+    /**
+     * Overwrites mapping of value of DICOM Specific Character Set (0008,0005) to named charset.
+     * <p>
+     * For example, {@code SpecificCharacterSet.setCharsetNameMapping("ISO_IR 100", "ISO-8859-15")} associates
+     * ISO-8859-15 (Latin-9), {@code SpecificCharacterSet.setCharsetNameMapping("ISO_IR 100", "windows-1252")}
+     * Windows-1252 (CP-1252), with DICOM Specific Character Set (0008,0005) code value {@code ISO_IR 100} -
+     * replacing the default mapping to ISO-8859-1 (Latin-1) - were both (ISO-8859-15 and Windows-1252)
+     * containing characters Š/š and Ž/ž not included in Latin-1, but used in Estonian and Finnish for
+     * transcribing foreign names.
+     *
+     * @param code        value of DICOM Specific Character Set (0008,0005)
+     * @param charsetName The name of the mapped charset
+     * @throws IllegalCharsetNameException If the given code or charset name is illegal
+     * @throws IllegalArgumentException    If the given {@code charsetName} is null
+     * @throws UnsupportedCharsetException If no support for the named charset is available
+     *                                     in this instance of the Java virtual machine
+     */
+    public static void setCharsetNameMapping(String code, String charsetName) {
+        Codec.forCodeChecked(code).setCharsetName(checkCharsetName(charsetName));
+    }
+
+    /**
+     * Reset mapping of DICOM Specific Character Set (0008,0005) values to named charsets as specified by
+     * <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html#table_C.12-2">
+     * DICOM PS 3.3 Table C.12-2</a>.
+     *
+     * <table>
+     * <tr>
+     * <th>Code String</th>
+     * <th>Charset Name</th>
+     * </tr>
+     * </thead>
+     * <tbody>
+     * <tr><td>_empty_</td>
+     *     <td>{@code US-ASCII}</td></tr>
+     * <tr><td>{@code ISO_IR 100}</td>
+     *     <td>{@code ISO-8859-1}</td></tr>
+     * <tr><td>{@code ISO_IR 101}</td>
+     *     <td>{@code ISO-8859-2}</td></tr>
+     * <tr><td>{@code ISO_IR 109}</td>
+     *     <td>{@code ISO-8859-3}</td></tr>
+     * <tr><td>{@code ISO_IR 110}</td>
+     *     <td>{@code ISO-8859-4}</td></tr>
+     * <tr><td>{@code ISO_IR 144}</td>
+     *     <td>{@code ISO-8859-5}</td></tr>
+     * <tr><td>{@code ISO_IR 127}</td>
+     *     <td>{@code ISO-8859-6}</td></tr>
+     * <tr><td>{@code ISO_IR 126}</td>
+     *     <td>{@code ISO-8859-7}</td></tr>
+     * <tr><td>{@code ISO_IR 138}</td>
+     *     <td>{@code ISO-8859-8}</td></tr>
+     * <tr><td>{@code ISO_IR 148}</td>
+     *     <td>{@code ISO-8859-9}</td></tr>
+     * <tr><td>{@code ISO_IR 13}</td>
+     *     <td>{@code JIS_X0201}</td></tr>
+     * <tr><td>{@code ISO_IR 166}</td>
+     *     <td>{@code TIS-620}</td></tr>
+     * <tr><td>{@code ISO 2022 IR 87}</td>
+     *     <td>{@code x-JIS0208}</td></tr>
+     * <tr><td>{@code ISO 2022 IR 159}</td>
+     *     <td>{@code JIS_X0212-1990}</td></tr>
+     * <tr><td>{@codeISO 2022 IR 149 }</td>
+     *     <td>{@code EUC-KR}</td></tr>
+     * <tr><td>{@code ISO 2022 IR 58}</td>
+     *     <td>{@code GB2312}</td></tr>
+     * <tr><td>{@code ISO_IR 192}</td>
+     *     <td>{@code UTF-8}</td></tr>
+     * <tr><td>{@code GB18030}</td>
+     *     <td>{@code GB18030}</td></tr>
+     * </tbody>
+     * </table>
+     */
+    public static void resetCharsetNameMappings() {
+        Codec.resetCharsetNames();
+    }
+
+    public static String checkSpecificCharacterSet(String code) {
+        Codec.forCodeChecked(code);
+        return code;
+    }
+
+    public static String checkCharsetName(String charsetName) {
+        if (!Charset.isSupported(charsetName))
+            throw new UnsupportedCharsetException(charsetName);
+        return charsetName;
+    }
+
     public static SpecificCharacterSet valueOf(String... codes) {
         if (codes == null || codes.length == 0)
             return DEFAULT;
@@ -86,11 +166,60 @@ public class SpecificCharacterSet {
                 : new SpecificCharacterSet(infos, codes);
     }
 
+    /**
+     * Replace single code for Single-Byte Character Sets with Code Extensions by code for Single-Byte Character Sets
+     * without Code Extensions.
+     *
+     * @param codes the codes
+     * @return {@code true} if the code was replaced.
+     */
+    public static boolean trimISO2022(String[] codes) {
+        if (codes != null && codes.length == 1 && codes[0].startsWith("ISO 2022")) {
+            switch (codes[0]) {
+                case "ISO 2022 IR 6":
+                    codes[0] = "";
+                    return true;
+                case "ISO 2022 IR 100":
+                    codes[0] = "ISO_IR 100";
+                    return true;
+                case "ISO 2022 IR 101":
+                    codes[0] = "ISO_IR 101";
+                    return true;
+                case "ISO 2022 IR 109":
+                    codes[0] = "ISO_IR 109";
+                    return true;
+                case "ISO 2022 IR 110":
+                    codes[0] = "ISO_IR 110";
+                    return true;
+                case "ISO 2022 IR 144":
+                    codes[0] = "ISO_IR 144";
+                    return true;
+                case "ISO 2022 IR 127":
+                    codes[0] = "ISO_IR 127";
+                    return true;
+                case "ISO 2022 IR 126":
+                    codes[0] = "ISO_IR 126";
+                    return true;
+                case "ISO 2022 IR 138":
+                    codes[0] = "ISO_IR 138";
+                    return true;
+                case "ISO 2022 IR 148":
+                    codes[0] = "ISO_IR 148";
+                    return true;
+                case "ISO 2022 IR 13":
+                    codes[0] = "ISO_IR 13";
+                    return true;
+                case "ISO 2022 IR 166":
+                    codes[0] = "ISO_IR 166";
+                    return true;
+            }
+        }
+        return false;
+    }
+
     private static String[] checkISO2022(String[] codes) {
         for (String code : codes) {
             if (code != null && !code.isEmpty() && !code.startsWith("ISO 2022")) {
-                Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]",
-                        Property.concat(codes, Symbol.C_BACKSLASH), Property.maskNull(codes[0], Normal.EMPTY));
                 return new String[]{codes[0]};
             }
         }
@@ -131,6 +260,10 @@ public class SpecificCharacterSet {
         return codecs[0].containsASCII();
     }
 
+    public boolean contains(SpecificCharacterSet other) {
+        return Arrays.equals(codecs, other.codecs) || (other.isASCII() || other == ASCII) && containsASCII();
+    }
+
     public String toText(String s) {
         return codecs[0].toText(s);
     }
@@ -154,149 +287,154 @@ public class SpecificCharacterSet {
     }
 
     private enum Codec {
-        ISO_646(Charset.DEFAULT_US_ASCII, true, 0x2842, 0, 1),
-        ISO_8859_1(Charset.DEFAULT_ISO_8859_1, true, 0x2842, 0x2d41, 1),
-        ISO_8859_2("ISO-8859-2", true, 0x2842, 0x2d42, 1),
-        ISO_8859_3("ISO-8859-3", true, 0x2842, 0x2d43, 1),
-        ISO_8859_4("ISO-8859-4", true, 0x2842, 0x2d44, 1),
-        ISO_8859_5("ISO-8859-5", true, 0x2842, 0x2d4c, 1),
-        ISO_8859_6("ISO-8859-6", true, 0x2842, 0x2d47, 1),
-        ISO_8859_7("ISO-8859-7", true, 0x2842, 0x2d46, 1),
-        ISO_8859_8("ISO-8859-8", true, 0x2842, 0x2d48, 1),
-        ISO_8859_9("ISO-8859-9", true, 0x2842, 0x2d4d, 1),
-        JIS_X_201("JIS_X0201", true, 0x284a, 0x2949, 1) {
+        ISO_646(true, 0x2842, 0, 1),
+        ISO_8859_1(true, 0x2842, 0x2d41, 1),
+        ISO_8859_2(true, 0x2842, 0x2d42, 1),
+        ISO_8859_3(true, 0x2842, 0x2d43, 1),
+        ISO_8859_4(true, 0x2842, 0x2d44, 1),
+        ISO_8859_5(true, 0x2842, 0x2d4c, 1),
+        ISO_8859_6(true, 0x2842, 0x2d47, 1),
+        ISO_8859_7(true, 0x2842, 0x2d46, 1),
+        ISO_8859_8(true, 0x2842, 0x2d48, 1),
+        ISO_8859_9(true, 0x2842, 0x2d4d, 1),
+        JIS_X_201(true, 0x284a, 0x2949, 1) {
             @Override
             public String toText(String s) {
                 return s.replace(Symbol.C_BACKSLASH, Symbol.C_CNY);
             }
         },
-        TIS_620("TIS-620", true, 0x2842, 0x2d54, 1),
-        JIS_X_208("x-JIS0208", false, 0x2442, 0, 1),
-        JIS_X_212("JIS_X0212-1990", false, 0x242844, 0, 2),
-        KS_X_1001("EUC-KR", false, 0x2842, 0x242943, -1),
-        GB2312("GB2312", false, 0x2842, 0x242941, -1),
-        UTF_8(Charset.DEFAULT_UTF_8, true, 0, 0, -1),
-        GB18030("GB18030", false, 0, 0, -1);
+        TIS_620(true, 0x2842, 0x2d54, 1),
+        JIS_X_208(false, 0x2442, 0, 1),
+        JIS_X_212(false, 0x242844, 0, 2),
+        KS_X_1001(false, 0x2842, 0x242943, -1),
+        GB2312(false, 0x2842, 0x242941, -1),
+        UTF_8(true, 0, 0, -1),
+        GB18030(false, 0, 0, -1);
 
-        private final String charsetName;
+        private static final String[] charsetNames = resetCharsetNames(new String[18]);
         private final boolean containsASCII;
         private final int escSeq0;
         private final int escSeq1;
         private final int bytesPerChar;
 
-        Codec(String charsetName, boolean containsASCII, int escSeq0, int escSeq1, int bytesPerChar) {
-            this.charsetName = charsetName;
+        Codec(boolean containsASCII, int escSeq0, int escSeq1, int bytesPerChar) {
             this.containsASCII = containsASCII;
             this.escSeq0 = escSeq0;
             this.escSeq1 = escSeq1;
             this.bytesPerChar = bytesPerChar;
         }
 
-        public static Codec forCode(String code) {
-            if (code == null)
-                return SpecificCharacterSet.DEFAULT.codecs[0];
-
-            switch (last2digits(code)) {
-                case 0:
-                    if (code.equals("ISO_IR 100") || code.equals("ISO 2022 IR 100"))
-                        return Codec.ISO_8859_1;
-                    break;
-                case 1:
-                    if (code.equals("ISO_IR 101") || code.equals("ISO 2022 IR 101"))
-                        return Codec.ISO_8859_2;
-                    break;
-                case 6:
-                    if (code.equals("ISO 2022 IR 6"))
-                        return SpecificCharacterSet.DEFAULT.codecs[0];
-                    break;
-                case 9:
-                    if (code.equals("ISO_IR 109") || code.equals("ISO 2022 IR 109"))
-                        return Codec.ISO_8859_3;
-                    break;
-                case 10:
-                    if (code.equals("ISO_IR 110") || code.equals("ISO 2022 IR 110"))
-                        return Codec.ISO_8859_4;
-                    break;
-                case 13:
-                    if (code.equals("ISO_IR 13") || code.equals("ISO 2022 IR 13"))
-                        return Codec.JIS_X_201;
-                    break;
-                case 26:
-                    if (code.equals("ISO_IR 126") || code.equals("ISO 2022 IR 126"))
-                        return Codec.ISO_8859_7;
-                    break;
-                case 27:
-                    if (code.equals("ISO_IR 127") || code.equals("ISO 2022 IR 127"))
-                        return Codec.ISO_8859_6;
-                    break;
-                case 30:
-                    if (code.equals("GB18030"))
-                        return Codec.GB18030;
-                    break;
-                case 31:
-                    if (code.equals(Charset.DEFAULT_GBK))
-                        return Codec.GB18030;
-                    break;
-                case 38:
-                    if (code.equals("ISO_IR 138") || code.equals("ISO 2022 IR 138"))
-                        return Codec.ISO_8859_8;
-                    break;
-                case 44:
-                    if (code.equals("ISO_IR 144") || code.equals("ISO 2022 IR 144"))
-                        return Codec.ISO_8859_5;
-                    break;
-                case 48:
-                    if (code.equals("ISO_IR 148") || code.equals("ISO 2022 IR 148"))
-                        return Codec.ISO_8859_9;
-                    break;
-                case 49:
-                    if (code.equals("ISO 2022 IR 149"))
-                        return Codec.KS_X_1001;
-                    break;
-                case 58:
-                    if (code.equals("ISO 2022 IR 58"))
-                        return Codec.GB2312;
-                    break;
-                case 59:
-                    if (code.equals("ISO 2022 IR 159"))
-                        return Codec.JIS_X_212;
-                    break;
-                case 66:
-                    if (code.equals("ISO_IR 166") || code.equals("ISO 2022 IR 166"))
-                        return Codec.TIS_620;
-                    break;
-                case 87:
-                    if (code.equals("ISO 2022 IR 87"))
-                        return Codec.JIS_X_208;
-                    break;
-                case 92:
-                    if (code.equals("ISO_IR 192"))
-                        return Codec.UTF_8;
-                    break;
-            }
-            return SpecificCharacterSet.DEFAULT.codecs[0];
+        private static void resetCharsetNames() {
+            resetCharsetNames(charsetNames);
         }
 
-        private static int last2digits(String code) {
-            int len = code.length();
-            if (len < 2)
-                return -1;
-            char ch1 = code.charAt(len - 1);
-            char ch2 = code.charAt(len - 2);
-            return (ch2 & 15) * 10 + (ch1 & 15);
+        private static String[] resetCharsetNames(String[] charsetNames) {
+            charsetNames[0] = "US-ASCII";
+            charsetNames[1] = "ISO-8859-1";
+            charsetNames[2] = "ISO-8859-2";
+            charsetNames[3] = "ISO-8859-3";
+            charsetNames[4] = "ISO-8859-4";
+            charsetNames[5] = "ISO-8859-5";
+            charsetNames[6] = "ISO-8859-6";
+            charsetNames[7] = "ISO-8859-7";
+            charsetNames[8] = "ISO-8859-8";
+            charsetNames[9] = "ISO-8859-9";
+            charsetNames[10] = "JIS_X0201";
+            charsetNames[11] = "TIS-620";
+            charsetNames[12] = "x-JIS0208";
+            charsetNames[13] = "JIS_X0212-1990";
+            charsetNames[14] = "EUC-KR";
+            charsetNames[15] = "GB2312";
+            charsetNames[16] = "UTF-8";
+            charsetNames[17] = "GB18030";
+            return charsetNames;
+        }
+
+        public static Codec forCode(String code) {
+            return forCode(code, SpecificCharacterSet.DEFAULT.codecs[0]);
+        }
+
+        private static Codec forCodeChecked(String code) {
+            Codec codec = forCode(code, null);
+            if (codec == null)
+                throw new IllegalArgumentException("No such Specific Character Set Code: " + code);
+            return codec;
+        }
+
+        private static Codec forCode(String code, Codec defCodec) {
+            switch (code != null ? code : "") {
+                case "":
+                case "ISO 2022 IR 6":
+                    return SpecificCharacterSet.DEFAULT.codecs[0];
+                case "ISO_IR 100":
+                case "ISO 2022 IR 100":
+                    return Codec.ISO_8859_1;
+                case "ISO_IR 101":
+                case "ISO 2022 IR 101":
+                    return Codec.ISO_8859_2;
+                case "ISO_IR 109":
+                case "ISO 2022 IR 109":
+                    return Codec.ISO_8859_3;
+                case "ISO_IR 110":
+                case "ISO 2022 IR 110":
+                    return Codec.ISO_8859_4;
+                case "ISO_IR 144":
+                case "ISO 2022 IR 144":
+                    return Codec.ISO_8859_5;
+                case "ISO_IR 127":
+                case "ISO 2022 IR 127":
+                    return Codec.ISO_8859_6;
+                case "ISO_IR 126":
+                case "ISO 2022 IR 126":
+                    return Codec.ISO_8859_7;
+                case "ISO_IR 138":
+                case "ISO 2022 IR 138":
+                    return Codec.ISO_8859_8;
+                case "ISO_IR 148":
+                case "ISO 2022 IR 148":
+                    return Codec.ISO_8859_9;
+                case "ISO_IR 13":
+                case "ISO 2022 IR 13":
+                    return Codec.JIS_X_201;
+                case "ISO_IR 166":
+                case "ISO 2022 IR 166":
+                    return Codec.TIS_620;
+                case "ISO 2022 IR 87":
+                    return Codec.JIS_X_208;
+                case "ISO 2022 IR 159":
+                    return Codec.JIS_X_212;
+                case "ISO 2022 IR 149":
+                    return Codec.KS_X_1001;
+                case "ISO 2022 IR 58":
+                    return Codec.GB2312;
+                case "ISO_IR 192":
+                    return Codec.UTF_8;
+                case "GB18030":
+                case "GBK":
+                    return Codec.GB18030;
+            }
+            return defCodec;
         }
 
         public byte[] encode(String val) {
             try {
-                return val.getBytes(charsetName);
+                return val.getBytes(charsetName());
             } catch (UnsupportedEncodingException e) {
                 throw new AssertionError(e);
             }
         }
 
+        private String charsetName() {
+            return charsetNames[ordinal()];
+        }
+
+        private void setCharsetName(String charsetName) {
+            charsetNames[ordinal()] = charsetName;
+        }
+
         public String decode(byte[] b, int off, int len) {
             try {
-                return new String(b, off, len, charsetName);
+                return new String(b, off, len, charsetName());
             } catch (UnsupportedEncodingException e) {
                 throw new AssertionError(e);
             }
@@ -320,55 +458,6 @@ public class SpecificCharacterSet {
 
         public String toText(String s) {
             return s;
-        }
-    }
-
-    private static final class Encoder {
-        final Codec codec;
-        final CharsetEncoder encoder;
-
-        public Encoder(Codec codec) {
-            this.codec = codec;
-            this.encoder = java.nio.charset.Charset.forName(codec.charsetName).newEncoder();
-        }
-
-        private static void escSeq(ByteBuffer bb, int seq) {
-            if (seq == 0)
-                return;
-
-            bb.put((byte) 0x1b);
-            int b1 = seq >> 16;
-            if (b1 != 0)
-                bb.put((byte) b1);
-            bb.put((byte) (seq >> 8));
-            bb.put((byte) seq);
-        }
-
-        public boolean encode(CharBuffer cb, ByteBuffer bb, int escSeq,
-                              CodingErrorAction errorAction) {
-            encoder.onMalformedInput(errorAction)
-                    .onUnmappableCharacter(errorAction)
-                    .reset();
-            int cbmark = cb.position();
-            int bbmark = bb.position();
-            try {
-                escSeq(bb, escSeq);
-                CoderResult cr = encoder.encode(cb, bb, true);
-                if (!cr.isUnderflow())
-                    cr.throwException();
-                cr = encoder.flush(bb);
-                if (!cr.isUnderflow())
-                    cr.throwException();
-            } catch (CharacterCodingException x) {
-                cb.position(cbmark);
-                bb.position(bbmark);
-                return false;
-            }
-            return true;
-        }
-
-        public byte[] replacement() {
-            return encoder.replacement();
         }
     }
 
@@ -572,6 +661,55 @@ public class SpecificCharacterSet {
                 codecs[0] = codecs[1];
         }
 
+    }
+
+    private static final class Encoder {
+        final Codec codec;
+        final CharsetEncoder encoder;
+
+        public Encoder(Codec codec) {
+            this.codec = codec;
+            this.encoder = java.nio.charset.Charset.forName(codec.charsetName()).newEncoder();
+        }
+
+        private static void escSeq(ByteBuffer bb, int seq) {
+            if (seq == 0)
+                return;
+
+            bb.put((byte) 0x1b);
+            int b1 = seq >> 16;
+            if (b1 != 0)
+                bb.put((byte) b1);
+            bb.put((byte) (seq >> 8));
+            bb.put((byte) seq);
+        }
+
+        public boolean encode(CharBuffer cb, ByteBuffer bb, int escSeq,
+                              CodingErrorAction errorAction) {
+            encoder.onMalformedInput(errorAction)
+                    .onUnmappableCharacter(errorAction)
+                    .reset();
+            int cbmark = cb.position();
+            int bbmark = bb.position();
+            try {
+                escSeq(bb, escSeq);
+                CoderResult cr = encoder.encode(cb, bb, true);
+                if (!cr.isUnderflow())
+                    cr.throwException();
+                cr = encoder.flush(bb);
+                if (!cr.isUnderflow())
+                    cr.throwException();
+            } catch (CharacterCodingException x) {
+                cb.position(cbmark);
+                bb.position(bbmark);
+                return false;
+            }
+            return true;
+        }
+
+        public byte[] replacement() {
+            return encoder.replacement();
+        }
     }
 
 }

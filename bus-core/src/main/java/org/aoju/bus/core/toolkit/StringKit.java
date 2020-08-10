@@ -1168,9 +1168,9 @@ public class StringKit {
      * 此方法只是简单将占位符 {} 按照顺序替换为参数
      * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
      * 例：
-     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
-     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a
-     * 转义\： format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
+     * 通常使用：format("this is {} for {}", "a", "b") =  this is a for b
+     * 转义{}： format("this is \\{} for {}", "a", "b") =  this is \{} for a
+     * 转义\： format("this is \\\\{} for {}", "a", "b") =  this is \a for b
      *
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param params   参数值
@@ -1191,9 +1191,9 @@ public class StringKit {
      * 此方法只是简单将占位符 {} 按照顺序替换为参数
      * 如果想输出 {} 使用 \\转义 { 即可,如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
      * 例：
-     * 通常使用：format("this is {} for {}", "a", "b") =》 this is a for b
-     * 转义{}： format("this is \\{} for {}", "a", "b") =》 this is \{} for a
-     * 转义\：format("this is \\\\{} for {}", "a", "b") =》 this is \a for b
+     * 通常使用：format("this is {} for {}", "a", "b") =  this is a for b
+     * 转义{}： format("this is \\{} for {}", "a", "b") =  this is \{} for a
+     * 转义\：format("this is \\\\{} for {}", "a", "b") =  this is \a for b
      *
      * @param val      字符串模板
      * @param argArray 参数列表
@@ -1253,8 +1253,8 @@ public class StringKit {
      * 如果from和to位置一样,返回 ""
      * 如果from或to为负数,则按照length从后向前数位置,如果绝对值大于字符串长度,则from归到0,to归到length
      * 如果经过修正的index中from大于to,则互换
-     * abcdefgh 2 3 =》 c
-     * abcdefgh 2 -3 =》 cde
+     * abcdefgh 2 3 =  c
+     * abcdefgh 2 -3 =  cde
      *
      * @param str       String
      * @param fromIndex 开始的index(包括)
@@ -2062,8 +2062,8 @@ public class StringKit {
 
     /**
      * 切分字符串
-     * a#b#c =》 [a,b,c]
-     * a##b#c =》 [a,"",b,c]
+     * a#b#c =  [a,b,c]
+     * a##b#c =  [a,"",b,c]
      *
      * @param str       被切分的字符串
      * @param separator 分隔符字符
@@ -2692,7 +2692,7 @@ public class StringKit {
 
     /**
      * 反转字符串
-     * 例如：abcd =》dcba
+     * 例如：abcd = dcba
      *
      * @param str 被反转的字符串
      * @return 反转后的字符串
@@ -2776,7 +2776,7 @@ public class StringKit {
 
     /**
      * 去掉首部指定长度的字符串并将剩余字符串首字母小写
-     * 例如：str=setName, preLength=3 =》 return name
+     * 例如：str=setName, preLength=3 =  return name
      *
      * @param str       被处理的字符串
      * @param preLength 去掉的长度
@@ -2799,7 +2799,7 @@ public class StringKit {
 
     /**
      * 去掉首部指定长度的字符串并将剩余字符串首字母小写
-     * 例如：str=setName, prefix=set =》 return name
+     * 例如：str=setName, prefix=set =  return name
      *
      * @param str    被处理的字符串
      * @param prefix 前缀
@@ -2926,7 +2926,7 @@ public class StringKit {
     /**
      * 将驼峰式命名的字符串转换为下划线方式
      * 如果转换前的驼峰式命名的字符串为空,则返回空字符串
-     * 例如：HelloWorld=》hello_world
+     * 例如：HelloWorld= hello_world
      *
      * @param camelCaseStr 转换前的驼峰式命名的字符串
      * @return 转换后下划线大写方式命名的字符串
@@ -3016,7 +3016,7 @@ public class StringKit {
     /**
      * 将下划线方式命名的字符串转换为驼峰式
      * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串
-     * 例如：hello_world=》helloWorld
+     * 例如：hello_world= helloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串

@@ -34,6 +34,7 @@ import org.aoju.bus.oauth.Registry;
 import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 /**
  * Gitlab登录
@@ -110,7 +111,7 @@ public class GitlabProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", "read_user+openid+profile+email")
+                .queryParam("scope", this.getScopes("+", false, getScopes(true, OauthScope.Gitlab.values())))
                 .build();
     }
 

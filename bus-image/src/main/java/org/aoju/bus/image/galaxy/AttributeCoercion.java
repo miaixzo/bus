@@ -122,7 +122,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     }
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
-        String indent2 = indent + "  ";
+        String indent2 = indent + Symbol.SPACE;
         Property.appendLine(sb, indent,
                 "AttributeCoercion[cn: ", commonName);
         Property.appendLine(sb, indent2, "dimse: ", condition.dimse);

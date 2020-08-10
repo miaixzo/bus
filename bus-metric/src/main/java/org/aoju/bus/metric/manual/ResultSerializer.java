@@ -22,67 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.oauth.provider;
-
-import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.cache.metric.ExtendCache;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.exception.AuthorizedException;
-import org.aoju.bus.oauth.Context;
-import org.aoju.bus.oauth.Registry;
-import org.aoju.bus.oauth.magic.AccToken;
-import org.aoju.bus.oauth.magic.Callback;
-import org.aoju.bus.oauth.magic.Property;
+package org.aoju.bus.metric.manual;
 
 /**
- * CSDN登录
+ * 对象序列化
  *
  * @author Kimi Liu
  * @version 6.0.5
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
-public class CsdnProvider extends AbstractProvider {
-
-    public CsdnProvider(Context context) {
-        super(context, Registry.CSDN);
-    }
-
-    public CsdnProvider(Context context, ExtendCache extendCache) {
-        super(context, Registry.CSDN, extendCache);
-    }
-
-    @Override
-    public AccToken getAccessToken(Callback callback) {
-        JSONObject object = JSONObject.parseObject(doPostAuthorizationCode(callback.getCode()));
-        this.checkResponse(object);
-        return AccToken.builder().accessToken(object.getString("access_token")).build();
-    }
-
-    @Override
-    public Property getUserInfo(AccToken accToken) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
-        this.checkResponse(object);
-        return Property.builder()
-                .rawJson(object)
-                .uuid(object.getString("username"))
-                .username(object.getString("username"))
-                .remark(object.getString("description"))
-                .blog(object.getString("website"))
-                .gender(Normal.Gender.UNKNOWN)
-                .token(accToken)
-                .source(source.toString())
-                .build();
-    }
+public interface ResultSerializer {
 
     /**
-     * 检查响应内容是否正确
+     * 序列化
      *
-     * @param object 请求响应内容
+     * @param obj 对象
+     * @return 返回序列化后的结果
      */
-    private void checkResponse(JSONObject object) {
-        if (object.containsKey("error_code")) {
-            throw new AuthorizedException(object.getString("error"));
-        }
-    }
+    String serialize(Object obj);
 
 }

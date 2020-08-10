@@ -99,7 +99,7 @@ public class HexKit {
     }
 
     /**
-     * 将字节数组转换为十六进制字符串,结果为小写
+     * 将符串转换为十六进制字符串,结果为小写
      *
      * @param data    被编码的字符串
      * @param charset 编码
@@ -110,7 +110,7 @@ public class HexKit {
     }
 
     /**
-     * 将字节数组转换为十六进制字符串,结果为小写,默认编码是UTF-8
+     * 将符串转换为十六进制字符串,结果为小写,默认编码是UTF-8
      *
      * @param data 被编码的字符串
      * @return 十六进制String
@@ -261,7 +261,7 @@ public class HexKit {
      * 转换的字符串如果u后不足4位,则前面用0填充,例如：
      *
      * <pre>
-     * '我' =》\u4f60
+     * '我' = \u4f60
      * </pre>
      *
      * @param value int值,也可以是char
@@ -286,7 +286,7 @@ public class HexKit {
      * 转换的字符串如果u后不足4位,则前面用0填充,例如：
      *
      * <pre>
-     * '我' =》\u4f60
+     * '我' = \u4f60
      * </pre>
      *
      * @param ch char值

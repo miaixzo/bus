@@ -37,6 +37,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -135,6 +136,13 @@ public class WeiboProvider extends AbstractProvider {
         // 返回 result = true 表示取消授权成功，否则失败
         Builder.ErrorCode status = object.getBooleanValue("result") ? Builder.ErrorCode.SUCCESS : Builder.ErrorCode.FAILURE;
         return Message.builder().errcode(status.getCode()).errmsg(status.getMsg()).build();
+    }
+
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Weibo.values())))
+                .build();
     }
 
 }

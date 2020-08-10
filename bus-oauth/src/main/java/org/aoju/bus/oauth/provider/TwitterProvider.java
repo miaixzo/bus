@@ -209,7 +209,7 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     private String buildHeader(Map<String, String> params) {
-        final StringBuilder sb = new StringBuilder(PREAMBLE + " ");
+        final StringBuilder sb = new StringBuilder(PREAMBLE + Symbol.SPACE);
 
         for (Map.Entry<String, String> param : params.entrySet()) {
             sb.append(param.getKey()).append("=\"").append(UriKit.encode(param.getValue())).append(Symbol.C_DOUBLE_QUOTES).append(", ");

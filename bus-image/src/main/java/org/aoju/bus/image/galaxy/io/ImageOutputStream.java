@@ -46,10 +46,10 @@ public class ImageOutputStream extends FilterOutputStream {
     private byte[] preamble = new byte[128];
     private boolean explicitVR;
     private boolean bigEndian;
+    private boolean deflated;
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
 
-    public ImageOutputStream(OutputStream out, String tsuid)
-            throws IOException {
+    public ImageOutputStream(OutputStream out, String tsuid) {
         super(out);
         switchTransferSyntax(tsuid);
     }
@@ -97,9 +97,10 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public void writeFileMetaInformation(Attributes fmi) throws IOException {
-        if (!explicitVR || bigEndian)
+        if (!explicitVR || bigEndian || deflated)
             throw new IllegalStateException("explicitVR=" + explicitVR
-                    + ", bigEndian=" + bigEndian);
+                    + ", bigEndian=" + bigEndian
+                    + ", deflated=" + deflated);
         write(preamble);
         write(DICM);
         fmi.writeGroupTo(this, Tag.FileMetaInformationGroupLength);
@@ -128,6 +129,7 @@ public class ImageOutputStream extends FilterOutputStream {
                 || tsuid.equals(UID.JPIPReferencedDeflate)) {
             super.out = new DeflaterOutputStream(super.out,
                     new Deflater(Deflater.DEFAULT_COMPRESSION, true));
+            this.deflated = true;
         }
     }
 

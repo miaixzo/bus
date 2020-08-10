@@ -38,6 +38,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.util.Objects;
 
@@ -137,6 +138,13 @@ public class RenrenProvider extends AbstractProvider {
         return Builder.fromUrl(source.userInfo())
                 .queryParam("access_token", token.getAccessToken())
                 .queryParam("userId", token.getOpenId())
+                .build();
+    }
+
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Renren.values())))
                 .build();
     }
 

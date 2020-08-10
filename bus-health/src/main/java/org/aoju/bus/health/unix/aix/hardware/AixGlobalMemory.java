@@ -90,7 +90,7 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
         List<PhysicalMemory> pmList = new ArrayList<>();
         boolean isMemModule = false;
         String bankLabel = Normal.UNKNOWN;
-        String locator = "";
+        String locator = Normal.EMPTY;
         long capacity = 0L;
         for (String line : lscfg.get()) {
             String s = line.trim();

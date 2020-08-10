@@ -40,6 +40,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.util.Map;
 
@@ -140,14 +141,21 @@ public class QqProvider extends AbstractProvider {
     }
 
     private AccToken getAuthToken(String response) {
-        Map<String, String> paramMap = UriKit.decodeVal(response, Charset.DEFAULT_UTF_8);
-        if (!paramMap.containsKey("access_token") || paramMap.containsKey("code")) {
-            throw new AuthorizedException(paramMap.get("msg"));
+        Map<String, String> accessTokenObject = UriKit.decodeVal(response, Charset.DEFAULT_UTF_8);
+        if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
+            throw new AuthorizedException(accessTokenObject.get("msg"));
         }
         return AccToken.builder()
-                .accessToken(paramMap.get("access_token"))
-                .expireIn(Integer.valueOf(paramMap.get("expires_in")))
-                .refreshToken(paramMap.get("refresh_token"))
+                .accessToken(accessTokenObject.get("access_token"))
+                .expireIn(Integer.parseInt(accessTokenObject.getOrDefault("expires_in", "0")))
+                .refreshToken(accessTokenObject.get("refresh_token"))
+                .build();
+    }
+
+    @Override
+    public String authorize(String state) {
+        return Builder.fromUrl(super.authorize(state))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Qq.values())))
                 .build();
     }
 

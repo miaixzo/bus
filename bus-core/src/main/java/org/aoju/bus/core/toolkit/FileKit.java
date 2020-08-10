@@ -1003,11 +1003,11 @@ public class FileKit {
      * isRetainExt为true时，保留原扩展名：
      *
      * <pre>
-     * FileKit.rename(file, "aaa", true) xx/xx.png =》xx/aaa.png
+     * FileKit.rename(file, "aaa", true) xx/xx.png = xx/aaa.png
      * </pre>
      *
      * <pre>
-     * FileKit.rename(file, "aaa.jpg", false) xx/xx.png =》xx/aaa.jpg
+     * FileKit.rename(file, "aaa.jpg", false) xx/xx.png = xx/aaa.jpg
      * </pre>
      *
      * @param file       被修改的文件
@@ -1025,13 +1025,13 @@ public class FileKit {
      * 1、isRetainExt为true时,保留原扩展名：
      *
      * <pre>
-     *  rename(file, "aaa", true) xx/xx.png =》xx/aaa.png
+     *  rename(file, "aaa", true) xx/xx.png = xx/aaa.png
      * </pre>
      * <p>
      * 2、isRetainExt为false时,不保留原扩展名,需要在newName中
      *
      * <pre>
-     *  rename(file, "aaa.jpg", false) xx/xx.png =》xx/aaa.jpg
+     *  rename(file, "aaa.jpg", false) xx/xx.png = xx/aaa.jpg
      * </pre>
      *
      * @param file        被修改的文件
@@ -1584,18 +1584,18 @@ public class FileKit {
      * 栗子：
      *
      * <pre>
-     * "/foo//" =》 "/foo/"
-     * "/foo/./" =》 "/foo/"
-     * "/foo/../bar" =》 "/bar"
-     * "/foo/../bar/" =》 "/bar/"
-     * "/foo/../bar/../baz" =》 "/baz"
-     * "foo/bar/.." =》 "foo"
-     * "foo/../bar" =》 "bar"
-     * "foo/../../bar" =》 "bar"
-     * "//server/foo/../bar" =》 "/server/bar"
-     * "//server/../bar" =》 "/bar"
-     * "~/foo/../bar/" =》 "~/bar/"
-     * "~/../bar" =》 "bar"
+     * "/foo//" =  "/foo/"
+     * "/foo/./" =  "/foo/"
+     * "/foo/../bar" =  "/bar"
+     * "/foo/../bar/" =  "/bar/"
+     * "/foo/../bar/../baz" =  "/baz"
+     * "foo/bar/.." =  "foo"
+     * "foo/../bar" =  "bar"
+     * "foo/../../bar" =  "bar"
+     * "//server/foo/../bar" =  "/server/bar"
+     * "//server/../bar" =  "/bar"
+     * "~/foo/../bar/" =  "~/bar/"
+     * "~/../bar" =  "bar"
      * </pre>
      *
      * @param path 原路径
@@ -1676,8 +1676,8 @@ public class FileKit {
      * 栗子：
      *
      * <pre>
-     * dirPath: /data/aaa/bbb    filePath: /data/aaa/bbb/ccc     =》    ccc
-     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/ccc.txt     =》    ccc.txt
+     * dirPath: /data/aaa/bbb    filePath: /data/aaa/bbb/ccc     =     ccc
+     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/ccc.txt     =     ccc.txt
      * </pre>
      *
      * @param rootDir 绝对父路径
@@ -1698,9 +1698,9 @@ public class FileKit {
      * 栗子：
      *
      * <pre>
-     * dirPath: /data/aaa/bbb    filePath: /data/aaa/bbb/ccc     =》    ccc
-     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/ccc.txt     =》    ccc.txt
-     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/     =》    ""
+     * dirPath: /data/aaa/bbb    filePath: /data/aaa/bbb/ccc     =     ccc
+     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/ccc.txt     =     ccc.txt
+     * dirPath: /data/Aaa/bbb    filePath: /data/aaa/bbb/     =     ""
      * </pre>
      *
      * @param dirPath  父路径

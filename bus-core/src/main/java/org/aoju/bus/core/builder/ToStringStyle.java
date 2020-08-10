@@ -2023,7 +2023,7 @@ public abstract class ToStringStyle implements Serializable {
         MultiLineToStringStyle() {
             super();
             this.setContentStart(Symbol.BRACKET_LEFT);
-            this.setFieldSeparator(System.lineSeparator() + "  ");
+            this.setFieldSeparator(System.lineSeparator() + Symbol.SPACE);
             this.setFieldSeparatorAtStart(true);
             this.setContentEnd(System.lineSeparator() + Symbol.BRACKET_RIGHT);
         }

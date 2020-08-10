@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.gitlab.Constants.TokenType;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
@@ -220,7 +221,7 @@ public class GitLabApiClient implements AutoCloseable {
     public GitLabApiClient(ApiVersion apiVersion, String hostUrl, TokenType tokenType, String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
 
         // Remove the trailing "/" from the hostUrl if present
-        this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", "") : hostUrl);
+        this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", Normal.EMPTY) : hostUrl);
         this.baseUrl = this.hostUrl;
         this.hostUrl += apiVersion.getApiNamespace();
 
@@ -689,7 +690,7 @@ public class GitLabApiClient implements AutoCloseable {
      */
     protected Response put(MultivaluedMap<String, String> queryParams, URL url) {
         if (queryParams == null || queryParams.isEmpty()) {
-            Entity<?> empty = Entity.text("");
+            Entity<?> empty = Entity.text(Normal.EMPTY);
             return (invocation(url, null).put(empty));
         } else {
             return (invocation(url, null).put(Entity.entity(queryParams, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));

@@ -46,6 +46,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -383,7 +384,7 @@ public class CollKit {
      * 计算集合的单差集，即只返回【集合1】中有，但是【集合2】中没有的元素，例如：
      *
      * <pre>
-     *     subtract([1,2,3,4],[2,3,4,5]) -》 [1]
+     *     subtract([1,2,3,4],[2,3,4,5]) -  [1]
      * </pre>
      *
      * @param coll1 集合1
@@ -525,6 +526,26 @@ public class CollKit {
                 if (ObjectKit.nullSafeEquals(candidate, element)) {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 自定义函数判断集合是否包含某类值
+     *
+     * @param collection  集合
+     * @param containFunc 自定义判断函数
+     * @param <T>         值类型
+     * @return 是否包含自定义规则的值
+     */
+    public static <T> boolean contains(Collection<T> collection, Predicate<? super T> containFunc) {
+        if (isEmpty(collection)) {
+            return false;
+        }
+        for (T t : collection) {
+            if (containFunc.test(t)) {
+                return true;
             }
         }
         return false;
@@ -2620,8 +2641,8 @@ public class CollKit {
      * 将页数和每页条目数转换为开始位置和结束位置
      * 此方法用于不包括结束位置的分页方法
      * 例如：
-     * 页码：1,每页10 =》 [0, 10]
-     * 页码：2,每页10 =》 [10, 20]
+     * 页码：1,每页10 =  [0, 10]
+     * 页码：2,每页10 =  [10, 20]
      *
      * @param pageNo   页码(从1计数)
      * @param pageSize 每页条目数

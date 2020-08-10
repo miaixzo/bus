@@ -40,11 +40,11 @@ public enum BasicType {
     BYTE, SHORT, INT, INTEGER, LONG, DOUBLE, FLOAT, BOOLEAN, CHAR, CHARACTER, STRING;
 
     /**
-     * 包装类型为Key,原始类型为Value,例如： Integer.class =》 int.class.
+     * 包装类型为Key,原始类型为Value,例如： Integer.class = int.class.
      */
     public static final Map<Class<?>, Class<?>> WRAPPER_PRIMITIVE_MAP = new ConcurrentHashMap<>(8);
     /**
-     * 原始类型为Key,包装类型为Value,例如： int.class =》 Integer.class.
+     * 原始类型为Key,包装类型为Value,例如： int.class = Integer.class.
      */
     public static final Map<Class<?>, Class<?>> PRIMITIVE_WRAPPER_MAP = new ConcurrentHashMap<>(8);
 

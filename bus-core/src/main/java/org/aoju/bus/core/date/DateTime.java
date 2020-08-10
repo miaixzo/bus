@@ -542,7 +542,7 @@ public class DateTime extends Date {
 
     /**
      * 获得指定日期的分钟数部分
-     * 例如：10:04:15.250 =》 4
+     * 例如：10:04:15.250 = 4
      *
      * @return 分钟数
      */

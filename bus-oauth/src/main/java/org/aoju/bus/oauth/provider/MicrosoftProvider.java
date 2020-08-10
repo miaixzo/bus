@@ -39,6 +39,7 @@ import org.aoju.bus.oauth.magic.AccToken;
 import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Message;
 import org.aoju.bus.oauth.magic.Property;
+import org.aoju.bus.oauth.metric.OauthScope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -151,13 +152,9 @@ public class MicrosoftProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(source.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(super.authorize(state))
                 .queryParam("response_mode", "query")
-                .queryParam("scope", "offline_access%20user.read%20mail.read")
-                .queryParam("state", getRealState(state))
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Microsoft.values())))
                 .build();
     }
 

@@ -26,6 +26,7 @@ package org.aoju.bus.health.mac;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.OSProcess;
@@ -49,7 +50,7 @@ public final class ThreadInfo {
     }
 
     public static List<ThreadStats> queryTaskThreads(int pid) {
-        String pidStr = " " + pid + " ";
+        String pidStr = Symbol.SPACE + pid + Symbol.SPACE;
         List<ThreadStats> taskThreads = new ArrayList<>();
         // Only way to get thread info without root permissions
         // Using the M switch gives all threads with no possibility to filter
