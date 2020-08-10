@@ -25,6 +25,8 @@
 package org.aoju.bus.starter.swagger;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -39,11 +41,70 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = BusXExtend.SWAGGER)
 public class SwaggerProperties {
 
-    private String basePackage;
-    private String title;
-    private String serviceUrl;
-    private String description;
-    private String contact;
-    private String version;
+    /**
+     * swagger会解析的包路径
+     **/
+    private String basePackage = Normal.EMPTY;
+
+    /**
+     * 标题
+     **/
+    private String title = Normal.EMPTY;
+
+    /**
+     * 描述
+     **/
+    private String description = Normal.EMPTY;
+
+    /**
+     * 版本
+     **/
+    private String version = Normal.EMPTY;
+
+    /**
+     * 许可证
+     **/
+    private String license = Normal.EMPTY;
+
+    /**
+     * 许可证URL
+     **/
+    private String licenseUrl = Normal.EMPTY;
+
+    /**
+     * 服务条款URL
+     **/
+    private String termsOfServiceUrl = Normal.EMPTY;
+
+    /**
+     * host信息
+     **/
+    private String host = Normal.EMPTY;
+
+    /**
+     * 联系人信息
+     */
+    private Contact contact = new Contact();
+
+    @Data
+    @NoArgsConstructor
+    public static class Contact {
+
+        /**
+         * 联系人
+         **/
+        private String name = Normal.EMPTY;
+
+        /**
+         * 联系人url
+         **/
+        private String url = Normal.EMPTY;
+
+        /**
+         * 联系人email
+         **/
+        private String email = Normal.EMPTY;
+
+    }
 
 }

@@ -26,20 +26,18 @@ package org.aoju.bus.starter.swagger;
 
 import io.swagger.annotations.ApiOperation;
 import org.aoju.bus.core.key.ObjectID;
-import org.aoju.bus.core.lang.Normal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.ModelRef;
+import springfox.documentation.builders.RequestParameterBuilder;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
-import springfox.documentation.service.Parameter;
+import springfox.documentation.service.RequestParameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -76,27 +74,28 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
     @Bean
     public Docket createRestApi() {
         // 可以添加多个header或参数
-        ParameterBuilder aParameterBuilder = new ParameterBuilder();
-        aParameterBuilder.parameterType("header") // 参数类型支持header, cookie,
+        RequestParameterBuilder aParameterBuilder = new RequestParameterBuilder();
+        aParameterBuilder.in("header") // 参数类型支持header, cookie,
                 .name("X-Access-Token") // 参数名
-                .defaultValue(Normal.EMPTY) // 默认值
-                .description("X-Access-Token格式为:" + ObjectID.id()).modelRef(new ModelRef("string"))// 指定参数值的类型
+                .description("X-Access-Token格式为:" + ObjectID.id())
                 .required(false).build(); // 非必需,这里是全局配置,然而在登陆的时候是不用验证的
-        List<Parameter> aParameters = new ArrayList();
-        aParameters.add(aParameterBuilder.build());
+        List<RequestParameter> requestParameters = new ArrayList();
+        requestParameters.add(aParameterBuilder.build());
         return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .select()
+                .apiInfo(apiInfo()).select()
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .paths(PathSelectors.any())
                 .build()
-                .globalOperationParameters(aParameters);
-
+                .globalRequestParameters(requestParameters);
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title(this.properties.getTitle()).termsOfServiceUrl(this.properties.getServiceUrl())
-                .description(this.properties.getDescription()).contact(new Contact(this.properties.getContact(), Normal.EMPTY, Normal.EMPTY)).version(this.properties.getVersion()).build();
+        return new ApiInfoBuilder().title(this.properties.getTitle()).description(this.properties.getDescription())
+                .license(this.properties.getLicense()).licenseUrl(this.properties.getLicenseUrl())
+                .termsOfServiceUrl(this.properties.getTermsOfServiceUrl())
+                .contact(new Contact(this.properties.getContact().getName(), this.properties.getContact().getUrl(),
+                        this.properties.getContact().getEmail()))
+                .version(this.properties.getVersion()).build();
     }
 
 }
