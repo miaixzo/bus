@@ -19,8 +19,8 @@
         <project.compiler.version>1.8</project.compiler.version>
         <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
         <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.70</fastjson.version>
-        <netty.version>4.1.50.Final</netty.version>
+        <fastjson.version>1.2.73</fastjson.version>
+        <netty.version>4.1.51.Final</netty.version>
     </properties>
 
     <dependencies>

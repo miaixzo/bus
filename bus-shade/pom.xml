@@ -17,10 +17,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <freemarker.version>2.3.28</freemarker.version>
+        <freemarker.version>2.3.30</freemarker.version>
         <lombok.version>1.18.12</lombok.version>
-        <druid.version>1.1.22</druid.version>
-        <mysql.version>8.0.20</mysql.version>
+        <druid.version>1.1.23</druid.version>
+        <mysql.version>8.0.21</mysql.version>
     </properties>
 
     <dependencies>

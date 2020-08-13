@@ -25,8 +25,8 @@
         <project.compiler.version>1.8</project.compiler.version>
         <lombok.version>1.18.12</lombok.version>
         <guava.version>29.0-jre</guava.version>
-        <netty.version>4.1.50.Final</netty.version>
-        <fastjson.version>1.2.70</fastjson.version>
+        <netty.version>4.1.51.Final</netty.version>
+        <fastjson.version>1.2.73</fastjson.version>
         <marshalling.version>2.0.5.Final</marshalling.version>
         <asm.version>7.2</asm.version>
     </properties>

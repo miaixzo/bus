@@ -18,8 +18,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <lombok.version>1.18.12</lombok.version>
-        <mybatis.version>3.5.3</mybatis.version>
-        <mybatis.spring.version>2.0.3</mybatis.spring.version>
+        <mybatis.version>3.5.5</mybatis.version>
+        <mybatis.spring.version>2.0.5</mybatis.spring.version>
         <persistence.version>2.2</persistence.version>
     </properties>
 
