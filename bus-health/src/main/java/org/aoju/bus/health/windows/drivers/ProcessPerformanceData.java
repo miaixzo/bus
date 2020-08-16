@@ -29,6 +29,7 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.health.Config;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +48,8 @@ import java.util.Map;
 public final class ProcessPerformanceData {
 
     private static final String PROCESS = "Process";
+    public static final String WIN_HKEY_PERFDATA = "health.os.windows.hkeyperfdata";
+    private static final boolean PERFDATA = Config.get(WIN_HKEY_PERFDATA, true);
 
     private ProcessPerformanceData() {
     }
@@ -62,8 +65,10 @@ public final class ProcessPerformanceData {
      */
     public static Map<Integer, PerfCounterBlock> buildProcessMapFromRegistry(Collection<Integer> pids) {
         // Grab the data from the registry.
-        Triple<List<Map<ProcessInformation.ProcessPerformanceProperty, Object>>, Long, Long> processData = HkeyPerformance
-                .readPerfDataFromRegistry(PROCESS, ProcessInformation.ProcessPerformanceProperty.class);
+        Triple<List<Map<ProcessInformation.ProcessPerformanceProperty, Object>>, Long, Long> processData = null;
+        if (PERFDATA) {
+            processData = HkeyPerformance.readPerfDataFromRegistry(PROCESS, ProcessInformation.ProcessPerformanceProperty.class);
+        }
         if (processData == null) {
             return null;
         }
