@@ -202,7 +202,8 @@ public abstract class AbstractProvider implements Provider {
     /**
      * 从 {@link  OauthScope.Scope} 数组中获取实际的 scope 字符串
      *
-     * @param scopes 可变参数，支持传任意 {@link  OauthScope.Scope}
+     * @param defaultScope 默认参数
+     * @param scopes       可变参数，支持传任意 {@link  OauthScope.Scope}
      * @return List
      */
     public static List<String> getScopes(boolean defaultScope, OauthScope.Scope... scopes) {

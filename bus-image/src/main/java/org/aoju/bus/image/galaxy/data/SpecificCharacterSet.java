@@ -89,52 +89,6 @@ public class SpecificCharacterSet {
      * Reset mapping of DICOM Specific Character Set (0008,0005) values to named charsets as specified by
      * <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html#table_C.12-2">
      * DICOM PS 3.3 Table C.12-2</a>.
-     *
-     * <table>
-     * <tr>
-     * <th>Code String</th>
-     * <th>Charset Name</th>
-     * </tr>
-     * </thead>
-     * <tbody>
-     * <tr><td>_empty_</td>
-     *     <td>{@code US-ASCII}</td></tr>
-     * <tr><td>{@code ISO_IR 100}</td>
-     *     <td>{@code ISO-8859-1}</td></tr>
-     * <tr><td>{@code ISO_IR 101}</td>
-     *     <td>{@code ISO-8859-2}</td></tr>
-     * <tr><td>{@code ISO_IR 109}</td>
-     *     <td>{@code ISO-8859-3}</td></tr>
-     * <tr><td>{@code ISO_IR 110}</td>
-     *     <td>{@code ISO-8859-4}</td></tr>
-     * <tr><td>{@code ISO_IR 144}</td>
-     *     <td>{@code ISO-8859-5}</td></tr>
-     * <tr><td>{@code ISO_IR 127}</td>
-     *     <td>{@code ISO-8859-6}</td></tr>
-     * <tr><td>{@code ISO_IR 126}</td>
-     *     <td>{@code ISO-8859-7}</td></tr>
-     * <tr><td>{@code ISO_IR 138}</td>
-     *     <td>{@code ISO-8859-8}</td></tr>
-     * <tr><td>{@code ISO_IR 148}</td>
-     *     <td>{@code ISO-8859-9}</td></tr>
-     * <tr><td>{@code ISO_IR 13}</td>
-     *     <td>{@code JIS_X0201}</td></tr>
-     * <tr><td>{@code ISO_IR 166}</td>
-     *     <td>{@code TIS-620}</td></tr>
-     * <tr><td>{@code ISO 2022 IR 87}</td>
-     *     <td>{@code x-JIS0208}</td></tr>
-     * <tr><td>{@code ISO 2022 IR 159}</td>
-     *     <td>{@code JIS_X0212-1990}</td></tr>
-     * <tr><td>{@codeISO 2022 IR 149 }</td>
-     *     <td>{@code EUC-KR}</td></tr>
-     * <tr><td>{@code ISO 2022 IR 58}</td>
-     *     <td>{@code GB2312}</td></tr>
-     * <tr><td>{@code ISO_IR 192}</td>
-     *     <td>{@code UTF-8}</td></tr>
-     * <tr><td>{@code GB18030}</td>
-     *     <td>{@code GB18030}</td></tr>
-     * </tbody>
-     * </table>
      */
     public static void resetCharsetNameMappings() {
         Codec.resetCharsetNames();
