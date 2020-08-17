@@ -60,4 +60,11 @@ public interface RowHandler {
 
     }
 
+    /**
+     * 处理一个sheet页完成的操作
+     */
+    default void doAfterAllAnalysed() {
+
+    }
+
 }

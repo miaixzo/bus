@@ -47,8 +47,8 @@ import java.util.Map;
 @ThreadSafe
 public final class ProcessPerformanceData {
 
-    private static final String PROCESS = "Process";
     public static final String WIN_HKEY_PERFDATA = "health.os.windows.hkeyperfdata";
+    private static final String PROCESS = "Process";
     private static final boolean PERFDATA = Config.get(WIN_HKEY_PERFDATA, true);
 
     private ProcessPerformanceData() {

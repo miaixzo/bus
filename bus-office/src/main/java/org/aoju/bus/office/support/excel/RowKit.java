@@ -31,6 +31,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,25 +65,40 @@ public class RowKit {
      * @return 单元格值列表
      */
     public static List<Object> readRow(Row row, CellEditor cellEditor) {
+        return readRow(row, 0, Short.MAX_VALUE, cellEditor);
+    }
+
+    /**
+     * 读取一行
+     *
+     * @param row                 行
+     * @param startCellNumInclude 起始单元格号，0开始（包含）
+     * @param endCellNumInclude   结束单元格号，0开始（包含）
+     * @param cellEditor          单元格编辑器
+     * @return 单元格值列表
+     */
+    public static List<Object> readRow(Row row, int startCellNumInclude, int endCellNumInclude, CellEditor cellEditor) {
         if (null == row) {
             return new ArrayList<>(0);
         }
-        final short length = row.getLastCellNum();
-        if (length < 0) {
-            return new ArrayList<>(0);
+        final short rowLength = row.getLastCellNum();
+        if (rowLength < 0) {
+            return Collections.emptyList();
         }
-        final List<Object> cellValues = new ArrayList<>(length);
+
+        final int size = Math.min(endCellNumInclude + 1, rowLength);
+        final List<Object> cellValues = new ArrayList<>(size);
         Object cellValue;
         boolean isAllNull = true;
-        for (short i = 0; i < length; i++) {
+        for (int i = startCellNumInclude; i < size; i++) {
             cellValue = CellKit.getCellValue(row.getCell(i), cellEditor);
             isAllNull &= StringKit.emptyIfStr(cellValue);
             cellValues.add(cellValue);
         }
 
         if (isAllNull) {
-            // 如果每个元素都为空,则定义为空行
-            return new ArrayList<>(0);
+            // 如果每个元素都为空，则定义为空行
+            return Collections.emptyList();
         }
         return cellValues;
     }
