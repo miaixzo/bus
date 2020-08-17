@@ -32,7 +32,7 @@ import org.aoju.bus.core.lang.Symbol;
  * HTTP授权工厂
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public final class Credentials {

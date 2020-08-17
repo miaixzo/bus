@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * 各个平台 scope 类的统一接口
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class OauthScope {
@@ -44,7 +44,7 @@ public class OauthScope {
      * 百度 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -70,7 +70,7 @@ public class OauthScope {
      * Coding 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -97,7 +97,7 @@ public class OauthScope {
      * Facebook 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -132,7 +132,7 @@ public class OauthScope {
      * Gitee 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -164,7 +164,7 @@ public class OauthScope {
      * Github 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -214,7 +214,7 @@ public class OauthScope {
      * Gitlab 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -246,7 +246,7 @@ public class OauthScope {
      * Google 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -706,7 +706,7 @@ public class OauthScope {
      * 华为 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -745,7 +745,7 @@ public class OauthScope {
      * 京东 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -767,7 +767,7 @@ public class OauthScope {
      * 酷家乐 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -791,7 +791,7 @@ public class OauthScope {
      * 领英 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -830,7 +830,7 @@ public class OauthScope {
      * 微软 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -892,7 +892,7 @@ public class OauthScope {
      * 小米 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -916,7 +916,7 @@ public class OauthScope {
      * Pinterest 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -941,7 +941,7 @@ public class OauthScope {
      * QQ 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -972,7 +972,7 @@ public class OauthScope {
      * 人人 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -1022,7 +1022,7 @@ public class OauthScope {
      * Stackoverflow 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -1047,7 +1047,7 @@ public class OauthScope {
      * 微信公众平台 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -1070,7 +1070,7 @@ public class OauthScope {
      * 微博 授权范围
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     @Getter
@@ -1100,7 +1100,7 @@ public class OauthScope {
      * 各个平台 scope 类的统一接口
      *
      * @author Kimi Liu
-     * @version 6.0.5
+     * @version 6.0.6
      * @since JDK 1.8+
      */
     public interface Scope {

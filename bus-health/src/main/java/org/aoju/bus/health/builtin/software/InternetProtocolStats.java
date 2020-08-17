@@ -30,7 +30,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
  * Includes key statistics of TCP and UDP protocols
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe

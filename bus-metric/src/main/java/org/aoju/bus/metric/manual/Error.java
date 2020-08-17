@@ -29,7 +29,7 @@ package org.aoju.bus.metric.manual;
  *
  * @param <T> 状态码类型，一般为Integer或String
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8++
  */
 public interface Error<T> {

@@ -29,7 +29,7 @@ import org.aoju.bus.image.Device;
 
 /**
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class DeviceCache extends ConfigurationCache<Configuration, Device>

@@ -30,7 +30,7 @@ import org.aoju.bus.core.annotation.Immutable;
  * 抽象声卡
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @Immutable

@@ -49,7 +49,7 @@ import java.util.Map;
  * 读取Excel工作簿
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class ExcelReader extends ExcelBase<ExcelReader> {

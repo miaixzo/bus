@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {

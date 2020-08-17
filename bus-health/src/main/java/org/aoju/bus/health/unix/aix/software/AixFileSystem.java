@@ -42,7 +42,7 @@ import java.util.*;
  * implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe

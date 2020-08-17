@@ -33,7 +33,7 @@ import java.util.Collection;
  * 负责文档文件生成
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8++
  */
 public interface DocFileCreator {

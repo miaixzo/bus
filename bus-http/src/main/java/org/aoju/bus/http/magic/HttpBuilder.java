@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * 请求参数构造器
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class HttpBuilder {

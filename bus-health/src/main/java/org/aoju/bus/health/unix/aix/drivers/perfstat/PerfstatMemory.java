@@ -31,7 +31,7 @@ import org.aoju.bus.health.unix.aix.Perfstat;
  * Utility to query performance stats for memory
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe

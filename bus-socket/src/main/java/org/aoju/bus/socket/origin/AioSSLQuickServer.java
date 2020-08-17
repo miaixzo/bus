@@ -34,7 +34,7 @@ import java.io.IOException;
  * AIO服务端
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class AioSSLQuickServer<T> extends AioQuickServer<T> {

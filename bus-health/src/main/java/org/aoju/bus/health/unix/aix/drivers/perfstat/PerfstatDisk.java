@@ -32,7 +32,7 @@ import org.aoju.bus.health.unix.aix.Perfstat;
  * Utility to query performance stats for disk_stats
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe

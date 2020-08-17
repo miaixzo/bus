@@ -43,7 +43,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public abstract class AbstractHitting implements Hitting {

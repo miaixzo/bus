@@ -33,7 +33,7 @@ import java.util.HashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class HL7ServiceRegistry extends DefaultHL7Listener {
