@@ -50,7 +50,7 @@ import java.nio.file.Path;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -554,8 +554,7 @@ public class Image implements Serializable {
     public Image pressImage(java.awt.Image pressImage, Rectangle rectangle, float alpha) {
         final java.awt.Image targetImage = getValidSrcImg();
 
-        rectangle = fixRectangle(rectangle, targetImage.getWidth(null), targetImage.getHeight(null));
-        this.targetImage = draw(ImageKit.toBufferedImage(targetImage), pressImage, rectangle, alpha);
+        this.targetImage = draw(ImageKit.toBufferedImage(targetImage, this.targetImageType), pressImage, rectangle, alpha);
         return this;
     }
 

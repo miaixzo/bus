@@ -48,7 +48,7 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class QqProvider extends AbstractProvider {

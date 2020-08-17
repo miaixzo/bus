@@ -56,7 +56,7 @@ import java.util.concurrent.Executors;
  * DCM解压缩/转换
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class Dcm2Dcm {

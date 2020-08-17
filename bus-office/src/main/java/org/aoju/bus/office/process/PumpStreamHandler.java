@@ -28,7 +28,7 @@ package org.aoju.bus.office.process;
  * 将子过程的标准输出和错误复制到给定的pumpers.
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class PumpStreamHandler {

@@ -34,7 +34,7 @@ import org.aoju.bus.proxy.Provider;
  * {@link Interceptor interceptors}的代理
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class InterceptorChain {

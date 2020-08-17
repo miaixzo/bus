@@ -38,7 +38,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 文档方法，作用在方法上
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8++
  */
 @Documented

@@ -45,7 +45,7 @@ import java.util.Objects;
  * CSV文件读取器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public final class CsvReader {
@@ -259,13 +259,13 @@ public final class CsvReader {
      *
      * @param <T>            Bean类型
      * @param reader         Reader
-     * @param startLineIndex 起始行号
+     * @param startLineIndex 起始行号,不需要大于 0，因为首行是标题行
      * @param clazz          Bean类型
      * @return Bean列表
      */
     public <T> List<T> read(Reader reader, int startLineIndex, Class<T> clazz) {
-        if (startLineIndex < 0) {
-            throw new IndexOutOfBoundsException(StringKit.format("start line index {} is lower than first row index 0.", startLineIndex));
+        if (startLineIndex < 1) {
+            throw new IndexOutOfBoundsException(StringKit.format("start line index {} is lower than first row index 1.", startLineIndex));
         }
         // 此方法必须包含标题
         this.config.setContainsHeader(true);

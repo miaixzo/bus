@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * ByteBuffer内存页
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class PageBuffer {

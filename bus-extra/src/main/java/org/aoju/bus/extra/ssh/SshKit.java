@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class SshKit {
@@ -84,6 +84,20 @@ public class SshKit {
     }
 
     /**
+     * 获得一个SSH会话，重用已经使用的会话
+     *
+     * @param sshHost        主机
+     * @param sshPort        端口
+     * @param sshUser        用户名
+     * @param privateKeyPath 私钥路径
+     * @param passphrase     私钥密码
+     * @return SSH会话
+     */
+    public static Session getSession(String sshHost, int sshPort, String sshUser, String privateKeyPath, byte[] passphrase) {
+        return JschSessionPool.INSTANCE.getSession(sshHost, sshPort, sshUser, privateKeyPath, passphrase);
+    }
+
+    /**
      * 打开一个新的SSH会话
      *
      * @param sshHost 主机
@@ -93,9 +107,23 @@ public class SshKit {
      * @return SSH会话
      */
     public static Session openSession(String sshHost, int sshPort, String sshUser, String sshPass) {
+        return openSession(sshHost, sshPort, sshUser, sshPass, 0);
+    }
+
+    /**
+     * 打开一个新的SSH会话
+     *
+     * @param sshHost 主机
+     * @param sshPort 端口
+     * @param sshUser 用户名
+     * @param sshPass 密码
+     * @param timeout Socket连接超时时长，单位毫秒
+     * @return SSH会话
+     */
+    public static Session openSession(String sshHost, int sshPort, String sshUser, String sshPass, int timeout) {
         final Session session = createSession(sshHost, sshPort, sshUser, sshPass);
         try {
-            session.connect();
+            session.connect(timeout);
         } catch (JSchException e) {
             throw new InstrumentException(e);
         }

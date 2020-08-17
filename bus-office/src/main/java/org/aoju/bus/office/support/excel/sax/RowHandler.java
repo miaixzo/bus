@@ -32,7 +32,7 @@ import java.util.List;
  * Sax方式读取Excel行处理器
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @FunctionalInterface
@@ -57,6 +57,13 @@ public interface RowHandler {
      * @param xssfCellStyle 单元格样式
      */
     default void handleCell(int sheetIndex, long rowIndex, int cellIndex, Object value, CellStyle xssfCellStyle) {
+
+    }
+
+    /**
+     * 处理一个sheet页完成的操作
+     */
+    default void doAfterAllAnalysed() {
 
     }
 

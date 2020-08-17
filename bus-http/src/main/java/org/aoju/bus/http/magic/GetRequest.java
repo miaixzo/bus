@@ -33,7 +33,7 @@ import java.util.Map;
  * GET请求处理
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class GetRequest extends HttpRequest {

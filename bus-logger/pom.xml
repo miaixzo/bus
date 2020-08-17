@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-logger</artifactId>
-    <version>6.0.5</version>
+    <version>6.0.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

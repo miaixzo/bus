@@ -53,7 +53,7 @@ import java.util.TreeMap;
  * 京东账号登录
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class JdProvider extends AbstractProvider {

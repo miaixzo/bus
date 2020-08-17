@@ -50,7 +50,7 @@ import java.util.List;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> implements ContentHandler {
@@ -158,6 +158,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                 // 根据 rId# 或 rSheet# 查找sheet
                 sheetInputStream = xssfReader.getSheet(RID_PREFIX + (rid + 1));
                 ExcelSaxKit.readFrom(sheetInputStream, this);
+                rowHandler.doAfterAllAnalysed();
             } else {
                 this.sheetIndex = -1;
                 // 遍历所有sheet
@@ -168,6 +169,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                     this.sheetIndex++;
                     sheetInputStream = sheetInputStreams.next();
                     ExcelSaxKit.readFrom(sheetInputStream, this);
+                    rowHandler.doAfterAllAnalysed();
                 }
             }
         } catch (RuntimeException e) {

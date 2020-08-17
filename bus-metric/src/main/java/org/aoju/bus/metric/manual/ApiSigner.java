@@ -31,7 +31,7 @@ import java.util.Map;
  * 签名验证实现
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8++
  */
 public class ApiSigner implements Signer {

@@ -32,7 +32,7 @@ import java.util.List;
  * 指定结束标识的解码器
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class DelimiterFrame implements SmartDecoder {

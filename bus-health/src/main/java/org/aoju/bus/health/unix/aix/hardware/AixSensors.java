@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * Sensors not available except counting fans from lscfg
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe

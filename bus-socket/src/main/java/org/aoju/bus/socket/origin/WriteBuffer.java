@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 包装当前会话分配到的虚拟Buffer,提供流式操作方式
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class WriteBuffer extends OutputStream {

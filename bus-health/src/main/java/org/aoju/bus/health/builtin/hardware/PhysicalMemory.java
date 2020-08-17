@@ -32,7 +32,7 @@ import org.aoju.bus.health.Formats;
  * computer system and available to the operating system.
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @Immutable

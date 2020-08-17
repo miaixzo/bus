@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
  * 多个逻辑处理器(操作系统看到的内容，可能包括超线程内核)
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -534,30 +534,39 @@ public interface CentralProcessor {
         }
 
         private String queryMicroarchitecture() {
+            String arch = null;
             Properties archProps = Builder.readProperties(Builder.BUS_HEALTH_ARCH_PROPERTIES);
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix
-            if (this.cpuVendor.contains("AMD")) {
+            if (this.cpuVendor.toUpperCase().contains("AMD")) {
                 sb.append("amd.");
-            } else if (this.getVendor().contains("ARM")) {
+            } else if (this.getVendor().toUpperCase().contains("ARM")) {
                 sb.append("arm.");
+            } else if (this.getVendor().toUpperCase().contains("IBM")) {
+                // Directly parse the name to POWER#
+                int powerIdx = this.cpuName.indexOf("_POWER");
+                if (powerIdx > 0) {
+                    arch = this.cpuName.substring(powerIdx + 1);
+                }
             }
-            sb.append(this.cpuFamily);
-            // Check for match with only family
-            String arch = archProps.getProperty(sb.toString());
+            if (StringKit.isBlank(arch) && !sb.toString().equals("arm.")) {
+                // Append family
+                sb.append(this.cpuFamily);
+                arch = archProps.getProperty(sb.toString());
+            }
 
             if (StringKit.isBlank(arch)) {
                 // Append model
                 sb.append(Symbol.C_DOT).append(this.cpuModel);
+                arch = archProps.getProperty(sb.toString());
             }
-            arch = archProps.getProperty(sb.toString());
 
             if (StringKit.isBlank(arch)) {
                 // Append stepping
                 sb.append(Symbol.C_DOT).append(this.cpuStepping);
+                arch = archProps.getProperty(sb.toString());
             }
-            arch = archProps.getProperty(sb.toString());
 
             return StringKit.isBlank(arch) ? Normal.UNKNOWN : arch;
         }

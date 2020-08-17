@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  * 用于附加单元或在数字类型之间转换的格式化实用程序
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe

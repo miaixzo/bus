@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 在字段上使用这个注释来获得摘要，而不是详细信息.
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

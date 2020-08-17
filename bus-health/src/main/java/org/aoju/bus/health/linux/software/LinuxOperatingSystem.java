@@ -54,7 +54,7 @@ import java.util.*;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe

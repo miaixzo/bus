@@ -40,7 +40,7 @@ import java.util.*;
  * Utility to read HKEY_PERFORMANCE_DATA information.
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -166,7 +166,8 @@ public final class HkeyPerformance {
                             counterMap.put(key,
                                     pPerfData.getLong(perfCounterBlockOffset + counterOffsetMap.get(keyIndex)));
                         } else {
-                            counterMap.put(key, null);
+                            // If counter defined in enum isn't in registry, fail
+                            return null;
                         }
                     }
                     counterMaps.add(counterMap);

@@ -36,7 +36,7 @@ import org.aoju.bus.metric.consts.NettyMode;
  * netty心跳检测
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8++
  */
 public class HeartBeatClientHandler extends ChannelInboundHandlerAdapter {

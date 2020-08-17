@@ -50,7 +50,7 @@ import java.util.List;
  * Excel2003格式的事件-用户模型方式读取器,统一将此归类为Sax读取
  *
  * @author Kimi Liu
- * @version 6.0.5
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> implements HSSFListener {
@@ -200,6 +200,8 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
                 }
                 curRid++;
             }
+        } else if (record instanceof EOFRecord) {
+            processLastCellSheet();
         } else if (isProcessCurrentSheet()) {
             if (record instanceof MissingCellDummyRecord) {
                 // 空值的操作
@@ -353,6 +355,13 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
      */
     private boolean isProcessCurrentSheet() {
         return this.rid < 0 || this.curRid == this.rid;
+    }
+
+    /**
+     * 处理sheet结束后的操作
+     */
+    private void processLastCellSheet() {
+        this.rowHandler.doAfterAllAnalysed();
     }
 
 }
