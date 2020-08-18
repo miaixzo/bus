@@ -62,7 +62,7 @@ public class MybatisConfiguration {
             }
 
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            bean.setPlugins(MybatisPluginBuilder.build(properties));
+            bean.setPlugins(MybatisPluginBuilder.build(this.properties));
             try {
                 bean.setMapperLocations(resolver.getResources(this.properties.getXmlLocation()));
             } catch (FileNotFoundException e) {

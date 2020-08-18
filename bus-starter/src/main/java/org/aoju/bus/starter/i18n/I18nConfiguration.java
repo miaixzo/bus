@@ -49,8 +49,8 @@ public class I18nConfiguration {
 
     private ResourceBundleMessageSource getMessageSource() {
         ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
-        bundleMessageSource.setDefaultEncoding(StringKit.toString(properties.getDefaultEncoding(), Charset.DEFAULT_UTF_8));
-        bundleMessageSource.setBasenames(properties.getBaseNames());
+        bundleMessageSource.setDefaultEncoding(StringKit.toString(this.properties.getDefaultEncoding(), Charset.DEFAULT_UTF_8));
+        bundleMessageSource.setBasenames(this.properties.getBaseNames());
         return bundleMessageSource;
     }
 

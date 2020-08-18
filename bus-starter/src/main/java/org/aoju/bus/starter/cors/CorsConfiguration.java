@@ -57,22 +57,22 @@ public class CorsConfiguration {
     @ConditionalOnMissingBean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration(properties.getPath(), buildConfig());
+        source.registerCorsConfiguration(this.properties.getPath(), buildConfig());
         return new CorsFilter(source);
     }
 
     private org.springframework.web.cors.CorsConfiguration buildConfig() {
         org.springframework.web.cors.CorsConfiguration corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList(properties.getAllowedOrigins()));
-        corsConfiguration.setAllowedHeaders(Arrays.asList(properties.getAllowedHeaders()));
-        corsConfiguration.setAllowedMethods(Arrays.asList(properties.getAllowedMethods()));
+        corsConfiguration.setAllowedOrigins(Arrays.asList(this.properties.getAllowedOrigins()));
+        corsConfiguration.setAllowedHeaders(Arrays.asList(this.properties.getAllowedHeaders()));
+        corsConfiguration.setAllowedMethods(Arrays.asList(this.properties.getAllowedMethods()));
         // 是否发送 Cookie 信息
-        corsConfiguration.setAllowCredentials(properties.getAllowCredentials());
-        if (ObjectKit.isNotNull(properties.getMaxAge())) {
-            corsConfiguration.setMaxAge(properties.getMaxAge());
+        corsConfiguration.setAllowCredentials(this.properties.getAllowCredentials());
+        if (ObjectKit.isNotNull(this.properties.getMaxAge())) {
+            corsConfiguration.setMaxAge(this.properties.getMaxAge());
         }
-        if (ArrayKit.isNotEmpty(properties.getExposedHeaders())) {
-            corsConfiguration.setExposedHeaders(Arrays.asList(properties.getExposedHeaders()));
+        if (ArrayKit.isNotEmpty(this.properties.getExposedHeaders())) {
+            corsConfiguration.setExposedHeaders(Arrays.asList(this.properties.getExposedHeaders()));
         }
         return corsConfiguration;
     }

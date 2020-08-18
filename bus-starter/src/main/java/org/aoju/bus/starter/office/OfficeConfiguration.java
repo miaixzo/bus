@@ -70,24 +70,24 @@ public class OfficeConfiguration {
     @Bean(initMethod = "start", destroyMethod = "stop")
     public OfficeManager localOfficeManager() {
         final LocalOfficePoolManager.Builder builder = LocalOfficePoolManager.builder();
-        if (!StringKit.isBlank(properties.getPortNumbers())) {
+        if (!StringKit.isBlank(this.properties.getPortNumbers())) {
             builder.portNumbers(
                     ArrayKit.toPrimitive(
-                            Stream.of(StringKit.split(properties.getPortNumbers(), Symbol.COMMA))
+                            Stream.of(StringKit.split(this.properties.getPortNumbers(), Symbol.COMMA))
                                     .map(str -> MathKit.toInt(str, Builder.DEFAULT_PORT_NUMBER))
                                     .toArray(Integer[]::new)));
         }
 
-        builder.officeHome(properties.getOfficeHome());
-        builder.workingDir(properties.getWorkingDir());
-        builder.templateProfileDir(properties.getTemplateProfileDir());
-        builder.killExistingProcess(properties.isKillExistingProcess());
-        builder.processTimeout(properties.getProcessTimeout());
-        builder.processRetryInterval(properties.getProcessRetryInterval());
-        builder.taskExecutionTimeout(properties.getTaskExecutionTimeout());
-        builder.maxTasksPerProcess(properties.getMaxTasksPerProcess());
-        builder.taskQueueTimeout(properties.getTaskQueueTimeout());
-        final String processManagerClass = properties.getProcessManagerClass();
+        builder.officeHome(this.properties.getOfficeHome());
+        builder.workingDir(this.properties.getWorkingDir());
+        builder.templateProfileDir(this.properties.getTemplateProfileDir());
+        builder.killExistingProcess(this.properties.isKillExistingProcess());
+        builder.processTimeout(this.properties.getProcessTimeout());
+        builder.processRetryInterval(this.properties.getProcessRetryInterval());
+        builder.taskExecutionTimeout(this.properties.getTaskExecutionTimeout());
+        builder.maxTasksPerProcess(this.properties.getMaxTasksPerProcess());
+        builder.taskQueueTimeout(this.properties.getTaskQueueTimeout());
+        final String processManagerClass = this.properties.getProcessManagerClass();
         if (StringKit.isNotEmpty(processManagerClass)) {
             builder.processManager(processManagerClass);
         } else {
@@ -99,11 +99,11 @@ public class OfficeConfiguration {
     @Bean(initMethod = "start", destroyMethod = "stop")
     public OfficeManager onlineOfficeManager() {
         final OnlineOfficePoolManager.Builder builder = OnlineOfficePoolManager.builder();
-        builder.urlConnection(properties.getUrl());
-        builder.poolSize(properties.getPoolSize());
-        builder.workingDir(properties.getWorkingDir());
-        builder.taskExecutionTimeout(properties.getTaskExecutionTimeout());
-        builder.taskQueueTimeout(properties.getTaskQueueTimeout());
+        builder.urlConnection(this.properties.getUrl());
+        builder.poolSize(this.properties.getPoolSize());
+        builder.workingDir(this.properties.getWorkingDir());
+        builder.taskExecutionTimeout(this.properties.getTaskExecutionTimeout());
+        builder.taskQueueTimeout(this.properties.getTaskQueueTimeout());
         return builder.build();
     }
 

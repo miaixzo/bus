@@ -45,7 +45,7 @@ public class SocketConfiguration {
     @Bean(initMethod = "start")
     @ConditionalOnMissingBean
     public WebSocketServerStarter initialization() {
-        return new WebSocketServerStarter(properties);
+        return new WebSocketServerStarter(this.properties);
     }
 
 }

@@ -61,23 +61,23 @@ public class DruidMonitorConfiguration {
     @Bean
     public ServletRegistrationBean druidStatViewServlet() {
         //org.springframework.boot.context.embedded.ServletRegistrationBean提供类的进行注册.
-        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(), properties.getDruidStatView());
+        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new StatViewServlet(), this.properties.getDruidStatView());
 
         //添加初始化参数：initParams
 
         //白名单：
-        servletRegistrationBean.addInitParameter("allow", properties.getAllow());
-        Logger.info("allow ---> " + properties.getAllow());
+        servletRegistrationBean.addInitParameter("allow", this.properties.getAllow());
+        Logger.info("allow ---> " + this.properties.getAllow());
         //IP黑名单 (存在共同时,deny优先于allow) : 如果满足deny的话提示:Sorry, you are not permitted to view this page.
-        servletRegistrationBean.addInitParameter("deny", properties.getDeny());
-        Logger.info("deny ---> " + properties.getDeny());
+        servletRegistrationBean.addInitParameter("deny", this.properties.getDeny());
+        Logger.info("deny ---> " + this.properties.getDeny());
         //登录查看信息的账号密码.
-        servletRegistrationBean.addInitParameter("loginUsername", properties.getLoginUsername());
-        servletRegistrationBean.addInitParameter("loginPassword", properties.getLoginPassword());
-        Logger.info("username ---> " + properties.getLoginUsername() + " password ---> " + properties.getLoginPassword());
+        servletRegistrationBean.addInitParameter("loginUsername", this.properties.getLoginUsername());
+        servletRegistrationBean.addInitParameter("loginPassword", this.properties.getLoginPassword());
+        Logger.info("username ---> " + this.properties.getLoginUsername() + " password ---> " + this.properties.getLoginPassword());
         //是否能够重置数据.
-        servletRegistrationBean.addInitParameter("resetEnable", properties.getResetEnable());
-        Logger.info("resetEnable ---> " + properties.getResetEnable());
+        servletRegistrationBean.addInitParameter("resetEnable", this.properties.getResetEnable());
+        Logger.info("resetEnable ---> " + this.properties.getResetEnable());
         return servletRegistrationBean;
     }
 
@@ -91,12 +91,12 @@ public class DruidMonitorConfiguration {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
 
         //添加过滤规则.
-        filterRegistrationBean.addUrlPatterns(properties.getDruidWebStatFilter());
-        Logger.info("urlPatterns ---> " + properties.getDruidWebStatFilter());
+        filterRegistrationBean.addUrlPatterns(this.properties.getDruidWebStatFilter());
+        Logger.info("urlPatterns ---> " + this.properties.getDruidWebStatFilter());
 
         //添加不需要忽略的格式信息.
-        filterRegistrationBean.addInitParameter("exclusions", properties.getExclusions());
-        Logger.info("exclusions ---> " + properties.getExclusions());
+        filterRegistrationBean.addInitParameter("exclusions", this.properties.getExclusions());
+        Logger.info("exclusions ---> " + this.properties.getExclusions());
         return filterRegistrationBean;
     }
 
