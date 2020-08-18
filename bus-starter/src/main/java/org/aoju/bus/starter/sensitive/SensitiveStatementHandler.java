@@ -45,6 +45,7 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -61,6 +62,9 @@ import java.util.Map;
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
 
+    @Autowired
+    SensitiveProperties properties;
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = realTarget(invocation.getTarget());
@@ -73,7 +77,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
         if (params instanceof Map) {
             return invocation.proceed();
         }
-        SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
+
         if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
             Sensitive sensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
             if (ObjectKit.isNotEmpty(sensitive)) {

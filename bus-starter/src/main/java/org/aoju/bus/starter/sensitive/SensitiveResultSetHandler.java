@@ -33,13 +33,13 @@ import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
-import org.aoju.bus.starter.SpringAware;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -56,6 +56,9 @@ import java.util.Map;
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
 public class SensitiveResultSetHandler extends AbstractSqlHandler implements Interceptor {
 
+    @Autowired
+    SensitiveProperties properties;
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         final List<Object> results = (List<Object>) invocation.proceed();
@@ -64,7 +67,6 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
             return results;
         }
 
-        SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
         if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
