@@ -36,7 +36,6 @@ import org.aoju.bus.sensitive.annotation.NShield;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
 import org.aoju.bus.sensitive.annotation.Shield;
-import org.aoju.bus.starter.SpringAware;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -78,7 +77,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
             return invocation.proceed();
         }
 
-        if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             Sensitive sensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
             if (ObjectKit.isNotEmpty(sensitive)) {
                 handleParameters(sensitive, mappedStatement.getConfiguration(), boundSql, params, commandType);
@@ -120,12 +119,11 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
                     Privacy privacy = field.getAnnotation(Privacy.class);
                     if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
                         if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
-                            SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
-                            if (ObjectKit.isEmpty(properties)) {
+                            if (ObjectKit.isEmpty(this.properties)) {
                                 throw new InstrumentException("Please check the request.crypto.encrypt");
                             }
                             Logger.debug("Write data encryption enabled ...");
-                            value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value.toString(), Charset.UTF_8);
+                            value = org.aoju.bus.crypto.Builder.encrypt(this.properties.getEncrypt().getType(), this.properties.getEncrypt().getKey(), value.toString(), Charset.UTF_8);
                         }
                     }
                 }

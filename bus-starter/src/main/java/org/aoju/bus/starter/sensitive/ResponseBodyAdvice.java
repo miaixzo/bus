@@ -180,11 +180,11 @@ public class ResponseBodyAdvice extends BaseAdvice
                         String property = entry.getKey();
                         String value = (String) getValue(object, property);
                         if (StringKit.isNotEmpty(value)) {
-                            if (ObjectKit.isEmpty(properties)) {
+                            if (ObjectKit.isEmpty(this.properties)) {
                                 throw new InstrumentException("Please check the request.crypto.encrypt");
                             }
                             Logger.debug("Response data encryption enabled ...");
-                            value = org.aoju.bus.crypto.Builder.encrypt(properties.getEncrypt().getType(), properties.getEncrypt().getKey(), value, Charset.UTF_8);
+                            value = org.aoju.bus.crypto.Builder.encrypt(this.properties.getEncrypt().getType(), this.properties.getEncrypt().getKey(), value, Charset.UTF_8);
                             setValue(object, new String[]{property}, new String[]{value});
                         }
                     }

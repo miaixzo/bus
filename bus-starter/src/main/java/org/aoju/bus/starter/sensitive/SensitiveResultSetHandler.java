@@ -67,7 +67,7 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
             return results;
         }
 
-        if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
             final MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("mappedStatement");
@@ -91,11 +91,11 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
                                 String property = entry.getKey();
                                 String value = (String) objMetaObject.getValue(property);
                                 if (StringKit.isNotEmpty(value)) {
-                                    if (ObjectKit.isEmpty(properties)) {
+                                    if (ObjectKit.isEmpty(this.properties)) {
                                         throw new InstrumentException("Please check the request.crypto.decrypt");
                                     }
                                     Logger.debug("Query data decryption enabled ...");
-                                    String decryptValue = org.aoju.bus.crypto.Builder.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
+                                    String decryptValue = org.aoju.bus.crypto.Builder.decrypt(this.properties.getDecrypt().getType(), this.properties.getDecrypt().getKey(), value, Charset.UTF_8);
                                     objMetaObject.setValue(property, decryptValue);
                                 }
                             }
