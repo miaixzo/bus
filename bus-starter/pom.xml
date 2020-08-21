@@ -27,7 +27,7 @@
         <mybatis.version>3.5.5</mybatis.version>
         <mybatis.spring.version>2.0.5</mybatis.spring.version>
         <validation.version>2.0.1.Final</validation.version>
-        <jsqlparser.version>3.2</jsqlparser.version>
+        <jsqlparser.version>3.1</jsqlparser.version>
         <mysql.version>8.0.21</mysql.version>
         <druid.version>1.1.23</druid.version>
         <dubbo.version>2.7.8</dubbo.version>

@@ -68,17 +68,17 @@ import java.util.Map;
 @Import(AspectjDruidProxy.class)
 public class DruidConfiguration {
 
-    private final Map<Object, Object> sourceMap = new HashMap<>();
-
     private static final ConfigurationPropertyNameAliases aliases;
-    @Autowired
-    DruidProperties properties;
 
     static {
         aliases = new ConfigurationPropertyNameAliases();
         aliases.addAliases("url", new String[]{"jdbc-url"});
         aliases.addAliases("username", new String[]{"user"});
     }
+
+    private final Map<Object, Object> sourceMap = new HashMap<>();
+    @Autowired
+    DruidProperties properties;
 
     /**
      * 初始化数据源/多数据源

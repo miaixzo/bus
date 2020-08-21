@@ -3386,6 +3386,16 @@ public class DateKit {
     }
 
     /**
+     * {@link TemporalAccessor}转换为 时间戳（从1970-01-01T00:00:00Z开始的毫秒数）
+     *
+     * @param temporalAccessor 日期对象
+     * @return {@link Instant} 对象
+     */
+    public static long toEpochMilli(TemporalAccessor temporalAccessor) {
+        return toInstant(temporalAccessor).toEpochMilli();
+    }
+
+    /**
      * {@link Instant} 转换为 {@link LocalDateTime}，使用系统默认时区
      *
      * @param instant {@link Instant}

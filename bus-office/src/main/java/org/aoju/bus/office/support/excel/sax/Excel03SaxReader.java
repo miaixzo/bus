@@ -312,10 +312,10 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
             case NumberRecord.sid: // 数字类型
                 final NumberRecord numrec = (NumberRecord) record;
                 final String formatString = formatListener.getFormatString(numrec);
-                if (formatString.contains(Symbol.DOT)) {
+                if (StringKit.contains(formatString, Symbol.DOT)) {
                     //浮点数
                     value = numrec.getValue();
-                } else if (formatString.contains(Symbol.SLASH) || formatString.contains(Symbol.COLON)) {
+                } else if (StringKit.containsAny(formatString, Symbol.SLASH, Symbol.COLON, "年", "月", "日", "时", "分", "秒")) {
                     //日期
                     value = ExcelSaxKit.getDateValue(numrec.getValue());
                 } else {
