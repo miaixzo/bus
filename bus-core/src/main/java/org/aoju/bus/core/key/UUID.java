@@ -64,7 +64,7 @@ import java.util.Random;
  * @version 6.0.6
  * @since JDK 1.8+
  */
-public final class UUID implements java.io.Serializable, Comparable<UUID> {
+public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     private static final long serialVersionUID = 1L;
     /**
