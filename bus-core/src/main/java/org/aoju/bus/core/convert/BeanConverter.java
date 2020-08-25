@@ -92,7 +92,6 @@ public class BeanConverter<T> extends AbstractConverter<T> {
                 // 将Map动态代理为Bean
                 return MapProxy.create((Map<?, ?>) value).toProxyBean(this.beanClass);
             }
-
             // 限定被转换对象类型
             return BeanCopier.create(value, ReflectKit.newInstanceIfPossible(this.beanClass), this.beanType, this.copyOptions).copy();
         } else if (value instanceof byte[]) {
