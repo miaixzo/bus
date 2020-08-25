@@ -73,6 +73,38 @@ public class ThreadKit {
     }
 
     /**
+     * 获得一个新的线程池
+     * 如果maximumPoolSize &gt;= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
+     *
+     * @param corePoolSize    初始线程池大小
+     * @param maximumPoolSize 最大线程池大小
+     * @return {@link ThreadPoolExecutor}
+     */
+    public static ThreadPoolExecutor newExecutor(int corePoolSize, int maximumPoolSize) {
+        return ExecutorBuilder.create()
+                .setCorePoolSize(corePoolSize)
+                .setMaxPoolSize(maximumPoolSize)
+                .build();
+    }
+
+    /**
+     * 获得一个新的线程池，并指定最大任务队列大小
+     * 如果maximumPoolSize &gt;= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
+     *
+     * @param corePoolSize     初始线程池大小
+     * @param maximumPoolSize  最大线程池大小
+     * @param maximumQueueSize 最大任务队列大小
+     * @return {@link ThreadPoolExecutor}
+     */
+    public static ExecutorService newExecutor(int corePoolSize, int maximumPoolSize, int maximumQueueSize) {
+        return ExecutorBuilder.create()
+                .setCorePoolSize(corePoolSize)
+                .setMaxPoolSize(maximumPoolSize)
+                .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
+                .build();
+    }
+
+    /**
      * 获得一个新的线程池,只有单个线程
      * <pre>
      *    1. 初始线程数为 1
@@ -89,21 +121,6 @@ public class ThreadKit {
                 .setMaxPoolSize(1)
                 .setKeepAliveTime(0)
                 .buildFinalizable();
-    }
-
-    /**
-     * 获得一个新的线程池
-     * 如果maximumPoolSize &gt;= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
-     *
-     * @param corePoolSize    初始线程池大小
-     * @param maximumPoolSize 最大线程池大小
-     * @return {@link ThreadPoolExecutor}
-     */
-    public static ThreadPoolExecutor newExecutor(int corePoolSize, int maximumPoolSize) {
-        return ExecutorBuilder.create()
-                .setCorePoolSize(corePoolSize)
-                .setMaxPoolSize(maximumPoolSize)
-                .build();
     }
 
     /**

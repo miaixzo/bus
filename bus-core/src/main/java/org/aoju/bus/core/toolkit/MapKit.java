@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Types;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.map.*;
 
 import java.util.*;
@@ -228,7 +229,7 @@ public class MapKit {
         }
         final HashMap<Object, Object> map = new HashMap<>((int) (array.length * 1.5));
         for (int i = 0; i < array.length; i++) {
-            Object object = array[i];
+            final Object object = array[i];
             if (object instanceof Map.Entry) {
                 Entry entry = (Entry) object;
                 map.put(entry.getKey(), entry.getValue());
@@ -238,7 +239,7 @@ public class MapKit {
                     map.put(entry[0], entry[1]);
                 }
             } else if (object instanceof Iterable) {
-                Iterator iter = ((Iterable) object).iterator();
+                final Iterator iter = ((Iterable) object).iterator();
                 if (iter.hasNext()) {
                     final Object key = iter.next();
                     if (iter.hasNext()) {
@@ -247,7 +248,7 @@ public class MapKit {
                     }
                 }
             } else if (object instanceof Iterator) {
-                Iterator iter = ((Iterator) object);
+                final Iterator iter = ((Iterator) object);
                 if (iter.hasNext()) {
                     final Object key = iter.next();
                     if (iter.hasNext()) {
@@ -258,6 +259,20 @@ public class MapKit {
             } else {
                 throw new IllegalArgumentException(StringKit.format("Array element {}, '{}', is not type of Map.Entry or Array or Iterable or Iterator", i, object));
             }
+        }
+        return map;
+    }
+
+    /**
+     * 根据给定的Pair数组创建Map对象
+     *
+     * @param pairs 键值对
+     * @return Map
+     */
+    public static <K, V> Map<K, V> of(Pair<K, V>... pairs) {
+        final Map<K, V> map = new HashMap<>();
+        for (Pair<K, V> pair : pairs) {
+            map.put(pair.getKey(), pair.getValue());
         }
         return map;
     }
