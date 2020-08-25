@@ -185,7 +185,7 @@ public class MemoryCache implements CacheX {
             this.scheduler = new ScheduledThreadPoolExecutor(10, r -> new Thread(r, String.format("OAuth-Task-%s", cacheTaskNumber.getAndIncrement())));
         }
 
-        private void shutdown() {
+        public void shutdown() {
             if (null != scheduler) {
                 this.scheduler.shutdown();
             }
