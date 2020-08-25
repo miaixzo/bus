@@ -63,7 +63,6 @@ public class DingTalkProvider extends AbstractProvider<DingTalkTemplate, Context
 
     @Override
     public Message send(DingTalkTemplate template) {
-        //   String token = getToken();
         Map<String, Object> param = new HashMap<>();
         param.put("access_token", template.getToken());
         param.put("agent_id", template.getAgentId());

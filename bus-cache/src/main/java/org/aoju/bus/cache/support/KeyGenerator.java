@@ -45,7 +45,6 @@ public class KeyGenerator {
         return doGenerateKey(cacheKeyMap, prefix, argNames, argValues);
     }
 
-    //array[]: {multiEntry2Key, key2MultiEntry}
     public static Map[] generateMultiKey(AnnoHolder annoHolder, Object[] argValues) {
         /*由于要将Collection内的元素作为Map的Key, 因此就要求元素必须实现的hashcode & equals方法*/
         Map<Object, String> multiEntry2Key = new LinkedHashMap<>();
@@ -58,8 +57,6 @@ public class KeyGenerator {
         Map<Integer, CacheKey> argIndex2CacheKey = annoHolder.getCacheKeyMap();
         // 全局prefix
         String prefix = annoHolder.getPrefix();
-
-        // 开始拼装
 
         // 根据方法获取原始的参数名
         String[] argNames = ArgNameGenerator.getArgNames(annoHolder.getMethod());

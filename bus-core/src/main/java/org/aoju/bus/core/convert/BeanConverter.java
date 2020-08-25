@@ -93,7 +93,7 @@ public class BeanConverter<T> extends AbstractConverter<T> {
                 return MapProxy.create((Map<?, ?>) value).toProxyBean(this.beanClass);
             }
 
-            //限定被转换对象类型
+            // 限定被转换对象类型
             return BeanCopier.create(value, ReflectKit.newInstanceIfPossible(this.beanClass), this.beanType, this.copyOptions).copy();
         } else if (value instanceof byte[]) {
             // 尝试反序列化

@@ -173,14 +173,6 @@ class TcpAioSession<T> extends AioSession<T> {
     public final WriteBuffer writeBuffer() {
         return byteBuf;
     }
-//
-//    /**
-//     * 强制关闭当前AIOSession
-//     * <p>若此时还存留待输出的数据,则会导致该部分数据丢失</p>
-//     */
-//    public final void close() {
-//        close(true);
-//    }
 
     /**
      * 是否立即关闭会话

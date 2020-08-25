@@ -61,7 +61,7 @@ public class InvokeTask implements Task {
             throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
-        //类
+        // 类
         final String className = classNameWithMethodName.substring(0, splitIndex);
         if (StringKit.isBlank(className)) {
             throw new IllegalArgumentException("Class name is blank !");
@@ -72,7 +72,7 @@ public class InvokeTask implements Task {
         }
         this.obj = ReflectKit.newInstanceIfPossible(this.clazz);
 
-        //方法
+        // 方法
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
         if (StringKit.isBlank(methodName)) {
             throw new IllegalArgumentException("Method name is blank !");
