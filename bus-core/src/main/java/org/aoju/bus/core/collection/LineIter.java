@@ -38,7 +38,7 @@ import java.util.NoSuchElementException;
  * 此对象遍历结束后,应关闭之,推荐使用方式:
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class LineIter implements Iterator<String>, Iterable<String>, Closeable, Serializable {

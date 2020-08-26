@@ -28,7 +28,7 @@ package org.aoju.bus.goalie.manual;
  * 请求参数名定义
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8++
  */
 public class ParamNames {

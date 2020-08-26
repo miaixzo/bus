@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
  * @param <ServiceAnnotation> 类上面的注解，如Controller,ApiService
  * @param <MethodAnnotation>  方法上面的注解，如Api,RequestMapping
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8++
  */
 public abstract class AbstractApiDocCreator<ServiceAnnotation extends Annotation, MethodAnnotation extends Annotation> {

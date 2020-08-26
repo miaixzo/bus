@@ -6,7 +6,7 @@
 </p>
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v6.0.6-blue.svg?label=Maven%20Central" />
+		<img src="https://img.shields.io/badge/maven--central-v6.0.8-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -101,10 +101,10 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.0.6</version>
+    <version>6.0.8</version>
 </dependency>
 ```
-或者单独使用某个组建
+或者单独使用某个组件
 ```
 <dependency>
     <groupId>org.aoju</groupId>
@@ -115,7 +115,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 
 ### Gradle
 ```
-implementation 'org.aoju:bus-all:6.0.6'
+implementation 'org.aoju:bus-all:6.0.8'
 ```
 
 ### Downlad

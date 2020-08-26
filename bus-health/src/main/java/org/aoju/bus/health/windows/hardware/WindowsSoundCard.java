@@ -41,7 +41,7 @@ import java.util.List;
  * Sound Card data obtained from registry
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 @Immutable

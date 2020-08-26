@@ -28,7 +28,7 @@ package org.aoju.bus.goalie.manual;
  * 负责签名相关
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8++
  */
 public interface Signer {

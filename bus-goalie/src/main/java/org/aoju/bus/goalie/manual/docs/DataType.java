@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.Normal;
  * 数据类型
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8++
  */
 public enum DataType {

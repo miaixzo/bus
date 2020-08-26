@@ -39,7 +39,7 @@ import java.security.NoSuchAlgorithmException;
  * 然后调用{@link #hash()}来计算最终的哈希值
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public final class HashSource extends DelegateSource {

@@ -60,7 +60,7 @@ import java.util.List;
  * 支持Android 6.0+ {@code NetworkSecurityPolicy}
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class Platform {

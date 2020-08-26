@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * SimpleDocumentFormatRegistry包含office支持的文档格式集合.
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class SimpleFormatRegistry implements FormatRegistry {

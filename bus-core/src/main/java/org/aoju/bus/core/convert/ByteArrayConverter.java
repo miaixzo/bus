@@ -30,7 +30,7 @@ import org.aoju.bus.core.toolkit.ArrayKit;
  * byte 类型数组转换器
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class ByteArrayConverter extends AbstractConverter<byte[]> {

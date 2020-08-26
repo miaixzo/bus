@@ -34,7 +34,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * NOT IN 校验
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class NotInStrategy implements Matcher<String, NotIn> {

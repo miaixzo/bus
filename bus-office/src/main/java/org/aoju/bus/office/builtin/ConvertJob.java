@@ -30,7 +30,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
  * 尚未应用到转换器的完整指定转换.
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public interface ConvertJob {

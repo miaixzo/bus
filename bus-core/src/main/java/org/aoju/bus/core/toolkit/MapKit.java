@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class MapKit {
@@ -267,7 +267,9 @@ public class MapKit {
      * 根据给定的Pair数组创建Map对象
      *
      * @param pairs 键值对
-     * @return Map
+     * @param <K>   键信息
+     * @param <V>   值信息
+     * @return Map对象
      */
     public static <K, V> Map<K, V> of(Pair<K, V>... pairs) {
         final Map<K, V> map = new HashMap<>();

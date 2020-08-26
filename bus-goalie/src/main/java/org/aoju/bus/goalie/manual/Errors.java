@@ -28,7 +28,7 @@ package org.aoju.bus.goalie.manual;
  * 定义错误码的地方
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8++
  */
 public interface Errors {

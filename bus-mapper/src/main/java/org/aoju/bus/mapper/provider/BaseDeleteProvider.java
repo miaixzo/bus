@@ -33,7 +33,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * BaseDeleteMapper实现类,基础方法实现类
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class BaseDeleteProvider extends MapperTemplate {

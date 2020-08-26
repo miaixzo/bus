@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 作用在service类的方法上，service类被@ApiService标记
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8++
  */
 @Documented

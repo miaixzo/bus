@@ -28,7 +28,7 @@ package org.aoju.bus.office;
  * 表示可用于与正在运行的office实例通信的协议.
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public enum Protocol {
