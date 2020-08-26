@@ -44,7 +44,6 @@ import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -55,14 +54,17 @@ import java.util.Map;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.6
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
 
-    @Autowired
-    SensitiveProperties properties;
+    private SensitiveProperties properties;
+
+    public SensitiveStatementHandler(SensitiveProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -77,7 +79,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
             return invocation.proceed();
         }
 
-        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
             Sensitive sensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
             if (ObjectKit.isNotEmpty(sensitive)) {
                 handleParameters(sensitive, mappedStatement.getConfiguration(), boundSql, params, commandType);
