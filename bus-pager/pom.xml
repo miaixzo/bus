@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>6.0.6</version>
+    <version>6.0.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -19,7 +19,7 @@
         <project.compiler.version>1.8</project.compiler.version>
         <mybatis.version>3.5.5</mybatis.version>
         <guava.version>29.0-jre</guava.version>
-        <jsqlparser.version>3.2</jsqlparser.version>
+        <jsqlparser.version>3.1</jsqlparser.version>
     </properties>
 
     <dependencies>

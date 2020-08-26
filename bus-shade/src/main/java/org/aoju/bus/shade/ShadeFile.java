@@ -35,7 +35,7 @@ import java.util.List;
  * 获取文件路径调用创建文件
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class ShadeFile {

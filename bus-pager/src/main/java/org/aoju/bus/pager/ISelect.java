@@ -28,7 +28,7 @@ package org.aoju.bus.pager;
  * 分页查询接口
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public interface ISelect {

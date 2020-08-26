@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 字段验证器
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class Validator {
@@ -570,28 +570,29 @@ public class Validator {
     }
 
     /**
-     * 验证是否为身份证号码(18位中国)
-     * 出生日期只支持到到2999年
+     * 验证是否为身份证号码（支持18位/15位和港澳台的10位）
      *
-     * @param value 值
-     * @return 是否为身份证号码(18位中国)
+     * @param value 身份证号，支持18位/15位和港澳台的10位
+     * @return 是否为有效身份证号码
      */
-    public static boolean isCitizenId(String value) {
-        return isMatchRegex(RegEx.CITIZEN_ID, value);
+    public static boolean isCitizenId(CharSequence value) {
+        return CitizenIdKit.isValidCard(String.valueOf(value));
     }
 
     /**
-     * 验证是否为身份证号码(18位中国)
-     * 出生日期只支持到到2999年
+     * 验证是否为身份证号码（支持18位/15位和港澳台的10位）
      *
+     * @param <T>      字符串类型
      * @param value    值
      * @param errorMsg 验证错误的信息
+     * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static void validateCitizenId(String value, String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateCitizenIdNumber(T value, String errorMsg) throws ValidateException {
         if (false == isCitizenId(value)) {
             throw new ValidateException(errorMsg);
         }
+        return value;
     }
 
     /**

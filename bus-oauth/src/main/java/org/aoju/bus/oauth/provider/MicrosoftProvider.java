@@ -48,7 +48,7 @@ import java.util.Map;
  * 微软登录
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class MicrosoftProvider extends AbstractProvider {
@@ -171,7 +171,7 @@ public class MicrosoftProvider extends AbstractProvider {
                 .queryParam("client_id", context.getAppKey())
                 .queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("scope", "user.read%20mail.read")
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Microsoft.values())))
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
@@ -200,7 +200,7 @@ public class MicrosoftProvider extends AbstractProvider {
                 .queryParam("client_secret", context.getAppSecret())
                 .queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
-                .queryParam("scope", "user.read%20mail.read")
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, getScopes(true, OauthScope.Microsoft.values())))
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }

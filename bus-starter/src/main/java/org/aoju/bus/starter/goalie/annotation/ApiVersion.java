@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 规则，自动放置于路径开始部分；不做method版本，避免难以维护
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 @Documented

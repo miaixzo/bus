@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * 时间工具类
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class DateKit {
@@ -1474,6 +1474,21 @@ public class DateKit {
         return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
                 cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA);
+    }
+
+    /**
+     * 比较两个日期是否为同一月
+     *
+     * @param cal1 日期1
+     * @param cal2 日期2
+     * @return 是否为同一月
+     */
+    public static boolean isSameMonth(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The date must not be null");
+        }
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
     }
 
     /**
@@ -3383,6 +3398,16 @@ public class DateKit {
         }
 
         return result;
+    }
+
+    /**
+     * {@link TemporalAccessor}转换为 时间戳（从1970-01-01T00:00:00Z开始的毫秒数）
+     *
+     * @param temporalAccessor 日期对象
+     * @return {@link Instant} 对象
+     */
+    public static long toEpochMilli(TemporalAccessor temporalAccessor) {
+        return toInstant(temporalAccessor).toEpochMilli();
     }
 
     /**

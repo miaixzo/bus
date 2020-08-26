@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
@@ -43,7 +44,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * 微信公众平台登录
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class WeChatMpProvider extends AbstractProvider {
@@ -144,8 +145,8 @@ public class WeChatMpProvider extends AbstractProvider {
                 .queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("response_type", "code")
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.WechatMp.values())))
                 .queryParam("state", getRealState(state).concat("#wechat_redirect"))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.WechatMp.values())))
                 .build();
     }
 

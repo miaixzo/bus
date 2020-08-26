@@ -26,6 +26,7 @@ package org.aoju.bus.core.lang;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.BasicType;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.core.toolkit.CollKit;
 
@@ -39,7 +40,7 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {
@@ -137,6 +138,51 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      */
     public static <T> Dict parse(T bean) {
         return create().parseBean(bean);
+    }
+
+    /**
+     * 根据给定的Pair数组创建Dict对象
+     *
+     * @param pairs 键值对
+     * @return Dict
+     */
+    public static Dict of(Pair<String, Object>... pairs) {
+        final Dict dict = create();
+        for (Pair<String, Object> pair : pairs) {
+            dict.put(pair.getKey(), pair.getValue());
+        }
+        return dict;
+    }
+
+    /**
+     * 根据给定的键值对数组创建Dict对象，传入参数必须为key,value,key,value...
+     * 奇数参数必须为key，key最后会转换为String类型
+     * 奇数参数必须为value，可以为任意类型
+     *
+     * <pre>
+     * Dict dict = Dict.of(
+     * 	"RED", "#FF0000",
+     * 	"GREEN", "#00FF00",
+     * 	"BLUE", "#0000FF"
+     * );
+     * </pre>
+     *
+     * @param keysAndValues 键值对列表，必须奇数参数为key，偶数参数为value
+     * @return Dict
+     */
+    public static Dict of(Object... keysAndValues) {
+        final Dict dict = create();
+
+        String key = null;
+        for (int i = 0; i < keysAndValues.length; i++) {
+            if (i % 2 == 0) {
+                dict.put(key, keysAndValues[i]);
+            } else {
+                key = Convert.toString(keysAndValues[i]);
+            }
+        }
+
+        return dict;
     }
 
     @Override

@@ -61,10 +61,10 @@ import java.util.Random;
  * 这些类型的 version 值分别为 1、2、3 和 4
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
-public final class UUID implements java.io.Serializable, Comparable<UUID> {
+public class UUID implements java.io.Serializable, Comparable<UUID> {
 
     private static final long serialVersionUID = 1L;
     /**

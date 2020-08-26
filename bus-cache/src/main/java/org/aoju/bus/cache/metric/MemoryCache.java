@@ -46,7 +46,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 内存缓存支持
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class MemoryCache implements CacheX {
@@ -185,7 +185,7 @@ public class MemoryCache implements CacheX {
             this.scheduler = new ScheduledThreadPoolExecutor(10, r -> new Thread(r, String.format("OAuth-Task-%s", cacheTaskNumber.getAndIncrement())));
         }
 
-        private void shutdown() {
+        public void shutdown() {
             if (null != scheduler) {
                 this.scheduler.shutdown();
             }

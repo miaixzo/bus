@@ -31,7 +31,7 @@ import java.util.Objects;
  * 单元格位置
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class CellLocation implements Serializable {

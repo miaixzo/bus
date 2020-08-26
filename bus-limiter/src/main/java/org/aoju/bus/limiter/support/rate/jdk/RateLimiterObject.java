@@ -28,7 +28,7 @@ package org.aoju.bus.limiter.support.rate.jdk;
  * 基于令牌桶实现的速率限制器
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class RateLimiterObject {

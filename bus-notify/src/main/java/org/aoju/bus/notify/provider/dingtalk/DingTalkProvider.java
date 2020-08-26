@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 钉钉通知
  *
  * @author Justubborn
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK1.8+
  */
 @Setter
@@ -63,7 +63,6 @@ public class DingTalkProvider extends AbstractProvider<DingTalkTemplate, Context
 
     @Override
     public Message send(DingTalkTemplate template) {
-        //   String token = getToken();
         Map<String, Object> param = new HashMap<>();
         param.put("access_token", template.getToken());
         param.put("agent_id", template.getAgentId());

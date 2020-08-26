@@ -47,7 +47,7 @@ import java.util.*;
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class BeanKit {
@@ -346,12 +346,7 @@ public class BeanKit {
      * @return 字段名和字段描述Map
      */
     public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) {
-        Map<String, PropertyDescriptor> map = BeanInfoCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase);
-        if (null == map) {
-            map = internalGetPropertyDescriptorMap(clazz, ignoreCase);
-            BeanInfoCache.INSTANCE.putPropertyDescriptorMap(clazz, map, ignoreCase);
-        }
-        return map;
+        return BeanInfoCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
     }
 
     /**

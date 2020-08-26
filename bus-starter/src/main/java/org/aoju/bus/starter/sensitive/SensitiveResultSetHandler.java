@@ -33,13 +33,13 @@ import org.aoju.bus.mapper.handlers.AbstractSqlHandler;
 import org.aoju.bus.sensitive.Builder;
 import org.aoju.bus.sensitive.annotation.Privacy;
 import org.aoju.bus.sensitive.annotation.Sensitive;
-import org.aoju.bus.starter.SpringAware;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -50,11 +50,14 @@ import java.util.Map;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
 public class SensitiveResultSetHandler extends AbstractSqlHandler implements Interceptor {
+
+    @Autowired
+    SensitiveProperties properties;
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -64,8 +67,7 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
             return results;
         }
 
-        SensitiveProperties properties = SpringAware.getBean(SensitiveProperties.class);
-        if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
             final MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("mappedStatement");
@@ -89,11 +91,11 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
                                 String property = entry.getKey();
                                 String value = (String) objMetaObject.getValue(property);
                                 if (StringKit.isNotEmpty(value)) {
-                                    if (ObjectKit.isEmpty(properties)) {
+                                    if (ObjectKit.isEmpty(this.properties)) {
                                         throw new InstrumentException("Please check the request.crypto.decrypt");
                                     }
                                     Logger.debug("Query data decryption enabled ...");
-                                    String decryptValue = org.aoju.bus.crypto.Builder.decrypt(properties.getDecrypt().getType(), properties.getDecrypt().getKey(), value, Charset.UTF_8);
+                                    String decryptValue = org.aoju.bus.crypto.Builder.decrypt(this.properties.getDecrypt().getType(), this.properties.getDecrypt().getKey(), value, Charset.UTF_8);
                                     objMetaObject.setValue(property, decryptValue);
                                 }
                             }

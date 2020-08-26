@@ -59,7 +59,7 @@ import java.util.Map;
  * 数据源配置
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 @ConditionalOnClass(DruidDataSource.class)
@@ -76,9 +76,9 @@ public class DruidConfiguration {
         aliases.addAliases("username", new String[]{"user"});
     }
 
+    private final Map<Object, Object> sourceMap = new HashMap<>();
     @Autowired
-    DruidProperties druidProperties;
-    private Map<Object, Object> sourceMap = new HashMap<>();
+    DruidProperties properties;
 
     /**
      * 初始化数据源/多数据源
@@ -88,12 +88,12 @@ public class DruidConfiguration {
     @Bean
     @Primary
     public DynamicDataSource dataSource() {
-        Map defaultConfig = beanToMap(this.druidProperties);
+        Map defaultConfig = beanToMap(this.properties);
         DataSource defaultDatasource = bind(defaultConfig);
         sourceMap.put("dataSource", defaultDatasource);
-        if (ObjectKit.isNotEmpty(druidProperties.getMulti())) {
+        if (ObjectKit.isNotEmpty(this.properties.getMulti())) {
             Logger.info("Enabled Multiple DataSource");
-            List<DruidProperties> list = this.druidProperties.getMulti();
+            List<DruidProperties> list = this.properties.getMulti();
             for (int i = 0; i < list.size(); i++) {
                 Map config = beanToMap(list.get(i));
                 if ((boolean) config.getOrDefault("extend", Boolean.TRUE)) {
@@ -150,16 +150,16 @@ public class DruidConfiguration {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
                 Object value = beanMap.get(key);
-                if (StringKit.isNotEmpty(this.druidProperties.getPrivateKey())) {
+                if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");
                     if ("url".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES, this.properties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("url", value);
                     } else if ("username".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES, this.properties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("username", value);
                     } else if ("password".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES, this.druidProperties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES, this.properties.getPrivateKey(), value.toString(), Charset.UTF_8);
                         beanMap.put("password", value);
                     }
                 }

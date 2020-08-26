@@ -38,7 +38,7 @@ import java.lang.reflect.Method;
  * 如果是静态方法直接执行,如果是对象方法,需要类有默认的构造方法
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class InvokeTask implements Task {
@@ -61,7 +61,7 @@ public class InvokeTask implements Task {
             throw new InstrumentException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
-        //类
+        // 类
         final String className = classNameWithMethodName.substring(0, splitIndex);
         if (StringKit.isBlank(className)) {
             throw new IllegalArgumentException("Class name is blank !");
@@ -72,7 +72,7 @@ public class InvokeTask implements Task {
         }
         this.obj = ReflectKit.newInstanceIfPossible(this.clazz);
 
-        //方法
+        // 方法
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
         if (StringKit.isBlank(methodName)) {
             throw new IllegalArgumentException("Method name is blank !");

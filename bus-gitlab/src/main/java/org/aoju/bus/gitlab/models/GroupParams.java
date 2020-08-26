@@ -33,7 +33,7 @@ import org.aoju.bus.gitlab.GroupApi;
  * the parameters for the call to the GitLab API.
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class GroupParams {

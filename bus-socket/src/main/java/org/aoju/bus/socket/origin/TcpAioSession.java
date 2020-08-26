@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 class TcpAioSession<T> extends AioSession<T> {
@@ -173,14 +173,6 @@ class TcpAioSession<T> extends AioSession<T> {
     public final WriteBuffer writeBuffer() {
         return byteBuf;
     }
-//
-//    /**
-//     * 强制关闭当前AIOSession
-//     * <p>若此时还存留待输出的数据,则会导致该部分数据丢失</p>
-//     */
-//    public final void close() {
-//        close(true);
-//    }
 
     /**
      * 是否立即关闭会话

@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -6002,6 +6002,41 @@ public class StringKit {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 返回第一个非{@code null}元素
+     *
+     * @param strs 多个元素
+     * @param <T>  元素类型
+     * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
+     */
+    public <T extends CharSequence> T firstNonNull(T... strs) {
+        return ArrayKit.firstNonNull(strs);
+    }
+
+    /**
+     * 返回第一个非empty元素
+     *
+     * @param strs 多个元素
+     * @param <T>  元素类型
+     * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
+     * @see #isNotEmpty(CharSequence)
+     */
+    public <T extends CharSequence> T firstNonEmpty(T... strs) {
+        return ArrayKit.firstNonNull(StringKit::isNotEmpty, strs);
+    }
+
+    /**
+     * 返回第一个非blank 元素
+     *
+     * @param strs 多个元素
+     * @param <T>  元素类型
+     * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
+     * @see #isNotBlank(CharSequence)
+     */
+    public <T extends CharSequence> T firstNonBlank(T... strs) {
+        return ArrayKit.firstNonNull(StringKit::isNotBlank, strs);
     }
 
     /**

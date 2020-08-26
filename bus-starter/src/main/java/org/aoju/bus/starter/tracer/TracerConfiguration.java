@@ -54,7 +54,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 @ConditionalOnWebApplication
@@ -65,7 +65,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class TracerConfiguration {
 
     @Autowired
-    TracerProperties TracerProperties;
+    TracerProperties properties;
 
     @Autowired
     Backend backend;
@@ -110,11 +110,12 @@ public class TracerConfiguration {
     @ConditionalOnMissingBean(TraceFilterConfig.class)
     public static class TracePropertiesConfig {
 
-        @Role(BeanDefinition.ROLE_SUPPORT)
         @Bean
-        public TraceFilterConfig filterConfiguration(TracerProperties TracerProperties) {
-            return TracerProperties.getAsFilterConfiguration();
+        @Role(BeanDefinition.ROLE_SUPPORT)
+        public TraceFilterConfig filterConfiguration(TracerProperties properties) {
+            return properties.getAsFilterConfiguration();
         }
+
     }
 
     private static class RestTemplatePostProcessor implements BeanPostProcessor {

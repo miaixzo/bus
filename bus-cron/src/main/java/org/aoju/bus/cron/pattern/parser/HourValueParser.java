@@ -28,7 +28,7 @@ package org.aoju.bus.cron.pattern.parser;
  * 小时值处理
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class HourValueParser extends SimpleValueParser {

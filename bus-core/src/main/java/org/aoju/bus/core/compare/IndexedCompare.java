@@ -24,8 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.compare;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.util.Comparator;
 
@@ -35,31 +35,55 @@ import java.util.Comparator;
  *
  * @param <T> 被排序元素类型
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class IndexedCompare<T> implements Comparator<T> {
 
+    private final boolean atEndIfMiss;
     private final T[] array;
 
     /**
      * 构造
      *
-     * @param objs 参与排序的数组,数组的元素位置决定了对象的排序先后
+     * @param obj 参与排序的数组，数组的元素位置决定了对象的排序先后
      */
-    public IndexedCompare(T... objs) {
-        this.array = objs;
+    public IndexedCompare(T... obj) {
+        this(false, obj);
+    }
+
+    /**
+     * 构造
+     *
+     * @param atEndIfMiss 如果不在列表中是否排在后边
+     * @param obj         参与排序的数组，数组的元素位置决定了对象的排序先后
+     */
+    public IndexedCompare(boolean atEndIfMiss, T... obj) {
+        Assert.notNull(obj, "'objs' array must not be null");
+        this.atEndIfMiss = atEndIfMiss;
+        this.array = obj;
     }
 
     @Override
     public int compare(T o1, T o2) {
-        final int index1 = ArrayKit.indexOf(array, o1);
-        final int index2 = ArrayKit.indexOf(array, o2);
-        if (index1 == index2) {
-            //位置相同使用自然排序
-            return ObjectKit.compare(o1, o2, true);
+        final int index1 = getOrder(o1);
+        final int index2 = getOrder(o2);
+
+        return Integer.compare(index1, index2);
+    }
+
+    /**
+     * 查找对象类型所在列表的位置
+     *
+     * @param object 对象
+     * @return 位置，未找到位置根据{@link #atEndIfMiss}取不同值，false返回-1，否则返回列表长度
+     */
+    private int getOrder(T object) {
+        int order = ArrayKit.indexOf(array, object);
+        if (order < 0) {
+            order = this.atEndIfMiss ? this.array.length : -1;
         }
-        return index1 < index2 ? -1 : 1;
+        return order;
     }
 
 }

@@ -32,7 +32,7 @@ import java.util.Properties;
  * 配置文件源
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 @FunctionalInterface

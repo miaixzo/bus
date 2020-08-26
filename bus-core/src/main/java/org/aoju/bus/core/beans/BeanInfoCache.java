@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.beans;
 
+import org.aoju.bus.core.lang.Func;
 import org.aoju.bus.core.lang.SimpleCache;
 
 import java.beans.PropertyDescriptor;
@@ -34,15 +35,15 @@ import java.util.Map;
  * 缓存用于防止多次反射造成的性能问题
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public enum BeanInfoCache {
 
     INSTANCE;
 
-    private SimpleCache<Class<?>, Map<String, PropertyDescriptor>> pdCache = new SimpleCache<>();
-    private SimpleCache<Class<?>, Map<String, PropertyDescriptor>> ignoreCasePdCache = new SimpleCache<>();
+    private final SimpleCache<Class<?>, Map<String, PropertyDescriptor>> pdCache = new SimpleCache<>();
+    private final SimpleCache<Class<?>, Map<String, PropertyDescriptor>> ignoreCasePdCache = new SimpleCache<>();
 
     /**
      * 获得属性名和{@link PropertyDescriptor}Map映射
@@ -52,7 +53,22 @@ public enum BeanInfoCache {
      * @return 属性名和{@link PropertyDescriptor}Map映射
      */
     public Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> beanClass, boolean ignoreCase) {
-        return (ignoreCase ? ignoreCasePdCache : pdCache).get(beanClass);
+        return getCache(ignoreCase).get(beanClass);
+    }
+
+    /**
+     * 获得属性名和{@link PropertyDescriptor}Map映射
+     *
+     * @param beanClass  Bean的类
+     * @param ignoreCase 是否忽略大小写
+     * @param supplier   缓存对象产生函数
+     * @return 属性名和{@link PropertyDescriptor}Map映射
+     */
+    public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
+            Class<?> beanClass,
+            boolean ignoreCase,
+            Func.Func0<Map<String, PropertyDescriptor>> supplier) {
+        return getCache(ignoreCase).get(beanClass, supplier);
     }
 
     /**
@@ -63,7 +79,17 @@ public enum BeanInfoCache {
      * @param ignoreCase                     是否忽略大小写
      */
     public void putPropertyDescriptorMap(Class<?> beanClass, Map<String, PropertyDescriptor> fieldNamePropertyDescriptorMap, boolean ignoreCase) {
-        (ignoreCase ? ignoreCasePdCache : pdCache).put(beanClass, fieldNamePropertyDescriptorMap);
+        getCache(ignoreCase).put(beanClass, fieldNamePropertyDescriptorMap);
+    }
+
+    /**
+     * 根据是否忽略字段名的大小写，返回不用Cache对象
+     *
+     * @param ignoreCase 是否忽略大小写
+     * @return SimpleCache
+     */
+    private SimpleCache<Class<?>, Map<String, PropertyDescriptor>> getCache(boolean ignoreCase) {
+        return ignoreCase ? ignoreCasePdCache : pdCache;
     }
 
 }

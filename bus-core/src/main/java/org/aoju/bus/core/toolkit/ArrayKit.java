@@ -29,6 +29,7 @@ import org.aoju.bus.core.builder.ToStringBuilder;
 import org.aoju.bus.core.builder.ToStringStyle;
 import org.aoju.bus.core.lang.Editor;
 import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Matcher;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.mutable.MutableInt;
@@ -41,7 +42,7 @@ import java.util.*;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 6.0.6
+ * @version 6.0.8
  * @since JDK 1.8+
  */
 public class ArrayKit {
@@ -628,13 +629,24 @@ public class ArrayKit {
      *
      * @param <T>   数组元素类型
      * @param array 数组
-     * @return 非空元素, 如果不存在非空元素或数组为空, 返回{@code null}
+     * @return 非空元素，如果不存在非空元素或数组为空，返回{@code null}
      */
-
     public static <T> T firstNonNull(T... array) {
+        return firstNonNull(Objects::nonNull, array);
+    }
+
+    /**
+     * 返回数组中第一个匹配规则的值
+     *
+     * @param <T>     数组元素类型
+     * @param matcher 匹配接口，实现此接口自定义匹配规则
+     * @param array   数组
+     * @return 非空元素，如果不存在非空元素或数组为空，返回{@code null}
+     */
+    public static <T> T firstNonNull(Matcher<T> matcher, T... array) {
         if (isNotEmpty(array)) {
             for (final T val : array) {
-                if (null != val) {
+                if (matcher.match(val)) {
                     return val;
                 }
             }
