@@ -60,7 +60,7 @@ import java.util.Map;
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
 
-    private SensitiveProperties properties;
+    private final SensitiveProperties properties;
 
     public SensitiveStatementHandler(SensitiveProperties properties) {
         this.properties = properties;

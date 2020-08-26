@@ -55,7 +55,7 @@ import java.util.Map;
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
 public class SensitiveResultSetHandler extends AbstractSqlHandler implements Interceptor {
 
-    private SensitiveProperties properties;
+    private final SensitiveProperties properties;
 
     public SensitiveResultSetHandler(SensitiveProperties properties) {
         this.properties = properties;
