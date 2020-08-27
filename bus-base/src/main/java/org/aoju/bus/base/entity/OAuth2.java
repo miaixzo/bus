@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -42,46 +43,32 @@ public class OAuth2 extends Entity {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 当前用户ID
-     */
     @Transient
+    @ApiModelProperty("当前用户ID")
     protected String x_user_id;
 
-    /**
-     * 当前用户名称
-     */
     @Transient
+    @ApiModelProperty("当前用户名称")
     protected String x_user_name;
 
-    /**
-     * 当前用户编码
-     */
     @Transient
+    @ApiModelProperty("当前用户工号")
     protected String x_user_code;
 
-    /**
-     * 当前用户角色ID
-     */
     @Transient
+    @ApiModelProperty("当前用户角色ID")
     private String x_role_id;
 
-    /**
-     * 当前用户职称ID
-     */
     @Transient
+    @ApiModelProperty("当前用户职称ID")
     private String x_duty_id;
 
-    /**
-     * 当前用户组织ID
-     */
     @Transient
+    @ApiModelProperty("当前用户组织ID")
     private String x_org_id;
 
-    /**
-     * 可选参数信息
-     */
     @Transient
+    @ApiModelProperty("可选参数信息")
     private String x_extract;
 
 }

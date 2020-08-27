@@ -70,10 +70,10 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
     public Object intercept(Invocation invocation) throws Throwable {
         StatementHandler statementHandler = realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-        MappedStatement mappedStatement = getMappedStatement(metaObject);
+        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(DELEGATE_MAPPED_STATEMENT);
         SqlCommandType commandType = mappedStatement.getSqlCommandType();
 
-        BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
+        BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
         Object params = boundSql.getParameterObject();
         if (params instanceof Map) {
             return invocation.proceed();

@@ -25,7 +25,6 @@
 package org.aoju.bus.starter.mapper;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.logger.Logger;
 import org.aoju.bus.mapper.builder.MapperBuilder;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.session.Configuration;
@@ -64,7 +63,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport
             try {
                 configuration.addMapper(this.mapperInterface);
             } catch (Exception e) {
-                Logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
+                logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
                 throw new IllegalArgumentException(e);
             } finally {
                 ErrorContext.instance().reset();
