@@ -267,8 +267,8 @@ public class MapKit {
      * 根据给定的Pair数组创建Map对象
      *
      * @param pairs 键值对
-     * @param <K>   键信息
-     * @param <V>   值信息
+     * @param <K>   键类型
+     * @param <V>   值类型
      * @return Map对象
      */
     public static <K, V> Map<K, V> of(Pair<K, V>... pairs) {
