@@ -19,7 +19,7 @@ update: UPDATE hi_cache_rate
   %s = ?
   WHERE pattern = ? AND version = ?
 
-insert:  INSERT INTO hi_cache_rate (pattern, %s, version)
+insert: INSERT INTO hi_cache_rate (pattern, %s, version)
   VALUES (?, ?, 0)
 
 delete: DELETE FROM hi_cache_rate WHERE pattern = ?
