@@ -31,7 +31,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 /**
- * swagger配置项
+ * Dubbo配置项
  *
  * @author Kimi Liu
  * @version 6.0.8

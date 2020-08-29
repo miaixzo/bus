@@ -94,10 +94,6 @@ public class BusXExtend {
      */
     public static final String STORAGE = "extend.storage";
     /**
-     * Swagger设置
-     */
-    public static final String SWAGGER = "extend.swagger";
-    /**
      * XSS/重复读取失效
      */
     public static final String WRAPPER = "extend.wrapper";
