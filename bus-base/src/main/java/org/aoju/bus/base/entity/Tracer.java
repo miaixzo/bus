@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -41,24 +40,34 @@ import javax.persistence.Transient;
 @EqualsAndHashCode(callSuper = true)
 public class Tracer extends OAuth2 {
 
+    /**
+     * 当前主链ID
+     */
     @Transient
-    @ApiModelProperty("当前主链ID")
     protected String x_trace_id;
 
+    /**
+     * 调用者ID
+     */
     @Transient
-    @ApiModelProperty("调用者ID")
     protected String x_span_id;
 
+    /**
+     * 被调用者ID
+     */
     @Transient
-    @ApiModelProperty("被调用者ID")
     protected String x_child_Id;
 
+    /**
+     * 本地IP
+     */
     @Transient
-    @ApiModelProperty("本地IP")
     protected String x_local_ip;
 
+    /**
+     * 远程IP
+     */
     @Transient
-    @ApiModelProperty("远程IP")
     protected String x_remote_ip;
 
 }

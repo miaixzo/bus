@@ -39,13 +39,41 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = BusXExtend.MYBATIS)
 public class MybatisProperties {
 
+    /**
+     * Mapper包路径
+     */
     private String basePackage;
+    /**
+     * XML路径
+     */
     private String xmlLocation;
+    /**
+     * 映射类型别名
+     */
     private String typeAliasesPackage;
+    /**
+     * 检查返回类型是否为PageInfo
+     */
     private String returnPageInfo;
+    /**
+     * 参数信息
+     */
     private String params;
+    /**
+     * 识别列名中的SQL关键字
+     */
     private String autoDelimitKeywords;
+    /**
+     * 分页合理化参数
+     */
     private String reasonable;
+    /**
+     * 支持通过 Mapper 接口参数来传递分页参数
+     */
     private String supportMethodsArguments;
+    /**
+     * 记录时间,即created,modified
+     */
+    private boolean recordTime;
 
 }

@@ -66,6 +66,10 @@ public class MybatisPluginBuilder {
                     new ExplainSQLHandler()
             );
 
+            if (mybatisProperties.isRecordTime()) {
+                list.add(new RecordTimeHandler());
+            }
+
             if (ObjectKit.isNotEmpty(sensitiveProperties)) {
                 list.add(new SensitiveResultSetHandler(sensitiveProperties));
                 list.add(new SensitiveStatementHandler(sensitiveProperties));

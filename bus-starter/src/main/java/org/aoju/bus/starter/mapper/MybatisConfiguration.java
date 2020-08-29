@@ -52,7 +52,7 @@ public class MybatisConfiguration {
 
     @Autowired
     MybatisProperties mybatisProperties;
-    @Autowired
+    @Autowired(required = false)
     SensitiveProperties sensitiveProperties;
 
     @Bean

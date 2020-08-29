@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.base.spring;
 
-import io.swagger.annotations.ApiOperation;
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +49,8 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      * @param entity 对象参数
      * @return 操作结果
      */
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    @ApiOperation(value = "通用:添加数据", httpMethod = "POST")
     @ResponseBody
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Object add(T entity) {
         return write(ErrorCode.EM_SUCCESS, service.insertSelective(entity));
     }
@@ -63,9 +61,8 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      * @param entity 对象参数
      * @return 操作结果
      */
-    @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    @ApiOperation(value = "通用:删除数据", httpMethod = "POST")
     @ResponseBody
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
     public Object remove(T entity) {
         service.deleteById(entity);
         return write(ErrorCode.EM_SUCCESS);
@@ -77,9 +74,8 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      * @param entity 对象参数
      * @return 操作结果
      */
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ApiOperation(value = "通用:主键更新", httpMethod = "POST")
     @ResponseBody
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Object update(T entity) {
         return write(ErrorCode.EM_SUCCESS, service.updateSelectiveById(entity));
     }
@@ -90,9 +86,8 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      * @param entity 对象参数
      * @return 操作结果
      */
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
-    @ApiOperation(value = "通用:数据主键查询", httpMethod = "GET")
     @ResponseBody
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
     public Object get(T entity) {
         return write(service.selectById(entity));
     }
@@ -103,9 +98,8 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      * @param entity 对象参数
      * @return 操作结果
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ApiOperation(value = "通用:数据条件查询", httpMethod = "GET")
     @ResponseBody
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public Object list(T entity) {
         return write(service.selectList(entity));
     }
@@ -116,9 +110,8 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      * @param entity 对象参数
      * @return 操作结果
      */
-    @RequestMapping(value = "/page", method = RequestMethod.GET)
-    @ApiOperation(value = "通用:数据分页查询", httpMethod = "GET")
     @ResponseBody
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
     public Object page(T entity) {
         return write(service.page(entity));
     }
