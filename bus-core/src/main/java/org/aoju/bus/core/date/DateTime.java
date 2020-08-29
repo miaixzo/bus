@@ -603,7 +603,7 @@ public class DateTime extends Date {
      * @see DateKit#isLeapYear(int)
      */
     public boolean isLeapYear() {
-        return DateKit.isLeapYear(year());
+        return new DateKit().isLeapYear(year());
     }
 
     /**
