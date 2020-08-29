@@ -42,13 +42,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class AbstractSqlHandler {
 
+    public static final String DELEGATE_BOUNDSQL = "delegate.boundSql";
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
-    public static final String DELEGATE_MAPPED_STATEMENT = "delegate.mappedStatement";
+    public static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
     /**
      * SQL 解析缓存
      * key 可能是 mappedStatement 的 ID,也可能是 class 的 name
      */
-    private static final Map<String, Boolean> SQL_PARSER_INFO_CACHE = new ConcurrentHashMap<>();
+    private static final Map<String, Boolean> SQL_PARSER_CACHE = new ConcurrentHashMap<>();
 
     /**
      * 获取 SqlParser 注解信息
@@ -58,12 +59,12 @@ public abstract class AbstractSqlHandler {
      */
     protected static boolean getSqlParserInfo(MetaObject metaObject) {
         String id = getMappedStatement(metaObject).getId();
-        Boolean value = SQL_PARSER_INFO_CACHE.get(id);
+        Boolean value = SQL_PARSER_CACHE.get(id);
         if (value != null) {
             return value;
         }
         String mapperName = id.substring(0, id.lastIndexOf(Symbol.DOT));
-        return SQL_PARSER_INFO_CACHE.getOrDefault(mapperName, false);
+        return SQL_PARSER_CACHE.getOrDefault(mapperName, false);
     }
 
     /**
@@ -73,7 +74,7 @@ public abstract class AbstractSqlHandler {
      * @return 映射语句
      */
     protected static MappedStatement getMappedStatement(MetaObject metaObject) {
-        return (MappedStatement) metaObject.getValue(DELEGATE_MAPPED_STATEMENT);
+        return (MappedStatement) metaObject.getValue(DELEGATE_MAPPEDSTATEMENT);
     }
 
     /**

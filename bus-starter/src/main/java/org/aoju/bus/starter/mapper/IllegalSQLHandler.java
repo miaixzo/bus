@@ -295,11 +295,11 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
         StatementHandler statementHandler = realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
         // 如果是insert操作， 或者 @SqlParser(filter = true) 跳过该方法解析 ， 不进行验证
-        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(DELEGATE_MAPPED_STATEMENT);
+        MappedStatement mappedStatement = getMappedStatement(metaObject);
         if (SqlCommandType.INSERT.equals(mappedStatement.getSqlCommandType()) || getSqlParserInfo(metaObject)) {
             return invocation.proceed();
         }
-        BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
+        BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
         String originalSql = boundSql.getSql();
         Logger.debug("Check for SQL : " + originalSql);
 

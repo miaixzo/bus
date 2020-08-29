@@ -72,7 +72,7 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
         if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-            final MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("mappedStatement");
+            final MappedStatement mappedStatement = getMappedStatement(metaObject);
             final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null : mappedStatement.getResultMaps().get(0);
 
             Sensitive sensitive = results.get(0).getClass().getAnnotation(Sensitive.class);

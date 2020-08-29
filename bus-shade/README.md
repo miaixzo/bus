@@ -58,7 +58,7 @@ CREATE TABLE `hi_user` (
         public static final String SERVICE_IMPL_URL = "org.aoju.test.service.impl";
         public static final String CONTROLLER_URL = "org.aoju.test.spring";
         //是否是Swagger配置
-        public static final String IS_SWAGGER = "true";
+        public static final String IS_SWAGGER = "false";
     
         public static void main(String[] args) {
             TableEntity tb = new TableEntity(PROJECT, AUTHOR, VERSION, URL, NAME, PASS, DATABASE, TABLE, AGILE, ENTITY_URL,

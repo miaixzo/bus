@@ -20,9 +20,6 @@
 	<a target="_blank" href="https://www.mysql.com">
 		<img src="https://img.shields.io/badge/Mysql-5.7-blue.svg">
 	</a>
-	<a target="_blank" href="https://swagger.io">
-		<img src="https://img.shields.io/badge/swagger-2.9.2-brightgreen.svg">
-	</a>
 	<a target="_blank" href="http://dubbo.apache.org">
 		<img src="https://img.shields.io/badge/dubbo-2.7.5-yellow.svg">
 	</a>

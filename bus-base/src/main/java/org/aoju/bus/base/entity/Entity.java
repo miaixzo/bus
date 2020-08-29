@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.Id;
@@ -42,8 +41,10 @@ public abstract class Entity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 数据主键
+     */
     @Id
-    @ApiModelProperty("主键")
     protected String id;
 
 }
