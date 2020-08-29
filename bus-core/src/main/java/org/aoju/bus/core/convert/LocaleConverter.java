@@ -42,7 +42,7 @@ public class LocaleConverter extends AbstractConverter<Locale> {
     @Override
     protected Locale convertInternal(Object value) {
         try {
-            String str = convertToStr(value);
+            String str = convertString(value);
             if (StringKit.isEmpty(str)) {
                 return null;
             }

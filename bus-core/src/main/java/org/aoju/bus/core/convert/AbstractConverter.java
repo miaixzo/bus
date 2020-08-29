@@ -116,7 +116,7 @@ public abstract class AbstractConverter<T> implements Converter<T> {
      * @param value 值
      * @return String
      */
-    protected String convertToStr(Object value) {
+    protected String convertString(Object value) {
         if (null == value) {
             return null;
         }

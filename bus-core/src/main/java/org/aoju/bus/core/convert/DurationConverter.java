@@ -43,7 +43,7 @@ public class DurationConverter extends AbstractConverter<Duration> {
         } else if (value instanceof Long) {
             return Duration.ofMillis((Long) value);
         } else {
-            return Duration.parse(convertToStr(value));
+            return Duration.parse(convertString(value));
         }
     }
 

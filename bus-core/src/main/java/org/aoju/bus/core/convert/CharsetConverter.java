@@ -37,7 +37,7 @@ public class CharsetConverter extends AbstractConverter<java.nio.charset.Charset
 
     @Override
     protected java.nio.charset.Charset convertInternal(Object value) {
-        return Charset.charset(convertToStr(value));
+        return Charset.charset(convertString(value));
     }
 
 }

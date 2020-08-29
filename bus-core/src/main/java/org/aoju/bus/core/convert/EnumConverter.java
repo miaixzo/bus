@@ -114,7 +114,7 @@ public class EnumConverter extends AbstractConverter<Object> {
         Enum enumValue = tryConvertEnum(value, this.enumClass);
         if (null == enumValue && false == value instanceof String) {
             // 最后尝试valueOf转换
-            enumValue = Enum.valueOf(this.enumClass, convertToStr(value));
+            enumValue = Enum.valueOf(this.enumClass, convertString(value));
         }
         return enumValue;
     }

@@ -37,7 +37,7 @@ public class TimeZoneConverter extends AbstractConverter<TimeZone> {
 
     @Override
     protected TimeZone convertInternal(Object value) {
-        return TimeZone.getTimeZone(convertToStr(value));
+        return TimeZone.getTimeZone(convertString(value));
     }
 
 }

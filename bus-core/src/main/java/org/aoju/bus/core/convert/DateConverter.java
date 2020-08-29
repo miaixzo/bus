@@ -98,7 +98,7 @@ public class DateConverter extends AbstractConverter<Date> {
             return DateKit.date((TemporalAccessor) value);
         } else {
             // 统一按照字符串处理
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             Date date = null;
             try {
                 date = StringKit.isBlank(this.format)

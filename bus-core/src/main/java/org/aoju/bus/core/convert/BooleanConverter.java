@@ -37,7 +37,7 @@ public class BooleanConverter extends AbstractConverter<Boolean> {
 
     @Override
     protected Boolean convertInternal(Object value) {
-        return BooleanKit.toBoolean(convertToStr(value));
+        return BooleanKit.toBoolean(convertString(value));
     }
 
 }

@@ -41,7 +41,7 @@ public class CharacterConverter extends AbstractConverter<Character> {
         if (value instanceof Boolean) {
             return BooleanKit.toCharacter((Boolean) value);
         } else {
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             if (StringKit.isNotBlank(valueStr)) {
                 return valueStr.charAt(0);
             }

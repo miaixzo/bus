@@ -113,7 +113,7 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
             final Calendar calendar = (Calendar) value;
             return parseFromInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
         } else {
-            return parseFromCharSequence(convertToStr(value));
+            return parseFromCharSequence(convertString(value));
         }
     }
 

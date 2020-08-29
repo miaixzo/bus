@@ -64,18 +64,15 @@ public class CalendarConverter extends AbstractConverter<Calendar> {
 
     @Override
     protected Calendar convertInternal(Object value) {
-        // Handle Date
         if (value instanceof Date) {
             return DateKit.calendar((Date) value);
         }
 
-        // Handle Long
         if (value instanceof Long) {
-            //此处使用自动拆装箱
             return DateKit.calendar((Long) value);
         }
 
-        final String valueStr = convertToStr(value);
+        final String valueStr = convertString(value);
         return DateKit.calendar(StringKit.isBlank(format) ? DateKit.parse(valueStr) : DateKit.parse(valueStr, format));
     }
 

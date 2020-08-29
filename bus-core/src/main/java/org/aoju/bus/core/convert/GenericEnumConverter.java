@@ -48,7 +48,7 @@ public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E
     protected E convertInternal(Object value) {
         E enumValue = (E) EnumConverter.tryConvertEnum(value, this.enumClass);
         if (null == enumValue && false == value instanceof String) {
-            enumValue = Enum.valueOf(this.enumClass, convertToStr(value));
+            enumValue = Enum.valueOf(this.enumClass, convertString(value));
         }
         return enumValue;
     }

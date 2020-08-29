@@ -37,7 +37,7 @@ public class UUIDConverter extends AbstractConverter<UUID> {
 
     @Override
     protected UUID convertInternal(Object value) {
-        return UUID.fromString(convertToStr(value));
+        return UUID.fromString(convertString(value));
     }
 
 }

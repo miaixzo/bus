@@ -84,7 +84,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             } else if (value instanceof Boolean) {
                 return BooleanKit.toByteObj((Boolean) value);
             }
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             return StringKit.isBlank(valueStr) ? null : Byte.valueOf(valueStr);
 
         } else if (Short.class == targetType) {
@@ -93,7 +93,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             } else if (value instanceof Boolean) {
                 return BooleanKit.toShortObj((Boolean) value);
             }
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             return StringKit.isBlank(valueStr) ? null : Short.valueOf(valueStr);
 
         } else if (Integer.class == targetType) {
@@ -108,7 +108,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             } else if (value instanceof TemporalAccessor) {
                 return (int) DateKit.toInstant((TemporalAccessor) value).toEpochMilli();
             }
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             return StringKit.isBlank(valueStr) ? null : MathKit.parseInt(valueStr);
 
         } else if (AtomicInteger.class == targetType) {
@@ -131,7 +131,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             } else if (value instanceof TemporalAccessor) {
                 return DateKit.toInstant((TemporalAccessor) value).toEpochMilli();
             }
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             return StringKit.isBlank(valueStr) ? null : MathKit.parseLong(valueStr);
 
         } else if (AtomicLong.class == targetType) {
@@ -148,7 +148,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             } else if (value instanceof Boolean) {
                 return BooleanKit.toFloatObj((Boolean) value);
             }
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             return StringKit.isBlank(valueStr) ? null : Float.valueOf(valueStr);
 
         } else if (Double.class == targetType) {
@@ -157,7 +157,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             } else if (value instanceof Boolean) {
                 return BooleanKit.toDoubleObj((Boolean) value);
             }
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             return StringKit.isBlank(valueStr) ? null : Double.valueOf(valueStr);
 
         } else if (BigDecimal.class == targetType) {
@@ -172,7 +172,7 @@ public class NumberConverter extends AbstractConverter<Number> {
             } else if (value instanceof Boolean) {
                 return BooleanKit.toInteger((Boolean) value);
             }
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             return StringKit.isBlank(valueStr) ? null : MathKit.parseNumber(valueStr);
         }
 
@@ -199,7 +199,7 @@ public class NumberConverter extends AbstractConverter<Number> {
         }
 
         //对于Double类型,先要转换为String,避免精度问题
-        final String valueStr = convertToStr(value);
+        final String valueStr = convertString(value);
         if (StringKit.isBlank(valueStr)) {
             return null;
         }
@@ -220,7 +220,7 @@ public class NumberConverter extends AbstractConverter<Number> {
         } else if (value instanceof Boolean) {
             return BigInteger.valueOf((boolean) value ? 1 : 0);
         }
-        final String valueStr = convertToStr(value);
+        final String valueStr = convertString(value);
         if (StringKit.isBlank(valueStr)) {
             return null;
         }
@@ -228,8 +228,8 @@ public class NumberConverter extends AbstractConverter<Number> {
     }
 
     @Override
-    protected String convertToStr(Object value) {
-        return StringKit.trim(super.convertToStr(value));
+    protected String convertString(Object value) {
+        return StringKit.trim(super.convertString(value));
     }
 
     @Override

@@ -39,7 +39,7 @@ public class ClassConverter extends AbstractConverter<Class<?>> {
 
     @Override
     protected Class<?> convertInternal(Object value) {
-        String valueStr = convertToStr(value);
+        String valueStr = convertString(value);
         try {
             return ClassKit.getClassLoader().loadClass(valueStr);
         } catch (Exception e) {

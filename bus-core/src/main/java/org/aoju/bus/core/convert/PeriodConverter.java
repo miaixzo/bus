@@ -43,7 +43,7 @@ public class PeriodConverter extends AbstractConverter<Period> {
         } else if (value instanceof Integer) {
             return Period.ofDays((Integer) value);
         } else {
-            return Period.parse(convertToStr(value));
+            return Period.parse(convertString(value));
         }
     }
 

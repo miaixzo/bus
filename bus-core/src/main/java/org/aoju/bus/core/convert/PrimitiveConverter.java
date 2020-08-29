@@ -75,7 +75,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 } else if (value instanceof Boolean) {
                     return BooleanKit.toByte((Boolean) value);
                 }
-                final String valueStr = convertToStr(value);
+                final String valueStr = convertString(value);
                 if (StringKit.isBlank(valueStr)) {
                     return 0;
                 }
@@ -87,7 +87,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 } else if (value instanceof Boolean) {
                     return BooleanKit.toShort((Boolean) value);
                 }
-                final String valueStr = convertToStr(value);
+                final String valueStr = convertString(value);
                 if (StringKit.isBlank(valueStr)) {
                     return 0;
                 }
@@ -99,7 +99,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 } else if (value instanceof Boolean) {
                     return BooleanKit.toInt((Boolean) value);
                 }
-                final String valueStr = convertToStr(value);
+                final String valueStr = convertString(value);
                 if (StringKit.isBlank(valueStr)) {
                     return 0;
                 }
@@ -111,7 +111,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 } else if (value instanceof Boolean) {
                     return BooleanKit.toLong((Boolean) value);
                 }
-                final String valueStr = convertToStr(value);
+                final String valueStr = convertString(value);
                 if (StringKit.isBlank(valueStr)) {
                     return 0;
                 }
@@ -123,7 +123,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 } else if (value instanceof Boolean) {
                     return BooleanKit.toFloat((Boolean) value);
                 }
-                final String valueStr = convertToStr(value);
+                final String valueStr = convertString(value);
                 if (StringKit.isBlank(valueStr)) {
                     return 0;
                 }
@@ -135,7 +135,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 } else if (value instanceof Boolean) {
                     return BooleanKit.toDouble((Boolean) value);
                 }
-                final String valueStr = convertToStr(value);
+                final String valueStr = convertString(value);
                 if (StringKit.isBlank(valueStr)) {
                     return 0;
                 }
@@ -147,7 +147,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 } else if (value instanceof Boolean) {
                     return BooleanKit.toChar((Boolean) value);
                 }
-                final String valueStr = convertToStr(value);
+                final String valueStr = convertString(value);
                 if (StringKit.isBlank(valueStr)) {
                     return 0;
                 }
@@ -156,7 +156,7 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
                 if (value instanceof Boolean) {
                     return ((Boolean) value).booleanValue();
                 }
-                String valueStr = convertToStr(value);
+                String valueStr = convertString(value);
                 return BooleanKit.toBoolean(valueStr);
             }
         } catch (Exception e) {
@@ -166,8 +166,8 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
     }
 
     @Override
-    protected String convertToStr(Object value) {
-        return StringKit.trim(super.convertToStr(value));
+    protected String convertString(Object value) {
+        return StringKit.trim(super.convertString(value));
     }
 
     @Override
