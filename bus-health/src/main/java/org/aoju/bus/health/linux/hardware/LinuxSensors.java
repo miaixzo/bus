@@ -91,8 +91,8 @@ final class LinuxSensors extends AbstractSensors {
     private static double queryCpuTemperatureFromVcGenCmd() {
         String tempStr = Executor.getFirstAnswer("vcgencmd measure_temp");
         // temp=50.8'C
-        if (tempStr.startsWith("temp=") && tempStr.endsWith("'C")) {
-            return Builder.parseDoubleOrDefault(tempStr.replaceAll("\\^[0-9]+(\\.[0-9]{1,4})?$", Normal.EMPTY), 0d);
+        if (tempStr.startsWith("temp=")) {
+            return Builder.parseDoubleOrDefault(tempStr.replaceAll("[^\\d|\\.]+", Normal.EMPTY), 0d);
         }
         return 0d;
     }

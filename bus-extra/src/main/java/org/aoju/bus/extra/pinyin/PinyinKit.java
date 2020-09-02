@@ -28,6 +28,7 @@ import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
  * 拼音工具类，通过SPI自动识别
@@ -129,13 +130,26 @@ public class PinyinKit {
     }
 
     /**
+     * 是否为中文字符
+     *
+     * @param c 字符
+     * @return 是否为中文字符
+     */
+    public static boolean isChinese(char c) {
+        return '〇' == c || String.valueOf(c).matches(RegEx.CHINESE_PATTERN);
+    }
+
+    /**
      * 判断某个字符是否为汉字
      *
      * @param c 需要判断的字符
      * @return 是汉字返回true, 否则返回false
      */
     public static boolean isChinese(String c) {
-        return String.valueOf(c).matches(RegEx.CHINESE_PATTERN);
+        if (StringKit.isEmpty(c)) {
+            return false;
+        }
+        return c.matches(RegEx.CHINESE_PATTERN);
     }
 
 }
