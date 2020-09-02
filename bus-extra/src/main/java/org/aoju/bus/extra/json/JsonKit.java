@@ -42,7 +42,7 @@ public class JsonKit {
      *
      * @return 全局单例的json映射器
      */
-    public static JsonProvider getEngine() {
+    public static JsonProvider getProvider() {
         return JsonFactory.get();
     }
 
@@ -53,7 +53,7 @@ public class JsonKit {
      * @return 返回对象的json字符串
      */
     public static String toJsonString(Object object) {
-        return getEngine().toJsonString(object);
+        return getProvider().toJsonString(object);
     }
 
     /**
@@ -64,7 +64,7 @@ public class JsonKit {
      * @return 返回对象的json字符串
      */
     public static String toJsonString(Object object, String format) {
-        return getEngine().toJsonString(object, format);
+        return getProvider().toJsonString(object, format);
     }
 
     /**
@@ -76,7 +76,7 @@ public class JsonKit {
      * @return 返回解析后的对象
      */
     public static <T> T toPojo(String json, Class<T> clazz) {
-        return getEngine().toPojo(json, clazz);
+        return getProvider().toPojo(json, clazz);
     }
 
     /**
@@ -88,7 +88,7 @@ public class JsonKit {
      * @return 返回Map转换得到的对象
      */
     public static <T> T toPojo(Map map, Class<T> clazz) {
-        return getEngine().toPojo(map, clazz);
+        return getProvider().toPojo(map, clazz);
     }
 
     /**
@@ -98,7 +98,7 @@ public class JsonKit {
      * @return 返回List
      */
     public static List toList(String json) {
-        return getEngine().toList(json);
+        return getProvider().toList(json);
     }
 
     /**
@@ -110,7 +110,7 @@ public class JsonKit {
      * @return 返回List
      */
     public static <T> List<T> toList(String json, final Type type) {
-        return getEngine().toList(json, type);
+        return getProvider().toList(json, type);
     }
 
     /**
@@ -120,7 +120,7 @@ public class JsonKit {
      * @return 返回Map
      */
     public static Map toMap(String json) {
-        return getEngine().toMap(json);
+        return getProvider().toMap(json);
     }
 
     /**
@@ -130,7 +130,7 @@ public class JsonKit {
      * @return 返回Map对象
      */
     public static Map toMap(Object object) {
-        return getEngine().toMap(object);
+        return getProvider().toMap(object);
     }
 
     /**
@@ -140,7 +140,7 @@ public class JsonKit {
      * @return the true/false
      */
     public static boolean isJson(String json) {
-        return getEngine().isJson(json);
+        return getProvider().isJson(json);
     }
 
 }

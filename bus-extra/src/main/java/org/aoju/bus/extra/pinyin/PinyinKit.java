@@ -47,7 +47,7 @@ public class PinyinKit {
      *
      * @return 全局单例的拼音引擎
      */
-    public static PinyinProvider getEngine() {
+    public static PinyinProvider getProvider() {
         return PinyinFactory.get();
     }
 
@@ -58,7 +58,7 @@ public class PinyinKit {
      * @return 汉字返回拼音，非汉字原样返回
      */
     public static String getPinyin(char c) {
-        return getEngine().getPinyin(c);
+        return getProvider().getPinyin(c);
     }
 
     /**
@@ -79,7 +79,7 @@ public class PinyinKit {
      * @return 汉字返回拼音，非汉字原样返回
      */
     public static String getPinyin(String str, String separator) {
-        return getEngine().getPinyin(str, separator);
+        return getProvider().getPinyin(str, separator);
     }
 
     /**
@@ -89,7 +89,7 @@ public class PinyinKit {
      * @return 汉字返回拼音，非汉字原样返回
      */
     public static char getFirstLetter(char c) {
-        return getEngine().getFirstLetter(c);
+        return getProvider().getFirstLetter(c);
     }
 
     /**
@@ -100,7 +100,7 @@ public class PinyinKit {
      * @return 汉字返回拼音，非汉字原样返回
      */
     public static String getFirstLetter(String str, String separator) {
-        return getEngine().getFirstLetter(str, separator);
+        return getProvider().getFirstLetter(str, separator);
     }
 
     /**
