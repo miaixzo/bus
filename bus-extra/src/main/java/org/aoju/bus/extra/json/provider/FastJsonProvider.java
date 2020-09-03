@@ -102,7 +102,7 @@ public class FastJsonProvider extends AbstractJsonProvider {
 
     @Override
     public Map toMap(String json) {
-        return toMap(json);
+        return JSON.parseObject(json,LinkedHashMap.class);
     }
 
     @Override
