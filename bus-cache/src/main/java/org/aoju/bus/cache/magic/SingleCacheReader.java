@@ -68,9 +68,6 @@ public class SingleCacheReader extends AbstractReader {
             return readResult;
         }
 
-
-        // not hit
-        // invoke method
         Object invokeResult = doLogInvoke(baseInvoker::proceed);
         if (invokeResult != null && methodHolder.getInnerReturnType() == null) {
             methodHolder.setInnerReturnType(invokeResult.getClass());
@@ -85,7 +82,6 @@ public class SingleCacheReader extends AbstractReader {
             return invokeResult;
         }
 
-        // invokeResult is null
         if (config.isPreventOn()) {
             cacheManager.writeSingle(annoHolder.getCache(), key, PreventObjects.getPreventObject(), annoHolder.getExpire());
         }

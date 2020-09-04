@@ -251,6 +251,28 @@ public class SshKit {
     }
 
     /**
+     * 绑定ssh服务端的serverPort端口, 到host主机的port端口上
+     *
+     * @param session  与ssh服务端建立的会话
+     * @param bindPort ssh服务端上要被绑定的端口
+     * @param host     转发到的host
+     * @param port     host上的端口
+     * @return 成功与否
+     * @throws InstrumentException 端口绑定失败异常
+     */
+    public static boolean bindRemotePort(Session session, int bindPort, String host, int port) throws InstrumentException {
+        if (session != null && session.isConnected()) {
+            try {
+                session.setPortForwardingR(bindPort, host, port);
+            } catch (JSchException e) {
+                throw new InstrumentException("From [{}] mapping to [{}] error！", bindPort, port);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 解除端口映射
      *
      * @param session   需要解除端口映射的SSH会话
