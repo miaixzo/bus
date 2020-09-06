@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class EnumConverter extends AbstractConverter<Object> {
@@ -114,7 +114,7 @@ public class EnumConverter extends AbstractConverter<Object> {
         Enum enumValue = tryConvertEnum(value, this.enumClass);
         if (null == enumValue && false == value instanceof String) {
             // 最后尝试valueOf转换
-            enumValue = Enum.valueOf(this.enumClass, convertToStr(value));
+            enumValue = Enum.valueOf(this.enumClass, convertString(value));
         }
         return enumValue;
     }

@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * 浏览器对象
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class Browser extends UserAgent {

@@ -40,7 +40,7 @@ import java.util.*;
  * 字典对象,扩充了HashMap中的方法
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class Dict extends LinkedHashMap<String, Object> implements BasicType<String> {

@@ -29,12 +29,15 @@ import org.aoju.bus.proxy.invoker.ProxyChain;
 
 /**
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public abstract class AbstractReader {
 
-    public abstract Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite) throws Throwable;
+    public abstract Object read(AnnoHolder annoHolder,
+                                MethodHolder methodHolder,
+                                ProxyChain baseInvoker,
+                                boolean needWrite) throws Throwable;
 
     Object doLogInvoke(ThrowableSupplier<Object> throwableSupplier) throws Throwable {
         long start = System.currentTimeMillis();

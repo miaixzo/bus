@@ -35,7 +35,7 @@ import java.io.File;
  * 提供对Linux上某些/proc文件系统信息的访问
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 @ThreadSafe

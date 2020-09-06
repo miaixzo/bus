@@ -28,7 +28,7 @@ package org.aoju.bus.core.convert;
  * 泛型枚举转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E> {
@@ -48,7 +48,7 @@ public class GenericEnumConverter<E extends Enum<E>> extends AbstractConverter<E
     protected E convertInternal(Object value) {
         E enumValue = (E) EnumConverter.tryConvertEnum(value, this.enumClass);
         if (null == enumValue && false == value instanceof String) {
-            enumValue = Enum.valueOf(this.enumClass, convertToStr(value));
+            enumValue = Enum.valueOf(this.enumClass, convertString(value));
         }
         return enumValue;
     }

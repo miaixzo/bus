@@ -1,0 +1,3 @@
+org.aoju.bus.extra.json.provider.FastJsonProvider
+org.aoju.bus.extra.json.provider.GsonProvider
+org.aoju.bus.extra.json.provider.JacksonProvider

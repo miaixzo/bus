@@ -30,14 +30,14 @@ import org.aoju.bus.core.toolkit.BooleanKit;
  * 波尔转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class BooleanConverter extends AbstractConverter<Boolean> {
 
     @Override
     protected Boolean convertInternal(Object value) {
-        return BooleanKit.toBoolean(convertToStr(value));
+        return BooleanKit.toBoolean(convertString(value));
     }
 
 }

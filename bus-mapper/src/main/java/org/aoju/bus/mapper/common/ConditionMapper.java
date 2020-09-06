@@ -31,7 +31,7 @@ import org.aoju.bus.mapper.common.condition.*;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public interface ConditionMapper<T> extends

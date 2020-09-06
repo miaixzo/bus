@@ -37,7 +37,7 @@ import java.util.*;
  * 这个类从值中删除空白。它从不返回带开头或结尾空白的值
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public final class Headers {

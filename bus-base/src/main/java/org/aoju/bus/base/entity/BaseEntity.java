@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.base.entity;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.aoju.bus.base.consts.Consts;
@@ -40,7 +39,7 @@ import java.util.Objects;
  * Entity 基本信息.
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 @Data
@@ -49,31 +48,47 @@ public class BaseEntity extends Tracer {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "状态", notes = "-1删除,0无效,1正常")
+    /**
+     * 数据状态:-1删除,0无效,1正常
+     */
     protected String status;
 
-    @ApiModelProperty("创建人")
+    /**
+     * 创建者
+     */
     protected String creator;
 
-    @ApiModelProperty("创建时间")
+    /**
+     * 创建时间
+     */
     protected String created;
 
-    @ApiModelProperty("修改人")
+    /**
+     * 修改者
+     */
     protected String modifier;
 
-    @ApiModelProperty("修改时间")
+    /**
+     * 修改时间
+     */
     protected String modified;
 
+    /**
+     * 分页页码,默认值:1
+     */
     @Transient
-    @ApiModelProperty(value = "页码", notes = "默认值:1")
     protected Integer pageNo = 1;
 
+    /**
+     * 分页大小,默认值:20
+     */
     @Transient
-    @ApiModelProperty(value = "分页大小", notes = "默认值:20")
     protected Integer pageSize = 20;
 
+    /**
+     * 排序方式,asc desc
+     */
     @Transient
-    @ApiModelProperty(value = "数据排序")
     protected String orderBy;
 
     /**

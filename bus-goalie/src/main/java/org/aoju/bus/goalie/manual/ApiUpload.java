@@ -35,7 +35,7 @@ import java.util.Map;
  * 存放上传文件
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public class ApiUpload implements Upload {

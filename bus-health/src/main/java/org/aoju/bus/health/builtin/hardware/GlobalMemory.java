@@ -33,7 +33,7 @@ import java.util.List;
  * physical memory (RAM) as well as any available virtual memory.
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 @ThreadSafe

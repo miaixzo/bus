@@ -6,7 +6,6 @@
     @EnableOnceFilter
     @EnableMapper
     @EnableDubbo
-    @EnableSwagger
     @EnableCrypto
     @EnableValidate
     ...
@@ -31,8 +30,6 @@
 8. 启用第三方授权登陆 注解形式 `@EnableThirdAuth`
 
 9. 启用OSS存储 注解形式 `@EnableStorage` 
-   
-9. 启用Swagger 注解形式 `@EnableSwagger` 
       
 10. 启用Validate 注解形式 `@EnableValidate` 
 
@@ -79,16 +76,16 @@ public class TestController {
     //以下三个请求路径都是/c，
     //通过header里的客户端类型（如果是从url参数取，修改TerminalVersionExpression即可）以及版本号路由到不同方法
     @GetMapping("/c")
-    @ClientVersion(expression = {"1>6.0.8"})
-    public String cvcheck1(){return "6.0.8以上版本的1类型";}
+    @ClientVersion(expression = {"1>6.0.9"})
+    public String cvcheck1(){return "6.0.9以上版本的1类型";}
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.GT,version = "6.0.8")})
-    public String cvcheck2(){return "6.0.8以上版本的2类型";}
+    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.GT,version = "6.0.9")})
+    public String cvcheck2(){return "6.0.9以上版本的2类型";}
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.LTE,version = "6.0.8")})
-    public String cvcheck3(){return "6.0.8以下版本的2类型";}
+    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.LTE,version = "6.0.9")})
+    public String cvcheck3(){return "6.0.9以下版本的2类型";}
 
     public String c(){
         return "aaaa";

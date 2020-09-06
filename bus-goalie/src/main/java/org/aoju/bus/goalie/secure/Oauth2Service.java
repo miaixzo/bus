@@ -29,7 +29,7 @@ import org.aoju.bus.goalie.ApiConfig;
 
 /**
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public interface Oauth2Service {

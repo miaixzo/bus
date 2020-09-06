@@ -82,7 +82,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>7.where条件使用了 使用子查询</p>
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
@@ -295,11 +295,11 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
         StatementHandler statementHandler = realTarget(invocation.getTarget());
         MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
         // 如果是insert操作， 或者 @SqlParser(filter = true) 跳过该方法解析 ， 不进行验证
-        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue(DELEGATE_MAPPED_STATEMENT);
+        MappedStatement mappedStatement = getMappedStatement(metaObject);
         if (SqlCommandType.INSERT.equals(mappedStatement.getSqlCommandType()) || getSqlParserInfo(metaObject)) {
             return invocation.proceed();
         }
-        BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
+        BoundSql boundSql = (BoundSql) metaObject.getValue(DELEGATE_BOUNDSQL);
         String originalSql = boundSql.getSql();
         Logger.debug("Check for SQL : " + originalSql);
 

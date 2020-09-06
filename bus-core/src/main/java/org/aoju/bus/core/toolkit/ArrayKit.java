@@ -37,12 +37,13 @@ import org.aoju.bus.core.lang.mutable.MutableInt;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class ArrayKit {
@@ -8844,6 +8845,24 @@ public class ArrayKit {
         final Object[] array = (Object[]) arrayObj;
         final Object[] result = newArray(componentType, array.length);
         System.arraycopy(array, 0, result, 0, array.length);
+        return result;
+    }
+
+    /**
+     * 按照指定规则，将一种类型的数组转换为另一种类型
+     *
+     * @param array         被转换的数组
+     * @param componentType 目标的元素类型
+     * @param func          转换规则函数
+     * @param <T>           原数组类型
+     * @param <R>           目标数组类型
+     * @return 转换后的数组
+     */
+    public static <T, R> R[] map(T[] array, Class<R> componentType, Function<? super T, ? extends R> func) {
+        final R[] result = newArray(componentType, array.length);
+        for (int i = 0; i < array.length; i++) {
+            result[i] = func.apply(array[i]);
+        }
         return result;
     }
 

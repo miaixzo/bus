@@ -42,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 它允许你连接到一个SSH服务器,并且可以使用端口转发,X11转发,文件传输等
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class SshKit {
@@ -244,6 +244,28 @@ public class SshKit {
                 session.setPortForwardingL(localPort, remoteHost, remotePort);
             } catch (JSchException e) {
                 throw new InstrumentException("From [{" + remoteHost + "}] mapping to [{" + localPort + "}] error！");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 绑定ssh服务端的serverPort端口, 到host主机的port端口上
+     *
+     * @param session  与ssh服务端建立的会话
+     * @param bindPort ssh服务端上要被绑定的端口
+     * @param host     转发到的host
+     * @param port     host上的端口
+     * @return 成功与否
+     * @throws InstrumentException 端口绑定失败异常
+     */
+    public static boolean bindRemotePort(Session session, int bindPort, String host, int port) throws InstrumentException {
+        if (session != null && session.isConnected()) {
+            try {
+                session.setPortForwardingR(bindPort, host, port);
+            } catch (JSchException e) {
+                throw new InstrumentException("From [{}] mapping to [{}] error！", bindPort, port);
             }
             return true;
         }

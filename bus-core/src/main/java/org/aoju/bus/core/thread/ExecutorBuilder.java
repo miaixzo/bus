@@ -32,8 +32,15 @@ import java.util.concurrent.*;
 /**
  * {@link ThreadPoolExecutor} 建造者
  *
+ * <pre>
+ *     1. 如果池中任务数  corePoolSize     - 放入立即执行
+ *     2. 如果池中任务数  corePoolSize     - 放入队列等待
+ *     3. 队列满                          - 新建线程立即执行
+ *     4. 执行中的线程 maxPoolSize         - 触发handler异常
+ * </pre>
+ *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {

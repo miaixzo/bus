@@ -39,7 +39,7 @@ import java.io.File;
  * 但是，如果外部进程是手动重新启动的，那么它将自动重新连接到外部进程
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public final class ExternalOfficeManager extends AbstractOfficeManager {

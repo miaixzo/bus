@@ -28,7 +28,7 @@ package org.aoju.bus.goalie.manual;
  * 解码data部分参数。如果想要在执行方法前改变业务参数，使用此功能。
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public interface DataDecoder {

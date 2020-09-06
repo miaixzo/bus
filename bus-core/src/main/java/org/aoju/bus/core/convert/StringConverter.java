@@ -28,14 +28,14 @@ package org.aoju.bus.core.convert;
  * 字符串转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class StringConverter extends AbstractConverter<String> {
 
     @Override
     protected String convertInternal(Object value) {
-        return convertToStr(value);
+        return convertString(value);
     }
 
 }

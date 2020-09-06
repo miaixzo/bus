@@ -50,7 +50,7 @@ import java.nio.file.Path;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -705,6 +705,43 @@ public class Image implements Serializable {
             );
         }
         return rectangle;
+    }
+
+    /**
+     * 描边，此方法为向内描边，会覆盖图片相应的位置
+     *
+     * @param color 描边颜色，默认黑色
+     * @param width 边框粗细
+     * @return this
+     */
+    public Image stroke(Color color, float width) {
+        return stroke(color, new BasicStroke(width));
+    }
+
+    /**
+     * 描边，此方法为向内描边，会覆盖图片相应的位置
+     *
+     * @param color  描边颜色，默认黑色
+     * @param stroke 描边属性，包括粗细、线条类型等，见{@link BasicStroke}
+     * @return this
+     */
+    public Image stroke(Color color, Stroke stroke) {
+        final BufferedImage image = ImageKit.toBufferedImage(getValidSrcImg());
+        int width = image.getWidth(null);
+        int height = image.getHeight(null);
+        Graphics2D g = image.createGraphics();
+
+        g.setColor(ObjectKit.defaultIfNull(color, Color.BLACK));
+        if (null != stroke) {
+            g.setStroke(stroke);
+        }
+
+        g.drawRect(0, 0, width - 1, height - 1);
+
+        g.dispose();
+        this.targetImage = image;
+
+        return this;
     }
 
 }

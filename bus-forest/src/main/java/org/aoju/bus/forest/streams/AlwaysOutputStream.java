@@ -31,7 +31,7 @@ import java.io.OutputStream;
  * 不关闭的输出流
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class AlwaysOutputStream extends OutputStream {

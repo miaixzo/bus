@@ -33,7 +33,7 @@ import java.util.*;
  * 枚举工具类
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class EnumKit {
@@ -157,7 +157,7 @@ public class EnumKit {
      */
     public static <E extends Enum<E>> E getEnumAt(Class<E> enumClass, int index) {
         final E[] enumConstants = enumClass.getEnumConstants();
-        return index < enumConstants.length ? enumConstants[index] : null;
+        return index >= 0 && index < enumConstants.length ? enumConstants[index] : null;
     }
 
     /**

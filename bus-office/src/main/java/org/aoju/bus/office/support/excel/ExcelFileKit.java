@@ -25,19 +25,17 @@
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.IoKit;
 import org.apache.poi.poifs.filesystem.FileMagic;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PushbackInputStream;
 
 /**
  * Excel文件工具类
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class ExcelFileKit {
@@ -50,9 +48,9 @@ public class ExcelFileKit {
      * @return 是否为XLS格式的Excel文件(HSSF)
      */
     public static boolean isXls(InputStream in) {
-        final PushbackInputStream pin = IoKit.toPushbackStream(in, 8);
+        final InputStream inputStream = FileMagic.prepareToCheckMagic(in);
         try {
-            return FileMagic.valueOf(pin) == FileMagic.OLE2;
+            return FileMagic.valueOf(inputStream) == FileMagic.OLE2;
         } catch (IOException e) {
             throw new InstrumentException(e);
         }

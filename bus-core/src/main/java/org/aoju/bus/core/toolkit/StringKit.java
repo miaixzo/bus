@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -59,24 +59,6 @@ public class StringKit {
      */
     public static String trim(CharSequence str) {
         return (null == str) ? null : trim(str, 0);
-    }
-
-    /**
-     * 分别去空格
-     *
-     * @param array 数组
-     * @return 数组
-     */
-    public static final String[] trim(String[] array) {
-        if (ArrayKit.isEmpty(array)) {
-            return array;
-        }
-        String[] resultArray = new String[array.length];
-        for (int i = 0; i < array.length; i++) {
-            String param = array[i];
-            resultArray[i] = trim(param);
-        }
-        return resultArray;
     }
 
     /**
@@ -114,6 +96,24 @@ public class StringKit {
         }
 
         return str.toString();
+    }
+
+    /**
+     * 字符串去空格
+     *
+     * @param array 数组
+     * @return 数组
+     */
+    public static String[] trim(String[] array) {
+        if (ArrayKit.isEmpty(array)) {
+            return array;
+        }
+        String[] resultArray = new String[array.length];
+        for (int i = 0; i < array.length; i++) {
+            String param = array[i];
+            resultArray[i] = trim(param);
+        }
+        return resultArray;
     }
 
     /**
@@ -2369,6 +2369,9 @@ public class StringKit {
      * @return 位置
      */
     public static int indexOf(final CharSequence str, char searchChar, int start, int end) {
+        if (isEmpty(str)) {
+            return Symbol.C_HYPHEN + Symbol.C_ONE;
+        }
         final int len = str.length();
         if (start < 0 || start > len) {
             start = 0;

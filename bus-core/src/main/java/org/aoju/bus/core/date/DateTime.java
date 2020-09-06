@@ -51,7 +51,7 @@ import java.util.TimeZone;
  * 包装java.utils.Date
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class DateTime extends Date {
@@ -603,7 +603,7 @@ public class DateTime extends Date {
      * @see DateKit#isLeapYear(int)
      */
     public boolean isLeapYear() {
-        return DateKit.isLeapYear(year());
+        return new DateKit().isLeapYear(year());
     }
 
     /**

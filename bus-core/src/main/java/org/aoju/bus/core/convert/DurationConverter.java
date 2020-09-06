@@ -31,7 +31,7 @@ import java.time.temporal.TemporalAmount;
  * {@link Duration}对象转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class DurationConverter extends AbstractConverter<Duration> {
@@ -43,7 +43,7 @@ public class DurationConverter extends AbstractConverter<Duration> {
         } else if (value instanceof Long) {
             return Duration.ofMillis((Long) value);
         } else {
-            return Duration.parse(convertToStr(value));
+            return Duration.parse(convertString(value));
         }
     }
 

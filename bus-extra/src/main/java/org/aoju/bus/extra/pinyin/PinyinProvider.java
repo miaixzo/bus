@@ -22,27 +22,58 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.annotation;
+package org.aoju.bus.extra.pinyin;
 
-import org.aoju.bus.starter.swagger.SwaggerConfiguration;
-import org.springframework.context.annotation.Import;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.lang.annotation.*;
+import org.aoju.bus.core.toolkit.ArrayKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 /**
- * 启用 swagger
+ * 拼音服务提供者
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
-@Inherited
-@Documented
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@EnableSwagger2
-@Import(SwaggerConfiguration.class)
-public @interface EnableSwagger {
+public interface PinyinProvider {
+
+    /**
+     * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
+     *
+     * @param c 任意字符，汉字返回拼音，非汉字原样返回
+     * @return 汉字返回拼音，非汉字原样返回
+     */
+    String getPinyin(char c);
+
+    /**
+     * 获取字符串对应的完整拼音，非中文返回原字符
+     *
+     * @param str       字符串
+     * @param separator 拼音之间的分隔符
+     * @return 拼音
+     */
+    String getPinyin(String str, String separator);
+
+    /**
+     * 将输入字符串转为拼音首字母，其它字符原样返回
+     *
+     * @param c 任意字符，汉字返回拼音，非汉字原样返回
+     * @return 汉字返回拼音，非汉字原样返回
+     */
+    default char getFirstLetter(char c) {
+        return getPinyin(c).charAt(0);
+    }
+
+    /**
+     * 将输入字符串转为拼音首字母，其它字符原样返回
+     *
+     * @param str       任意字符，汉字返回拼音，非汉字原样返回
+     * @param separator 分隔符
+     * @return 汉字返回拼音，非汉字原样返回
+     */
+    default String getFirstLetter(String str, String separator) {
+        final String splitSeparator = StringKit.isEmpty(separator) ? "#" : separator;
+        final String[] split = StringKit.split(getPinyin(str, splitSeparator), splitSeparator);
+        return ArrayKit.join(split, separator, (s) -> String.valueOf(s.length() > 0 ? s.charAt(0) : ""));
+    }
 
 }

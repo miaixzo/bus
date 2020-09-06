@@ -22,89 +22,98 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.swagger;
+package org.aoju.bus.extra.json;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.starter.BusXExtend;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
 
 /**
- * swagger配置项
+ * JSON服务提供者
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
-@Data
-@ConfigurationProperties(prefix = BusXExtend.SWAGGER)
-public class SwaggerProperties {
+public interface JsonProvider {
 
     /**
-     * swagger会解析的包路径
-     **/
-    private String basePackage = Normal.EMPTY;
-
-    /**
-     * 标题
-     **/
-    private String title = Normal.EMPTY;
-
-    /**
-     * 描述
-     **/
-    private String description = Normal.EMPTY;
-
-    /**
-     * 版本
-     **/
-    private String version = Normal.EMPTY;
-
-    /**
-     * 许可证
-     **/
-    private String license = Normal.EMPTY;
-
-    /**
-     * 许可证URL
-     **/
-    private String licenseUrl = Normal.EMPTY;
-
-    /**
-     * 服务条款URL
-     **/
-    private String termsOfServiceUrl = Normal.EMPTY;
-
-    /**
-     * host信息
-     **/
-    private String host = Normal.EMPTY;
-
-    /**
-     * 联系人信息
+     * 解析对象为Json字符串
+     *
+     * @param object 要转换的对象
+     * @return 返回对象的json字符串
      */
-    private Contact contact = new Contact();
+    String toJsonString(Object object);
 
-    @Data
-    @NoArgsConstructor
-    public static class Contact {
+    /**
+     * 解析对象为Json字符串
+     *
+     * @param object 要转换的对象
+     * @param format 日期格式，如"yyyy年MM月dd日 HH时mm分ss秒"
+     * @return 返回对象的json字符串
+     */
+    String toJsonString(Object object, String format);
 
-        /**
-         * 联系人
-         **/
-        private String name = Normal.EMPTY;
+    /**
+     * 解析json字符串到指定类型的对象
+     *
+     * @param json  要解析的json字符串
+     * @param clazz 类对象class
+     * @param <T>   泛型参数类型
+     * @return 返回解析后的对象
+     */
+    <T> T toPojo(String json, Class<T> clazz);
 
-        /**
-         * 联系人url
-         **/
-        private String url = Normal.EMPTY;
+    /**
+     * 从Map转换到对象
+     *
+     * @param map   Map对象
+     * @param clazz 与Map可兼容的对象类型
+     * @param <T>   泛型参数类型
+     * @return 返回Map转换得到的对象
+     */
+    <T> T toPojo(Map map, Class<T> clazz);
 
-        /**
-         * 联系人email
-         **/
-        private String email = Normal.EMPTY;
+    /**
+     * 解析json字符串到List
+     *
+     * @param json 要解析的json字符串
+     * @return 返回List
+     */
+    List toList(String json);
 
-    }
+    /**
+     * 按指定的Type解析json字符串到List
+     *
+     * @param json 要解析的json字符串
+     * @param type {@link Type}
+     * @param <T>  泛型参数类型
+     * @return 返回List
+     */
+    <T> List<T> toList(String json, final Type type);
+
+    /**
+     * 解析json字符串到Map
+     *
+     * @param json 要解析的json字符串
+     * @return 返回Map
+     */
+    Map toMap(String json);
+
+    /**
+     * 转换对象到Map
+     *
+     * @param object 与Map可兼容的对象
+     * @return 返回Map对象
+     */
+    Map toMap(Object object);
+
+    /**
+     * 判断是否为标准json
+     *
+     * @param json 字符串
+     * @return the true/false
+     */
+    boolean isJson(String json);
 
 }

@@ -47,7 +47,7 @@ import java.util.*;
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class BeanKit {
@@ -498,6 +498,34 @@ public class BeanKit {
      */
     public static <T> T toBean(Class<T> beanClass, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
         return fillBean(ReflectKit.newInstance(beanClass), valueProvider, copyOptions);
+    }
+
+    /**
+     * 对象或Map转Bean，忽略字段转换时发生的异常
+     *
+     * @param <T>    转换的Bean类型
+     * @param source Bean对象或Map
+     * @param clazz  目标的Bean类型
+     * @return Bean对象
+     */
+    public static <T> T toBeanIgnoreError(Object source, Class<T> clazz) {
+        return toBean(source, clazz, CopyOptions.create().setIgnoreError(true));
+    }
+
+    /**
+     * 对象或Map转Bean，忽略字段转换时发生的异常
+     *
+     * @param <T>         转换的Bean类型
+     * @param source      Bean对象或Map
+     * @param clazz       目标的Bean类型
+     * @param ignoreError 是否忽略注入错误
+     * @return Bean对象
+     */
+    public static <T> T toBeanIgnoreCase(Object source, Class<T> clazz, boolean ignoreError) {
+        return toBean(source, clazz,
+                CopyOptions.create()
+                        .setIgnoreCase(true)
+                        .setIgnoreError(ignoreError));
     }
 
     /**

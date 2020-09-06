@@ -33,14 +33,13 @@ import java.util.concurrent.atomic.AtomicReference;
  * {@link AtomicReference}转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class AtomicReferenceConverter extends AbstractConverter<AtomicReference> {
 
     @Override
     protected AtomicReference<?> convertInternal(Object value) {
-
         //尝试将值转换为Reference泛型的类型
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(AtomicReference.class);
@@ -50,7 +49,6 @@ public class AtomicReferenceConverter extends AbstractConverter<AtomicReference>
         if (null == targetValue) {
             targetValue = value;
         }
-
         return new AtomicReference<>(targetValue);
     }
 

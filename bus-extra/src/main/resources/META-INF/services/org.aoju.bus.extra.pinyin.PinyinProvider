@@ -1,0 +1,3 @@
+org.aoju.bus.extra.pinyin.provider.JPinyinProvider
+org.aoju.bus.extra.pinyin.provider.Pinyin4JProvider
+org.aoju.bus.extra.pinyin.provider.TinyPinyinProvider

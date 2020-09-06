@@ -27,6 +27,7 @@ package org.aoju.bus.starter.mapper;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.starter.sensitive.SensitiveProperties;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -43,28 +44,30 @@ import java.io.FileNotFoundException;
  * mybatis 配置
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties(value = {MybatisProperties.class})
 public class MybatisConfiguration {
 
     @Autowired
-    MybatisProperties properties;
+    MybatisProperties mybatisProperties;
+    @Autowired(required = false)
+    SensitiveProperties sensitiveProperties;
 
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) {
         try {
             SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
             bean.setDataSource(dataSource);
-            if (StringKit.isNotBlank(this.properties.getTypeAliasesPackage())) {
-                bean.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
+            if (StringKit.isNotBlank(this.mybatisProperties.getTypeAliasesPackage())) {
+                bean.setTypeAliasesPackage(this.mybatisProperties.getTypeAliasesPackage());
             }
 
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            bean.setPlugins(MybatisPluginBuilder.build(this.properties));
+            bean.setPlugins(MybatisPluginBuilder.build(this.mybatisProperties, this.sensitiveProperties));
             try {
-                bean.setMapperLocations(resolver.getResources(this.properties.getXmlLocation()));
+                bean.setMapperLocations(resolver.getResources(this.mybatisProperties.getXmlLocation()));
             } catch (FileNotFoundException e) {
                 Logger.warn(e.getMessage());
             }

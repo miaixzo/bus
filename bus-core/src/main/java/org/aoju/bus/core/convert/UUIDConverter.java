@@ -30,14 +30,14 @@ import java.util.UUID;
  * UUID对象转换器转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class UUIDConverter extends AbstractConverter<UUID> {
 
     @Override
     protected UUID convertInternal(Object value) {
-        return UUID.fromString(convertToStr(value));
+        return UUID.fromString(convertString(value));
     }
 
 }

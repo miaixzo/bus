@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 字符转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class CharacterConverter extends AbstractConverter<Character> {
@@ -41,7 +41,7 @@ public class CharacterConverter extends AbstractConverter<Character> {
         if (value instanceof Boolean) {
             return BooleanKit.toCharacter((Boolean) value);
         } else {
-            final String valueStr = convertToStr(value);
+            final String valueStr = convertString(value);
             if (StringKit.isNotBlank(valueStr)) {
                 return valueStr.charAt(0);
             }

@@ -30,14 +30,14 @@ import java.util.TimeZone;
  * TimeZone转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class TimeZoneConverter extends AbstractConverter<TimeZone> {
 
     @Override
     protected TimeZone convertInternal(Object value) {
-        return TimeZone.getTimeZone(convertToStr(value));
+        return TimeZone.getTimeZone(convertString(value));
     }
 
 }

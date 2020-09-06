@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * 自动进行参数处理实现类
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class AutoValidateAdvice {

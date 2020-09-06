@@ -42,7 +42,7 @@ import java.util.List;
  * Graphics card info obtained by lshw
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 @Immutable

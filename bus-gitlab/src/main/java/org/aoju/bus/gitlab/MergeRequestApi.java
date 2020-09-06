@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab merge request calls.
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @see <a href="https://docs.gitlab.com/ce/api/merge_requests.html">Merge requests API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/merge_request_approvals.html">Merge request approvals API at GitLab</a>
  * @since JDK 1.8+

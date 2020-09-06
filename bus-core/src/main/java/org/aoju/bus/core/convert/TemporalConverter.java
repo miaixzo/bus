@@ -51,7 +51,7 @@ import java.util.Objects;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
@@ -113,7 +113,7 @@ public class TemporalConverter extends AbstractConverter<TemporalAccessor> {
             final Calendar calendar = (Calendar) value;
             return parseFromInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
         } else {
-            return parseFromCharSequence(convertToStr(value));
+            return parseFromCharSequence(convertString(value));
         }
     }
 

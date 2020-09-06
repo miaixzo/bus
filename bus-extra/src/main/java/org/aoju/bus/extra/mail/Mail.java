@@ -43,7 +43,7 @@ import java.util.Date;
  * 邮件发送客户端
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class Mail {
@@ -256,6 +256,12 @@ public class Mail {
         try {
             return doSend();
         } catch (MessagingException e) {
+            if (e instanceof SendFailedException) {
+                // 当地址无效时，显示更加详细的无效地址信息
+                final Address[] invalidAddresses = ((SendFailedException) e).getInvalidAddresses();
+                final String msg = StringKit.format("Invalid Addresses: {}", ArrayKit.toString(invalidAddresses));
+                throw new InstrumentException(msg, e);
+            }
             throw new InstrumentException(e);
         }
     }

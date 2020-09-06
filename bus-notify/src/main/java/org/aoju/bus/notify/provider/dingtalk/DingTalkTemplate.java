@@ -33,7 +33,7 @@ import org.aoju.bus.notify.magic.Template;
  * 钉钉通知模版
  *
  * @author Justubborn
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK1.8+
  */
 @Getter

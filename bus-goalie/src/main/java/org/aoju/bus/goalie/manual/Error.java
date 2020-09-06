@@ -29,7 +29,7 @@ package org.aoju.bus.goalie.manual;
  *
  * @param <T> 状态码类型，一般为Integer或String
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public interface Error<T> {

@@ -48,7 +48,7 @@ import java.util.List;
  * 表示正在执行的office程序的实例.
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class OfficeProcess {

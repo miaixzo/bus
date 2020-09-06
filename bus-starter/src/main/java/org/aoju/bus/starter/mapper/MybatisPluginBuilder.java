@@ -24,44 +24,59 @@
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.pager.plugin.PageInterceptor;
+import org.aoju.bus.starter.sensitive.SensitiveProperties;
 import org.aoju.bus.starter.sensitive.SensitiveResultSetHandler;
 import org.aoju.bus.starter.sensitive.SensitiveStatementHandler;
 import org.apache.ibatis.plugin.Interceptor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
  * mybatis 插件启用
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class MybatisPluginBuilder {
 
-    protected static Interceptor[] plugins = {};
+    public static List<Interceptor> plugins = new ArrayList<>();
 
-    public static Interceptor[] build(MybatisProperties properties) {
-        if (ObjectKit.isNotEmpty(properties)) {
-            PageInterceptor interceptor = new PageInterceptor();
+    public static Interceptor[] build(MybatisProperties mybatisProperties,
+                                      SensitiveProperties sensitiveProperties) {
+        if (ObjectKit.isNotEmpty(mybatisProperties)) {
             Properties p = new Properties();
-            p.setProperty("autoDelimitKeywords", properties.getAutoDelimitKeywords());
-            p.setProperty("reasonable", properties.getReasonable());
-            p.setProperty("supportMethodsArguments", properties.getSupportMethodsArguments());
-            p.setProperty("returnPageInfo", properties.getReturnPageInfo());
-            p.setProperty("params", properties.getParams());
+            p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
+            p.setProperty("reasonable", mybatisProperties.getReasonable());
+            p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
+            p.setProperty("returnPageInfo", mybatisProperties.getReturnPageInfo());
+            p.setProperty("params", mybatisProperties.getParams());
+
+            PageInterceptor interceptor = new PageInterceptor();
             interceptor.setProperties(p);
 
-            plugins = new Interceptor[]{
+            List<Interceptor> list = CollKit.newArrayList(
                     interceptor,
                     new NatureSQLHandler(),
-                    new ExplainSQLHandler(),
-                    new SensitiveResultSetHandler(),
-                    new SensitiveStatementHandler()};
+                    new ExplainSQLHandler()
+            );
+
+            if (mybatisProperties.isRecordTime()) {
+                list.add(new RecordTimeHandler());
+            }
+
+            if (ObjectKit.isNotEmpty(sensitiveProperties)) {
+                list.add(new SensitiveResultSetHandler(sensitiveProperties));
+                list.add(new SensitiveStatementHandler(sensitiveProperties));
+            }
+            plugins.addAll(list);
         }
-        return plugins;
+        return plugins.stream().toArray(Interceptor[]::new);
     }
 
 }

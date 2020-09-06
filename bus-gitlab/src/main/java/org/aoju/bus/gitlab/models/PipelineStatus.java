@@ -34,7 +34,7 @@ import java.util.Map;
  * Enum for the various Pipeline status values.
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public enum PipelineStatus {

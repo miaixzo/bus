@@ -32,7 +32,7 @@ import java.net.URL;
  * URL对象转换器
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class URLConverter extends AbstractConverter<URL> {
@@ -47,7 +47,7 @@ public class URLConverter extends AbstractConverter<URL> {
             if (value instanceof URI) {
                 return ((URI) value).toURL();
             }
-            return new URL(convertToStr(value));
+            return new URL(convertString(value));
         } catch (Exception e) {
             // Ignore Exception
         }
