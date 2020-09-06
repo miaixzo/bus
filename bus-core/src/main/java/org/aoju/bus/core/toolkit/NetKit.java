@@ -510,9 +510,12 @@ public class NetKit {
             return null;
         }
 
-        byte[] mac;
+        byte[] mac = null;
         try {
-            mac = NetworkInterface.getByInetAddress(inetAddress).getHardwareAddress();
+            final NetworkInterface networkInterface = NetworkInterface.getByInetAddress(inetAddress);
+            if (null != networkInterface) {
+                mac = networkInterface.getHardwareAddress();
+            }
         } catch (SocketException e) {
             throw new InstrumentException(e);
         }
