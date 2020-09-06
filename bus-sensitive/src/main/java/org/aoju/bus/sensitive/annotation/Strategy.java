@@ -35,7 +35,7 @@ import java.lang.annotation.*;
  * 2.如果有多个策略, 则优先执行一次满足条件的策略
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 @Documented

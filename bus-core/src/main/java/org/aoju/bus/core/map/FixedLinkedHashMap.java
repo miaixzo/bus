@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class FixedLinkedHashMap<K, V> extends LinkedHashMap<K, V> {

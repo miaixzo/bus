@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  * See <a href="https://docs.gitlab.com/ce/api/wikis.html">Wikis API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class WikisApi extends AbstractApi {

@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
  * 接口定义，负责存放定义的接口信息
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public class ApiDefinition implements ApiMeta {

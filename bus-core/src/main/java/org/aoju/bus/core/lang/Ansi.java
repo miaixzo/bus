@@ -41,7 +41,7 @@ import java.util.List;
  * 注意:同时出现多种组合FG颜色或BG颜色,只有最后一个会显示
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class Ansi {

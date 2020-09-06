@@ -33,7 +33,7 @@ import org.aoju.bus.crypto.asymmetric.KeyType;
  * 负责各类加解密
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public class ApiSafety implements Safety {

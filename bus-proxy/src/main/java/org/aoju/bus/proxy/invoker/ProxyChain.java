@@ -30,7 +30,7 @@ import org.aoju.bus.proxy.Invocation;
  * 拦截层
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public interface ProxyChain extends Invocation {

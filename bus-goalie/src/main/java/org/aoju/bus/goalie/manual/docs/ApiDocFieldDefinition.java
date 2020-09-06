@@ -33,7 +33,7 @@ import java.util.List;
  * 文档参数字段信息
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 @Data

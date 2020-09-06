@@ -36,7 +36,7 @@ import java.util.Map;
  * 云信消息
  *
  * @author wubenhui
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class NeteaseSendProvider extends NeteaseProvider {

@@ -28,7 +28,7 @@ package org.aoju.bus.goalie.manual;
  * 负责对返回结果进行封装
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public class ApiResultCreator implements ResultCreator {

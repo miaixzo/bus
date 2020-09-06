@@ -40,7 +40,7 @@ import java.util.Map;
  * 负责结果输出
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8++
  */
 public class ApiWriter implements Writer {

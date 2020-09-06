@@ -50,7 +50,7 @@ import java.security.Key;
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class HMac implements Serializable {

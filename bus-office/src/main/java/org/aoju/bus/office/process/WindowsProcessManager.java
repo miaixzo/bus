@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * 需要wmic.exe和taskkill.exe，至少在Windows XP、Windows Vista和Windows 7上可用(家庭版除外)
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class WindowsProcessManager extends AbstractProcessManager {

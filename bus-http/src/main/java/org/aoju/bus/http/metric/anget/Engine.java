@@ -33,7 +33,7 @@ import java.util.List;
  * 浏览器解析引擎
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class Engine extends UserAgent {

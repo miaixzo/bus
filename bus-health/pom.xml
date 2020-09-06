@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-health</artifactId>
-    <version>6.0.8</version>
+    <version>6.0.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

@@ -31,7 +31,7 @@ import java.io.IOException;
  * 即使底层接收器抛出了IOExceptions
  *
  * @author Kimi Liu
- * @version 6.0.8
+ * @version 6.0.9
  * @since JDK 1.8+
  */
 public class FaultHideSink extends DelegateSink {
