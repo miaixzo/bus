@@ -22,13 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie;
+package org.aoju.bus.goalie.handler;
 
 import org.aoju.bus.core.Version;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.starter.goalie.annotation.TerminalVersion;
+import org.aoju.bus.goalie.annotation.TerminalVersion;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,26 +39,27 @@ import java.util.regex.Pattern;
 /**
  * @author Kimi Liu
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
-public class RequestConditions extends AbstractRequestCondition<RequestConditions> {
+public class VersionRequestCondition extends AbstractRequestCondition<VersionRequestCondition> {
 
     private final Set<TerminalVersionExpression> expressions;
 
-    protected RequestConditions(Set<TerminalVersionExpression> expressions) {
+    protected VersionRequestCondition(Set<TerminalVersionExpression> expressions) {
         this.expressions = expressions;
     }
 
-    public RequestConditions(String[] stringExpressions) {
+    public VersionRequestCondition(String[] stringExpressions) {
+        // 待实现，适配string，可以使用正则快速匹配
         expressions = Collections.unmodifiableSet(parseByExpression(stringExpressions));
     }
 
-    public RequestConditions(TerminalVersion[] terminalVersions) {
+    public VersionRequestCondition(TerminalVersion[] terminalVersions) {
         expressions = Collections.unmodifiableSet(parseByTerminalVersion(terminalVersions));
     }
 
     private static Set<TerminalVersionExpression> parseByTerminalVersion(TerminalVersion[] terminalVersions) {
-        Set<TerminalVersionExpression> expressions = new LinkedHashSet<>();
+        Set<TerminalVersionExpression> expressions = new LinkedHashSet<TerminalVersionExpression>();
         for (TerminalVersion terminalVersion : terminalVersions) {
             expressions.add(new TerminalVersionExpression(terminalVersion.terminals(), terminalVersion.version(), terminalVersion.op()));
         }
@@ -105,27 +106,25 @@ public class RequestConditions extends AbstractRequestCondition<RequestCondition
         return terminalExpressions;
     }
 
-
     @Override
     protected Collection<?> getContent() {
         return this.expressions;
     }
 
-    //同param,一项不满足，即匹配失败
     @Override
     protected String getToStringInfix() {
         return " && ";
     }
 
     @Override
-    public RequestConditions combine(RequestConditions other) {
+    public VersionRequestCondition combine(VersionRequestCondition other) {
         Set<TerminalVersionExpression> set = new LinkedHashSet<TerminalVersionExpression>(this.expressions);
         set.addAll(other.expressions);
-        return new RequestConditions(set);
+        return new VersionRequestCondition(set);
     }
 
     @Override
-    public RequestConditions getMatchingCondition(HttpServletRequest request) {
+    public VersionRequestCondition getMatchingCondition(HttpServletRequest request) {
         for (TerminalVersionExpression expression : expressions) {
             if (!expression.match(request)) {//同param condition,任意一个失败则失败
                 return null;
@@ -135,7 +134,7 @@ public class RequestConditions extends AbstractRequestCondition<RequestCondition
     }
 
     @Override
-    public int compareTo(RequestConditions other, HttpServletRequest request) {
+    public int compareTo(VersionRequestCondition other, HttpServletRequest request) {
         return 0;
     }
 
@@ -143,11 +142,9 @@ public class RequestConditions extends AbstractRequestCondition<RequestCondition
 
         public static final String HEADER_VERSION = "cv";
         public static final String HEADER_TERMINAL = "terminal";
-
-
+        private final String version;
+        private final Version operator;
         private int[] terminals;
-        private String version;
-        private Version operator;
 
         public TerminalVersionExpression(int[] terminals, String version, Version operator) {
             Arrays.sort(terminals);
@@ -186,31 +183,29 @@ public class RequestConditions extends AbstractRequestCondition<RequestCondition
             return builder.toString();
         }
 
-
         @Override
         public boolean equals(Object obj) {
             if (this == obj) {
                 return true;
             }
             if (obj != null && obj instanceof TerminalVersionExpression) {
-                //暂定最终的表达式结果一致确定唯一性，后期有需要调整
+                // 暂定最终的表达式结果一致确定唯一性，后期有需要调整
                 return this.toString().equalsIgnoreCase(obj.toString());
             }
             return false;
         }
 
-        //同上，如果需要复杂判定，则需要自己实现hashcode
         @Override
         public int hashCode() {
             return this.toString().hashCode();
         }
 
         public final boolean match(HttpServletRequest request) {
-            //匹配客户端类型
+            // 匹配客户端类型
             if (this.terminals != null && this.terminals.length > 0) {
                 int terminal = getTerminal(request);
                 int i = Arrays.binarySearch(terminals, terminal);
-                //未找到则匹配失败
+                // 未找到则匹配失败
                 if (i < 0) {
                     return false;
                 }
@@ -219,18 +214,18 @@ public class RequestConditions extends AbstractRequestCondition<RequestCondition
                 String clientVersion = getVersion(request);
                 String checkVersion = getVersion();
                 if (StringKit.isBlank(clientVersion)) {
-                    //尽量保证快速失败
+                    // 尽量保证快速失败
                     return false;
                 }
                 int i = clientVersion.compareToIgnoreCase(checkVersion);
                 switch (operator) {
                     case GT:
                         return i > 0;
-                    case GE:
+                    case GTE:
                         return i >= 0;
                     case LT:
                         return i < 0;
-                    case LE:
+                    case LTE:
                         return i <= 0;
                     case EQ:
                         return i == 0;

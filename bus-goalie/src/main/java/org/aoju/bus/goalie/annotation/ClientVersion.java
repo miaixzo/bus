@@ -22,26 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.annotation;
+package org.aoju.bus.goalie.annotation;
 
-import org.aoju.bus.core.Version;
-import org.aoju.bus.core.lang.Normal;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TerminalVersion {
+@Documented
+@Inherited
+public @interface ClientVersion {
 
-    int[] terminals() default {};
+    TerminalVersion[] value() default {};
 
-    Version op() default Version.NIL;
-
-    String version() default Normal.EMPTY;
+    /**
+     * @return 从string表达式解析，和上述效果一致
+     */
+    String[] expression() default {};
 
 }

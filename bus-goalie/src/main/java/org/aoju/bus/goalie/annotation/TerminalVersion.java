@@ -22,26 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.annotation;
+package org.aoju.bus.goalie.annotation;
 
+import org.aoju.bus.core.Version;
 import org.aoju.bus.core.lang.Normal;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * 注解用于生成RequestMappingInfo时候直接拼接路径
- * 规则，自动放置于路径开始部分；不做method版本，避免难以维护
- *
  * @author Kimi Liu
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
-@Documented
-@Inherited
-@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ApiVersion {
+public @interface TerminalVersion {
 
-    String value() default Normal.EMPTY;
+    int[] terminals() default {};
+
+    Version op() default Version.NIL;
+
+    String version() default Normal.EMPTY;
 
 }

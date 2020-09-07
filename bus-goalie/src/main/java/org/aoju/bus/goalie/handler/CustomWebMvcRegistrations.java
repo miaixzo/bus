@@ -22,90 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.annotation;
+package org.aoju.bus.goalie.handler;
 
-import org.aoju.bus.core.lang.Normal;
-import org.springframework.core.annotation.AliasFor;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.lang.annotation.*;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
+ * spring boot专用，避免继承webconfigurationsupport对spring的自动配置侵入和破坏
+ *
  * @author Kimi Liu
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
-@Documented
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@RequestMapping
-@ApiVersion
-@ClientVersion
-public @interface MethodMapping {
+public class CustomWebMvcRegistrations implements WebMvcRegistrations {
 
-    /**
-     * Alias for {@link RequestMapping#name}
-     *
-     * @return String
-     */
-    @AliasFor(annotation = RequestMapping.class)
-    String name() default "";
+    @Override
+    public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
+        return new CustomRequestMappingHandlerMapping();
+    }
 
-    /**
-     * Alias for {@link RequestMapping#value}
-     *
-     * @return String[]
-     */
-    @AliasFor(annotation = RequestMapping.class)
-    String[] value() default {};
+    @Override
+    public RequestMappingHandlerAdapter getRequestMappingHandlerAdapter() {
+        return null;
+    }
 
-    /**
-     * Alias for {@link RequestMapping#path}
-     *
-     * @return String[]
-     */
-    @AliasFor(annotation = RequestMapping.class)
-    String[] path() default {};
-
-    /**
-     * Alias for {@link RequestMapping#params}
-     *
-     * @return String[]
-     */
-    @AliasFor(annotation = RequestMapping.class)
-    String[] params() default {};
-
-    /**
-     * Alias for {@link RequestMapping#headers}
-     *
-     * @return the String[]
-     */
-    @AliasFor(annotation = RequestMapping.class)
-    String[] headers() default {};
-
-    /**
-     * Alias for {@link RequestMapping#consumes}
-     *
-     * @return String[]
-     */
-    @AliasFor(annotation = RequestMapping.class)
-    String[] consumes() default {};
-
-    /**
-     * Alias for {@link RequestMapping#produces}
-     *
-     * @return String[]
-     */
-    @AliasFor(annotation = RequestMapping.class)
-    String[] produces() default {};
-
-    @AliasFor(annotation = ApiVersion.class, attribute = "value")
-    String apiVersion() default Normal.EMPTY;
-
-    @AliasFor(annotation = ClientVersion.class, attribute = "value")
-    TerminalVersion[] terminalVersion() default {};
-
-    @AliasFor(annotation = ClientVersion.class, attribute = "expression")
-    String[] terminalExpression() default {};
+    @Override
+    public ExceptionHandlerExceptionResolver getExceptionHandlerExceptionResolver() {
+        return null;
+    }
 
 }

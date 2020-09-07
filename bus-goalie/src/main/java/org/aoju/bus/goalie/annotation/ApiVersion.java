@@ -22,35 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie;
+package org.aoju.bus.goalie.annotation;
 
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.aoju.bus.core.lang.Normal;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+
+import java.lang.annotation.*;
 
 /**
- * spring boot专用，避免继承WebMvcConfigurationSupport对spring的自动配置侵入和破坏
+ * 注解用于生成 {@link RequestMappingInfo} 时候直接拼接路径
+ * 规则，自动放置于路径开始部分；不做method做版本，避免难以维护
  *
  * @author Kimi Liu
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
-public class WebMvcRegistration implements WebMvcRegistrations {
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+public @interface ApiVersion {
 
-    @Override
-    public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
-        return new RequestHandlerMapping();
-    }
-
-    @Override
-    public RequestMappingHandlerAdapter getRequestMappingHandlerAdapter() {
-        return null;
-    }
-
-    @Override
-    public ExceptionHandlerExceptionResolver getExceptionHandlerExceptionResolver() {
-        return null;
-    }
+    String value() default Normal.EMPTY;
 
 }

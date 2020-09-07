@@ -24,19 +24,22 @@
  ********************************************************************************/
 package org.aoju.bus.starter.goalie;
 
+import org.aoju.bus.goalie.handler.CustomWebMvcRegistrations;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Bean;
 
 /**
  * @author Kimi Liu
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK 1.8++
  */
+@ConditionalOnWebApplication
 public class GoalieConfiguration {
 
     @Bean
     public WebMvcRegistrations customWebMvcRegistrations() {
-        return new WebMvcRegistration();
+        return new CustomWebMvcRegistrations();
     }
 
 }
