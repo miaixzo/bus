@@ -2001,7 +2001,7 @@ public class DateKit extends GregorianCalendar {
 
             final int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
             final boolean isLastDayOfMonthBirth = dayOfMonthBirth == cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            if ((false == isLastDayOfMonth || false == isLastDayOfMonthBirth) && dayOfMonth < dayOfMonthBirth) {
+            if ((!isLastDayOfMonth || !isLastDayOfMonthBirth) && dayOfMonth < dayOfMonthBirth) {
                 // 如果生日在当月，但是未达到生日当天的日期，年龄减一
                 age--;
             }
@@ -2094,13 +2094,7 @@ public class DateKit extends GregorianCalendar {
      */
     public static int compareWithNow(long date) {
         long now = timestamp();
-        if (date > now) {
-            return 1;
-        } else if (date < now) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return Long.compare(date, now);
     }
 
     /**
