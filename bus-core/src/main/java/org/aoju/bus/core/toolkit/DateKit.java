@@ -3915,7 +3915,7 @@ public class DateKit extends GregorianCalendar {
     }
 
     /**
-     * <p>@title getAge </p>
+     * <p>@title getChineseAge </p>
      * <p>@description 计算年龄, 返回几周岁几个月几天 </p>
      *
      * @param birthday   出生日期:yyyy-MM-dd
