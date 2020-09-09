@@ -2023,7 +2023,7 @@ public class DateKit extends GregorianCalendar {
      */
     public static String getAge(String birthDay, String dateToCompare) {
         if (null == birthDay || birthDay.trim().length() == 0) {
-            throw new IllegalArgumentException("birthday must not be null");
+            throw new IllegalArgumentException("birthDay must not be null");
         }
         if (null == dateToCompare || dateToCompare.trim().length() == 0) {
             dateToCompare = Fields.NORM_DATE_FORMAT.format(new Date());
@@ -2049,7 +2049,7 @@ public class DateKit extends GregorianCalendar {
         int days = nowDay - startDay;
 
         if (years <= 0 && months <= 0 && days < 0) {
-            throw new IllegalArgumentException("targetDate must be greater than birthday");
+            throw new IllegalArgumentException("dateToCompare must be greater than birthDay");
         }
 
         return (years > 0 ? (years + "周岁") : "") + (months > 0 ? (months + "个月") : "") + ((days > 0) ? days : ("差" + Math.abs(days))) + "天";
