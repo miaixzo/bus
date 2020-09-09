@@ -2013,6 +2013,47 @@ public class DateKit extends GregorianCalendar {
         return age;
     }
 
+    /**
+     * <p>@title getChineseAge </p>
+     * <p>@description 计算年龄, 返回几周岁几个月几天 </p>
+     *
+     * @param birthDay      出生日期:yyyy-MM-dd
+     * @param dateToCompare 对比日期: yyyy-MM-dd, 默认当前系统日期
+     * @return java.lang.String 返回几周岁几个月几天: 如 6 周岁 3 个月 2 天，1 周岁差 8 天
+     */
+    public static String getAge(String birthDay, String dateToCompare) {
+        if (null == birthDay || birthDay.trim().length() == 0) {
+            throw new IllegalArgumentException("birthday must not be null");
+        }
+        if (null == dateToCompare || dateToCompare.trim().length() == 0) {
+            dateToCompare = Fields.NORM_DATE_FORMAT.format(new Date());
+        }
+        if (birthDay.length() > 10) {
+            birthDay = birthDay.substring(0, 10);
+        }
+        if (dateToCompare.length() > 10) {
+            dateToCompare = dateToCompare.substring(0, 10);
+        }
+
+        int years = (Integer.parseInt(dateToCompare.substring(0, 4)) - Integer.parseInt(birthDay.substring(0, 4))) - 1;
+        int startMonth = Integer.parseInt(birthDay.substring(5, 7));
+        int nowMonth = Integer.parseInt(dateToCompare.substring(5, 7));
+        int startDay = Integer.parseInt(birthDay.substring(8, 10));
+        int nowDay = Integer.parseInt(dateToCompare.substring(8, 10));
+
+        int months = (startMonth > nowMonth) ? (12 - startMonth + nowMonth) : (12 - nowMonth + startMonth);
+        if (months == 12) {
+            years++;
+            months = 0;
+        }
+        int days = nowDay - startDay;
+
+        if (years <= 0 && months <= 0 && days < 0) {
+            throw new IllegalArgumentException("targetDate must be greater than birthday");
+        }
+
+        return (years > 0 ? (years + "周岁") : "") + (months > 0 ? (months + "个月") : "") + ((days > 0) ? days : ("差" + Math.abs(days))) + "天";
+    }
 
     /**
      * 通过给定的日期格式解析日期时间字符串
@@ -3912,49 +3953,6 @@ public class DateKit extends GregorianCalendar {
         other.leapMonth = leapMonth;
         other.isLeapMonth = isLeapMonth;
         return other;
-    }
-
-    /**
-     * <p>@title getChineseAge </p>
-     * <p>@description 计算年龄, 返回几周岁几个月几天 </p>
-     *
-     * @param birthday   出生日期:yyyy-MM-dd
-     * @param targetDate 对比日期: yyyy-MM-dd, 默认当前系统日期
-     * @return java.lang.String 返回几周岁几个月几天: 如 6 周岁 3 个月 2 天，1 周岁差 8 天
-     */
-    public static String getChineseAge(String birthday, String targetDate) {
-        if (null == birthday || birthday.trim().length() == 0) {
-            throw new IllegalArgumentException("birthday must not be null");
-        }
-        if (null == targetDate || targetDate.trim().length() == 0) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            targetDate = format.format(new Date());
-        }
-        if (birthday.length() > 10) {
-            birthday = birthday.substring(0, 10);
-        }
-        if (targetDate.length() > 10) {
-            targetDate = targetDate.substring(0, 10);
-        }
-
-        int years = (Integer.parseInt(targetDate.substring(0, 4)) - Integer.parseInt(birthday.substring(0, 4))) - 1;
-        int startMonth = Integer.parseInt(birthday.substring(5, 7));
-        int nowMonth = Integer.parseInt(targetDate.substring(5, 7));
-        int startDay = Integer.parseInt(birthday.substring(8, 10));
-        int nowDay = Integer.parseInt(targetDate.substring(8, 10));
-
-        int months = (startMonth > nowMonth) ? (12 - startMonth + nowMonth) : (12 - nowMonth + startMonth);
-        if (months == 12) {
-            years++;
-            months = 0;
-        }
-        int days = nowDay - startDay;
-
-        if (years <= 0 && months <= 0 && days < 0) {
-            throw new IllegalArgumentException("targetDate must be greater than birthday");
-        }
-
-        return (years > 0 ? (years + "周岁") : "") + (months > 0 ? (months + "个月") : "") + ((days > 0) ? days : ("差" + Math.abs(days))) + "天";
     }
 
 }
