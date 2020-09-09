@@ -83,6 +83,10 @@ public class QrConfig {
      * 二维码中的Logo缩放的比例系数,如5表示长宽最小值的1/5
      */
     public int ratio = 6;
+    /**
+     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     */
+    protected Integer qrVersion = 0;
 
     /**
      * 构造,默认长宽为300
@@ -318,6 +322,26 @@ public class QrConfig {
     }
 
     /**
+     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     *
+     * @return 二维码中的信息量
+     */
+    public Integer getQrVersion() {
+        return qrVersion;
+    }
+
+    /**
+     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     *
+     * @param qrVersion 二维码中的信息量
+     * @return this
+     */
+    public QrConfig setQrVersion(Integer qrVersion) {
+        this.qrVersion = qrVersion;
+        return this;
+    }
+
+    /**
      * 转换为Zxing的二维码配置
      *
      * @return 配置
@@ -333,6 +357,9 @@ public class QrConfig {
         }
         if (null != this.margin) {
             hints.put(EncodeHintType.MARGIN, this.margin);
+        }
+        if (null != this.qrVersion) {
+            hints.put(EncodeHintType.QR_VERSION, this.qrVersion);
         }
         return hints;
     }

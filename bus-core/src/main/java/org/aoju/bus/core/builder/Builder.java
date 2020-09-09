@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.builder;
 
+import java.io.Serializable;
+
 /**
  * 建造者模式
  *
@@ -32,16 +34,19 @@ package org.aoju.bus.core.builder;
  * @version 6.0.9
  * @since JDK 1.8+
  */
-public interface Builder<T> {
+public interface Builder<T> extends Serializable {
 
     /**
-     * 构建
+     * 包装唯一键（System.identityHashCode()）使对象只有和自己 equals
+     * 此对象用于消除小概率下System.identityHashCode()产生的ID重复问题
      *
      * @return 被构建的对象
      */
     T build();
 
-    final class HashKey {
+    final class HashKey implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private final Object value;
         private final int id;

@@ -30,7 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注释用于绑定的注释
+ * 用于绑定的注解
  *
  * @author Kimi Liu
  * @version 6.0.9

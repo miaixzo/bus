@@ -45,6 +45,8 @@ public abstract class AbstractSqlHandler {
     public static final String DELEGATE_BOUNDSQL = "delegate.boundSql";
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
     public static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
+    public static final String MAPPEDSTATEMENT = "mappedStatement";
+
     /**
      * SQL 解析缓存
      * key 可能是 mappedStatement 的 ID,也可能是 class 的 name
@@ -75,6 +77,17 @@ public abstract class AbstractSqlHandler {
      */
     protected static MappedStatement getMappedStatement(MetaObject metaObject) {
         return (MappedStatement) metaObject.getValue(DELEGATE_MAPPEDSTATEMENT);
+    }
+
+    /**
+     * 获取当前执行 MappedStatement
+     *
+     * @param metaObject 元对象
+     * @param property   元素属性
+     * @return 映射语句
+     */
+    protected static MappedStatement getMappedStatement(MetaObject metaObject, String property) {
+        return (MappedStatement) metaObject.getValue(property);
     }
 
     /**
