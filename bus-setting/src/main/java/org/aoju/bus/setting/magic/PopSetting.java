@@ -232,6 +232,15 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
+     * 获得设定文件的URL
+     *
+     * @return 获得设定文件的路径
+     */
+    public URL getSettingUrl() {
+        return this.settingUrl;
+    }
+
+    /**
      * @return 获得设定文件的路径
      */
     public String getSettingPath() {
@@ -334,15 +343,34 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
 
     /**
      * 持久化当前设置,会覆盖掉之前的设置
+     * 持久化不会保留之前的分组，注意如果配置文件在jar内部或者在exe中，此方法会报错。
+     */
+    public void store() {
+        Assert.notNull(this.settingUrl, "Setting path must be not null !");
+        store(FileKit.file(this.settingUrl));
+    }
+
+    /**
+     * 持久化当前设置,会覆盖掉之前的设置
      * 持久化不会保留之前的分组
      *
      * @param absolutePath 设置文件的绝对路径
      */
     public void store(String absolutePath) {
+        store(FileKit.touch(absolutePath));
+    }
+
+    /**
+     * 持久化当前设置，会覆盖掉之前的设置
+     * 持久化不会保留之前的分组
+     *
+     * @param file 设置文件
+     */
+    public void store(File file) {
         if (null == this.readers) {
             readers = new Readers(this.groupMap, this.charset, this.isUseVariable);
         }
-        readers.store(absolutePath);
+        readers.store(file);
     }
 
     /**

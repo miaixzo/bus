@@ -109,6 +109,63 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     }
 
     /**
+     * 构建 {@link CompareChain}
+     *
+     * @param <E>        被比较对象类型
+     * @param comparator 比较器
+     * @return {@link CompareChain}
+     */
+    public static <E> CompareChain<E> of(Comparator<E> comparator) {
+        return of(comparator, false);
+    }
+
+    /**
+     * 构建 {@link CompareChain}
+     *
+     * @param <E>        被比较对象类型
+     * @param comparator 比较器
+     * @param reverse    是否反向
+     * @return {@link CompareChain}
+     */
+    public static <E> CompareChain<E> of(Comparator<E> comparator, boolean reverse) {
+        return new CompareChain<>(comparator, reverse);
+    }
+
+    /**
+     * 构建 {@link CompareChain}
+     *
+     * @param <E>         被比较对象类型
+     * @param comparators 比较器数组
+     * @return {@link CompareChain}
+     */
+    public static <E> CompareChain<E> of(Comparator<E>... comparators) {
+        return of(Arrays.asList(comparators));
+    }
+
+    /**
+     * 构建 {@link CompareChain}
+     *
+     * @param <E>         被比较对象类型
+     * @param comparators 比较器列表
+     * @return {@link CompareChain}
+     */
+    public static <E> CompareChain<E> of(List<Comparator<E>> comparators) {
+        return new CompareChain<>(comparators);
+    }
+
+    /**
+     * 构建 {@link CompareChain}
+     *
+     * @param <E>         被比较对象类型
+     * @param comparators 比较器列表
+     * @param bits        {@link Comparator} 列表对应的排序boolean值，true表示正序，false反序
+     * @return {@link CompareChain}
+     */
+    public static <E> CompareChain<E> of(List<Comparator<E>> comparators, BitSet bits) {
+        return new CompareChain<>(comparators, bits);
+    }
+
+    /**
      * 在链的尾部添加比较器,使用正向排序
      *
      * @param comparator {@link Comparator} 比较器,正向
@@ -203,7 +260,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
     /**
      * 是否已经被锁定 当开始比较时(调用compare方法)此值为true
      *
-     * @return true = ComparatorChain cannot be modified; false = ComparatorChain can still be modified.
+     * @return true = CompareChain cannot be modified; false = CompareChain can still be modified.
      */
     public boolean isLocked() {
         return lock;
@@ -300,7 +357,7 @@ public class CompareChain<E> implements Chain<Comparator<E>, CompareChain<E>>, C
      */
     private void checkChainIntegrity() {
         if (chain.size() == 0) {
-            throw new UnsupportedOperationException("ComparatorChains must contain at least one Comparator");
+            throw new UnsupportedOperationException("CompareChains must contain at least one Comparator");
         }
     }
 

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.System;
@@ -40,21 +41,21 @@ import java.util.Scanner;
 public class Console {
 
     /**
-     * 打印控制台日志
+     * 打印控制台日志,同System.out.println()方法
      */
     public static void log() {
         System.out.println();
     }
 
     /**
-     * 打印控制台日志
+     * 打印控制台日志,同System.out.println()方法
      * 如果传入打印对象为{@link Throwable}对象,那么同时打印堆栈
      *
      * @param obj 要打印的对象
      */
     public static void log(Object obj) {
         if (obj instanceof Throwable) {
-            Throwable e = (Throwable) obj;
+            final Throwable e = (Throwable) obj;
             log(e, e.getMessage());
         } else {
             log(Symbol.DELIM, obj);
@@ -62,23 +63,44 @@ public class Console {
     }
 
     /**
-     * 打印控制台日志
+     * 打印控制台日志,同System.out.println()方法
+     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
-     * @param template 文本模板,被替换的部分用 {} 表示
-     * @param values   值
+     * @param object 打印模板
+     * @param args   模板参数
      */
-    public static void log(String template, Object... values) {
-        log(null, template, values);
+    public static void log(Object object, Object... args) {
+        if (ArrayKit.isEmpty(args)) {
+            log(object);
+        } else {
+            log(build(args.length + 1), ArrayKit.insert(args, 0, object));
+        }
     }
 
     /**
-     * 打印控制台日志
+     * 打印控制台日志,同System.out.println()方法
+     * 当传入template无"{}"时，被认为非模板，直接打印多个参数以空格分隔
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    public static void log(String template, Object... values) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
+            logInternal(template, values);
+        } else {
+            logInternal(build(values.length + 1), ArrayKit.insert(values, 0, template));
+        }
+    }
+
+    /**
+     * 打印控制台日志,同System.out.println()方法
      *
      * @param t        异常对象
-     * @param template 文本模板,被替换的部分用 {} 表示
+     * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
     public static void log(Throwable t, String template, Object... values) {
+        System.out.println(StringKit.format(template, values));
         if (null != t) {
             t.printStackTrace();
             System.out.flush();
@@ -86,7 +108,7 @@ public class Console {
     }
 
     /**
-     * 打印控制台日志
+     * 打印控制台日志,同System.out.print()方法
      *
      * @param obj 要打印的对象
      */
@@ -95,13 +117,32 @@ public class Console {
     }
 
     /**
-     * 打印控制台日志
+     * 打印控制台日志,同System.out.println()方法
+     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
-     * @param template 文本模板,被替换的部分用 {} 表示
+     * @param object 打印模板
+     * @param args   模板参数
+     */
+    public static void print(Object object, Object... args) {
+        if (ArrayKit.isEmpty(args)) {
+            print(object);
+        } else {
+            print(build(args.length + 1), ArrayKit.insert(args, 0, object));
+        }
+    }
+
+    /**
+     * 打印控制台日志,同System.out.print()方法
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
     public static void print(String template, Object... values) {
-        System.out.println(StringKit.format(template, values));
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
+            printInternal(template, values);
+        } else {
+            printInternal(build(values.length + 1), ArrayKit.insert(values, 0, template));
+        }
     }
 
     /**
@@ -127,14 +168,14 @@ public class Console {
     }
 
     /**
-     * 同 System.System.err.println()方法,打印控制台日志
+     * 打印控制台日志,同System.err.println()方法同
      */
     public static void error() {
         System.err.println();
     }
 
     /**
-     * 同 System.System.err.println()方法,打印控制台日志
+     * 打印控制台日志,同System.err.println()方法同
      *
      * @param obj 要打印的对象
      */
@@ -148,20 +189,39 @@ public class Console {
     }
 
     /**
-     * 同 System.System.err.println()方法,打印控制台日志
+     * 打印控制台日志,同System.err.println()方法同
+     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
-     * @param template 文本模板,被替换的部分用 {} 表示
-     * @param values   值
+     * @param object 打印模板
+     * @param args   模板参数
      */
-    public static void error(String template, Object... values) {
-        error(null, template, values);
+    public static void error(Object object, Object... args) {
+        if (ArrayKit.isEmpty(args)) {
+            error(args);
+        } else {
+            error(build(args.length + 1), ArrayKit.insert(args, 0, object));
+        }
     }
 
     /**
-     * 同 System.System.err.println()方法,打印控制台日志
+     * 打印控制台日志,同System.err.println()方法同
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    public static void error(String template, Object... values) {
+        if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
+            errorInternal(template, values);
+        } else {
+            errorInternal(build(values.length + 1), ArrayKit.insert(values, 0, template));
+        }
+    }
+
+    /**
+     * 打印控制台日志,同System.err.println()方法同
      *
      * @param t        异常对象
-     * @param template 文本模板,被替换的部分用 {} 表示
+     * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
      */
     public static void error(Throwable t, String template, Object... values) {
@@ -173,21 +233,21 @@ public class Console {
     }
 
     /**
-     * 读取用户输入的内容(在控制台敲回车前的内容)
-     *
-     * @return 用户输入的内容
-     */
-    public static String input() {
-        return scanner().next();
-    }
-
-    /**
      * 创建从控制台读取内容的{@link Scanner}
      *
      * @return {@link Scanner}
      */
     public static Scanner scanner() {
         return new Scanner(System.in);
+    }
+
+    /**
+     * 读取用户输入的内容（在控制台敲回车前的内容）
+     *
+     * @return 用户输入的内容
+     */
+    public static String input() {
+        return scanner().next();
     }
 
     /**
@@ -211,6 +271,46 @@ public class Console {
      */
     public static Integer lineNumber() {
         return new Throwable().getStackTrace()[1].getLineNumber();
+    }
+
+    /**
+     * 构建空格分隔的模板，类似于"{} {} {} {}"
+     *
+     * @param count 变量数量
+     * @return 模板
+     */
+    private static String build(int count) {
+        return StringKit.repeatAndJoin(Symbol.DELIM, count, Symbol.SPACE);
+    }
+
+    /**
+     * 打印控制台日志,同System.out.println()方法
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    private static void logInternal(String template, Object... values) {
+        log(null, template, values);
+    }
+
+    /**
+     * 打印控制台日志,同System.out.println()方法
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    private static void printInternal(String template, Object... values) {
+        System.out.print(StringKit.format(template, values));
+    }
+
+    /**
+     * 打印控制台日志,同System.err.println()方法同
+     *
+     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param values   值
+     */
+    private static void errorInternal(String template, Object... values) {
+        error(null, template, values);
     }
 
 }

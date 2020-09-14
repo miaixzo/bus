@@ -90,6 +90,11 @@ public class FastJsonProvider extends AbstractJsonProvider {
     }
 
     @Override
+    public <T> List<T> toList(String json, Class<T> clazz) {
+        return JSON.parseArray(json, clazz);
+    }
+
+    @Override
     public <T> List<T> toList(String json, Type type) {
         TypeReference<T> typeReference = new TypeReference<T>() {
             @Override

@@ -85,6 +85,16 @@ public interface JsonProvider {
     /**
      * 按指定的Type解析json字符串到List
      *
+     * @param json  要解析的json字符串
+     * @param clazz 类对象class
+     * @param <T>   泛型参数类型
+     * @return 返回List
+     */
+    <T> List<T> toList(String json, Class<T> clazz);
+
+    /**
+     * 按指定的Type解析json字符串到List
+     *
      * @param json 要解析的json字符串
      * @param type {@link Type}
      * @param <T>  泛型参数类型
