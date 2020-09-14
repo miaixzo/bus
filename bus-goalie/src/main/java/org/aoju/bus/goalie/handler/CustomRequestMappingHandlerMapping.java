@@ -44,9 +44,9 @@ public class CustomRequestMappingHandlerMapping extends RequestMappingHandlerMap
     /**
      * 重写此处，保证读取我们的注解apiversion
      *
-     * @param method
-     * @param handlerType
-     * @return
+     * @param method      请求方法
+     * @param handlerType 拦截器
+     * @return 处理结果
      */
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
@@ -67,8 +67,8 @@ public class CustomRequestMappingHandlerMapping extends RequestMappingHandlerMap
     /**
      * 重新定义clientversion的条件匹配
      *
-     * @param method
-     * @return
+     * @param method 请求方法
+     * @return 匹配规则
      */
     @Override
     protected RequestCondition<?> getCustomMethodCondition(Method method) {
@@ -90,9 +90,9 @@ public class CustomRequestMappingHandlerMapping extends RequestMappingHandlerMap
     }
 
     /**
-     * @param method
-     * @param handlerType
-     * @return
+     * @param method      请求方法
+     * @param handlerType 拦截器
+     * @return 处理结果
      */
     private RequestMappingInfo getApiVersionMappingInfo(Method method, Class<?> handlerType) {
         // 优先查找method

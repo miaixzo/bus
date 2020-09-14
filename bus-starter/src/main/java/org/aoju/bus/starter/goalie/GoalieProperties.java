@@ -22,29 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.starter.health;
+package org.aoju.bus.starter.goalie;
+
+import lombok.Data;
+import org.aoju.bus.starter.BusXExtend;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 检查运行时是否健康.
+ * 路由配置
  *
  * @author Kimi Liu
  * @version 6.0.9
  * @since JDK 1.8+
  */
-public interface HealthIndicators {
-
-    /**
-     * 检查运行时是否准备就绪
-     *
-     * @return true/false
-     */
-    boolean isReadinessHealth();
-
-    /**
-     * 检查运行时是否为活动健康状态
-     *
-     * @return true/false
-     */
-    boolean isLivenessHealth();
+@Data
+@ConfigurationProperties(BusXExtend.GOALIE)
+public class GoalieProperties {
 
 }
