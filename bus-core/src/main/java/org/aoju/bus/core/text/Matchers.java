@@ -38,46 +38,46 @@ import java.util.Arrays;
  * @version 6.0.9
  * @since JDK 1.8+
  */
-public abstract class StrMatcher {
+public abstract class Matchers {
 
     /**
      * 匹配逗号字符.
      */
-    private static final StrMatcher COMMA_MATCHER = new CharMatcher(Symbol.C_COMMA);
+    private static final Matchers COMMA_MATCHER = new CharMatcher(Symbol.C_COMMA);
     /**
      * 匹配tab字符.
      */
-    private static final StrMatcher TAB_MATCHER = new CharMatcher(Symbol.C_HT);
+    private static final Matchers TAB_MATCHER = new CharMatcher(Symbol.C_HT);
     /**
      * 匹配空格字符.
      */
-    private static final StrMatcher SPACE_MATCHER = new CharMatcher(Symbol.C_SPACE);
+    private static final Matchers SPACE_MATCHER = new CharMatcher(Symbol.C_SPACE);
     /**
      * 匹配相同的字符,即空格、制表符、换行符等.
      */
-    private static final StrMatcher SPLIT_MATCHER = new CharSetMatcher(" \t\n\r\f".toCharArray());
+    private static final Matchers SPLIT_MATCHER = new CharSetMatcher(" \t\n\r\f".toCharArray());
     /**
      * 匹配字符串trim()空白字符.
      */
-    private static final StrMatcher TRIM_MATCHER = new TrimMatcher();
+    private static final Matchers TRIM_MATCHER = new TrimMatcher();
     /**
      * 匹配双引号字符.
      */
-    private static final StrMatcher SINGLE_QUOTE_MATCHER = new CharMatcher(Symbol.C_SINGLE_QUOTE);
+    private static final Matchers SINGLE_QUOTE_MATCHER = new CharMatcher(Symbol.C_SINGLE_QUOTE);
     /**
      * 匹配双引号字符.
      */
-    private static final StrMatcher DOUBLE_QUOTE_MATCHER = new CharMatcher(Symbol.C_DOUBLE_QUOTES);
+    private static final Matchers DOUBLE_QUOTE_MATCHER = new CharMatcher(Symbol.C_DOUBLE_QUOTES);
     /**
      * 匹配单引号或双引号字符.
      */
-    private static final StrMatcher QUOTE_MATCHER = new CharSetMatcher("'\"".toCharArray());
+    private static final Matchers QUOTE_MATCHER = new CharSetMatcher("'\"".toCharArray());
     /**
      * 匹配任何字符.
      */
-    private static final StrMatcher NONE_MATCHER = new NoMatcher();
+    private static final Matchers NONE_MATCHER = new NoMatcher();
 
-    protected StrMatcher() {
+    protected Matchers() {
         super();
     }
 
@@ -86,7 +86,7 @@ public abstract class StrMatcher {
      *
      * @return 逗号的匹配器
      */
-    public static StrMatcher commaMatcher() {
+    public static Matchers commaMatcher() {
         return COMMA_MATCHER;
     }
 
@@ -95,7 +95,7 @@ public abstract class StrMatcher {
      *
      * @return tab的匹配器
      */
-    public static StrMatcher tabMatcher() {
+    public static Matchers tabMatcher() {
         return TAB_MATCHER;
     }
 
@@ -104,7 +104,7 @@ public abstract class StrMatcher {
      *
      * @return 空格的匹配器
      */
-    public static StrMatcher spaceMatcher() {
+    public static Matchers spaceMatcher() {
         return SPACE_MATCHER;
     }
 
@@ -113,7 +113,7 @@ public abstract class StrMatcher {
      *
      * @return 分割匹配器
      */
-    public static StrMatcher splitMatcher() {
+    public static Matchers splitMatcher() {
         return SPLIT_MATCHER;
     }
 
@@ -122,7 +122,7 @@ public abstract class StrMatcher {
      *
      * @return 空白匹配器
      */
-    public static StrMatcher trimMatcher() {
+    public static Matchers trimMatcher() {
         return TRIM_MATCHER;
     }
 
@@ -131,7 +131,7 @@ public abstract class StrMatcher {
      *
      * @return 单引号匹配器
      */
-    public static StrMatcher singleQuoteMatcher() {
+    public static Matchers singleQuoteMatcher() {
         return SINGLE_QUOTE_MATCHER;
     }
 
@@ -140,7 +140,7 @@ public abstract class StrMatcher {
      *
      * @return 双引号匹配器
      */
-    public static StrMatcher doubleQuoteMatcher() {
+    public static Matchers doubleQuoteMatcher() {
         return DOUBLE_QUOTE_MATCHER;
     }
 
@@ -149,7 +149,7 @@ public abstract class StrMatcher {
      *
      * @return 单引号/双引号匹配器
      */
-    public static StrMatcher quoteMatcher() {
+    public static Matchers quoteMatcher() {
         return QUOTE_MATCHER;
     }
 
@@ -158,7 +158,7 @@ public abstract class StrMatcher {
      *
      * @return 什么也不匹配的匹配器
      */
-    public static StrMatcher noneMatcher() {
+    public static Matchers noneMatcher() {
         return NONE_MATCHER;
     }
 
@@ -168,7 +168,7 @@ public abstract class StrMatcher {
      * @param ch 匹配的字符不能为空
      * @return 给定的字符返回一个新的匹配器
      */
-    public static StrMatcher charMatcher(final char ch) {
+    public static Matchers charMatcher(final char ch) {
         return new CharMatcher(ch);
     }
 
@@ -178,7 +178,7 @@ public abstract class StrMatcher {
      * @param chars 对要匹配的字符进行字符切分,null或empty不匹配任何字符
      * @return 给定字符的新匹配器[]
      */
-    public static StrMatcher charSetMatcher(final char... chars) {
+    public static Matchers charSetMatcher(final char... chars) {
         if (chars == null || chars.length == 0) {
             return NONE_MATCHER;
         }
@@ -194,7 +194,7 @@ public abstract class StrMatcher {
      * @param chars 对要匹配的字符进行字符切分,null或empty不匹配任何字符
      * @return 给定字符的新匹配器
      */
-    public static StrMatcher charSetMatcher(final String chars) {
+    public static Matchers charSetMatcher(final String chars) {
         if (StringKit.isEmpty(chars)) {
             return NONE_MATCHER;
         }
@@ -210,7 +210,7 @@ public abstract class StrMatcher {
      * @param str 匹配的字符串为null或空,不匹配任何内容
      * @return 给定字符串返回一个新的匹配器
      */
-    public static StrMatcher stringMatcher(final String str) {
+    public static Matchers stringMatcher(final String str) {
         if (StringKit.isEmpty(str)) {
             return NONE_MATCHER;
         }
@@ -242,7 +242,7 @@ public abstract class StrMatcher {
     /**
      * 用于定义用于匹配目的的一组字符.
      */
-    static final class CharSetMatcher extends StrMatcher {
+    static final class CharSetMatcher extends Matchers {
 
         /**
          * 要匹配的字符集.
@@ -273,7 +273,7 @@ public abstract class StrMatcher {
     /**
      * 用于定义用于匹配目的的字符.
      */
-    static final class CharMatcher extends StrMatcher {
+    static final class CharMatcher extends Matchers {
 
         /**
          * 要匹配的字符集.
@@ -303,7 +303,7 @@ public abstract class StrMatcher {
     /**
      * 用于定义用于匹配目的的一组字符.
      */
-    static final class StringMatcher extends StrMatcher {
+    static final class StringMatcher extends Matchers {
 
         /**
          * 要匹配的字符集.
@@ -348,7 +348,7 @@ public abstract class StrMatcher {
     /**
      * 用于不匹配任何字符.
      */
-    static final class NoMatcher extends StrMatcher {
+    static final class NoMatcher extends Matchers {
 
         NoMatcher() {
             super();
@@ -372,7 +372,7 @@ public abstract class StrMatcher {
     /**
      * 用于根据trim()匹配空格.
      */
-    static final class TrimMatcher extends StrMatcher {
+    static final class TrimMatcher extends Matchers {
 
         TrimMatcher() {
             super();

@@ -43,7 +43,7 @@ import java.util.Objects;
  * @version 6.0.9
  * @since JDK 1.8+
  */
-public class StrBuilder implements CharSequence, Appendable, Serializable, Builder<String> {
+public class Builders implements CharSequence, Appendable, Serializable, Builder<String> {
 
     /**
      * 默认容量
@@ -78,7 +78,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     /**
      * 构造
      */
-    public StrBuilder() {
+    public Builders() {
         this(CAPACITY);
     }
 
@@ -87,7 +87,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @param initialCapacity 初始容量
      */
-    public StrBuilder(int initialCapacity) {
+    public Builders(int initialCapacity) {
         super();
         if (initialCapacity <= 0) {
             initialCapacity = CAPACITY;
@@ -100,7 +100,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @param str 初始字符串
      */
-    public StrBuilder(final String str) {
+    public Builders(final String str) {
         super();
         if (str == null) {
             buffer = new char[CAPACITY];
@@ -115,7 +115,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @param strs 初始字符串
      */
-    public StrBuilder(CharSequence... strs) {
+    public Builders(CharSequence... strs) {
         this(ArrayKit.isEmpty(strs) ? CAPACITY : (totalLength(strs) + CAPACITY));
         for (int i = 0; i < strs.length; i++) {
             append(strs[i]);
@@ -125,30 +125,30 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     /**
      * 创建字符串构建器
      *
-     * @return {@link StrBuilder}
+     * @return {@link Builders}
      */
-    public static StrBuilder create() {
-        return new StrBuilder();
+    public static Builders create() {
+        return new Builders();
     }
 
     /**
      * 创建字符串构建器
      *
      * @param initialCapacity 初始容量
-     * @return {@link StrBuilder}
+     * @return {@link Builders}
      */
-    public static StrBuilder create(int initialCapacity) {
-        return new StrBuilder(initialCapacity);
+    public static Builders create(int initialCapacity) {
+        return new Builders(initialCapacity);
     }
 
     /**
      * 创建字符串构建器
      *
      * @param strs 初始字符串
-     * @return {@link StrBuilder}
+     * @return {@link Builders}
      */
-    public static StrBuilder create(CharSequence... strs) {
-        return new StrBuilder(strs);
+    public static Builders create(CharSequence... strs) {
+        return new Builders(strs);
     }
 
     /**
@@ -172,18 +172,21 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
     }
 
     @Override
-    public char charAt(final int index) {
-        if (index < 0 || index >= length()) {
+    public char charAt(int index) {
+        if (index < 0) {
+            index = this.position + index;
+        }
+        if ((index < 0) || (index > this.position)) {
             throw new StringIndexOutOfBoundsException(index);
         }
-        return buffer[index];
+        return this.value[index];
     }
 
     public String getNewLineText() {
         return newLine;
     }
 
-    public StrBuilder setNewLineText(final String newLine) {
+    public Builders setNewLineText(final String newLine) {
         this.newLine = newLine;
         return this;
     }
@@ -192,7 +195,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return nullText;
     }
 
-    public StrBuilder setNullText(String nullText) {
+    public Builders setNullText(String nullText) {
         if (nullText != null && nullText.isEmpty()) {
             nullText = null;
         }
@@ -207,7 +210,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果长度是负的
      */
-    public StrBuilder setLength(final int length) {
+    public Builders setLength(final int length) {
         if (length < 0) {
             throw new StringIndexOutOfBoundsException(length);
         }
@@ -235,7 +238,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param capacity 确保大小
      * @return this
      */
-    public StrBuilder ensureCapacity(final int capacity) {
+    public Builders ensureCapacity(final int capacity) {
         if (capacity > buffer.length) {
             final char[] old = buffer;
             buffer = new char[capacity * 2];
@@ -244,7 +247,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return this;
     }
 
-    public StrBuilder minimizeCapacity() {
+    public Builders minimizeCapacity() {
         if (buffer.length > length()) {
             final char[] old = buffer;
             buffer = new char[length()];
@@ -261,7 +264,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
         return size == 0;
     }
 
-    public StrBuilder clear() {
+    public Builders clear() {
         size = 0;
         return this;
     }
@@ -271,7 +274,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @return this
      */
-    public StrBuilder reset() {
+    public Builders reset() {
         this.position = 0;
         return this;
     }
@@ -287,7 +290,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @see #charAt(int)
      * @see #deleteCharAt(int)
      */
-    public StrBuilder setCharAt(final int index, final char ch) {
+    public Builders setCharAt(final int index, final char ch) {
         if (index < 0 || index >= length()) {
             throw new StringIndexOutOfBoundsException(index);
         }
@@ -304,7 +307,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @see #charAt(int)
      * @see #setCharAt(int, char)
      */
-    public StrBuilder deleteCharAt(final int index) {
+    public Builders deleteCharAt(final int index) {
         if (index < 0 || index >= size) {
             throw new StringIndexOutOfBoundsException(index);
         }
@@ -392,7 +395,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @return this
      */
-    public StrBuilder appendNewLine() {
+    public Builders appendNewLine() {
         if (newLine == null) {
             append(System.getProperty("line.separator"));
             return this;
@@ -405,7 +408,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @return this
      */
-    public StrBuilder appendNull() {
+    public Builders appendNull() {
         if (nullText == null) {
             return this;
         }
@@ -419,7 +422,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param obj 要追加的对象
      * @return this
      */
-    public StrBuilder append(final Object obj) {
+    public Builders append(final Object obj) {
         if (obj == null) {
             return appendNull();
         }
@@ -437,12 +440,12 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      */
     @Override
-    public StrBuilder append(final CharSequence seq) {
+    public Builders append(final CharSequence seq) {
         if (seq == null) {
             return appendNull();
         }
-        if (seq instanceof StrBuilder) {
-            return append((StrBuilder) seq);
+        if (seq instanceof Builders) {
+            return append((Builders) seq);
         }
         if (seq instanceof StringBuilder) {
             return append((StringBuilder) seq);
@@ -466,7 +469,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      */
     @Override
-    public StrBuilder append(final CharSequence seq, final int startIndex, final int length) {
+    public Builders append(final CharSequence seq, final int startIndex, final int length) {
         if (seq == null) {
             return appendNull();
         }
@@ -480,7 +483,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 要追加的字符串
      * @return this
      */
-    public StrBuilder append(final String str) {
+    public Builders append(final String str) {
         if (str == null) {
             return appendNull();
         }
@@ -503,7 +506,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder append(final String str, final int startIndex, final int length) {
+    public Builders append(final String str, final int startIndex, final int length) {
         if (str == null) {
             return appendNull();
         }
@@ -530,7 +533,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @see String#format(String, Object...)
      */
-    public StrBuilder append(final String format, final Object... objs) {
+    public Builders append(final String format, final Object... objs) {
         return append(String.format(format, objs));
     }
 
@@ -541,7 +544,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param buf 要附加的字符缓冲区
      * @return this
      */
-    public StrBuilder append(final CharBuffer buf) {
+    public Builders append(final CharBuffer buf) {
         if (buf == null) {
             return appendNull();
         }
@@ -566,7 +569,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder append(final CharBuffer buf, final int startIndex, final int length) {
+    public Builders append(final CharBuffer buf, final int startIndex, final int length) {
         if (buf == null) {
             return appendNull();
         }
@@ -595,7 +598,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 要追加的字符串
      * @return this
      */
-    public StrBuilder append(final StringBuffer str) {
+    public Builders append(final StringBuffer str) {
         if (str == null) {
             return appendNull();
         }
@@ -618,7 +621,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder append(final StringBuffer str, final int startIndex, final int length) {
+    public Builders append(final StringBuffer str, final int startIndex, final int length) {
         if (str == null) {
             return appendNull();
         }
@@ -644,7 +647,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 要追加的字符串
      * @return this
      */
-    public StrBuilder append(final StringBuilder str) {
+    public Builders append(final StringBuilder str) {
         if (str == null) {
             return appendNull();
         }
@@ -667,7 +670,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder append(final StringBuilder str, final int startIndex, final int length) {
+    public Builders append(final StringBuilder str, final int startIndex, final int length) {
         if (str == null) {
             return appendNull();
         }
@@ -693,7 +696,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 要追加的字符串
      * @return this
      */
-    public StrBuilder append(final StrBuilder str) {
+    public Builders append(final Builders str) {
         if (str == null) {
             return appendNull();
         }
@@ -716,7 +719,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder append(final StrBuilder str, final int startIndex, final int length) {
+    public Builders append(final Builders str, final int startIndex, final int length) {
         if (str == null) {
             return appendNull();
         }
@@ -742,7 +745,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param chars 要附加的字符数组
      * @return this
      */
-    public StrBuilder append(final char[] chars) {
+    public Builders append(final char[] chars) {
         if (chars == null) {
             return appendNull();
         }
@@ -765,7 +768,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder append(final char[] chars, final int startIndex, final int length) {
+    public Builders append(final char[] chars, final int startIndex, final int length) {
         if (chars == null) {
             return appendNull();
         }
@@ -790,7 +793,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder append(final boolean value) {
+    public Builders append(final boolean value) {
         if (value) {
             ensureCapacity(size + 4);
             buffer[size++] = 't';
@@ -815,7 +818,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      */
     @Override
-    public StrBuilder append(final char ch) {
+    public Builders append(final char ch) {
         final int len = length();
         ensureCapacity(len + 1);
         buffer[size++] = ch;
@@ -828,7 +831,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder append(final int value) {
+    public Builders append(final int value) {
         return append(String.valueOf(value));
     }
 
@@ -838,7 +841,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder append(final long value) {
+    public Builders append(final long value) {
         return append(String.valueOf(value));
     }
 
@@ -848,7 +851,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder append(final float value) {
+    public Builders append(final float value) {
         return append(String.valueOf(value));
     }
 
@@ -858,7 +861,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder append(final double value) {
+    public Builders append(final double value) {
         return append(String.valueOf(value));
     }
 
@@ -869,7 +872,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param obj 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final Object obj) {
+    public Builders appendln(final Object obj) {
         return append(obj).appendNewLine();
     }
 
@@ -880,7 +883,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final String str) {
+    public Builders appendln(final String str) {
         return append(str).appendNewLine();
     }
 
@@ -893,7 +896,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder appendln(final String str, final int startIndex, final int length) {
+    public Builders appendln(final String str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
@@ -905,7 +908,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @see String#format(String, Object...)
      */
-    public StrBuilder appendln(final String format, final Object... objs) {
+    public Builders appendln(final String format, final Object... objs) {
         return append(format, objs).appendNewLine();
     }
 
@@ -916,7 +919,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 要追加的字符串缓冲区
      * @return this
      */
-    public StrBuilder appendln(final StringBuffer str) {
+    public Builders appendln(final StringBuffer str) {
         return append(str).appendNewLine();
     }
 
@@ -927,7 +930,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str t他附加字符串生成器
      * @return this
      */
-    public StrBuilder appendln(final StringBuilder str) {
+    public Builders appendln(final StringBuilder str) {
         return append(str).appendNewLine();
     }
 
@@ -940,7 +943,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder appendln(final StringBuilder str, final int startIndex, final int length) {
+    public Builders appendln(final StringBuilder str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
@@ -953,7 +956,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder appendln(final StringBuffer str, final int startIndex, final int length) {
+    public Builders appendln(final StringBuffer str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
@@ -964,7 +967,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 要追加的字符串缓冲区
      * @return this
      */
-    public StrBuilder appendln(final StrBuilder str) {
+    public Builders appendln(final Builders str) {
         return append(str).appendNewLine();
     }
 
@@ -977,7 +980,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder appendln(final StrBuilder str, final int startIndex, final int length) {
+    public Builders appendln(final Builders str, final int startIndex, final int length) {
         return append(str, startIndex, length).appendNewLine();
     }
 
@@ -988,7 +991,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param chars 要附加的字符数组
      * @return this
      */
-    public StrBuilder appendln(final char[] chars) {
+    public Builders appendln(final char[] chars) {
         return append(chars).appendNewLine();
     }
 
@@ -1001,7 +1004,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param length     要追加的长度必须有效
      * @return this
      */
-    public StrBuilder appendln(final char[] chars, final int startIndex, final int length) {
+    public Builders appendln(final char[] chars, final int startIndex, final int length) {
         return append(chars, startIndex, length).appendNewLine();
     }
 
@@ -1011,7 +1014,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final boolean value) {
+    public Builders appendln(final boolean value) {
         return append(value).appendNewLine();
     }
 
@@ -1021,7 +1024,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param ch 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final char ch) {
+    public Builders appendln(final char ch) {
         return append(ch).appendNewLine();
     }
 
@@ -1031,7 +1034,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final int value) {
+    public Builders appendln(final int value) {
         return append(value).appendNewLine();
     }
 
@@ -1041,7 +1044,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final long value) {
+    public Builders appendln(final long value) {
         return append(value).appendNewLine();
     }
 
@@ -1051,7 +1054,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final float value) {
+    public Builders appendln(final float value) {
         return append(value).appendNewLine();
     }
 
@@ -1061,7 +1064,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param value 要附加的值
      * @return this
      */
-    public StrBuilder appendln(final double value) {
+    public Builders appendln(final double value) {
         return append(value).appendNewLine();
     }
 
@@ -1074,7 +1077,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param array 要追加的数组
      * @return this
      */
-    public <T> StrBuilder appendAll(final T... array) {
+    public <T> Builders appendAll(final T... array) {
         if (array != null && array.length > 0) {
             for (final Object element : array) {
                 append(element);
@@ -1091,7 +1094,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param iterable 可追加的迭代
      * @return this
      */
-    public StrBuilder appendAll(final Iterable<?> iterable) {
+    public Builders appendAll(final Iterable<?> iterable) {
         if (iterable != null) {
             for (final Object o : iterable) {
                 append(o);
@@ -1108,7 +1111,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param it 要追加的迭代器
      * @return this
      */
-    public StrBuilder appendAll(final Iterator<?> it) {
+    public Builders appendAll(final Iterator<?> it) {
         if (it != null) {
             while (it.hasNext()) {
                 append(it.next());
@@ -1126,7 +1129,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param separator 要使用的分隔符，null表示没有分隔符
      * @return this
      */
-    public StrBuilder appendWithSeparators(final Object[] array, final String separator) {
+    public Builders appendWithSeparators(final Object[] array, final String separator) {
         if (array != null && array.length > 0) {
             final String sep = Objects.toString(separator, Normal.EMPTY);
             append(array[0]);
@@ -1147,7 +1150,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param separator 要使用的分隔符，null表示没有分隔符
      * @return this
      */
-    public StrBuilder appendWithSeparators(final Iterable<?> iterable, final String separator) {
+    public Builders appendWithSeparators(final Iterable<?> iterable, final String separator) {
         if (iterable != null) {
             final String sep = Objects.toString(separator, Normal.EMPTY);
             final Iterator<?> it = iterable.iterator();
@@ -1170,7 +1173,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param separator 要使用的分隔符，null表示没有分隔符
      * @return this
      */
-    public StrBuilder appendWithSeparators(final Iterator<?> it, final String separator) {
+    public Builders appendWithSeparators(final Iterator<?> it, final String separator) {
         if (it != null) {
             final String sep = Objects.toString(separator, Normal.EMPTY);
             while (it.hasNext()) {
@@ -1194,7 +1197,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param padChar 要使用的填充字符
      * @return this
      */
-    public StrBuilder appendFixedWidthPadLeft(final Object obj, final int width, final char padChar) {
+    public Builders appendFixedWidthPadLeft(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
             String str = (obj == null ? getNullText() : obj.toString());
@@ -1226,7 +1229,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param padChar 要使用的填充字符
      * @return this
      */
-    public StrBuilder appendFixedWidthPadLeft(final int value, final int width, final char padChar) {
+    public Builders appendFixedWidthPadLeft(final int value, final int width, final char padChar) {
         return appendFixedWidthPadLeft(String.valueOf(value), width, padChar);
     }
 
@@ -1241,7 +1244,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param padChar 要使用的填充字符
      * @return this
      */
-    public StrBuilder appendFixedWidthPadRight(final Object obj, final int width, final char padChar) {
+    public Builders appendFixedWidthPadRight(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
             String str = (obj == null ? getNullText() : obj.toString());
@@ -1273,7 +1276,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param padChar 要使用的填充字符
      * @return this
      */
-    public StrBuilder appendFixedWidthPadRight(final int value, final int width, final char padChar) {
+    public Builders appendFixedWidthPadRight(final int value, final int width, final char padChar) {
         return appendFixedWidthPadRight(String.valueOf(value), width, padChar);
     }
 
@@ -1286,7 +1289,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, final Object obj) {
+    public Builders insert(final int index, final Object obj) {
         if (obj == null) {
             return insert(index, nullText);
         }
@@ -1302,7 +1305,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, String str) {
+    public Builders insert(final int index, String str) {
         validateIndex(index);
         if (str == null) {
             str = nullText;
@@ -1329,7 +1332,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, final char[] chars) {
+    public Builders insert(final int index, final char[] chars) {
         validateIndex(index);
         if (chars == null) {
             return insert(index, nullText);
@@ -1355,7 +1358,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果任何索引无效
      */
-    public StrBuilder insert(final int index, final char[] chars, final int offset, final int length) {
+    public Builders insert(final int index, final char[] chars, final int offset, final int length) {
         validateIndex(index);
         if (chars == null) {
             return insert(index, nullText);
@@ -1383,7 +1386,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(int index, final boolean value) {
+    public Builders insert(int index, final boolean value) {
         validateIndex(index);
         if (value) {
             ensureCapacity(size + 4);
@@ -1414,7 +1417,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, final char value) {
+    public Builders insert(final int index, final char value) {
         validateIndex(index);
         ensureCapacity(size + 1);
         System.arraycopy(buffer, index, buffer, index + 1, size - index);
@@ -1431,7 +1434,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, final int value) {
+    public Builders insert(final int index, final int value) {
         return insert(index, String.valueOf(value));
     }
 
@@ -1443,7 +1446,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, final long value) {
+    public Builders insert(final int index, final long value) {
         return insert(index, String.valueOf(value));
     }
 
@@ -1455,7 +1458,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, final float value) {
+    public Builders insert(final int index, final float value) {
         return insert(index, String.valueOf(value));
     }
 
@@ -1467,7 +1470,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder insert(final int index, final double value) {
+    public Builders insert(final int index, final double value) {
         return insert(index, String.valueOf(value));
     }
 
@@ -1492,7 +1495,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder delete(final int startIndex, int endIndex) {
+    public Builders delete(final int startIndex, int endIndex) {
         endIndex = validateRange(startIndex, endIndex);
         final int len = endIndex - startIndex;
         if (len > 0) {
@@ -1507,7 +1510,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param ch 要删除的字符
      * @return this
      */
-    public StrBuilder deleteAll(final char ch) {
+    public Builders deleteAll(final char ch) {
         for (int i = 0; i < size; i++) {
             if (buffer[i] == ch) {
                 final int start = i;
@@ -1530,7 +1533,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param ch 要删除的字符
      * @return this
      */
-    public StrBuilder deleteFirst(final char ch) {
+    public Builders deleteFirst(final char ch) {
         for (int i = 0; i < size; i++) {
             if (buffer[i] == ch) {
                 deleteImpl(i, i + 1, 1);
@@ -1546,7 +1549,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 若要删除的字符串为空，则不执行任何操作
      * @return this
      */
-    public StrBuilder deleteAll(final String str) {
+    public Builders deleteAll(final String str) {
         final int len = (str == null ? 0 : str.length());
         if (len > 0) {
             int index = indexOf(str, 0);
@@ -1564,7 +1567,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param str 若要删除的字符串为空，则不执行任何操作
      * @return this
      */
-    public StrBuilder deleteFirst(final String str) {
+    public Builders deleteFirst(final String str) {
         final int len = (str == null ? 0 : str.length());
         if (len > 0) {
             final int index = indexOf(str, 0);
@@ -1583,7 +1586,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param matcher 要使用的matcher来查找删除，null不导致任何操作
      * @return this
      */
-    public StrBuilder deleteAll(final StrMatcher matcher) {
+    public Builders deleteAll(final Matchers matcher) {
         return replace(matcher, null, 0, size, -1);
     }
 
@@ -1595,7 +1598,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param matcher 要使用的matcher来查找删除，null不导致任何操作
      * @return this
      */
-    public StrBuilder deleteFirst(final StrMatcher matcher) {
+    public Builders deleteFirst(final Matchers matcher) {
         return replace(matcher, null, 0, size, 1);
     }
 
@@ -1631,7 +1634,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果索引无效
      */
-    public StrBuilder replace(final int startIndex, int endIndex, final String replaceStr) {
+    public Builders replace(final int startIndex, int endIndex, final String replaceStr) {
         endIndex = validateRange(startIndex, endIndex);
         final int insertLen = (replaceStr == null ? 0 : replaceStr.length());
         replaceImpl(startIndex, endIndex, endIndex - startIndex, replaceStr, insertLen);
@@ -1645,7 +1648,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param replace 替换字符
      * @return this
      */
-    public StrBuilder replaceAll(final char search, final char replace) {
+    public Builders replaceAll(final char search, final char replace) {
         if (search != replace) {
             for (int i = 0; i < size; i++) {
                 if (buffer[i] == search) {
@@ -1663,7 +1666,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param replace 替换字符
      * @return this
      */
-    public StrBuilder replaceFirst(final char search, final char replace) {
+    public Builders replaceFirst(final char search, final char replace) {
         if (search != replace) {
             for (int i = 0; i < size; i++) {
                 if (buffer[i] == search) {
@@ -1682,7 +1685,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param replaceStr 替换字符串null相当于空字符串
      * @return this
      */
-    public StrBuilder replaceAll(final String searchStr, final String replaceStr) {
+    public Builders replaceAll(final String searchStr, final String replaceStr) {
         final int searchLen = (searchStr == null ? 0 : searchStr.length());
         if (searchLen > 0) {
             final int replaceLen = (replaceStr == null ? 0 : replaceStr.length());
@@ -1702,7 +1705,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param replaceStr 替换字符串null相当于空字符串
      * @return this
      */
-    public StrBuilder replaceFirst(final String searchStr, final String replaceStr) {
+    public Builders replaceFirst(final String searchStr, final String replaceStr) {
         final int searchLen = (searchStr == null ? 0 : searchStr.length());
         if (searchLen > 0) {
             final int index = indexOf(searchStr, 0);
@@ -1721,7 +1724,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param replaceStr 替换字符串null相当于空字符串
      * @return this
      */
-    public StrBuilder replaceAll(final StrMatcher matcher, final String replaceStr) {
+    public Builders replaceAll(final Matchers matcher, final String replaceStr) {
         return replace(matcher, replaceStr, 0, size, -1);
     }
 
@@ -1732,7 +1735,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param replaceStr 替换字符串null相当于空字符串
      * @return this
      */
-    public StrBuilder replaceFirst(final StrMatcher matcher, final String replaceStr) {
+    public Builders replaceFirst(final Matchers matcher, final String replaceStr) {
         return replace(matcher, replaceStr, 0, size, 1);
     }
 
@@ -1747,8 +1750,8 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果开始索引无效
      */
-    public StrBuilder replace(
-            final StrMatcher matcher, final String replaceStr,
+    public Builders replace(
+            final Matchers matcher, final String replaceStr,
             final int startIndex, int endIndex, final int replaceCount) {
         endIndex = validateRange(startIndex, endIndex);
         return replaceImpl(matcher, replaceStr, startIndex, endIndex, replaceCount);
@@ -1765,8 +1768,8 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @return this
      * @throws IndexOutOfBoundsException 如果任何索引无效
      */
-    private StrBuilder replaceImpl(
-            final StrMatcher matcher, final String replaceStr,
+    private Builders replaceImpl(
+            final Matchers matcher, final String replaceStr,
             final int from, int to, int replaceCount) {
         if (matcher == null || size == 0) {
             return this;
@@ -1792,7 +1795,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @return this
      */
-    public StrBuilder reverse() {
+    public Builders reverse() {
         if (size == 0) {
             return this;
         }
@@ -1812,7 +1815,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      *
      * @return this
      */
-    public StrBuilder trim() {
+    public Builders trim() {
         if (size == 0) {
             return this;
         }
@@ -2007,7 +2010,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param matcher 要使用的匹配器，如果为null返回-1
      * @return 如果匹配器在生成器中找到匹配项，则为真
      */
-    public boolean contains(final StrMatcher matcher) {
+    public boolean contains(final Matchers matcher) {
         return indexOf(matcher, 0) >= 0;
     }
 
@@ -2094,7 +2097,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param matcher 要使用的匹配器，null返回-1
      * @return 第一个索引匹配，如果没有找到，则为-1
      */
-    public int indexOf(final StrMatcher matcher) {
+    public int indexOf(final Matchers matcher) {
         return indexOf(matcher, 0);
     }
 
@@ -2105,7 +2108,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param startIndex 从索引开始，无效的索引四舍五入到边缘
      * @return 第一个索引匹配，如果没有找到，则为-1
      */
-    public int indexOf(final StrMatcher matcher, int startIndex) {
+    public int indexOf(final Matchers matcher, int startIndex) {
         startIndex = (startIndex < 0 ? 0 : startIndex);
         if (matcher == null || startIndex >= size) {
             return -1;
@@ -2200,7 +2203,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param matcher 要使用的匹配器，null返回-1
      * @return 最后一个索引匹配，如果没有找到，则为-1
      */
-    public int lastIndexOf(final StrMatcher matcher) {
+    public int lastIndexOf(final Matchers matcher) {
         return lastIndexOf(matcher, size);
     }
 
@@ -2211,7 +2214,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param startIndex 从索引开始，无效的索引四舍五入到边缘
      * @return 最后一个索引匹配，如果没有找到，则为-1
      */
-    public int lastIndexOf(final StrMatcher matcher, int startIndex) {
+    public int lastIndexOf(final Matchers matcher, int startIndex) {
         startIndex = (startIndex >= size ? size - 1 : startIndex);
         if (matcher == null || startIndex < 0) {
             return -1;
@@ -2232,7 +2235,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param other 要检查的对象null返回false
      * @return 如果生成器以相同的顺序包含相同的字符，则为真
      */
-    public boolean equalsIgnoreCase(final StrBuilder other) {
+    public boolean equalsIgnoreCase(final Builders other) {
         if (this == other) {
             return true;
         }
@@ -2257,7 +2260,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      * @param other 要检查的对象null返回false
      * @return 如果生成器以相同的顺序包含相同的字符，则为真
      */
-    public boolean equals(final StrBuilder other) {
+    public boolean equals(final Builders other) {
         if (this == other) {
             return true;
         }
@@ -2285,7 +2288,7 @@ public class StrBuilder implements CharSequence, Appendable, Serializable, Build
      */
     @Override
     public boolean equals(final Object obj) {
-        return obj instanceof StrBuilder && equals((StrBuilder) obj);
+        return obj instanceof Builders && equals((Builders) obj);
     }
 
     @Override

@@ -25,7 +25,7 @@
 package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.StrBuilder;
+import org.aoju.bus.core.text.Builders;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
@@ -55,11 +55,10 @@ import java.util.List;
  */
 public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> implements ContentHandler {
 
-
     // sheet r:Id前缀
     private static final String RID_PREFIX = "rId";
     // 上一次的内容
-    private final StrBuilder lastContent = StringKit.strBuilder();
+    private final Builders lastContent = StringKit.builders();
     // 单元格的格式表，对应style.xml
     private StylesTable stylesTable;
     // excel 2007 的共享字符串表,对应sharedString.xml

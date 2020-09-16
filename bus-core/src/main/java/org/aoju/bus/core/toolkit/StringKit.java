@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.StrBuilder;
+import org.aoju.bus.core.text.Builders;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -2680,7 +2680,7 @@ public class StringKit {
         if (count <= 0) {
             return Normal.EMPTY;
         }
-        final StrBuilder builder = StrBuilder.create();
+        final Builders builder = Builders.create();
         boolean isFirst = true;
         while (count-- > 0) {
             if (isFirst) {
@@ -2978,7 +2978,7 @@ public class StringKit {
         }
 
         final int length = str.length();
-        final StringBuilder sb = new StringBuilder();
+        final Builders sb = new Builders();
         char c;
         for (int i = 0; i < length; i++) {
             c = str.charAt(i);
@@ -2987,12 +2987,12 @@ public class StringKit {
                 // 遇到大写字母处理
                 final Character nextChar = (i < str.length() - 1) ? str.charAt(i + 1) : null;
                 if (null != preChar && Character.isUpperCase(preChar)) {
-                    // 前一个字符为大写，则按照一个词对待
+                    // 前一个字符为大写，则按照一个词对待，例如AB
                     sb.append(c);
-                } else if (null != nextChar && Character.isUpperCase(nextChar)) {
-                    // 后一个为大写字母，按照一个词对待
+                } else if (null != nextChar && (false == Character.isLowerCase(nextChar))) {
+                    // 后一个为非小写字母，按照一个词对待
                     if (null != preChar && symbol != preChar) {
-                        // 前一个是非大写时按照新词对待，加连接符
+                        // 前一个是非大写时按照新词对待，加连接符，例如xAB
                         sb.append(symbol);
                     }
                     sb.append(c);
@@ -3005,8 +3005,11 @@ public class StringKit {
                     sb.append(Character.toLowerCase(c));
                 }
             } else {
-                if (sb.length() > 0 && Character.isUpperCase(sb.charAt(sb.length() - 1)) && symbol != c) {
-                    // 当结果中前一个字母为大写，当前为小写，说明此字符为新词开始(连接符也表示新词)
+                if (symbol != c
+                        && sb.length() > 0
+                        && Character.isUpperCase(sb.charAt(-1))
+                        && Character.isLowerCase(c)) {
+                    // 当结果中前一个字母为大写，当前为小写(非数字或字符)，说明此字符为新词开始（连接符也表示新词）
                     sb.append(symbol);
                 }
                 // 小写或符号
@@ -4926,7 +4929,7 @@ public class StringKit {
      * @return 连接后的字符串
      */
     public static String concat(boolean isNullToEmpty, CharSequence... strs) {
-        final StrBuilder sb = new StrBuilder();
+        final Builders sb = new Builders();
         for (CharSequence str : strs) {
             sb.append(isNullToEmpty ? nullToEmpty(str) : str);
         }
@@ -5115,12 +5118,12 @@ public class StringKit {
     }
 
     /**
-     * 创建StrBuilder对象
+     * 创建Builders对象
      *
-     * @return StrBuilder对象
+     * @return Builders对象
      */
-    public static StrBuilder strBuilder() {
-        return new StrBuilder();
+    public static Builders builders() {
+        return new Builders();
     }
 
     /**
@@ -5134,13 +5137,13 @@ public class StringKit {
     }
 
     /**
-     * 创建StrBuilder对象
+     * 创建Builders对象
      *
      * @param capacity 初始大小
-     * @return StrBuilder对象
+     * @return Builders对象
      */
-    public static StrBuilder strBuilder(int capacity) {
-        return new StrBuilder(capacity);
+    public static Builders builders(int capacity) {
+        return new Builders(capacity);
     }
 
     /**
@@ -5158,13 +5161,13 @@ public class StringKit {
     }
 
     /**
-     * 创建StrBuilder对象
+     * 创建Builders对象
      *
      * @param strs 初始字符串列表
-     * @return StrBuilder对象
+     * @return Builders对象
      */
-    public static StrBuilder strBuilder(CharSequence... strs) {
-        return new StrBuilder(strs);
+    public static Builders builders(CharSequence... strs) {
+        return new Builders(strs);
     }
 
     /**

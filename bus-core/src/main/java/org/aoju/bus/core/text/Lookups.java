@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
-
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.util.Map;
@@ -36,14 +35,14 @@ import java.util.Map;
  * @version 6.0.9
  * @since JDK 1.8+
  */
-public abstract class StrLookup<V> {
+public abstract class Lookups<V> {
 
     /**
      * 基于系统属性的查找.
      */
-    private static final StrLookup<String> SYSTEM_PROPERTIES_LOOKUP = new SystemPropertiesStrLookup();
+    private static final Lookups<String> SYSTEM_PROPERTIES_LOOKUP = new SystemPropertiesLookups();
 
-    protected StrLookup() {
+    protected Lookups() {
         super();
     }
 
@@ -54,7 +53,7 @@ public abstract class StrLookup<V> {
      *
      * @return 使用系统属性返回查找, 而不是null
      */
-    public static StrLookup<String> systemPropertiesLookup() {
+    public static Lookups<String> systemPropertiesLookup() {
         return SYSTEM_PROPERTIES_LOOKUP;
     }
 
@@ -67,8 +66,8 @@ public abstract class StrLookup<V> {
      * @param map 映射键值的映射,可以为空
      * @return 使用映射的查找, 而不是null
      */
-    public static <V> StrLookup<V> mapLookup(final Map<String, V> map) {
-        return new MapStrLookup<>(map);
+    public static <V> Lookups<V> mapLookup(final Map<String, V> map) {
+        return new MapLookups<>(map);
     }
 
     /**
@@ -82,7 +81,7 @@ public abstract class StrLookup<V> {
     /**
      * 使用映射的查找实现.
      */
-    static class MapStrLookup<V> extends StrLookup<V> {
+    static class MapLookups<V> extends Lookups<V> {
 
         /**
          * Map键是变量名和值.
@@ -94,7 +93,7 @@ public abstract class StrLookup<V> {
          *
          * @param map 键到值的映射可以为空
          */
-        MapStrLookup(final Map<String, V> map) {
+        MapLookups(final Map<String, V> map) {
             this.map = map;
         }
 
@@ -120,9 +119,9 @@ public abstract class StrLookup<V> {
     }
 
     /**
-     * 基于系统属性的查找实现s.
+     * 基于系统属性的查找实现
      */
-    private static class SystemPropertiesStrLookup extends StrLookup<String> {
+    private static class SystemPropertiesLookups extends Lookups<String> {
 
         @Override
         public String lookup(String key) {

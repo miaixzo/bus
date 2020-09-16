@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
-
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -37,20 +36,20 @@ import java.util.*;
  * @version 6.0.9
  * @since JDK 1.8+
  */
-public class Substitute {
+public class Replacers {
 
     /**
      * 默认变量前缀.
      */
-    public static final StrMatcher DEFAULT_PREFIX = StrMatcher.stringMatcher(Symbol.DOLLAR + Symbol.BRACE_LEFT);
+    public static final Matchers DEFAULT_PREFIX = Matchers.stringMatcher(Symbol.DOLLAR + Symbol.BRACE_LEFT);
     /**
      * 默认变量后缀.
      */
-    public static final StrMatcher DEFAULT_SUFFIX = StrMatcher.stringMatcher(Symbol.BRACE_RIGHT);
+    public static final Matchers DEFAULT_SUFFIX = Matchers.stringMatcher(Symbol.BRACE_RIGHT);
     /**
      * 默认值分隔符.
      */
-    public static final StrMatcher DEFAULT_VALUE_DELIMITER = StrMatcher.stringMatcher(Symbol.COLON + Symbol.HYPHEN);
+    public static final Matchers DEFAULT_VALUE_DELIMITER = Matchers.stringMatcher(Symbol.COLON + Symbol.HYPHEN);
 
     /**
      * 存储转义字符.
@@ -59,19 +58,19 @@ public class Substitute {
     /**
      * 存储变量前缀.
      */
-    private StrMatcher prefixMatcher;
+    private Matchers prefixMatcher;
     /**
      * 存储变量后缀.
      */
-    private StrMatcher suffixMatcher;
+    private Matchers suffixMatcher;
     /**
      * 存储默认变量值分隔符
      */
-    private StrMatcher valueDelimiterMatcher;
+    private Matchers valueDelimiterMatcher;
     /**
      * 变量解析被委托给VariableResolver的实现程序.
      */
-    private StrLookup<?> variableResolver;
+    private Lookups<?> variableResolver;
     /**
      * 标记是否启用变量名中的替换.
      */
@@ -84,7 +83,7 @@ public class Substitute {
     /**
      * 默认值为变量前缀和后缀以及转义字符.
      */
-    public Substitute() {
+    public Replacers() {
         this(null, DEFAULT_PREFIX, DEFAULT_SUFFIX, Symbol.C_DOLLAR);
     }
 
@@ -95,8 +94,8 @@ public class Substitute {
      * @param <V>      映射中值的类型
      * @param valueMap 带有变量值的映射可能为null
      */
-    public <V> Substitute(final Map<String, V> valueMap) {
-        this(StrLookup.mapLookup(valueMap), DEFAULT_PREFIX, DEFAULT_SUFFIX, Symbol.C_DOLLAR);
+    public <V> Replacers(final Map<String, V> valueMap) {
+        this(Lookups.mapLookup(valueMap), DEFAULT_PREFIX, DEFAULT_SUFFIX, Symbol.C_DOLLAR);
     }
 
     /**
@@ -107,8 +106,8 @@ public class Substitute {
      * @param prefix   变量的前缀,而不是null
      * @param suffix   变量的后缀,而不是null
      */
-    public <V> Substitute(final Map<String, V> valueMap, final String prefix, final String suffix) {
-        this(StrLookup.mapLookup(valueMap), prefix, suffix, Symbol.C_DOLLAR);
+    public <V> Replacers(final Map<String, V> valueMap, final String prefix, final String suffix) {
+        this(Lookups.mapLookup(valueMap), prefix, suffix, Symbol.C_DOLLAR);
     }
 
     /**
@@ -120,9 +119,9 @@ public class Substitute {
      * @param suffix   变量的后缀,而不是null
      * @param escape   转义字符
      */
-    public <V> Substitute(final Map<String, V> valueMap, final String prefix, final String suffix,
-                          final char escape) {
-        this(StrLookup.mapLookup(valueMap), prefix, suffix, escape);
+    public <V> Replacers(final Map<String, V> valueMap, final String prefix, final String suffix,
+                         final char escape) {
+        this(Lookups.mapLookup(valueMap), prefix, suffix, escape);
     }
 
     /**
@@ -135,9 +134,9 @@ public class Substitute {
      * @param escape    转义字符
      * @param delimiter 变量默认值分隔符可以为空
      */
-    public <V> Substitute(final Map<String, V> valueMap, final String prefix, final String suffix,
-                          final char escape, final String delimiter) {
-        this(StrLookup.mapLookup(valueMap), prefix, suffix, escape, delimiter);
+    public <V> Replacers(final Map<String, V> valueMap, final String prefix, final String suffix,
+                         final char escape, final String delimiter) {
+        this(Lookups.mapLookup(valueMap), prefix, suffix, escape, delimiter);
     }
 
     /**
@@ -145,7 +144,7 @@ public class Substitute {
      *
      * @param resolver 变量解析器可以为空
      */
-    public Substitute(final StrLookup<?> resolver) {
+    public Replacers(final Lookups<?> resolver) {
         this(resolver, DEFAULT_PREFIX, DEFAULT_SUFFIX, Symbol.C_DOLLAR);
     }
 
@@ -157,8 +156,8 @@ public class Substitute {
      * @param suffix   变量的后缀,而不是null
      * @param escape   转义字符
      */
-    public Substitute(final StrLookup<?> resolver, final String prefix, final String suffix,
-                      final char escape) {
+    public Replacers(final Lookups<?> resolver, final String prefix, final String suffix,
+                     final char escape) {
         this.setVariableResolver(resolver);
         this.setVariablePrefix(prefix);
         this.setVariableSuffix(suffix);
@@ -175,8 +174,8 @@ public class Substitute {
      * @param escape    转义字符
      * @param delimiter 变量默认值分隔符可以为空
      */
-    public Substitute(final StrLookup<?> resolver, final String prefix, final String suffix,
-                      final char escape, final String delimiter) {
+    public Replacers(final Lookups<?> resolver, final String prefix, final String suffix,
+                     final char escape, final String delimiter) {
         this.setVariableResolver(resolver);
         this.setVariablePrefix(prefix);
         this.setVariableSuffix(suffix);
@@ -192,8 +191,8 @@ public class Substitute {
      * @param suffixMatcher 后缀解析器,而不是null
      * @param escape        转义转义字符
      */
-    public Substitute(
-            final StrLookup<?> resolver, final StrMatcher prefixMatcher, final StrMatcher suffixMatcher,
+    public Replacers(
+            final Lookups<?> resolver, final Matchers prefixMatcher, final Matchers suffixMatcher,
             final char escape) {
         this(resolver, prefixMatcher, suffixMatcher, escape, DEFAULT_VALUE_DELIMITER);
     }
@@ -207,9 +206,9 @@ public class Substitute {
      * @param escape        转义转义字符
      * @param delimiter     变量默认值分隔符可以为空
      */
-    public Substitute(
-            final StrLookup<?> resolver, final StrMatcher prefixMatcher, final StrMatcher suffixMatcher,
-            final char escape, final StrMatcher delimiter) {
+    public Replacers(
+            final Lookups<?> resolver, final Matchers prefixMatcher, final Matchers suffixMatcher,
+            final char escape, final Matchers delimiter) {
         this.setVariableResolver(resolver);
         this.setVariablePrefixMatcher(prefixMatcher);
         this.setVariableSuffixMatcher(suffixMatcher);
@@ -227,7 +226,7 @@ public class Substitute {
      * @return 替换操作的结果
      */
     public static <V> String replace(final Object source, final Map<String, V> valueMap) {
-        return new Substitute(valueMap).replace(source);
+        return new Replacers(valueMap).replace(source);
     }
 
     /**
@@ -242,7 +241,7 @@ public class Substitute {
      * @return 替换操作的结果
      */
     public static <V> String replace(final Object source, final Map<String, V> valueMap, final String prefix, final String suffix) {
-        return new Substitute(valueMap, prefix, suffix).replace(source);
+        return new Replacers(valueMap, prefix, suffix).replace(source);
     }
 
     /**
@@ -263,7 +262,7 @@ public class Substitute {
             final String propValue = value.getProperty(propName);
             valueMap.put(propName, propValue);
         }
-        return Substitute.replace(source, valueMap);
+        return Replacers.replace(source, valueMap);
     }
 
     /**
@@ -274,7 +273,7 @@ public class Substitute {
      * @return 返回替换操作的结果
      */
     public static String replaceSystemProperties(final Object source) {
-        return new Substitute(StrLookup.systemPropertiesLookup()).replace(source);
+        return new Replacers(Lookups.systemPropertiesLookup()).replace(source);
     }
 
     /**
@@ -288,7 +287,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(source);
+        final Builders buf = new Builders(source);
         if (substitute(buf, 0, source.length()) == false) {
             return source;
         }
@@ -307,7 +306,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(length).append(source, offset, length);
+        final Builders buf = new Builders(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return source.substring(offset, offset + length);
         }
@@ -326,7 +325,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(source.length).append(source);
+        final Builders buf = new Builders(source.length).append(source);
         substitute(buf, 0, source.length);
         return buf.toString();
     }
@@ -343,7 +342,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(length).append(source, offset, length);
+        final Builders buf = new Builders(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -359,7 +358,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(source.length()).append(source);
+        final Builders buf = new Builders(source.length()).append(source);
         substitute(buf, 0, buf.length());
         return buf.toString();
     }
@@ -376,7 +375,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(length).append(source, offset, length);
+        final Builders buf = new Builders(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -406,7 +405,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(length).append(source, offset, length);
+        final Builders buf = new Builders(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -418,11 +417,11 @@ public class Substitute {
      * @param source 获取要替换的字符数组的源代码
      * @return 替换操作的结果
      */
-    public String replace(final StrBuilder source) {
+    public String replace(final Builders source) {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(source.length()).append(source);
+        final Builders buf = new Builders(source.length()).append(source);
         substitute(buf, 0, buf.length());
         return buf.toString();
     }
@@ -435,11 +434,11 @@ public class Substitute {
      * @param length 要处理的数组中的长度必须是有效的
      * @return 替换操作的结果
      */
-    public String replace(final StrBuilder source, final int offset, final int length) {
+    public String replace(final Builders source, final int offset, final int length) {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder(length).append(source, offset, length);
+        final Builders buf = new Builders(length).append(source, offset, length);
         substitute(buf, 0, length);
         return buf.toString();
     }
@@ -454,7 +453,7 @@ public class Substitute {
         if (source == null) {
             return null;
         }
-        final StrBuilder buf = new StrBuilder().append(source);
+        final Builders buf = new Builders().append(source);
         substitute(buf, 0, buf.length());
         return buf.toString();
     }
@@ -485,7 +484,7 @@ public class Substitute {
         if (source == null) {
             return false;
         }
-        final StrBuilder buf = new StrBuilder(length).append(source, offset, length);
+        final Builders buf = new Builders(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return false;
         }
@@ -518,7 +517,7 @@ public class Substitute {
         if (source == null) {
             return false;
         }
-        final StrBuilder buf = new StrBuilder(length).append(source, offset, length);
+        final Builders buf = new Builders(length).append(source, offset, length);
         if (substitute(buf, 0, length) == false) {
             return false;
         }
@@ -532,7 +531,7 @@ public class Substitute {
      * @param source 获取要替换的字符数组的源代码
      * @return 替换操作的结果
      */
-    public boolean replaceIn(final StrBuilder source) {
+    public boolean replaceIn(final Builders source) {
         if (source == null) {
             return false;
         }
@@ -547,7 +546,7 @@ public class Substitute {
      * @param length 要处理的数组中的长度必须是有效的
      * @return 替换操作的结果
      */
-    public boolean replaceIn(final StrBuilder source, final int offset, final int length) {
+    public boolean replaceIn(final Builders source, final int offset, final int length) {
         if (source == null) {
             return false;
         }
@@ -562,7 +561,7 @@ public class Substitute {
      * @param length 要处理的构建器中的长度必须是有效的
      * @return true/false
      */
-    protected boolean substitute(final StrBuilder buffer, final int offset, final int length) {
+    protected boolean substitute(final Builders buffer, final int offset, final int length) {
         return substitute(buffer, offset, length, null) > 0;
     }
 
@@ -575,11 +574,11 @@ public class Substitute {
      * @param priorVariables 保存被替换变量的堆栈可以为空
      * @return 发生的长度更改, 除非priorVariables在int时为null 表示布尔标志,表示是否发生了更改
      */
-    private int substitute(final StrBuilder buffer, final int offset, final int length, List<String> priorVariables) {
-        final StrMatcher pfxMatcher = getVariablePrefixMatcher();
-        final StrMatcher suffMatcher = getVariableSuffixMatcher();
+    private int substitute(final Builders buffer, final int offset, final int length, List<String> priorVariables) {
+        final Matchers pfxMatcher = getVariablePrefixMatcher();
+        final Matchers suffMatcher = getVariableSuffixMatcher();
         final char escape = getEscapeChar();
-        final StrMatcher valueDelimMatcher = getValueDelimiterMatcher();
+        final Matchers valueDelimMatcher = getValueDelimiterMatcher();
         final boolean substitutionInVariablesEnabled = isEnableSubstitutionInVariables();
 
         final boolean top = priorVariables == null;
@@ -628,7 +627,7 @@ public class Substitute {
                                         + startMatchLen, pos - startPos
                                         - startMatchLen);
                                 if (substitutionInVariablesEnabled) {
-                                    final StrBuilder bufName = new StrBuilder(varNameExpr);
+                                    final Builders bufName = new Builders(varNameExpr);
                                     substitute(bufName, 0, bufName.length());
                                     varNameExpr = bufName.toString();
                                 }
@@ -709,7 +708,7 @@ public class Substitute {
         if (priorVariables.contains(varName) == false) {
             return;
         }
-        final StrBuilder buf = new StrBuilder(256);
+        final Builders buf = new Builders(256);
         buf.append("Infinite loop in property interpolation of ");
         buf.append(priorVariables.remove(0));
         buf.append(": ");
@@ -727,8 +726,8 @@ public class Substitute {
      * @param endPos       变量的结束位置,包括后缀,有效
      * @return 返回变量的值, 如果变量未知, 则null
      */
-    protected String resolveVariable(final String variableName, final StrBuilder buf, final int startPos, final int endPos) {
-        final StrLookup<?> resolver = getVariableResolver();
+    protected String resolveVariable(final String variableName, final Builders buf, final int startPos, final int endPos) {
+        final Lookups<?> resolver = getVariableResolver();
         if (resolver == null) {
             return null;
         }
@@ -759,7 +758,7 @@ public class Substitute {
      *
      * @return 正在使用的前缀匹配器
      */
-    public StrMatcher getVariablePrefixMatcher() {
+    public Matchers getVariablePrefixMatcher() {
         return prefixMatcher;
     }
 
@@ -769,7 +768,7 @@ public class Substitute {
      * @param prefixMatcher 前缀匹配器,null被忽略
      * @return this, 以启用链接
      */
-    public Substitute setVariablePrefixMatcher(final StrMatcher prefixMatcher) {
+    public Replacers setVariablePrefixMatcher(final Matchers prefixMatcher) {
         if (prefixMatcher == null) {
             throw new IllegalArgumentException("Variable prefix matcher must not be null!");
         }
@@ -783,8 +782,8 @@ public class Substitute {
      * @param prefix 要使用的前缀字符
      * @return this, 以启用链接
      */
-    public Substitute setVariablePrefix(final char prefix) {
-        return setVariablePrefixMatcher(StrMatcher.charMatcher(prefix));
+    public Replacers setVariablePrefix(final char prefix) {
+        return setVariablePrefixMatcher(Matchers.charMatcher(prefix));
     }
 
     /**
@@ -793,11 +792,11 @@ public class Substitute {
      * @param prefix 变量的前缀,而不是null
      * @return this, 以启用链接
      */
-    public Substitute setVariablePrefix(final String prefix) {
+    public Replacers setVariablePrefix(final String prefix) {
         if (prefix == null) {
             throw new IllegalArgumentException("Variable prefix must not be null!");
         }
-        return setVariablePrefixMatcher(StrMatcher.stringMatcher(prefix));
+        return setVariablePrefixMatcher(Matchers.stringMatcher(prefix));
     }
 
     /**
@@ -805,7 +804,7 @@ public class Substitute {
      *
      * @return 正在使用的后缀匹配器
      */
-    public StrMatcher getVariableSuffixMatcher() {
+    public Matchers getVariableSuffixMatcher() {
         return suffixMatcher;
     }
 
@@ -816,7 +815,7 @@ public class Substitute {
      * @param suffixMatcher 后缀匹配器,null被忽略
      * @return this, 以启用链接
      */
-    public Substitute setVariableSuffixMatcher(final StrMatcher suffixMatcher) {
+    public Replacers setVariableSuffixMatcher(final Matchers suffixMatcher) {
         if (suffixMatcher == null) {
             throw new IllegalArgumentException("Variable suffix matcher must not be null!");
         }
@@ -830,8 +829,8 @@ public class Substitute {
      * @param suffix 要使用的后缀字符
      * @return this, 以启用链接
      */
-    public Substitute setVariableSuffix(final char suffix) {
-        return setVariableSuffixMatcher(StrMatcher.charMatcher(suffix));
+    public Replacers setVariableSuffix(final char suffix) {
+        return setVariableSuffixMatcher(Matchers.charMatcher(suffix));
     }
 
     /**
@@ -840,24 +839,24 @@ public class Substitute {
      * @param suffix 变量的后缀,而不是null
      * @return this, 以启用链接
      */
-    public Substitute setVariableSuffix(final String suffix) {
+    public Replacers setVariableSuffix(final String suffix) {
         if (suffix == null) {
             throw new IllegalArgumentException("Variable suffix must not be null!");
         }
-        return setVariableSuffixMatcher(StrMatcher.stringMatcher(suffix));
+        return setVariableSuffixMatcher(Matchers.stringMatcher(suffix));
     }
 
-    public StrMatcher getValueDelimiterMatcher() {
+    public Matchers getValueDelimiterMatcher() {
         return valueDelimiterMatcher;
     }
 
-    public Substitute setValueDelimiterMatcher(final StrMatcher valueDelimiterMatcher) {
+    public Replacers setValueDelimiterMatcher(final Matchers valueDelimiterMatcher) {
         this.valueDelimiterMatcher = valueDelimiterMatcher;
         return this;
     }
 
-    public Substitute setValueDelimiter(final char valueDelimiter) {
-        return setValueDelimiterMatcher(StrMatcher.charMatcher(valueDelimiter));
+    public Replacers setValueDelimiter(final char valueDelimiter) {
+        return setValueDelimiterMatcher(Matchers.charMatcher(valueDelimiter));
     }
 
     /**
@@ -866,19 +865,19 @@ public class Substitute {
      * @param valueDelimiter 要使用的变量默认值分隔符字符串可以为null或空
      * @return this, 以启用链接
      */
-    public Substitute setValueDelimiter(final String valueDelimiter) {
+    public Replacers setValueDelimiter(final String valueDelimiter) {
         if (StringKit.isEmpty(valueDelimiter)) {
             setValueDelimiterMatcher(null);
             return this;
         }
-        return setValueDelimiterMatcher(StrMatcher.stringMatcher(valueDelimiter));
+        return setValueDelimiterMatcher(Matchers.stringMatcher(valueDelimiter));
     }
 
-    public StrLookup<?> getVariableResolver() {
+    public Lookups<?> getVariableResolver() {
         return this.variableResolver;
     }
 
-    public void setVariableResolver(final StrLookup<?> variableResolver) {
+    public void setVariableResolver(final Lookups<?> variableResolver) {
         this.variableResolver = variableResolver;
     }
 

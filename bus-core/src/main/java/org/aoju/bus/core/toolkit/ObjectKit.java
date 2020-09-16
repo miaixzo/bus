@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.StrBuilder;
+import org.aoju.bus.core.text.Builders;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -1296,7 +1296,7 @@ public class ObjectKit {
      * @param builder 要附加到的生成器
      * @param object  要为其创建toString的对象
      */
-    public static void identityToString(final StrBuilder builder, final Object object) {
+    public static void identityToString(final Builders builder, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");
         final String name = object.getClass().getName();
         final String hexString = Integer.toHexString(System.identityHashCode(object));

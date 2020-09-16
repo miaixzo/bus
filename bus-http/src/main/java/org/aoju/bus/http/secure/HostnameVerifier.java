@@ -27,7 +27,6 @@ package org.aoju.bus.http.secure;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.Builder;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 import java.security.cert.Certificate;
@@ -42,14 +41,14 @@ import java.util.*;
  * @version 6.0.9
  * @since JDK 1.8+
  */
-public final class OkHostnameVerifier implements HostnameVerifier {
+public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
 
-    public static final OkHostnameVerifier INSTANCE = new OkHostnameVerifier();
+    public static final HostnameVerifier INSTANCE = new HostnameVerifier();
 
     private static final int ALT_DNS_NAME = 2;
     private static final int ALT_IPA_NAME = 7;
 
-    private OkHostnameVerifier() {
+    private HostnameVerifier() {
     }
 
     public static List<String> allSubjectAltNames(X509Certificate certificate) {

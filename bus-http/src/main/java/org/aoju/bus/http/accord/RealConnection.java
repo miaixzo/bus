@@ -41,7 +41,7 @@ import org.aoju.bus.http.metric.Handshake;
 import org.aoju.bus.http.metric.Interceptor;
 import org.aoju.bus.http.metric.http.*;
 import org.aoju.bus.http.secure.CertificatePinner;
-import org.aoju.bus.http.secure.OkHostnameVerifier;
+import org.aoju.bus.http.secure.HostnameVerifier;
 import org.aoju.bus.http.socket.RealWebSocket;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -341,7 +341,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
                             "Hostname " + address.url().host() + " not verified:"
                                     + "\n    certificate: " + CertificatePinner.pin(cert)
                                     + "\n    DN: " + cert.getSubjectDN().getName()
-                                    + "\n    subjectAltNames: " + OkHostnameVerifier.allSubjectAltNames(cert));
+                                    + "\n    subjectAltNames: " + HostnameVerifier.allSubjectAltNames(cert));
                 } else {
                     throw new SSLPeerUnverifiedException(
                             "Hostname " + address.url().host() + " not verified (no certificates)");
@@ -497,7 +497,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         if (!this.route.socketAddress().equals(route.socketAddress())) return false;
 
         // 3. 此连接的服务器证书必须覆盖新主机
-        if (route.address().hostnameVerifier() != OkHostnameVerifier.INSTANCE) return false;
+        if (route.address().hostnameVerifier() != HostnameVerifier.INSTANCE) return false;
         if (!supportsUrl(address.url())) return false;
 
         // 4. 证书固定必须与主机匹配
@@ -519,7 +519,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         // 主机不匹配,但是如果证书匹配，仍然是好的。
         if (!url.host().equals(route.address().url().host())) {
             // We have a host mismatch. But if the certificate matches, we're still good.
-            return handshake != null && OkHostnameVerifier.INSTANCE.verify(
+            return handshake != null && HostnameVerifier.INSTANCE.verify(
                     url.host(), (X509Certificate) handshake.peerCertificates().get(0));
         }
 

@@ -38,7 +38,7 @@ import org.aoju.bus.http.metric.proxy.NullProxySelector;
 import org.aoju.bus.http.secure.Authenticator;
 import org.aoju.bus.http.secure.CertificateChainCleaner;
 import org.aoju.bus.http.secure.CertificatePinner;
-import org.aoju.bus.http.secure.OkHostnameVerifier;
+import org.aoju.bus.http.secure.HostnameVerifier;
 import org.aoju.bus.http.socket.RealWebSocket;
 import org.aoju.bus.http.socket.WebSocket;
 import org.aoju.bus.http.socket.WebSocketListener;
@@ -181,7 +181,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     final SocketFactory socketFactory;
     final SSLSocketFactory sslSocketFactory;
     final CertificateChainCleaner certificateChainCleaner;
-    final HostnameVerifier hostnameVerifier;
+    final javax.net.ssl.HostnameVerifier hostnameVerifier;
     final CertificatePinner certificatePinner;
     final Authenticator proxyAuthenticator;
     final Authenticator authenticator;
@@ -346,7 +346,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         return sslSocketFactory;
     }
 
-    public HostnameVerifier hostnameVerifier() {
+    public javax.net.ssl.HostnameVerifier hostnameVerifier() {
         return hostnameVerifier;
     }
 
@@ -423,7 +423,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         SocketFactory socketFactory;
         SSLSocketFactory sslSocketFactory;
         CertificateChainCleaner certificateChainCleaner;
-        HostnameVerifier hostnameVerifier;
+        javax.net.ssl.HostnameVerifier hostnameVerifier;
         CertificatePinner certificatePinner;
         Authenticator proxyAuthenticator;
         Authenticator authenticator;
@@ -449,7 +449,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             }
             cookieJar = CookieJar.NO_COOKIES;
             socketFactory = SocketFactory.getDefault();
-            hostnameVerifier = OkHostnameVerifier.INSTANCE;
+            hostnameVerifier = HostnameVerifier.INSTANCE;
             certificatePinner = CertificatePinner.DEFAULT;
             proxyAuthenticator = Authenticator.NONE;
             authenticator = Authenticator.NONE;
@@ -763,7 +763,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @param hostnameVerifier 验证主机名接口
          * @return 构造器
          */
-        public Builder hostnameVerifier(HostnameVerifier hostnameVerifier) {
+        public Builder hostnameVerifier(javax.net.ssl.HostnameVerifier hostnameVerifier) {
             if (hostnameVerifier == null) throw new NullPointerException("hostnameVerifier == null");
             this.hostnameVerifier = hostnameVerifier;
             return this;
