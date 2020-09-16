@@ -1172,18 +1172,57 @@ public class StringKit {
      * 转义{}： format("this is \\{} for {}", "a", "b") =  this is \{} for a
      * 转义\： format("this is \\\\{} for {}", "a", "b") =  this is \a for b
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param template 文本模板，被替换的部分用 {} 表示，如果模板为null，返回"null"
      * @param params   参数值
-     * @return 格式化后的文本
+     * @return 格式化后的文本，如果模板为null，返回"null"
      */
     public static String format(CharSequence template, Object... params) {
         if (null == template) {
-            return null;
+            return Normal.NULL;
         }
         if (ArrayKit.isEmpty(params) || isBlank(template)) {
             return template.toString();
         }
         return format(template.toString(), params);
+    }
+
+    /**
+     * 格式化文本
+     *
+     * @param template 文本模板，被替换的部分用 {key} 表示
+     * @param map      参数值对
+     * @return 格式化后的文本
+     */
+    public static String format(CharSequence template, Map<?, ?> map) {
+        return format(template, map, true);
+    }
+
+    /**
+     * 格式化文本
+     *
+     * @param template   文本模板，被替换的部分用 {key} 表示
+     * @param map        参数值对
+     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
+     * @return 格式化后的文本
+     */
+    public static String format(CharSequence template, Map<?, ?> map, boolean ignoreNull) {
+        if (null == template) {
+            return null;
+        }
+        if (null == map || map.isEmpty()) {
+            return template.toString();
+        }
+
+        String template2 = template.toString();
+        String value;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            value = toString(entry.getValue());
+            if (null == value && ignoreNull) {
+                continue;
+            }
+            template2 = replace(template2, "{" + entry.getKey() + "}", value);
+        }
+        return template2;
     }
 
     /**

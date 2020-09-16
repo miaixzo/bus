@@ -84,10 +84,9 @@ public class QrConfig {
      */
     public int ratio = 6;
     /**
-     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     * 设置二维码中的信息量，可设置1-40的整数
      */
-    protected Integer qrVersion = 0;
-
+    protected Integer qrVersion;
     /**
      * 构造,默认长宽为300
      */
