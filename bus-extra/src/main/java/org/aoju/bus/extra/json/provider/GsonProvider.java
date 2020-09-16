@@ -111,6 +111,11 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     @Override
+    public <T> List<T> toList(String json, Class<T> clazz) {
+        return gson.fromJson(json, (Type) clazz);
+    }
+
+    @Override
     public <T> List<T> toList(String json, Type type) {
         return gson.fromJson(json, type);
     }

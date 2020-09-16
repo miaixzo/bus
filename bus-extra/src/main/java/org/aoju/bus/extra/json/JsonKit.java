@@ -114,6 +114,18 @@ public class JsonKit {
     }
 
     /**
+     * 按指定的Type解析json字符串到List
+     *
+     * @param json  要解析的json字符串
+     * @param clazz 类对象class
+     * @param <T>   泛型参数类型
+     * @return 返回List
+     */
+    public static <T> List<T> toList(String json, final Class<T> clazz) {
+        return getProvider().toList(json, clazz);
+    }
+
+    /**
      * 解析json字符串到Map
      *
      * @param json 要解析的json字符串

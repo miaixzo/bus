@@ -150,7 +150,7 @@ public class TinyLog extends AbstractAware {
         if (null == t) {
             t = getLastArgumentIfThrowable(arguments);
         }
-        LogEntryForwarder.forward(DEPTH, level, t, format, arguments);
+        LogEntryForwarder.forward(DEPTH, level, t, StringKit.toString(format), arguments);
     }
 
     /**

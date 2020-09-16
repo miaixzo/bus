@@ -24,15 +24,15 @@
  ********************************************************************************/
 package org.aoju.bus.core.builder;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.ArrayKit;
-import org.aoju.bus.core.toolkit.ClassKit;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * {@link Object#equals(Object)} 方法的构建器
@@ -67,25 +67,23 @@ import java.util.*;
  */
 public class EqualsBuilder implements Builder<Boolean> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 反射方法用于检测循环对象引用和避免无限循环的对象注册表
      */
     private static final ThreadLocal<Set<Pair<HashKey, HashKey>>> REGISTRY = new ThreadLocal<>();
 
     /**
-     * 是否equals,此值随着构建会变更,默认true
+     * 是否equals，此值随着构建会变更，默认true
      */
     private boolean isEquals = true;
-    private boolean testTransients = false;
-    private boolean testRecursive = false;
-    private List<Class<?>> bypassReflectionClasses;
-    private Class<?> reflectUpToClass = null;
-    private String[] excludeFields = null;
 
-
+    /**
+     * 构造，初始状态值为true
+     */
     public EqualsBuilder() {
-        bypassReflectionClasses = new ArrayList<>();
-        bypassReflectionClasses.add(String.class);
+
     }
 
     /**
@@ -123,7 +121,7 @@ public class EqualsBuilder implements Builder<Boolean> {
     static boolean isRegistered(final Object lhs, final Object rhs) {
         final Set<Pair<HashKey, HashKey>> registry = getRegistry();
         final Pair<HashKey, HashKey> pair = getRegisterPair(lhs, rhs);
-        final Pair<HashKey, HashKey> swappedPair = Pair.of(pair.getRight(), pair.getLeft());
+        final Pair<HashKey, HashKey> swappedPair = Pair.of(pair.getKey(), pair.getValue());
 
         return registry != null
                 && (registry.contains(pair) || registry.contains(swappedPair));
@@ -136,12 +134,14 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @param lhs 要注册的对象
      * @param rhs 另一个要注册的对象
      */
-    private static void register(final Object lhs, final Object rhs) {
-        Set<Pair<HashKey, HashKey>> registry = getRegistry();
-        if (registry == null) {
-            registry = new HashSet<>();
-            REGISTRY.set(registry);
+    static void register(final Object lhs, final Object rhs) {
+        synchronized (EqualsBuilder.class) {
+            if (getRegistry() == null) {
+                REGISTRY.set(new HashSet<>());
+            }
         }
+
+        final Set<Pair<HashKey, HashKey>> registry = getRegistry();
         final Pair<HashKey, HashKey> pair = getRegisterPair(lhs, rhs);
         registry.add(pair);
     }
@@ -153,13 +153,16 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @param lhs 要注销此对象
      * @param rhs 另一个要注册的对象
      */
-    private static void unregister(final Object lhs, final Object rhs) {
-        final Set<Pair<HashKey, HashKey>> registry = getRegistry();
+    static void unregister(final Object lhs, final Object rhs) {
+        Set<Pair<HashKey, HashKey>> registry = getRegistry();
         if (registry != null) {
             final Pair<HashKey, HashKey> pair = getRegisterPair(lhs, rhs);
             registry.remove(pair);
-            if (registry.isEmpty()) {
-                REGISTRY.remove();
+            synchronized (EqualsBuilder.class) {
+                registry = getRegistry();
+                if (registry != null && registry.isEmpty()) {
+                    REGISTRY.remove();
+                }
             }
         }
     }
@@ -173,7 +176,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @return 两个对象是否equals, 是返回<code>true</code>
      */
     public static boolean reflectionEquals(final Object lhs, final Object rhs, final Collection<String> excludeFields) {
-        return reflectionEquals(lhs, rhs, ReflectionToStringBuilder.toNoNullStringArray(excludeFields));
+        return reflectionEquals(lhs, rhs, ArrayKit.toArray(excludeFields, String.class));
     }
 
     /**
@@ -209,97 +212,16 @@ public class EqualsBuilder implements Builder<Boolean> {
      * @param testTransients   是否测试忽略
      * @param reflectUpToClass 要反映到(包括)的超类可以是null
      * @param excludeFields    要从测试中排除的字段名的数组
-     * @return true如果两个对象已测试相等.
-     */
-    public static boolean reflectionEquals(final Object lhs, final Object rhs, final boolean testTransients, final Class<?> reflectUpToClass,
-                                           final String... excludeFields) {
-        return reflectionEquals(lhs, rhs, testTransients, reflectUpToClass, false, excludeFields);
-    }
-
-    /**
-     * 此方法使用反射来确定两个对象是否相等
-     *
-     * @param lhs              对象
-     * @param rhs              其他对象
-     * @param testTransients   是否测试忽略
-     * @param reflectUpToClass 要反映到(包括)的超类可以是null
-     * @param testRecursive    是否递归地调用非基元字段上的反射等于.
-     * @param excludeFields    要从测试中排除的字段名的数组
      * @return true如果两个对象已测试相等
      */
     public static boolean reflectionEquals(final Object lhs, final Object rhs, final boolean testTransients, final Class<?> reflectUpToClass,
-                                           final boolean testRecursive, final String... excludeFields) {
+                                           final String... excludeFields) {
         if (lhs == rhs) {
             return true;
         }
         if (lhs == null || rhs == null) {
             return false;
         }
-        return new EqualsBuilder()
-                .setExcludeFields(excludeFields)
-                .setReflectUpToClass(reflectUpToClass)
-                .setTestTransients(testTransients)
-                .setTestRecursive(testRecursive)
-                .reflectionAppend(lhs, rhs)
-                .isEquals();
-    }
-
-    /**
-     * 设置反射比较对象时是否测试忽略.
-     *
-     * @param testTransients 是否测试忽略
-     * @return EqualsBuilder -调用链.
-     */
-    public EqualsBuilder setTestTransients(final boolean testTransients) {
-        this.testTransients = testTransients;
-        return this;
-    }
-
-    /**
-     * 置反射比较对象时是否测试忽略.
-     *
-     * @param testRecursive 是否做递归测试
-     * @return EqualsBuilder -调用链.
-     */
-    public EqualsBuilder setTestRecursive(final boolean testRecursive) {
-        this.testRecursive = testRecursive;
-        return this;
-    }
-
-    public EqualsBuilder setBypassReflectionClasses(List<Class<?>> bypassReflectionClasses) {
-        this.bypassReflectionClasses = bypassReflectionClasses;
-        return this;
-    }
-
-    public EqualsBuilder setReflectUpToClass(final Class<?> reflectUpToClass) {
-        this.reflectUpToClass = reflectUpToClass;
-        return this;
-    }
-
-    public EqualsBuilder setExcludeFields(final String... excludeFields) {
-        this.excludeFields = excludeFields;
-        return this;
-    }
-
-    /**
-     * 使用反射测试两个对象
-     *
-     * @param lhs 左边对象
-     * @param rhs 右边对象
-     * @return EqualsBuilder -调用链.
-     */
-    public EqualsBuilder reflectionAppend(final Object lhs, final Object rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            isEquals = false;
-            return this;
-        }
-
         final Class<?> lhsClass = lhs.getClass();
         final Class<?> rhsClass = rhs.getClass();
         Class<?> testClass;
@@ -314,43 +236,42 @@ public class EqualsBuilder implements Builder<Boolean> {
                 testClass = lhsClass;
             }
         } else {
-            isEquals = false;
-            return this;
+            return false;
         }
-
+        final EqualsBuilder equalsBuilder = new EqualsBuilder();
         try {
             if (testClass.isArray()) {
-                append(lhs, rhs);
+                equalsBuilder.append(lhs, rhs);
             } else {
-                if (bypassReflectionClasses != null
-                        && (bypassReflectionClasses.contains(lhsClass) || bypassReflectionClasses.contains(rhsClass))) {
-                    isEquals = lhs.equals(rhs);
-                } else {
-                    reflectionAppend(lhs, rhs, testClass);
-                    while (testClass.getSuperclass() != null && testClass != reflectUpToClass) {
-                        testClass = testClass.getSuperclass();
-                        reflectionAppend(lhs, rhs, testClass);
-                    }
+                reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
+                while (testClass.getSuperclass() != null && testClass != reflectUpToClass) {
+                    testClass = testClass.getSuperclass();
+                    reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
                 }
             }
         } catch (final IllegalArgumentException e) {
-            isEquals = false;
-            return this;
+            return false;
         }
-        return this;
+        return equalsBuilder.isEquals();
     }
 
     /**
      * 附加由给定类的给定对象定义的字段和值
      *
-     * @param lhs   左边对象
-     * @param rhs   右边对象
-     * @param clazz 要附加详细信息的类
+     * @param lhs           左边对象
+     * @param rhs           右边对象
+     * @param clazz         要附加详细信息的类
+     * @param builder       要附加的构建器
+     * @param useTransients 是否包含修饰符
+     * @param excludeFields 要从比较中排除的字段名称数组
      */
-    private void reflectionAppend(
+    private static void reflectionAppend(
             final Object lhs,
             final Object rhs,
-            final Class<?> clazz) {
+            final Class<?> clazz,
+            final EqualsBuilder builder,
+            final boolean useTransients,
+            final String[] excludeFields) {
 
         if (isRegistered(lhs, rhs)) {
             return;
@@ -360,15 +281,14 @@ public class EqualsBuilder implements Builder<Boolean> {
             register(lhs, rhs);
             final Field[] fields = clazz.getDeclaredFields();
             AccessibleObject.setAccessible(fields, true);
-            for (int i = 0; i < fields.length && isEquals; i++) {
+            for (int i = 0; i < fields.length && builder.isEquals; i++) {
                 final Field f = fields[i];
-                if (!ArrayKit.contains(excludeFields, f.getName())
-                        && !f.getName().contains(Symbol.DOLLAR)
-                        && (testTransients || !Modifier.isTransient(f.getModifiers()))
-                        && !Modifier.isStatic(f.getModifiers())
-                        && !f.isAnnotationPresent(EqualsExclude.class)) {
+                if (false == ArrayKit.contains(excludeFields, f.getName())
+                        && (f.getName().indexOf('$') == -1)
+                        && (useTransients || !Modifier.isTransient(f.getModifiers()))
+                        && (!Modifier.isStatic(f.getModifiers()))) {
                     try {
-                        append(f.get(lhs), f.get(rhs));
+                        builder.append(f.get(lhs), f.get(rhs));
                     } catch (final IllegalAccessException e) {
                         throw new InternalError("Unexpected IllegalAccessException");
                     }
@@ -379,16 +299,29 @@ public class EqualsBuilder implements Builder<Boolean> {
         }
     }
 
+    /**
+     * 将<code>super.equals()</code>的结果添加到此构建器
+     *
+     * @param superEquals 调用<code> super.equals()</code>的结果
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder appendSuper(final boolean superEquals) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
         isEquals = superEquals;
         return this;
     }
 
+    /**
+     * 使用两个<code>equals</code>方法比较两个<code>Object</code>是否相等
+     *
+     * @param lhs 左边对象
+     * @param rhs 右边对象
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final Object lhs, final Object rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
         if (lhs == rhs) {
@@ -399,307 +332,171 @@ public class EqualsBuilder implements Builder<Boolean> {
             return this;
         }
         final Class<?> lhsClass = lhs.getClass();
-        if (lhsClass.isArray()) {
-            appendArray(lhs, rhs);
-        } else {
-            if (testRecursive && !ClassKit.isPrimitiveOrWrapper(lhsClass)) {
-                reflectionAppend(lhs, rhs);
-            } else {
-                isEquals = lhs.equals(rhs);
-            }
+        if (false == lhsClass.isArray()) {
+            // 简单的情况，不是数组，只比较元素
+            isEquals = lhs.equals(rhs);
         }
+
+        // 判断数组的equals
+        this.setEquals(ArrayKit.equals(lhs, rhs));
         return this;
     }
 
-    private void appendArray(final Object lhs, final Object rhs) {
-        if (lhs.getClass() != rhs.getClass()) {
-            this.setEquals(false);
-        } else if (lhs instanceof long[]) {
-            append((long[]) lhs, (long[]) rhs);
-        } else if (lhs instanceof int[]) {
-            append((int[]) lhs, (int[]) rhs);
-        } else if (lhs instanceof short[]) {
-            append((short[]) lhs, (short[]) rhs);
-        } else if (lhs instanceof char[]) {
-            append((char[]) lhs, (char[]) rhs);
-        } else if (lhs instanceof byte[]) {
-            append((byte[]) lhs, (byte[]) rhs);
-        } else if (lhs instanceof double[]) {
-            append((double[]) lhs, (double[]) rhs);
-        } else if (lhs instanceof float[]) {
-            append((float[]) lhs, (float[]) rhs);
-        } else if (lhs instanceof boolean[]) {
-            append((boolean[]) lhs, (boolean[]) rhs);
-        } else {
-            // Not an array of primitives
-            append((Object[]) lhs, (Object[]) rhs);
-        }
-    }
-
+    /**
+     * 比较两个<code>long</code>是否相等
+     *
+     * @param lhs 左边对象
+     * @param rhs 右边对象
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final long lhs, final long rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
-        isEquals = lhs == rhs;
+        isEquals = (lhs == rhs);
         return this;
     }
 
+    /**
+     * 比较两个<code>int</code>是否相等
+     *
+     * @param lhs 左边对象
+     * @param rhs 右边对象
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final int lhs, final int rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
-        isEquals = lhs == rhs;
+        isEquals = (lhs == rhs);
         return this;
     }
 
+    /**
+     * 比较两个<code>short</code>是否相等
+     *
+     * @param lhs 左边对象
+     * @param rhs 右边对象
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final short lhs, final short rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
-        isEquals = lhs == rhs;
+        isEquals = (lhs == rhs);
         return this;
     }
 
+    /**
+     * 比较两个<code>char</code>是否相等
+     *
+     * @param lhs 左边对象
+     * @param rhs 右边对象
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final char lhs, final char rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
-        isEquals = lhs == rhs;
+        isEquals = (lhs == rhs);
         return this;
     }
 
+    /**
+     * 比较两个<code>byte</code>是否相等
+     *
+     * @param lhs 左边对象
+     * @param rhs 右边对象
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final byte lhs, final byte rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
-        isEquals = lhs == rhs;
+        isEquals = (lhs == rhs);
         return this;
     }
 
+    /**
+     * 通过比较<code>doubleToLong</code>返回的位的模式是否相等来比较两个<code>double</code>是否相等
+     *
+     * @param lhs 左边对象
+     * @param rhs 右边对象
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final double lhs, final double rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
         return append(Double.doubleToLongBits(lhs), Double.doubleToLongBits(rhs));
     }
 
+    /**
+     * <p>Test if two <code>float</code>s are equal byt testing that the
+     * pattern of bits returned by doubleToLong are equal.</p>
+     *
+     * <p>This handles NaNs, Infinities, and <code>-0.0</code>.</p>
+     *
+     * <p>It is compatible with the hash code generated by
+     * <code>HashCodeBuilder</code>.</p>
+     *
+     * @param lhs 左边对象 <code>float</code>
+     * @param rhs 右边对象 <code>float</code>
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final float lhs, final float rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
         return append(Float.floatToIntBits(lhs), Float.floatToIntBits(rhs));
     }
 
+    /**
+     * 比较两个<code>boolean</code>是否相等
+     *
+     * @param lhs 左边对象 <code>boolean</code>
+     * @param rhs 右边对象 <code>boolean</code>
+     * @return EqualsBuilder - 自定义返回链
+     */
     public EqualsBuilder append(final boolean lhs, final boolean rhs) {
-        if (!isEquals) {
+        if (isEquals == false) {
             return this;
         }
-        isEquals = lhs == rhs;
+        isEquals = (lhs == rhs);
         return this;
     }
 
-    public EqualsBuilder append(final Object[] lhs, final Object[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final long[] lhs, final long[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final int[] lhs, final int[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final short[] lhs, final short[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final char[] lhs, final char[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final byte[] lhs, final byte[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final double[] lhs, final double[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final float[] lhs, final float[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
-    public EqualsBuilder append(final boolean[] lhs, final boolean[] rhs) {
-        if (!isEquals) {
-            return this;
-        }
-        if (lhs == rhs) {
-            return this;
-        }
-        if (lhs == null || rhs == null) {
-            this.setEquals(false);
-            return this;
-        }
-        if (lhs.length != rhs.length) {
-            this.setEquals(false);
-            return this;
-        }
-        for (int i = 0; i < lhs.length && isEquals; ++i) {
-            append(lhs[i], rhs[i]);
-        }
-        return this;
-    }
-
+    /**
+     * 如果已选中的字段全部相等，则返回<code>true</code>
+     *
+     * @return boolean
+     */
     public boolean isEquals() {
         return this.isEquals;
     }
 
-    protected void setEquals(final boolean isEquals) {
+    /**
+     * 设置<code>isEquals</code>值
+     *
+     * @param isEquals 设定值
+     */
+    protected void setEquals(boolean isEquals) {
         this.isEquals = isEquals;
     }
 
+    /**
+     * 如果已选中的字段全部相等，则返回<code>true</code>
+     *
+     * @return 如果所有已检查的字段都相等，则<code>true</code>否则<code>false</code>
+     */
     @Override
     public Boolean build() {
-        return Boolean.valueOf(isEquals());
+        return isEquals();
     }
 
+    /**
+     * 重置EqualsBuilder，以便您可以再次使用同一对象
+     */
     public void reset() {
         this.isEquals = true;
     }

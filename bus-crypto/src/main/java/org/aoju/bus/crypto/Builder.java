@@ -56,6 +56,7 @@ import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.util.Arrays;
+import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemObjectGenerator;
@@ -1974,12 +1975,7 @@ public final class Builder {
         // 根据曲线恢复公钥格式
         ECParameterSpec ecSpec = new ECNamedCurveSpec(curveName, curve, namedSpec.getG(), namedSpec.getN());
 
-        final KeyFactory PubKeyGen = getKeyFactory(Algorithm.EC);
-        try {
-            return PubKeyGen.generatePublic(new ECPublicKeySpec(point, ecSpec));
-        } catch (GeneralSecurityException e) {
-            throw new InstrumentException(e);
-        }
+        return generatePublicKey("EC", new ECPublicKeySpec(point, ecSpec));
     }
 
     /**
@@ -2028,14 +2024,10 @@ public final class Builder {
      * @return ECPrivateKeyParameters或者ECPublicKeyParameters
      */
     public static AsymmetricKeyParameter toParams(Key key) {
-        try {
-            if (key instanceof PrivateKey) {
-                return ECUtil.generatePrivateKeyParameter((PrivateKey) key);
-            } else if (key instanceof PublicKey) {
-                return ECUtil.generatePublicKeyParameter((PublicKey) key);
-            }
-        } catch (InvalidKeyException e) {
-            throw new InstrumentException(e);
+        if (key instanceof PrivateKey) {
+            return toPrivateParams((PrivateKey) key);
+        } else if (key instanceof PublicKey) {
+            return toPublicParams((PublicKey) key);
         }
 
         return null;
@@ -2048,7 +2040,7 @@ public final class Builder {
      * @return ECPrivateKeyParameters
      */
     public static ECPrivateKeyParameters toSm2Params(String dHex) {
-        return toSm2Params(HexKit.toBigInteger(dHex));
+        return toSm2PrivateParams(dHex);
     }
 
     /**
@@ -2059,7 +2051,7 @@ public final class Builder {
      * @return ECPrivateKeyParameters
      */
     public static ECPrivateKeyParameters toParams(String dHex, ECDomainParameters domainParameters) {
-        return toParams(new BigInteger(dHex, 16), domainParameters);
+        return toPrivateParams(dHex, domainParameters);
     }
 
     /**
@@ -2069,7 +2061,7 @@ public final class Builder {
      * @return ECPrivateKeyParameters
      */
     public static ECPrivateKeyParameters toSm2Params(byte[] d) {
-        return toSm2Params(new BigInteger(d));
+        return toSm2PrivateParams(d);
     }
 
     /**
@@ -2080,7 +2072,7 @@ public final class Builder {
      * @return ECPrivateKeyParameters
      */
     public static ECPrivateKeyParameters toParams(byte[] d, ECDomainParameters domainParameters) {
-        return toParams(new BigInteger(d), domainParameters);
+        return toPrivateParams(d, domainParameters);
     }
 
     /**
@@ -2101,10 +2093,7 @@ public final class Builder {
      * @return ECPrivateKeyParameters
      */
     public static ECPrivateKeyParameters toParams(BigInteger d, ECDomainParameters domainParameters) {
-        if (null == d) {
-            return null;
-        }
-        return new ECPrivateKeyParameters(d, domainParameters);
+        return toPrivateParams(d, domainParameters);
     }
 
     /**
@@ -2116,10 +2105,7 @@ public final class Builder {
      * @return ECPublicKeyParameters
      */
     public static ECPublicKeyParameters toParams(BigInteger x, BigInteger y, ECDomainParameters domainParameters) {
-        if (null == x || null == y) {
-            return null;
-        }
-        return toParams(x.toByteArray(), y.toByteArray(), domainParameters);
+        return toPublicParams(x, y, domainParameters);
     }
 
     /**
@@ -2165,13 +2151,7 @@ public final class Builder {
      * @return ECPublicKeyParameters
      */
     public static ECPublicKeyParameters toParams(byte[] xBytes, byte[] yBytes, ECDomainParameters domainParameters) {
-        if (null == xBytes || null == yBytes) {
-            return null;
-        }
-        final ECCurve curve = domainParameters.getCurve();
-        final int curveLength = getCurveLength(curve);
-        final byte[] encodedPubKey = encodePoint(xBytes, yBytes, curveLength);
-        return new ECPublicKeyParameters(curve.decodePoint(encodedPubKey), domainParameters);
+        return toPublicParams(xBytes, yBytes, domainParameters);
     }
 
     /**
@@ -2181,14 +2161,7 @@ public final class Builder {
      * @return {@link ECPublicKeyParameters}或null
      */
     public static ECPublicKeyParameters toParams(PublicKey publicKey) {
-        if (null == publicKey) {
-            return null;
-        }
-        try {
-            return (ECPublicKeyParameters) ECUtil.generatePublicKeyParameter(publicKey);
-        } catch (InvalidKeyException e) {
-            throw new InstrumentException(e);
-        }
+        return toPublicParams(publicKey);
     }
 
     /**
@@ -2198,68 +2171,7 @@ public final class Builder {
      * @return {@link ECPrivateKeyParameters}或null
      */
     public static ECPrivateKeyParameters toParams(PrivateKey privateKey) {
-        if (null == privateKey) {
-            return null;
-        }
-        try {
-            return (ECPrivateKeyParameters) ECUtil.generatePrivateKeyParameter(privateKey);
-        } catch (InvalidKeyException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    /**
-     * 将X，Y曲线点编码为bytes
-     *
-     * @param xBytes      X坐标bytes
-     * @param yBytes      Y坐标bytes
-     * @param curveLength 曲线编码后的长度
-     * @return 编码bytes
-     */
-    private static byte[] encodePoint(byte[] xBytes, byte[] yBytes, int curveLength) {
-        xBytes = fixLength(curveLength, xBytes);
-        yBytes = fixLength(curveLength, yBytes);
-        final byte[] encodedPubKey = new byte[1 + xBytes.length + yBytes.length];
-
-        // 压缩类型：无压缩
-        encodedPubKey[0] = 0x04;
-        System.arraycopy(xBytes, 0, encodedPubKey, 1, xBytes.length);
-        System.arraycopy(yBytes, 0, encodedPubKey, 1 + xBytes.length, yBytes.length);
-
-        return encodedPubKey;
-    }
-
-    /**
-     * 获取Curve长度
-     *
-     * @param curve {@link ECCurve}
-     * @return Curve长度
-     */
-    private static int getCurveLength(ECCurve curve) {
-        return (curve.getFieldSize() + 7) / 8;
-    }
-
-    /**
-     * 修正长度
-     *
-     * @param curveLength 修正后的长度
-     * @param src         bytes
-     * @return 修正后的bytes
-     */
-    private static byte[] fixLength(int curveLength, byte[] src) {
-        if (src.length == curveLength) {
-            return src;
-        }
-
-        byte[] result = new byte[curveLength];
-        if (src.length > curveLength) {
-            // 裁剪末尾的指定长度
-            System.arraycopy(src, src.length - result.length, result, 0, result.length);
-        } else {
-            // 放置于末尾
-            System.arraycopy(src, 0, result, result.length - src.length, src.length);
-        }
-        return result;
+        return toPrivateParams(privateKey);
     }
 
     /**
@@ -2591,6 +2503,223 @@ public final class Builder {
      */
     public static HMac hmacSm3(byte[] key) {
         return new HMac(Algorithm.HmacSM3, key);
+    }
+
+    /**
+     * 转换为 ECPublicKeyParameters
+     *
+     * @param q 公钥Q值
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toSm2PublicParams(byte[] q) {
+        return toPublicParams(q, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为 ECPublicKeyParameters
+     *
+     * @param q 公钥Q值
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toSm2PublicParams(String q) {
+        return toPublicParams(q, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为SM2的ECPublicKeyParameters
+     *
+     * @param x 公钥X
+     * @param y 公钥Y
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toSm2PublicParams(String x, String y) {
+        return toPublicParams(x, y, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为SM2的ECPublicKeyParameters
+     *
+     * @param xBytes 公钥X
+     * @param yBytes 公钥Y
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toSm2PublicParams(byte[] xBytes, byte[] yBytes) {
+        return toPublicParams(xBytes, yBytes, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param x                公钥X
+     * @param y                公钥Y
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toPublicParams(String x, String y, ECDomainParameters domainParameters) {
+        return toPublicParams(decode(x), decode(y), domainParameters);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param xBytes           公钥X
+     * @param yBytes           公钥Y
+     * @param domainParameters ECDomainParameters曲线参数
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toPublicParams(byte[] xBytes, byte[] yBytes, ECDomainParameters domainParameters) {
+        return toPublicParams(BigIntegers.fromUnsignedByteArray(xBytes), BigIntegers.fromUnsignedByteArray(yBytes), domainParameters);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param x                公钥X
+     * @param y                公钥Y
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toPublicParams(BigInteger x, BigInteger y, ECDomainParameters domainParameters) {
+        if (null == x || null == y) {
+            return null;
+        }
+        final ECCurve curve = domainParameters.getCurve();
+        return toPublicParams(curve.createPoint(x, y), domainParameters);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param pointEncoded     被编码的曲线坐标点
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toPublicParams(String pointEncoded, ECDomainParameters domainParameters) {
+        final ECCurve curve = domainParameters.getCurve();
+        return toPublicParams(curve.decodePoint(decode(pointEncoded)), domainParameters);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param pointEncoded     被编码的曲线坐标点
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toPublicParams(byte[] pointEncoded, ECDomainParameters domainParameters) {
+        final ECCurve curve = domainParameters.getCurve();
+        return toPublicParams(curve.decodePoint(pointEncoded), domainParameters);
+    }
+
+    /**
+     * 转换为ECPublicKeyParameters
+     *
+     * @param point            曲线坐标点
+     * @param domainParameters ECDomainParameters
+     * @return ECPublicKeyParameters
+     */
+    public static ECPublicKeyParameters toPublicParams(org.bouncycastle.math.ec.ECPoint point, ECDomainParameters domainParameters) {
+        return new ECPublicKeyParameters(point, domainParameters);
+    }
+
+    /**
+     * 公钥转换为 {@link ECPublicKeyParameters}
+     *
+     * @param publicKey 公钥，传入null返回null
+     * @return {@link ECPublicKeyParameters}或null
+     */
+    public static ECPublicKeyParameters toPublicParams(PublicKey publicKey) {
+        if (null == publicKey) {
+            return null;
+        }
+        try {
+            return (ECPublicKeyParameters) ECUtil.generatePublicKeyParameter(publicKey);
+        } catch (InvalidKeyException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d 私钥d值16进制字符串
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toSm2PrivateParams(String d) {
+        return toPrivateParams(d, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d 私钥d值
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toSm2PrivateParams(byte[] d) {
+        return toPrivateParams(d, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d 私钥d值
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toSm2PrivateParams(BigInteger d) {
+        return toPrivateParams(d, SM2_DOMAIN_PARAMS);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d                私钥d值16进制字符串
+     * @param domainParameters ECDomainParameters
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toPrivateParams(String d, ECDomainParameters domainParameters) {
+        return toPrivateParams(BigIntegers.fromUnsignedByteArray(decode(d)), domainParameters);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d                私钥d值
+     * @param domainParameters ECDomainParameters
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toPrivateParams(byte[] d, ECDomainParameters domainParameters) {
+        return toPrivateParams(BigIntegers.fromUnsignedByteArray(d), domainParameters);
+    }
+
+    /**
+     * 转换为 ECPrivateKeyParameters
+     *
+     * @param d                私钥d值
+     * @param domainParameters ECDomainParameters
+     * @return ECPrivateKeyParameters
+     */
+    public static ECPrivateKeyParameters toPrivateParams(BigInteger d, ECDomainParameters domainParameters) {
+        if (null == d) {
+            return null;
+        }
+        return new ECPrivateKeyParameters(d, domainParameters);
+    }
+
+    /**
+     * 私钥转换为 {@link ECPrivateKeyParameters}
+     *
+     * @param privateKey 私钥，传入null返回null
+     * @return {@link ECPrivateKeyParameters}或null
+     */
+    public static ECPrivateKeyParameters toPrivateParams(PrivateKey privateKey) {
+        if (null == privateKey) {
+            return null;
+        }
+        try {
+            return (ECPrivateKeyParameters) ECUtil.generatePrivateKeyParameter(privateKey);
+        } catch (InvalidKeyException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     /**

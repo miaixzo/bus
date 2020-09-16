@@ -24,17 +24,19 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.StrBuilder;
+import org.aoju.bus.core.text.Builders;
 
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * 一些通用的函数
@@ -603,6 +605,34 @@ public class ObjectKit {
         }
 
         return result;
+    }
+
+    /**
+     * 中文字符比较器
+     *
+     * @param object 从对象中提取中文(参与比较的内容)
+     * @param <T>    对象类型
+     * @return 中文字符比较器
+     */
+    public static <T> Comparator<T> compare(Function<T, String> object) {
+        return compare(object, false);
+    }
+
+    /**
+     * 中文字符比较器
+     *
+     * @param object  从对象中提取中文(参与比较的内容)
+     * @param reverse 是否反序
+     * @param <T>     对象类型
+     * @return 中文字符比较器
+     */
+    public static <T> Comparator<T> compare(Function<T, String> object, boolean reverse) {
+        Objects.requireNonNull(object);
+        PinyinCompare pinyinComparator = new PinyinCompare();
+        if (reverse) {
+            return (o1, o2) -> pinyinComparator.compare(object.apply(o2), object.apply(o1));
+        }
+        return (o1, o2) -> pinyinComparator.compare(object.apply(o1), object.apply(o2));
     }
 
     /**
@@ -1266,7 +1296,7 @@ public class ObjectKit {
      * @param builder 要附加到的生成器
      * @param object  要为其创建toString的对象
      */
-    public static void identityToString(final StrBuilder builder, final Object object) {
+    public static void identityToString(final Builders builder, final Object object) {
         Assert.notNull(object, "Cannot get the toString of a null object");
         final String name = object.getClass().getName();
         final String hexString = Integer.toHexString(System.identityHashCode(object));

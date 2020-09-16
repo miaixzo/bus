@@ -638,7 +638,7 @@ public class NetKit {
     }
 
     /**
-     * 检测给定字符串是否为未知，多用于检测HTTP请求相关<br>
+     * 检测给定字符串是否为未知，多用于检测HTTP请求相关
      *
      * @param checkString 被检测的字符串
      * @return 是否未知

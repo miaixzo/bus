@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.text.StrBuilder;
+import org.aoju.bus.core.text.Builders;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -1172,18 +1172,57 @@ public class StringKit {
      * 转义{}： format("this is \\{} for {}", "a", "b") =  this is \{} for a
      * 转义\： format("this is \\\\{} for {}", "a", "b") =  this is \a for b
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
+     * @param template 文本模板，被替换的部分用 {} 表示，如果模板为null，返回"null"
      * @param params   参数值
-     * @return 格式化后的文本
+     * @return 格式化后的文本，如果模板为null，返回"null"
      */
     public static String format(CharSequence template, Object... params) {
         if (null == template) {
-            return null;
+            return Normal.NULL;
         }
         if (ArrayKit.isEmpty(params) || isBlank(template)) {
             return template.toString();
         }
         return format(template.toString(), params);
+    }
+
+    /**
+     * 格式化文本
+     *
+     * @param template 文本模板，被替换的部分用 {key} 表示
+     * @param map      参数值对
+     * @return 格式化后的文本
+     */
+    public static String format(CharSequence template, Map<?, ?> map) {
+        return format(template, map, true);
+    }
+
+    /**
+     * 格式化文本
+     *
+     * @param template   文本模板，被替换的部分用 {key} 表示
+     * @param map        参数值对
+     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
+     * @return 格式化后的文本
+     */
+    public static String format(CharSequence template, Map<?, ?> map, boolean ignoreNull) {
+        if (null == template) {
+            return null;
+        }
+        if (null == map || map.isEmpty()) {
+            return template.toString();
+        }
+
+        String template2 = template.toString();
+        String value;
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            value = toString(entry.getValue());
+            if (null == value && ignoreNull) {
+                continue;
+            }
+            template2 = replace(template2, "{" + entry.getKey() + "}", value);
+        }
+        return template2;
     }
 
     /**
@@ -2680,7 +2719,7 @@ public class StringKit {
         if (count <= 0) {
             return Normal.EMPTY;
         }
-        final StrBuilder builder = StrBuilder.create();
+        final Builders builder = Builders.create();
         boolean isFirst = true;
         while (count-- > 0) {
             if (isFirst) {
@@ -2978,7 +3017,7 @@ public class StringKit {
         }
 
         final int length = str.length();
-        final StringBuilder sb = new StringBuilder();
+        final Builders sb = new Builders();
         char c;
         for (int i = 0; i < length; i++) {
             c = str.charAt(i);
@@ -2987,12 +3026,12 @@ public class StringKit {
                 // 遇到大写字母处理
                 final Character nextChar = (i < str.length() - 1) ? str.charAt(i + 1) : null;
                 if (null != preChar && Character.isUpperCase(preChar)) {
-                    // 前一个字符为大写，则按照一个词对待
+                    // 前一个字符为大写，则按照一个词对待，例如AB
                     sb.append(c);
-                } else if (null != nextChar && Character.isUpperCase(nextChar)) {
-                    // 后一个为大写字母，按照一个词对待
+                } else if (null != nextChar && (false == Character.isLowerCase(nextChar))) {
+                    // 后一个为非小写字母，按照一个词对待
                     if (null != preChar && symbol != preChar) {
-                        // 前一个是非大写时按照新词对待，加连接符
+                        // 前一个是非大写时按照新词对待，加连接符，例如xAB
                         sb.append(symbol);
                     }
                     sb.append(c);
@@ -3005,8 +3044,11 @@ public class StringKit {
                     sb.append(Character.toLowerCase(c));
                 }
             } else {
-                if (sb.length() > 0 && Character.isUpperCase(sb.charAt(sb.length() - 1)) && symbol != c) {
-                    // 当结果中前一个字母为大写，当前为小写，说明此字符为新词开始(连接符也表示新词)
+                if (symbol != c
+                        && sb.length() > 0
+                        && Character.isUpperCase(sb.charAt(-1))
+                        && Character.isLowerCase(c)) {
+                    // 当结果中前一个字母为大写，当前为小写(非数字或字符)，说明此字符为新词开始（连接符也表示新词）
                     sb.append(symbol);
                 }
                 // 小写或符号
@@ -4926,7 +4968,7 @@ public class StringKit {
      * @return 连接后的字符串
      */
     public static String concat(boolean isNullToEmpty, CharSequence... strs) {
-        final StrBuilder sb = new StrBuilder();
+        final Builders sb = new Builders();
         for (CharSequence str : strs) {
             sb.append(isNullToEmpty ? nullToEmpty(str) : str);
         }
@@ -5115,12 +5157,12 @@ public class StringKit {
     }
 
     /**
-     * 创建StrBuilder对象
+     * 创建Builders对象
      *
-     * @return StrBuilder对象
+     * @return Builders对象
      */
-    public static StrBuilder strBuilder() {
-        return new StrBuilder();
+    public static Builders builders() {
+        return new Builders();
     }
 
     /**
@@ -5134,13 +5176,13 @@ public class StringKit {
     }
 
     /**
-     * 创建StrBuilder对象
+     * 创建Builders对象
      *
      * @param capacity 初始大小
-     * @return StrBuilder对象
+     * @return Builders对象
      */
-    public static StrBuilder strBuilder(int capacity) {
-        return new StrBuilder(capacity);
+    public static Builders builders(int capacity) {
+        return new Builders(capacity);
     }
 
     /**
@@ -5158,13 +5200,13 @@ public class StringKit {
     }
 
     /**
-     * 创建StrBuilder对象
+     * 创建Builders对象
      *
      * @param strs 初始字符串列表
-     * @return StrBuilder对象
+     * @return Builders对象
      */
-    public static StrBuilder strBuilder(CharSequence... strs) {
-        return new StrBuilder(strs);
+    public static Builders builders(CharSequence... strs) {
+        return new Builders(strs);
     }
 
     /**

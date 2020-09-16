@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.UriKit;
+import org.aoju.bus.http.Httpx;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
 import org.aoju.bus.oauth.Registry;
@@ -39,6 +40,7 @@ import org.aoju.bus.oauth.magic.Callback;
 import org.aoju.bus.oauth.magic.Property;
 import org.aoju.bus.oauth.metric.OauthScope;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -74,7 +76,10 @@ public class GithubProvider extends AbstractProvider {
 
     @Override
     public Property getUserInfo(AccToken accToken) {
-        JSONObject object = JSONObject.parseObject(doGetUserInfo(accToken));
+        Map<String, String> header = new HashMap<>();
+        header.put("Authorization", "token " + accToken.getAccessToken());
+
+        JSONObject object = JSONObject.parseObject(Httpx.get(Builder.fromUrl(source.userInfo()).build(), null, header));
 
         this.checkResponse(object.containsKey("error"), object.getString("error_description"));
 

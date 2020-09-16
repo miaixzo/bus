@@ -1579,7 +1579,23 @@ public class MathKit {
     public static boolean equals(BigDecimal bigNum1, BigDecimal bigNum2) {
         Assert.notNull(bigNum1);
         Assert.notNull(bigNum2);
+        if (bigNum1 == bigNum2) {
+            return true;
+        }
         return 0 == bigNum1.compareTo(bigNum2);
+    }
+
+    /**
+     * 比较大小，值相等 返回true
+     * 此方法通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等
+     * 此方法判断值相等时忽略精度的，即0.00 == 0
+     *
+     * @param num1 数字1
+     * @param num2 数字2
+     * @return 是否相等
+     */
+    public static boolean equals(double num1, double num2) {
+        return equals(toBigDecimal(num1), toBigDecimal(num2));
     }
 
     /**
@@ -2740,9 +2756,9 @@ public class MathKit {
      */
     public static String format(long size) {
         if (size <= 0) {
-            return "0";
+            return Symbol.ZERO;
         }
-        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
         return new DecimalFormat("#,##0.##")
                 .format(size / Math.pow(1024, digitGroups)) + " " + Normal.CAPACITY_NAMES[digitGroups];
     }

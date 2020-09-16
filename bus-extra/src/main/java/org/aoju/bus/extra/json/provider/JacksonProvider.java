@@ -100,6 +100,15 @@ public class JacksonProvider extends AbstractJsonProvider {
     }
 
     @Override
+    public <T> List<T> toList(String json, Class<T> clazz) {
+        try {
+            return (List<T>) objectMapper.readValue(json, clazz);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public <T> List<T> toList(String json, Type type) {
         TypeReference<T> typeReference = new TypeReference<T>() {
             @Override

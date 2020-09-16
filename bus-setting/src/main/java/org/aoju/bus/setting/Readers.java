@@ -25,12 +25,14 @@
 package org.aoju.bus.setting;
 
 import org.aoju.bus.core.io.resource.UriResource;
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.setting.format.*;
 import org.aoju.bus.setting.magic.*;
 import org.aoju.bus.setting.metric.GroupMap;
@@ -198,16 +200,29 @@ public class Readers {
         this.reg_var = regex;
     }
 
+
     /**
-     * 持久化当前设置,会覆盖掉之前的设置
+     * 持久化当前设置，会覆盖掉之前的设置
      * 持久化会不会保留之前的分组
      *
      * @param absolutePath 设置文件的绝对路径
      */
     public void store(String absolutePath) {
+        store(FileKit.touch(absolutePath));
+    }
+
+    /**
+     * 持久化当前设置，会覆盖掉之前的设置
+     * 持久化会不会保留之前的分组
+     *
+     * @param file 设置文件
+     */
+    public void store(File file) {
+        Assert.notNull(file, "File to store must be not null !");
+        Logger.debug("Store Setting to [{}]...", file.getAbsolutePath());
         PrintWriter writer = null;
         try {
-            writer = FileKit.getPrintWriter(absolutePath, charset, false);
+            writer = FileKit.getPrintWriter(file, charset, false);
             store(writer);
         } finally {
             IoKit.close(writer);

@@ -2001,7 +2001,7 @@ public class DateKit extends GregorianCalendar {
 
             final int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);
             final boolean isLastDayOfMonthBirth = dayOfMonthBirth == cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            if ((false == isLastDayOfMonth || false == isLastDayOfMonthBirth) && dayOfMonth < dayOfMonthBirth) {
+            if ((!isLastDayOfMonth || !isLastDayOfMonthBirth) && dayOfMonth < dayOfMonthBirth) {
                 // 如果生日在当月，但是未达到生日当天的日期，年龄减一
                 age--;
             }
@@ -2013,6 +2013,47 @@ public class DateKit extends GregorianCalendar {
         return age;
     }
 
+    /**
+     * <p>@title getChineseAge </p>
+     * <p>@description 计算年龄, 返回几周岁几个月几天 </p>
+     *
+     * @param birthDay      出生日期:yyyy-MM-dd
+     * @param dateToCompare 对比日期: yyyy-MM-dd, 默认当前系统日期
+     * @return java.lang.String 返回几周岁几个月几天: 如 6 周岁 3 个月 2 天，1 周岁差 8 天
+     */
+    public static String getAge(String birthDay, String dateToCompare) {
+        if (null == birthDay || birthDay.trim().length() == 0) {
+            throw new IllegalArgumentException("birthDay must not be null");
+        }
+        if (null == dateToCompare || dateToCompare.trim().length() == 0) {
+            dateToCompare = Fields.NORM_DATE_FORMAT.format(new Date());
+        }
+        if (birthDay.length() > 10) {
+            birthDay = birthDay.substring(0, 10);
+        }
+        if (dateToCompare.length() > 10) {
+            dateToCompare = dateToCompare.substring(0, 10);
+        }
+
+        int years = (Integer.parseInt(dateToCompare.substring(0, 4)) - Integer.parseInt(birthDay.substring(0, 4))) - 1;
+        int startMonth = Integer.parseInt(birthDay.substring(5, 7));
+        int nowMonth = Integer.parseInt(dateToCompare.substring(5, 7));
+        int startDay = Integer.parseInt(birthDay.substring(8, 10));
+        int nowDay = Integer.parseInt(dateToCompare.substring(8, 10));
+
+        int months = (startMonth > nowMonth) ? (12 - startMonth + nowMonth) : (12 - nowMonth + startMonth);
+        if (months == 12) {
+            years++;
+            months = 0;
+        }
+        int days = nowDay - startDay;
+
+        if (years <= 0 && months <= 0 && days < 0) {
+            throw new IllegalArgumentException("dateToCompare must be greater than birthDay");
+        }
+
+        return (years > 0 ? (years + "周岁") : "") + (months > 0 ? (months + "个月") : "") + ((days > 0) ? days : ("差" + Math.abs(days))) + "天";
+    }
 
     /**
      * 通过给定的日期格式解析日期时间字符串
@@ -2094,13 +2135,7 @@ public class DateKit extends GregorianCalendar {
      */
     public static int compareWithNow(long date) {
         long now = timestamp();
-        if (date > now) {
-            return 1;
-        } else if (date < now) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return Long.compare(date, now);
     }
 
     /**

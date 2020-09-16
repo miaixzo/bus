@@ -474,18 +474,18 @@ public class MapKit {
      * @return 连接后的字符串
      */
     public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, boolean isIgnoreNull) {
-        final StringBuilder strBuilder = new StringBuilder();
+        final StringBuilder stringBuilder = new StringBuilder();
         boolean isFirst = true;
         for (Entry<K, V> entry : map.entrySet())
             if (false == isIgnoreNull || entry.getKey() != null && entry.getValue() != null) {
                 if (isFirst) {
                     isFirst = false;
                 } else {
-                    strBuilder.append(separator);
+                    stringBuilder.append(separator);
                 }
-                strBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
+                stringBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
             }
-        return strBuilder.toString();
+        return stringBuilder.toString();
     }
 
     /**
@@ -546,7 +546,7 @@ public class MapKit {
      * @return 连接后的字符串，map和otherParams为空返回""
      */
     public static <K, V> String join(Map<K, V> map, String separator, String keyValueSeparator, boolean isIgnoreNull, String... otherParams) {
-        final StringBuilder strBuilder = StringKit.builder();
+        final StringBuilder stringBuilder = StringKit.builder();
         boolean isFirst = true;
         if (isNotEmpty(map)) {
             for (Entry<K, V> entry : map.entrySet()) {
@@ -554,19 +554,19 @@ public class MapKit {
                     if (isFirst) {
                         isFirst = false;
                     } else {
-                        strBuilder.append(separator);
+                        stringBuilder.append(separator);
                     }
-                    strBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
+                    stringBuilder.append(Convert.toString(entry.getKey())).append(keyValueSeparator).append(Convert.toString(entry.getValue()));
                 }
             }
         }
         // 补充其它字符串到末尾，默认无分隔符
         if (ArrayKit.isNotEmpty(otherParams)) {
             for (String otherParam : otherParams) {
-                strBuilder.append(otherParam);
+                stringBuilder.append(otherParam);
             }
         }
-        return strBuilder.toString();
+        return stringBuilder.toString();
     }
 
     /**

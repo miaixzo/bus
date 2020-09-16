@@ -54,6 +54,10 @@ public class BusXExtend {
      */
     public static final String DUBBO = "extend.dubbo";
     /**
+     * 路由配置
+     */
+    public static final String GOALIE = "extend.goalie";
+    /**
      * 国际化支持
      */
     public static final String I18N = "extend.i18n";

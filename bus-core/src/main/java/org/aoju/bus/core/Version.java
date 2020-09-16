@@ -42,7 +42,9 @@ public enum Version {
     NIL(Normal.EMPTY),
     LT(Symbol.LT),
     GT(Symbol.GT),
+    GTE(Symbol.GT + Symbol.EQUAL),
     LE(Symbol.LE),
+    LTE(Symbol.LE + Symbol.EQUAL),
     GE(Symbol.GE),
     NE(Symbol.NOT + Symbol.EQUAL),
     EQ(Symbol.EQUAL + Symbol.EQUAL);

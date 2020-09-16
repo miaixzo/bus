@@ -176,9 +176,9 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
         String key = null;
         for (int i = 0; i < keysAndValues.length; i++) {
             if (i % 2 == 0) {
-                dict.put(key, keysAndValues[i]);
-            } else {
                 key = Convert.toString(keysAndValues[i]);
+            } else {
+                dict.put(key, keysAndValues[i]);
             }
         }
 
