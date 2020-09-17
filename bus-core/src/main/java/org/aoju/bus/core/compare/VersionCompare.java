@@ -109,19 +109,4 @@ public class VersionCompare implements Comparator<String>, Serializable {
         return (diff != 0) ? diff : v1s.size() - v2s.size();
     }
 
-    @Override
-    public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (null == object) {
-            return false;
-        }
-        if (object.getClass().equals(this.getClass())) {
-            final VersionCompare other = (VersionCompare) object;
-            return this.equals(other);
-        }
-        return false;
-    }
-
 }

@@ -35,6 +35,7 @@ import org.aoju.bus.core.text.Builders;
 
 import java.io.*;
 import java.lang.reflect.*;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 
@@ -257,9 +258,24 @@ public class ObjectKit {
      * @param obj1 对象1
      * @param obj2 对象2
      * @return 是否相等
+     * @see #equal(Object, Object)
+     */
+    public static boolean equals(Object obj1, Object obj2) {
+        return equal(obj1, obj2);
+    }
+
+    /**
+     * 比较两个对象是否相等
+     *
+     * @param obj1 对象1
+     * @param obj2 对象2
+     * @return 是否相等
      */
     public static boolean equal(Object obj1, Object obj2) {
-        return (obj1 == obj2) || (obj1 != null && obj1.equals(obj2));
+        if (obj1 instanceof BigDecimal && obj2 instanceof BigDecimal) {
+            return MathKit.equals((BigDecimal) obj1, (BigDecimal) obj2);
+        }
+        return Objects.equals(obj1, obj2);
     }
 
     /**
