@@ -1,28 +1,41 @@
 ### 读取 properties
+```java
+    Props props = new Props("test.properties");
+    String user = props.getProperty("user");
+    Assert.assertEquals(user, "root");
+
+    String driver = props.getStr("driver");
+    Assert.assertEquals(driver, "com.mysql.jdbc.Driver");
+    
+    // 或者使用
+    driver = Builder.get("test").get("driver");
+    Assert.assertEquals("com.mysql.jdbc.Driver", driver);
+```
+
 
 ### 读取 ini
  
 ```java
-// 得到输入流
-InputStream iniInput = Test.class.getClassLoader().getResourceAsStream("test.ini");
-
-// 通过默认的bufferedIniReader类读取ini文件
-IniReader ir = new BufferedIniReader();
-Ini ini = ir.read(iniInput);
-
-// 打印展示
-System.out.println(ini);
-
-// 转化为properties文件并展示
-ini.toProperties().forEach((k, v) -> {
-    System.out.println(k + "=" + v);
-});
+    // 得到输入流
+    InputStream iniInput = Test.class.getClassLoader().getResourceAsStream("test.ini");
+    
+    // 通过默认的bufferedIniReader类读取ini文件
+    Readers ir = new BufferedIniReader();
+    Ini ini = ir.read(iniInput);
+    
+    // 打印展示
+    System.out.println(ini);
+    
+    // 转化为properties文件并展示
+    ini.toProperties().forEach((k, v) -> {
+        System.out.println(k + "=" + v);
+    });
 ```
 
 ### 创建/输出 ini
  
 ```
-IniBuilder b = new IniBuilder()
+    Builder b = new Builder()
         .plusComment("this is a test ini")
         .skipLine(2)
         .plusSection("sec1", "this is a section")
@@ -38,14 +51,13 @@ IniBuilder b = new IniBuilder()
         .plusProperty("key3", "value")
         .plusProperty("key4", "value")
         .plusProperty("key5", "value")
-        .plusProperty("key6", "value")
-;
+        .plusProperty("key6", "value");
  
-final Ini ini = b.build();
+    final Builder ini = b.build();
  
-System.out.println(ini);
- 
-ini.write(Paths.get("F:\\test3.ini"), true);
+    System.out.println(ini);
+
+    ini.write(Paths.get("F:\\test.ini"), true);
 ```
 
 ## 特性
