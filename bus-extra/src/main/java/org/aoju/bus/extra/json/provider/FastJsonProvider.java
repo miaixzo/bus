@@ -119,10 +119,10 @@ public class FastJsonProvider extends AbstractJsonProvider {
     public boolean isJson(String json) {
         try {
             JSON.parseObject(json);
-        } catch (JSONException ex) {
+        } catch (RuntimeException ex) {
             try {
                 JSON.parseArray(json);
-            } catch (JSONException ex1) {
+            } catch (RuntimeException ex1) {
                 return false;
             }
         }

@@ -25,7 +25,6 @@
 package org.aoju.bus.extra.captcha.strategy;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.math.Calculator;
 import org.aoju.bus.core.toolkit.RandomKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -83,8 +82,20 @@ public class MathStrategy implements CodeStrategy {
             return false;
         }
 
-        final int calculateResult = (int) Calculator.conversion(code);
-        return result == calculateResult;
+        final int a = Integer.parseInt(StringKit.sub(code, 0, this.numberLength).trim());
+        final char operator = code.charAt(this.numberLength);
+        final int b = Integer.parseInt(StringKit.sub(code, this.numberLength + 1, this.numberLength + 1 + this.numberLength).trim());
+
+        switch (operator) {
+            case Symbol.C_PLUS:
+                return (a + b) == result;
+            case Symbol.C_HYPHEN:
+                return (a - b) == result;
+            case Symbol.C_STAR:
+                return (a * b) == result;
+            default:
+                return false;
+        }
     }
 
     /**

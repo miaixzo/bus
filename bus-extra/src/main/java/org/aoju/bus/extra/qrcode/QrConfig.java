@@ -87,7 +87,6 @@ public class QrConfig {
      * 设置二维码中的信息量，可设置1-40的整数
      */
     protected Integer qrVersion;
-
     /**
      * 构造,默认长宽为300
      */
