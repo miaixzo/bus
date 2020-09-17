@@ -22,59 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.mail;
+package org.aoju.bus.notify.provider.aliyun;
 
-import lombok.Builder;
-import lombok.Data;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * ApiBoot Mail Request Entity
+ * 阿里云短信模版
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK1.8+
  */
-@Data
-@Builder
-public class AliMailEntity {
+@Getter
+@Setter
+@SuperBuilder
+public class AliyunSmsProperty extends Property {
 
     /**
-     * 内容类型
+     * 模版参数
      */
-    private ContentType contentType;
-    /**
-     * 邮件内容
-     * Limit 28K
-     */
-    private String content;
-    /**
-     * 发送邮件地址
-     */
-    private List<String> toAddress;
-    /**
-     * 别名
-     */
-    private String formAlias;
-    /**
-     * 主题
-     */
-    private String subject;
-    /**
-     * 标签名称
-     */
-    private String tagName;
+    String templateParam;
 
-    public enum ContentType {
-        /**
-         * html 内容
-         */
-        HTML,
-        /**
-         * text 内容
-         */
-        TEXT
-    }
+
+    /**
+     * 模版id
+     */
+    String tempCode;
 
 }

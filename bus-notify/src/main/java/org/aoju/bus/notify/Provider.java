@@ -25,7 +25,7 @@
 package org.aoju.bus.notify;
 
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
 import java.util.Map;
 
@@ -36,7 +36,7 @@ import java.util.Map;
  * @version 6.0.9
  * @since JDK1.8+
  */
-public interface Provider<T extends Template> {
+public interface Provider<T extends Property> {
 
     /**
      * 指定模版ID进行发送.
@@ -49,7 +49,7 @@ public interface Provider<T extends Template> {
     Message send(String templateId, Map<String, String> context);
 
     /**
-     * 指定模版{@link Template}并发送.
+     * 指定模版{@link Property}并发送.
      * <p>
      * 注意:不同等服务商使用的模版实现不同.
      *

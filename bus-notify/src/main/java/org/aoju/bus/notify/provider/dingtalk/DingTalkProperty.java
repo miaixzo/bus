@@ -22,25 +22,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.sms;
+package org.aoju.bus.notify.provider.dingtalk;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 发送短信时响应实体
+ * 钉钉通知模版
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK1.8+
  */
-@Data
-@Builder
-public class AliSmsResult {
+@Getter
+@Setter
+@SuperBuilder
+public class DingTalkProperty extends Property {
 
     /**
-     * 是否发送成功
+     * 应用agentId
      */
-    private boolean success;
+    private String agentId;
+    /**
+     * 接收者的用户userId列表，最大列表长度：100
+     */
+    private String userIdList;
+    /**
+     * 接收者的部门id列表，最大列表长度：20,  接收者是部门id下(包括子部门下)的所有用户
+     */
+    private String deptIdList;
+    /**
+     * 是否发送给企业全部用户 true,false
+     */
+    private boolean toAllUser;
+    /**
+     * json字符串
+     */
+    private String msg;
+
+    /**
+     * 钉钉token
+     */
+    private String token;
 
 }

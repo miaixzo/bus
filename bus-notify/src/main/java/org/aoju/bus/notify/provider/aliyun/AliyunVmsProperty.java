@@ -22,37 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.sms;
+package org.aoju.bus.notify.provider.aliyun;
 
-import lombok.Data;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 发送短信时请求实体
+ * 阿里云语音通知模版
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK1.8+
  */
-@Data
-public class AliSmsEntity {
+@Getter
+@Setter
+@SuperBuilder
+public class AliyunVmsProperty extends Property {
 
     /**
-     * 接收手机号
+     * 语音模版参数
      */
-    private String phone;
+    private String ttsParam;
 
     /**
-     * 模板Code
-     * 对应阿里云控制台信息
+     * 语音模版id
      */
-    private String templateCode;
+    private String ttsCode;
 
     /**
-     * 对应模板内的参数列表
+     * 播放次数
      */
-    private Map<String, Object> params = new HashMap<>();
+    private String playTimes;
 
 }

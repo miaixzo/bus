@@ -45,7 +45,7 @@ import java.util.Map;
  * @version 6.0.9
  * @since JDK1.8+
  */
-public abstract class NeteaseProvider extends AbstractProvider<NeteaseTemplate, Context> {
+public abstract class NeteaseProvider extends AbstractProvider<NeteaseProperty, Context> {
 
     /**
      * 发送成功后返回code

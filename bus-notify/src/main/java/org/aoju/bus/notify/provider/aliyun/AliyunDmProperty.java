@@ -22,30 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify.provider.aliyun;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 云信消息
+ * 阿里云邮件模版
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @version 6.0.9
- * @since JDK1.8+
+ * @since JDK 1.8+
  */
-
 @Getter
 @Setter
 @SuperBuilder
-public class NeteaseTemplate extends Template {
+public class AliyunDmProperty extends Property {
 
-    String title;
+    /**
+     * 邮件内容
+     * Limit 28K
+     */
+    private String content;
 
-    String body;
-
-    String content;
+    /**
+     * 主题
+     */
+    private String subject;
 
 }

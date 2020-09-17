@@ -48,7 +48,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since JDK1.8+
  */
 @Setter
-public class DingTalkProvider extends AbstractProvider<DingTalkTemplate, Context> {
+public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context> {
 
     private static final String SUCCESS_RESULT = "200";
     private static final String TOKEN_API = "https://oapi.dingtalk.com/gettoken";
@@ -62,18 +62,18 @@ public class DingTalkProvider extends AbstractProvider<DingTalkTemplate, Context
     }
 
     @Override
-    public Message send(DingTalkTemplate template) {
+    public Message send(DingTalkProperty entity) {
         Map<String, Object> param = new HashMap<>();
-        param.put("access_token", template.getToken());
-        param.put("agent_id", template.getAgentId());
-        param.put("msg", template.getMsg());
-        if (StringKit.isNotBlank(template.getUserIdList())) {
-            param.put("userid_list", template.getUserIdList());
+        param.put("access_token", entity.getToken());
+        param.put("agent_id", entity.getAgentId());
+        param.put("msg", entity.getMsg());
+        if (StringKit.isNotBlank(entity.getUserIdList())) {
+            param.put("userid_list", entity.getUserIdList());
         }
-        if (StringKit.isNotBlank(template.getDeptIdList())) {
-            param.put("dept_id_list", template.getDeptIdList());
+        if (StringKit.isNotBlank(entity.getDeptIdList())) {
+            param.put("dept_id_list", entity.getDeptIdList());
         }
-        param.put("to_all_user", template.isToAllUser());
+        param.put("to_all_user", entity.isToAllUser());
         String response = Httpx.post(NOTIFY_API, param);
         JSONObject object = JSON.parseObject(response);
         return Message.builder()

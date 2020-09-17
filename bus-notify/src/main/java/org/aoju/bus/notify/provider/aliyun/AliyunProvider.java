@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
 import javax.crypto.Mac;
@@ -55,7 +55,7 @@ import java.util.TreeMap;
  * @version 6.0.9
  * @since JDK1.8+
  */
-public class AliyunProvider<T extends Template, K extends Context> extends AbstractProvider<T, K> {
+public class AliyunProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
 
     /**
      * 发送成功后返回code

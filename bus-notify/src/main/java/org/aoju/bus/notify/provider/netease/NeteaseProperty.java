@@ -22,15 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.notify.provider.netease;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 阿里云语音通知模版
+ * 云信消息
  *
  * @author Justubborn
  * @version 6.0.9
@@ -40,21 +40,12 @@ import org.aoju.bus.notify.magic.Template;
 @Getter
 @Setter
 @SuperBuilder
-public class AliyunVmsTemplate extends Template {
+public class NeteaseProperty extends Property {
 
-    /**
-     * 语音模版参数
-     */
-    private String ttsParam;
+    String title;
 
-    /**
-     * 语音模版id
-     */
-    private String ttsCode;
+    String body;
 
-    /**
-     * 播放次数
-     */
-    private String playTimes;
+    String content;
 
 }

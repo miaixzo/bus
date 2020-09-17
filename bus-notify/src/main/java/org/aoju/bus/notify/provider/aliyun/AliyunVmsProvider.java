@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
+import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.Http;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.notify.Context;
@@ -39,21 +40,21 @@ import java.util.*;
  * @version 6.0.9
  * @since JDK1.8+
  */
-public class AliyunVmsProvider extends AliyunProvider<AliyunVmsTemplate, Context> {
+public class AliyunVmsProvider extends AliyunProvider<AliyunVmsProperty, Context> {
 
     /**
      * 阿里云短信产品域名
      */
-    private static final String ALIYUN_PRODUCT_DOMAIN = "dyvmsapi.aliyuncs.com";
+    private static final String ALIYUN_VMS_DOMAIN = "dyvmsapi.aliyuncs.com";
 
     public AliyunVmsProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(AliyunVmsTemplate template) {
+    public Message send(AliyunVmsProperty template) {
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        SimpleDateFormat df = new SimpleDateFormat(Fields.UTC_PATTERN);
         // 这里一定要设置UTC时区
         df.setTimeZone(new SimpleTimeZone(0, "UTC"));
         Map<String, String> paras = new HashMap<>();
@@ -80,7 +81,7 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunVmsTemplate, Context
         for (String str : paras.keySet()) {
             map.put(specialUrlEncode(str), specialUrlEncode(paras.get(str)));
         }
-        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_PRODUCT_DOMAIN, map));
+        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_VMS_DOMAIN, map));
     }
 
 }

@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Provider;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
 import java.util.Map;
 
@@ -40,7 +40,7 @@ import java.util.Map;
  * @since JDK1.8+
  */
 @AllArgsConstructor
-public abstract class AbstractProvider<T extends Template, K extends Context> implements Provider<T> {
+public abstract class AbstractProvider<T extends Property, K extends Context> implements Provider<T> {
 
     protected K properties;
 

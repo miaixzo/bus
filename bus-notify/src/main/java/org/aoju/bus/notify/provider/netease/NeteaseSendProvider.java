@@ -48,7 +48,7 @@ public class NeteaseSendProvider extends NeteaseProvider {
     }
 
     @Override
-    public Message send(NeteaseTemplate template) {
+    public Message send(NeteaseProperty template) {
         //构造payload
         Map<String, Object> payload = new HashMap<>();
         payload.put("content", template.getContent());

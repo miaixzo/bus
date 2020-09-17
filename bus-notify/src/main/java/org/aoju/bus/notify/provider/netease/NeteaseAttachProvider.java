@@ -46,7 +46,7 @@ public class NeteaseAttachProvider extends NeteaseProvider {
     }
 
     @Override
-    public Message send(NeteaseTemplate template) {
+    public Message send(NeteaseProperty template) {
         Map<String, Object> param = new HashMap<>();
         param.put("from", template.getSender());
         param.put("msgtype", "0");
