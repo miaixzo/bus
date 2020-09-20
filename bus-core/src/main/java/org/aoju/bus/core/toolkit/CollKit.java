@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.collection.EnumerationIter;
 import org.aoju.bus.core.collection.IteratorEnumeration;
+import org.aoju.bus.core.compare.PinyinCompare;
 import org.aoju.bus.core.compare.PropertyCompare;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.convert.ConverterRegistry;
@@ -869,105 +870,6 @@ public class CollKit {
     }
 
     /**
-     * 新建一个空List
-     *
-     * @param <T>      集合元素类型
-     * @param isLinked 是否新建LinkedList
-     * @return List对象
-     */
-    public static <T> List<T> list(boolean isLinked) {
-        return isLinked ? new LinkedList<>() : new ArrayList<>();
-    }
-
-    /**
-     * 新建一个List
-     *
-     * @param <T>      集合元素类型
-     * @param isLinked 是否新建LinkedList
-     * @param values   数组
-     * @return List对象
-     */
-    public static <T> List<T> list(boolean isLinked, T... values) {
-        if (ArrayKit.isEmpty(values)) {
-            return list(isLinked);
-        }
-        List<T> arrayList = isLinked ? new LinkedList<>() : new ArrayList<>(values.length);
-        for (T t : values) {
-            arrayList.add(t);
-        }
-        return arrayList;
-    }
-
-    /**
-     * 新建一个List
-     *
-     * @param <T>        集合元素类型
-     * @param isLinked   是否新建LinkedList
-     * @param collection 集合
-     * @return List对象
-     */
-    public static <T> List<T> list(boolean isLinked, Collection<T> collection) {
-        if (null == collection) {
-            return list(isLinked);
-        }
-        return isLinked ? new LinkedList<>(collection) : new ArrayList<>(collection);
-    }
-
-    /**
-     * 新建一个List
-     * 提供的参数为null时返回空{@link ArrayList}
-     *
-     * @param <T>      集合元素类型
-     * @param isLinked 是否新建LinkedList
-     * @param iterable {@link Iterable}
-     * @return List对象
-     */
-    public static <T> List<T> list(boolean isLinked, Iterable<T> iterable) {
-        if (null == iterable) {
-            return list(isLinked);
-        }
-        return list(isLinked, iterable.iterator());
-    }
-
-    /**
-     * 新建一个ArrayList
-     * 提供的参数为null时返回空{@link ArrayList}
-     *
-     * @param <T>      集合元素类型
-     * @param isLinked 是否新建LinkedList
-     * @param iter     {@link Iterator}
-     * @return ArrayList对象
-     */
-    public static <T> List<T> list(boolean isLinked, Iterator<T> iter) {
-        final List<T> list = list(isLinked);
-        if (null != iter) {
-            while (iter.hasNext()) {
-                list.add(iter.next());
-            }
-        }
-        return list;
-    }
-
-    /**
-     * 新建一个List
-     * 提供的参数为null时返回空{@link ArrayList}
-     *
-     * @param <T>        集合元素类型
-     * @param isLinked   是否新建LinkedList
-     * @param enumration {@link Enumeration}
-     * @return ArrayList对象
-     */
-    public static <T> List<T> list(boolean isLinked, Enumeration<T> enumration) {
-        final List<T> list = list(isLinked);
-        if (null != enumration) {
-            while (enumration.hasMoreElements()) {
-                list.add(enumration.nextElement());
-            }
-        }
-        return list;
-    }
-
-    /**
      * 新建一个ArrayList
      *
      * @param <T>    集合元素类型
@@ -976,17 +878,6 @@ public class CollKit {
      */
     public static <T> ArrayList<T> newArrayList(T... values) {
         return (ArrayList<T>) list(false, values);
-    }
-
-    /**
-     * 数组转为ArrayList
-     *
-     * @param <T>    集合元素类型
-     * @param values 数组
-     * @return ArrayList对象
-     */
-    public static <T> ArrayList<T> toList(T... values) {
-        return newArrayList(values);
     }
 
     /**
@@ -1075,6 +966,219 @@ public class CollKit {
             queue = new ArrayBlockingQueue<>(capacity);
         }
         return queue;
+    }
+
+    /**
+     * 新建一个空List
+     *
+     * @param <T>      集合元素类型
+     * @param isLinked 是否新建LinkedList
+     * @return List对象
+     */
+    public static <T> List<T> list(boolean isLinked) {
+        return isLinked ? new LinkedList<>() : new ArrayList<>();
+    }
+
+    /**
+     * 新建一个List
+     *
+     * @param <T>      集合元素类型
+     * @param isLinked 是否新建LinkedList
+     * @param values   数组
+     * @return List对象
+     */
+    public static <T> List<T> list(boolean isLinked, T... values) {
+        if (ArrayKit.isEmpty(values)) {
+            return list(isLinked);
+        }
+        final List<T> arrayList = isLinked ? new LinkedList<>() : new ArrayList<>(values.length);
+        Collections.addAll(arrayList, values);
+        return arrayList;
+    }
+
+    /**
+     * 新建一个List
+     *
+     * @param <T>        集合元素类型
+     * @param isLinked   是否新建LinkedList
+     * @param collection 集合
+     * @return List对象
+     */
+    public static <T> List<T> list(boolean isLinked, Collection<T> collection) {
+        if (null == collection) {
+            return list(isLinked);
+        }
+        return isLinked ? new LinkedList<>(collection) : new ArrayList<>(collection);
+    }
+
+    /**
+     * 新建一个List
+     * 提供的参数为null时返回空{@link ArrayList}
+     *
+     * @param <T>      集合元素类型
+     * @param isLinked 是否新建LinkedList
+     * @param iterable {@link Iterable}
+     * @return List对象
+     */
+    public static <T> List<T> list(boolean isLinked, Iterable<T> iterable) {
+        if (null == iterable) {
+            return list(isLinked);
+        }
+        return list(isLinked, iterable.iterator());
+    }
+
+    /**
+     * 新建一个ArrayList
+     * 提供的参数为null时返回空{@link ArrayList}
+     *
+     * @param <T>      集合元素类型
+     * @param isLinked 是否新建LinkedList
+     * @param iter     {@link Iterator}
+     * @return ArrayList对象
+     */
+    public static <T> List<T> list(boolean isLinked, Iterator<T> iter) {
+        final List<T> list = list(isLinked);
+        if (null != iter) {
+            while (iter.hasNext()) {
+                list.add(iter.next());
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 新建一个List
+     * 提供的参数为null时返回空{@link ArrayList}
+     *
+     * @param <T>        集合元素类型
+     * @param isLinked   是否新建LinkedList
+     * @param enumration {@link Enumeration}
+     * @return ArrayList对象
+     */
+    public static <T> List<T> list(boolean isLinked, Enumeration<T> enumration) {
+        final List<T> list = list(isLinked);
+        if (null != enumration) {
+            while (enumration.hasMoreElements()) {
+                list.add(enumration.nextElement());
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 新建一个ArrayList
+     *
+     * @param <T>    集合元素类型
+     * @param values 数组
+     * @return ArrayList对象
+     */
+    public static <T> ArrayList<T> toList(T... values) {
+        return (ArrayList<T>) list(false, values);
+    }
+
+    /**
+     * 新建LinkedList
+     *
+     * @param values 数组
+     * @param <T>    类型
+     * @return LinkedList
+     */
+    public static <T> LinkedList<T> toLinkedList(T... values) {
+        return (LinkedList<T>) list(true, values);
+    }
+
+    /**
+     * 新建一个CopyOnWriteArrayList
+     *
+     * @param <T>        集合元素类型
+     * @param collection 集合
+     * @return {@link CopyOnWriteArrayList}
+     */
+    public static <T> CopyOnWriteArrayList<T> toCopyOnWriteArrayList(Collection<T> collection) {
+        return (null == collection) ? (new CopyOnWriteArrayList<>()) : (new CopyOnWriteArrayList<>(collection));
+    }
+
+    /**
+     * 新建一个ArrayList
+     *
+     * @param <T>        集合元素类型
+     * @param collection 集合
+     * @return ArrayList对象
+     */
+    public static <T> ArrayList<T> toList(Collection<T> collection) {
+        return (ArrayList<T>) list(false, collection);
+    }
+
+    /**
+     * 新建一个ArrayList
+     * 提供的参数为null时返回空{@link ArrayList}
+     *
+     * @param <T>      集合元素类型
+     * @param iterable {@link Iterable}
+     * @return ArrayList对象
+     */
+    public static <T> ArrayList<T> toList(Iterable<T> iterable) {
+        return (ArrayList<T>) list(false, iterable);
+    }
+
+    /**
+     * 新建一个ArrayList
+     * 提供的参数为null时返回空{@link ArrayList}
+     *
+     * @param <T>      集合元素类型
+     * @param iterator {@link Iterator}
+     * @return ArrayList对象
+     */
+    public static <T> ArrayList<T> toList(Iterator<T> iterator) {
+        return (ArrayList<T>) list(false, iterator);
+    }
+
+    /**
+     * 新建一个ArrayList
+     * 提供的参数为null时返回空{@link ArrayList}
+     *
+     * @param <T>         集合元素类型
+     * @param enumeration {@link Enumeration}
+     * @return ArrayList对象
+     */
+    public static <T> ArrayList<T> toList(Enumeration<T> enumeration) {
+        return (ArrayList<T>) list(false, enumeration);
+    }
+
+    /**
+     * 获取匹配规则定义中匹配到元素的所有位置
+     *
+     * @param <T>     元素类型
+     * @param list    列表
+     * @param matcher 匹配器，为空则全部匹配
+     * @return 位置数组
+     */
+    public static <T> int[] indexOfAll(List<T> list, Matcher<T> matcher) {
+        final List<Integer> indexList = new ArrayList<>();
+        if (null != list) {
+            int index = 0;
+            for (T t : list) {
+                if (null == matcher || matcher.match(t)) {
+                    indexList.add(index);
+                }
+                index++;
+            }
+        }
+        return Convert.convert(int[].class, indexList);
+    }
+
+    /**
+     * 将对应List转换为不可修改的List
+     *
+     * @param list List
+     * @param <T>  元素类型
+     * @return 不可修改List
+     */
+    public static <T> List<T> unmodifiable(List<T> list) {
+        if (null == list) {
+            return null;
+        }
+        return Collections.unmodifiableList(list);
     }
 
     /**
@@ -2396,6 +2500,16 @@ public class CollKit {
      */
     public static <T> List<T> sortByProperty(List<T> list, String property) {
         return sort(list, new PropertyCompare<>(property));
+    }
+
+    /**
+     * 根据汉字的拼音顺序排序
+     *
+     * @param list List
+     * @return 排序后的List
+     */
+    public static List<String> sortByPinyin(List<String> list) {
+        return sort(list, new PinyinCompare());
     }
 
     /**

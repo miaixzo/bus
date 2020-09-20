@@ -45,7 +45,7 @@ public class AliyunSmsProvider extends AliyunProvider<AliyunSmsProperty, Context
     /**
      * 阿里云短信产品域名
      */
-    private static final String ALIYUN_SMS_DOMAIN = "dysmsapi.aliyuncs.com";
+    private static final String ALIYUN_SMS_API = "dysmsapi.aliyuncs.com";
 
     public AliyunSmsProvider(Context properties) {
         super(properties);
@@ -56,30 +56,30 @@ public class AliyunSmsProvider extends AliyunProvider<AliyunSmsProperty, Context
         SimpleDateFormat df = new SimpleDateFormat(Fields.UTC_PATTERN);
         // 这里一定要设置GMT时区
         df.setTimeZone(new SimpleTimeZone(0, "GMT"));
-        Map<String, String> paras = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         // 1. 系统参数
-        paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", UUID.randomUUID().toString());
-        paras.put("AccessKeyId", properties.getAppKey());
-        paras.put("SignatureVersion", "1.0");
-        paras.put("Timestamp", df.format(new Date()));
-        paras.put("Format", "JSON");
+        params.put("SignatureMethod", "HMAC-SHA1");
+        params.put("SignatureNonce", UUID.randomUUID().toString());
+        params.put("AccessKeyId", properties.getAppKey());
+        params.put("SignatureVersion", "1.0");
+        params.put("Timestamp", df.format(new Date()));
+        params.put("Format", "JSON");
         // 2. 业务API参数
-        paras.put("Action", "SendSms");
-        paras.put("Version", "2017-05-25");
-        paras.put("RegionId", "cn-hangzhou");
-        paras.put("PhoneNumbers", entity.getReceive());
-        paras.put("SignName", properties.getSignName());
-        paras.put("TemplateParam", entity.getTemplateParam());
-        paras.put("TemplateCode", entity.getTempCode());
+        params.put("Action", "SendSms");
+        params.put("Version", "2017-05-25");
+        params.put("RegionId", "cn-hangzhou");
+        params.put("PhoneNumbers", entity.getReceive());
+        params.put("SignName", properties.getSignName());
+        params.put("TemplateParam", entity.getTemplateParam());
+        params.put("TemplateCode", entity.getTempCode());
 
-        paras.put("Signature", getSign(paras));
+        params.put("Signature", getSign(params));
 
         Map<String, Object> map = new HashMap<>();
-        for (String str : paras.keySet()) {
-            map.put(specialUrlEncode(str), specialUrlEncode(paras.get(str)));
+        for (String str : params.keySet()) {
+            map.put(specialUrlEncode(str), specialUrlEncode(params.get(str)));
         }
-        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_SMS_DOMAIN, map));
+        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_SMS_API, map));
     }
 
 }

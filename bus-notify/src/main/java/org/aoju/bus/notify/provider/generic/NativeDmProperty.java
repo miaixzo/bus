@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.email;
+package org.aoju.bus.notify.provider.generic;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ import org.aoju.bus.notify.magic.Property;
 import java.io.File;
 
 /**
- * 邮件发送客户端
+ * 邮件消息
  *
  * @author Kimi Liu
  * @version 6.0.9

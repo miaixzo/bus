@@ -28,7 +28,7 @@ import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 
 /**
- * Apache Log4J 2 log.
+ * Apache Log4J 2
  *
  * @author Kimi Liu
  * @version 6.0.9

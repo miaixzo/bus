@@ -53,9 +53,9 @@ public class Property {
     /**
      * 内容类型
      */
-    private ContentType contentType;
+    private Type type;
 
-    public enum ContentType {
+    public enum Type {
         /**
          * html 内容
          */

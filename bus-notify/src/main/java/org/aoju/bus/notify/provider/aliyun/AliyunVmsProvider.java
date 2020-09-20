@@ -45,43 +45,43 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunVmsProperty, Context
     /**
      * 阿里云短信产品域名
      */
-    private static final String ALIYUN_VMS_DOMAIN = "dyvmsapi.aliyuncs.com";
+    private static final String ALIYUN_VMS_API = "dyvmsapi.aliyuncs.com";
 
     public AliyunVmsProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(AliyunVmsProperty template) {
+    public Message send(AliyunVmsProperty entity) {
 
         SimpleDateFormat df = new SimpleDateFormat(Fields.UTC_PATTERN);
         // 这里一定要设置UTC时区
         df.setTimeZone(new SimpleTimeZone(0, "UTC"));
-        Map<String, String> paras = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         // 1. 系统参数
-        paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", UUID.randomUUID().toString());
-        paras.put("AccessKeyId", properties.getAppKey());
-        paras.put("SignatureVersion", "1.0");
-        paras.put("Timestamp", df.format(new Date()));
-        paras.put("Format", "JSON");
+        params.put("SignatureMethod", "HMAC-SHA1");
+        params.put("SignatureNonce", UUID.randomUUID().toString());
+        params.put("AccessKeyId", properties.getAppKey());
+        params.put("SignatureVersion", "1.0");
+        params.put("Timestamp", df.format(new Date()));
+        params.put("Format", "JSON");
 
         // 2. 业务API参数
-        paras.put("Action", "SingleCallByTts");
-        paras.put("Version", "2017-05-25");
-        paras.put("RegionId", "cn-hangzhou");
-        paras.put("CalledNumber", template.getReceive());
-        paras.put("CalledShowNumber", properties.getShowNumber());
-        paras.put("PlayTimes", template.getPlayTimes());
-        paras.put("TtsParam", template.getTtsParam());
-        paras.put("TtsCode", template.getTtsCode());
-        paras.put("Signature", getSign(paras));
+        params.put("Action", "SingleCallByTts");
+        params.put("Version", "2017-05-25");
+        params.put("RegionId", "cn-hangzhou");
+        params.put("CalledNumber", entity.getReceive());
+        params.put("CalledShowNumber", properties.getShowNumber());
+        params.put("PlayTimes", entity.getPlayTimes());
+        params.put("TtsParam", entity.getTtsParam());
+        params.put("TtsCode", entity.getTtsCode());
+        params.put("Signature", getSign(params));
 
         Map<String, Object> map = new HashMap<>();
-        for (String str : paras.keySet()) {
-            map.put(specialUrlEncode(str), specialUrlEncode(paras.get(str)));
+        for (String str : params.keySet()) {
+            map.put(specialUrlEncode(str), specialUrlEncode(params.get(str)));
         }
-        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_VMS_DOMAIN, map));
+        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_VMS_API, map));
     }
 
 }

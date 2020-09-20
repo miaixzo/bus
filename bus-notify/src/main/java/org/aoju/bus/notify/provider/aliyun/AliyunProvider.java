@@ -91,9 +91,9 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
      */
     protected String getSign(Map<String, String> params) {
         // 4. 参数KEY排序
-        TreeMap<String, String> sortParas = new TreeMap<>(params);
+        Map<String, String> map = new TreeMap<>(params);
         // 5. 构造待签名的字符串
-        Iterator<String> it = sortParas.keySet().iterator();
+        Iterator<String> it = map.keySet().iterator();
         StringBuilder sortQueryStringTmp = new StringBuilder();
         while (it.hasNext()) {
             String key = it.next();
@@ -130,7 +130,6 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
 
     protected Message checkResponse(String response) {
         JSONObject object = JSON.parseObject(response);
-
         return Message.builder()
                 .errcode(SUCCESS_RESULT.equals(object.getString("Code")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("Code"))
                 .errmsg(object.getString("Code")).build();

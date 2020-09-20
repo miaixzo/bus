@@ -22,37 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify.provider.qiniu;
 
-import org.aoju.bus.notify.Context;
-import org.aoju.bus.notify.magic.Message;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 云信通知
+ * 七牛云短信
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @version 6.0.9
  * @since JDK1.8+
  */
-public class NeteaseAttachProvider extends NeteaseProvider {
+@Getter
+@Setter
+@SuperBuilder
+public class QiniuSmsProperty extends Property {
 
-    private static final String API = "https://api.netease.im/nimserver/msg/sendAttachMsg.action";
-
-    public NeteaseAttachProvider(Context properties) {
-        super(properties);
-    }
-
-    @Override
-    public Message send(NeteaseProperty template) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("from", template.getSender());
-        param.put("msgtype", "0");
-        param.put("to", template.getReceive());
-        param.put("attach", template.getContent());
-        return post(API, param);
-    }
 
 }

@@ -28,12 +28,15 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.AbstractAware;
-import org.pmw.tinylog.Level;
-import org.pmw.tinylog.LogEntryForwarder;
-import org.pmw.tinylog.Logger;
+import org.tinylog.Level;
+import org.tinylog.configuration.Configuration;
+import org.tinylog.format.AdvancedMessageFormatter;
+import org.tinylog.format.MessageFormatter;
+import org.tinylog.provider.LoggingProvider;
+import org.tinylog.provider.ProviderRegistry;
 
 /**
- * tinylog log.
+ * tinylog2
  *
  * @author Kimi Liu
  * @version 6.0.9
@@ -44,10 +47,14 @@ public class TinyLog extends AbstractAware {
     /**
      * 堆栈增加层数,因为封装因此多了两层,此值用于正确获取当前类名
      */
-    private static final int DEPTH = 4;
-
-    private int level;
-    private String name;
+    private static final int DEPTH = 5;
+    private static final LoggingProvider provider = ProviderRegistry.getLoggingProvider();
+    private static final MessageFormatter formatter = new AdvancedMessageFormatter(
+            Configuration.getLocale(),
+            Configuration.isEscapingEnabled()
+    );
+    private final int level;
+    private final String name;
 
     public TinyLog(Class<?> clazz) {
         this(null == clazz ? Normal.NULL : clazz.getName());
@@ -55,11 +62,11 @@ public class TinyLog extends AbstractAware {
 
     public TinyLog(String name) {
         this.name = name;
-        this.level = Logger.getLevel(name).ordinal();
+        this.level = provider.getMinimumLevel().ordinal();
     }
 
     /**
-     * 如果最后一个参数为异常参数,则获取之,否则返回null
+     * 如果最后一个参数为异常参数，则获取之，否则返回null
      *
      * @param arguments 参数
      * @return 最后一个异常参数
@@ -109,12 +116,7 @@ public class TinyLog extends AbstractAware {
 
     @Override
     public boolean isWarn() {
-        return this.level <= Level.WARNING.ordinal();
-    }
-
-    @Override
-    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
-        logIfEnabled(fqcn, Level.WARNING, t, format, arguments);
+        return this.level <= Level.WARN.ordinal();
     }
 
     @Override
@@ -137,12 +139,17 @@ public class TinyLog extends AbstractAware {
         return this.level <= toTinyLevel(level).ordinal();
     }
 
+    @Override
+    public void warn(String fqcn, Throwable t, String format, Object... arguments) {
+        logIfEnabled(fqcn, Level.WARN, t, format, arguments);
+    }
+
     /**
      * 在对应日志级别打开情况下打印日志
      *
-     * @param fqcn      完全限定类名(Fully Qualified Class Name),用于定位日志位置
+     * @param fqcn      完全限定类名(Fully Qualified Class Name)，用于定位日志位置
      * @param level     日志级别
-     * @param t         异常,null则检查最后一个参数是否为Throwable类型,是则取之,否则不打印堆栈
+     * @param t         异常，null则检查最后一个参数是否为Throwable类型，是则取之，否则不打印堆栈
      * @param format    日志消息模板
      * @param arguments 日志消息参数
      */
@@ -150,7 +157,7 @@ public class TinyLog extends AbstractAware {
         if (null == t) {
             t = getLastArgumentIfThrowable(arguments);
         }
-        LogEntryForwarder.forward(DEPTH, level, t, StringKit.toString(format), arguments);
+        provider.log(DEPTH, null, level, t, formatter, StringKit.toString(format), arguments);
     }
 
     /**
@@ -172,7 +179,7 @@ public class TinyLog extends AbstractAware {
                 tinyLevel = Level.INFO;
                 break;
             case WARN:
-                tinyLevel = Level.WARNING;
+                tinyLevel = Level.WARN;
                 break;
             case ERROR:
                 tinyLevel = Level.ERROR;

@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify.provider.huawei;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,22 +30,16 @@ import lombok.experimental.SuperBuilder;
 import org.aoju.bus.notify.magic.Property;
 
 /**
- * 云信消息
+ * 七牛云短信
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @version 6.0.9
  * @since JDK1.8+
  */
-
 @Getter
 @Setter
 @SuperBuilder
-public class NeteaseProperty extends Property {
+public class HuaweiSmsProperty extends Property {
 
-    String title;
-
-    String body;
-
-    String content;
 
 }

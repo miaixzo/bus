@@ -30,7 +30,7 @@ import org.aoju.bus.notify.Provider;
 import org.aoju.bus.notify.magic.Message;
 import org.aoju.bus.notify.magic.Property;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * 抽象类
@@ -45,12 +45,12 @@ public abstract class AbstractProvider<T extends Property, K extends Context> im
     protected K properties;
 
     @Override
-    public Message send(String templateId, Map<String, String> context) {
+    public Message send(T entity) {
         return null;
     }
 
     @Override
-    public Message send(T template) {
+    public Message send(T entity, List<String> mobile) {
         return null;
     }
 

@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.provider.email.NativeDmProperty;
+import org.aoju.bus.notify.provider.generic.NativeDmProperty;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,7 +48,7 @@ public class AliyunDmProvider extends AliyunProvider<AliyunDmProperty, Context> 
     /**
      * 阿里云邮件产品域名
      */
-    private static final String ALIYUN_DM_DOMAIN = "dm.aliyuncs.com";
+    private static final String ALIYUN_DM_API = "dm.aliyuncs.com";
 
     public AliyunDmProvider(Context properties) {
         super(properties);
@@ -74,42 +74,42 @@ public class AliyunDmProvider extends AliyunProvider<AliyunDmProperty, Context> 
         SimpleDateFormat df = new SimpleDateFormat(Fields.UTC_PATTERN);
         // 这里一定要设置GMT时区
         df.setTimeZone(new SimpleTimeZone(0, "GMT"));
-        Map<String, String> paras = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         // 1. 系统参数
-        paras.put("SignatureMethod", "HMAC-SHA1");
-        paras.put("SignatureNonce", UUID.randomUUID().toString());
-        paras.put("AccessKeyId", properties.getAppKey());
-        paras.put("SignatureVersion", "1.0");
-        paras.put("Timestamp", df.format(new Date()));
-        paras.put("Format", "JSON");
+        params.put("SignatureMethod", "HMAC-SHA1");
+        params.put("SignatureNonce", UUID.randomUUID().toString());
+        params.put("AccessKeyId", properties.getAppKey());
+        params.put("SignatureVersion", "1.0");
+        params.put("Timestamp", df.format(new Date()));
+        params.put("Format", "JSON");
         // 2. 业务API参数
-        paras.put("Action", "SingleSendMail");
-        paras.put("Version", "2015-11-23");
-        paras.put("RegionId", "cn-hangzhou");
+        params.put("Action", "SingleSendMail");
+        params.put("Version", "2015-11-23");
+        params.put("RegionId", "cn-hangzhou");
 
-        paras.put("Subject", entity.getSubject());
-        paras.put("FromAlias", entity.getSender());
-        paras.put("ToAddress", entity.getReceive());
+        params.put("Subject", entity.getSubject());
+        params.put("FromAlias", entity.getSender());
+        params.put("ToAddress", entity.getReceive());
 
-        if (NativeDmProperty.ContentType.HTML.equals(entity.getContentType())) {
-            paras.put("HtmlBody", entity.getContent());
-        } else if (NativeDmProperty.ContentType.TEXT.equals(entity.getContentType())) {
-            paras.put("TextBody", entity.getContent());
+        if (NativeDmProperty.Type.HTML.equals(entity.getType())) {
+            params.put("HtmlBody", entity.getContent());
+        } else if (NativeDmProperty.Type.TEXT.equals(entity.getType())) {
+            params.put("TextBody", entity.getContent());
         }
 
-        paras.put("ReplyAddress", entity.getSender());
-        paras.put("ReplyToAddress", entity.getSender());
-        paras.put("ReplyAddressAlias", entity.getSender());
+        params.put("ReplyAddress", entity.getSender());
+        params.put("ReplyToAddress", entity.getSender());
+        params.put("ReplyAddressAlias", entity.getSender());
 
-        paras.put("ClickTrace", getSign(paras));
+        params.put("ClickTrace", getSign(params));
 
-        paras.put("Signature", getSign(paras));
+        params.put("Signature", getSign(params));
 
         Map<String, Object> map = new HashMap<>();
-        for (String str : paras.keySet()) {
-            map.put(specialUrlEncode(str), specialUrlEncode(paras.get(str)));
+        for (String val : params.keySet()) {
+            map.put(specialUrlEncode(val), specialUrlEncode(params.get(val)));
         }
-        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_DM_DOMAIN, map));
+        return checkResponse(Httpx.get(Http.HTTPS_PREFIX + ALIYUN_DM_API, map));
     }
 
 }

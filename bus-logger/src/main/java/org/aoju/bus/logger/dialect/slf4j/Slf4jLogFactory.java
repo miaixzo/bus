@@ -35,7 +35,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
 /**
- * SLF4J log.
+ * SLF4J
  * 无缝支持LogBack
  *
  * @author Kimi Liu

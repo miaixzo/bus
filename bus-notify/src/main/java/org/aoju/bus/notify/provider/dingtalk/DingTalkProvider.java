@@ -51,8 +51,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context> {
 
     private static final String SUCCESS_RESULT = "200";
-    private static final String TOKEN_API = "https://oapi.dingtalk.com/gettoken";
-    private static final String NOTIFY_API = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
+    private static final String DINGTALK_TOKEN_API = "https://oapi.dingtalk.com/gettoken";
+    private static final String DingTalk_NOTIFY_API = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
+
     private AtomicReference<String> accessToken = new AtomicReference<>();
     private long refreshTokenTime;
     private long tokenTimeOut = Duration.ofSeconds(7000).toMillis();
@@ -74,7 +75,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
             param.put("dept_id_list", entity.getDeptIdList());
         }
         param.put("to_all_user", entity.isToAllUser());
-        String response = Httpx.post(NOTIFY_API, param);
+        String response = Httpx.post(DingTalk_NOTIFY_API, param);
         JSONObject object = JSON.parseObject(response);
         return Message.builder()
                 .errcode(SUCCESS_RESULT.equals(object.getString("errcode")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("errcode"))
@@ -98,7 +99,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("corpid", properties.getAppKey());
         paramMap.put("corpsecret", properties.getAppSecret());
-        String response = Httpx.get(TOKEN_API, paramMap);
+        String response = Httpx.get(DINGTALK_TOKEN_API, paramMap);
         JSONObject object = JSON.parseObject(response);
         if (SUCCESS_RESULT.equals(object.getString("errcode"))) {
             String token = object.getString("access_token");

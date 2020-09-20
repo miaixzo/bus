@@ -31,6 +31,7 @@ import org.aoju.bus.logger.Logger;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
+import org.aoju.bus.notify.magic.Property;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
 import java.security.MessageDigest;
@@ -45,7 +46,7 @@ import java.util.Map;
  * @version 6.0.9
  * @since JDK1.8+
  */
-public abstract class NeteaseProvider extends AbstractProvider<NeteaseProperty, Context> {
+public abstract class NeteaseProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
 
     /**
      * 发送成功后返回code
@@ -55,7 +56,7 @@ public abstract class NeteaseProvider extends AbstractProvider<NeteaseProperty, 
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-    public NeteaseProvider(Context properties) {
+    public NeteaseProvider(K properties) {
         super(properties);
     }
 
@@ -94,7 +95,6 @@ public abstract class NeteaseProvider extends AbstractProvider<NeteaseProperty, 
     }
 
     public Message post(String routerUrl, Map<String, Object> map) {
-
         Map<String, String> header = getPostHeader();
         Logger.debug("netease send：{}", map);
         String response = Httpx.post(routerUrl, map, header);

@@ -22,58 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.netease;
+package org.aoju.bus.notify.provider.jdcloud;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import org.aoju.bus.notify.Context;
-import org.aoju.bus.notify.magic.Message;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 云信消息
+ * 七牛云短信
  *
- * @author wubenhui
+ * @author Kimi Liu
  * @version 6.0.9
- * @since JDK 1.8+
+ * @since JDK1.8+
  */
-public class NeteaseSendProvider extends NeteaseProvider {
+@Getter
+@Setter
+@SuperBuilder
+public class JdcloudSmsProperty extends Property {
 
-    private static final String API = "https://api.netease.im/nimserver/msg/sendMsg.action";
-
-    public NeteaseSendProvider(Context properties) {
-        super(properties);
-    }
-
-    @Override
-    public Message send(NeteaseProperty template) {
-        //构造payload
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("content", template.getContent());
-        Map<String, Object> aps = new HashMap<>();
-        aps.put("mutable-content", "1");
-        Map<String, Object> alert = new HashMap<>();
-        alert.put("title", template.getTitle());
-        alert.put("body", template.getBody());
-        aps.put("alert", alert);
-        payload.put("apsField", aps);
-
-        //构造请求参数
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("from", template.getSender());
-        param.put("to", template.getReceive());
-        param.put("ope", "0");
-        param.put("type", "100");
-        param.put("body", template.getContent());
-        param.put("payload", JSONObject.toJSONString(payload));
-
-        Map<String, Object> option = new HashMap<>();
-        option.put("needPushNick", "false");
-        option.put("sendersync", "false");
-        param.put("option", JSON.toJSONString(option));
-        return post(API, param);
-    }
 
 }

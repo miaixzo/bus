@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.email;
+package org.aoju.bus.notify.provider.generic;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -48,7 +48,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 邮箱
+ * 邮件消息
  *
  * @author Justubborn
  * @version 6.0.9
@@ -61,9 +61,9 @@ public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context
     }
 
     @Override
-    public Message send(NativeDmProperty template) {
+    public Message send(NativeDmProperty entity) {
         try {
-            Transport.send(build(template));
+            Transport.send(build(entity));
         } catch (MessagingException e) {
             String message = e.getMessage();
             if (e instanceof SendFailedException) {
@@ -155,12 +155,12 @@ public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context
      * @return {@link MimeMessage}消息
      * @throws MessagingException 消息异常
      */
-    private MimeMessage build(NativeDmProperty template) throws MessagingException {
-        template.defaultIfEmpty();
-        final Charset charset = template.getCharset();
-        final MimeMessage msg = new MimeMessage(getSession(template));
+    private MimeMessage build(NativeDmProperty entity) throws MessagingException {
+        entity.defaultIfEmpty();
+        final Charset charset = entity.getCharset();
+        final MimeMessage msg = new MimeMessage(getSession(entity));
         // 发件人
-        final String from = template.getSender();
+        final String from = entity.getSender();
         if (StringKit.isEmpty(from)) {
             // 用户未提供发送方,则从Session中自动获取
             msg.setFrom();
@@ -168,7 +168,7 @@ public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context
             msg.setFrom(getFirstAddress(from, charset));
         }
         // 标题
-        msg.setSubject(template.getTitle(), charset.name());
+        msg.setSubject(entity.getTitle(), charset.name());
         // 发送时间
         msg.setSentDate(new Date());
         // 内容和附件
@@ -177,18 +177,18 @@ public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context
 
         // 正文
         final BodyPart body = new MimeBodyPart();
-        body.setContent(template.getContent(), StringKit.format("text/{}; charset={}", Property.ContentType.HTML.equals(template.getContentType()) ? "html" : "plain", template.getCharset()));
+        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}", Property.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
         mainPart.addBodyPart(body);
 
         // 附件
-        if (ArrayKit.isNotEmpty(template.getAttachments())) {
+        if (ArrayKit.isNotEmpty(entity.getAttachments())) {
             BodyPart bodyPart;
-            for (File file : template.getAttachments()) {
+            for (File file : entity.getAttachments()) {
                 DataSource dataSource = new FileDataSource(file);
                 bodyPart = new MimeBodyPart();
                 bodyPart.setDataHandler(new DataHandler(dataSource));
                 try {
-                    bodyPart.setFileName(MimeUtility.encodeText(dataSource.getName(), template.getCharset().name(), null));
+                    bodyPart.setFileName(MimeUtility.encodeText(dataSource.getName(), entity.getCharset().name(), null));
                 } catch (UnsupportedEncodingException e) {
 
                 }
@@ -199,14 +199,14 @@ public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context
         msg.setContent(mainPart);
 
         // 收件人
-        msg.setRecipients(MimeMessage.RecipientType.TO, getAddress(StringKit.split(template.getReceive(), Symbol.COMMA), charset));
+        msg.setRecipients(MimeMessage.RecipientType.TO, getAddress(StringKit.split(entity.getReceive(), Symbol.COMMA), charset));
         // 抄送人
-        if (StringKit.isNotEmpty(template.getCcs())) {
-            msg.setRecipients(MimeMessage.RecipientType.CC, getAddress(StringKit.split(template.getCcs(), Symbol.COMMA), charset));
+        if (StringKit.isNotEmpty(entity.getCcs())) {
+            msg.setRecipients(MimeMessage.RecipientType.CC, getAddress(StringKit.split(entity.getCcs(), Symbol.COMMA), charset));
         }
         // 密送人
-        if (StringKit.isNotEmpty(template.getBccs())) {
-            msg.setRecipients(MimeMessage.RecipientType.BCC, getAddress(StringKit.split(template.getBccs(), Symbol.COMMA), charset));
+        if (StringKit.isNotEmpty(entity.getBccs())) {
+            msg.setRecipients(MimeMessage.RecipientType.BCC, getAddress(StringKit.split(entity.getBccs(), Symbol.COMMA), charset));
         }
         return msg;
     }
