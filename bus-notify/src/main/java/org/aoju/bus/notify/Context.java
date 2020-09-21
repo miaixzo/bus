@@ -54,7 +54,7 @@ public class Context {
     private String signName;
 
     /**
-     * 主叫号码
+     * 语音主叫号码
      */
     private String showNumber;
 
@@ -62,6 +62,7 @@ public class Context {
      * 授权方的网页应用ID
      */
     private String agentId;
+
     /**
      * 企业ID
      */
