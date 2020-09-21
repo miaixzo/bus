@@ -55,15 +55,43 @@ public class Property {
      */
     private Type type;
 
+    /**
+     * 发送模型
+     */
+    private Mode mode;
+
     public enum Type {
         /**
-         * html 内容
+         * html
          */
         HTML,
         /**
-         * text 内容
+         * 文本
          */
-        TEXT
+        TEXT,
+        /**
+         * 语音
+         */
+        VOICE,
+        /**
+         * 文件
+         */
+        FILE,
+        /**
+         * 文件
+         */
+        OTHER
+    }
+
+    public enum Mode {
+        /**
+         * 单发
+         */
+        SINGLE,
+        /**
+         * 批量
+         */
+        BATCH
     }
 
 }

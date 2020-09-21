@@ -39,21 +39,16 @@ public enum Registry {
     ALIYUN_SMS,
 
     /**
-     * 阿里云语音通知
+     * 阿里云语音
      */
     ALIYUN_VMS,
 
     /**
-     * 钉钉企业通知
+     * 企业钉钉
      */
-    DINGTALK_CORP_MSG,
-
+    DINGTALK_MSG,
     /**
-     * 云信通知
-     */
-    NETEASE_ATTACH_MSG,
-    /**
-     * 云信普通消息
+     * 云信消息
      */
     NETEASE_MSG
 

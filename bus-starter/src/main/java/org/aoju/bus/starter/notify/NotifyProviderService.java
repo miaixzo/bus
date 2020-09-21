@@ -85,10 +85,8 @@ public class NotifyProviderService {
             return new AliyunSmsProvider(context);
         } else if (Registry.ALIYUN_VMS.equals(registry)) {
             return new AliyunVmsProvider(context);
-        } else if (Registry.DINGTALK_CORP_MSG.equals(registry)) {
+        } else if (Registry.DINGTALK_MSG.equals(registry)) {
             return new DingTalkProvider(context);
-        } else if (Registry.NETEASE_ATTACH_MSG.equals(registry)) {
-            return new NeteaseImAttachProvider(context);
         } else if (Registry.NETEASE_MSG.equals(registry)) {
             return new NeteaseImProvider(context);
         }

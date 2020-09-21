@@ -101,8 +101,6 @@ public class AuthProviderService {
             return new ElemeProvider(context, extendCache);
         } else if (Registry.FACEBOOK.equals(type)) {
             return new FacebookProvider(context, extendCache);
-        } else if (Registry.FEISHU.equals(type)) {
-            return new FeishuProvider(context, extendCache);
         } else if (Registry.GITEE.equals(type)) {
             return new GiteeProvider(context, extendCache);
         } else if (Registry.GITHUB.equals(type)) {

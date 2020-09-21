@@ -51,7 +51,7 @@ public class NeteaseImProvider extends NeteaseProvider<NeteaseImProperty, Contex
 
     @Override
     public Message send(NeteaseImProperty property) {
-        if (Property.Type.HTML.equals(property.getType())) {
+        if (Property.Type.FILE.equals(property.getType())) {
             return sendAttachMsg(property);
         }
         return sendMsg(property);
