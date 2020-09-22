@@ -480,6 +480,23 @@ public class NetKit {
     }
 
     /**
+     * 获取主机名称，一次获取会缓存名称
+     *
+     * @return 主机名称
+     */
+    public static String getLocalHostName() {
+        final InetAddress localhost = getLocalhost();
+        if (null != localhost) {
+            String name = localhost.getHostName();
+            if (StringKit.isEmpty(name)) {
+                return localhost.getHostAddress();
+            }
+            return name;
+        }
+        return Normal.EMPTY;
+    }
+
+    /**
      * 获得本机MAC地址
      *
      * @return 本机MAC地址
