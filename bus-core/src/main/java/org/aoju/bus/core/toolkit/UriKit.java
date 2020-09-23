@@ -378,13 +378,7 @@ public class UriKit {
      * @throws InstrumentException 包装URISyntaxException
      */
     public static String getPath(String uriStr) {
-        URI uri;
-        try {
-            uri = new URI(uriStr);
-        } catch (URISyntaxException e) {
-            throw new InstrumentException(e);
-        }
-        return uri.getPath();
+        return toURI(uriStr).getPath();
     }
 
     /**

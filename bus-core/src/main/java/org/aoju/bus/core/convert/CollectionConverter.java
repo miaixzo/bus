@@ -25,6 +25,7 @@
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.TypeKit;
 
 import java.lang.reflect.Type;
@@ -86,13 +87,8 @@ public class CollectionConverter implements Converter<Collection<?>> {
 
     @Override
     public Collection<?> convert(Object value, Collection<?> defaultValue) throws IllegalArgumentException {
-        Collection<?> result;
-        try {
-            result = convertInternal(value);
-        } catch (RuntimeException e) {
-            return defaultValue;
-        }
-        return ((null == result) ? defaultValue : result);
+        final Collection<?> result = convertInternal(value);
+        return ObjectKit.defaultIfNull(result, defaultValue);
     }
 
     /**

@@ -1114,6 +1114,7 @@ public class ZipKit {
      * @return 文件或目录
      */
     private static File buildFile(File outFile, String fileName) {
+        fileName = fileName.replace('\\', Symbol.C_SLASH);
         if (false == FileKit.isWindows()
                 // 检查文件名中是否包含"/"，不考虑以"/"结尾的情况
                 && fileName.lastIndexOf(Symbol.SLASH, fileName.length() - 2) > 0) {

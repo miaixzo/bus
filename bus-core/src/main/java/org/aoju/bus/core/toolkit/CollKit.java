@@ -1201,7 +1201,12 @@ public class CollKit {
         } else if (collectionType.isAssignableFrom(LinkedHashSet.class)) {
             list = new LinkedHashSet<>();
         } else if (collectionType.isAssignableFrom(TreeSet.class)) {
-            list = new TreeSet<>();
+            list = new TreeSet<>((o1, o2) -> {
+                if (o1 instanceof Comparable) {
+                    return ((Comparable<T>) o1).compareTo(o2);
+                }
+                return ObjectKit.compare(o1.toString(), o2.toString());
+            });
         } else if (collectionType.isAssignableFrom(EnumSet.class)) {
             list = (Collection<T>) EnumSet.noneOf((Class<Enum>) ClassKit.getTypeArgument(collectionType));
         }

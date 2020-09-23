@@ -350,6 +350,20 @@ public class Ftp extends AbstractFtp {
         return ArrayKit.isNotEmpty(ftpFileArr);
     }
 
+    /**
+     * 获取服务端目录状态。
+     *
+     * @param path 路径
+     * @return 状态int，服务端不同，返回不同
+     */
+    public int stat(String path) {
+        try {
+            return this.client.stat(path);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
     @Override
     public boolean delFile(String path) {
         final String pwd = pwd();
