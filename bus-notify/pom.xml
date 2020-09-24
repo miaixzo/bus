@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-notify</artifactId>
-    <version>6.0.9</version>
+    <version>6.1.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -19,6 +19,7 @@
         <project.compiler.version>1.8</project.compiler.version>
         <lombok.version>1.18.12</lombok.version>
         <fastjson.version>1.2.73</fastjson.version>
+        <mail.version>1.6.2</mail.version>
     </properties>
 
     <dependencies>
@@ -42,6 +43,12 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>${mail.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

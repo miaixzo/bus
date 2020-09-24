@@ -28,17 +28,17 @@ import org.aoju.bus.logger.Log;
 import org.aoju.bus.logger.LogFactory;
 
 /**
- * TinyLog log.
+ * TinyLog2
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class TinyLogFactory extends LogFactory {
 
     public TinyLogFactory() {
         super("TinyLog");
-        checkLogExist(org.pmw.tinylog.Logger.class);
+        checkLogExist(org.tinylog.Logger.class);
     }
 
     @Override

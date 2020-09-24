@@ -38,7 +38,7 @@ import java.util.List;
  * 支持如：1.3.20.8,6.82.20160101,8.5a/8.5c等版本形式
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class VersionCompare implements Comparator<String>, Serializable {
@@ -107,21 +107,6 @@ public class VersionCompare implements Comparator<String>, Serializable {
         }
 
         return (diff != 0) ? diff : v1s.size() - v2s.size();
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (null == object) {
-            return false;
-        }
-        if (object.getClass().equals(this.getClass())) {
-            final VersionCompare other = (VersionCompare) object;
-            return this.equals(other);
-        }
-        return false;
     }
 
 }

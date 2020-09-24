@@ -35,10 +35,10 @@ import java.util.logging.LogManager;
 
 /**
  * JDK日志工厂类
- * <a href="http://java.sun.com/javase/6/docs/technotes/guides/logging/index.html">java.util.logging</a> log.
+ * java.util.logging
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class JdkLogFactory extends LogFactory {

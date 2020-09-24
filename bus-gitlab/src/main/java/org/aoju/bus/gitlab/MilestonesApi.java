@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab milestones calls.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @see <a href="https://docs.gitlab.com/ce/api/milestones.html">Project milestones API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_milestones.html">Group milestones API</a>
  * @since JDK 1.8+

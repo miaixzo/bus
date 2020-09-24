@@ -28,29 +28,29 @@ import lombok.AllArgsConstructor;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.Provider;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * 抽象类
  *
  * @author Justubborn
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK1.8+
  */
 @AllArgsConstructor
-public abstract class AbstractProvider<T extends Template, K extends Context> implements Provider<T> {
+public abstract class AbstractProvider<T extends Property, K extends Context> implements Provider<T> {
 
     protected K properties;
 
     @Override
-    public Message send(String templateId, Map<String, String> context) {
+    public Message send(T entity) {
         return null;
     }
 
     @Override
-    public Message send(T template) {
+    public Message send(T entity, List<String> mobile) {
         return null;
     }
 

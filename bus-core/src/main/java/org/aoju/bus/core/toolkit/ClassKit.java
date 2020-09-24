@@ -51,7 +51,7 @@ import java.util.*;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class ClassKit {
@@ -3300,7 +3300,7 @@ public class ClassKit {
      * 返回给定的一组修饰符是否允许程序包访问
      *
      * @param modifiers to test
-     * @return {@code true} unless {@code package}/{@code protected}/{@code private} modifier detected
+     * @return 除非检测到 {@code package} / {@code protected} / {@code private}修饰符，否则{@code true}
      */
     public static boolean isPackageAccess(final int modifiers) {
         return (modifiers & ACCESS_TEST) == 0;
@@ -3317,48 +3317,39 @@ public class ClassKit {
     }
 
     /**
-     * Compares the relative fitness of two Constructors in terms of how well they
-     * match a set of runtime parameter types, such that a list ordered
-     * by the results of the comparison would return the best match first
-     * (least).
+     * 根据两个构造函数与一组运行时参数类型的匹配程度进行比较
+     * 从而使比较结果按顺序排序的列表首先返回最佳匹配(最低)
      *
-     * @param left   the "left" Constructor
-     * @param right  the "right" Constructor
-     * @param actual the runtime parameter types to match against
-     *               {@code left}/{@code right}
-     * @return int consistent with {@code compare} semantics
+     * @param left   左构造函数
+     * @param right  右构造函数
+     * @param actual 运行时参数类型以匹配* * {@code left} / {@code right}
+     * @return 与{@code compare}语义一致的int
      */
     public static int compareConstructorFit(final Constructor<?> left, final Constructor<?> right, final Class<?>[] actual) {
         return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
     }
 
     /**
-     * Compares the relative fitness of two Methods in terms of how well they
-     * match a set of runtime parameter types, such that a list ordered
-     * by the results of the comparison would return the best match first
-     * (least).
+     * 根据两个方法与一组运行时参数类型的匹配程度，比较两个方法的相对适应性，
+     * 这样，按比较结果排序的列表将首先返回最匹配的(最低)
      *
-     * @param left   the "left" Method
-     * @param right  the "right" Method
-     * @param actual the runtime parameter types to match against
-     *               {@code left}/{@code right}
-     * @return int consistent with {@code compare} semantics
+     * @param left   左方法
+     * @param right  右方法
+     * @param actual 运行时参数类型以匹配{@code left} / {@code right}
+     * @return 与{@code compare}语义一致的int
      */
     public static int compareMethodFit(final Method left, final Method right, final Class<?>[] actual) {
         return compareParameterTypes(Executable.of(left), Executable.of(right), actual);
     }
 
     /**
-     * Compares the relative fitness of two Executables in terms of how well they
-     * match a set of runtime parameter types, such that a list ordered
-     * by the results of the comparison would return the best match first
-     * (least).
+     * 根据两个可执行文件与一组运行时参数类型的匹配程度来比较两个可执行文件的相对适合度
+     * 以便按比较结果排序的列表将首先返回最佳匹配项
      *
-     * @param left   the "left" Executable
-     * @param right  the "right" Executable
-     * @param actual the runtime parameter types to match against
-     *               {@code left}/{@code right}
-     * @return int consistent with {@code compare} semantics
+     * @param left   左可执行文件
+     * @param right  右可执行文件
+     * @param actual 运行时参数类型以匹配 {@code left} / {@code right}
+     * @return 与{@code compare}语义一致的int
      */
     public static int compareParameterTypes(final Executable left, final Executable right, final Class<?>[] actual) {
         final float leftCost = getTotalTransformationCost(actual, left);
@@ -3367,18 +3358,17 @@ public class ClassKit {
     }
 
     /**
-     * Returns the sum of the object transformation cost for each class in the
-     * source argument list.
+     * 返回source参数列表中每个类的对象转换成本之和
      *
-     * @param srcArgs    The source arguments
-     * @param executable The executable to calculate transformation costs for
-     * @return The total transformation cost
+     * @param srcArgs    源参数
+     * @param executable 执行文件以计算转换成本
+     * @return 总转换成本
      */
     public static float getTotalTransformationCost(final Class<?>[] srcArgs, final Executable executable) {
         final Class<?>[] destArgs = executable.getParameterTypes();
         final boolean isVarArgs = executable.isVarArgs();
 
-        // "source" and "destination" are the actual and declared args respectively.
+        // “源”和“目标”分别是实际参数和声明参数
         float totalCost = 0.0f;
         final long normalArgsLen = isVarArgs ? destArgs.length - 1 : destArgs.length;
         if (srcArgs.length < normalArgsLen) {
@@ -3388,21 +3378,20 @@ public class ClassKit {
             totalCost += getObjectTransformationCost(srcArgs[i], destArgs[i]);
         }
         if (isVarArgs) {
-            // When isVarArgs is true, srcArgs and dstArgs may differ in length.
-            // There are two special cases to consider:
+            // 如果isVarArgs为true，则srcArgs和dstArgs的长度可能不同
             final boolean noVarArgsPassed = srcArgs.length < destArgs.length;
             final boolean explicitArrayForVarags = srcArgs.length == destArgs.length && srcArgs[srcArgs.length - 1].isArray();
 
             final float varArgsCost = 0.001f;
             final Class<?> destClass = destArgs[destArgs.length - 1].getComponentType();
             if (noVarArgsPassed) {
-                // When no varargs passed, the best match is the most generic matching type, not the most specific.
+                // 如果没有传递任何可变参数，则最佳匹配是最通用的匹配类型，而不是最具体的匹配类型
                 totalCost += getObjectTransformationCost(destClass, Object.class) + varArgsCost;
             } else if (explicitArrayForVarags) {
                 final Class<?> sourceClass = srcArgs[srcArgs.length - 1].getComponentType();
                 totalCost += getObjectTransformationCost(sourceClass, destClass) + varArgsCost;
             } else {
-                // This is typical varargs case.
+                // 这是典型的varargs情况
                 for (int i = destArgs.length - 1; i < srcArgs.length; i++) {
                     final Class<?> srcClass = srcArgs[i];
                     totalCost += getObjectTransformationCost(srcClass, destClass) + varArgsCost;
@@ -3497,7 +3486,6 @@ public class ClassKit {
         return false;
     }
 
-
     /**
      * 验证类是否是cglib代理对象
      *
@@ -3542,6 +3530,86 @@ public class ClassKit {
         return actualClass;
     }
 
+    /**
+     * 加载第一个可用服务，如果用户定义了多个接口实现类，只获取第一个不报错的服务。
+     *
+     * @param <T>   接口类型
+     * @param clazz 服务接口
+     * @return 第一个服务接口实现对象，无实现返回{@code null}
+     */
+    public static <T> T loadFirstAvailable(Class<T> clazz) {
+        final Iterator<T> iterator = load(clazz).iterator();
+        while (iterator.hasNext()) {
+            try {
+                return iterator.next();
+            } catch (ServiceConfigurationError ignore) {
+                // ignore
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 加载第一个服务，如果用户定义了多个接口实现类，只获取第一个
+     *
+     * @param <T>   接口类型
+     * @param clazz 服务接口
+     * @return 第一个服务接口实现对象，无实现返回{@code null}
+     */
+    public static <T> T loadFirst(Class<T> clazz) {
+        final Iterator<T> iterator = load(clazz).iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        return null;
+    }
+
+    /**
+     * 加载服务
+     *
+     * @param <T>   接口类型
+     * @param clazz 服务接口
+     * @return 服务接口实现列表
+     */
+    public static <T> ServiceLoader<T> load(Class<T> clazz) {
+        return load(clazz, null);
+    }
+
+    /**
+     * 加载服务
+     *
+     * @param <T>    接口类型
+     * @param clazz  服务接口
+     * @param loader {@link ClassLoader}
+     * @return 服务接口实现列表
+     */
+    public static <T> ServiceLoader<T> load(Class<T> clazz, ClassLoader loader) {
+        return ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, getClassLoader()));
+    }
+
+    /**
+     * 加载服务 并已list列表返回
+     *
+     * @param <T>   接口类型
+     * @param clazz 服务接口
+     * @return 服务接口实现列表
+     */
+    public static <T> List<T> loadList(Class<T> clazz) {
+        return loadList(clazz, null);
+    }
+
+    /**
+     * 加载服务 并已list列表返回
+     *
+     * @param <T>    接口类型
+     * @param clazz  服务接口
+     * @param loader {@link ClassLoader}
+     * @return 服务接口实现列表
+     */
+    public static <T> List<T> loadList(Class<T> clazz, ClassLoader loader) {
+        return CollKit.list(false, load(clazz, loader));
+    }
+
     public enum Interfaces {
         INCLUDE, EXCLUDE
     }
@@ -3551,6 +3619,7 @@ public class ClassKit {
      * 的子集的类，为构造函数和方法的函数签名提供通用表示
      */
     private static final class Executable {
+
         private final Class<?>[] parameterTypes;
         private final boolean isVarArgs;
 
@@ -3579,6 +3648,7 @@ public class ClassKit {
         public boolean isVarArgs() {
             return isVarArgs;
         }
+
     }
 
 }

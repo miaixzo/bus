@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 import org.aoju.bus.notify.provider.AbstractProvider;
 
 import javax.crypto.Mac;
@@ -52,10 +52,10 @@ import java.util.TreeMap;
  * 阿里云抽象类提供者
  *
  * @author Justubborn
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK1.8+
  */
-public class AliyunProvider<T extends Template, K extends Context> extends AbstractProvider<T, K> {
+public class AliyunProvider<T extends Property, K extends Context> extends AbstractProvider<T, K> {
 
     /**
      * 发送成功后返回code
@@ -91,9 +91,9 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
      */
     protected String getSign(Map<String, String> params) {
         // 4. 参数KEY排序
-        TreeMap<String, String> sortParas = new TreeMap<>(params);
+        Map<String, String> map = new TreeMap<>(params);
         // 5. 构造待签名的字符串
-        Iterator<String> it = sortParas.keySet().iterator();
+        Iterator<String> it = map.keySet().iterator();
         StringBuilder sortQueryStringTmp = new StringBuilder();
         while (it.hasNext()) {
             String key = it.next();
@@ -130,7 +130,6 @@ public class AliyunProvider<T extends Template, K extends Context> extends Abstr
 
     protected Message checkResponse(String response) {
         JSONObject object = JSON.parseObject(response);
-
         return Message.builder()
                 .errcode(SUCCESS_RESULT.equals(object.getString("Code")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("Code"))
                 .errmsg(object.getString("Code")).build();

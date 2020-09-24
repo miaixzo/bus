@@ -22,38 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.mail;
+package org.aoju.bus.notify.provider.baidu;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 用户名密码验证器
+ * 七牛云短信
  *
  * @author Kimi Liu
- * @version 6.0.9
- * @since JDK 1.8+
+ * @version 6.1.0
+ * @since JDK1.8+
  */
-public class UserPassAuthenticator extends Authenticator {
+@Getter
+@Setter
+@SuperBuilder
+public class BaiduSmsProperty extends Property {
 
-    private String user;
-    private String pass;
-
-    /**
-     * 构造
-     *
-     * @param user 用户名
-     * @param pass 密码
-     */
-    public UserPassAuthenticator(String user, String pass) {
-        super();
-        this.user = user;
-        this.pass = pass;
-    }
-
-    @Override
-    protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(this.user, this.pass);
-    }
 
 }

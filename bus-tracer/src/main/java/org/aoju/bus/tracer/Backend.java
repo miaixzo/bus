@@ -32,7 +32,7 @@ import java.util.Map;
  * 后端应该是线程安全的(读写被委托给线程本地状态).
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface Backend {

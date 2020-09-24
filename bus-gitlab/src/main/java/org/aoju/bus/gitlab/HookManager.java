@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * This interface provides a base class handler for processing GitLab Web Hook and System Hook callouts.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface HookManager {

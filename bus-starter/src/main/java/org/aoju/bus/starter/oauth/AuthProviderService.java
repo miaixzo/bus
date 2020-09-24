@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 授权服务提供
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class AuthProviderService {
@@ -101,8 +101,6 @@ public class AuthProviderService {
             return new ElemeProvider(context, extendCache);
         } else if (Registry.FACEBOOK.equals(type)) {
             return new FacebookProvider(context, extendCache);
-        } else if (Registry.FEISHU.equals(type)) {
-            return new FeishuProvider(context, extendCache);
         } else if (Registry.GITEE.equals(type)) {
             return new GiteeProvider(context, extendCache);
         } else if (Registry.GITHUB.equals(type)) {

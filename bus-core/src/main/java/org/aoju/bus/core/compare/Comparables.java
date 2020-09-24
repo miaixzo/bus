@@ -32,7 +32,7 @@ import java.util.Comparator;
  *
  * @param <E> 比较对象类型
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class Comparables<E extends Comparable<? super E>> implements Comparator<E>, Serializable {

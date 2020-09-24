@@ -24,38 +24,60 @@
  ********************************************************************************/
 package org.aoju.bus.notify;
 
+import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 通知器,用于发送通知,如: 短信,邮件,语音,微信等s
  *
  * @author Justubborn
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK1.8+
  */
-public interface Provider<T extends Template> {
+public interface Provider<T extends Property> {
 
     /**
-     * 指定模版ID进行发送.
-     * 发送失败或者模版不存在将返回
+     * 指定模版{@link Property}并发送
+     * 注意:不同等服务商使用的模版实现不同
      *
-     * @param templateId 模版id
-     * @param context    内容
-     * @return 结果
+     * @param entity 通知内容
+     * @return 发送结果
      */
-    Message send(String templateId, Map<String, String> context);
+    Message send(T entity);
 
     /**
-     * 指定模版{@link Template}并发送.
-     * <p>
-     * 注意:不同等服务商使用的模版实现不同.
+     * 发送通知
      *
-     * @param template 模版
-     * @return 结果
+     * @param entity 通知内容
+     * @param mobile 手机号列表
+     * @return 发送结果
      */
-    Message send(T template);
+    Message send(T entity, List<String> mobile);
+
+    /**
+     * 发送通知
+     *
+     * @param entity 通知内容
+     * @param mobile 手机号列表
+     * @return 发送结果
+     */
+    default Message send(T entity, String mobile) {
+        return send(entity, Collections.singletonList(mobile));
+    }
+
+    /**
+     * 发送通知
+     *
+     * @param entity 通知内容
+     * @param mobile 手机号列表
+     * @return 发送结果
+     */
+    default Message send(T entity, String... mobile) {
+        return send(entity, CollKit.toList(mobile));
+    }
 
 }

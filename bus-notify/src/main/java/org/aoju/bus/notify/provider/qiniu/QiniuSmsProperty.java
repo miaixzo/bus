@@ -22,39 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.notify.provider.qiniu;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 阿里云语音通知模版
+ * 七牛云短信
  *
- * @author Justubborn
- * @version 6.0.9
+ * @author Kimi Liu
+ * @version 6.1.0
  * @since JDK1.8+
  */
-
 @Getter
 @Setter
 @SuperBuilder
-public class AliyunVmsTemplate extends Template {
+public class QiniuSmsProperty extends Property {
 
-    /**
-     * 语音模版参数
-     */
-    private String ttsParam;
-
-    /**
-     * 语音模版id
-     */
-    private String ttsCode;
-
-    /**
-     * 播放次数
-     */
-    private String playTimes;
 
 }

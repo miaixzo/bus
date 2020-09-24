@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -4188,21 +4188,44 @@ public class StringKit {
      * 是否以指定字符串开头
      * 如果给定的字符串和开头字符串都为null则返回true,否则任意一个值为null返回false
      *
-     * @param str          被监测字符串
-     * @param prefix       开头字符串
-     * @param isIgnoreCase 是否忽略大小写
+     * @param str        被监测字符串
+     * @param prefix     开头字符串
+     * @param ignoreCase 是否忽略大小写
      * @return 是否以指定字符串开头
      */
-    public static boolean startWith(CharSequence str, CharSequence prefix, boolean isIgnoreCase) {
+    public static boolean startWith(CharSequence str, CharSequence prefix, boolean ignoreCase) {
+        return startWith(str, prefix, ignoreCase, false);
+    }
+
+    /**
+     * 是否以指定字符串开头
+     * 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     *
+     * @param str          被监测字符串
+     * @param prefix       开头字符串
+     * @param ignoreCase   是否忽略大小写
+     * @param ignoreEquals 是否忽略字符串相等的情况
+     * @return 是否以指定字符串开头
+     */
+    public static boolean startWith(CharSequence str, CharSequence prefix, boolean ignoreCase, boolean ignoreEquals) {
         if (null == str || null == prefix) {
+            if (false == ignoreEquals) {
+                return false;
+            }
             return null == str && null == prefix;
         }
 
-        if (isIgnoreCase) {
-            return str.toString().toLowerCase().startsWith(prefix.toString().toLowerCase());
+        boolean isStartWith;
+        if (ignoreCase) {
+            isStartWith = str.toString().toLowerCase().startsWith(prefix.toString().toLowerCase());
         } else {
-            return str.toString().startsWith(prefix.toString());
+            isStartWith = str.toString().startsWith(prefix.toString());
         }
+
+        if (isStartWith) {
+            return (false == ignoreEquals) || (false == equals(str, prefix, ignoreCase));
+        }
+        return false;
     }
 
     /**
@@ -4214,6 +4237,17 @@ public class StringKit {
      */
     public static boolean startWith(CharSequence str, CharSequence prefix) {
         return startWith(str, prefix, false);
+    }
+
+    /**
+     * 是否以指定字符串开头，忽略相等字符串的情况
+     *
+     * @param str    被监测字符串
+     * @param prefix 开头字符串
+     * @return 是否以指定字符串开头并且两个字符串不相等
+     */
+    public static boolean startWithIgnoreEquals(CharSequence str, CharSequence prefix) {
+        return startWith(str, prefix, false, true);
     }
 
     /**

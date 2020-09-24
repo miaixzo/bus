@@ -22,25 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.sms;
+package org.aoju.bus.notify.provider.aliyun;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 发送短信时响应实体
+ * 阿里云语音通知模版
  *
- * @author Kimi Liu
- * @version 6.0.9
- * @since JDK 1.8+
+ * @author Justubborn
+ * @version 6.1.0
+ * @since JDK1.8+
  */
-@Data
-@Builder
-public class AliSmsResult {
+@Getter
+@Setter
+@SuperBuilder
+public class AliyunVmsProperty extends Property {
 
     /**
-     * 是否发送成功
+     * 语音模版参数
      */
-    private boolean success;
+    private String ttsParam;
+
+    /**
+     * 语音模版id
+     */
+    private String ttsCode;
+
+    /**
+     * 播放次数
+     */
+    private String playTimes;
 
 }

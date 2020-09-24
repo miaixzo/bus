@@ -22,52 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.mail;
+package org.aoju.bus.notify.provider.aliyun;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 全局邮件帐户,依赖于邮件配置文件
- * {@link MailAccount#MAIL_SETTING_PATH}}
+ * 阿里云短信模版
  *
- * @author Kimi Liu
- * @version 6.0.9
- * @since JDK 1.8+
+ * @author Justubborn
+ * @version 6.1.0
+ * @since JDK1.8+
  */
-public enum GlobalMailAccount {
-
-    INSTANCE;
-
-    private final MailAccount mailAccount;
-
-    /**
-     * 构造
-     */
-    GlobalMailAccount() {
-        mailAccount = createDefaultAccount();
-    }
+@Getter
+@Setter
+@SuperBuilder
+public class AliyunSmsProperty extends Property {
 
     /**
-     * 获得邮件帐户
-     *
-     * @return 邮件帐户
+     * 模版参数
      */
-    public MailAccount getAccount() {
-        return this.mailAccount;
-    }
+    String templateParam;
+
 
     /**
-     * 创建默认帐户
-     *
-     * @return MailAccount
+     * 模版id
      */
-    private MailAccount createDefaultAccount() {
-        MailAccount mailAccount;
-        try {
-            mailAccount = new MailAccount(MailAccount.MAIL_SETTING_PATH);
-        } catch (InstrumentException e) {
-            throw new InstrumentException("Please check the email account config [mail.setting]");
-        }
-        return mailAccount;
-    }
+    String tempCode;
+
 }

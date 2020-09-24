@@ -29,7 +29,7 @@ import org.aoju.bus.image.metric.WebApplication;
 
 /**
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class WebApplicationCache extends ConfigurationCache<Configuration, WebApplication>

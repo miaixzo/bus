@@ -41,7 +41,7 @@ import java.util.List;
  * Graphics card info obtained by system_profiler SPDisplaysDataType.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 @Immutable

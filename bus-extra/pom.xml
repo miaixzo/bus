@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-extra</artifactId>
-    <version>6.0.9</version>
+    <version>6.1.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -22,7 +22,6 @@
         <gson.version>2.8.6</gson.version>
         <jackson.version>2.11.2</jackson.version>
         <yaml.version>1.26</yaml.version>
-        <mail.version>1.6.2</mail.version>
         <jpinyin.version>1.1.8</jpinyin.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
@@ -30,9 +29,6 @@
         <zxing.version>3.4.0</zxing.version>
         <net.version>3.6</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
-        <aliyun.sdk.core.version>4.2.0</aliyun.sdk.core.version>
-        <aliyun.sdk.sms.version>2.1.0</aliyun.sdk.sms.version>
-        <aliyun.sdk.dm.version>3.3.1</aliyun.sdk.dm.version>
         <compress.vetsion>1.19</compress.vetsion>
         <lzo.version>1.0.6</lzo.version>
         <lz4.version>1.3.0</lz4.version>
@@ -77,12 +73,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>${mail.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.github.stuxuhai</groupId>
             <artifactId>jpinyin</artifactId>
             <version>${jpinyin.version}</version>
@@ -122,24 +112,6 @@
             <groupId>com.vdurmont</groupId>
             <artifactId>emoji-java</artifactId>
             <version>${emoji.java.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>${aliyun.sdk.core.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
-            <version>${aliyun.sdk.sms.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-dm</artifactId>
-            <version>${aliyun.sdk.dm.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

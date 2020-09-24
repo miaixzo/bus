@@ -33,8 +33,7 @@ import org.aoju.bus.notify.Registry;
 import org.aoju.bus.notify.provider.aliyun.AliyunSmsProvider;
 import org.aoju.bus.notify.provider.aliyun.AliyunVmsProvider;
 import org.aoju.bus.notify.provider.dingtalk.DingTalkProvider;
-import org.aoju.bus.notify.provider.netease.NeteaseAttachProvider;
-import org.aoju.bus.notify.provider.netease.NeteaseSendProvider;
+import org.aoju.bus.notify.provider.netease.NeteaseSmsProvider;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通知提供服务
  *
  * @author Justubborn
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK1.8+
  */
 public class NotifyProviderService {
@@ -86,12 +85,10 @@ public class NotifyProviderService {
             return new AliyunSmsProvider(context);
         } else if (Registry.ALIYUN_VMS.equals(registry)) {
             return new AliyunVmsProvider(context);
-        } else if (Registry.DINGTALK_CORP_MSG.equals(registry)) {
+        } else if (Registry.DINGTALK_MSG.equals(registry)) {
             return new DingTalkProvider(context);
-        } else if (Registry.NETEASE_ATTACH_MSG.equals(registry)) {
-            return new NeteaseAttachProvider(context);
         } else if (Registry.NETEASE_MSG.equals(registry)) {
-            return new NeteaseSendProvider(context);
+            return new NeteaseSmsProvider(context);
         }
         throw new InstrumentException(Builder.ErrorCode.UNSUPPORTED.getMsg());
     }

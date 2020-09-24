@@ -32,7 +32,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface AixLibc extends CLibrary {

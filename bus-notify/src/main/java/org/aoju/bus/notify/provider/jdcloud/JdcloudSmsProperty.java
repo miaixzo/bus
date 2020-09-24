@@ -22,37 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.sms;
+package org.aoju.bus.notify.provider.jdcloud;
 
-import lombok.Data;
-
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 发送短信时请求实体
+ * 七牛云短信
  *
  * @author Kimi Liu
- * @version 6.0.9
- * @since JDK 1.8+
+ * @version 6.1.0
+ * @since JDK1.8+
  */
-@Data
-public class AliSmsEntity {
+@Getter
+@Setter
+@SuperBuilder
+public class JdcloudSmsProperty extends Property {
 
-    /**
-     * 接收手机号
-     */
-    private String phone;
-
-    /**
-     * 模板Code
-     * 对应阿里云控制台信息
-     */
-    private String templateCode;
-
-    /**
-     * 对应模板内的参数列表
-     */
-    private Map<String, Object> params = new HashMap<>();
 
 }

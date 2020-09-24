@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * 或向缓存的响应添加警告(如果缓存的数据可能过时)
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public final class CacheStrategy {

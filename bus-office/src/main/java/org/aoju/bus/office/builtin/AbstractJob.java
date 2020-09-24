@@ -34,7 +34,7 @@ import org.aoju.bus.office.provider.AbstractTargetProvider;
  * 所有转换作业实现的基类.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public abstract class AbstractJob implements OptionalTarget {

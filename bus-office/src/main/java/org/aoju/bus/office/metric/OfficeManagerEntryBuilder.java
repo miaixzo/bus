@@ -28,7 +28,7 @@ package org.aoju.bus.office.metric;
  * 这个接口提供了{@link OfficeProcessEntryManager}的配置
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface OfficeManagerEntryBuilder {

@@ -31,7 +31,7 @@ import lombok.Data;
  * 配置信息
  *
  * @author Justubborn
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK1.8+
  */
 @Data
@@ -54,7 +54,7 @@ public class Context {
     private String signName;
 
     /**
-     * 主叫号码
+     * 语音主叫号码
      */
     private String showNumber;
 
@@ -62,6 +62,7 @@ public class Context {
      * 授权方的网页应用ID
      */
     private String agentId;
+
     /**
      * 企业ID
      */

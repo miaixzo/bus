@@ -25,7 +25,6 @@
 package org.aoju.bus.core.toolkit;
 
 import lombok.Data;
-import org.aoju.bus.core.date.DateTime;
 import org.aoju.bus.core.lang.*;
 
 import java.util.Date;
@@ -37,7 +36,7 @@ import java.util.Objects;
  * 身份证相关工具类
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class CitizenIdKit {
@@ -55,126 +54,95 @@ public class CitizenIdKit {
      */
     private static final int[] WEIGHTING = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
     /**
-     * 省市代码表
+     * 身份证对应区域代码表
      */
-    private static final Map<String, String> CITY_CODE = new HashMap<>();
+    private static final Map<String, String> AREA_CODE = new HashMap<>();
     /**
-     * 台湾身份首字母对应数字
+     * 台湾身份证首字母对应数字
      */
-    private static final Map<String, Integer> TW_FIRST_CODE = new HashMap<>();
+    private static final Map<String, Integer> AREA_TW_CODE = new HashMap<>();
 
     static {
-        CITY_CODE.put("11", "北京");
-        CITY_CODE.put("12", "天津");
-        CITY_CODE.put("13", "河北");
-        CITY_CODE.put("14", "山西");
-        CITY_CODE.put("15", "内蒙古");
-        CITY_CODE.put("21", "辽宁");
-        CITY_CODE.put("22", "吉林");
-        CITY_CODE.put("23", "黑龙江");
-        CITY_CODE.put("31", "上海");
-        CITY_CODE.put("32", "江苏");
-        CITY_CODE.put("33", "浙江");
-        CITY_CODE.put("34", "安徽");
-        CITY_CODE.put("35", "福建");
-        CITY_CODE.put("36", "江西");
-        CITY_CODE.put("37", "山东");
-        CITY_CODE.put("41", "河南");
-        CITY_CODE.put("42", "湖北");
-        CITY_CODE.put("43", "湖南");
-        CITY_CODE.put("44", "广东");
-        CITY_CODE.put("45", "广西");
-        CITY_CODE.put("46", "海南");
-        CITY_CODE.put("50", "重庆");
-        CITY_CODE.put("51", "四川");
-        CITY_CODE.put("52", "贵州");
-        CITY_CODE.put("53", "云南");
-        CITY_CODE.put("54", "西藏");
-        CITY_CODE.put("61", "陕西");
-        CITY_CODE.put("62", "甘肃");
-        CITY_CODE.put("63", "青海");
-        CITY_CODE.put("64", "宁夏");
-        CITY_CODE.put("65", "新疆");
-        CITY_CODE.put("71", "台湾");
-        CITY_CODE.put("81", "香港");
-        CITY_CODE.put("82", "澳门");
-        CITY_CODE.put("91", "国外");
+        AREA_CODE.put("11", "北京");
+        AREA_CODE.put("12", "天津");
+        AREA_CODE.put("13", "河北");
+        AREA_CODE.put("14", "山西");
+        AREA_CODE.put("15", "内蒙古");
+        AREA_CODE.put("21", "辽宁");
+        AREA_CODE.put("22", "吉林");
+        AREA_CODE.put("23", "黑龙江");
+        AREA_CODE.put("31", "上海");
+        AREA_CODE.put("32", "江苏");
+        AREA_CODE.put("33", "浙江");
+        AREA_CODE.put("34", "安徽");
+        AREA_CODE.put("35", "福建");
+        AREA_CODE.put("36", "江西");
+        AREA_CODE.put("37", "山东");
+        AREA_CODE.put("41", "河南");
+        AREA_CODE.put("42", "湖北");
+        AREA_CODE.put("43", "湖南");
+        AREA_CODE.put("44", "广东");
+        AREA_CODE.put("45", "广西");
+        AREA_CODE.put("46", "海南");
+        AREA_CODE.put("50", "重庆");
+        AREA_CODE.put("51", "四川");
+        AREA_CODE.put("52", "贵州");
+        AREA_CODE.put("53", "云南");
+        AREA_CODE.put("54", "西藏");
+        AREA_CODE.put("61", "陕西");
+        AREA_CODE.put("62", "甘肃");
+        AREA_CODE.put("63", "青海");
+        AREA_CODE.put("64", "宁夏");
+        AREA_CODE.put("65", "新疆");
+        AREA_CODE.put("71", "台湾");
+        AREA_CODE.put("81", "香港");
+        AREA_CODE.put("82", "澳门");
+        AREA_CODE.put("91", "国外");
 
-        TW_FIRST_CODE.put("A", 10);
-        TW_FIRST_CODE.put("B", 11);
-        TW_FIRST_CODE.put("C", 12);
-        TW_FIRST_CODE.put("D", 13);
-        TW_FIRST_CODE.put("E", 14);
-        TW_FIRST_CODE.put("F", 15);
-        TW_FIRST_CODE.put("G", 16);
-        TW_FIRST_CODE.put("H", 17);
-        TW_FIRST_CODE.put("J", 18);
-        TW_FIRST_CODE.put("K", 19);
-        TW_FIRST_CODE.put("L", 20);
-        TW_FIRST_CODE.put("M", 21);
-        TW_FIRST_CODE.put("N", 22);
-        TW_FIRST_CODE.put("P", 23);
-        TW_FIRST_CODE.put("Q", 24);
-        TW_FIRST_CODE.put("R", 25);
-        TW_FIRST_CODE.put("S", 26);
-        TW_FIRST_CODE.put("T", 27);
-        TW_FIRST_CODE.put("U", 28);
-        TW_FIRST_CODE.put("V", 29);
-        TW_FIRST_CODE.put("X", 30);
-        TW_FIRST_CODE.put("Y", 31);
-        TW_FIRST_CODE.put("W", 32);
-        TW_FIRST_CODE.put("Z", 33);
-        TW_FIRST_CODE.put("I", 34);
-        TW_FIRST_CODE.put("O", 35);
-    }
-
-    /**
-     * 将15位身份证号码转换为18位
-     *
-     * @param idCard 15位身份编码
-     * @return 18位身份编码
-     */
-    public static String convert15To18(String idCard) {
-        StringBuilder idCard18;
-        if (idCard.length() != CHINA_ID_MIN_LENGTH) {
-            return null;
-        }
-        if (PatternKit.isMatch(RegEx.NUMBERS, idCard)) {
-            // 获取出生年月日
-            String birthday = idCard.substring(6, 12);
-            Date birthDate = DateKit.parse(birthday, "yyMMdd");
-            // 获取出生年(完全表现形式,如：2010)
-            int sYear = DateKit.year(birthDate);
-            if (sYear > 2000) {
-                // 2000年之后不存在15位身份证号,此处用于修复此问题的判断
-                sYear -= 100;
-            }
-            idCard18 = StringKit.builder().append(idCard, 0, 6).append(sYear).append(idCard.substring(8));
-            // 获取校验位
-            char sVal = getCheckCode18(idCard18.toString());
-            idCard18.append(sVal);
-        } else {
-            return null;
-        }
-        return idCard18.toString();
+        AREA_TW_CODE.put("A", 10);
+        AREA_TW_CODE.put("B", 11);
+        AREA_TW_CODE.put("C", 12);
+        AREA_TW_CODE.put("D", 13);
+        AREA_TW_CODE.put("E", 14);
+        AREA_TW_CODE.put("F", 15);
+        AREA_TW_CODE.put("G", 16);
+        AREA_TW_CODE.put("H", 17);
+        AREA_TW_CODE.put("J", 18);
+        AREA_TW_CODE.put("K", 19);
+        AREA_TW_CODE.put("L", 20);
+        AREA_TW_CODE.put("M", 21);
+        AREA_TW_CODE.put("N", 22);
+        AREA_TW_CODE.put("P", 23);
+        AREA_TW_CODE.put("Q", 24);
+        AREA_TW_CODE.put("R", 25);
+        AREA_TW_CODE.put("S", 26);
+        AREA_TW_CODE.put("T", 27);
+        AREA_TW_CODE.put("U", 28);
+        AREA_TW_CODE.put("V", 29);
+        AREA_TW_CODE.put("X", 30);
+        AREA_TW_CODE.put("Y", 31);
+        AREA_TW_CODE.put("W", 32);
+        AREA_TW_CODE.put("Z", 33);
+        AREA_TW_CODE.put("I", 34);
+        AREA_TW_CODE.put("O", 35);
     }
 
     /**
      * 是否有效身份证号
      *
-     * @param idCard 身份证号,支持18位、15位和港澳台的10位
+     * @param idcard 身份证号,支持18位、15位和港澳台的10位
      * @return 是否有效
      */
-    public static boolean isValidCard(String idCard) {
-        idCard = idCard.trim();
-        int length = idCard.length();
+    public static boolean isValidCard(String idcard) {
+        idcard = idcard.trim();
+        int length = idcard.length();
         switch (length) {
             case 18:// 18位身份证
-                return isValidCard18(idCard);
+                return isValidCard18(idcard);
             case 15:// 15位身份证
-                return isValidCard15(idCard);
+                return isValidCard15(idcard);
             case 10: {// 10位身份证，港澳台地区
-                String[] cardVal = isValidCard10(idCard);
+                String[] cardVal = isValidCard10(idcard);
                 return null != cardVal && "true".equals(cardVal[2]);
             }
             default:
@@ -210,29 +178,29 @@ public class CitizenIdKit {
      * <li>通过上面得知如果余数是2,就会在身份证的第18位数字上出现罗马数字的Ⅹ 如果余数是10,身份证的最后一位号码就是2</li>
      * </ol>
      *
-     * @param idCard 待验证的身份证
+     * @param idcard 待验证的身份证
      * @return 是否有效的18位身份证
      */
-    public static boolean isValidCard18(String idCard) {
-        if (CHINA_ID_MAX_LENGTH != idCard.length()) {
+    public static boolean isValidCard18(String idcard) {
+        if (CHINA_ID_MAX_LENGTH != idcard.length()) {
             return false;
         }
 
         // 省份
-        final String proCode = idCard.substring(0, 2);
-        if (null == CITY_CODE.get(proCode)) {
+        final String proCode = idcard.substring(0, 2);
+        if (null == AREA_CODE.get(proCode)) {
             return false;
         }
 
         //校验生日
-        if (false == Validator.isBirthday(idCard.substring(6, 14))) {
+        if (false == Validator.isBirthday(idcard.substring(6, 14))) {
             return false;
         }
 
         // 前17位
-        String code17 = idCard.substring(0, 17);
+        String code17 = idcard.substring(0, 17);
         // 第18位
-        char code18 = Character.toLowerCase(idCard.charAt(17));
+        char code18 = Character.toLowerCase(idcard.charAt(17));
         if (PatternKit.isMatch(RegEx.NUMBERS, code17)) {
             // 获取校验位
             char val = getCheckCode18(code17);
@@ -244,22 +212,22 @@ public class CitizenIdKit {
     /**
      * 验证15位身份编码是否合法
      *
-     * @param idCard 身份编码
+     * @param idcard 身份编码
      * @return 是否合法
      */
-    public static boolean isValidCard15(String idCard) {
-        if (CHINA_ID_MIN_LENGTH != idCard.length()) {
+    public static boolean isValidCard15(String idcard) {
+        if (CHINA_ID_MIN_LENGTH != idcard.length()) {
             return false;
         }
-        if (PatternKit.isMatch(RegEx.NUMBERS, idCard)) {
+        if (PatternKit.isMatch(RegEx.NUMBERS, idcard)) {
             // 省份
-            String proCode = idCard.substring(0, 2);
-            if (null == CITY_CODE.get(proCode)) {
+            String proCode = idcard.substring(0, 2);
+            if (null == AREA_CODE.get(proCode)) {
                 return false;
             }
 
             //校验生日(两位年份，补充为19XX)
-            return false != Validator.isBirthday("19" + idCard.substring(6, 12));
+            return false != Validator.isBirthday("19" + idcard.substring(6, 12));
         } else {
             return false;
         }
@@ -268,25 +236,25 @@ public class CitizenIdKit {
     /**
      * 验证10位身份编码是否合法
      *
-     * @param idCard 身份编码
+     * @param idcard 身份编码
      * @return 身份证信息数组
      * <p>
      * [0] - 台湾、澳门、香港 [1] - 性别(男M,女F,未知N) [2] - 是否合法(合法true,不合法false) 若不是身份证件号码则返回null
      * </p>
      */
-    public static String[] isValidCard10(String idCard) {
-        if (StringKit.isBlank(idCard)) {
+    public static String[] isValidCard10(String idcard) {
+        if (StringKit.isBlank(idcard)) {
             return null;
         }
         String[] info = new String[3];
-        String card = idCard.replaceAll("[()]", Normal.EMPTY);
-        if (card.length() != 8 && card.length() != 9 && idCard.length() != 10) {
+        String card = idcard.replaceAll("[()]", Normal.EMPTY);
+        if (card.length() != 8 && card.length() != 9 && idcard.length() != 10) {
             return null;
         }
         // 台湾
-        if (idCard.matches("^[a-zA-Z][0-9]{9}$")) {
+        if (idcard.matches("^[a-zA-Z][0-9]{9}$")) {
             info[0] = "台湾";
-            char char2 = idCard.charAt(1);
+            char char2 = idcard.charAt(1);
             if (Symbol.C_ONE == char2) {
                 info[1] = "M";
             } else if (Symbol.C_TWO == char2) {
@@ -296,14 +264,14 @@ public class CitizenIdKit {
                 info[2] = "false";
                 return info;
             }
-            info[2] = isValidTWCard(idCard) ? "true" : "false";
-        } else if (idCard.matches("^[157][0-9]{6}\\(?[0-9A-Z]\\)?$")) {    // 澳门
+            info[2] = isValidTWCard(idcard) ? "true" : "false";
+        } else if (idcard.matches("^[157][0-9]{6}\\(?[0-9A-Z]\\)?$")) {
             info[0] = "澳门";
             info[1] = "N";
-        } else if (idCard.matches("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$")) { // 香港
+        } else if (idcard.matches("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$")) {
             info[0] = "香港";
             info[1] = "N";
-            info[2] = isValidHKCard(idCard) ? "true" : "false";
+            info[2] = isValidHKCard(idcard) ? "true" : "false";
         } else {
             return null;
         }
@@ -313,20 +281,20 @@ public class CitizenIdKit {
     /**
      * 验证台湾身份证号码
      *
-     * @param idCard 身份证号码
+     * @param idcard 身份证号码
      * @return 验证码是否符合
      */
-    public static boolean isValidTWCard(String idCard) {
-        if (StringKit.isEmpty(idCard)) {
+    public static boolean isValidTWCard(String idcard) {
+        if (StringKit.isEmpty(idcard)) {
             return false;
         }
-        String start = idCard.substring(0, 1);
-        Integer iStart = TW_FIRST_CODE.get(start);
+        String start = idcard.substring(0, 1);
+        Integer iStart = AREA_TW_CODE.get(start);
         if (null == iStart) {
             return false;
         }
-        String mid = idCard.substring(1, 9);
-        String end = idCard.substring(9, 10);
+        String mid = idcard.substring(1, 9);
+        String end = idcard.substring(9, 10);
         int sum = iStart / 10 + (iStart % 10) * 9;
         final char[] chars = mid.toCharArray();
         int iflag = 8;
@@ -346,11 +314,11 @@ public class CitizenIdKit {
      * 将身份证号码全部转换为数字，分别对应乘9-1相加的总和，整除11则证件号码有效
      * </p>
      *
-     * @param idCard 身份证号码
+     * @param idcard 身份证号码
      * @return 验证码是否符合
      */
-    public static boolean isValidHKCard(String idCard) {
-        String card = idCard.replaceAll("[()]", Normal.EMPTY);
+    public static boolean isValidHKCard(String idcard) {
+        String card = idcard.replaceAll("[()]", Normal.EMPTY);
         int sum;
         if (card.length() == 9) {
             sum = (Character.toUpperCase(card.charAt(0)) - 55) * 9 + (Character.toUpperCase(card.charAt(1)) - 55) * 8;
@@ -379,143 +347,120 @@ public class CitizenIdKit {
     /**
      * 根据身份编号获取生日,只支持15或18位身份证号码
      *
-     * @param idCard 身份编号
-     * @return 生日(yyyyMMdd)
-     * @see #getBirth(String)
-     */
-    public static String getBirthByIdCard(String idCard) {
-        return getBirth(idCard);
-    }
-
-    /**
-     * 根据身份编号获取生日,只支持15或18位身份证号码
-     *
-     * @param idCard 身份编号
+     * @param idcard 身份编号
      * @return 生日(yyyyMMdd)
      */
-    public static String getBirth(String idCard) {
-        Assert.notBlank(idCard, "id card must be not blank!");
-        final int len = idCard.length();
+    public static String getBirthByIdCard(String idcard) {
+        Assert.notBlank(idcard, "id card must be not blank!");
+        final int len = idcard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
         } else if (len == CHINA_ID_MIN_LENGTH) {
-            idCard = convert15To18(idCard);
+            idcard = getIdCardTo18(idcard);
         }
-        return Objects.requireNonNull(idCard).substring(6, 14);
-    }
-
-    /**
-     * 从身份证号码中获取生日日期,只支持15或18位身份证号码
-     *
-     * @param idCard 身份证号码
-     * @return 日期
-     */
-    public static DateTime getBirthDate(String idCard) {
-        final String birthByIdCard = getBirthByIdCard(idCard);
-        return null == birthByIdCard ? null : DateKit.parse(birthByIdCard, Fields.PURE_DATE_FORMAT);
+        return Objects.requireNonNull(idcard).substring(6, 14);
     }
 
     /**
      * 根据身份编号获取年龄,只支持15或18位身份证号码
      *
-     * @param idCard 身份编号
+     * @param idcard 身份编号
      * @return 年龄
      */
-    public static int getAgeByIdCard(String idCard) {
-        return getAgeByIdCard(idCard, DateKit.date());
+    public static int getAgeByIdCard(String idcard) {
+        return getAgeByIdCard(idcard, DateKit.date());
     }
 
     /**
-     * 根据身份编号获取指定日期当时的年龄年龄,只支持15或18位身份证号码
+     * 根据身份编号获取指定日期当时的年龄,只支持15或18位身份证号码
      *
-     * @param idCard        身份编号
+     * @param idcard        身份编号
      * @param dateToCompare 以此日期为界,计算年龄
      * @return 年龄
      */
-    public static int getAgeByIdCard(String idCard, Date dateToCompare) {
-        String birth = getBirthByIdCard(idCard);
-        return DateKit.getAge(DateKit.parse(birth, Fields.PURE_DATE_PATTERN), dateToCompare);
+    public static int getAgeByIdCard(String idcard, Date dateToCompare) {
+        return DateKit.getAge(DateKit.parse(getBirthByIdCard(idcard), Fields.PURE_DATE_PATTERN), dateToCompare);
     }
 
     /**
      * 根据身份编号获取生日年,只支持15或18位身份证号码
      *
-     * @param idCard 身份编号
+     * @param idcard 身份编号
      * @return 生日(yyyy)
      */
-    public static Short getYearByIdCard(String idCard) {
-        final int len = idCard.length();
+    public static Short getYearByIdCard(String idcard) {
+        final int len = idcard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
         } else if (len == CHINA_ID_MIN_LENGTH) {
-            idCard = convert15To18(idCard);
+            idcard = getIdCardTo18(idcard);
         }
-        return Short.valueOf(Objects.requireNonNull(idCard).substring(6, 10));
+        return Short.valueOf(Objects.requireNonNull(idcard).substring(6, 10));
     }
 
     /**
      * 根据身份编号获取生日月,只支持15或18位身份证号码
      *
-     * @param idCard 身份编号
+     * @param idcard 身份编号
      * @return 生日(MM)
      */
-    public static Short getMonthByIdCard(String idCard) {
-        final int len = idCard.length();
+    public static Short getMonthByIdCard(String idcard) {
+        final int len = idcard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
         } else if (len == CHINA_ID_MIN_LENGTH) {
-            idCard = convert15To18(idCard);
+            idcard = getIdCardTo18(idcard);
         }
-        return Short.valueOf(Objects.requireNonNull(idCard).substring(10, 12));
+        return Short.valueOf(Objects.requireNonNull(idcard).substring(10, 12));
     }
 
     /**
      * 根据身份编号获取生日天，只支持15或18位身份证号码
      *
-     * @param idCard 身份编号
+     * @param idcard 身份编号
      * @return 生日(dd)
      */
-    public static Short getDayByIdCard(String idCard) {
-        final int len = idCard.length();
+    public static Short getDayByIdCard(String idcard) {
+        final int len = idcard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             return null;
         } else if (len == CHINA_ID_MIN_LENGTH) {
-            idCard = convert15To18(idCard);
+            idcard = getIdCardTo18(idcard);
         }
-        return Short.valueOf(Objects.requireNonNull(idCard).substring(12, 14));
+        return Short.valueOf(Objects.requireNonNull(idcard).substring(12, 14));
     }
 
     /**
      * 根据身份编号获取性别,只支持15或18位身份证号码
      *
-     * @param idCard 身份编号
+     * @param idcard 身份编号
      * @return 性别(1 : 男, 0 : 女)
      */
-    public static int getGenderByIdCard(String idCard) {
-        Assert.notBlank(idCard);
-        final int len = idCard.length();
+    public static int getGenderByIdCard(String idcard) {
+        Assert.notBlank(idcard);
+        final int len = idcard.length();
         if (len < CHINA_ID_MIN_LENGTH) {
             throw new IllegalArgumentException("ID Card length must be 15 or 18");
         }
 
         if (len == CHINA_ID_MIN_LENGTH) {
-            idCard = convert15To18(idCard);
+            idcard = getIdCardTo18(idcard);
         }
-        char sCardChar = Objects.requireNonNull(idCard).charAt(16);
+        char sCardChar = Objects.requireNonNull(idcard).charAt(16);
         return (sCardChar % 2 != 0) ? 1 : 0;
     }
 
     /**
      * 根据身份编号获取户籍省份，只支持15或18位身份证号码
      *
-     * @param idCard 身份编码
-     * @return 省级编码
+     * @param idcard 身份证号
+     * @return 省份名称, 省份编码 采用','分割
      */
-    public static String getProvinceByIdCard(String idCard) {
-        int len = idCard.length();
+    public static String getProvinceByIdCard(String idcard) {
+        int len = idcard.length();
         if (len == CHINA_ID_MIN_LENGTH || len == CHINA_ID_MAX_LENGTH) {
-            String sProvinNum = idCard.substring(0, 2);
-            return CITY_CODE.get(sProvinNum);
+            String province = idcard.substring(0, 2);
+            return AREA_CODE.get(province) + "," + idcard.substring(0, 5);
         }
         return null;
     }
@@ -523,14 +468,45 @@ public class CitizenIdKit {
     /**
      * 隐藏指定位置的几个身份证号数字为“*”
      *
-     * @param idCard       身份证号
+     * @param idcard       身份证号
      * @param startInclude 开始位置(包含)
      * @param endExclude   结束位置(不包含)
      * @return 隐藏后的身份证号码
      * @see StringKit#hide(CharSequence, int, int)
      */
-    public static String hide(String idCard, int startInclude, int endExclude) {
-        return StringKit.hide(idCard, startInclude, endExclude);
+    public static String hide(String idcard, int startInclude, int endExclude) {
+        return StringKit.hide(idcard, startInclude, endExclude);
+    }
+
+    /**
+     * 将15位身份证号码转换为18位
+     *
+     * @param idcard 15位身份编码
+     * @return 18位身份编码
+     */
+    public static String getIdCardTo18(String idcard) {
+        StringBuilder idcard18;
+        if (idcard.length() != CHINA_ID_MIN_LENGTH) {
+            return null;
+        }
+        if (PatternKit.isMatch(RegEx.NUMBERS, idcard)) {
+            // 获取出生年月日
+            String birthday = idcard.substring(6, 12);
+            Date birthDate = DateKit.parse(birthday, "yyMMdd");
+            // 获取出生年(完全表现形式,如：2010)
+            int sYear = DateKit.year(birthDate);
+            if (sYear > 2000) {
+                // 2000年之后不存在15位身份证号,此处用于修复此问题的判断
+                sYear -= 100;
+            }
+            idcard18 = StringKit.builder().append(idcard, 0, 6).append(sYear).append(idcard.substring(8));
+            // 获取校验位
+            char sVal = getCheckCode18(idcard18.toString());
+            idcard18.append(sVal);
+        } else {
+            return null;
+        }
+        return idcard18.toString();
     }
 
     /**
@@ -598,23 +574,23 @@ public class CitizenIdKit {
     /**
      * 获取公民身份相关信息
      *
-     * @param idCard 身份号码
+     * @param idcard 身份号码
      * @return 身份信息
      */
-    public CitizenInfo getCitizenInfo(String idCard) {
+    public CitizenInfo getCitizenInfo(String idcard) {
         CitizenInfo citizenInfo = new CitizenInfo();
-        if (isValidCard(idCard)) {
-            short year = getYearByIdCard(idCard);
-            short month = getMonthByIdCard(idCard);
-            short day = getDayByIdCard(idCard);
-            citizenInfo.setVerify(isValidCard(idCard));
-            citizenInfo.setBirthDate(getBirthByIdCard(idCard));
-            citizenInfo.setAge(getAgeByIdCard(idCard));
-            citizenInfo.setProvince(getProvinceByIdCard(idCard));
+        if (isValidCard(idcard)) {
+            short year = getYearByIdCard(idcard);
+            short month = getMonthByIdCard(idcard);
+            short day = getDayByIdCard(idcard);
+            citizenInfo.setVerify(isValidCard(idcard));
+            citizenInfo.setBirthDate(getBirthByIdCard(idcard));
+            citizenInfo.setAge(getAgeByIdCard(idcard));
+            citizenInfo.setProvince(getProvinceByIdCard(idcard));
             citizenInfo.setBirthYear(year);
             citizenInfo.setBirthMonth(month);
             citizenInfo.setBirthDay(day);
-            citizenInfo.setGender(Normal.Gender.getGender(Normal.EMPTY + getGenderByIdCard(idCard)).getDesc());
+            citizenInfo.setGender(Normal.Gender.getGender(Normal.EMPTY + getGenderByIdCard(idcard)).getDesc());
             citizenInfo.setZodiac(DateKit.getZodiac(month, day));
             citizenInfo.setAnimal(DateKit.getAnimal(year));
         } else {
@@ -638,6 +614,10 @@ public class CitizenIdKit {
          * 出生省份
          */
         private String province;
+        /**
+         * 出生省份
+         */
+        private String cityCode;
         /**
          * 出生年
          */
@@ -666,7 +646,6 @@ public class CitizenIdKit {
          * 生肖
          */
         private String animal;
-
 
     }
 

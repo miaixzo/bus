@@ -39,7 +39,7 @@ import java.util.Map;
  * 二维码设置
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class QrConfig {
@@ -87,6 +87,7 @@ public class QrConfig {
      * 设置二维码中的信息量，可设置1-40的整数
      */
     protected Integer qrVersion;
+
     /**
      * 构造,默认长宽为300
      */

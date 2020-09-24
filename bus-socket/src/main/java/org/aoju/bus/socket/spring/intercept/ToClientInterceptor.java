@@ -33,7 +33,7 @@ import org.springframework.web.socket.messaging.StompSubProtocolHandler;
  * 拦截发送给客户端的消息
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface ToClientInterceptor {

@@ -30,7 +30,7 @@ import java.util.Set;
  * 实现此接口的类应该保留office支持的文档格式集合.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface FormatRegistry {

@@ -22,34 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.notify.provider.aliyun;
+package org.aoju.bus.notify.provider.tencent;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.aoju.bus.notify.magic.Template;
+import org.aoju.bus.notify.magic.Property;
 
 /**
- * 阿里云短信模版
+ * 腾讯云短信
  *
- * @author Justubborn
- * @version 6.0.9
+ * @author Kimi Liu
+ * @version 6.1.0
  * @since JDK1.8+
  */
 @Getter
 @Setter
 @SuperBuilder
-public class AliyunSmsTemplate extends Template {
+public class QCloudSmsProperty extends Property {
 
-    /**
-     * 模版参数
-     */
-    String templateParam;
-
-
-    /**
-     * 模版id
-     */
-    String tempCode;
 
 }

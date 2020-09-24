@@ -43,7 +43,7 @@ import java.util.Map;
  * Sensors from WMI or Open Hardware Monitor
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 @ThreadSafe

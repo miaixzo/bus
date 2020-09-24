@@ -28,7 +28,7 @@ package org.aoju.bus.health.builtin.software;
  * Represents a Thread/Task on the operating system.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface OSThread {

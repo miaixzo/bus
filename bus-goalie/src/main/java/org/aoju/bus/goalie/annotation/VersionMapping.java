@@ -31,7 +31,7 @@ import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8++
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
@@ -42,45 +42,24 @@ import java.lang.annotation.*;
 @ClientVersion
 public @interface VersionMapping {
 
-    /**
-     * Alias for {@link RequestMapping#name}.
-     */
     @AliasFor(annotation = RequestMapping.class)
     String name() default "";
 
-    /**
-     * Alias for {@link RequestMapping#value}.
-     */
     @AliasFor(annotation = RequestMapping.class)
     String[] value() default {};
 
-    /**
-     * Alias for {@link RequestMapping#path}.
-     */
     @AliasFor(annotation = RequestMapping.class)
     String[] path() default {};
 
-    /**
-     * Alias for {@link RequestMapping#params}.
-     */
     @AliasFor(annotation = RequestMapping.class)
     String[] params() default {};
 
-    /**
-     * Alias for {@link RequestMapping#headers}.
-     */
     @AliasFor(annotation = RequestMapping.class)
     String[] headers() default {};
 
-    /**
-     * Alias for {@link RequestMapping#consumes}.
-     */
     @AliasFor(annotation = RequestMapping.class)
     String[] consumes() default {};
 
-    /**
-     * Alias for {@link RequestMapping#produces}.
-     */
     @AliasFor(annotation = RequestMapping.class)
     String[] produces() default {};
 

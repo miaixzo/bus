@@ -50,7 +50,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class Ftp extends AbstractFtp {
@@ -348,6 +348,20 @@ public class Ftp extends AbstractFtp {
             throw new InstrumentException(e);
         }
         return ArrayKit.isNotEmpty(ftpFileArr);
+    }
+
+    /**
+     * 获取服务端目录状态。
+     *
+     * @param path 路径
+     * @return 状态int，服务端不同，返回不同
+     */
+    public int stat(String path) {
+        try {
+            return this.client.stat(path);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     @Override

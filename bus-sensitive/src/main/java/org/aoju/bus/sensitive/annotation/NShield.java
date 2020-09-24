@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 对json内的key_value进行脱敏/过滤
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 @Documented

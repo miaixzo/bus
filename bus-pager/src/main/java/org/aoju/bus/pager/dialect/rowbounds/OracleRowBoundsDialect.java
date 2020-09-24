@@ -32,7 +32,7 @@ import org.apache.ibatis.session.RowBounds;
  * oracle 基于 RowBounds 的分页
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class OracleRowBoundsDialect extends AbstractRowBoundsDialect {

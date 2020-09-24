@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * Memory obtained by sysctl vm.stats
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -22,25 +22,76 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.extra.mail;
+package org.aoju.bus.notify.magic;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
- * 发送邮件时响应实体
+ * 消息模版
  *
- * @author Kimi Liu
- * @version 6.0.9
- * @since JDK 1.8+
+ * @author Justubborn
+ * @version 6.1.0
+ * @since JDK1.8+
  */
-@Data
-@Builder
-public class AliMailResult {
+@Getter
+@Setter
+@SuperBuilder
+public class Property {
 
     /**
-     * 是否发送成功
+     * 发送者
      */
-    private boolean success;
+    protected String sender;
+
+    /**
+     * 接收者
+     */
+    protected String receive;
+
+    /**
+     * 内容类型
+     */
+    private Type type;
+
+    /**
+     * 发送模型
+     */
+    private Mode mode;
+
+    public enum Type {
+        /**
+         * html
+         */
+        HTML,
+        /**
+         * 文本
+         */
+        TEXT,
+        /**
+         * 语音
+         */
+        VOICE,
+        /**
+         * 文件
+         */
+        FILE,
+        /**
+         * 文件
+         */
+        OTHER
+    }
+
+    public enum Mode {
+        /**
+         * 单发
+         */
+        SINGLE,
+        /**
+         * 批量
+         */
+        BATCH
+    }
 
 }

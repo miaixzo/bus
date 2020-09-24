@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
  * 反射信息校验
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class ReflectStrategy implements Matcher<Object, Reflect> {

@@ -52,7 +52,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class NumberConverter extends AbstractConverter<Number> {
@@ -229,7 +229,15 @@ public class NumberConverter extends AbstractConverter<Number> {
 
     @Override
     protected String convertString(Object value) {
-        return StringKit.trim(super.convertString(value));
+        String result = StringKit.trim(super.convertString(value));
+        if (StringKit.isNotEmpty(result)) {
+            final char c = Character.toUpperCase(result.charAt(result.length() - 1));
+            if (c == 'D' || c == 'L' || c == 'F') {
+                // 类型标识形式（例如123.6D）
+                return StringKit.subPre(result, -1);
+            }
+        }
+        return result;
     }
 
     @Override
