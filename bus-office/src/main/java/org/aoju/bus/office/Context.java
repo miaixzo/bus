@@ -28,7 +28,7 @@ package org.aoju.bus.office;
  * 所有office上下文接口的基本接口.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface Context {

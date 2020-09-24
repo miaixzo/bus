@@ -30,7 +30,7 @@ import org.aoju.bus.forest.Complex;
  * 记录可过滤的解密器
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public abstract class EntryDecryptorProvider<E> extends WrappedDecryptorProvider implements DecryptorProvider, Complex<E> {

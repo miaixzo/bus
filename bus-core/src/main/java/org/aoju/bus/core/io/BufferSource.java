@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
  * 它还允许客户端提前读取,在消费之前进行必要的缓冲输入
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface BufferSource extends Source, ReadableByteChannel {

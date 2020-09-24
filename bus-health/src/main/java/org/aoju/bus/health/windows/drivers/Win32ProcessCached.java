@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * Utility to query WMI class {@code Win32_Process} using cache
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -45,7 +45,7 @@ import java.util.Objects;
  * @param <L> the left element type
  * @param <R> the right element type
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 @ThreadSafe

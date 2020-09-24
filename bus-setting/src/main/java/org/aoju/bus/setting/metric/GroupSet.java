@@ -43,7 +43,7 @@ import java.util.*;
  * 分组配置文件如下：
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class GroupSet extends HashMap<String, LinkedHashSet<String>> {

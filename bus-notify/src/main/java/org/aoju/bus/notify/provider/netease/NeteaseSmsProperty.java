@@ -33,7 +33,7 @@ import org.aoju.bus.notify.magic.Property;
  * 网易云短信模版
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK1.8+
  */
 @Getter

@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API project and group label calls.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @see <a href="https://docs.gitlab.com/ce/api/labels.html">Labels API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/group_labels.html">Group Labels API at GitLab</a>
  * @since JDK 1.8+

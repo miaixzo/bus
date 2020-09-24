@@ -34,7 +34,7 @@ import java.io.*;
  * 这在测试远程服务以确保所有参数/返回类型实际上都是可序列化/反序列化的时候非常有用
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class SerializingInterceptor implements Interceptor {

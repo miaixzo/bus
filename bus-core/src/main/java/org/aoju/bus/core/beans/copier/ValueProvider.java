@@ -34,7 +34,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> KEY类型,一般情况下为 {@link String}
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface ValueProvider<T> {

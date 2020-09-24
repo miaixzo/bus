@@ -40,7 +40,7 @@ import java.util.List;
  * 因此，我们希望所有帧的最大长度为{@link Http2#INITIAL_MAX_FRAME_SIZE}。
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public final class Http2Reader implements Closeable {

@@ -37,7 +37,7 @@ import org.springframework.web.socket.config.annotation.WebMvcStompEndpointRegis
  * 代替默认的{@link WebMvcStompEndpointRegistry}
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class MessageConfiguration extends DelegatingWebSocketMessageBrokerConfiguration {

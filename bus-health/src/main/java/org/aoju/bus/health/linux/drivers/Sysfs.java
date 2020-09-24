@@ -33,7 +33,7 @@ import org.aoju.bus.health.Builder;
  * Utility to read info from {@code sysfs}
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 @ThreadSafe

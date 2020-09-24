@@ -42,7 +42,7 @@ import java.io.File;
  * 此筛选器用于在转换的文档末尾插入文档.
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class DocumentInserterFilter implements Filter {

@@ -45,7 +45,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 日期格式化等工具
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class Format extends java.text.Format {

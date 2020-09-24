@@ -35,7 +35,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public interface SolarisLibc extends CLibrary {

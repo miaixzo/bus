@@ -40,7 +40,7 @@ import java.util.List;
  * 数组转换器,包括原始类型数组
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class ArrayConverter extends AbstractConverter<Object> {

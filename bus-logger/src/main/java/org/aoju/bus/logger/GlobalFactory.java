@@ -36,7 +36,7 @@ import org.aoju.bus.logger.dialect.slf4j.Slf4jLogFactory;
  * 用于减少日志工厂创建,减少日志库探测
  *
  * @author Kimi Liu
- * @version 6.0.9
+ * @version 6.1.0
  * @since JDK 1.8+
  */
 public class GlobalFactory {
