@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 云信抽象类
+ * 网易云抽象类
  *
  * @author Justubborn
  * @version 6.0.9

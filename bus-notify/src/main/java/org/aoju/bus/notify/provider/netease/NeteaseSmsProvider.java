@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 云信短信消息
+ * 网易云短信消息
  *
  * @author Kimi Liu
  * @version 6.0.9
