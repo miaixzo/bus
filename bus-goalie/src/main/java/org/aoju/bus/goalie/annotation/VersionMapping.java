@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.annotation;
 
+import org.aoju.bus.core.lang.Normal;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -43,7 +44,7 @@ import java.lang.annotation.*;
 public @interface VersionMapping {
 
     @AliasFor(annotation = RequestMapping.class)
-    String name() default "";
+    String name() default Normal.EMPTY;
 
     @AliasFor(annotation = RequestMapping.class)
     String[] value() default {};
@@ -64,7 +65,7 @@ public @interface VersionMapping {
     String[] produces() default {};
 
     @AliasFor(annotation = ApiVersion.class, attribute = "value")
-    String apiVersion() default "";
+    String apiVersion() default Normal.EMPTY;
 
     @AliasFor(annotation = ClientVersion.class, attribute = "value")
     TerminalVersion[] terminalVersion() default {};

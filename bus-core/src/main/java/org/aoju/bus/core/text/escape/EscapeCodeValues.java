@@ -456,8 +456,8 @@ public class EscapeCodeValues {
         ESCAPE_XSI_MAP.put(Symbol.SINGLE_QUOTE, "\\'");
         ESCAPE_XSI_MAP.put(Symbol.SPACE, "\\ ");
         ESCAPE_XSI_MAP.put(Symbol.HT, "\\\t");
-        ESCAPE_XSI_MAP.put(Symbol.CRLF, "");
-        ESCAPE_XSI_MAP.put(Symbol.LF, "");
+        ESCAPE_XSI_MAP.put(Symbol.CRLF, Normal.EMPTY);
+        ESCAPE_XSI_MAP.put(Symbol.LF, Normal.EMPTY);
         ESCAPE_XSI_MAP.put(Symbol.STAR, "\\*");
         ESCAPE_XSI_MAP.put(Symbol.QUESTION_MARK, "\\?");
         ESCAPE_XSI_MAP.put(Symbol.BRACKET_LEFT, "\\[");

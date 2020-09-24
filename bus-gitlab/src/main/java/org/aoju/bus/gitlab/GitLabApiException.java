@@ -25,6 +25,7 @@
 package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.aoju.bus.core.lang.Normal;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -116,7 +117,7 @@ public class GitLabApiException extends Exception {
                                 }
 
                                 if (values.size() > 0) {
-                                    buf.append((buf.length() > 0 ? ", " : "")).append(fieldName);
+                                    buf.append((buf.length() > 0 ? ", " : Normal.EMPTY)).append(fieldName);
                                 }
                             }
 

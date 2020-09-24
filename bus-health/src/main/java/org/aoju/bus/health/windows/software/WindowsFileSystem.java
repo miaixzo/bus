@@ -187,7 +187,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 String uuid = Builder.parseUuidOrDefault(volume, Normal.EMPTY);
 
                 fs.add(new WindowsOSFileStore(String.format("%s (%s)", strName, strMount), volume, strName, strMount,
-                        options.toString(), uuid, "", getDriveType(strMount), strFsType, systemFreeBytes.getValue(),
+                        options.toString(), uuid, Normal.EMPTY, getDriveType(strMount), strFsType, systemFreeBytes.getValue(),
                         userFreeBytes.getValue(), totalBytes.getValue(), 0, 0));
             }
             retVal = Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE);
@@ -284,7 +284,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 result.remove(volume);
                 result.add(new WindowsOSFileStore(wmiVolume.getName(), volume.getVolume(),
                         volume.getLabel().isEmpty() ? wmiVolume.getLabel() : volume.getLabel(), volume.getMount(),
-                        volume.getOptions(), volume.getUUID(), "", volume.getDescription(), volume.getType(),
+                        volume.getOptions(), volume.getUUID(), Normal.EMPTY, volume.getDescription(), volume.getType(),
                         volume.getFreeSpace(), volume.getUsableSpace(), volume.getTotalSpace(), 0, 0));
             } else if (!localOnly) {
                 // Otherwise add the new volume in its entirety

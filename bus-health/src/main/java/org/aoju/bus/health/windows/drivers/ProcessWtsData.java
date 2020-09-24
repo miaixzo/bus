@@ -34,6 +34,7 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.logger.Logger;
 
@@ -92,7 +93,7 @@ public final class ProcessWtsData {
         for (int i = 0; i < processInfo.length; i++) {
             if (pids == null || pids.contains(processInfo[i].ProcessId)) {
                 wtsMap.put(processInfo[i].ProcessId,
-                        new WtsInfo(processInfo[i].pProcessName, "", processInfo[i].NumberOfThreads,
+                        new WtsInfo(processInfo[i].pProcessName, Normal.EMPTY, processInfo[i].NumberOfThreads,
                                 processInfo[i].PagefileUsage & 0xffff_ffffL,
                                 processInfo[i].KernelTime.getValue() / 10_000L,
                                 processInfo[i].UserTime.getValue() / 10_000, processInfo[i].HandleCount));

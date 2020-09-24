@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.setting.magic;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.setting.Builder;
 
 import java.io.*;
@@ -59,7 +60,7 @@ public class IniSetting extends ArrayList<IniElement> {
     public String toString() {
         if (this.isEmpty()) {
             // if data empty, return empty.
-            return "";
+            return Normal.EMPTY;
         } else {
             // Imitation of super toString method.
             // Imitation ? maybe not ?
@@ -68,7 +69,7 @@ public class IniSetting extends ArrayList<IniElement> {
             StringJoiner joiner = new StringJoiner(newLineSplit);
             for (IniElement iniElement : this) {
                 // if null, show a empty line.
-                joiner.add(iniElement == null ? "" : iniElement.toString());
+                joiner.add(iniElement == null ? Normal.EMPTY : iniElement.toString());
             }
             return joiner.toString();
         }
@@ -206,7 +207,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = element == null ? "" : withComment ? element.toString() : element.toNoCommentString();
+            str = element == null ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
             print.println(str);
         }
         print.flush();

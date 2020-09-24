@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.Builders;
 import org.aoju.bus.core.toolkit.IoKit;
@@ -355,7 +356,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
                 len++;
             }
             while (len-- > 0) {
-                addCellValue(curCell++, "");
+                addCellValue(curCell++, Normal.EMPTY);
             }
         }
     }
@@ -367,7 +368,7 @@ public class Excel07SaxReader extends AbstractExcelSaxReader<Excel07SaxReader> i
      */
     private void setCellType(Attributes attributes) {
         // numFmtString的值
-        numFmtString = "";
+        numFmtString = Normal.EMPTY;
         this.cellDataType = CellDataType.of(AttributeName.t.getValue(attributes));
 
         // 获取单元格的xf索引，对应style.xml中cellXfs的子元素xf
