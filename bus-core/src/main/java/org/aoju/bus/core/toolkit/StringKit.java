@@ -28,6 +28,7 @@ import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.Builders;
+import org.aoju.bus.core.text.Similarity;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -6140,6 +6141,29 @@ public class StringKit {
             sb.append((start <= i && i < end) ? character : str.charAt(i));
         }
         return sb;
+    }
+
+    /**
+     * 计算两个字符串的相似度
+     *
+     * @param str1 字符串1
+     * @param str2 字符串2
+     * @return 相似度
+     */
+    public static double similar(String str1, String str2) {
+        return Similarity.similar(str1, str2);
+    }
+
+    /**
+     * 计算两个字符串的相似度百分比
+     *
+     * @param str1  字符串1
+     * @param str2  字符串2
+     * @param scale 相似度
+     * @return 相似度百分比
+     */
+    public static String similar(String str1, String str2, int scale) {
+        return Similarity.similar(str1, str2, scale);
     }
 
 }

@@ -1037,7 +1037,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 
     class IndexedComparator<T> implements Comparator<T> {
 
-        private T[] array;
+        private final T[] array;
 
         /**
          * 构造

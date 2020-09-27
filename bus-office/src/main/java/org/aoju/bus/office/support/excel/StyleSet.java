@@ -57,7 +57,7 @@ public class StyleSet implements Serializable {
     /**
      * 工作簿引用
      */
-    private Workbook workbook;
+    private final Workbook workbook;
 
     /**
      * 构造

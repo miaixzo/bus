@@ -198,10 +198,7 @@ public class ExcelSaxKit {
         // 普通数字
         if (null != numFmtString && numFmtString.indexOf(Symbol.C_DOT) < 0) {
             final long longPart = (long) numValue;
-            if (longPart == numValue) {
-                // 对于无小数部分的数字类型,转为Long
-                return longPart;
-            }
+            // 对于无小数部分的数字类型,转为Long
         }
         return numValue;
     }
