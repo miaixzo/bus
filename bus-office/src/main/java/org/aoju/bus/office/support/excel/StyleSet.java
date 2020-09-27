@@ -39,6 +39,10 @@ public class StyleSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
+     * 工作簿引用
+     */
+    private final Workbook workbook;
+    /**
      * 标题样式
      */
     protected CellStyle headCellStyle;
@@ -54,10 +58,6 @@ public class StyleSet implements Serializable {
      * 默认日期样式
      */
     protected CellStyle cellStyleForDate;
-    /**
-     * 工作簿引用
-     */
-    private final Workbook workbook;
 
     /**
      * 构造

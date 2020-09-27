@@ -59,7 +59,13 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
      * 如果为公式,true表示输出公式计算后的结果值,false表示输出公式本身
      */
     private final boolean isOutputFormulaValues = true;
-
+    /**
+     * Sheet边界记录,此Record中可以获得Sheet名
+     */
+    private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
+    // 存储行记录的容器
+    private final List<Object> rowCellList = new ArrayList<>();
+    private final RowHandler rowHandler;
     /**
      * 用于解析公式
      */
@@ -68,32 +74,20 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
      * 子工作簿,用于公式计算
      */
     private HSSFWorkbook stubWorkbook;
-
     /**
      * 静态字符串表
      */
     private SSTRecord sstRecord;
-
     private FormatTrackingHSSFListener formatListener;
-
-    /**
-     * Sheet边界记录,此Record中可以获得Sheet名
-     */
-    private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
-
     private boolean isOutputNextStringRecord;
-
-    // 存储行记录的容器
-    private final List<Object> rowCellList = new ArrayList<>();
-
     /**
      * 自定义需要处理的sheet编号,如果-1表示处理所有sheet
      */
     private int rid = -1;
-    // 当前表索引
+    /**
+     * 当前表索引
+     */
     private int curRid = -1;
-
-    private final RowHandler rowHandler;
 
     /**
      * 构造

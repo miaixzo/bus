@@ -6085,6 +6085,29 @@ public class StringKit {
     }
 
     /**
+     * 计算两个字符串的相似度
+     *
+     * @param str1 字符串1
+     * @param str2 字符串2
+     * @return 相似度
+     */
+    public static double similar(String str1, String str2) {
+        return Similarity.similar(str1, str2);
+    }
+
+    /**
+     * 计算两个字符串的相似度百分比
+     *
+     * @param str1  字符串1
+     * @param str2  字符串2
+     * @param scale 相似度
+     * @return 相似度百分比
+     */
+    public static String similar(String str1, String str2, int scale) {
+        return Similarity.similar(str1, str2, scale);
+    }
+
+    /**
      * 返回第一个非{@code null}元素
      *
      * @param strs 多个元素
@@ -6141,29 +6164,6 @@ public class StringKit {
             sb.append((start <= i && i < end) ? character : str.charAt(i));
         }
         return sb;
-    }
-
-    /**
-     * 计算两个字符串的相似度
-     *
-     * @param str1 字符串1
-     * @param str2 字符串2
-     * @return 相似度
-     */
-    public static double similar(String str1, String str2) {
-        return Similarity.similar(str1, str2);
-    }
-
-    /**
-     * 计算两个字符串的相似度百分比
-     *
-     * @param str1  字符串1
-     * @param str2  字符串2
-     * @param scale 相似度
-     * @return 相似度百分比
-     */
-    public static String similar(String str1, String str2, int scale) {
-        return Similarity.similar(str1, str2, scale);
     }
 
 }

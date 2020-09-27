@@ -76,6 +76,7 @@ public final class Builder {
      * 不做任何处理
      */
     public static final String OVERALL = "OVERALL";
+    private static final WordTree sensitiveTree = new WordTree();
 
     /**
      * 每次都创建一个新的对象,避免线程问题
@@ -114,8 +115,6 @@ public final class Builder {
     public static <T> T on(Object object, Annotation annotation) {
         return (T) Instances.singletion(Provider.class).on(object, annotation, false);
     }
-
-    private static final WordTree sensitiveTree = new WordTree();
 
     /**
      * 返回脱敏后的对象 json
