@@ -372,7 +372,7 @@ public class Readers {
         Format format = getFormatter();
         List<IniElement> iniElements = new ArrayList<>();
         // new line split
-        String newLineSplit = System.getProperty("line.separator", "\n");
+        String newLineSplit = System.getProperty("line.separator", Symbol.LF);
         StringBuilder line = new StringBuilder(builderCapacity);
 
         int ch;

@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.glassfish.jersey.message.MessageUtils;
 
 import javax.annotation.Priority;
@@ -195,18 +196,18 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         appendId(sb, id).append(SECTION_PREFIX)
                 .append(note)
                 .append(" on thread ").append(Thread.currentThread().getName())
-                .append('\n');
+                .append(Symbol.C_LF);
         appendId(sb, id).append(REQUEST_PREFIX).append(method).append(' ')
-                .append(uri.toASCIIString()).append('\n');
+                .append(uri.toASCIIString()).append(Symbol.C_LF);
     }
 
     protected void printResponseLine(final StringBuilder sb, final String note, final long id, final int status) {
         appendId(sb, id).append(SECTION_PREFIX)
                 .append(note)
-                .append(" on thread ").append(Thread.currentThread().getName()).append('\n');
+                .append(" on thread ").append(Thread.currentThread().getName()).append(Symbol.C_LF);
         appendId(sb, id).append(RESPONSE_PREFIX)
                 .append(status)
-                .append('\n');
+                .append(Symbol.C_LF);
     }
 
     protected Set<Entry<String, List<String>>> getSortedHeaders(final Set<Entry<String, List<String>>> headers) {
@@ -238,7 +239,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
             if (values.size() == 1) {
                 String value = (isMaskedHeader ? "********" : values.get(0).toString());
-                appendId(sb, id).append(prefix).append(header).append(": ").append(value).append('\n');
+                appendId(sb, id).append(prefix).append(header).append(": ").append(value).append(Symbol.C_LF);
             } else {
 
                 final StringBuilder headerBuf = new StringBuilder();
@@ -250,7 +251,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
                     headerBuf.append(isMaskedHeader ? "********" : value.toString());
                 }
 
-                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append('\n');
+                appendId(sb, id).append(prefix).append(header).append(": ").append(headerBuf.toString()).append(Symbol.C_LF);
             }
         });
     }
@@ -262,7 +263,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
             sb.append("...more...");
         }
 
-        sb.append('\n');
+        sb.append(Symbol.C_LF);
     }
 
     private InputStream logResponseEntity(final StringBuilder sb, InputStream stream, final Charset charset) throws IOException {

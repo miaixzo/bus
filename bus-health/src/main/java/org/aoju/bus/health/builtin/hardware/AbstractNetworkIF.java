@@ -210,23 +210,23 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: ").append(getName()).append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT).append("\n");
-        sb.append("  MAC Address: ").append(getMacaddr()).append("\n");
-        sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append("\n");
+        sb.append("Name: ").append(getName()).append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
+        sb.append("  MAC Address: ").append(getMacaddr()).append(Symbol.LF);
+        sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append(Symbol.LF);
         String[] ipv4withmask = getIPv4addr();
         if (this.ipv4.length == this.subnetMasks.length) {
             for (int i = 0; i < this.subnetMasks.length; i++) {
                 ipv4withmask[i] += Symbol.SLASH + this.subnetMasks[i];
             }
         }
-        sb.append("  IPv4: ").append(Arrays.toString(ipv4withmask)).append("\n");
+        sb.append("  IPv4: ").append(Arrays.toString(ipv4withmask)).append(Symbol.LF);
         String[] ipv6withprefixlength = getIPv6addr();
         if (this.ipv6.length == this.prefixLengths.length) {
             for (int j = 0; j < this.prefixLengths.length; j++) {
                 ipv6withprefixlength[j] += Symbol.SLASH + this.prefixLengths[j];
             }
         }
-        sb.append("  IPv6: ").append(Arrays.toString(ipv6withprefixlength)).append("\n");
+        sb.append("  IPv6: ").append(Arrays.toString(ipv6withprefixlength)).append(Symbol.LF);
         sb.append("  Traffic: received ").append(getPacketsRecv()).append(" packets/")
                 .append(Formats.formatBytes(getBytesRecv())).append(" (" + getInErrors() + " err, ")
                 .append(getInDrops() + " drop);");

@@ -65,7 +65,6 @@ public class AliYunOssProvider extends AbstractProvider {
 
         this.client = new OSSClient(this.context.getEndpoint(), new DefaultCredentialProvider(this.context.getAccessKey(), this.context.getSecretKey()), null);
         if (!this.client.doesBucketExist(this.context.getBucket())) {
-            System.out.println("Creating bucket " + this.context.getBucket() + "\n");
             this.client.createBucket(this.context.getBucket());
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(this.context.getBucket());
             createBucketRequest.setCannedACL(this.context.isSecure() ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);

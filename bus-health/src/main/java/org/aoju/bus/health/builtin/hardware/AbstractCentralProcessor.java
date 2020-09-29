@@ -361,12 +361,12 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getProcessorIdentifier().getName());
-        sb.append("\n ").append(getPhysicalPackageCount()).append(" physical CPU package(s)");
-        sb.append("\n ").append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
-        sb.append("\n ").append(getLogicalProcessorCount()).append(" logical CPU(s)");
-        sb.append('\n').append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
-        sb.append('\n').append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
-        sb.append('\n').append("Microarchitecture: ").append(getProcessorIdentifier().getMicroarchitecture());
+        sb.append(Symbol.LF).append(getPhysicalPackageCount()).append(" physical CPU package(s)");
+        sb.append(Symbol.LF).append(getPhysicalProcessorCount()).append(" physical CPU core(s)");
+        sb.append(Symbol.LF).append(getLogicalProcessorCount()).append(" logical CPU(s)");
+        sb.append(Symbol.C_LF).append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
+        sb.append(Symbol.C_LF).append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
+        sb.append(Symbol.C_LF).append("Microarchitecture: ").append(getProcessorIdentifier().getMicroarchitecture());
         return sb.toString();
     }
 

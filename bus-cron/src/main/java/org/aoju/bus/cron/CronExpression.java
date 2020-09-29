@@ -382,7 +382,7 @@ public final class CronExpression implements Serializable, Cloneable {
         if (c == Symbol.C_QUESTION_MARK) {
             i++;
             if ((i + 1) < s.length()
-                    && (s.charAt(i) != ' ' && s.charAt(i + 1) != '\t')) {
+                    && (s.charAt(i) != ' ' && s.charAt(i + 1) != Symbol.C_HT)) {
                 throw new ParseException("Illegal character after '?': "
                         + s.charAt(i), i);
             }
@@ -410,7 +410,7 @@ public final class CronExpression implements Serializable, Cloneable {
                 return i + 1;
             } else if (c == Symbol.C_SLASH
                     && ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s
-                    .charAt(i + 1) == '\t')) {
+                    .charAt(i + 1) == Symbol.C_HT)) {
                 throw new ParseException("'/' must be followed by an integer.", i);
             } else if (c == '*') {
                 i++;
@@ -603,7 +603,7 @@ public final class CronExpression implements Serializable, Cloneable {
         }
 
         if (c == Symbol.C_SLASH) {
-            if ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s.charAt(i + 1) == '\t') {
+            if ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s.charAt(i + 1) == Symbol.C_HT) {
                 throw new ParseException("'/' must be followed by an integer.", i);
             }
 
@@ -643,37 +643,37 @@ public final class CronExpression implements Serializable, Cloneable {
 
         buf.append("seconds: ");
         buf.append(getExpressionSetSummary(seconds));
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("minutes: ");
         buf.append(getExpressionSetSummary(minutes));
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("hours: ");
         buf.append(getExpressionSetSummary(hours));
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("daysOfMonth: ");
         buf.append(getExpressionSetSummary(daysOfMonth));
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("months: ");
         buf.append(getExpressionSetSummary(months));
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("daysOfWeek: ");
         buf.append(getExpressionSetSummary(daysOfWeek));
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("lastdayOfWeek: ");
         buf.append(lastdayOfWeek);
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("nearestWeekday: ");
         buf.append(nearestWeekday);
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("NthDayOfWeek: ");
         buf.append(nthdayOfWeek);
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("lastdayOfMonth: ");
         buf.append(lastdayOfMonth);
-        buf.append("\n");
+        buf.append(Symbol.LF);
         buf.append("years: ");
         buf.append(getExpressionSetSummary(years));
-        buf.append("\n");
+        buf.append(Symbol.LF);
 
         return buf.toString();
     }
@@ -731,14 +731,14 @@ public final class CronExpression implements Serializable, Cloneable {
     }
 
     protected int skipWhiteSpace(int i, String s) {
-        for (; i < s.length() && (s.charAt(i) == ' ' || s.charAt(i) == '\t'); i++) {
+        for (; i < s.length() && (s.charAt(i) == ' ' || s.charAt(i) == Symbol.C_HT); i++) {
         }
 
         return i;
     }
 
     protected int findNextWhiteSpace(int i, String s) {
-        for (; i < s.length() && (s.charAt(i) != ' ' || s.charAt(i) != '\t'); i++) {
+        for (; i < s.length() && (s.charAt(i) != ' ' || s.charAt(i) != Symbol.C_HT); i++) {
         }
 
         return i;

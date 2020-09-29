@@ -41,8 +41,8 @@ import java.util.Map;
  */
 public class Morse {
 
-    private static final Map<Integer, String> alphabets = new HashMap<>();
-    private static final Map<String, Integer> dictionaries = new HashMap<>();
+    private static final Map<Integer, String> ALPHABETS = new HashMap<>();
+    private static final Map<String, Integer> DICTIONARIES = new HashMap<>();
 
     static {
         // Letters
@@ -135,8 +135,8 @@ public class Morse {
      * @param dict 二进制
      */
     private static void registerMorse(Character abc, String dict) {
-        alphabets.put(Integer.valueOf(abc), dict);
-        dictionaries.put(dict, Integer.valueOf(abc));
+        ALPHABETS.put(Integer.valueOf(abc), dict);
+        DICTIONARIES.put(dict, Integer.valueOf(abc));
     }
 
     /**
@@ -153,7 +153,7 @@ public class Morse {
         final int len = text.codePointCount(0, text.length());
         for (int i = 0; i < len; i++) {
             int codePoint = text.codePointAt(i);
-            String word = alphabets.get(codePoint);
+            String word = ALPHABETS.get(codePoint);
             if (word == null) {
                 word = Integer.toBinaryString(codePoint);
             }
@@ -185,7 +185,7 @@ public class Morse {
                 continue;
             }
             word = word.replace(dit, Symbol.C_ZERO).replace(dah, Symbol.C_ONE);
-            codePoint = dictionaries.get(word);
+            codePoint = DICTIONARIES.get(word);
             if (codePoint == null) {
                 codePoint = Integer.valueOf(word, 2);
             }
