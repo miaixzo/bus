@@ -26,7 +26,6 @@ package org.aoju.bus.starter.banner;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.logger.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -232,7 +231,7 @@ public class ImageBanner {
             BufferedImage resizedImage = resizeImage(sourceImage, maxWidth, aspectRatio);
             banner = imageToBanner(resizedImage, invert, cie94);
         } catch (Exception ex) {
-            Logger.warn("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass()
+            System.out.println("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass()
                     + ": '" + ex.getMessage() + "')");
             ex.printStackTrace();
         } finally {

@@ -2527,7 +2527,7 @@ public class Attributes implements Serializable {
         for (Attributes item : sq) {
             if (++lines > limit)
                 break;
-            sb.append(prefix).append("Item #").append(++itemNo).append(Symbol.C_LF);
+            sb.append(prefix).append("Item #").append(++itemNo).append('\n');
             lines += item.appendAttributes(limit - lines, maxWidth, sb, prefix);
         }
         return lines;
@@ -2542,7 +2542,7 @@ public class Attributes implements Serializable {
             if (sb.length() > maxLength)
                 sb.setLength(maxLength);
         }
-        sb.append(Symbol.C_LF);
+        sb.append('\n');
         return sb;
     }
 

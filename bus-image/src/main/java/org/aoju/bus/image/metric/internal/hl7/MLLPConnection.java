@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.BufferedOutputStream;
@@ -77,7 +76,7 @@ public class MLLPConnection implements Closeable {
 
     private void log(String format, byte[] b, int off, int len) {
         int mshlen = 0;
-        while (mshlen < len && b[off + mshlen] != Symbol.C_CR)
+        while (mshlen < len && b[off + mshlen] != '\r')
             mshlen++;
         Logger.info(format, sock, new String(b, off, mshlen));
     }

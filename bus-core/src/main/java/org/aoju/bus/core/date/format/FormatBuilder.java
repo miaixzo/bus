@@ -61,7 +61,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      */
     public static final int SHORT = DateFormat.SHORT;
 
-    private static final FormatCache<FormatBuilder> CACHE = new FormatCache<FormatBuilder>() {
+    private static final FormatCache<FormatBuilder> cache = new FormatCache<FormatBuilder>() {
         @Override
         protected FormatBuilder createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
             return new FormatBuilder(pattern, timeZone, locale);
@@ -103,7 +103,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return {@link FormatBuilder}
      */
     public static FormatBuilder getInstance() {
-        return CACHE.getInstance();
+        return cache.getInstance();
     }
 
     /**
@@ -115,7 +115,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @throws IllegalArgumentException 日期格式问题
      */
     public static FormatBuilder getInstance(final String pattern) {
-        return CACHE.getInstance(pattern, null, null);
+        return cache.getInstance(pattern, null, null);
     }
 
     /**
@@ -128,7 +128,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @throws IllegalArgumentException 日期格式问题
      */
     public static FormatBuilder getInstance(final String pattern, final TimeZone timeZone) {
-        return CACHE.getInstance(pattern, timeZone, null);
+        return cache.getInstance(pattern, timeZone, null);
     }
 
     /**
@@ -141,7 +141,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @throws IllegalArgumentException 日期格式问题
      */
     public static FormatBuilder getInstance(final String pattern, final Locale locale) {
-        return CACHE.getInstance(pattern, null, locale);
+        return cache.getInstance(pattern, null, locale);
     }
 
     /**
@@ -155,7 +155,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @throws IllegalArgumentException 日期格式问题
      */
     public static FormatBuilder getInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
-        return CACHE.getInstance(pattern, timeZone, locale);
+        return cache.getInstance(pattern, timeZone, locale);
     }
 
     /**
@@ -166,7 +166,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getDateInstance(final int style) {
-        return CACHE.getDateInstance(style, null, null);
+        return cache.getDateInstance(style, null, null);
     }
 
     /**
@@ -178,7 +178,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getDateInstance(final int style, final Locale locale) {
-        return CACHE.getDateInstance(style, null, locale);
+        return cache.getDateInstance(style, null, locale);
     }
 
     /**
@@ -190,7 +190,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getDateInstance(final int style, final TimeZone timeZone) {
-        return CACHE.getDateInstance(style, timeZone, null);
+        return cache.getDateInstance(style, timeZone, null);
     }
 
     /**
@@ -203,7 +203,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getDateInstance(final int style, final TimeZone timeZone, final Locale locale) {
-        return CACHE.getDateInstance(style, timeZone, locale);
+        return cache.getDateInstance(style, timeZone, locale);
     }
 
     /**
@@ -214,7 +214,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getTimeInstance(final int style) {
-        return CACHE.getTimeInstance(style, null, null);
+        return cache.getTimeInstance(style, null, null);
     }
 
     /**
@@ -226,7 +226,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getTimeInstance(final int style, final Locale locale) {
-        return CACHE.getTimeInstance(style, null, locale);
+        return cache.getTimeInstance(style, null, locale);
     }
 
     /**
@@ -238,7 +238,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getTimeInstance(final int style, final TimeZone timeZone) {
-        return CACHE.getTimeInstance(style, timeZone, null);
+        return cache.getTimeInstance(style, timeZone, null);
     }
 
     /**
@@ -251,7 +251,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getTimeInstance(final int style, final TimeZone timeZone, final Locale locale) {
-        return CACHE.getTimeInstance(style, timeZone, locale);
+        return cache.getTimeInstance(style, timeZone, locale);
     }
 
     /**
@@ -263,7 +263,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle) {
-        return CACHE.getDateTimeInstance(dateStyle, timeStyle, null, null);
+        return cache.getDateTimeInstance(dateStyle, timeStyle, null, null);
     }
 
     /**
@@ -276,7 +276,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final Locale locale) {
-        return CACHE.getDateTimeInstance(dateStyle, timeStyle, null, locale);
+        return cache.getDateTimeInstance(dateStyle, timeStyle, null, locale);
     }
 
     /**
@@ -303,7 +303,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
      * @return 本地化 {@link FormatBuilder}
      */
     public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone, final Locale locale) {
-        return CACHE.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale);
+        return cache.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale);
     }
 
     @Override

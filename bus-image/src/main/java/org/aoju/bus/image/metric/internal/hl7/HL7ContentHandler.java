@@ -159,7 +159,7 @@ public class HL7ContentHandler extends DefaultHandler {
                         return;
                     }
             }
-            writer.write(Symbol.C_CR);
+            writer.write('\r');
         } catch (Exception e) {
             throw new SAXException(e);
         }

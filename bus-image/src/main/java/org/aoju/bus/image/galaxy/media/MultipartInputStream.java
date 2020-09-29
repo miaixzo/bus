@@ -227,7 +227,7 @@ public class MultipartInputStream extends FilterInputStream {
         }
 
         boolean append(byte b) {
-            if (b == Symbol.C_LF && length > 0 && buffer[length - 1] == Symbol.C_CR) {
+            if (b == '\n' && length > 0 && buffer[length - 1] == '\r') {
                 length--;
                 return false;
             }

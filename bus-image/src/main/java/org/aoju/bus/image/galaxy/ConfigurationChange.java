@@ -96,12 +96,12 @@ public class ConfigurationChange {
 
         StringBuilder sb = new StringBuilder(objects.size() * 64);
         for (ModifiedObject obj : objects) {
-            sb.append(obj.changeType).append(Symbol.C_SPACE).append(obj.dn).append(Symbol.C_LF);
+            sb.append(obj.changeType).append(Symbol.C_SPACE).append(obj.dn).append('\n');
             if (obj.attributes != null) {
                 for (ModifiedAttribute attr : obj.attributes) {
                     sb.append(Symbol.SPACE).append(attr.name).append(": ")
                             .append(attr.removedValues).append("=>")
-                            .append(attr.addedValues).append(Symbol.C_LF);
+                            .append(attr.addedValues).append('\n');
                 }
             }
         }

@@ -94,7 +94,7 @@ public class IniSectionImpl extends AbstractElement implements IniSection {
      */
     @Override
     public String toPropertiesString() {
-        StringJoiner joiner = new StringJoiner(System.getProperty("line.separator", Symbol.LF));
+        StringJoiner joiner = new StringJoiner(System.getProperty("line.separator", "\n"));
         joiner.add(toString());
         for (IniProperty p : this) {
             joiner.add(p);

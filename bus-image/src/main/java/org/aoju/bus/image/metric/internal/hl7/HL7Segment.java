@@ -136,14 +136,14 @@ public class HL7Segment implements Serializable {
                                 String charsetName) {
         int off = pos.getIndex();
         int end = off;
-        while (end < size && b[end] != Symbol.C_CR && b[end] != Symbol.C_LF)
+        while (end < size && b[end] != '\r' && b[end] != '\n')
             end++;
 
         int len = end - off;
         if (len == 0)
             return null;
 
-        if (++end < size && (b[end] == Symbol.C_CR || b[end] == Symbol.C_LF))
+        if (++end < size && (b[end] == '\r' || b[end] == '\n'))
             end++;
 
         pos.setIndex(end);

@@ -161,7 +161,7 @@ public class MathKit {
         }
 
         String value = values[0];
-        BigDecimal result = null == value ? BigDecimal.ZERO : new BigDecimal(value);
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
             value = values[i];
             if (null != value) {
@@ -417,15 +417,18 @@ public class MathKit {
      * @return 积
      */
     public static BigDecimal mul(String... values) {
-        if (ArrayKit.isEmpty(values) || ArrayKit.hasNull(values)) {
+        if (ArrayKit.isEmpty(values)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal result = new BigDecimal(values[0]);
+        String value = values[0];
+        BigDecimal result = new BigDecimal(null == value ? Symbol.ZERO : value);
         for (int i = 1; i < values.length; i++) {
-            result = result.multiply(new BigDecimal(values[i]));
+            value = values[i];
+            if (null != value) {
+                result = result.multiply(new BigDecimal(value));
+            }
         }
-
         return result;
     }
 
@@ -437,13 +440,17 @@ public class MathKit {
      * @return 积
      */
     public static BigDecimal mul(BigDecimal... values) {
-        if (ArrayKit.isEmpty(values) || ArrayKit.hasNull(values)) {
+        if (ArrayKit.isEmpty(values)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal result = values[0];
+        BigDecimal value = values[0];
+        BigDecimal result = null == value ? BigDecimal.ZERO : value;
         for (int i = 1; i < values.length; i++) {
-            result = result.multiply(values[i]);
+            value = values[i];
+            if (null != value) {
+                result = result.multiply(value);
+            }
         }
         return result;
     }
@@ -1570,11 +1577,10 @@ public class MathKit {
      * @return 是否相等
      */
     public static boolean equals(BigDecimal bigNum1, BigDecimal bigNum2) {
+        Assert.notNull(bigNum1);
+        Assert.notNull(bigNum2);
         if (bigNum1 == bigNum2) {
             return true;
-        }
-        if (bigNum1 == null || bigNum2 == null) {
-            return false;
         }
         return 0 == bigNum1.compareTo(bigNum2);
     }

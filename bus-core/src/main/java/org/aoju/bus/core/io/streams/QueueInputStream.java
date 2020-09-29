@@ -70,8 +70,8 @@ public class QueueInputStream extends InputStream {
         while (true) {
             switch (peek()) {
                 case Symbol.C_SPACE:
-                case Symbol.C_CR:
-                case Symbol.C_LF:
+                case '\r':
+                case '\n':
                 case -1:
                     return sb.toString();
                 default:
@@ -95,10 +95,10 @@ public class QueueInputStream extends InputStream {
         StringBuilder sb = new StringBuilder();
         for (; ; ) {
             int v = peek();
-            if (v == Symbol.C_CR || v == Symbol.C_LF) {
+            if (v == '\r' || v == '\n') {
                 poll();
                 v = peekNext();
-                if (v == Symbol.C_CR || v == Symbol.C_LF) {
+                if (v == '\r' || v == '\n') {
                     poll();
                 }
                 break;
@@ -125,7 +125,7 @@ public class QueueInputStream extends InputStream {
         if (v == -1) {
             end = true;
         }
-        if (v == Symbol.C_LF) {
+        if (v == '\n') {
             col = 0;
             row++;
         } else {
