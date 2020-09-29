@@ -25,6 +25,7 @@
 package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.setting.Builder;
 
 import java.io.*;
@@ -76,7 +77,7 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     private String getNewLineSplit() {
-        return System.getProperty("line.separator", "\n");
+        return System.getProperty("line.separator", Symbol.LF);
     }
 
     /**

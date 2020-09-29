@@ -26,6 +26,7 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -133,7 +134,7 @@ public class GitLabApiException extends Exception {
                             }
 
                             if (values.size() > 0) {
-                                this.message = String.join("\n", values);
+                                this.message = String.join(Symbol.LF, values);
                             }
 
                         } else if (jsonMessage.isTextual()) {

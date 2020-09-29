@@ -169,7 +169,6 @@ public class Launcher {
             password = new String(chars);
         }
         if (password == null) {
-            System.out.print("password:");
             Scanner scanner = new Scanner(System.in);
             password = scanner.nextLine();
         }

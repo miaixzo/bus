@@ -161,7 +161,7 @@ public class GetSCU implements AutoCloseable {
     public void setStorageDirectory(File storageDir) {
         if (storageDir != null) {
             if (storageDir.mkdirs()) {
-                System.out.println("M-WRITE " + storageDir);
+                Logger.info("M-WRITE " + storageDir);
             }
         }
         this.storageDir = storageDir;

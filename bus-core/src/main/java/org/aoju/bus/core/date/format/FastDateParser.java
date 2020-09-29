@@ -47,11 +47,12 @@ import java.util.regex.Pattern;
  */
 public class FastDateParser extends AbstractFormater implements DateParser {
 
-    static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
-    private static final long serialVersionUID = -3199383897950947498L;
+    private static final long serialVersionUID = -1L;
+
+    private static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
     // 用来对正则表达式排序的比较器。('february' 在 'feb'之前)所有条目按区域设置必须是小写的
     private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
-    private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
+    private static final ConcurrentMap<Locale, Strategy>[] CACHES = new ConcurrentMap[Calendar.FIELD_COUNT];
     private static final Strategy ABBREVIATED_YEAR_STRATEGY = new NumberStrategy(Calendar.YEAR) {
         @Override
         int modify(final FastDateParser parser, final int iValue) {
@@ -204,11 +205,11 @@ public class FastDateParser extends AbstractFormater implements DateParser {
      * @return 区域设置到策略的缓存
      */
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
-        synchronized (caches) {
-            if (caches[field] == null) {
-                caches[field] = new ConcurrentHashMap<>(3);
+        synchronized (CACHES) {
+            if (CACHES[field] == null) {
+                CACHES[field] = new ConcurrentHashMap<>(3);
             }
-            return caches[field];
+            return CACHES[field];
         }
     }
 

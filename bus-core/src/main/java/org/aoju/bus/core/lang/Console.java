@@ -24,10 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
+import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.lang.System;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -39,6 +43,20 @@ import java.util.Scanner;
  * @since JDK 1.8+
  */
 public class Console {
+
+    /**
+     * 表格头信息
+     */
+    private final List<List<String>> headers = new ArrayList<>();
+    /**
+     * 表格体信息
+     */
+    private final List<List<String>> bodys = new ArrayList<>();
+    /**
+     * 每列最大字符个数
+     */
+    private List<Integer> maxChar;
+
 
     /**
      * 打印控制台日志,同System.out.println()方法
@@ -311,6 +329,109 @@ public class Console {
      */
     private static void errorInternal(String template, Object... values) {
         error(null, template, values);
+    }
+
+    /**
+     * 添加头信息
+     *
+     * @param columns 列名
+     * @return 自身对象
+     */
+    public Console addHeader(String... columns) {
+        maxChar = new ArrayList<>(Collections.nCopies(columns.length, 0));
+        List<String> l = new ArrayList<>();
+        headers.add(l);
+        for (int i = 0; i < columns.length; i++) {
+            String column = columns[i];
+            String col = Convert.toSBC(column);
+            l.add(col);
+            int width = col.length();
+            maxChar.set(i, width);
+        }
+        return this;
+    }
+
+    /**
+     * 添加体信息
+     *
+     * @param values 列值
+     * @return 自身对象
+     */
+    public Console addBody(String... values) {
+        List<String> l = new ArrayList<>();
+        bodys.add(l);
+        for (int i = 0; i < values.length; i++) {
+            String value = values[i];
+            String val = Convert.toSBC(value);
+            l.add(val);
+            int width = val.length();
+            if (width > maxChar.get(i)) {
+                maxChar.set(i, width);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 获取表格字符串
+     *
+     * @return 表格字符串
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        border(sb);
+        for (List<String> headers : headers) {
+            for (int i = 0; i < headers.size(); i++) {
+                if (i == 0) {
+                    sb.append(Symbol.C_OR);
+                }
+                String header = headers.get(i);
+                sb.append(Convert.toSBC(Symbol.SPACE));
+                sb.append(header);
+                sb.append(Convert.toSBC(Symbol.SPACE));
+                int l = header.length();
+                int lw = maxChar.get(i);
+                if (lw > l) {
+                    for (int j = 0; j < (lw - l); j++) {
+                        sb.append(Convert.toSBC(Symbol.SPACE));
+                    }
+                }
+                sb.append(Symbol.C_OR);
+            }
+            sb.append(Symbol.C_LF);
+        }
+        border(sb);
+        for (List<String> bodys : bodys) {
+            for (int i = 0; i < bodys.size(); i++) {
+                if (i == 0) {
+                    sb.append(Symbol.C_OR);
+                }
+                String body = bodys.get(i);
+                sb.append(Convert.toSBC(Symbol.SPACE));
+                sb.append(body);
+                sb.append(Convert.toSBC(Symbol.SPACE));
+                int l = body.length();
+                int lw = maxChar.get(i);
+                if (lw > l) {
+                    for (int j = 0; j < (lw - l); j++) {
+                        sb.append(Convert.toSBC(Symbol.SPACE));
+                    }
+                }
+                sb.append(Symbol.C_OR);
+            }
+            sb.append(Symbol.C_LF);
+        }
+        border(sb);
+        return sb.toString();
+    }
+
+    private void border(StringBuilder sb) {
+        sb.append(Symbol.STAR);
+        for (Integer width : maxChar) {
+            sb.append(Convert.toSBC(StringKit.fillAfter(Normal.EMPTY, Symbol.C_HYPHEN, width + 2)));
+            sb.append(Symbol.STAR);
+        }
+        sb.append(Symbol.C_LF);
     }
 
 }

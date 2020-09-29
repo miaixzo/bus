@@ -99,7 +99,7 @@ public class MultipartParser {
                 int k = start;
                 while (k < length) {
                     char c = header.charAt(k);
-                    if (c != Symbol.C_SPACE && c != '\t') {
+                    if (c != Symbol.C_SPACE && c != Symbol.C_HT) {
                         break;
                     }
                     ++k;
@@ -134,11 +134,11 @@ public class MultipartParser {
     private static int parseEOF(String header, int pos) {
         int index = pos;
         while (true) {
-            int k = header.indexOf('\r', index);
+            int k = header.indexOf(Symbol.C_CR, index);
             if (k == -1 || k + 1 >= header.length()) {
                 throw new IllegalStateException("No EOF found in headers");
             }
-            if (header.charAt(k + 1) == '\n') {
+            if (header.charAt(k + 1) == Symbol.C_LF) {
                 return k;
             }
             index = k + 1;
@@ -169,7 +169,7 @@ public class MultipartParser {
             if (ch1 == '-' && ch2 == '-')
                 break;
 
-            if (ch1 != '\r' || ch2 != '\n')
+            if (ch1 != Symbol.C_CR || ch2 != Symbol.C_LF)
                 throw new IOException("missing CR/LF after boundary");
 
             MultipartInputStream mis = new MultipartInputStream(in, "\r\n--" + boundary);
