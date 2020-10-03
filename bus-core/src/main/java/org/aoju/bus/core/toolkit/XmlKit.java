@@ -30,13 +30,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -62,6 +64,11 @@ import java.util.regex.Pattern;
  * @since JDK 1.8+
  */
 public class XmlKit {
+
+    /**
+     * Sax读取器工厂缓存
+     */
+    private static SAXParserFactory factory;
 
     /**
      * 读取解析XML文件
@@ -142,6 +149,86 @@ public class XmlKit {
             return builder.parse(source);
         } catch (Exception e) {
             throw new InstrumentException("Parse XML from stream error!");
+        }
+    }
+
+    /**
+     * 使用Sax方式读取指定的XML
+     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     *
+     * @param file           XML源文件,使用后自动关闭
+     * @param contentHandler XML流处理器，用于按照Element处理xml
+     */
+    public static void readBySax(File file, ContentHandler contentHandler) {
+        InputStream in = null;
+        try {
+            in = FileKit.getInputStream(file);
+            readBySax(new InputSource(in), contentHandler);
+        } finally {
+            IoKit.close(in);
+        }
+    }
+
+    /**
+     * 使用Sax方式读取指定的XML
+     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     *
+     * @param reader         XML源Reader,使用后自动关闭
+     * @param contentHandler XML流处理器，用于按照Element处理xml
+     */
+    public static void readBySax(Reader reader, ContentHandler contentHandler) {
+        try {
+            readBySax(new InputSource(reader), contentHandler);
+        } finally {
+            IoKit.close(reader);
+        }
+    }
+
+    /**
+     * 使用Sax方式读取指定的XML
+     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     *
+     * @param source         XML源流,使用后自动关闭
+     * @param contentHandler XML流处理器，用于按照Element处理xml
+     */
+    public static void readBySax(InputStream source, ContentHandler contentHandler) {
+        try {
+            readBySax(new InputSource(source), contentHandler);
+        } finally {
+            IoKit.close(source);
+        }
+    }
+
+    /**
+     * 使用Sax方式读取指定的XML
+     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     *
+     * @param source         XML源，可以是文件、流、路径等
+     * @param contentHandler XML流处理器，用于按照Element处理xml
+     */
+    public static void readBySax(InputSource source, ContentHandler contentHandler) {
+        // 1.获取解析工厂
+        if (null == factory) {
+            factory = SAXParserFactory.newInstance();
+            factory.setValidating(false);
+            factory.setNamespaceAware(true);
+        }
+        // 2.从解析工厂获取解析器
+        final SAXParser parse;
+        XMLReader reader;
+        try {
+            parse = factory.newSAXParser();
+            if (contentHandler instanceof DefaultHandler) {
+                parse.parse(source, (DefaultHandler) contentHandler);
+                return;
+            }
+
+            // 3.得到解读器
+            reader = parse.getXMLReader();
+            reader.setContentHandler(contentHandler);
+            reader.parse(source);
+        } catch (IOException | ParserConfigurationException | SAXException e) {
+            throw new InstrumentException(e);
         }
     }
 

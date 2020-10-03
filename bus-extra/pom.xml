@@ -26,8 +26,8 @@
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <jsch.version>0.1.54</jsch.version>
-        <zxing.version>3.4.0</zxing.version>
-        <net.version>3.6</net.version>
+        <zxing.version>3.4.1</zxing.version>
+        <net.version>3.7</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
         <compress.vetsion>1.19</compress.vetsion>
         <lzo.version>1.0.6</lzo.version>

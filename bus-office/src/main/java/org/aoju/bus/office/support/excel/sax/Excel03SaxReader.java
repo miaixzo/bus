@@ -53,19 +53,18 @@ import java.util.List;
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> implements HSSFListener {
+public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03SaxReader> {
 
     /**
      * 如果为公式,true表示输出公式计算后的结果值,false表示输出公式本身
      */
     private final boolean isOutputFormulaValues = true;
     /**
-     * Sheet边界记录,此Record中可以获得Sheet名
+     * Sheet边界记录，此Record中可以获得Sheet名
      */
     private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
-    // 存储行记录的容器
-    private final List<Object> rowCellList = new ArrayList<>();
     private final RowHandler rowHandler;
+
     /**
      * 用于解析公式
      */
@@ -88,6 +87,10 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
      * 当前表索引
      */
     private int curRid = -1;
+    /**
+     * 存储行记录的容器
+     */
+    private List<Object> rowCellList = new ArrayList<>();
 
     /**
      * 构造
@@ -99,18 +102,18 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     }
 
     @Override
-    public Excel03SaxReader read(File file, int rid) throws InstrumentException {
+    public Excel03SaxReader read(File file, String idOrRid) throws InstrumentException {
         try {
-            return read(new POIFSFileSystem(file), rid);
+            return read(new POIFSFileSystem(file), idOrRid);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
     }
 
     @Override
-    public Excel03SaxReader read(InputStream excelStream, int rid) throws InstrumentException {
+    public Excel03SaxReader read(InputStream excelStream, String idOrRid) throws InstrumentException {
         try {
-            return read(new POIFSFileSystem(excelStream), rid);
+            return read(new POIFSFileSystem(excelStream), idOrRid);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -119,13 +122,13 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
     /**
      * 读取
      *
-     * @param fs  {@link POIFSFileSystem}
-     * @param rid sheet序号
+     * @param fs {@link POIFSFileSystem}
+     * @param id sheet序号
      * @return this
      * @throws InstrumentException IO异常包装
      */
-    public Excel03SaxReader read(POIFSFileSystem fs, int rid) throws InstrumentException {
-        this.rid = rid;
+    public Excel03SaxReader read(POIFSFileSystem fs, String id) throws InstrumentException {
+        this.rid = Integer.parseInt(id);
 
         formatListener = new FormatTrackingHSSFListener(new MissingRecordAwareHSSFListener(this));
         final HSSFRequest request = new HSSFRequest();
@@ -339,7 +342,14 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
         // 每行结束时, 调用handle() 方法
         this.rowHandler.handle(curRid, lastCell.getRow(), this.rowCellList);
         // 清空行Cache
-        this.rowCellList.clear();
+        this.rowCellList = new ArrayList<>(this.rowCellList.size());
+    }
+
+    /**
+     * 处理sheet结束后的操作
+     */
+    private void processLastCellSheet() {
+        this.rowHandler.doAfterAllAnalysed();
     }
 
     /**
@@ -349,13 +359,6 @@ public class Excel03SaxReader extends AbstractExcelSaxReader<Excel03SaxReader> i
      */
     private boolean isProcessCurrentSheet() {
         return this.rid < 0 || this.curRid == this.rid;
-    }
-
-    /**
-     * 处理sheet结束后的操作
-     */
-    private void processLastCellSheet() {
-        this.rowHandler.doAfterAllAnalysed();
     }
 
 }

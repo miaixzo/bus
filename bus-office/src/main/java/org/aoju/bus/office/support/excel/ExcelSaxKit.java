@@ -30,9 +30,9 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.office.support.excel.sax.CellDataType;
-import org.apache.poi.ooxml.util.SAXHelper;
+import org.aoju.bus.office.support.excel.sax.*;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.util.XMLHelper;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.xml.sax.ContentHandler;
@@ -164,6 +164,24 @@ public class ExcelSaxKit {
     }
 
     /**
+     * 从Excel的XML文档中读取内容，并使用{@link ContentHandler}处理
+     *
+     * @param xmlDocStream Excel的XML文档流
+     * @param handler      文档内容处理接口，实现此接口用于回调处理数据
+     * @throws InstrumentException POI异常，包装了SAXException
+     */
+    public static void readFrom(InputStream xmlDocStream, ContentHandler handler) throws InstrumentException {
+        XMLReader xmlReader;
+        try {
+            xmlReader = XMLHelper.newXMLReader();
+            xmlReader.setContentHandler(handler);
+            xmlReader.parse(new InputSource(xmlDocStream));
+        } catch (SAXException | ParserConfigurationException | IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
      * 获取日期
      *
      * @param value 单元格值
@@ -184,6 +202,19 @@ public class ExcelSaxKit {
     }
 
     /**
+     * 创建 {@link ExcelSaxReader}
+     *
+     * @param isXlsx     是否为xlsx格式（07格式）
+     * @param rowHandler 行处理器
+     * @return {@link ExcelSaxReader}
+     */
+    public static ExcelSaxReader<?> createSaxReader(boolean isXlsx, RowHandler rowHandler) {
+        return isXlsx
+                ? new Excel07SaxReader(rowHandler)
+                : new Excel03SaxReader(rowHandler);
+    }
+
+    /**
      * 获取数字类型值
      *
      * @param value        值
@@ -201,34 +232,6 @@ public class ExcelSaxKit {
             // 对于无小数部分的数字类型,转为Long
         }
         return numValue;
-    }
-
-    /**
-     * 从Excel的XML文档中读取内容，并使用{@link ContentHandler}处理
-     *
-     * @param xmlDocStream Excel的XML文档流
-     * @param handler      文档内容处理接口，实现此接口用于回调处理数据
-     * @throws InstrumentException POI异常，包装了SAXException
-     */
-    public static void readFrom(InputStream xmlDocStream, ContentHandler handler) {
-        XMLReader xmlReader;
-        try {
-            xmlReader = SAXHelper.newXMLReader();
-        } catch (SAXException | ParserConfigurationException e) {
-            if (e.getMessage().contains("org.apache.xerces.parsers.SAXParser")) {
-                throw new InstrumentException("You need to add 'xerces:xercesImpl' to your project and version >= 2.11.0");
-            } else {
-                throw new InstrumentException(e);
-            }
-        }
-        xmlReader.setContentHandler(handler);
-        try {
-            xmlReader.parse(new InputSource(xmlDocStream));
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        } catch (SAXException e) {
-            throw new InstrumentException(e);
-        }
     }
 
 }
