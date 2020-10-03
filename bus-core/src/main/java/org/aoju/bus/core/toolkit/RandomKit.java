@@ -473,7 +473,7 @@ public class RandomKit {
      */
     public static Color randomColor() {
         final Random random = getRandom();
-        return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
     /**

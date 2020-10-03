@@ -75,7 +75,7 @@ public class ExecCmd {
 
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
-                sb.append("\n");
+                sb.append(Symbol.LF);
             }
 
             bufferedReader.close();
@@ -122,7 +122,7 @@ public class ExecCmd {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
-                sb.append("\n");
+                sb.append(Symbol.LF);
             }
             bufferedReader.close();
             p.destroy();

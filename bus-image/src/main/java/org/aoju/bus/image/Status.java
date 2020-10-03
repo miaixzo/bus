@@ -313,7 +313,7 @@ public class Status {
             if (StringKit.hasText(error)) {
                 hasFailed = true;
                 if (msg.length() > 0) {
-                    msg.append("\n");
+                    msg.append(Symbol.LF);
                 }
                 msg.append("DICOM error : ");
                 msg.append(error);
@@ -321,7 +321,7 @@ public class Status {
 
             if (!Status.isPending(s) && s != -1 && s != Status.Success && s != Status.Cancel) {
                 if (msg.length() > 0) {
-                    msg.append("\n");
+                    msg.append(Symbol.LF);
                 }
                 msg.append("DICOM status : ");
                 msg.append(s);

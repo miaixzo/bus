@@ -26,6 +26,7 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.core.lang.Normal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -164,7 +165,7 @@ public final class AccessToken {
             StringBuilder formData = new StringBuilder();
             addFormData(formData, "authenticity_token", csrfToken);
             addFormData(formData, "personal_access_token[name]", tokenName);
-            addFormData(formData, "personal_access_token[expires_at]", "");
+            addFormData(formData, "personal_access_token[expires_at]", Normal.EMPTY);
 
             if (scopes != null && scopes.size() > 0) {
                 for (Scope scope : scopes) {
@@ -317,7 +318,7 @@ public final class AccessToken {
             }
 
             content = content.substring(0, indexOfLinkEnd);
-            String scopesText = "";
+            String scopesText = Normal.EMPTY;
             if (scopes != null && scopes.size() > 0) {
                 final StringJoiner joiner = new StringJoiner(", ");
                 scopes.forEach(s -> joiner.add(s.toString()));

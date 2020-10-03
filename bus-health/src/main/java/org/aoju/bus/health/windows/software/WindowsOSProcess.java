@@ -95,7 +95,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         if (pid == os.getProcessId()) {
             String cwd = new File(".").getAbsolutePath();
             // trim off trailing "."
-            this.currentWorkingDirectory = cwd.isEmpty() ? "" : cwd.substring(0, cwd.length() - 1);
+            this.currentWorkingDirectory = cwd.isEmpty() ? Normal.EMPTY : cwd.substring(0, cwd.length() - 1);
         }
         // There is no easy way to get ExecutuionState for a process.
         // The WMI value is null. It's possible to get thread Execution

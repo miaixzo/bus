@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.extra.pinyin;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -73,7 +74,7 @@ public interface PinyinProvider {
     default String getFirstLetter(String str, String separator) {
         final String splitSeparator = StringKit.isEmpty(separator) ? "#" : separator;
         final String[] split = StringKit.split(getPinyin(str, splitSeparator), splitSeparator);
-        return ArrayKit.join(split, separator, (s) -> String.valueOf(s.length() > 0 ? s.charAt(0) : ""));
+        return ArrayKit.join(split, separator, (s) -> String.valueOf(s.length() > 0 ? s.charAt(0) : Normal.EMPTY));
     }
 
 }

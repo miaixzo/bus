@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.web;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.HookManager;
 import org.aoju.bus.gitlab.JacksonJson;
@@ -166,7 +167,7 @@ public class WebHookManager implements HookManager {
                 String postData = getPostDataAsString(request);
                 LOGGER.fine("Raw POST data:\n" + postData);
                 event = jacksonJson.unmarshal(Event.class, postData);
-                LOGGER.fine(event.getObjectKind() + " event:\n" + jacksonJson.marshal(event) + "\n");
+                LOGGER.fine(event.getObjectKind() + " event:" + Symbol.LF + jacksonJson.marshal(event) + Symbol.LF);
             } else {
                 InputStreamReader reader = new InputStreamReader(request.getInputStream());
                 event = jacksonJson.unmarshal(Event.class, reader);

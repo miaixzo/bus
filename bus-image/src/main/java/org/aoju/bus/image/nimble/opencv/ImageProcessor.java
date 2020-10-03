@@ -467,7 +467,6 @@ public class ImageProcessor {
         if (matrix == null) {
             return (ImageCV) source;
         }
-        // System.out.println(matrix.dump());
         Mat srcImg = Objects.requireNonNull(source);
         ImageCV dstImg = new ImageCV();
 

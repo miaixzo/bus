@@ -1838,7 +1838,7 @@ public class ImageKit {
         if (null == random) {
             random = RandomKit.getRandom();
         }
-        return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+        return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
 }

@@ -25,6 +25,7 @@
 package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.FileKit;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,14 +39,37 @@ import java.io.InputStream;
  * @since JDK 1.8+
  */
 public interface ExcelSaxReader<T> {
+
     /**
-     * 开始读取Excel,读取所有sheet
+     * 开始读取Excel
+     *
+     * @param file    Excel文件
+     * @param idOrRid Excel中的sheet id或者rid编号，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
+     * @return this
+     * @throws InstrumentException POI异常
+     */
+    T read(File file, String idOrRid) throws InstrumentException;
+
+    /**
+     * 开始读取Excel，读取结束后并不关闭流
+     *
+     * @param in      Excel流
+     * @param idOrRid Excel中的sheet id或者rid编号，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
+     * @return this
+     * @throws InstrumentException POI异常
+     */
+    T read(InputStream in, String idOrRid) throws InstrumentException;
+
+    /**
+     * 开始读取Excel，读取所有sheet
      *
      * @param path Excel文件路径
      * @return this
      * @throws InstrumentException POI异常
      */
-    T read(String path) throws InstrumentException;
+    default T read(String path) throws InstrumentException {
+        return read(FileKit.file(path));
+    }
 
     /**
      * 开始读取Excel,读取所有sheet
@@ -54,7 +78,9 @@ public interface ExcelSaxReader<T> {
      * @return this
      * @throws InstrumentException POI异常
      */
-    T read(File file) throws InstrumentException;
+    default T read(File file) throws InstrumentException {
+        return read(file, -1);
+    }
 
     /**
      * 开始读取Excel,读取所有sheet,读取结束后并不关闭流
@@ -63,7 +89,21 @@ public interface ExcelSaxReader<T> {
      * @return this
      * @throws InstrumentException POI异常
      */
-    T read(InputStream in) throws InstrumentException;
+    default T read(InputStream in) throws InstrumentException {
+        return read(in, -1);
+    }
+
+    /**
+     * 开始读取Excel
+     *
+     * @param path 文件路径
+     * @param rid  Excel中的sheet rid编号，如果为-1处理所有编号的sheet
+     * @return this
+     * @throws InstrumentException POI异常
+     */
+    default T read(String path, int rid) throws InstrumentException {
+        return read(FileKit.file(path), rid);
+    }
 
     /**
      * 开始读取Excel
@@ -73,7 +113,9 @@ public interface ExcelSaxReader<T> {
      * @return this
      * @throws InstrumentException POI异常
      */
-    T read(String path, int rid) throws InstrumentException;
+    default T read(String path, String rid) throws InstrumentException {
+        return read(FileKit.file(path), rid);
+    }
 
     /**
      * 开始读取Excel
@@ -83,7 +125,9 @@ public interface ExcelSaxReader<T> {
      * @return this
      * @throws InstrumentException POI异常
      */
-    T read(File file, int rid) throws InstrumentException;
+    default T read(File file, int rid) throws InstrumentException {
+        return read(file, String.valueOf(rid));
+    }
 
     /**
      * 开始读取Excel,读取结束后并不关闭流
@@ -93,6 +137,8 @@ public interface ExcelSaxReader<T> {
      * @return this
      * @throws InstrumentException POI异常
      */
-    T read(InputStream in, int rid) throws InstrumentException;
+    default T read(InputStream in, int rid) throws InstrumentException {
+        return read(in, String.valueOf(rid));
+    }
 
 }

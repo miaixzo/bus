@@ -22,42 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.office.support.excel.sax;
+package org.aoju.bus.office.support.excel.reader;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.FileKit;
-
-import java.io.File;
-import java.io.InputStream;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
- * 抽象的Sax方式Excel读取器,提供一些共用方法
+ * Excel {@link Sheet}读取接口，通过实现此接口，将{@link Sheet}中的数据读取为不同类型。
  *
- * @param <T> 子对象类型,用于标记返回值this
+ * @param <T> 读取的数据类型
  * @author Kimi Liu
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public abstract class AbstractExcelSaxReader<T> implements ExcelSaxReader<T> {
+@FunctionalInterface
+public interface SheetReader<T> {
 
-    @Override
-    public T read(String path) throws InstrumentException {
-        return read(FileKit.file(path));
-    }
-
-    @Override
-    public T read(File file) throws InstrumentException {
-        return read(file, -1);
-    }
-
-    @Override
-    public T read(InputStream in) throws InstrumentException {
-        return read(in, -1);
-    }
-
-    @Override
-    public T read(String path, int sheetIndex) throws InstrumentException {
-        return read(FileKit.file(path), sheetIndex);
-    }
+    /**
+     * 读取数据
+     *
+     * @param sheet {@link Sheet}
+     * @return 读取结果
+     */
+    T read(Sheet sheet);
 
 }

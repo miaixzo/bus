@@ -28,6 +28,8 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.aoju.bus.office.support.excel.cell.CellHandler;
+import org.aoju.bus.office.support.excel.reader.ListSheetReader;
+import org.aoju.bus.office.support.excel.reader.SheetReader;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.extractor.ExcelExtractor;
 import org.apache.poi.ss.usermodel.Cell;
@@ -275,6 +277,19 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
         return resultList;
     }
 
+
+    /**
+     * 读取数据为指定类型
+     *
+     * @param <T>         读取数据类型
+     * @param sheetReader {@link SheetReader}实现
+     * @return 数据读取结果
+     */
+    public <T> T read(SheetReader<T> sheetReader) {
+        checkNotClosed();
+        return Assert.notNull(sheetReader).read(this.sheet);
+    }
+
     /**
      * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口
      * 用户通过实现此接口，可以更加灵活的处理每个单元格的数据
@@ -283,6 +298,22 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      */
     public void read(CellHandler cellHandler) {
         read(0, Integer.MAX_VALUE, cellHandler);
+    }
+
+    /**
+     * 读取工作簿中指定的Sheet
+     *
+     * @param startRowIndex  起始行（包含，从0开始计数）
+     * @param endRowIndex    结束行（包含，从0开始计数）
+     * @param aliasFirstLine 是否首行作为标题行转换别名
+     * @return 行的集合，一行使用List表示
+     */
+    public List<List<Object>> read(int startRowIndex, int endRowIndex, boolean aliasFirstLine) {
+        final ListSheetReader reader = new ListSheetReader(startRowIndex, endRowIndex, aliasFirstLine);
+        reader.setCellEditor(this.cellEditor);
+        reader.setIgnoreEmptyRow(this.ignoreEmptyRow);
+        reader.setHeaderAlias(headerAlias);
+        return read(reader);
     }
 
     /**
@@ -310,16 +341,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
                 cellHandler.handle(cell, CellKit.getCellValue(cell));
             }
         }
-    }
-
-    /**
-     * 读取Excel为Map的列表,读取所有行,默认第一行做为标题,数据从第二行开始
-     * Map表示一行,标题为key,单元格内容为value
-     *
-     * @return Map的列表
-     */
-    public List<Map<String, Object>> readAll() {
-        return read(0, 1, Integer.MAX_VALUE);
     }
 
     /**
@@ -362,17 +383,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取Excel为Bean的列表,读取所有行,默认第一行做为标题,数据从第二行开始
-     *
-     * @param <T>      Bean类型
-     * @param beanType 每行对应Bean的类型
-     * @return Map的列表
-     */
-    public <T> List<T> readAll(Class<T> beanType) {
-        return read(0, 1, Integer.MAX_VALUE, beanType);
-    }
-
-    /**
      * 读取Excel为Bean的列表
      *
      * @param <T>            Bean类型
@@ -410,16 +420,24 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取为文本格式
-     * 使用{@link ExcelExtractor} 提取Excel内容
+     * 读取Excel为Map的列表,读取所有行,默认第一行做为标题,数据从第二行开始
+     * Map表示一行,标题为key,单元格内容为value
      *
-     * @param withSheetName 是否附带sheet名
-     * @return Excel文本
+     * @return Map的列表
      */
-    public String readAsText(boolean withSheetName) {
-        final ExcelExtractor extractor = getExtractor();
-        extractor.setIncludeSheetNames(withSheetName);
-        return extractor.getText();
+    public List<Map<String, Object>> readAll() {
+        return read(0, 1, Integer.MAX_VALUE);
+    }
+
+    /**
+     * 读取Excel为Bean的列表,读取所有行,默认第一行做为标题,数据从第二行开始
+     *
+     * @param <T>      Bean类型
+     * @param beanType 每行对应Bean的类型
+     * @return Map的列表
+     */
+    public <T> List<T> readAll(Class<T> beanType) {
+        return read(0, 1, Integer.MAX_VALUE, beanType);
     }
 
     /**
@@ -427,15 +445,28 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      *
      * @return {@link ExcelExtractor}
      */
-    public ExcelExtractor getExtractor() {
+    public ExcelExtractor getExtractor(Workbook wb) {
         ExcelExtractor extractor;
-        Workbook wb = this.workbook;
         if (wb instanceof HSSFWorkbook) {
             extractor = new org.apache.poi.hssf.extractor.ExcelExtractor((HSSFWorkbook) wb);
         } else {
             extractor = new XSSFExcelExtractor((XSSFWorkbook) wb);
         }
         return extractor;
+    }
+
+    /**
+     * 读取为文本格式
+     * 使用{@link ExcelExtractor} 提取Excel内容
+     *
+     * @param wb            {@link Workbook}
+     * @param withSheetName 是否附带sheet名
+     * @return Excel文本
+     */
+    public String readAsText(Workbook wb, boolean withSheetName) {
+        final ExcelExtractor extractor = getExtractor(wb);
+        extractor.setIncludeSheetNames(withSheetName);
+        return extractor.getText();
     }
 
     /**

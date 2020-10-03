@@ -34,6 +34,7 @@ import org.aoju.bus.core.lang.Normal;
  * @since JDK 1.8+
  */
 public enum CellDataType {
+
     /**
      * Boolean类型
      */
@@ -70,7 +71,7 @@ public enum CellDataType {
     /**
      * 属性值
      */
-    private String name;
+    private final String name;
 
     /**
      * 构造

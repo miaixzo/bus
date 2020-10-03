@@ -60,9 +60,9 @@ public class BeanPath implements Serializable {
     /**
      * 表达式边界符号数组
      */
-    private static final char[] expChars = {Symbol.C_DOT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT};
+    private static final char[] EXP_CHARS = {Symbol.C_DOT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT};
     protected List<String> patternParts;
-    private boolean isStartWith$ = false;
+    private boolean isStartWith = false;
 
     /**
      * 构造
@@ -230,7 +230,7 @@ public class BeanPath implements Serializable {
             subBean = getFieldValue(subBean, patternPart);
             if (null == subBean) {
                 // 支持表达式的第一个对象为Bean本身(若用户定义表达式$开头,则不做此操作)
-                if (isFirst && false == this.isStartWith$ && BeanKit.isMatchName(bean, patternPart, true)) {
+                if (isFirst && false == this.isStartWith && BeanKit.isMatchName(bean, patternPart, true)) {
                     subBean = bean;
                     isFirst = false;
                 } else {
@@ -257,11 +257,11 @@ public class BeanPath implements Serializable {
             c = expression.charAt(i);
             if (0 == i && Symbol.C_DOLLAR == c) {
                 // 忽略开头的$符,表示当前对象
-                isStartWith$ = true;
+                isStartWith = true;
                 continue;
             }
 
-            if (ArrayKit.contains(expChars, c)) {
+            if (ArrayKit.contains(EXP_CHARS, c)) {
                 // 处理边界符号
                 if (Symbol.C_BRACKET_RIGHT == c) {
                     // 中括号(数字下标)结束

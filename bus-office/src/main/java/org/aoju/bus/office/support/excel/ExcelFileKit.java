@@ -25,9 +25,10 @@
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.apache.poi.poifs.filesystem.FileMagic;
 
-import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -64,11 +65,23 @@ public class ExcelFileKit {
      * @return 是否为XLSX格式的Excel文件(XSSF)
      */
     public static boolean isXlsx(InputStream in) {
-        if (false == in.markSupported()) {
-            in = new BufferedInputStream(in);
-        }
         try {
-            return FileMagic.valueOf(in) == FileMagic.OOXML;
+            return FileMagic.valueOf(IoKit.toMarkSupportStream(in)) == FileMagic.OOXML;
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 是否为XLSX格式的Excel文件（XSSF）
+     * XLSX文件主要用于Excel 2007+创建
+     *
+     * @param file excel文件
+     * @return 是否为XLSX格式的Excel文件（XSSF）
+     */
+    public static boolean isXlsx(File file) {
+        try {
+            return FileMagic.valueOf(file) == FileMagic.OOXML;
         } catch (IOException e) {
             throw new InstrumentException(e);
         }

@@ -25,8 +25,15 @@
 package org.aoju.bus.sensitive;
 
 import org.aoju.bus.core.instance.Instances;
+import org.aoju.bus.core.lang.Filter;
+import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ThreadKit;
+import org.aoju.bus.extra.json.JsonKit;
 
 import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 脱敏策略工具类
@@ -69,10 +76,9 @@ public final class Builder {
      * 不做任何处理
      */
     public static final String OVERALL = "OVERALL";
+    private static final WordTree sensitiveTree = new WordTree();
 
     /**
-     * 脱敏对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -85,8 +91,6 @@ public final class Builder {
     }
 
     /**
-     * 脱敏对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -100,8 +104,6 @@ public final class Builder {
     }
 
     /**
-     * 脱敏对象
-     * <p>
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -115,8 +117,17 @@ public final class Builder {
     }
 
     /**
-     * 脱敏对象
-     * <p>
+     * 返回脱敏后的对象 json
+     * null 对象,返回字符串 "null"
+     *
+     * @param object 对象
+     * @return 结果 json
+     */
+    public static String json(Object object) {
+        return Instances.singletion(Provider.class).json(object, null);
+    }
+
+    /**
      * 每次都创建一个新的对象,避免线程问题
      * 可以使用 {@link ThreadLocal} 简单优化
      *
@@ -131,14 +142,160 @@ public final class Builder {
     }
 
     /**
-     * 返回脱敏后的对象 json
-     * null 对象,返回字符串 "null"
-     *
-     * @param object 对象
-     * @return 结果 json
+     * @return 是否已经被初始化
      */
-    public static String json(Object object) {
-        return Instances.singletion(Provider.class).json(object, null);
+    public static boolean isInited() {
+        return !sensitiveTree.isEmpty();
+    }
+
+    /**
+     * 初始化敏感词树
+     *
+     * @param isAsync        是否异步初始化
+     * @param sensitiveWords 敏感词列表
+     */
+    public static void init(final Collection<String> sensitiveWords, boolean isAsync) {
+        if (isAsync) {
+            ThreadKit.execAsync(() -> {
+                init(sensitiveWords);
+                return true;
+            });
+        } else {
+            init(sensitiveWords);
+        }
+    }
+
+    /**
+     * 初始化敏感词树
+     *
+     * @param sensitiveWords 敏感词列表
+     */
+    public static void init(Collection<String> sensitiveWords) {
+        sensitiveTree.clear();
+        sensitiveTree.addWords(sensitiveWords);
+    }
+
+    /**
+     * 初始化敏感词树
+     *
+     * @param sensitiveWords 敏感词列表组成的字符串
+     * @param isAsync        是否异步初始化
+     * @param separator      分隔符
+     */
+    public static void init(String sensitiveWords, char separator, boolean isAsync) {
+        if (StringKit.isNotBlank(sensitiveWords)) {
+            init(StringKit.split(sensitiveWords, separator), isAsync);
+        }
+    }
+
+    /**
+     * 初始化敏感词树，使用逗号分隔每个单词
+     *
+     * @param sensitiveWords 敏感词列表组成的字符串
+     * @param isAsync        是否异步初始化
+     */
+    public static void init(String sensitiveWords, boolean isAsync) {
+        init(sensitiveWords, Symbol.C_COMMA, isAsync);
+    }
+
+    /**
+     * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符
+     * 当accept为false时，此字符不参与匹配
+     *
+     * @param charFilter 过滤函数
+     */
+    public static void setCharFilter(Filter<Character> charFilter) {
+        if (charFilter != null) {
+            sensitiveTree.setCharFilter(charFilter);
+        }
+    }
+
+    /**
+     * 是否包含敏感词
+     *
+     * @param text 文本
+     * @return 是否包含
+     */
+    public static boolean containsSensitive(String text) {
+        return sensitiveTree.isMatch(text);
+    }
+
+    /**
+     * 是否包含敏感词
+     *
+     * @param obj bean，会被转为JSON字符串
+     * @return 是否包含
+     */
+    public static boolean containsSensitive(Object obj) {
+        return sensitiveTree.isMatch(JsonKit.toJsonString(obj));
+    }
+
+    /**
+     * 查找敏感词，返回找到的第一个敏感词
+     *
+     * @param text 文本
+     * @return 敏感词
+     */
+    public static String getFindedFirstSensitive(String text) {
+        return sensitiveTree.match(text);
+    }
+
+    /**
+     * 查找敏感词，返回找到的第一个敏感词
+     *
+     * @param obj bean，会被转为JSON字符串
+     * @return 敏感词
+     */
+    public static String getFindedFirstSensitive(Object obj) {
+        return sensitiveTree.match(JsonKit.toJsonString(obj));
+    }
+
+    /**
+     * 查找敏感词，返回找到的所有敏感词
+     *
+     * @param text 文本
+     * @return 敏感词
+     */
+    public static List<String> getFindedAllSensitive(String text) {
+        return sensitiveTree.matchAll(text);
+    }
+
+    /**
+     * 查找敏感词，返回找到的所有敏感词
+     * 密集匹配原则：假如关键词有 ab,b，文本是abab，将匹配 [ab,b,ab]
+     * 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
+     *
+     * @param text           文本
+     * @param isDensityMatch 是否使用密集匹配原则
+     * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
+     * @return 敏感词
+     */
+    public static List<String> getFindedAllSensitive(String text, boolean isDensityMatch, boolean isGreedMatch) {
+        return sensitiveTree.matchAll(text, -1, isDensityMatch, isGreedMatch);
+    }
+
+    /**
+     * 查找敏感词，返回找到的所有敏感词
+     *
+     * @param bean 对象，会被转为JSON
+     * @return 敏感词
+     */
+    public static List<String> getFindedAllSensitive(Object bean) {
+        return sensitiveTree.matchAll(JsonKit.toJsonString(bean));
+    }
+
+    /**
+     * 查找敏感词，返回找到的所有敏感词
+     * 密集匹配原则：假如关键词有 ab,b，文本是abab，将匹配 [ab,b,ab]
+     * 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
+     *
+     * @param bean           对象，会被转为JSON
+     * @param isDensityMatch 是否使用密集匹配原则
+     * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
+     * @return 敏感词
+     */
+    public static List<String> getFindedAllSensitive(Object bean, boolean isDensityMatch, boolean isGreedMatch) {
+        return getFindedAllSensitive(JsonKit.toJsonString(bean), isDensityMatch, isGreedMatch);
     }
 
     public enum Mode {

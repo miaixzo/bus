@@ -25,6 +25,7 @@
 package org.aoju.bus.cron.listener;
 
 import org.aoju.bus.cron.TaskExecutor;
+import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ import java.util.List;
  */
 public class TaskListenerManager {
 
-    private List<TaskListener> listeners = new ArrayList<>();
+    private final List<TaskListener> listeners = new ArrayList<>();
 
     /**
      * 增加监听器
@@ -73,10 +74,10 @@ public class TaskListenerManager {
      */
     public void notifyTaskStart(TaskExecutor executor) {
         synchronized (listeners) {
-            int size = listeners.size();
-            for (int i = 0; i < size; i++) {
-                TaskListener listenerl = listeners.get(i);
-                listenerl.onStart(executor);
+            for (TaskListener listener : listeners) {
+                if (null != listener) {
+                    listener.onStart(executor);
+                }
             }
         }
     }
@@ -88,10 +89,8 @@ public class TaskListenerManager {
      */
     public void notifyTaskSucceeded(TaskExecutor executor) {
         synchronized (listeners) {
-            int size = listeners.size();
-            for (int i = 0; i < size; i++) {
-                TaskListener listenerl = listeners.get(i);
-                listenerl.onSucceeded(executor);
+            for (TaskListener listener : listeners) {
+                listener.onSucceeded(executor);
             }
         }
     }
@@ -107,10 +106,11 @@ public class TaskListenerManager {
         synchronized (listeners) {
             int size = listeners.size();
             if (size > 0) {
-                for (int i = 0; i < size; i++) {
-                    TaskListener listenerl = listeners.get(i);
-                    listenerl.onFailed(executor, exception);
+                for (TaskListener listener : listeners) {
+                    listener.onFailed(executor, exception);
                 }
+            } else {
+                Logger.error(exception, exception.getMessage());
             }
         }
     }

@@ -124,7 +124,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
 
     @Override
     public String toString() {
-        return toString('\r');
+        return toString(Symbol.C_CR);
     }
 
     public String toString(char segdelim) {
