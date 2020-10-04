@@ -78,7 +78,6 @@ public class Lang {
 
     /**
      * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
-     * <p>
      * 如果是 InvocationTargetException，那么将其剥离，只包裹其 TargetException
      *
      * @param e 抛出对象

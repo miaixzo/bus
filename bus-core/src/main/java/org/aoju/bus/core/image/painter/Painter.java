@@ -22,58 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
  ********************************************************************************/
-package org.aoju.bus.core.image;
+package org.aoju.bus.core.image.painter;
 
-import java.awt.Image;
+import org.aoju.bus.core.image.element.AbstractElement;
+
+import java.awt.*;
 
 /**
- * 图片缩略算法类型
- *
  * @author Kimi Liu
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public enum ScaleType {
+public interface Painter {
 
-    /**
-     * 默认
-     */
-    DEFAULT(Image.SCALE_DEFAULT),
-    /**
-     * 快速
-     */
-    FAST(Image.SCALE_FAST),
-    /**
-     * 平滑
-     */
-    SMOOTH(Image.SCALE_SMOOTH),
-    /**
-     * 使用 ReplicateScaleFilter 类中包含的图像缩放算法
-     */
-    REPLICATE(Image.SCALE_REPLICATE),
-    /**
-     * Area Averaging算法
-     */
-    AREA_AVERAGING(Image.SCALE_AREA_AVERAGING);
-
-    private final int value;
-
-    /**
-     * 构造
-     *
-     * @param value 缩放方式
-     * @see Image#SCALE_DEFAULT
-     * @see Image#SCALE_FAST
-     * @see Image#SCALE_SMOOTH
-     * @see Image#SCALE_REPLICATE
-     * @see Image#SCALE_AREA_AVERAGING
-     */
-    ScaleType(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return this.value;
-    }
+    void draw(Graphics2D g, AbstractElement element, int canvasWidth) throws Exception;
 
 }

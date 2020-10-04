@@ -31,7 +31,7 @@
 
 - 定义接口：
 
-```
+```java
 @Api(name = "goods.get")
 public Goods getGoods(GoodsParam param) {
     Goods goods = new Goods();
@@ -44,7 +44,7 @@ public Goods getGoods(GoodsParam param) {
 
 - 请求数据：
 
-```
+```json
 {
   "name": "goods.get",
   "version": "",
@@ -58,7 +58,7 @@ public Goods getGoods(GoodsParam param) {
 
 - 返回结果：
 
-```
+```json
 {
     "code":"0",
     "data":{
@@ -68,7 +68,6 @@ public Goods getGoods(GoodsParam param) {
     }
 }
 ```
-
 
 
 - **@ApiVersion**

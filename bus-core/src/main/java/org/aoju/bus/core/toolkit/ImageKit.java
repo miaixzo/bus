@@ -1841,4 +1841,26 @@ public class ImageKit {
         return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 
+    /**
+     * 图片合成
+     *
+     * @param srcImage 背景图片对象（画布以背景图宽高为基准）
+     * @param fileType 输出图片格式
+     * @return {@link Image}
+     */
+    public static Image merge(BufferedImage srcImage, String fileType) {
+        return Image.from(srcImage, null, fileType);
+    }
+
+    /**
+     * 图片合成
+     *
+     * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
+     * @param fileType 输出图片格式
+     * @return {@link Image}
+     */
+    public static Image merge(String imageUrl, String fileType) {
+        return Image.from(null, imageUrl, fileType);
+    }
+
 }

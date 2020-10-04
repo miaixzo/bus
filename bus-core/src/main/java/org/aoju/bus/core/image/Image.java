@@ -24,9 +24,16 @@
  ********************************************************************************/
 package org.aoju.bus.core.image;
 
+import org.aoju.bus.core.image.element.AbstractElement;
+import org.aoju.bus.core.image.element.ImageElement;
+import org.aoju.bus.core.image.element.TextElement;
+import org.aoju.bus.core.image.painter.Painter;
+import org.aoju.bus.core.image.painter.PainterFactory;
+import org.aoju.bus.core.image.painter.TextPainter;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
+import org.aoju.bus.core.lang.Scale;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 
@@ -39,12 +46,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.*;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 图像编辑器
@@ -57,7 +63,10 @@ public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final BufferedImage srcImage;
+    /**
+     * 待绘制的元素集合
+     */
+    private final List<AbstractElement> list = new ArrayList<>();
     private java.awt.Image targetImage;
     /**
      * 目标图片文件格式,用于写出
@@ -71,6 +80,19 @@ public class Image implements Serializable {
      * 图片输出质量,用于压缩
      */
     private float quality = -1;
+    private BufferedImage srcImage;
+    /**
+     * 画布宽度
+     */
+    private int canvasWidth;
+    /**
+     * 画布高度
+     */
+    private int canvasHeight;
+    /**
+     * 输出图片格式
+     */
+    private String fileType;
 
     /**
      * 构造
@@ -101,6 +123,32 @@ public class Image implements Serializable {
             }
         }
         this.targetImageType = imageType;
+    }
+
+    /**
+     * 构造:图片合成专用
+     *
+     * @param srcImage 背景图片对象（画布以背景图宽高为基准）
+     * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
+     * @param fileType 输出图片格式
+     */
+    public Image(BufferedImage srcImage, String imageUrl, String fileType) {
+        ImageElement imageElement;
+        if (StringKit.isNotEmpty(imageUrl)) {
+            imageElement = new ImageElement(imageUrl, 0, 0);
+            try {
+                this.canvasWidth = imageElement.getImage().getWidth();
+                this.canvasHeight = imageElement.getImage().getHeight();
+            } catch (Exception e) {
+                throw new InstrumentException(e.getMessage());
+            }
+        } else {
+            imageElement = new ImageElement(srcImage, 0, 0);
+            this.canvasWidth = imageElement.getWidth();
+            this.canvasHeight = imageElement.getHeight();
+        }
+        this.list.add(imageElement);
+        this.fileType = fileType;
     }
 
     /**
@@ -171,6 +219,18 @@ public class Image implements Serializable {
      */
     public static Image from(java.awt.Image image) {
         return new Image(ImageKit.toBufferedImage(image));
+    }
+
+    /**
+     * 图片合成专用-读取图片
+     *
+     * @param srcImage 背景图片对象（画布以背景图宽高为基准）
+     * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
+     * @param fileType 输出图片格式
+     * @return {@link Image}
+     */
+    public static Image from(BufferedImage srcImage, String imageUrl, String fileType) {
+        return new Image(srcImage, imageUrl, fileType);
     }
 
     /**
@@ -742,6 +802,205 @@ public class Image implements Serializable {
         this.targetImage = image;
 
         return this;
+    }
+
+    /**
+     * 合成图片，返回图片对象
+     *
+     * @return {@link BufferedImage}
+     * @throws Exception 异常
+     */
+    public BufferedImage merge() throws Exception {
+        this.srcImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = this.srcImage.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        for (AbstractElement element : this.list) {
+            Painter painter = PainterFactory.newInstance(element);
+            painter.draw(g, element, canvasWidth);
+        }
+        g.dispose();
+
+        return this.srcImage;
+    }
+
+    /**
+     * 保存合成后的图片
+     *
+     * @param filePath 完整保存路径，如 “E://123.jpg”
+     * @throws IOException 异常
+     */
+    public void out(String filePath) throws Exception {
+        if (this.srcImage != null) {
+            ImageIO.write(this.srcImage, fileType, new File(filePath));
+        } else {
+            throw new Exception("尚未执行图片合成，无法保存文件");
+        }
+    }
+
+    /**
+     * 获取合成后的图片对象
+     *
+     * @return {@link BufferedImage}
+     */
+    public BufferedImage getBufferedImage() {
+        return this.srcImage;
+    }
+
+    /**
+     * 获取合成后的图片流
+     *
+     * @return {@link InputStream}
+     * @throws Exception 异常
+     */
+    public InputStream getInputStream() throws Exception {
+        if (this.srcImage != null) {
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(this.srcImage, fileType, os);
+            return new ByteArrayInputStream(os.toByteArray());
+        } else {
+            throw new Exception("尚未执行图片合成，无法输出文件流");
+        }
+    }
+
+    /**
+     * 计算多行文本高度
+     *
+     * @param textElement 文本元素
+     * @return 高度数值
+     */
+    public int getLineHeight(TextElement textElement) {
+        TextPainter textPainter = new TextPainter();
+        List<TextElement> textElements = textPainter.getBreakLineElements(textElement);
+        return textElement.getLineHeight() * textElements.size();
+    }
+
+    /**
+     * 计算多行文本高度
+     *
+     * @param textElement 文本元素
+     * @return 高度数值
+     */
+    public int getFrontWidth(TextElement textElement) {
+        TextPainter textPainter = new TextPainter();
+        return textPainter.getFrontWidth(textElement.getText(), textElement.getFont());
+    }
+
+    /**
+     * 添加元素（图片或文本）
+     *
+     * @param element 图片或文本元素
+     */
+    public void addElement(AbstractElement element) {
+        this.list.add(element);
+    }
+
+    /**
+     * 添加图片元素
+     *
+     * @param imgUrl 图片url
+     * @param x      x坐标
+     * @param y      y坐标
+     * @return {@link ImageElement}
+     */
+    public ImageElement addImageElement(String imgUrl, int x, int y) {
+        ImageElement imageElement = new ImageElement(imgUrl, x, y);
+        this.list.add(imageElement);
+        return imageElement;
+    }
+
+    /**
+     * 添加图片元素
+     *
+     * @param image 图片对象
+     * @param x     x坐标
+     * @param y     y坐标
+     * @return {@link ImageElement}
+     */
+    public ImageElement addImageElement(BufferedImage image, int x, int y) {
+        ImageElement imageElement = new ImageElement(image, x, y);
+        this.list.add(imageElement);
+        return imageElement;
+    }
+
+    /**
+     * 添加图片元素
+     *
+     * @param imgUrl 图片rul
+     * @param x      x坐标
+     * @param y      y坐标
+     * @param width  宽度
+     * @param height 高度
+     * @param mode   缩放模式
+     * @return {@link ImageElement}
+     */
+    public ImageElement addImageElement(String imgUrl, int x, int y, int width, int height, Scale.Mode mode) {
+        ImageElement imageElement = new ImageElement(imgUrl, x, y, width, height, mode);
+        this.list.add(imageElement);
+        return imageElement;
+    }
+
+    /**
+     * 添加图片元素
+     *
+     * @param image  图片对象
+     * @param x      x坐标
+     * @param y      y坐标
+     * @param width  宽度
+     * @param height 高度
+     * @param mode   缩放模式
+     * @return {@link ImageElement}
+     */
+    public ImageElement addImageElement(BufferedImage image, int x, int y, int width, int height, Scale.Mode mode) {
+        ImageElement imageElement = new ImageElement(image, x, y, width, height, mode);
+        this.list.add(imageElement);
+        return imageElement;
+    }
+
+    /**
+     * 添加文本元素
+     *
+     * @param text 文本
+     * @param font Font对象
+     * @param x    x坐标
+     * @param y    y坐标
+     * @return {@link TextElement}
+     */
+    public TextElement addTextElement(String text, Font font, int x, int y) {
+        TextElement textElement = new TextElement(text, font, x, y);
+        this.list.add(textElement);
+        return textElement;
+    }
+
+    /**
+     * 添加文本元素
+     *
+     * @param text     文本
+     * @param fontSize 字体大小
+     * @param x        x坐标
+     * @param y        y坐标
+     * @return {@link TextElement}
+     */
+    public TextElement addTextElement(String text, int fontSize, int x, int y) {
+        TextElement textElement = new TextElement(text, fontSize, x, y);
+        this.list.add(textElement);
+        return textElement;
+    }
+
+    /**
+     * 添加文本元素
+     *
+     * @param text     文本
+     * @param fontName 字体名称
+     * @param fontSize 字体大小
+     * @param x        x坐标
+     * @param y        y坐标
+     * @return {@link TextElement}
+     */
+    public TextElement addTextElement(String text, String fontName, int fontSize, int x, int y) {
+        TextElement textElement = new TextElement(text, fontName, fontSize, x, y);
+        this.list.add(textElement);
+        return textElement;
     }
 
 }

@@ -15,7 +15,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 -通过前两步中的对象构建Call对象；
 -通过Call#enqueue(Callback)方法来提交异步请求；
  
-``` 
+```java
     String url = "http://wwww.baidu.com";
     Httpd httpd = new Httpd();
     final Request request = new Request.Builder()
@@ -39,7 +39,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 1.2. 同步GET请求
 前面几个步骤和异步方式一样，只是最后一部是通过 NewCall#execute() 来提交请求，注意这种方式会阻塞调用线程，所以在Android中应放在子线程中执行，否则有可能引起ANR异常，Android3.0 以后已经不允许在主线程访问网络。
  
-``` 
+```java
     String url = "http://wwww.baidu.com";
     Httpd httpd = new Httpd();
     final Request request = new Request.Builder()
@@ -62,7 +62,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 2.1. POST方式提交String
 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造 RequestBody 需要指定MediaType，用于描述请求/响应 body 的内容类型，关于 MediaType 的更多信息可以查看 RFC 2045，RequstBody的几种构造方式：
  
-``` 
+```java
     MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     String requestBody = "I am Jdqm.";
     Request request = new Request.Builder()
@@ -88,7 +88,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
     });
 ``` 
 响应内容
-```
+```text
     http/1.1 200 OK 
     Date:Sat, 10 Mar 2018 05:23:20 GMT 
     Content-Type:text/html;charsets=utf-8
@@ -114,7 +114,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 ```
 
 2.2 POST方式提交流
-```
+```java
     RequestBody requestBody = new RequestBody() {
     
         @Override
@@ -152,7 +152,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 ```
 
 2.3. POST提交文件
-```
+```java
     MediaType mediaType = MediaType.valueOf("text/x-markdown; charsets=utf-8");
     Httpd httpd = new Httpd();
     File file = new File("test.md");
@@ -180,7 +180,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 
 2.4. POST方式提交表单
 
-```
+```java
     Httpd httpd = new Httpd();
     RequestBody requestBody = new FormBody.Builder()
             .add("search", "Jurassic Park")
@@ -210,7 +210,7 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
 
 2.5. POST方式提交分块请求
 MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容。多块请求体中每块请求都是一个请求体，可以定义自己的请求头。这些请求头可以用来描述这块请求，例如它的 Content-Disposition 。如果 Content-Length 和 Content-Type 可用的话，他们会被自动添加到请求头中
-``` 
+```java
     Httpd client = new Httpd();
     MultipartBody body = new MultipartBody.Builder("AaB03x")
             .setType(MediaType.MULTIPART_FORM_DATA_TYPE)
@@ -250,7 +250,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
  ②另外一类是非网页请求的 interceptor ，这类拦截器只会在非网页请求中被调用，并且是在组装完请求之后，真正发起网络请求前被调用，所有的 interceptor 被保存在 List<Interceptor> interceptors 集合中，按照添加顺序来逐个调用，具体可参考 RealCall#getResponseWithInterceptorChain() 方法。通过 Httpd.Builder#addNetworkInterceptor(Interceptor) 传入；
 
  这里举一个简单的例子，例如有这样一个需求，我要监控App通过 Httpd 发出的所有原始请求，以及整个请求所耗费的时间，针对这样的需求就可以使用第一类全局的 interceptor 在拦截器链头去做。
-```
+```java
     public class LoggingInterceptor implements Interceptor {
 
         @Override
@@ -272,7 +272,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
     }
 ```
 
-```
+```java
     Httpd httpd = new Httpd.Builder()
             .addInterceptor(new LoggingInterceptor())
             .build();
@@ -297,7 +297,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
     });
 ```
 针对这个请求，打印出来的结果
-```
+```text
     Sending request http://www.publicobject.com/helloworld.txt on null
     User-Agent: Httpd Example
             
@@ -317,7 +317,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
  
 ## 其他
  1. 推荐让 Httpd 保持单例，用同一个 Httpd 实例来执行你的所有请求，因为每一个 Httpd 实例都拥有自己的连接池和线程池，重用这些资源可以减少延时和节省资源，如果为每个请求创建一个 Httpd 实例，显然就是一种资源的浪费。当然，也可以使用如下的方式来创建一个新的 Httpd 实例，它们共享连接池、线程池和配置信息。
-```
+```java
     Httpd client = Httpd.newBuilder()
             .readTimeout(500, TimeUnit.MILLISECONDS)
             .build();
@@ -347,7 +347,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
 * `webSocket(Request request, WebSocketListener listener)` Httpv 原生 WebSocket 连接
 * `newBuilder()`       用于重新构建一个 Httpv 实例
  
-```
+```java
 Httpv http = Httpv.builder()
         .baseUrl("http://api.example.com")
         .addMsgConvertor(new GsonMsgConvertor());
@@ -358,7 +358,7 @@ Httpv http = Httpv.builder()
 
 　　使用方法`sync(String url)`开始一个同步请求：
 
-```
+```java
 List<User> users = http.sync("/users") // http://api.example.com/users
         .get()                         // GET请求
         .getBody()                     // 获取响应报文体
@@ -371,7 +371,7 @@ List<User> users = http.sync("/users") // http://api.example.com/users
 
 　　使用方法`async(String url)`开始一个异步请求：
 
-```
+```java
 http.async("/users/1")                //  http://api.aoju.org/users/1
         .setOnResponse((HttpResult result) -> {
             // 得到目标数据
@@ -385,7 +385,7 @@ http.async("/users/1")                //  http://api.aoju.org/users/1
 
 　　使用方法`webSocket(String url)`开始一个 WebSocket 通讯：
 
-```
+```java
 http.webSocket("/chat") 
         .setOnOpen((WebSocket ws, HttpResult res) -> {
             ws.send("向服务器问好");
@@ -436,7 +436,7 @@ Websocket 方法：
 * `request(Request request)`  OkHttp 原生 HTTP 请求 
 * `webSocket(Request request, WebSocketListener listener)` Httpv 原生 WebSocket 连接
 
-```
+```java
 Httpv.async("https://api.aoju.org/auth/login")
         .addBodyPara("username", "jack")
         .addBodyPara("password", "xxxx")
@@ -457,8 +457,7 @@ Httpv.async("https://api.aoju.org/auth/login")
 
 例如：
 
-```
-
+```java
 public class HttpvConfig implements Config {
 
     @Override
@@ -480,7 +479,7 @@ public class HttpvConfig implements Config {
 
 　　Httpv 并没有把文件的下载排除在常规的请求之外，同一套API，它优雅的设计使得下载与常规请求融合的毫无违和感，一个最简单的示例：
 
-```
+```java
 http.sync("bus-http/test.zip")
         .get()                           // 使用 GET 方法（其它方法也可以，看服务器支持）
         .getBody()                       // 得到报文体
@@ -493,7 +492,7 @@ http.sync("/download/test.zip").get().getBody()
 ```
 　　或使用异步连接方式：
 
-```
+```java
 http.async("bus-http/test.zip")
         .setOnResponse((HttpResult result) -> {
             result.getBody().toFolder("bus-http").start();
@@ -506,7 +505,7 @@ http.async("bus-http/test.zip")
 
 　　就直接上代码啦，诸君一看便懂：
 
-```
+```java
 http.sync("/download/test.zip")
         .get()
         .getBody()
@@ -527,7 +526,7 @@ http.sync("/download/test.zip")
 ```
 　　值得一提的是：由于 Httpv 并没有把下载做的很特别，这里设置的进度回调不只对下载文件起用作，即使对响应JSON的常规请求，只要设置了进度回调，它也会告诉你报文接收的进度（提前是服务器响应的报文有`Content-Length`头），例如：
 
-```
+```java
 List<User> users = http.sync("/users")
         .get()
         .getBody()
@@ -542,7 +541,7 @@ List<User> users = http.sync("/users")
 
 　　过于简单：还是直接上代码：
 
-```
+```java
 Ctrl ctrl = http.sync("bus-http/test.zip")
         .get()
         .getBody()
@@ -559,7 +558,7 @@ ctrl.cancel();      // 取消下载（同时会删除文件，不可恢复）
 ```
 　　无论是同步还是异步发起的下载请求，都可以做以上的控制：
 
-```
+```java
 http.async("bus-http/test.zip")
         .setOnResponse((HttpResult result) -> {
             // 拿到下载控制器
@@ -572,7 +571,7 @@ http.async("bus-http/test.zip")
 
 　　Httpv 对断点续传并没有再做更高层次的封装，因为这是app该去做的事情，它在设计上使各种网络问题的处理变简单的同时力求纯粹。下面的例子可以看到，Httpv 通过一个失败回调拿到 **断点**，便将复杂的问题变得简单：
 
-```
+```java
 http.sync("bus-http/test.zip")
         .get()
         .getBody()
@@ -586,7 +585,7 @@ http.sync("bus-http/test.zip")
 ```
 　　下面代码实现续传：
 
-```
+```java
 long doneBytes = ...    // 拿到保存的断点
 File file =  ...        // 待续传的文件
 
@@ -609,7 +608,7 @@ http.sync("bus-http/test.zip")
 
 　　当文件很大时，有时候我们会考虑分块下载，与断点续传的思路是一样的，示例代码：
 
-```
+```java
     private static String url = "https://www.aoju.org/dl/test.zip";
     private static Httpv httpv;
 
@@ -649,20 +648,20 @@ http.sync("bus-http/test.zip")
 
 　　一个简单文件上传的示例：
 
-```
+```java
 http.sync("/upload")
         .addFilePara("test", "bus-http/test.zip")
         .post();     // 上传发法一般使用 POST 或 PUT，看服务器支持
 ```
 　　异步上传也是完全一样：
 
-```
+```java
 http.async("/upload")
         .addFilePara("test", "bus-http/test.zip")
         .post();
 ```
 
-```
+```java
 http.async("/upload")
         .bodyType("multipart/form")
         .addFilePara("test", "bus-http/test.zip")
@@ -673,7 +672,7 @@ http.async("/upload")
 
 　　Httpv 的上传进度监听，监听的是所有请求报文体的发送进度，示例代码：
 
-```
+```java
 http.sync("/upload")
         .addBodyPara("name", "Jack")
         .addBodyPara("age", 20)
@@ -694,7 +693,7 @@ http.sync("/upload")
 
 　　上传文件的过程控制就很简单，和常规请求一样，只有异步发起的上传可以取消：
 
-```
+```java
 HttpCall call = http.async("/upload")
         .addFilePara("test", "bus-http/test.zip")
         .setOnProcess((Process process) -> {
@@ -721,13 +720,13 @@ call.cancel();  // 取消上传
 - 支持文件流上传
 
 1.同步Get请求(访问百度首页,自动处理https单向认证)
-```
+```java
     String url = "https://www.baidu.com";
     String resp = Httpz.get().url(url).build().execute().string();
 ```
 
 2.异步Get请求(访问百度首页)
-```
+```java
     Httpz.get().url("https://www.baidu.com").build().
             executeAsync(new StringCallback() {
                 @Override
@@ -743,7 +742,7 @@ call.cancel();  // 取消上传
 ```
 
 3.百度搜索关键字'微信机器人'
-```
+```java
     Httpz.get().
             url("http://www.baidu.com/s").
             addParams("wd", "微信机器人").
@@ -754,7 +753,7 @@ call.cancel();  // 取消上传
 ```
 
 4.异步下载一张百度图片，有下载进度,保存为/tmp/tmp.jpg
-```
+```java
     String savePath = "tmp.jpg";
     String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
     Httpz.newBuilder().addNetworkInterceptor(new FileInterceptor() {
@@ -787,7 +786,7 @@ call.cancel();  // 取消上传
 ```
 
 5.同步下载文件
-```
+```java
     String savePath = "tmp.jpg";
     String imageUrl = "http://t7.baidu.com/it/u=3204887199,3790688592&fm=79&app=86&f=JPEG";
     InputStream is = Httpz.get().url(imageUrl).build().execute().byteStream();
@@ -795,7 +794,7 @@ call.cancel();  // 取消上传
 ```
 	
 6.上传文件
-```
+```java
     String url = "https://www.xxx.com";
     byte[] imageContent = FileKit.readBytes("/tmp/test.png");
     Response response = FastHttpClient.post()
@@ -807,7 +806,7 @@ call.cancel();  // 取消上传
 ```
 
 7.上传文件(通过文件流)
-```
+```java
     InputStream is = new FileInputStream("/tmp/logo.jpg");
     HttpResponse response = Httpz.newBuilder()
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -821,7 +820,7 @@ call.cancel();  // 取消上传
 ```
 
 8.设置网络代理
-```
+```java
     Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", 1088));
     Authenticator.setDefault(new Authenticator(){//如果没有设置账号密码，则可以注释掉这块
         private PasswordAuthentication authentication =
@@ -843,7 +842,7 @@ call.cancel();  // 取消上传
 ```
 
 9.设置Http头部信息
-```
+```java
     String url="https://www.baidu.com";
     HttpResponse response=Httpz.
             get().
@@ -856,7 +855,7 @@ call.cancel();  // 取消上传
 ```
 
 9.设置https证书
-```
+```java
     SSLContext sslContext = getxxx();
     Response response = Httpz
             .get()
@@ -868,7 +867,7 @@ call.cancel();  // 取消上传
 ```
 
 10.自动携带Cookie进行请求
-```
+```java
     private static class LocalCookieJar implements CookieJar {
 
         List<Cookie> cookies;
@@ -906,7 +905,7 @@ call.cancel();  // 取消上传
 ```
 
 11.设置Content-Type为application/json
-```
+```java
     String url="https://wx.qq.com";
     HttpResponse response=Httpz.post().
             addHeader("Content-Type","application/json").
@@ -918,7 +917,7 @@ call.cancel();  // 取消上传
 ```
 
 12.取消请求
-```
+```java
     RequestCall call = Httpz.get().
             url("https://www.baidu.com").
             build();

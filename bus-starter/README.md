@@ -1,7 +1,7 @@
 ## 使用说明
 
 启动类中增加注解或者POM文件中增加依赖即可。
-```
+```java
     @EnableCorsFilter
     @EnableOnceFilter
     @EnableMapper
@@ -52,7 +52,7 @@
 - ApiVersion：替换之前的版本定义在路径中，导致的接口升级需要重新定义类或者在代码中做判断的问题
 - ClientVersion：碰到客户端已经在使用的接口，区分对待的情况下，通过通过ClientVersion优雅的避免在代码中写大量版本判断逻辑的问题
 
-```
+```java
 
 @RequestMapping("/t")
 @RestController
@@ -94,7 +94,7 @@ public class TestController {
 
 ```
 
-```
+```java
 @RestController
 @VersionMapping(value="/t",apiVersion = "5")
 public class TController {

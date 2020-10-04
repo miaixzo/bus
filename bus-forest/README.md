@@ -15,42 +15,42 @@ JDK 1.8+ +
 
 ## 使用步骤
 
-```
+```java
 // Spring-Boot Jar包加密
 String password = "forest";
 Key key = Builder.key(password);
 Boot.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key);
 ```
 
-```
+```java
 // 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
 String password = "forest";
 Key key = Builder.key(password);
 Boot.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key, Builder.MODE_DANGER);
 ```
 
-```
+```java
 // Spring-Boot Jar包解密
 String password = "forest";
 Key key = Builder.key(password);
 Boot.decrypt("/path/to/read/forest.jar", "/path/to/save/deforest.jar", key);
 ```
 
-```
+```java
 // Jar包加密
 String password = "forest";
 Key key = Builder.key(password);
 Jar.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key);
 ```
 
-```
+```java
 // 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
 String password = "forest";
 Key key = Kit.key(password);
 Jar.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key, Builder.MODE_DANGER);
 ```
 
-```
+```java
 // Jar包解密
 String password = "forest";
 Key key = Builder.key(password);
@@ -58,15 +58,17 @@ Jar.decrypt("/path/to/read/forest.jar", "/path/to/save/deforest.jar", key);
 ```
 
 ## 启动命令
-```
+```java
 // 命令行运行JAR 然后在提示输入密码的时候输入密码后按回车即可正常启动
 java -jar /path/to/enforest.jar
 ```
-```
+
+```java
 // 也可以通过传参的方式直接启动，不太推荐这种方式，因为泄露的可能性更大！
 java -jar /path/to/enforest.jar --xjar.password=password
 ```
-```
+
+```java
 // 对于 nohup 或 javaw 这种后台启动方式，无法使用控制台来输入密码，推荐使用指定密钥文件的方式启动
 nohup java -jar /path/to/enforest.jar --xjar.keyfile=/path/to/forest.key
 ```
@@ -105,7 +107,7 @@ hold: HOLD
 框架提供使用过滤器的方式来灵活指定需要加密的资源或排除不需要加密的资源。
 
 * #### 硬编码方式
-```
+```java
 // 假如项目所有类的包名都以 com.company.project 开头，那只加密自身项目的字节码即可采用以下方式。
 Boot.encrypt(
         "/path/to/read/plaintext.jar", 
@@ -119,7 +121,7 @@ Boot.encrypt(
     );
 ```
 * #### 表达式方式
-```
+```java
 // 1. 采用Ant表达式过滤器更简洁地来指定需要加密的资源。
 Boot.encrypt(plaintext, encrypted, password, new XJarAntEntryFilter("com/company/project/**"));
 
@@ -136,7 +138,7 @@ Boot.encrypt(plaintext, encrypted, password, new XJarRegexEntryFilter("com/compa
 ```
 * #### 混合方式
 当过滤器的逻辑复杂或条件较多时可以将过滤器分成多个，并且使用 Builder 工具类提供的多个过滤器混合方法混合成一个，Builder 提供 “与” “或” “非” 三种逻辑运算的混合。
-```
+```java
 // 1. 与运算，即所有过滤器都满足的情况下才满足，mix() 方法返回的是this，可以继续拼接。
 XEntryFilter and = Builder.and()
     .mix(new AntEntryFilter("com/company/project/**"))
@@ -171,7 +173,7 @@ Content-Length 头返回给浏览器， 但实际上通过
 查看源代码也是能看到完整的源码的。通常情况下静态文件都会放在 static/ 和
 META-INF/resources/ 目录下，
 我们只需要在加密时通过过滤器排除这些资源即可，可以采用以下的过滤器：
-```
+```java
 XKit.not(
         XKit.or()
             .mix(new AntEntryFilter("static/**"))

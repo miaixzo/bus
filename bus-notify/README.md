@@ -8,7 +8,7 @@
 
 ## Maven配置
 
-```
+```xml
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-notify</artifactId>

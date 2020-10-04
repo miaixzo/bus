@@ -1,22 +1,25 @@
 
-# 介绍
+## 介绍
 完美集成lombok，swagger的代码生成工具，让你不再为繁琐的注释和简单的接口实现而烦恼：
 1. entity集成，格式校验，
 2. swagger; 
 3. mapper自动加@Mapper，
 4. service自动注释和依赖; 
 5. 控制器实现单表的增副改查，并集成swagger实现api文档
+ 
+## 快速开始
 
-# MAVEN地址
-```
+- 引入依赖
+```xml
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
     <version>6.1.0</version>
 </dependency>
 ```
-# 数据表结构样式
-```
+
+## 数据表结构样式
+```sql
 CREATE TABLE `hi_user` (
   `id` varchar(24) NOT NULL COMMENT 'ID',
   `name` varchar(40) DEFAULT NULL COMMENT '登录名',
@@ -34,8 +37,8 @@ CREATE TABLE `hi_user` (
 ```
 要求必须有表注释，要求必须有主键为id,所有字段必须有注释(便于生成java注释swagger等)。
 
-#
-``` 
+#@
+```java
 	 // 基础信息：项目名、作者、版本
         public static final String PROJECT = "bus-shade";
         public static final String AUTHOR = "Kimi Liu";
