@@ -72,8 +72,8 @@ public class RelevantException extends IOException {
         super(cause);
     }
 
-    protected RelevantException(Exception ex) {
-        super(ex);
+    protected RelevantException(Exception cause) {
+        super(cause);
     }
 
     /**

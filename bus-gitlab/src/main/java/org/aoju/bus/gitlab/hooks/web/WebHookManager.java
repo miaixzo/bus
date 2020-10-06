@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.hooks.web;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.HookManager;
@@ -78,7 +79,7 @@ public class WebHookManager implements HookManager {
      * @throws IOException if any error occurs while reading the POST data
      */
     public static String getPostDataAsString(HttpServletRequest request) throws IOException {
-        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), "UTF-8")) {
+        try (InputStreamReader reader = new InputStreamReader(request.getInputStream(), Charset.DEFAULT_UTF_8)) {
             int count;
             final char[] buffer = new char[2048];
             final StringBuilder out = new StringBuilder();

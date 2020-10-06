@@ -108,12 +108,26 @@ public class UncheckedException extends RuntimeException {
     /**
      * 将抛出对象包裹成运行时异常,并增加自己的描述
      *
-     * @param e    抛出对象
-     * @param fmt  格式
-     * @param args 参数
+     * @param cause  抛出对象
+     * @param format 格式
+     * @param args   参数
      */
-    protected UncheckedException(Throwable e, String fmt, Object... args) {
-        super(String.format(fmt, args), e);
+    protected UncheckedException(Throwable cause, String format, Object... args) {
+        super(String.format(format, args), cause);
+    }
+
+    /**
+     * 构造一个新的运行时异常，其中包含指定的详细信息消息，原因，启用或禁用抑制，可写堆栈跟踪启用或禁用
+     *
+     * @param message            详细信息
+     * @param cause              原因,（允许使用{@code null}值，表示原因不存在或未知)
+     * @param enableSuppression  是否启用抑制whether or not suppression is enabled
+     *                           or disabled
+     * @param writableStackTrace 堆栈跟踪是否应该可写
+     */
+    protected UncheckedException(String message, Throwable cause, boolean enableSuppression,
+                                 boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
     /**

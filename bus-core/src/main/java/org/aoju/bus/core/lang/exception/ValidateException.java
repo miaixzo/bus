@@ -45,8 +45,8 @@ public class ValidateException extends UncheckedException {
         super(format, args);
     }
 
-    public ValidateException(Throwable e) {
-        super(e);
+    public ValidateException(Throwable format) {
+        super(format);
     }
 
     public ValidateException(String errcode, String errmsg) {

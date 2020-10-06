@@ -37,8 +37,8 @@ public class NotInitedException extends UncheckedException {
         super();
     }
 
-    public NotInitedException(Throwable t) {
-        super(t);
+    public NotInitedException(Throwable cause) {
+        super(cause);
     }
 
     public NotInitedException(String format, Object... args) {

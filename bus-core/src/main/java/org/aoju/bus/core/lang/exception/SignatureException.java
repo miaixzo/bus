@@ -37,8 +37,8 @@ public class SignatureException extends UncheckedException {
         super();
     }
 
-    public SignatureException(Throwable t) {
-        super(t);
+    public SignatureException(Throwable cause) {
+        super(cause);
     }
 
     public SignatureException(String format, Object... args) {

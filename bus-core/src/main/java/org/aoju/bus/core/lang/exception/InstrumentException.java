@@ -37,8 +37,8 @@ public class InstrumentException extends UncheckedException {
         super();
     }
 
-    public InstrumentException(Throwable t) {
-        super(t);
+    public InstrumentException(Throwable cause) {
+        super(cause);
     }
 
     public InstrumentException(String format, Object... args) {

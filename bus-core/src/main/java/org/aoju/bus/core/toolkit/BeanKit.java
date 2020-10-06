@@ -853,6 +853,61 @@ public class BeanKit {
     }
 
     /**
+     * 转义bean中所有属性为字符串的
+     *
+     * @param bean {@link Object}
+     */
+    public static void trimAllFields(Object bean) {
+        try {
+            if (bean != null) {
+                // 获取所有的字段包括public,private,protected,private
+                Field[] fields = bean.getClass().getDeclaredFields();
+                for (Field f : fields) {
+                    if ("java.lang.String".equals(f.getType().getName())) {
+                        // 获取字段名
+                        String key = f.getName();
+                        Object value = getFieldValue(bean, key);
+
+                        if (value == null) {
+                            continue;
+                        }
+                        setFieldValue(bean, key, EscapeKit.escapeXml11(value.toString()));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * bean 中所有属性为字符串的进行\n\t\s处理
+     *
+     * @param bean {@link Object}
+     */
+    public static void replaceStrFields(Object bean) {
+        try {
+            if (bean != null) {
+                // 获取所有的字段包括public,private,protected,private
+                Field[] fields = bean.getClass().getDeclaredFields();
+                for (Field f : fields) {
+                    if ("java.lang.String".equals(f.getType().getName())) {
+                        // 获取字段名
+                        String key = f.getName();
+                        Object value = getFieldValue(bean, key);
+                        if (value == null) {
+                            continue;
+                        }
+                        setFieldValue(bean, key, StringKit.replaceBlank(value.toString()));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
      * 是否同时存在一个或多个修饰符(可能有多个修饰符,如果有指定的修饰符则返回true)
      *
      * @param clazz         类

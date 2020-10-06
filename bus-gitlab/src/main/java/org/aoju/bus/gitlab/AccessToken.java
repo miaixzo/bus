@@ -26,6 +26,7 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 
 import java.io.BufferedReader;
@@ -154,7 +155,7 @@ public final class AccessToken {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", "utf-8");
+            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
@@ -339,7 +340,7 @@ public final class AccessToken {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", "utf-8");
+            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
             connection.setConnectTimeout(10000);
@@ -600,7 +601,7 @@ public final class AccessToken {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestProperty("Charset", "utf-8");
+            connection.setRequestProperty("Charset", Charset.DEFAULT_UTF_8);
 
             connection.setRequestProperty("Cookie", cookies);
             connection.setReadTimeout(10000);
@@ -719,7 +720,7 @@ public final class AccessToken {
         formData.append(name);
         formData.append("=");
         try {
-            formData.append(URLEncoder.encode(value, "UTF-8"));
+            formData.append(URLEncoder.encode(value, Charset.DEFAULT_UTF_8));
             return (formData);
         } catch (Exception e) {
             throw new GitLabApiException(e);

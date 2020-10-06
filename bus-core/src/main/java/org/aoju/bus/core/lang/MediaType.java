@@ -234,7 +234,7 @@ public class MediaType {
      * "text/csv;charset=utf-8"
      */
     public static final String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
-    public static final MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", "utf-8");
+    public static final MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", Charset.DEFAULT_UTF_8);
 
     /**
      * "application/zip"

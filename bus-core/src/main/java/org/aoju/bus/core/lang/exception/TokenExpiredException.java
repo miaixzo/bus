@@ -37,8 +37,8 @@ public class TokenExpiredException extends UncheckedException {
         super();
     }
 
-    public TokenExpiredException(Throwable t) {
-        super(t);
+    public TokenExpiredException(Throwable cause) {
+        super(cause);
     }
 
     public TokenExpiredException(String format, Object... args) {

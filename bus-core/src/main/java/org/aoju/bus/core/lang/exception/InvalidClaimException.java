@@ -37,8 +37,8 @@ public class InvalidClaimException extends UncheckedException {
         super();
     }
 
-    public InvalidClaimException(Throwable t) {
-        super(t);
+    public InvalidClaimException(Throwable cause) {
+        super(cause);
     }
 
     public InvalidClaimException(String format, Object... args) {
