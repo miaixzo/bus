@@ -90,6 +90,16 @@ public interface HardwareAbstractionLayer {
     List<NetworkIF> getNetworkIFs();
 
     /**
+     * Gets a list {@link NetworkIF} objects, representing a network interface.
+     *
+     * @param includeLocalInterfaces whether to include local interfaces (loopback or no hardware
+     *                               address) in the result
+     * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
+     * the interfaces
+     */
+    List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces);
+
+    /**
      * Instantiates an array of {@link Display} objects, representing
      * monitors or other video output devices.
      *

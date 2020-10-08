@@ -38,6 +38,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * 网络接口信息
@@ -108,33 +109,43 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     }
 
     /**
-     * 返回不是环回且具有硬件地址的网络接口
+     * Returns network interfaces on this machine.
      *
-     * @return 网络接口的列表
+     * @param includeLocalInterfaces include local interfaces in the result
+     * @return A list of network interfaces
      */
-    protected static List<NetworkInterface> getNetworkInterfaces() {
-        List<NetworkInterface> result = new ArrayList<>();
-        Enumeration<NetworkInterface> interfaces = null;
+    protected static List<NetworkInterface> getNetworkInterfaces(boolean includeLocalInterfaces) {
+        List<NetworkInterface> interfaces = getAllNetworkInterfaces();
 
+        return includeLocalInterfaces ? interfaces : getAllNetworkInterfaces().stream()
+                .filter(networkInterface1 -> !isLocalInterface(networkInterface1))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns all network interfaces.
+     *
+     * @return A list of network interfaces
+     */
+    private static List<NetworkInterface> getAllNetworkInterfaces() {
         try {
-            interfaces = NetworkInterface.getNetworkInterfaces();
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            return Collections.list(interfaces);
         } catch (SocketException ex) {
             Logger.error("Socket exception when retrieving interfaces: {}", ex.getMessage());
         }
-        if (interfaces != null) {
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface netint = interfaces.nextElement();
-                try {
-                    if (!netint.isLoopback() && netint.getHardwareAddress() != null) {
-                        result.add(netint);
-                    }
-                } catch (SocketException ex) {
-                    Logger.error("Socket exception when retrieving interface \"{}\": {}", netint.getName(),
-                            ex.getMessage());
-                }
-            }
+
+        return Collections.emptyList();
+    }
+
+    private static boolean isLocalInterface(NetworkInterface networkInterface) {
+        try {
+            return networkInterface.isLoopback() || networkInterface.getHardwareAddress() == null;
+        } catch (SocketException e) {
+            Logger.error("Socket exception when retrieving interface information for {}: {}", networkInterface,
+                    e.getMessage());
         }
-        return result;
+        return false;
     }
 
     private static Properties queryVmMacAddrProps() {
