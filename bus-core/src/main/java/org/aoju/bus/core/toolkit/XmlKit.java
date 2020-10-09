@@ -1043,6 +1043,19 @@ public class XmlKit {
     }
 
     /**
+     * 去除XML文本中的注释内容
+     *
+     * @param xmlContent XML文本
+     * @return 当传入为null时返回null
+     */
+    public static String cleanComment(String xmlContent) {
+        if (xmlContent == null) {
+            return null;
+        }
+        return xmlContent.replaceAll(RegEx.COMMENT_XML_PATTERN, Normal.EMPTY);
+    }
+
+    /**
      * 给定节点是否为{@link Element} 类型节点
      *
      * @param node 节点

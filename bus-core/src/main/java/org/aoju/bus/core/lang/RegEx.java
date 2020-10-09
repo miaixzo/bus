@@ -63,6 +63,12 @@ public class RegEx {
     public static final Pattern VALID_XML = Pattern.compile(VALID_XML_PATTERN);
 
     /**
+     * XML中注释的内容
+     */
+    public static final String COMMENT_XML_PATTERN = "(?s)<!--.+?-->";
+    public static final Pattern COMMENT_XML = Pattern.compile(COMMENT_XML_PATTERN);
+
+    /**
      * 中文字、英文字母、数字和下划线
      */
     public static final String GENERAL_PATTERN = "^[\u4E00-\u9FFF\\w]+$";

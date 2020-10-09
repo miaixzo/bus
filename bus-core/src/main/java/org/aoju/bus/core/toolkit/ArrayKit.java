@@ -7234,7 +7234,7 @@ public class ArrayKit {
 
         int[] array = new int[length];
         for (int i = 0; i < length; i++) {
-            array[i] = values[i].intValue();
+            array[i] = ObjectKit.defaultIfNull(values[i], 0);
         }
         return array;
     }
@@ -7278,7 +7278,7 @@ public class ArrayKit {
 
         long[] array = new long[length];
         for (int i = 0; i < length; i++) {
-            array[i] = values[i].longValue();
+            array[i] = ObjectKit.defaultIfNull(values[i], 0L);
         }
         return array;
     }
@@ -7322,7 +7322,7 @@ public class ArrayKit {
 
         char[] array = new char[length];
         for (int i = 0; i < length; i++) {
-            array[i] = values[i].charValue();
+            array[i] = ObjectKit.defaultIfNull(values[i], Character.MIN_VALUE);
         }
         return array;
     }
