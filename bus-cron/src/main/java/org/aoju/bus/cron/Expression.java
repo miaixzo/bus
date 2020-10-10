@@ -38,7 +38,7 @@ import java.util.*;
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public final class CronExpression implements Serializable, Cloneable {
+public final class Expression implements Serializable, Cloneable {
 
     public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
     protected static final int SECOND = 0;
@@ -103,7 +103,7 @@ public final class CronExpression implements Serializable, Cloneable {
      * @param cronExpression 新对象应表示的cron表达式的字符串表示形式
      * @throws ParseException 如果字符串表达式不能解析为有效的<code> CronExpression </code>
      */
-    public CronExpression(String cronExpression) throws ParseException {
+    public Expression(String cronExpression) throws ParseException {
         if (cronExpression == null) {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
@@ -118,7 +118,7 @@ public final class CronExpression implements Serializable, Cloneable {
      *
      * @param expression 要复制的现有cron表达式
      */
-    public CronExpression(CronExpression expression) {
+    public Expression(Expression expression) {
         this.cronExpression = expression.getCronExpression();
         try {
             buildExpression(cronExpression);
@@ -139,7 +139,7 @@ public final class CronExpression implements Serializable, Cloneable {
     public static boolean isValidExpression(String cronExpression) {
 
         try {
-            new CronExpression(cronExpression);
+            new Expression(cronExpression);
         } catch (ParseException pe) {
             return false;
         }
@@ -149,7 +149,7 @@ public final class CronExpression implements Serializable, Cloneable {
 
     public static void validateExpression(String cronExpression) throws ParseException {
 
-        new CronExpression(cronExpression);
+        new Expression(cronExpression);
     }
 
     /**
@@ -1446,7 +1446,7 @@ public final class CronExpression implements Serializable, Cloneable {
     @Override
     @Deprecated
     public Object clone() {
-        return new CronExpression(this);
+        return new Expression(this);
     }
 
     class ValueSet {

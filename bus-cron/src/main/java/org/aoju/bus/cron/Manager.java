@@ -26,44 +26,58 @@ package org.aoju.bus.cron;
 
 import org.aoju.bus.cron.factory.Task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 作业执行器
- * 执行具体的作业,执行完毕销毁
+ * 作业执行管理器
+ * 负责管理作业的启动、停止等
  *
  * @author Kimi Liu
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public class TaskExecutor implements Runnable {
+public class Manager {
 
-    private Scheduler scheduler;
-    private Task task;
+    protected Scheduler scheduler;
+    /**
+     * 执行器列表
+     */
+    private List<Executor> executors = new ArrayList<>();
 
-    public TaskExecutor(Scheduler scheduler, Task task) {
+    public Manager(Scheduler scheduler) {
         this.scheduler = scheduler;
-        this.task = task;
     }
 
     /**
-     * 获得任务对象
+     * 启动 TaskExecutor
      *
-     * @return 任务对象
+     * @param task {@link Task}
+     * @return {@link Executor}
      */
-    public Task getTask() {
-        return task;
+    public Executor spawnExecutor(Task task) {
+        final Executor executor = new Executor(this.scheduler, task);
+        synchronized (this.executors) {
+            this.executors.add(executor);
+        }
+        // 子线程是否为deamon线程取决于父线程,因此此处无需显示调用
+        // executor.setDaemon(this.scheduler.daemon);
+//		executor.start();
+        this.scheduler.threadExecutor.execute(executor);
+        return executor;
     }
 
-    @Override
-    public void run() {
-        try {
-            scheduler.listenerManager.notifyTaskStart(this);
-            task.execute();
-            scheduler.listenerManager.notifyTaskSucceeded(this);
-        } catch (Exception e) {
-            scheduler.listenerManager.notifyTaskFailed(this, e);
-        } finally {
-            scheduler.executorManager.notifyExecutorCompleted(this);
+    /**
+     * 执行器执行完毕调用此方法,将执行器从执行器列表移除
+     *
+     * @param executor 执行器 {@link Executor}
+     * @return this
+     */
+    public Manager notifyExecutorCompleted(Executor executor) {
+        synchronized (executors) {
+            executors.remove(executor);
         }
+        return this;
     }
 
 }

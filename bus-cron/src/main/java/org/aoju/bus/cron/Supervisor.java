@@ -24,55 +24,52 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 任务执行规则
+ * 作业启动管理器
  *
  * @author Kimi Liu
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public enum ExecutorStrategy {
+public class Supervisor {
 
+    protected Scheduler scheduler;
     /**
-     * 串行
+     * 启动器列表
      */
-    SERIAL_EXECUTION("Serial execution"),
-    /**
-     * 并行
-     */
-    CONCURRENT_EXECUTION("Parallel flow"),
-    /**
-     * 丢弃
-     */
-    DISCARD_LATER("Discard Later"),
-    /**
-     * 覆盖
-     */
-    COVER_EARLY("Cover Early");
+    protected List<Launcher> launchers = new ArrayList<>();
 
-    private String title;
-
-    ExecutorStrategy(String title) {
-        this.title = title;
+    public Supervisor(Scheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
-    public static ExecutorStrategy match(String name, ExecutorStrategy defaultItem) {
-        if (name != null) {
-            for (ExecutorStrategy item : ExecutorStrategy.values()) {
-                if (item.name().equals(name)) {
-                    return item;
-                }
-            }
+    /**
+     * 启动 TaskLauncher
+     *
+     * @param millis 触发事件的毫秒数
+     * @return {@link Launcher}
+     */
+    protected Launcher spawnLauncher(long millis) {
+        final Launcher launcher = new Launcher(this.scheduler, millis);
+        synchronized (this.launchers) {
+            this.launchers.add(launcher);
         }
-        return defaultItem;
+        this.scheduler.threadExecutor.execute(launcher);
+        return launcher;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    /**
+     * 启动器启动完毕,启动完毕后从执行器列表中移除
+     *
+     * @param launcher 启动器 {@link Launcher}
+     */
+    protected void notifyLauncherCompleted(Launcher launcher) {
+        synchronized (launchers) {
+            launchers.remove(launcher);
+        }
     }
 
 }

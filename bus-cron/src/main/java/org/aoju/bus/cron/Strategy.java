@@ -25,31 +25,54 @@
 package org.aoju.bus.cron;
 
 /**
- * 作业启动器
- * 负责检查<strong>TaskTable</strong>是否有匹配到此时运行的Task
- * 检查完毕后启动器结束
+ * 任务执行规则
  *
  * @author Kimi Liu
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public class TaskLauncher implements Runnable {
+public enum Strategy {
 
-    private Scheduler scheduler;
-    private long millis;
+    /**
+     * 串行
+     */
+    SERIAL_EXECUTION("Serial execution"),
+    /**
+     * 并行
+     */
+    CONCURRENT_EXECUTION("Parallel flow"),
+    /**
+     * 丢弃
+     */
+    DISCARD_LATER("Discard Later"),
+    /**
+     * 覆盖
+     */
+    COVER_EARLY("Cover Early");
 
-    public TaskLauncher(Scheduler scheduler, long millis) {
-        this.scheduler = scheduler;
-        this.millis = millis;
+    private String title;
+
+    Strategy(String title) {
+        this.title = title;
     }
 
-    @Override
-    public void run() {
-        //匹配秒部分由用户定义决定,始终不匹配年
-        scheduler.taskTable.executeTaskIfMatchInternal(millis);
+    public static Strategy match(String name, Strategy defaultItem) {
+        if (name != null) {
+            for (Strategy item : Strategy.values()) {
+                if (item.name().equals(name)) {
+                    return item;
+                }
+            }
+        }
+        return defaultItem;
+    }
 
-        //结束通知
-        scheduler.launcherManager.notifyLauncherCompleted(this);
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

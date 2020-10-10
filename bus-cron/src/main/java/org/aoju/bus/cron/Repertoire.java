@@ -44,7 +44,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public class TaskTable {
+public class Repertoire {
 
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -61,7 +61,7 @@ public class TaskTable {
      *
      * @param scheduler {@link Scheduler}
      */
-    public TaskTable(Scheduler scheduler) {
+    public Repertoire(Scheduler scheduler) {
         this.scheduler = scheduler;
         this.timezone = scheduler.getTimeZone();
     }
@@ -74,7 +74,7 @@ public class TaskTable {
      * @param task    {@link Task}
      * @return this
      */
-    public TaskTable add(String id, CronPattern pattern, Task task) {
+    public Repertoire add(String id, CronPattern pattern, Task task) {
         final Lock writeLock = lock.writeLock();
         try {
             writeLock.lock();
@@ -235,7 +235,7 @@ public class TaskTable {
     protected void executeTaskIfMatchInternal(long millis) {
         for (int i = 0; i < size; i++) {
             if (patterns.get(i).match(timezone, millis, this.scheduler.matchSecond)) {
-                this.scheduler.executorManager.spawnExecutor(tasks.get(i));
+                this.scheduler.manager.spawnExecutor(tasks.get(i));
             }
         }
     }

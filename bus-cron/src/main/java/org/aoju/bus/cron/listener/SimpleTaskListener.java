@@ -24,7 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron.listener;
 
-import org.aoju.bus.cron.TaskExecutor;
+import org.aoju.bus.cron.Executor;
 
 /**
  * 简单监听实现,不做任何操作
@@ -37,16 +37,16 @@ import org.aoju.bus.cron.TaskExecutor;
 public class SimpleTaskListener implements TaskListener {
 
     @Override
-    public void onStart(TaskExecutor executor) {
+    public void onStart(Executor executor) {
     }
 
     @Override
-    public void onSucceeded(TaskExecutor executor) {
+    public void onSucceeded(Executor executor) {
 
     }
 
     @Override
-    public void onFailed(TaskExecutor executor, Throwable exception) {
+    public void onFailed(Executor executor, Throwable exception) {
 
     }
 

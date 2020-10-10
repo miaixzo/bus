@@ -46,7 +46,7 @@ import java.util.List;
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public final class CronBuilder {
+public final class Builder {
 
     /**
      * Crontab配置文件
@@ -56,7 +56,7 @@ public final class CronBuilder {
     private static final Scheduler scheduler = new Scheduler();
     private static PopSetting crontabSetting;
 
-    private CronBuilder() {
+    private Builder() {
     }
 
     /**

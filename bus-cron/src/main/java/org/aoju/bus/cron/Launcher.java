@@ -24,60 +24,32 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
-import org.aoju.bus.cron.factory.Task;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * 作业执行管理器
- * 负责管理作业的启动、停止等
+ * 作业启动器
+ * 负责检查<strong>TaskTable</strong>是否有匹配到此时运行的Task
+ * 检查完毕后启动器结束
  *
  * @author Kimi Liu
  * @version 6.1.0
  * @since JDK 1.8+
  */
-public class ExecutorManager {
+public class Launcher implements Runnable {
 
-    protected Scheduler scheduler;
-    /**
-     * 执行器列表
-     */
-    private List<TaskExecutor> executors = new ArrayList<>();
+    private Scheduler scheduler;
+    private long millis;
 
-    public ExecutorManager(Scheduler scheduler) {
+    public Launcher(Scheduler scheduler, long millis) {
         this.scheduler = scheduler;
+        this.millis = millis;
     }
 
-    /**
-     * 启动 TaskExecutor
-     *
-     * @param task {@link Task}
-     * @return {@link TaskExecutor}
-     */
-    public TaskExecutor spawnExecutor(Task task) {
-        final TaskExecutor executor = new TaskExecutor(this.scheduler, task);
-        synchronized (this.executors) {
-            this.executors.add(executor);
-        }
-        // 子线程是否为deamon线程取决于父线程,因此此处无需显示调用
-        // executor.setDaemon(this.scheduler.daemon);
-//		executor.start();
-        this.scheduler.threadExecutor.execute(executor);
-        return executor;
-    }
+    @Override
+    public void run() {
+        //匹配秒部分由用户定义决定,始终不匹配年
+        scheduler.repertoire.executeTaskIfMatchInternal(millis);
 
-    /**
-     * 执行器执行完毕调用此方法,将执行器从执行器列表移除
-     *
-     * @param executor 执行器 {@link TaskExecutor}
-     * @return this
-     */
-    public ExecutorManager notifyExecutorCompleted(TaskExecutor executor) {
-        synchronized (executors) {
-            executors.remove(executor);
-        }
-        return this;
+        //结束通知
+        scheduler.supervisor.notifyLauncherCompleted(this);
     }
 
 }
