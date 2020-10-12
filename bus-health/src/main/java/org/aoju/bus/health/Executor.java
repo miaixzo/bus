@@ -48,21 +48,8 @@ import java.util.List;
 @ThreadSafe
 public final class Executor {
 
-    private static final String[] DEFAULT_ENV = getDefaultEnv();
-
     private Executor() {
 
-    }
-
-    private static String[] getDefaultEnv() {
-        Platform.OS platform = Platform.getCurrentPlatform();
-        if (platform == Platform.OS.WINDOWS) {
-            return new String[]{"LANGUAGE=C"};
-        } else if (platform != Platform.OS.UNKNOWN) {
-            return new String[]{"LC_ALL=C"};
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -96,7 +83,7 @@ public final class Executor {
     public static List<String> runNative(String[] cmdToRunWithArgs) {
         Process p = null;
         try {
-            p = Runtime.getRuntime().exec(cmdToRunWithArgs, DEFAULT_ENV);
+            p = Runtime.getRuntime().exec(cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
             Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
             return new ArrayList<>(0);

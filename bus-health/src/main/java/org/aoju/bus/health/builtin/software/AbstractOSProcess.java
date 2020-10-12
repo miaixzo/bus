@@ -46,7 +46,7 @@ public abstract class AbstractOSProcess implements OSProcess {
 
     private int processID;
 
-    protected AbstractOSProcess(int pid) {
+    public AbstractOSProcess(int pid) {
         this.processID = pid;
     }
 

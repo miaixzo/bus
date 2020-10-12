@@ -50,7 +50,7 @@ public abstract class AbstractOSFileStore implements OSFileStore {
         this.uuid = uuid;
     }
 
-    protected AbstractOSFileStore() {
+    public AbstractOSFileStore() {
     }
 
     @Override
