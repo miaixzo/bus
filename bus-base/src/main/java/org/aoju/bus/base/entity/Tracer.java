@@ -70,4 +70,22 @@ public class Tracer extends OAuth2 {
     @Transient
     protected String x_remote_ip;
 
+    /**
+     * 渠道来源
+     */
+    @Transient
+    protected String x_remote_channel;
+
+    /**
+     * 终端设备
+     */
+    @Transient
+    protected String x_remote_terminal;
+
+    /**
+     * UA：浏览器信息(类型，版本号)
+     */
+    @Transient
+    protected String x_remote_browser;
+
 }

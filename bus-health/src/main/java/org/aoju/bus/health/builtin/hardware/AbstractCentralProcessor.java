@@ -67,7 +67,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     /**
      * 创建一个处理器
      */
-    public AbstractCentralProcessor() {
+    protected AbstractCentralProcessor() {
         // 填充逻辑处理器阵列
         this.logicalProcessors = Collections.unmodifiableList(initProcessorCounts());
         // I初始化处理器数
