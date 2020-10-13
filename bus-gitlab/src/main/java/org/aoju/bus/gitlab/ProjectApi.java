@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API project calls.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @see <a href="https://docs.gitlab.com/ce/api/projects.html">Projects API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/project_statistics.html">Project statistics API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
@@ -779,7 +779,7 @@ public class ProjectApi extends AbstractApi implements Constants {
 
         String projectPath = null;
         try {
-            projectPath = URLEncoder.encode(namespace + "/" + project, Charset.DEFAULT_UTF_8;
+            projectPath = URLEncoder.encode(namespace + "/" + project, Charset.DEFAULT_UTF_8);
         } catch (UnsupportedEncodingException uee) {
             throw (new GitLabApiException(uee));
         }

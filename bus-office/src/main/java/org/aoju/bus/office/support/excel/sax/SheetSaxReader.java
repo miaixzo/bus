@@ -42,7 +42,7 @@ import java.util.Map;
  * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class SheetSaxReader extends DefaultHandler {
@@ -59,6 +59,7 @@ public class SheetSaxReader extends DefaultHandler {
      * 读取Wordkbook的XML中sheet标签中sheetId和rid的对应关系
      *
      * @param xssfReader XSSF读取器
+     * @return {@link SheetSaxReader}
      */
     public SheetSaxReader read(XSSFReader xssfReader) {
         InputStream workbookData = null;

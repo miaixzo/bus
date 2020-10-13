@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * 元数据查询，查询的数据库表为INFORMATION_SCHEMA
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class MySqlDataBaseQuery extends AbstractDatabaseQuery {

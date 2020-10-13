@@ -34,7 +34,7 @@ import org.aoju.bus.office.Context;
  * 或者如果调用过滤器是链中的最后一个过滤器，则结束调用链。
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public interface FilterChain {

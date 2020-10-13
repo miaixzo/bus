@@ -36,7 +36,7 @@ import java.util.Map;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class CamelCaseMap<K, V> extends CustomKeyMap<K, V> {

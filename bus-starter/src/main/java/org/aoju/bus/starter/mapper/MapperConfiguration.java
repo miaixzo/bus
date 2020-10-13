@@ -35,7 +35,7 @@ import org.springframework.core.env.Environment;
  * mapper 扫描配置类
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @AutoConfigureAfter(MybatisConfiguration.class)

@@ -38,7 +38,7 @@ import java.util.ServiceLoader;
  * 自动创建对应的拼音引擎对象
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class PinyinFactory {

@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * Memory obtained by perfstat_memory_total_t
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe

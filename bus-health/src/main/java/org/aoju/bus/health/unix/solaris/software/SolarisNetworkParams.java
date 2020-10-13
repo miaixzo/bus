@@ -35,7 +35,7 @@ import org.aoju.bus.health.unix.solaris.SolarisLibc;
  * SolarisNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe

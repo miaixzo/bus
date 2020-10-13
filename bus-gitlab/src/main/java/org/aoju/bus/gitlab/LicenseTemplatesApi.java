@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API licenses calls.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @see <a href="https://docs.gitlab.com/ce/api/templates/licenses.html">Licenses API</a>
  * @since JDK 1.8+
  */

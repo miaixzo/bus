@@ -32,7 +32,7 @@ import java.util.function.Function;
  * Ini file's parameters, like {@code property1=value1 }
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class IniPropertyImpl extends AbstractElement implements IniProperty {
