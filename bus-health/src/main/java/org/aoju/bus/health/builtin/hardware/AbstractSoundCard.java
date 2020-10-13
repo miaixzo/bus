@@ -30,7 +30,7 @@ import org.aoju.bus.core.annotation.Immutable;
  * 抽象声卡
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @Immutable
@@ -47,7 +47,7 @@ public abstract class AbstractSoundCard implements SoundCard {
      * @param name          名称
      * @param codec         编解码器
      */
-    public AbstractSoundCard(String kernelVersion, String name, String codec) {
+    protected AbstractSoundCard(String kernelVersion, String name, String codec) {
         this.kernelVersion = kernelVersion;
         this.name = name;
         this.codec = codec;

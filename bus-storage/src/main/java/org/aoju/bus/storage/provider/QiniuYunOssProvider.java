@@ -32,6 +32,7 @@ import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -51,7 +52,7 @@ import java.nio.file.Path;
  * 存储服务-七牛
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class QiniuYunOssProvider extends AbstractProvider {
@@ -84,7 +85,7 @@ public class QiniuYunOssProvider extends AbstractProvider {
             path = this.auth.privateDownloadUrl(path, 3600);
         }
         try {
-            String encodedFileName = URLEncoder.encode(fileKey, "utf-8");
+            String encodedFileName = URLEncoder.encode(fileKey, Charset.DEFAULT_UTF_8);
             String format = String.format("%s/%s", path, encodedFileName);
             return Message.builder()
                     .errcode(Builder.ErrorCode.SUCCESS.getCode())

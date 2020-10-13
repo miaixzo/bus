@@ -28,6 +28,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.logger.Logger;
@@ -36,7 +37,7 @@ import org.aoju.bus.logger.Logger;
  * 提供对FreeBSD上的sysctl调用的访问
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -119,6 +120,27 @@ public final class BsdSysctlKit {
         }
         struct.read();
         return true;
+    }
+
+    /**
+     * Executes a sysctl call with a Pointer result
+     *
+     * @param name name of the sysctl
+     * @return An allocated memory buffer containing the result on success, null
+     * otherwise. Its value on failure is undefined.
+     */
+    public static Memory sysctl(String name) {
+        IntByReference size = new IntByReference();
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
+            Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+            return null;
+        }
+        Memory m = new Memory(size.getValue());
+        if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, 0)) {
+            Logger.error(SYSCTL_FAIL, name, Native.getLastError());
+            return null;
+        }
+        return m;
     }
 
 }

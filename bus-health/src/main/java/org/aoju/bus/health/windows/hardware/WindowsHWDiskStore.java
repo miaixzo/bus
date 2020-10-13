@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * Windows hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -169,8 +169,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             mAnt = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.ANTECEDENT, i));
             mDep = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.DEPENDENT, i));
             if (mAnt.matches() && mDep.matches()) {
-                maps.driveToPartitionMap.computeIfAbsent(mAnt.group(1).replace("\\\\", "\\"),
-                        x -> new ArrayList<>())
+                maps.driveToPartitionMap.computeIfAbsent(mAnt.group(1).replace("\\\\", "\\"), x -> new ArrayList<>())
                         .add(mDep.group(1));
             }
         }

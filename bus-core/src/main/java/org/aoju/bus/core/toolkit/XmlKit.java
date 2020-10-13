@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
  * 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class XmlKit {
@@ -1040,6 +1040,19 @@ public class XmlKit {
             return null;
         }
         return xmlContent.replaceAll(RegEx.VALID_XML_PATTERN, Normal.EMPTY);
+    }
+
+    /**
+     * 去除XML文本中的注释内容
+     *
+     * @param xmlContent XML文本
+     * @return 当传入为null时返回null
+     */
+    public static String cleanComment(String xmlContent) {
+        if (xmlContent == null) {
+            return null;
+        }
+        return xmlContent.replaceAll(RegEx.COMMENT_XML_PATTERN, Normal.EMPTY);
     }
 
     /**

@@ -33,7 +33,7 @@ import java.util.List;
  * FreeBsdHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -75,8 +75,8 @@ public final class FreeBsdHardwareAbstractionLayer extends AbstractHardwareAbstr
     }
 
     @Override
-    public List<NetworkIF> getNetworkIFs() {
-        return FreeBsdNetworkIF.getNetworks();
+    public List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces) {
+        return FreeBsdNetworkIF.getNetworks(includeLocalInterfaces);
     }
 
     @Override

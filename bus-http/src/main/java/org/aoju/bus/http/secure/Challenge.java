@@ -36,7 +36,7 @@ import java.util.Map.Entry;
  * RFC 7235兼容的认证
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public final class Challenge {

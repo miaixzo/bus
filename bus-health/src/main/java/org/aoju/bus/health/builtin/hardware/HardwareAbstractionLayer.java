@@ -33,7 +33,7 @@ import java.util.List;
  * processors, memory, battery, and disks.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -88,6 +88,16 @@ public interface HardwareAbstractionLayer {
      * the interfaces
      */
     List<NetworkIF> getNetworkIFs();
+
+    /**
+     * Gets a list {@link NetworkIF} objects, representing a network interface.
+     *
+     * @param includeLocalInterfaces whether to include local interfaces (loopback or no hardware
+     *                               address) in the result
+     * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
+     * the interfaces
+     */
+    List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces);
 
     /**
      * Instantiates an array of {@link Display} objects, representing

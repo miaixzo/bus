@@ -41,7 +41,7 @@ import java.util.function.Function;
  * 数组工具类
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class ArrayKit {
@@ -7234,7 +7234,7 @@ public class ArrayKit {
 
         int[] array = new int[length];
         for (int i = 0; i < length; i++) {
-            array[i] = values[i].intValue();
+            array[i] = ObjectKit.defaultIfNull(values[i], 0);
         }
         return array;
     }
@@ -7278,7 +7278,7 @@ public class ArrayKit {
 
         long[] array = new long[length];
         for (int i = 0; i < length; i++) {
-            array[i] = values[i].longValue();
+            array[i] = ObjectKit.defaultIfNull(values[i], 0L);
         }
         return array;
     }
@@ -7322,7 +7322,7 @@ public class ArrayKit {
 
         char[] array = new char[length];
         for (int i = 0; i < length; i++) {
-            array[i] = values[i].charValue();
+            array[i] = ObjectKit.defaultIfNull(values[i], Character.MIN_VALUE);
         }
         return array;
     }

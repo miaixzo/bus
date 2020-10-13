@@ -12,7 +12,7 @@
 
 ---
 ### 1. 多个@CacheKey属性为批量模式
-```
+```java
 @Cached
 Object func(@CacheKey("#arg0[#i]") List<Long> fIds, @CacheKey("#arg1[#i]") List<Long> aIds);
 ```
@@ -20,21 +20,21 @@ Object func(@CacheKey("#arg0[#i]") List<Long> fIds, @CacheKey("#arg1[#i]") List<
 
 ### 2. 以参数Map作为批量模式参数
 
-```
+```java
 @Cached
 Object func(@CacheKey("#arg0[#i]") Map<Long, Object> map);
 ```
 > 同上: 如果将Map内所有的`Key`/`Value`进行交叉拼装为缓存`key`的话, 也会产生类似**笛卡尔积**的效果, 因此也不支持.
 
 ### 3. 以Map.keySet()作为批量模式参数
-```
+```java
 @Cached
 Object func(@CacheKey("#arg0.keySet()[#i]") Map<Long, Object> map);
 ```
 > 这种模式不常用且实现复杂、性能损耗较大, 因此不支持.
 
 ### 4. 非标准容器作为批量模式参数
-```
+```java
 @Cached
 Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
     return Collections.emptyList();
@@ -53,15 +53,15 @@ Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
 ## I. 简单使用
 ### 配置
 - pom
-```
+```xml
 <dependency>
     <groupId>org.aoju.bus</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>6.1.0</version>
+    <version>6.1.1</version>
 </dependency>
 ```
 - XML注册
-```
+```xml
 <!-- 启用自动代理: 如果已经开启则不必重复开启 -->
 <aop:aspectj-autoproxy proxy-target-class="true"/>
 
@@ -104,7 +104,7 @@ org.aoju.bus.cache.provider.cache.Cache实现 -->
 ### @Cached
 - 在需要走缓存的方法前添加`@Cached`注解.
 
-```
+```java
 @Documented
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -149,7 +149,7 @@ public @interface Cached {
 ### @Invalid
 - 在需要失效缓存的方法前添加`@Invalid`注解.
 
-```
+```java
 @Documented
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -178,7 +178,7 @@ public @interface Invalid {
 ### @CacheKey
 - 在需要作为缓存key的方法参数前添加`@CacheKey`注解.
 
-```
+```java
 @Documented
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
@@ -209,7 +209,7 @@ public @interface CacheKey {
 - 在需要走缓存的方法前添加`@CachedGet`注解.
 > 与`@Cached`的不同在于`@CachedGet`只会从缓存内查询, 不会写入缓存(当缓存不存在时, 只是会取执行方法, 但不讲方法返回内容写入缓存).
 
-```
+```java
 @Documented
 @Target(value = ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,7 +1,7 @@
 ## 使用说明
 
 启动类中增加注解或者POM文件中增加依赖即可。
-```
+```java
     @EnableCorsFilter
     @EnableOnceFilter
     @EnableMapper
@@ -52,7 +52,7 @@
 - ApiVersion：替换之前的版本定义在路径中，导致的接口升级需要重新定义类或者在代码中做判断的问题
 - ClientVersion：碰到客户端已经在使用的接口，区分对待的情况下，通过通过ClientVersion优雅的避免在代码中写大量版本判断逻辑的问题
 
-```
+```java
 
 @RequestMapping("/t")
 @RestController
@@ -76,16 +76,16 @@ public class TestController {
     //以下三个请求路径都是/c，
     //通过header里的客户端类型（如果是从url参数取，修改TerminalVersionExpression即可）以及版本号路由到不同方法
     @GetMapping("/c")
-    @ClientVersion(expression = {"1>6.1.0"})
-    public String cvcheck1(){return "6.1.0以上版本的1类型";}
+    @ClientVersion(expression = {"1>6.1.1"})
+    public String cvcheck1(){return "6.1.1以上版本的1类型";}
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.GT,version = "6.1.0")})
-    public String cvcheck2(){return "6.1.0以上版本的2类型";}
+    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.GT,version = "6.1.1")})
+    public String cvcheck2(){return "6.1.1以上版本的2类型";}
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.LTE,version = "6.1.0")})
-    public String cvcheck3(){return "6.1.0以下版本的2类型";}
+    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.LTE,version = "6.1.1")})
+    public String cvcheck3(){return "6.1.1以下版本的2类型";}
 
     public String c(){
         return "aaaa";
@@ -94,7 +94,7 @@ public class TestController {
 
 ```
 
-```
+```java
 @RestController
 @VersionMapping(value="/t",apiVersion = "5")
 public class TController {

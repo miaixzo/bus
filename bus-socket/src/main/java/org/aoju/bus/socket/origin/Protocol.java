@@ -34,7 +34,7 @@ import java.nio.ByteBuffer;
  * 请勿在其实现类的成员变量中存储特定链路的数据
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public interface Protocol<T> {

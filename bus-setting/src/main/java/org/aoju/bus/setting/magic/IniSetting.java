@@ -41,7 +41,7 @@ import java.util.*;
  * 如果您想创建Ini，则可以{@link Builder}
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class IniSetting extends ArrayList<IniElement> {

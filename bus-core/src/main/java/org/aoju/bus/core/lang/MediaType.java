@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * HTTP 媒体类型
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @Data
@@ -234,7 +234,7 @@ public class MediaType {
      * "text/csv;charset=utf-8"
      */
     public static final String TEXT_CSV_UTF8 = "text/csv;charset=utf-8";
-    public static final MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", "utf-8");
+    public static final MediaType TEXT_CSV_UTF8_TYPE = new MediaType("text", "csv", Charset.DEFAULT_UTF_8);
 
     /**
      * "application/zip"

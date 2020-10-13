@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 无效的范围要求
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class InvalidClaimException extends UncheckedException {
@@ -37,8 +37,8 @@ public class InvalidClaimException extends UncheckedException {
         super();
     }
 
-    public InvalidClaimException(Throwable t) {
-        super(t);
+    public InvalidClaimException(Throwable cause) {
+        super(cause);
     }
 
     public InvalidClaimException(String format, Object... args) {

@@ -46,7 +46,7 @@ import org.apache.ibatis.reflection.MetaObject;
  * 抽象 SQL 解析类
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {

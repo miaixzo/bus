@@ -40,7 +40,7 @@ import java.util.List;
  * {@link ValueMatcher} 构建器,用于构建表达式中每一项的匹配器
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class ValueMatcherBuilder {

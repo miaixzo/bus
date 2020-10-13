@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * WindowsNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -72,14 +72,15 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Gets the network interfaces on this machine
+     * Gets all network interfaces on this machine
      *
+     * @param includeLocalInterfaces include local interfaces in the result
      * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
      * the interfaces
      */
-    public static List<NetworkIF> getNetworks() {
-        return Collections.unmodifiableList(
-                getNetworkInterfaces().stream().map(WindowsNetworkIF::new).collect(Collectors.toList()));
+    public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
+        return Collections.unmodifiableList(getNetworkInterfaces(includeLocalInterfaces).stream()
+                .map(WindowsNetworkIF::new).collect(Collectors.toList()));
     }
 
     @Override

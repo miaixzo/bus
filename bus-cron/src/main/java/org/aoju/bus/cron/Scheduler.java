@@ -71,7 +71,7 @@ import java.util.concurrent.ExecutorService;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class Scheduler {
@@ -87,15 +87,15 @@ public class Scheduler {
     /**
      * 定时任务表
      */
-    protected TaskTable taskTable = new TaskTable(this);
+    protected Repertoire repertoire = new Repertoire(this);
     /**
      * 启动器管理器
      */
-    protected LauncherManager launcherManager;
+    protected Supervisor supervisor;
     /**
      * 执行器管理器
      */
-    protected ExecutorManager executorManager;
+    protected Manager manager;
     /**
      * 监听管理器列表
      */
@@ -293,7 +293,7 @@ public class Scheduler {
      * @return this
      */
     public Scheduler schedule(String id, CronPattern pattern, Task task) {
-        taskTable.add(id, pattern, task);
+        repertoire.add(id, pattern, task);
         return this;
     }
 
@@ -304,7 +304,7 @@ public class Scheduler {
      * @return this
      */
     public Scheduler deschedule(String id) {
-        this.taskTable.remove(id);
+        this.repertoire.remove(id);
         return this;
     }
 
@@ -316,7 +316,7 @@ public class Scheduler {
      * @return this
      */
     public Scheduler updatePattern(String id, CronPattern pattern) {
-        this.taskTable.updatePattern(id, pattern);
+        this.repertoire.updatePattern(id, pattern);
         return this;
     }
 
@@ -327,7 +327,7 @@ public class Scheduler {
      * @return {@link CronPattern}
      */
     public CronPattern getPattern(String id) {
-        return this.taskTable.getPattern(id);
+        return this.repertoire.getPattern(id);
     }
 
     /**
@@ -337,7 +337,7 @@ public class Scheduler {
      * @return {@link Task}
      */
     public Task getTask(String id) {
-        return this.taskTable.getTask(id);
+        return this.repertoire.getTask(id);
     }
 
     /**
@@ -346,7 +346,7 @@ public class Scheduler {
      * @return true表示无任务
      */
     public boolean isEmpty() {
-        return this.taskTable.isEmpty();
+        return this.repertoire.isEmpty();
     }
 
     /**
@@ -355,7 +355,7 @@ public class Scheduler {
      * @return 当前任务数
      */
     public int size() {
-        return this.taskTable.size();
+        return this.repertoire.size();
     }
 
     /**
@@ -364,7 +364,7 @@ public class Scheduler {
      * @return this
      */
     public Scheduler clear() {
-        this.taskTable = new TaskTable(this);
+        this.repertoire = new Repertoire(this);
         return this;
     }
 
@@ -400,8 +400,8 @@ public class Scheduler {
             this.threadExecutor = ExecutorBuilder.create().useSynchronousQueue().setThreadFactory(//
                     ThreadBuilder.create().setNamePrefix("exec-cron-").setDaemon(this.daemon).build()//
             ).build();
-            this.launcherManager = new LauncherManager(this);
-            this.executorManager = new ExecutorManager(this);
+            this.supervisor = new Supervisor(this);
+            this.manager = new Manager(this);
 
             // Start CronTimer
             timer = new CronTimer(this);

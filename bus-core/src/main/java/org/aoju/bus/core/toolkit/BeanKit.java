@@ -47,7 +47,7 @@ import java.util.*;
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class BeanKit {
@@ -850,6 +850,61 @@ public class BeanKit {
         }
 
         return bean;
+    }
+
+    /**
+     * 转义bean中所有属性为字符串的
+     *
+     * @param bean {@link Object}
+     */
+    public static void trimAllFields(Object bean) {
+        try {
+            if (bean != null) {
+                // 获取所有的字段包括public,private,protected,private
+                Field[] fields = bean.getClass().getDeclaredFields();
+                for (Field f : fields) {
+                    if ("java.lang.String".equals(f.getType().getName())) {
+                        // 获取字段名
+                        String key = f.getName();
+                        Object value = getFieldValue(bean, key);
+
+                        if (value == null) {
+                            continue;
+                        }
+                        setFieldValue(bean, key, EscapeKit.escapeXml11(value.toString()));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * bean 中所有属性为字符串的进行\n\t\s处理
+     *
+     * @param bean {@link Object}
+     */
+    public static void replaceStrFields(Object bean) {
+        try {
+            if (bean != null) {
+                // 获取所有的字段包括public,private,protected,private
+                Field[] fields = bean.getClass().getDeclaredFields();
+                for (Field f : fields) {
+                    if ("java.lang.String".equals(f.getType().getName())) {
+                        // 获取字段名
+                        String key = f.getName();
+                        Object value = getFieldValue(bean, key);
+                        if (value == null) {
+                            continue;
+                        }
+                        setFieldValue(bean, key, StringKit.replaceBlank(value.toString()));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new InstrumentException(e);
+        }
     }
 
     /**

@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * See <a href="https://docs.gitlab.com/ee/api/discussions.html">Discussions API at GitLab</a> for more information.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class DiscussionsApi extends AbstractApi {

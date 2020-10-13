@@ -28,7 +28,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 参数验证失败
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class ValidateException extends UncheckedException {
@@ -45,8 +45,8 @@ public class ValidateException extends UncheckedException {
         super(format, args);
     }
 
-    public ValidateException(Throwable e) {
-        super(e);
+    public ValidateException(Throwable format) {
+        super(format);
     }
 
     public ValidateException(String errcode, String errmsg) {

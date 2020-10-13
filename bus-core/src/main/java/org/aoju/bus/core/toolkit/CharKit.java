@@ -35,7 +35,7 @@ import java.nio.CharBuffer;
  * 部分工具来自于Apache
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class CharKit {

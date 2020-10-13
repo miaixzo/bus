@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
  * This class provides an entry point to all the GitLab API markdown calls.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class MarkdownApi extends AbstractApi {

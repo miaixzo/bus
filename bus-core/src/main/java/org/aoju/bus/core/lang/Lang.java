@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
  * Lang 相关方法
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class Lang {
@@ -78,7 +78,6 @@ public class Lang {
 
     /**
      * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
-     * <p>
      * 如果是 InvocationTargetException，那么将其剥离，只包裹其 TargetException
      *
      * @param e 抛出对象

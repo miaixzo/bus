@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * MacNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -63,16 +63,17 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Gets the network interfaces on this machine
+     * Gets all network interfaces on this machine
      *
+     * @param includeLocalInterfaces include local interfaces in the result
      * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
      * the interfaces
      */
-    public static List<NetworkIF> getNetworks() {
+    public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         // One time fetch of stats
         final Map<Integer, NetStat.IFdata> data = NetStat.queryIFdata(-1);
-        return Collections.unmodifiableList(
-                getNetworkInterfaces().stream().map(ni -> new MacNetworkIF(ni, data)).collect(Collectors.toList()));
+        return Collections.unmodifiableList(getNetworkInterfaces(includeLocalInterfaces).stream()
+                .map(ni -> new MacNetworkIF(ni, data)).collect(Collectors.toList()));
     }
 
     @Override

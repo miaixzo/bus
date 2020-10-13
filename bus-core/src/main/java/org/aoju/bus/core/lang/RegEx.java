@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class RegEx {
@@ -61,6 +61,12 @@ public class RegEx {
      */
     public static final String VALID_XML_PATTERN = "[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f]";
     public static final Pattern VALID_XML = Pattern.compile(VALID_XML_PATTERN);
+
+    /**
+     * XML中注释的内容
+     */
+    public static final String COMMENT_XML_PATTERN = "(?s)<!--.+?-->";
+    public static final Pattern COMMENT_XML = Pattern.compile(COMMENT_XML_PATTERN);
 
     /**
      * 中文字、英文字母、数字和下划线

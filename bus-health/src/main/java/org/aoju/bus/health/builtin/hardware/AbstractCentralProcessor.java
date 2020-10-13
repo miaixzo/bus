@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * A CPU.
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -67,7 +67,7 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     /**
      * 创建一个处理器
      */
-    public AbstractCentralProcessor() {
+    protected AbstractCentralProcessor() {
         // 填充逻辑处理器阵列
         this.logicalProcessors = Collections.unmodifiableList(initProcessorCounts());
         // I初始化处理器数

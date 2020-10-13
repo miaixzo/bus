@@ -30,7 +30,7 @@ import org.aoju.bus.health.Formats;
 
 /**
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -41,7 +41,7 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
     private final String serial;
     private final long size;
 
-    public AbstractHWDiskStore(String name, String model, String serial, long size) {
+    protected AbstractHWDiskStore(String name, String model, String serial, long size) {
         this.name = name;
         this.model = model;
         this.serial = serial;

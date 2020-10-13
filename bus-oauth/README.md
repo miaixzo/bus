@@ -10,15 +10,15 @@
 ## 快速开始
 
 - 引入依赖
-```
+```xml
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>6.1.0</version>
+    <version>6.1.1</version>
 </dependency>
 ```
 - 调用api
-```
+```java
 // 创建授权request
 Provider provider = new GiteeProvider(Context.builder()
         .clientId("clientId")

@@ -55,7 +55,7 @@ import java.util.Random;
  * 彩色转黑白、文字水印、图片水印等
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public class ImageKit {
@@ -1839,6 +1839,28 @@ public class ImageKit {
             random = RandomKit.getRandom();
         }
         return new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+    }
+
+    /**
+     * 图片合成
+     *
+     * @param srcImage 背景图片对象（画布以背景图宽高为基准）
+     * @param fileType 输出图片格式
+     * @return {@link Image}
+     */
+    public static Image merge(BufferedImage srcImage, String fileType) {
+        return Image.from(srcImage, null, fileType);
+    }
+
+    /**
+     * 图片合成
+     *
+     * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
+     * @param fileType 输出图片格式
+     * @return {@link Image}
+     */
+    public static Image merge(String imageUrl, String fileType) {
+        return Image.from(null, imageUrl, fileType);
     }
 
 }

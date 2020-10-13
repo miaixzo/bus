@@ -42,7 +42,7 @@ import java.util.List;
  * 电源支持
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -70,11 +70,11 @@ public abstract class AbstractPowerSource implements PowerSource {
     private String serialNumber;
     private double temperature;
 
-    public AbstractPowerSource(String name, String deviceName, double remainingCapacityPercent,
-                               double timeRemainingEstimated, double timeRemainingInstant, double powerUsageRate, double voltage,
-                               double amperage, boolean powerOnLine, boolean charging, boolean discharging, CapacityUnits capacityUnits,
-                               int currentCapacity, int maxCapacity, int designCapacity, int cycleCount, String chemistry,
-                               LocalDate manufactureDate, String manufacturer, String serialNumber, double temperature) {
+    protected AbstractPowerSource(String name, String deviceName, double remainingCapacityPercent,
+                                  double timeRemainingEstimated, double timeRemainingInstant, double powerUsageRate, double voltage,
+                                  double amperage, boolean powerOnLine, boolean charging, boolean discharging, CapacityUnits capacityUnits,
+                                  int currentCapacity, int maxCapacity, int designCapacity, int cycleCount, String chemistry,
+                                  LocalDate manufactureDate, String manufacturer, String serialNumber, double temperature) {
         super();
         this.name = name;
         this.deviceName = deviceName;

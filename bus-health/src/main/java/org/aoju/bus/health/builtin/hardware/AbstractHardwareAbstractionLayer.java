@@ -27,13 +27,14 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
  * 硬件信息特定于平台的实现所使用的公共字段或方法
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -86,6 +87,11 @@ public abstract class AbstractHardwareAbstractionLayer implements HardwareAbstra
     @Override
     public Sensors getSensors() {
         return sensors.get();
+    }
+
+    @Override
+    public List<NetworkIF> getNetworkIFs() {
+        return getNetworkIFs(false);
     }
 
     /**

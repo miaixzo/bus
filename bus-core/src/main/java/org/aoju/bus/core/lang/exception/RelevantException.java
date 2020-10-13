@@ -34,7 +34,7 @@ import java.lang.reflect.InvocationTargetException;
  * 自定义异常: 未受检异常
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 @Data
@@ -72,8 +72,8 @@ public class RelevantException extends IOException {
         super(cause);
     }
 
-    protected RelevantException(Exception ex) {
-        super(ex);
+    protected RelevantException(Exception cause) {
+        super(cause);
     }
 
     /**

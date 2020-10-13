@@ -40,7 +40,7 @@ package org.aoju.bus.core.builder;
  *
  * @param <T> 这个对象可能被区分的对象类型
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public interface Differentable<T> {

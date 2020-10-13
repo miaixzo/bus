@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.1.0</version>
+    <version>6.1.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -65,6 +65,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-gitlab</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-goalie</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>

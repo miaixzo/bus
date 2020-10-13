@@ -34,7 +34,7 @@
 
 ### 创建/输出 ini
  
-```
+```java
     Builder b = new Builder()
         .plusComment("this is a test ini")
         .skipLine(2)

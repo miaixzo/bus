@@ -24,14 +24,14 @@
  ********************************************************************************/
 package org.aoju.bus.cron.listener;
 
-import org.aoju.bus.cron.TaskExecutor;
+import org.aoju.bus.cron.Executor;
 
 /**
  * 定时任务监听接口
  * 通过实现此接口,实现对定时任务的各个环节做监听
  *
  * @author Kimi Liu
- * @version 6.1.0
+ * @version 6.1.1
  * @since JDK 1.8+
  */
 public interface TaskListener {
@@ -39,23 +39,23 @@ public interface TaskListener {
     /**
      * 定时任务启动时触发
      *
-     * @param executor {@link TaskExecutor}
+     * @param executor {@link Executor}
      */
-    void onStart(TaskExecutor executor);
+    void onStart(Executor executor);
 
     /**
      * 任务成功结束时触发
      *
-     * @param executor {@link TaskExecutor}
+     * @param executor {@link Executor}
      */
-    void onSucceeded(TaskExecutor executor);
+    void onSucceeded(Executor executor);
 
     /**
      * 任务启动失败时触发
      *
-     * @param executor  {@link TaskExecutor}
+     * @param executor  {@link Executor}
      * @param exception 异常
      */
-    void onFailed(TaskExecutor executor, Throwable exception);
+    void onFailed(Executor executor, Throwable exception);
 
 }

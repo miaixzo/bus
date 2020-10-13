@@ -17,7 +17,7 @@
     * `@Valid`注解，默认全部校验，当标记value时按照标记校验，标记inside时取消或者开启内部校验。
     * `@Inside`注解，当标记在类中时,优先级高于@Valid` 中的inside
     
-```
+```java
         @Controller
         @RequestMapping("user")
         public UserController {
@@ -30,7 +30,7 @@
         }
 ```
 3. 在非spring环境使用校验器功能
-``` 
+``` java
         //标记校验对象内部字段的注解，否则默认不去校验对象内部字段
         @Inside
         class User {
@@ -65,7 +65,7 @@
     * 校验器注解的具体使用方法，可以阅读源代码的api注释文档。
     * 注意该框架的校验器的包名为`org.aoju.bus.validate.annotation`
     * 下列校验器注解，默认都**不会**产生校验对象内部字段的功能。如需校验对象内部字段，请使用后文提到的`@Inside`注解。
-```
+```text
         @Blank: 字符串必须为空
         @Each: 遍历数组或列表、Map执行校验器
         @Equals: toString方法的返回值必须和指定的字符串相同
@@ -85,7 +85,7 @@
 ```
     
    * 特殊的元数据注解
-```
+```text
         @Valid: 标记在类上或方法上，表示校验切面拦截位置
         @Group: 标记在被校验方法上或入参上，表示当前的校验组
         @Inside: 标记在被校验方法的入参或POJO字段上，表示校验对象内部字段
@@ -97,7 +97,7 @@
    
 6. 自定义校验器及注解：
     1. 自定义一个注解，必须有errcode、errmsg、group、field四个方法。注解上要有`@Complex`标明注解在运行时使用的校验器，示例如下：
-```
+```java
         @Documented
         @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.ANNOTATION_TYPE, ElementType.FIELD})
         @Retention(RetentionPolicy.RUNTIME)
@@ -127,7 +127,7 @@
 ```
     
     2. 实现一个校验器，实现`Complex`接口， 并且将其注入Spring容器中。
-```
+```java
         public class BlankStrategy implements Complex<String, Blank> {
             @Override
             public boolean on(String object, Blank annotation, ValidateContext context) {
@@ -137,7 +137,7 @@
 ```
     
     3. 在需要进行参数校验的地方使用该注解
-```
+```java
         @Valid //标记注解，启用验证器AOP拦截
         public append(@Blank String str) {
             ...
