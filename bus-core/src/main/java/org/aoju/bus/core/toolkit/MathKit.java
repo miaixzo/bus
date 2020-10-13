@@ -1140,27 +1140,33 @@ public class MathKit {
      * @return 随机int数组
      */
     public static int[] generateRandomNumber(int begin, int end, int size) {
+        return generateRandomNumber(begin, end, size, ArrayKit.range(begin, end));
+    }
+
+    /**
+     * 生成不重复随机数 根据给定的最小数字和最大数字，以及随机数的个数，产生指定的不重复的数组
+     *
+     * @param begin 最小数字（包含该数）
+     * @param end   最大数字（不包含该数）
+     * @param size  指定产生随机数的个数
+     * @param seed  种子，用于取随机数的int池
+     * @return 随机int数组
+     */
+    public static int[] generateRandomNumber(int begin, int end, int size, int[] seed) {
         if (begin > end) {
             int temp = begin;
             begin = end;
             end = temp;
         }
-        // 加入逻辑判断,确保begin<end并且size不能大于该表示范围
-        if ((end - begin) < size) {
-            throw new InstrumentException("Size is larger than range between begin and end!");
-        }
-        // 种子你可以随意生成,但不能重复
-        int[] seed = new int[end - begin];
+        // 加入逻辑判断，确保begin<end并且size不能大于该表示范围
+        Assert.isTrue((end - begin) > size, "Size is larger than range between begin and end!");
+        Assert.isTrue(seed.length > size, "Size is larger than seed size!");
 
-        for (int i = begin; i < end; i++) {
-            seed[i - begin] = i;
-        }
-        int[] ranArr = new int[size];
-        Random ran = new Random();
-        // 数量你可以自己定义
+        final int[] ranArr = new int[size];
+        // 数量你可以自己定义。
         for (int i = 0; i < size; i++) {
             // 得到一个位置
-            int j = ran.nextInt(seed.length - i);
+            int j = RandomKit.randomInt(seed.length - i);
             // 得到那个位置的数值
             ranArr[i] = seed[j];
             // 将最后一个未用的数字放到这里
@@ -2729,6 +2735,31 @@ public class MathKit {
     }
 
     /**
+     * 可读的文件大小
+     *
+     * @param size Long类型大小
+     * @return 大小
+     */
+    public static String format(long size) {
+        if (size <= 0) {
+            return Symbol.ZERO;
+        }
+        int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
+        return new DecimalFormat("#,##0.##")
+                .format(size / Math.pow(1024, digitGroups)) + " " + Normal.CAPACITY_NAMES[digitGroups];
+    }
+
+    /**
+     * 解析数据大小字符串，转换为bytes大小
+     *
+     * @param text 数据大小字符串，类似于：12KB, 5MB等
+     * @return bytes大小
+     */
+    public static long parse(String text) {
+        return MathKit.parse(text, null).toBytes();
+    }
+
+    /**
      * 获取指定数据大小文本对应的{@link MathKit}对象，如果无单位指定，默认获取{@link Normal#CAPACITY_NAMES}
      * <p>
      * 例如：
@@ -2743,31 +2774,6 @@ public class MathKit {
      */
     public static MathKit parse(CharSequence text) {
         return parse(text, null);
-    }
-
-    /**
-     * 解析数据大小字符串，转换为bytes大小
-     *
-     * @param text 数据大小字符串，类似于：12KB, 5MB等
-     * @return bytes大小
-     */
-    public static long parse(String text) {
-        return MathKit.parse(text, null).toBytes();
-    }
-
-    /**
-     * 可读的文件大小
-     *
-     * @param size Long类型大小
-     * @return 大小
-     */
-    public static String format(long size) {
-        if (size <= 0) {
-            return Symbol.ZERO;
-        }
-        int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
-        return new DecimalFormat("#,##0.##")
-                .format(size / Math.pow(1024, digitGroups)) + " " + Normal.CAPACITY_NAMES[digitGroups];
     }
 
     /**

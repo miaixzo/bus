@@ -116,9 +116,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      */
     protected static List<NetworkInterface> getNetworkInterfaces(boolean includeLocalInterfaces) {
         List<NetworkInterface> interfaces = getAllNetworkInterfaces();
-
-        return includeLocalInterfaces ? interfaces : getAllNetworkInterfaces().stream()
-                .filter(networkInterface1 -> !isLocalInterface(networkInterface1))
+        return includeLocalInterfaces ? interfaces
+                : getAllNetworkInterfaces().stream().filter(networkInterface1 -> !isLocalInterface(networkInterface1))
                 .collect(Collectors.toList());
     }
 
@@ -130,7 +129,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private static List<NetworkInterface> getAllNetworkInterfaces() {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            return Collections.list(interfaces);
+            return interfaces == null ? Collections.emptyList() : Collections.list(interfaces);
         } catch (SocketException ex) {
             Logger.error("Socket exception when retrieving interfaces: {}", ex.getMessage());
         }

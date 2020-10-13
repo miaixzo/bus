@@ -40,7 +40,7 @@ public abstract class AbstractOSThread implements OSThread {
 
     private final int owningProcessId;
 
-    public AbstractOSThread(int processId) {
+    protected AbstractOSThread(int processId) {
         this.owningProcessId = processId;
     }
 
