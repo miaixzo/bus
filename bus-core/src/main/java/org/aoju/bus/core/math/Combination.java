@@ -25,7 +25,6 @@
 package org.aoju.bus.core.math;
 
 import org.aoju.bus.core.toolkit.MathKit;
-import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,10 +76,11 @@ public class Combination {
      * @return 组合数
      */
     public static long countAll(int n) {
-        if (n < 0 || n > 63) {
-            throw new IllegalArgumentException(StringKit.format("countAll must have n >= 0 and n <= 63, but got n={}", n));
+        long total = 0;
+        for (int i = 1; i <= n; i++) {
+            total += count(n, i);
         }
-        return n == 63 ? Long.MAX_VALUE : (1L << n) - 1;
+        return total;
     }
 
     /**
