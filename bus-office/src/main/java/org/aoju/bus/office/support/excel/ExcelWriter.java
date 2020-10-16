@@ -852,6 +852,20 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     }
 
     /**
+     * 设置行样式
+     *
+     * @param y     Y坐标，从0计数，即行号
+     * @param style 样式
+     * @return this
+     * @see Row#setRowStyle(CellStyle)
+     * @since 5.4.5
+     */
+    public ExcelWriter setRowStyle(int y, CellStyle style) {
+        getOrCreateRow(y).setRowStyle(style);
+        return this;
+    }
+
+    /**
      * 创建字体
      *
      * @return 字体
