@@ -94,6 +94,16 @@ public class LookupTableCV {
         this.forceReadingUnsigned = forceReadingUnsigned;
     }
 
+    private static int index(int pixel, int offset, int length) {
+        int val = pixel - offset;
+        if (val < 0) {
+            val = 0;
+        } else if (val > length) {
+            val = length;
+        }
+        return val;
+    }
+
     public DataBuffer getData() {
         return data;
     }
@@ -132,16 +142,6 @@ public class LookupTableCV {
 
     public int getOffset() {
         return offsets[0];
-    }
-
-    private static int index(int pixel, int offset, int length) {
-        int val = pixel - offset;
-        if (val < 0) {
-            val = 0;
-        } else if (val > length) {
-            val = length;
-        }
-        return val;
     }
 
     public int getNumBands() {
@@ -272,14 +272,14 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 byte[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
-                int maxLength = t.length -1;
+                int maxLength = t.length - 1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
                     dstData[i] = t[index((srcData[i] & 0xFF), tblOffset, maxLength)];
@@ -296,14 +296,14 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFFFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 byte[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
-                int maxLength = t.length -1;
+                int maxLength = t.length - 1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
                     dstData[i] = t[index((srcData[i] & 0xFFFF), tblOffset, maxLength)];
@@ -321,14 +321,14 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = srcData[i] & mask;
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 byte[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
-                int maxLength = t.length -1;
+                int maxLength = t.length - 1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
                     dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];
@@ -345,14 +345,14 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 short[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
-                int maxLength = t.length -1;
+                int maxLength = t.length - 1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
                     dstData[i] = t[index((srcData[i] & 0xFF), tblOffset, maxLength)];
@@ -368,14 +368,14 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFFFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 short[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
-                int maxLength = t.length -1;
+                int maxLength = t.length - 1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
                     dstData[i] = t[index((srcData[i] & 0xFFFF), tblOffset, maxLength)];
@@ -393,14 +393,14 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & mask);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length - 1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 short[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
-                int maxLength = t.length -1;
+                int maxLength = t.length - 1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
                     dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];

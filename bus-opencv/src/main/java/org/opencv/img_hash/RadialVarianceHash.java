@@ -42,49 +42,27 @@ public class RadialVarianceHash extends ImgHashBase {
     // C++:  double cv::img_hash::RadialVarianceHash::getSigma()
     //
 
-    public double getSigma() {
-        return getSigma_0(nativeObj);
-    }
+    // C++: static Ptr_RadialVarianceHash cv::img_hash::RadialVarianceHash::create(double sigma = 1, int numOfAngleLine = 180)
+    private static native long create_0(double sigma, int numOfAngleLine);
 
 
     //
     // C++:  int cv::img_hash::RadialVarianceHash::getNumOfAngleLine()
     //
 
-    public void setSigma(double value) {
-        setSigma_0(nativeObj, value);
-    }
+    private static native long create_1(double sigma);
 
 
     //
     // C++:  void cv::img_hash::RadialVarianceHash::setNumOfAngleLine(int value)
     //
 
-    public int getNumOfAngleLine() {
-        return getNumOfAngleLine_0(nativeObj);
-    }
+    private static native long create_2();
 
 
     //
     // C++:  void cv::img_hash::RadialVarianceHash::setSigma(double value)
     //
-
-    public void setNumOfAngleLine(int value) {
-        setNumOfAngleLine_0(nativeObj, value);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
-
-
-    // C++: static Ptr_RadialVarianceHash cv::img_hash::RadialVarianceHash::create(double sigma = 1, int numOfAngleLine = 180)
-    private static native long create_0(double sigma, int numOfAngleLine);
-
-    private static native long create_1(double sigma);
-
-    private static native long create_2();
 
     // C++:  double cv::img_hash::RadialVarianceHash::getSigma()
     private static native double getSigma_0(long nativeObj);
@@ -100,5 +78,26 @@ public class RadialVarianceHash extends ImgHashBase {
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
+
+    public double getSigma() {
+        return getSigma_0(nativeObj);
+    }
+
+    public void setSigma(double value) {
+        setSigma_0(nativeObj, value);
+    }
+
+    public int getNumOfAngleLine() {
+        return getNumOfAngleLine_0(nativeObj);
+    }
+
+    public void setNumOfAngleLine(int value) {
+        setNumOfAngleLine_0(nativeObj, value);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
 
 }

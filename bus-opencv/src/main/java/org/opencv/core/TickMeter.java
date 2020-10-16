@@ -4,8 +4,8 @@
 package org.opencv.core;
 
 
-
 // C++: class TickMeter
+
 /**
  * a Class to measure passing time.
  * <p>
@@ -95,41 +95,59 @@ public class TickMeter {
     // C++:  int64 cv::TickMeter::getCounter()
     //
 
-    public double getTimeMicro() {
-        return getTimeMicro_0(nativeObj);
-    }
+    // C++:  int64 cv::TickMeter::getCounter()
+    private static native long getCounter_0(long nativeObj);
 
 
     //
     // C++:  int64 cv::TickMeter::getTimeTicks()
     //
 
-    public double getTimeMilli() {
-        return getTimeMilli_0(nativeObj);
-    }
+    // C++:  int64 cv::TickMeter::getTimeTicks()
+    private static native long getTimeTicks_0(long nativeObj);
 
 
     //
     // C++:  void cv::TickMeter::reset()
     //
 
-    public double getTimeSec() {
-        return getTimeSec_0(nativeObj);
-    }
+    // C++:  void cv::TickMeter::reset()
+    private static native void reset_0(long nativeObj);
 
 
     //
     // C++:  void cv::TickMeter::start()
     //
 
-    public long getCounter() {
-        return getCounter_0(nativeObj);
-    }
+    // C++:  void cv::TickMeter::start()
+    private static native void start_0(long nativeObj);
 
 
     //
     // C++:  void cv::TickMeter::stop()
     //
+
+    // C++:  void cv::TickMeter::stop()
+    private static native void stop_0(long nativeObj);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
+    public double getTimeMicro() {
+        return getTimeMicro_0(nativeObj);
+    }
+
+    public double getTimeMilli() {
+        return getTimeMilli_0(nativeObj);
+    }
+
+    public double getTimeSec() {
+        return getTimeSec_0(nativeObj);
+    }
+
+    public long getCounter() {
+        return getCounter_0(nativeObj);
+    }
 
     public long getTimeTicks() {
         return getTimeTicks_0(nativeObj);
@@ -138,9 +156,6 @@ public class TickMeter {
     public void reset() {
         reset_0(nativeObj);
     }
-
-    // C++:  int64 cv::TickMeter::getCounter()
-    private static native long getCounter_0(long nativeObj);
 
     public void start() {
         start_0(nativeObj);
@@ -154,21 +169,6 @@ public class TickMeter {
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-    // C++:  int64 cv::TickMeter::getTimeTicks()
-    private static native long getTimeTicks_0(long nativeObj);
-
-    // C++:  void cv::TickMeter::reset()
-    private static native void reset_0(long nativeObj);
-
-    // C++:  void cv::TickMeter::start()
-    private static native void start_0(long nativeObj);
-
-    // C++:  void cv::TickMeter::stop()
-    private static native void stop_0(long nativeObj);
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
     public long getNativeObjAddr() {
         return nativeObj;

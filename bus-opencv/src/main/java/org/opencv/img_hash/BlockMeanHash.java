@@ -6,9 +6,10 @@ package org.opencv.img_hash;
 import org.opencv.core.MatOfDouble;
 
 // C++: class BlockMeanHash
+
 /**
  * Image hash based on block mean.
- *
+ * <p>
  * See CITE: zauner2010implementation for details.
  */
 public class BlockMeanHash extends ImgHashBase {
@@ -39,33 +40,13 @@ public class BlockMeanHash extends ImgHashBase {
     // C++:  vector_double cv::img_hash::BlockMeanHash::getMean()
     //
 
-    public MatOfDouble getMean() {
-        return MatOfDouble.fromNativeAddr(getMean_0(nativeObj));
-    }
+    // C++: static Ptr_BlockMeanHash cv::img_hash::BlockMeanHash::create(int mode = BLOCK_MEAN_HASH_MODE_0)
+    private static native long create_0(int mode);
 
 
     //
     // C++:  void cv::img_hash::BlockMeanHash::setMode(int mode)
     //
-
-    /**
-     * Create BlockMeanHash object
-     *
-     * @param mode the mode
-     */
-    public void setMode(int mode) {
-        setMode_0(nativeObj, mode);
-    }
-
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
-
-
-    // C++: static Ptr_BlockMeanHash cv::img_hash::BlockMeanHash::create(int mode = BLOCK_MEAN_HASH_MODE_0)
-    private static native long create_0(int mode);
 
     private static native long create_1();
 
@@ -77,5 +58,23 @@ public class BlockMeanHash extends ImgHashBase {
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
+
+    public MatOfDouble getMean() {
+        return MatOfDouble.fromNativeAddr(getMean_0(nativeObj));
+    }
+
+    /**
+     * Create BlockMeanHash object
+     *
+     * @param mode the mode
+     */
+    public void setMode(int mode) {
+        setMode_0(nativeObj, mode);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
 
 }

@@ -7,6 +7,7 @@ import org.opencv.core.Algorithm;
 import org.opencv.core.Mat;
 
 // C++: class ImgHashBase
+
 /**
  * The base class for image hash algorithms
  */
@@ -25,6 +26,20 @@ public class ImgHashBase extends Algorithm {
     // C++:  double cv::img_hash::ImgHashBase::compare(Mat hashOne, Mat hashTwo)
     //
 
+    // C++:  double cv::img_hash::ImgHashBase::compare(Mat hashOne, Mat hashTwo)
+    private static native double compare_0(long nativeObj, long hashOne_nativeObj, long hashTwo_nativeObj);
+
+
+    //
+    // C++:  void cv::img_hash::ImgHashBase::compute(Mat inputArr, Mat& outputArr)
+    //
+
+    // C++:  void cv::img_hash::ImgHashBase::compute(Mat inputArr, Mat& outputArr)
+    private static native void compute_0(long nativeObj, long inputArr_nativeObj, long outputArr_nativeObj);
+
+    // native support for java finalize()
+    private static native void delete(long nativeObj);
+
     /**
      * Compare the hash value between inOne and inTwo
      *
@@ -37,11 +52,6 @@ public class ImgHashBase extends Algorithm {
         return compare_0(nativeObj, hashOne.nativeObj, hashTwo.nativeObj);
     }
 
-
-    //
-    // C++:  void cv::img_hash::ImgHashBase::compute(Mat inputArr, Mat& outputArr)
-    //
-
     /**
      * Computes hash of the input image
      *
@@ -52,20 +62,9 @@ public class ImgHashBase extends Algorithm {
         compute_0(nativeObj, inputArr.nativeObj, outputArr.nativeObj);
     }
 
-
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
     }
-
-
-    // C++:  double cv::img_hash::ImgHashBase::compare(Mat hashOne, Mat hashTwo)
-    private static native double compare_0(long nativeObj, long hashOne_nativeObj, long hashTwo_nativeObj);
-
-    // C++:  void cv::img_hash::ImgHashBase::compute(Mat inputArr, Mat& outputArr)
-    private static native void compute_0(long nativeObj, long inputArr_nativeObj, long outputArr_nativeObj);
-
-    // native support for java finalize()
-    private static native void delete(long nativeObj);
 
 }
