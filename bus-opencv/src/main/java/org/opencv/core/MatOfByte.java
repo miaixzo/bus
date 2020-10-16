@@ -19,6 +19,10 @@ public class MatOfByte extends Mat {
         //FIXME: do we need release() here?
     }
 
+    public static MatOfByte fromNativeAddr(long addr) {
+        return new MatOfByte(addr);
+    }
+
     public MatOfByte(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -34,10 +38,6 @@ public class MatOfByte extends Mat {
     public MatOfByte(int offset, int length, byte... a) {
         super();
         fromArray(offset, length, a);
-    }
-
-    public static MatOfByte fromNativeAddr(long addr) {
-        return new MatOfByte(addr);
     }
 
     public void alloc(int elemNumber) {

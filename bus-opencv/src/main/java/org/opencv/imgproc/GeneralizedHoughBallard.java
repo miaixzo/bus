@@ -25,55 +25,57 @@ public class GeneralizedHoughBallard extends GeneralizedHough {
     // C++:  int cv::GeneralizedHoughBallard::getLevels()
     //
 
-    // C++:  int cv::GeneralizedHoughBallard::getLevels()
-    private static native int getLevels_0(long nativeObj);
+    public int getLevels() {
+        return getLevels_0(nativeObj);
+    }
 
 
     //
     // C++:  int cv::GeneralizedHoughBallard::getVotesThreshold()
     //
 
-    // C++:  int cv::GeneralizedHoughBallard::getVotesThreshold()
-    private static native int getVotesThreshold_0(long nativeObj);
+    public void setLevels(int levels) {
+        setLevels_0(nativeObj, levels);
+    }
 
 
     //
     // C++:  void cv::GeneralizedHoughBallard::setLevels(int levels)
     //
 
-    // C++:  void cv::GeneralizedHoughBallard::setLevels(int levels)
-    private static native void setLevels_0(long nativeObj, int levels);
+    public int getVotesThreshold() {
+        return getVotesThreshold_0(nativeObj);
+    }
 
 
     //
     // C++:  void cv::GeneralizedHoughBallard::setVotesThreshold(int votesThreshold)
     //
+
+    public void setVotesThreshold(int votesThreshold) {
+        setVotesThreshold_0(nativeObj, votesThreshold);
+    }
+
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
+
+
+    // C++:  int cv::GeneralizedHoughBallard::getLevels()
+    private static native int getLevels_0(long nativeObj);
+
+    // C++:  int cv::GeneralizedHoughBallard::getVotesThreshold()
+    private static native int getVotesThreshold_0(long nativeObj);
+
+    // C++:  void cv::GeneralizedHoughBallard::setLevels(int levels)
+    private static native void setLevels_0(long nativeObj, int levels);
 
     // C++:  void cv::GeneralizedHoughBallard::setVotesThreshold(int votesThreshold)
     private static native void setVotesThreshold_0(long nativeObj, int votesThreshold);
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
-
-    public int getLevels() {
-        return getLevels_0(nativeObj);
-    }
-
-    public void setLevels(int levels) {
-        setLevels_0(nativeObj, levels);
-    }
-
-    public int getVotesThreshold() {
-        return getVotesThreshold_0(nativeObj);
-    }
-
-    public void setVotesThreshold(int votesThreshold) {
-        setVotesThreshold_0(nativeObj, votesThreshold);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
 
 }

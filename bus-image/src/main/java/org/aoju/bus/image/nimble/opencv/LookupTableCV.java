@@ -31,6 +31,7 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferShort;
 import java.awt.image.DataBufferUShort;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -42,58 +43,55 @@ public class LookupTableCV {
 
     private final int[] offsets;
     private final DataBuffer data;
+    private final boolean forceReadingUnsigned;
 
     public LookupTableCV(byte[] data) {
-        this.offsets = new int[1];
-        this.initOffsets(0);
-        this.data = new DataBufferByte(Objects.requireNonNull(data), data.length);
+        this(data, 0);
     }
 
     public LookupTableCV(byte[] data, int offset) {
+        this(data, offset, false);
+    }
+
+    public LookupTableCV(byte[] data, int offset, boolean forceReadingUnsigned) {
         this.offsets = new int[1];
-        this.initOffsets(offset);
+        Arrays.fill(offsets, offset);
         this.data = new DataBufferByte(Objects.requireNonNull(data), data.length);
+        this.forceReadingUnsigned = forceReadingUnsigned;
     }
 
     public LookupTableCV(byte[][] data) {
-        this.offsets = new int[data.length];
-        this.initOffsets(0);
-        this.data = new DataBufferByte(Objects.requireNonNull(data), data[0].length);
+        this(data, new int[data.length]);
     }
 
     public LookupTableCV(byte[][] data, int offset) {
-        this.offsets = new int[data.length];
-        this.initOffsets(offset);
-        this.data = new DataBufferByte(Objects.requireNonNull(data), data[0].length);
+        this(data, new int[data.length]);
+        Arrays.fill(offsets, offset);
     }
 
     public LookupTableCV(byte[][] data, int[] offsets) {
-        this.offsets = new int[data.length];
-        this.initOffsets(offsets);
+        this(data, offsets, false);
+    }
+
+    public LookupTableCV(byte[][] data, int[] offsets, boolean forceReadingUnsigned) {
+        this.offsets = Arrays.copyOf(offsets, data.length);
         this.data = new DataBufferByte(Objects.requireNonNull(data), data[0].length);
+        this.forceReadingUnsigned = forceReadingUnsigned;
     }
 
     public LookupTableCV(short[] data, int offset, boolean isUShort) {
+        this(data, offset, isUShort, false);
+    }
+
+    public LookupTableCV(short[] data, int offset, boolean isUShort, boolean forceReadingUnsigned) {
         this.offsets = new int[1];
-        this.initOffsets(offset);
+        Arrays.fill(offsets, offset);
         if (isUShort) {
             this.data = new DataBufferUShort(Objects.requireNonNull(data), data.length);
         } else {
             this.data = new DataBufferShort(Objects.requireNonNull(data), data.length);
         }
-    }
-
-    private void initOffsets(int offset) {
-
-        for (int i = 0; i < offsets.length; i++) {
-            offsets[i] = offset;
-        }
-    }
-
-    private void initOffsets(int[] offset) {
-        for (int i = 0; i < offsets.length; i++) {
-            offsets[i] = offset[i];
-        }
+        this.forceReadingUnsigned = forceReadingUnsigned;
     }
 
     public DataBuffer getData() {
@@ -136,8 +134,14 @@ public class LookupTableCV {
         return offsets[0];
     }
 
-    public int getOffset(int band) {
-        return offsets[band];
+    private static int index(int pixel, int offset, int length) {
+        int val = pixel - offset;
+        if (val < 0) {
+            val = 0;
+        } else if (val > length) {
+            val = length;
+        }
+        return val;
     }
 
     public int getNumBands() {
@@ -156,7 +160,15 @@ public class LookupTableCV {
         return data.getElem(band, value - offsets[band]);
     }
 
+    /**
+     * Returns the index offset of entry 0 for a specific band.
+     */
+    public int getOffset(int band) {
+        return offsets[band];
+    }
+
     public ImageCV lookup(Mat src) {
+        // Validate source.
         Objects.requireNonNull(src);
 
         int width = src.width();
@@ -174,7 +186,8 @@ public class LookupTableCV {
             sSrcData = new short[width * height * channels];
             src.get(0, 0, sSrcData);
         } else {
-            throw new IllegalArgumentException("Not suported dataType for LUT transformation:" + src.toString());
+            throw new IllegalArgumentException(
+                    "Not suported dataType for LUT transformation:" + src.toString());
         }
 
         int lkbBands = getNumBands();
@@ -187,23 +200,26 @@ public class LookupTableCV {
         short[][] sTblData = getShortData();
 
         if (lkbBands < channels) {
-            byte[] b = bTblData[0];
-            bTblData = new byte[channels][];
-            for (int i = 0; i < bTblData.length; i++) {
-                bTblData[i] = b;
+            if (sTblData == null) {
+                byte[] b = bTblData[0];
+                bTblData = new byte[channels][];
+                Arrays.fill(bTblData, b);
+            } else {
+                short[] b = sTblData[0];
+                sTblData = new short[channels][];
+                Arrays.fill(sTblData, b);
             }
 
             int t = tblOffsets[0];
             tblOffsets = new int[channels];
-            for (int i = 0; i < tblOffsets.length; i++) {
-                tblOffsets[i] = t;
-            }
+            Arrays.fill(tblOffsets, t);
             lkbBands = channels;
         }
 
         if (lkpDataType == DataBuffer.TYPE_BYTE) {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
-            byte[] bDstData = scrByte && channels >= lkbBands ? bSrcData : new byte[width * height * lkbBands];
+            byte[] bDstData =
+                    scrByte && channels >= lkbBands ? bSrcData : new byte[width * height * lkbBands];
             if (scrByte && bSrcData != null) {
                 lookup(bSrcData, bDstData, tblOffsets, bTblData);
             } else if (srcDataType == DataBuffer.TYPE_USHORT && sSrcData != null && bDstData != null) {
@@ -211,7 +227,8 @@ public class LookupTableCV {
             } else if (srcDataType == DataBuffer.TYPE_SHORT && sSrcData != null && bDstData != null) {
                 lookup(sSrcData, bDstData, tblOffsets, bTblData);
             } else {
-                throw new IllegalArgumentException("Not supported LUT conversion from source dataType " + srcDataType);
+                throw new IllegalArgumentException(
+                        "Not supported LUT conversion from source dataType " + srcDataType);
             }
 
             ImageCV dst = new ImageCV(height, width, CvType.CV_8UC(lkbBands));
@@ -220,7 +237,8 @@ public class LookupTableCV {
 
         } else if (lkpDataType == DataBuffer.TYPE_USHORT || lkpDataType == DataBuffer.TYPE_SHORT) {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
-            short[] sDstData = !scrByte && channels >= lkbBands ? sSrcData : new short[width * height * lkbBands];
+            short[] sDstData =
+                    !scrByte && channels >= lkbBands ? sSrcData : new short[width * height * lkbBands];
             if (scrByte) {
                 lookup(bSrcData, sDstData, tblOffsets, sTblData);
             } else if (srcDataType == DataBuffer.TYPE_USHORT) {
@@ -228,11 +246,17 @@ public class LookupTableCV {
             } else if (srcDataType == DataBuffer.TYPE_SHORT) {
                 lookup(sSrcData, sDstData, tblOffsets, sTblData);
             } else {
-                throw new IllegalArgumentException("Not supported LUT conversion from source dataType " + srcDataType);
+                throw new IllegalArgumentException(
+                        "Not supported LUT conversion from source dataType " + srcDataType);
             }
 
-            ImageCV dst = new ImageCV(height, width,
-                    lkpDataType == DataBuffer.TYPE_USHORT ? CvType.CV_16UC(channels) : CvType.CV_16SC(channels));
+            ImageCV dst =
+                    new ImageCV(
+                            height,
+                            width,
+                            lkpDataType == DataBuffer.TYPE_USHORT
+                                    ? CvType.CV_16UC(channels)
+                                    : CvType.CV_16SC(channels));
             dst.put(0, 0, sDstData);
             return dst;
         }
@@ -248,16 +272,17 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][val - tblOffsets[b]];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 byte[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
+                int maxLength = t.length -1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[(srcData[i] & 0xFF) - tblOffset];
+                    dstData[i] = t[index((srcData[i] & 0xFF), tblOffset, maxLength)];
                 }
             }
         }
@@ -271,16 +296,17 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFFFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][val - tblOffsets[b]];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 byte[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
+                int maxLength = t.length -1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[(srcData[i] & 0xFFFF) - tblOffset];
+                    dstData[i] = t[index((srcData[i] & 0xFFFF), tblOffset, maxLength)];
                 }
             }
         }
@@ -289,21 +315,23 @@ public class LookupTableCV {
     // short to byte
     private void lookup(short[] srcData, byte[] dstData, int[] tblOffsets, byte[][] tblData) {
         int bOffset = tblData.length;
+        int mask = forceReadingUnsigned ? 0xFFFF : 0xFFFFFFFF;
 
         if (srcData.length < dstData.length) {
             for (int i = 0; i < srcData.length; i++) {
-                int val = srcData[i];
+                int val = srcData[i] & mask;
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][val - tblOffsets[b]];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 byte[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
+                int maxLength = t.length -1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[(srcData[i]) - tblOffset];
+                    dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];
                 }
             }
         }
@@ -317,16 +345,17 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][val - tblOffsets[b]];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 short[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
+                int maxLength = t.length -1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
-                    dstData[i] = t[(srcData[i] & 0xFF) - tblOffset];
+                    dstData[i] = t[index((srcData[i] & 0xFF), tblOffset, maxLength)];
                 }
             }
         }
@@ -339,16 +368,17 @@ public class LookupTableCV {
             for (int i = 0; i < srcData.length; i++) {
                 int val = (srcData[i] & 0xFFFF);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][val - tblOffsets[b]];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 short[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
+                int maxLength = t.length -1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
-                    srcData[i] = t[(srcData[i] & 0xFFFF) - tblOffset];
+                    dstData[i] = t[index((srcData[i] & 0xFFFF), tblOffset, maxLength)];
                 }
             }
         }
@@ -357,21 +387,23 @@ public class LookupTableCV {
     // short to short or ushort
     private void lookup(short[] srcData, short[] dstData, int[] tblOffsets, short[][] tblData) {
         int bOffset = tblData.length;
+        int mask = forceReadingUnsigned ? 0xFFFF : 0xFFFFFFFF;
 
         if (srcData.length < dstData.length) {
             for (int i = 0; i < srcData.length; i++) {
-                int val = srcData[i];
+                int val = (srcData[i] & mask);
                 for (int b = 0; b < bOffset; b++) {
-                    dstData[i * bOffset + b] = tblData[b][val - tblOffsets[b]];
+                    dstData[i * bOffset + b] = tblData[b][index(val, tblOffsets[b], tblData[b].length -1)];
                 }
             }
         } else {
             for (int b = 0; b < bOffset; b++) {
                 short[] t = tblData[b];
                 int tblOffset = tblOffsets[b];
+                int maxLength = t.length -1;
 
                 for (int i = b; i < srcData.length; i += bOffset) {
-                    srcData[i] = t[(srcData[i]) - tblOffset];
+                    dstData[i] = t[index((srcData[i] & mask), tblOffset, maxLength)];
                 }
             }
         }

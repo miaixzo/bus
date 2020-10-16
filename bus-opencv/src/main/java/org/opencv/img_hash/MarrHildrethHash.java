@@ -54,20 +54,55 @@ public class MarrHildrethHash extends ImgHashBase {
     // C++:  float cv::img_hash::MarrHildrethHash::getAlpha()
     //
 
-    // C++: static Ptr_MarrHildrethHash cv::img_hash::MarrHildrethHash::create(float alpha = 2.0f, float scale = 1.0f)
-    private static native long create_0(float alpha, float scale);
+    /**
+     * self explain
+     *
+     * @return automatically generated
+     */
+    public float getAlpha() {
+        return getAlpha_0(nativeObj);
+    }
 
 
     //
     // C++:  float cv::img_hash::MarrHildrethHash::getScale()
     //
 
-    private static native long create_1(float alpha);
+    /**
+     * self explain
+     *
+     * @return automatically generated
+     */
+    public float getScale() {
+        return getScale_0(nativeObj);
+    }
 
 
     //
     // C++:  void cv::img_hash::MarrHildrethHash::setKernelParam(float alpha, float scale)
     //
+
+    /**
+     * Set Mh kernel parameters
+     *
+     * @param alpha int scale factor for marr wavelet (default=2).
+     * @param scale int level of scale factor (default = 1)
+     */
+    public void setKernelParam(float alpha, float scale) {
+        setKernelParam_0(nativeObj, alpha, scale);
+    }
+
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
+    }
+
+
+    // C++: static Ptr_MarrHildrethHash cv::img_hash::MarrHildrethHash::create(float alpha = 2.0f, float scale = 1.0f)
+    private static native long create_0(float alpha, float scale);
+
+    private static native long create_1(float alpha);
 
     private static native long create_2();
 
@@ -82,38 +117,5 @@ public class MarrHildrethHash extends ImgHashBase {
 
     // native support for java finalize()
     private static native void delete(long nativeObj);
-
-    /**
-     * self explain
-     *
-     * @return automatically generated
-     */
-    public float getAlpha() {
-        return getAlpha_0(nativeObj);
-    }
-
-    /**
-     * self explain
-     *
-     * @return automatically generated
-     */
-    public float getScale() {
-        return getScale_0(nativeObj);
-    }
-
-    /**
-     * Set Mh kernel parameters
-     *
-     * @param alpha int scale factor for marr wavelet (default=2).
-     * @param scale int level of scale factor (default = 1)
-     */
-    public void setKernelParam(float alpha, float scale) {
-        setKernelParam_0(nativeObj, alpha, scale);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
 
 }
