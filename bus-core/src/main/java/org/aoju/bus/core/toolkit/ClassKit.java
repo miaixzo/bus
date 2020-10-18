@@ -803,7 +803,7 @@ public class ClassKit {
 
     /**
      * 获得给定类所在包的名称
-     * 例如：org.aoju.bus.core.utils
+     * 例如：org.aoju.bus.core.toolkit
      *
      * @param clazz 类
      * @return 包名

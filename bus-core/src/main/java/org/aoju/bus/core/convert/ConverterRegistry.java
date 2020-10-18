@@ -45,10 +45,7 @@ import java.time.*;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.*;
 
 /**
  * 转换器登记中心,将各种类型Convert对象放入登记中心,通过convert方法查找
@@ -367,6 +364,9 @@ public class ConverterRegistry {
         defaultConverterMap.put(WeakReference.class, new ReferenceConverter(WeakReference.class));
         defaultConverterMap.put(SoftReference.class, new ReferenceConverter(SoftReference.class));
         defaultConverterMap.put(AtomicReference.class, new AtomicReferenceConverter());
+
+        defaultConverterMap.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
+        defaultConverterMap.put(AtomicLongArray.class, new AtomicLongArrayConverter());
 
         // 其它类型
         defaultConverterMap.put(Class.class, new ClassConverter());
