@@ -27,10 +27,10 @@ package org.aoju.bus.office.support.excel.sax;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.*;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
@@ -39,6 +39,7 @@ import org.apache.poi.hssf.model.HSSFFormulaParser;
 import org.apache.poi.hssf.record.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -309,12 +310,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             case NumberRecord.sid: // 数字类型
                 final NumberRecord numrec = (NumberRecord) record;
                 final String formatString = formatListener.getFormatString(numrec);
-                if (StringKit.contains(formatString, Symbol.DOT)) {
-                    //浮点数
-                    value = numrec.getValue();
-                } else if (StringKit.containsAny(formatString, Symbol.SLASH, Symbol.COLON, "年", "月", "日", "时", "分", "秒")) {
-                    //日期
-                    value = ExcelSaxKit.getDateValue(numrec.getValue());
+                if (false == StringKit.contains(formatString, Symbol.C_PERCENT)
+                        && false == "General".equalsIgnoreCase(formatString)) {
+                    // 可能为日期格式
+                    value = DateKit.date(DateUtil.getJavaDate(numrec.getValue()));
                 } else {
                     final double doubleValue = numrec.getValue();
                     final long longPart = (long) doubleValue;

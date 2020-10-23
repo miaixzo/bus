@@ -234,25 +234,6 @@ public class ObjectKit {
     }
 
     /**
-     * 检查是否为有效的数字
-     * 检查Double和Float是否为无限大,或者Not a Number
-     * 非数字类型和Null将返回true
-     *
-     * @param obj 被检查类型
-     * @return 检查结果, 非数字类型和Null将返回true
-     */
-    public static boolean isValidIfNumber(Object obj) {
-        if (obj != null && obj instanceof Number) {
-            if (obj instanceof Double) {
-                return !((Double) obj).isInfinite() && !((Double) obj).isNaN();
-            } else if (obj instanceof Float) {
-                return !((Float) obj).isInfinite() && !((Float) obj).isNaN();
-            }
-        }
-        return true;
-    }
-
-    /**
      * 比较两个对象是否相等
      *
      * @param obj1 对象1

@@ -821,7 +821,7 @@ public class FileKit {
      */
     public static File copyFile(String src, String dest, StandardCopyOption... options) throws InstrumentException {
         Assert.notBlank(src, "Source File path is blank !");
-        Assert.notNull(src, "Destination File path is null !");
+        Assert.notBlank(dest, "Destination File path is blank !");
         return copyFile(Paths.get(src), Paths.get(dest), options).toFile();
     }
 

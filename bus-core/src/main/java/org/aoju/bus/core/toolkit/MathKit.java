@@ -1778,14 +1778,14 @@ public class MathKit {
      * @return A String.
      */
     public static String toStr(Number number) {
-        if (null == number) {
-            throw new NullPointerException("Number is null !");
+        Assert.notNull(number, "Number is null !");
+
+        // BigDecimal单独处理，使用非科学计数法
+        if (number instanceof BigDecimal) {
+            return toStr((BigDecimal) number);
         }
 
-        if (false == ObjectKit.isValidIfNumber(number)) {
-            throw new IllegalArgumentException("Number is non-finite!");
-        }
-
+        Assert.isTrue(isValidNumber(number), "Number is non-finite!");
         // 去掉小数点儿后多余的0
         String string = number.toString();
         if (string.indexOf(Symbol.C_DOT) > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
@@ -1797,6 +1797,18 @@ public class MathKit {
             }
         }
         return string;
+    }
+
+    /**
+     * {@link BigDecimal}数字转字符串
+     * 调用{@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     *
+     * @param bigDecimal A {@link BigDecimal}
+     * @return A String.
+     */
+    public static String toStr(BigDecimal bigDecimal) {
+        Assert.notNull(bigDecimal, "BigDecimal is null !");
+        return bigDecimal.stripTrailingZeros().toPlainString();
     }
 
     /**
@@ -2909,6 +2921,23 @@ public class MathKit {
      */
     public long toTerabytes() {
         return this.bytes / Normal.BYTES_PER_TB;
+    }
+
+    /**
+     * 检查是否为有效的数字
+     * 检查Double和Float是否为无限大，或者Not a Number
+     * 非数字类型和Null将返回true
+     *
+     * @param number 被检查类型
+     * @return 检查结果，非数字类型和Null将返回true
+     */
+    public static boolean isValidNumber(Number number) {
+        if (number instanceof Double) {
+            return (false == ((Double) number).isInfinite()) && (false == ((Double) number).isNaN());
+        } else if (number instanceof Float) {
+            return (false == ((Float) number).isInfinite()) && (false == ((Float) number).isNaN());
+        }
+        return true;
     }
 
 }
