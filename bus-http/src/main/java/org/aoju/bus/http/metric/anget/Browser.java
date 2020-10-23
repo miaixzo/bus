@@ -53,30 +53,32 @@ public class Browser extends UserAgent {
      * 支持的浏览器类型
      */
     public static final List<Browser> BROWERS = CollKit.newArrayList(
-            new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg)\\/([\\d\\w\\.\\-]+)"), //
-            new Browser("Chrome", "chrome", "chrome\\/([\\d\\w\\.\\-]+)"), //
-            new Browser("Firefox", "firefox", OTHER_VERSION), //
-            new Browser("IEMobile", "iemobile", OTHER_VERSION), //
-            new Browser("Android Browser", "android", "version\\/([\\d\\w\\.\\-]+)"), //
-            new Browser("Safari", "safari", "version\\/([\\d\\w\\.\\-]+)"), //
-            new Browser("Opera", "opera", OTHER_VERSION), //
-            new Browser("Konqueror", "konqueror", OTHER_VERSION), //
-            new Browser("PS3", "playstation 3", "([\\d\\w\\.\\-]+)\\)\\s*$"), //
-            new Browser("PSP", "playstation portable", "([\\d\\w\\.\\-]+)\\)?\\s*$"), //
-            new Browser("Lotus", "lotus.notes", "Lotus-Notes\\/([\\w.]+)"), //
-            new Browser("Thunderbird", "thunderbird", OTHER_VERSION), //
-            new Browser("Netscape", "netscape", OTHER_VERSION), //
-            new Browser("Seamonkey", "seamonkey", OTHER_VERSION), //
-            new Browser("Outlook", "microsoft.outlook", OTHER_VERSION), //
-            new Browser("Evolution", "evolution", OTHER_VERSION), //
-            new Browser("MSIE", "msie", "msie ([\\d\\w\\.\\-]+)"), //
-            new Browser("MSIE11", "rv:11", "rv:([\\d\\w\\.\\-]+)"), //
-            new Browser("Gabble", "Gabble", "Gabble\\/([\\d\\w\\.\\-]+)"), //
-            new Browser("Yammer Desktop", "AdobeAir", "([\\d\\w\\.\\-]+)\\/Yammer"), //
-            new Browser("Yammer Mobile", "Yammer[\\s]+([\\d\\w\\.\\-]+)", "Yammer[\\s]+([\\d\\w\\.\\-]+)"), //
-            new Browser("Apache HTTP Client", "Apache\\\\-HttpClient", "Apache\\-HttpClient\\/([\\d\\w\\.\\-]+)"), //
-            new Browser("BlackBerry", "BlackBerry", "BlackBerry[\\d]+\\/([\\d\\w\\.\\-]+)"),//
-            new Browser("MicroMessenger", "MicroMessenger", "MicroMessenger\\/([\\d\\w\\.\\-]+)")//
+            new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg)\\/([\\d\\w\\.\\-]+)"),
+            new Browser("Chrome", "chrome", "chrome\\/([\\d\\w\\.\\-]+)"),
+            new Browser("Firefox", "firefox", OTHER_VERSION),
+            new Browser("IEMobile", "iemobile", OTHER_VERSION),
+            new Browser("Android Browser", "android", "version\\/([\\d\\w\\.\\-]+)"),
+            new Browser("Safari", "safari", "version\\/([\\d\\w\\.\\-]+)"),
+            new Browser("Opera", "opera", OTHER_VERSION),
+            new Browser("Konqueror", "konqueror", OTHER_VERSION),
+            new Browser("PS3", "playstation 3", "([\\d\\w\\.\\-]+)\\)\\s*$"),
+            new Browser("PSP", "playstation portable", "([\\d\\w\\.\\-]+)\\)?\\s*$"),
+            new Browser("Lotus", "lotus.notes", "Lotus-Notes\\/([\\w.]+)"),
+            new Browser("Thunderbird", "thunderbird", OTHER_VERSION),
+            new Browser("Netscape", "netscape", OTHER_VERSION),
+            new Browser("Seamonkey", "seamonkey", OTHER_VERSION),
+            new Browser("Outlook", "microsoft.outlook", OTHER_VERSION),
+            new Browser("Evolution", "evolution", OTHER_VERSION),
+            new Browser("MSIE", "msie", "msie ([\\d\\w\\.\\-]+)"),
+            new Browser("MSIE11", "rv:11", "rv:([\\d\\w\\.\\-]+)"),
+            new Browser("Gabble", "Gabble", "Gabble\\/([\\d\\w\\.\\-]+)"),
+            new Browser("Yammer Desktop", "AdobeAir", "([\\d\\w\\.\\-]+)\\/Yammer"),
+            new Browser("Yammer Mobile", "Yammer[\\s]+([\\d\\w\\.\\-]+)", "Yammer[\\s]+([\\d\\w\\.\\-]+)"),
+            new Browser("Apache HTTP Client", "Apache\\\\-HttpClient", "Apache\\-HttpClient\\/([\\d\\w\\.\\-]+)"),
+            new Browser("BlackBerry", "BlackBerry", "BlackBerry[\\d]+\\/([\\d\\w\\.\\-]+)"),
+            new Browser("wxwork", "wxwork", "wxwork\\/([\\d\\w\\.\\-]+)"),
+            new Browser("MicroMessenger", "MicroMessenger", "MicroMessenger\\/([\\d\\w\\.\\-]+)"),
+            new Browser("DingTalk", "DingTalk", "AliApp\\(DingTalk\\/([\\d\\w\\.\\-]+)\\)")
     );
 
     private Pattern versionPattern;
