@@ -26,13 +26,13 @@ public class Algorithm {
         nativeObj = addr;
     }
 
+    // C++:  String cv::Algorithm::getDefaultName()
+    private static native String getDefaultName_0(long nativeObj);
+
     // internal usage only
     public static Algorithm __fromPtr__(long addr) {
         return new Algorithm(addr);
     }
-
-    // C++:  String cv::Algorithm::getDefaultName()
-    private static native String getDefaultName_0(long nativeObj);
 
     //
     // C++:  String cv::Algorithm::getDefaultName()
@@ -79,10 +79,6 @@ public class Algorithm {
 
     // Unknown type 'Ptr_FileStorage' (I), skipping the function
 
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
-
     /**
      * Returns the algorithm string identifier.
      * This string is used as top level xml/yml node tag when the object is saved to a file or string.
@@ -122,6 +118,10 @@ public class Algorithm {
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
     }
 
 }

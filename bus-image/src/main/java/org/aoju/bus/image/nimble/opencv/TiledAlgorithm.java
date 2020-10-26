@@ -60,8 +60,11 @@ public class TiledAlgorithm {
 
         for (int rowTile = 0; rowTile < rows; rowTile++) {
             for (int colTile = 0; colTile < cols; colTile++) {
-                Rect srcTile = new Rect(colTile * mTileSize - mPadding, rowTile * mTileSize - mPadding,
-                        mTileSize + 2 * mPadding, mTileSize + 2 * mPadding);
+                Rect srcTile = new Rect(
+                        colTile * mTileSize - mPadding,
+                        rowTile * mTileSize - mPadding,
+                        mTileSize + 2 * mPadding,
+                        mTileSize + 2 * mPadding);
                 Rect dstTile = new Rect(colTile * mTileSize, rowTile * mTileSize, mTileSize, mTileSize);
 
                 copySourceTile(sourceImage, tileInput, srcTile);
@@ -69,7 +72,6 @@ public class TiledAlgorithm {
                 copyTileToResultImage(tileOutput, resultImage, dstTile);
             }
         }
-
     }
 
     private void copyTileToResultImage(Mat tileOutput, Mat resultImage, Rect dstTile) {
@@ -129,7 +131,8 @@ public class TiledAlgorithm {
             tile.height -= broffset.y;
         }
 
-        // If any of the tile sides exceed source image boundary we must use copyMakeBorder to make proper paddings
+        // If any of the tile sides exceed source image boundary we must use copyMakeBorder to make
+        // proper paddings
         // for this side
         if (tloffset.x > 0 || tloffset.y > 0 || broffset.x > 0 || broffset.y > 0) {
             Rect paddedTile = new Rect(tile.tl(), tile.br());
@@ -138,13 +141,18 @@ public class TiledAlgorithm {
             assert (paddedTile.br().x < sourceImage.cols());
             assert (paddedTile.br().y < sourceImage.rows());
 
-            Core.copyMakeBorder(sourceImage.submat(paddedTile), tileInput, (int) tloffset.y, (int) broffset.y,
-                    (int) tloffset.x, (int) broffset.x, mBorderType);
+            Core.copyMakeBorder(
+                    sourceImage.submat(paddedTile),
+                    tileInput,
+                    (int) tloffset.y,
+                    (int) broffset.y,
+                    (int) tloffset.x,
+                    (int) broffset.x,
+                    mBorderType);
         } else {
             // Entire tile (with paddings lies inside image and it's safe to just take a region:
             sourceImage.submat(tile).copyTo(tileInput);
         }
-
     }
 
 }

@@ -28,6 +28,7 @@ import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.Statements;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.CallableStatementHandler;
@@ -65,7 +66,7 @@ public class ExplainSQLHandler extends AbstractSqlParserHandler implements Inter
                 boolean sqlChangedFlag = false;
                 MetaObject metaObject = SystemMetaObject.forObject(realTarget(SystemMetaObject.forObject(handler).getOriginalObject()));
 
-                String sql = (String) metaObject.getValue(DELEGATE_BOUNDSQL_SQL);
+                String sql = ((String) metaObject.getValue(DELEGATE_BOUNDSQL_SQL)).replaceAll("[\\s]+", Symbol.SPACE);
                 if (this.allowProcess(metaObject)) {
                     try {
                         StringBuilder sqlStringBuilder = new StringBuilder();

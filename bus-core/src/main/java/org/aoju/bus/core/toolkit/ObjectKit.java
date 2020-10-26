@@ -38,6 +38,7 @@ import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * 一些通用的函数
@@ -78,6 +79,38 @@ public class ObjectKit {
      */
     public static <T> T defaultIfNull(final T object, final T defaultValue) {
         return (null != object) ? object : defaultValue;
+    }
+
+    /**
+     * 如果给定对象为{@code null} 返回默认值, 如果不为null 返回自定义handle处理后的返回值
+     *
+     * @param source       Object 类型对象
+     * @param handle       自定义的处理方法
+     * @param defaultValue 默认为空的返回值
+     * @param <T>          被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
+     * @return 被检查对象为{ null}返回默认值,否则返回原值
+     */
+    public static <T> T defaultIfNull(final Object source, Supplier<? extends T> handle, final T defaultValue) {
+        if (Objects.nonNull(source)) {
+            return handle.get();
+        }
+        return defaultValue;
+    }
+
+    /**
+     * 如果给定对象为{@code null}或者""返回默认值, 否则返回自定义handle处理后的返回值
+     *
+     * @param str          String 类型
+     * @param handle       自定义的处理方法
+     * @param defaultValue 默认为空的返回值
+     * @param <T>          被检查对象为{@code null}或者 ""返回默认值，否则返回自定义handle处理后的返回值
+     * @return 被检查对象为{ null}返回默认值,否则返回原值
+     */
+    public static <T> T defaultIfEmpty(final String str, Supplier<? extends T> handle, final T defaultValue) {
+        if (StringKit.isNotEmpty(str)) {
+            return handle.get();
+        }
+        return defaultValue;
     }
 
     /**
@@ -231,25 +264,6 @@ public class ObjectKit {
      */
     public static final boolean isNotEmpty(Object... object) {
         return !isEmpty(object);
-    }
-
-    /**
-     * 检查是否为有效的数字
-     * 检查Double和Float是否为无限大,或者Not a Number
-     * 非数字类型和Null将返回true
-     *
-     * @param obj 被检查类型
-     * @return 检查结果, 非数字类型和Null将返回true
-     */
-    public static boolean isValidIfNumber(Object obj) {
-        if (obj != null && obj instanceof Number) {
-            if (obj instanceof Double) {
-                return !((Double) obj).isInfinite() && !((Double) obj).isNaN();
-            } else if (obj instanceof Float) {
-                return !((Float) obj).isInfinite() && !((Float) obj).isNaN();
-            }
-        }
-        return true;
     }
 
     /**

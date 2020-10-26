@@ -171,7 +171,7 @@ public class BeanDesc implements Serializable {
             if (false == BeanKit.isStatic(field)) {
                 //只针对非static属性
                 prop = createProp(field, methods);
-                this.propMap.put(prop.getFieldName(), prop);
+                this.propMap.putIfAbsent(prop.getFieldName(), prop);
             }
         }
         return this;

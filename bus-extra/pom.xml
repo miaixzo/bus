@@ -25,6 +25,7 @@
         <jpinyin.version>1.1.8</jpinyin.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
+        <bopomofo4j.version>1.0.0</bopomofo4j.version>
         <jsch.version>0.1.54</jsch.version>
         <zxing.version>3.4.1</zxing.version>
         <net.version>3.7</net.version>
@@ -88,6 +89,12 @@
             <groupId>io.github.biezhi</groupId>
             <artifactId>TinyPinyin</artifactId>
             <version>${tiny.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.rnkrsoft.bopomofo4j</groupId>
+            <artifactId>bopomofo4j</artifactId>
+            <version>${bopomofo4j.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

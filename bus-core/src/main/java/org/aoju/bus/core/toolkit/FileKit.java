@@ -821,7 +821,7 @@ public class FileKit {
      */
     public static File copyFile(String src, String dest, StandardCopyOption... options) throws InstrumentException {
         Assert.notBlank(src, "Source File path is blank !");
-        Assert.notNull(src, "Destination File path is null !");
+        Assert.notBlank(dest, "Destination File path is blank !");
         return copyFile(Paths.get(src), Paths.get(dest), options).toFile();
     }
 
@@ -1389,7 +1389,7 @@ public class FileKit {
      * @return 总大小, bytes长度
      */
     public static long size(File file) {
-        if (null == file || false == file.exists()) {
+        if (null == file || false == file.exists() || isSymlink(file)) {
             return 0;
         }
 
@@ -1406,6 +1406,16 @@ public class FileKit {
         } else {
             return file.length();
         }
+    }
+
+    /**
+     * 判断是否为符号链接文件
+     *
+     * @param file 被检查的文件
+     * @return 是否为符号链接文件
+     */
+    public static boolean isSymlink(File file) {
+        return Files.isSymbolicLink(file.toPath());
     }
 
     /**

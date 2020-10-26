@@ -410,7 +410,7 @@ public class ReflectKit {
     }
 
     /**
-     * 获得一个类中所有字段列表,直接反射获取,无缓存
+     * 获得一个类中所有构造列表,直接反射获取,无缓存
      *
      * @param beanClass 类
      * @return 字段列表
@@ -431,14 +431,7 @@ public class ReflectKit {
      */
     public static Field getField(Class<?> beanClass, String name) throws SecurityException {
         final Field[] fields = getFields(beanClass);
-        if (ArrayKit.isNotEmpty(fields)) {
-            for (Field field : fields) {
-                if ((name.equals(getFieldName(field)))) {
-                    return field;
-                }
-            }
-        }
-        return null;
+        return ArrayKit.firstNonNull((field) -> name.equals(getFieldName(field)), fields);
     }
 
     /**
@@ -461,12 +454,12 @@ public class ReflectKit {
     /**
      * 获得一个类中所有字段列表,直接反射获取,无缓存
      *
-     * @param beanClass           类
-     * @param withSuperClassFieds 是否包括父类的字段列表
+     * @param beanClass            类
+     * @param withSuperClassFields 是否包括父类的字段列表
      * @return 字段列表
      * @throws SecurityException 安全检查异常
      */
-    public static Field[] getFields(Class<?> beanClass, boolean withSuperClassFieds) throws SecurityException {
+    public static Field[] getFields(Class<?> beanClass, boolean withSuperClassFields) throws SecurityException {
         Assert.notNull(beanClass);
 
         Field[] allFields = null;
@@ -479,7 +472,7 @@ public class ReflectKit {
             } else {
                 allFields = ArrayKit.append(allFields, declaredFields);
             }
-            searchType = withSuperClassFieds ? searchType.getSuperclass() : null;
+            searchType = withSuperClassFields ? searchType.getSuperclass() : null;
         }
 
         return allFields;

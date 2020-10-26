@@ -295,8 +295,32 @@ public class XmlKit {
      * @param doc XML文档
      * @return XML字符串
      */
-    public static String toString(Document doc) {
+    public static String toString(Node doc) {
         return toString(doc, false);
+    }
+
+    /**
+     * 将XML文档转换为String
+     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     * 默认非格式化输出，若想格式化请使用{@link #format(Document)}
+     *
+     * @param doc XML文档
+     * @return XML字符串
+     */
+    public static String toString(Document doc) {
+        return toString((Node) doc);
+    }
+
+    /**
+     * 将XML文档转换为String
+     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     *
+     * @param doc      XML文档
+     * @param isPretty 是否格式化输出
+     * @return XML字符串
+     */
+    public static String toString(Node doc, boolean isPretty) {
+        return toString(doc, Charset.DEFAULT_UTF_8, isPretty);
     }
 
     /**
@@ -308,7 +332,20 @@ public class XmlKit {
      * @return XML字符串
      */
     public static String toString(Document doc, boolean isPretty) {
-        return toString(doc, Charset.DEFAULT_UTF_8, isPretty);
+        return toString((Node) doc, isPretty);
+    }
+
+    /**
+     * 将XML文档转换为String
+     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     *
+     * @param doc      XML文档
+     * @param charset  编码
+     * @param isPretty 是否格式化输出
+     * @return XML字符串
+     */
+    public static String toString(Node doc, String charset, boolean isPretty) {
+        return toString(doc, charset, isPretty, false);
     }
 
     /**
@@ -321,7 +358,7 @@ public class XmlKit {
      * @return XML字符串
      */
     public static String toString(Document doc, String charset, boolean isPretty) {
-        return toString(doc, charset, isPretty, false);
+        return toString((Node) doc, charset, isPretty);
     }
 
     /**
@@ -334,7 +371,7 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否输出 xml Declaration
      * @return XML字符串
      */
-    public static String toString(Document doc, String charset, boolean isPretty, boolean omitXmlDeclaration) {
+    public static String toString(Node doc, String charset, boolean isPretty, boolean omitXmlDeclaration) {
         final StringWriter writer = StringKit.getWriter();
         try {
             write(doc, writer, charset, isPretty ? 2 : 0, omitXmlDeclaration);

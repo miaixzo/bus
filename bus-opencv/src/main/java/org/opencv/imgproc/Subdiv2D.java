@@ -212,24 +212,6 @@ public class Subdiv2D {
     // native support for java finalize()
     private static native void delete(long nativeObj);
 
-    public long getNativeObjAddr() {
-        return nativeObj;
-    }
-
-    /**
-     * Returns vertex location from vertex ID.
-     *
-     * @param vertex    vertex ID.
-     * @param firstEdge Optional. The first edge ID which is connected to the vertex.
-     * @return vertex (x,y)
-     */
-    public Point getVertex(int vertex, int[] firstEdge) {
-        double[] firstEdge_out = new double[1];
-        Point retVal = new Point(getVertex_0(nativeObj, vertex, firstEdge_out));
-        if (firstEdge != null) firstEdge[0] = (int) firstEdge_out[0];
-        return retVal;
-    }
-
     /**
      * Returns vertex location from vertex ID.
      *
@@ -258,16 +240,6 @@ public class Subdiv2D {
     }
 
     /**
-     * Returns the edge destination.
-     *
-     * @param edge Subdivision edge ID.
-     * @return vertex ID.
-     */
-    public int edgeDst(int edge) {
-        return edgeDst_1(nativeObj, edge);
-    }
-
-    /**
      * Returns the edge origin.
      *
      * @param edge  Subdivision edge ID.
@@ -280,38 +252,6 @@ public class Subdiv2D {
         if (orgpt != null) {
             orgpt.x = orgpt_out[0];
             orgpt.y = orgpt_out[1];
-        }
-        return retVal;
-    }
-
-    /**
-     * Returns the edge origin.
-     *
-     * @param edge Subdivision edge ID.
-     * @return vertex ID.
-     */
-    public int edgeOrg(int edge) {
-        return edgeOrg_1(nativeObj, edge);
-    }
-
-    /**
-     * Finds the subdivision vertex closest to the given point.
-     *
-     * @param pt        Input point.
-     * @param nearestPt Output subdivision vertex point.
-     *                  <p>
-     *                  The function is another function that locates the input point within the subdivision. It finds the
-     *                  subdivision vertex that is the closest to the input point. It is not necessarily one of vertices
-     *                  of the facet containing the input point, though the facet (located using locate() ) is used as a
-     *                  starting point.
-     * @return vertex ID.
-     */
-    public int findNearest(Point pt, Point nearestPt) {
-        double[] nearestPt_out = new double[2];
-        int retVal = findNearest_0(nativeObj, pt.x, pt.y, nearestPt_out);
-        if (nearestPt != null) {
-            nearestPt.x = nearestPt_out[0];
-            nearestPt.y = nearestPt_out[1];
         }
         return retVal;
     }
@@ -385,47 +325,6 @@ public class Subdiv2D {
      */
     public int insert(Point pt) {
         return insert_0(nativeObj, pt.x, pt.y);
-    }
-
-    /**
-     * Returns the location of a point within a Delaunay triangulation.
-     *
-     * @param pt     Point to locate.
-     * @param edge   Output edge that the point belongs to or is located to the right of it.
-     * @param vertex Optional output vertex the input point coincides with.
-     *               <p>
-     *               The function locates the input point within the subdivision and gives one of the triangle edges
-     *               or vertices.
-     * @return an integer which specify one of the following five cases for point location:
-     * <ul>
-     *   <li>
-     *       The point falls into some facet. The function returns #PTLOC_INSIDE and edge will contain one of
-     *        edges of the facet.
-     *   </li>
-     *   <li>
-     *       The point falls onto the edge. The function returns #PTLOC_ON_EDGE and edge will contain this edge.
-     *   </li>
-     *   <li>
-     *       The point coincides with one of the subdivision vertices. The function returns #PTLOC_VERTEX and
-     *        vertex will contain a pointer to the vertex.
-     *   </li>
-     *   <li>
-     *       The point is outside the subdivision reference rectangle. The function returns #PTLOC_OUTSIDE_RECT
-     *        and no pointers are filled.
-     *   </li>
-     *   <li>
-     *       One of input arguments is invalid. A runtime error is raised or, if silent or "parent" error
-     *        processing mode is selected, #PTLOC_ERROR is returned.
-     *   </li>
-     * </ul>
-     */
-    public int locate(Point pt, int[] edge, int[] vertex) {
-        double[] edge_out = new double[1];
-        double[] vertex_out = new double[1];
-        int retVal = locate_0(nativeObj, pt.x, pt.y, edge_out, vertex_out);
-        if (edge != null) edge[0] = (int) edge_out[0];
-        if (vertex != null) vertex[0] = (int) vertex_out[0];
-        return retVal;
     }
 
     /**
@@ -549,6 +448,107 @@ public class Subdiv2D {
     @Override
     protected void finalize() throws Throwable {
         delete(nativeObj);
+    }
+
+    public long getNativeObjAddr() {
+        return nativeObj;
+    }
+
+    /**
+     * Returns vertex location from vertex ID.
+     *
+     * @param vertex    vertex ID.
+     * @param firstEdge Optional. The first edge ID which is connected to the vertex.
+     * @return vertex (x,y)
+     */
+    public Point getVertex(int vertex, int[] firstEdge) {
+        double[] firstEdge_out = new double[1];
+        Point retVal = new Point(getVertex_0(nativeObj, vertex, firstEdge_out));
+        if (firstEdge != null) firstEdge[0] = (int) firstEdge_out[0];
+        return retVal;
+    }
+
+    /**
+     * Returns the edge destination.
+     *
+     * @param edge Subdivision edge ID.
+     * @return vertex ID.
+     */
+    public int edgeDst(int edge) {
+        return edgeDst_1(nativeObj, edge);
+    }
+
+    /**
+     * Returns the edge origin.
+     *
+     * @param edge Subdivision edge ID.
+     * @return vertex ID.
+     */
+    public int edgeOrg(int edge) {
+        return edgeOrg_1(nativeObj, edge);
+    }
+
+    /**
+     * Finds the subdivision vertex closest to the given point.
+     *
+     * @param pt        Input point.
+     * @param nearestPt Output subdivision vertex point.
+     *                  <p>
+     *                  The function is another function that locates the input point within the subdivision. It finds the
+     *                  subdivision vertex that is the closest to the input point. It is not necessarily one of vertices
+     *                  of the facet containing the input point, though the facet (located using locate() ) is used as a
+     *                  starting point.
+     * @return vertex ID.
+     */
+    public int findNearest(Point pt, Point nearestPt) {
+        double[] nearestPt_out = new double[2];
+        int retVal = findNearest_0(nativeObj, pt.x, pt.y, nearestPt_out);
+        if (nearestPt != null) {
+            nearestPt.x = nearestPt_out[0];
+            nearestPt.y = nearestPt_out[1];
+        }
+        return retVal;
+    }
+
+    /**
+     * Returns the location of a point within a Delaunay triangulation.
+     *
+     * @param pt     Point to locate.
+     * @param edge   Output edge that the point belongs to or is located to the right of it.
+     * @param vertex Optional output vertex the input point coincides with.
+     *               <p>
+     *               The function locates the input point within the subdivision and gives one of the triangle edges
+     *               or vertices.
+     * @return an integer which specify one of the following five cases for point location:
+     * <ul>
+     *   <li>
+     *       The point falls into some facet. The function returns #PTLOC_INSIDE and edge will contain one of
+     *        edges of the facet.
+     *   </li>
+     *   <li>
+     *       The point falls onto the edge. The function returns #PTLOC_ON_EDGE and edge will contain this edge.
+     *   </li>
+     *   <li>
+     *       The point coincides with one of the subdivision vertices. The function returns #PTLOC_VERTEX and
+     *        vertex will contain a pointer to the vertex.
+     *   </li>
+     *   <li>
+     *       The point is outside the subdivision reference rectangle. The function returns #PTLOC_OUTSIDE_RECT
+     *        and no pointers are filled.
+     *   </li>
+     *   <li>
+     *       One of input arguments is invalid. A runtime error is raised or, if silent or "parent" error
+     *        processing mode is selected, #PTLOC_ERROR is returned.
+     *   </li>
+     * </ul>
+     */
+    public int locate(Point pt, int[] edge, int[] vertex) {
+        double[] edge_out = new double[1];
+        double[] vertex_out = new double[1];
+        int retVal = locate_0(nativeObj, pt.x, pt.y, edge_out, vertex_out);
+        if (edge != null) edge[0] = (int) edge_out[0];
+        if (vertex != null) vertex[0] = (int) vertex_out[0];
+        return retVal;
     }
 
 }

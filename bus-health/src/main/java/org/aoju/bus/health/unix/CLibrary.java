@@ -49,6 +49,58 @@ public interface CLibrary extends LibCAPI, Library {
     int LOGIN_PROCESS = 6; // Session leader of a logged in user.
     int USER_PROCESS = 7; // Normal process.
 
+    /**
+     * Returns the process ID of the calling process. The ID is guaranteed to be
+     * unique and is useful for constructing temporary file names.
+     *
+     * @return the process ID of the calling process.
+     */
+    int getpid();
+
+    /**
+     * Given node and service, which identify an Internet host and a service,
+     * getaddrinfo() returns one or more addrinfo structures, each of which contains
+     * an Internet address that can be specified in a call to bind(2) or connect(2).
+     *
+     * @param node    a numerical network address or a network hostname, whose network
+     *                addresses are looked up and resolved.
+     * @param service sets the port in each returned address structure.
+     * @param hints   specifies criteria for selecting the socket address structures
+     *                returned in the list pointed to by res.
+     * @param res     returned address structure
+     * @return 0 on success; sets errno on failure
+     */
+    int getaddrinfo(String node, String service, Addrinfo hints, PointerByReference res);
+
+    /**
+     * Frees the memory that was allocated for the dynamically allocated linked list
+     * res.
+     *
+     * @param res Pointer to linked list returned by getaddrinfo
+     */
+    void freeaddrinfo(Pointer res);
+
+    /**
+     * Translates getaddrinfo error codes to a human readable string, suitable for
+     * error reporting.
+     *
+     * @param e Error code from getaddrinfo
+     * @return A human-readable version of the error code
+     */
+    String gai_strerror(int e);
+
+    /**
+     * Rewinds the file pointer to the beginning of the utmp file. It is generally a
+     * good idea to call it before any of the other functions.
+     */
+    void setutxent();
+
+    /**
+     * Closes the utmp file. It should be called when the user code is done
+     * accessing the file with the other functions.
+     */
+    void endutxent();
+
     @FieldOrder({"sa_family", "sa_data"})
     class Sockaddr extends Structure {
         public short sa_family;
@@ -128,57 +180,5 @@ public interface CLibrary extends LibCAPI, Library {
         public long ip6s_total; // 0
         public long ip6s_localout; // 88
     }
-
-    /**
-     * Returns the process ID of the calling process. The ID is guaranteed to be
-     * unique and is useful for constructing temporary file names.
-     *
-     * @return the process ID of the calling process.
-     */
-    int getpid();
-
-    /**
-     * Given node and service, which identify an Internet host and a service,
-     * getaddrinfo() returns one or more addrinfo structures, each of which contains
-     * an Internet address that can be specified in a call to bind(2) or connect(2).
-     *
-     * @param node    a numerical network address or a network hostname, whose network
-     *                addresses are looked up and resolved.
-     * @param service sets the port in each returned address structure.
-     * @param hints   specifies criteria for selecting the socket address structures
-     *                returned in the list pointed to by res.
-     * @param res     returned address structure
-     * @return 0 on success; sets errno on failure
-     */
-    int getaddrinfo(String node, String service, Addrinfo hints, PointerByReference res);
-
-    /**
-     * Frees the memory that was allocated for the dynamically allocated linked list
-     * res.
-     *
-     * @param res Pointer to linked list returned by getaddrinfo
-     */
-    void freeaddrinfo(Pointer res);
-
-    /**
-     * Translates getaddrinfo error codes to a human readable string, suitable for
-     * error reporting.
-     *
-     * @param e Error code from getaddrinfo
-     * @return A human-readable version of the error code
-     */
-    String gai_strerror(int e);
-
-    /**
-     * Rewinds the file pointer to the beginning of the utmp file. It is generally a
-     * good idea to call it before any of the other functions.
-     */
-    void setutxent();
-
-    /**
-     * Closes the utmp file. It should be called when the user code is done
-     * accessing the file with the other functions.
-     */
-    void endutxent();
 
 }
