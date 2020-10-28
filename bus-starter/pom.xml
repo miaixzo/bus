@@ -240,8 +240,8 @@
             <optional>true</optional>
             <exclusions>
                 <exclusion>
-                    <artifactId>spring</artifactId>
                     <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
