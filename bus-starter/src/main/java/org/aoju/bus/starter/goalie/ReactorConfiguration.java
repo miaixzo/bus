@@ -3,6 +3,7 @@ package org.aoju.bus.starter.goalie;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.goalie.reactor.AssetRegistry;
 import org.aoju.bus.goalie.reactor.Athlete;
+import org.aoju.bus.goalie.reactor.GlobalExceptionHandler;
 import org.aoju.bus.goalie.reactor.RouterHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -14,6 +15,7 @@ import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.WebExceptionHandler;
 import org.springframework.web.server.WebFilter;
+
 import reactor.netty.http.server.HttpServer;
 
 import java.util.List;
@@ -37,6 +39,11 @@ public class ReactorConfiguration {
 
     @Autowired(required = false)
     List<WebFilter> webFilters;
+
+    @Bean
+    WebExceptionHandler webExceptionHandler() {
+        return new GlobalExceptionHandler();
+    }
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
     Athlete athlete() {

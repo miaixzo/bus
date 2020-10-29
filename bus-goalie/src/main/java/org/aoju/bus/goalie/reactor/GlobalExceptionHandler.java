@@ -12,7 +12,6 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
@@ -23,8 +22,7 @@ import reactor.util.annotation.NonNull;
  * @author Justubborn
  * @since 2020/10/27
  */
-@Component
-public class CustomExceptionHandler extends Controller implements ErrorWebExceptionHandler {
+public class GlobalExceptionHandler extends Controller implements ErrorWebExceptionHandler {
 
 
     @NonNull
