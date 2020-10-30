@@ -560,7 +560,7 @@ public class Httpx {
                 Logger.info(">>>>>>>>Url[{}],Response[{}]<<<<<<<<", builder.url, result);
             }
         } catch (Exception e) {
-            Logger.error(">>>>>>>>Builder[{}] Error<<<<<<<<", builder.toString(), e);
+            Logger.error(e, ">>>>>>>>Builder[{}] Error<<<<<<<<", builder.toString());
         }
         return result;
     }
