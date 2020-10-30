@@ -24,6 +24,8 @@
  ********************************************************************************/
 package org.aoju.bus.cron.pattern.matcher;
 
+import org.aoju.bus.core.lang.Fields;
+
 import java.util.List;
 
 /**
@@ -36,14 +38,21 @@ import java.util.List;
  */
 public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
 
-    private static final int[] LAST_DAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
+    /**
+     * 构造
+     *
+     * @param intValueList 匹配的日值
+     */
     public DayOfMonthValueMatcher(List<Integer> intValueList) {
         super(intValueList);
     }
 
     /**
-     * 是否为本月最后一天
+     * 是否为本月最后一天，规则如下：
+     * <pre>
+     * 1、闰年2月匹配是否为29
+     * 2、其它月份是否匹配最后一天的日期（可能为30或者31）
+     * </pre>
      *
      * @param value      被检查的值
      * @param month      月份
@@ -51,23 +60,20 @@ public class DayOfMonthValueMatcher extends BoolArrayValueMatcher {
      * @return 是否为本月最后一天
      */
     private static boolean isLastDayOfMonth(int value, int month, boolean isLeapYear) {
-        if (isLeapYear && month == 2) {
-            return value == 29;
-        } else {
-            return value == LAST_DAYS[month - 1];
-        }
+        return value == Fields.Month.getLastDay(month, isLeapYear);
     }
 
     /**
-     * 是否匹配
+     * 给定的日期是否匹配当前匹配器
      *
-     * @param value      被检查的值
-     * @param month      月份
+     * @param value      被检查的值，此处为日
+     * @param month      实际的月份
      * @param isLeapYear 是否闰年
      * @return 是否匹配
      */
     public boolean match(int value, int month, boolean isLeapYear) {
-        return (super.match(value) || (value > 27 && match(32) && isLastDayOfMonth(value, month, isLeapYear)));
+        return (super.match(value)
+                || (value > 27 && match(32) && isLastDayOfMonth(value, month, isLeapYear)));
     }
 
 }

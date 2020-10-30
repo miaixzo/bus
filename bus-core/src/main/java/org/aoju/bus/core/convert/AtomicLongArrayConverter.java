@@ -35,9 +35,9 @@ import java.util.concurrent.atomic.AtomicLongArray;
  */
 public class AtomicLongArrayConverter extends AbstractConverter<AtomicLongArray> {
 
-	@Override
-	protected AtomicLongArray convertInternal(Object value) {
-		return new AtomicLongArray(Convert.convert(long[].class, value));
-	}
+    @Override
+    protected AtomicLongArray convertInternal(Object value) {
+        return new AtomicLongArray(Convert.convert(long[].class, value));
+    }
 
 }

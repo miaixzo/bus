@@ -29,9 +29,9 @@ import java.lang.annotation.*;
 /**
  * 忽略该属性
  */
-@Target({ElementType.FIELD})
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 public @interface Ignore {
 
 }

@@ -260,8 +260,8 @@ public final class CsvWriter implements Closeable, Flushable {
      */
     private void doAppendLine(final String... fields) throws IOException {
         if (null != fields) {
-            for (int i = 0; i < fields.length; i++) {
-                appendField(fields[i]);
+            for (String field : fields) {
+                appendField(field);
             }
             writer.write(config.lineDelimiter);
             newline = true;

@@ -100,7 +100,7 @@ public class CronTimer extends Thread {
                 spawnLauncher(thisTime);
             }
         }
-        Logger.debug("Cron timer stoped.");
+        Logger.debug("Cron timer stopped.");
     }
 
     /**

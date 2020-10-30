@@ -22,12 +22,12 @@ public class Athlete {
 
     private void init() {
         disposableServer = httpServer.bindNow();
-        Logger.info("reactor server start on port:{} success",disposableServer.port());
+        Logger.info("reactor server start on port:{} success", disposableServer.port());
     }
 
     private void destroy() {
         disposableServer.disposeNow();
-        Logger.info("reactor server stop on port:{} success",disposableServer.port());
+        Logger.info("reactor server stop on port:{} success", disposableServer.port());
     }
 
 }

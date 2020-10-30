@@ -8784,6 +8784,40 @@ public class ArrayKit {
     }
 
     /**
+     * 数组中是否包含指定元素中的任意一个
+     *
+     * @param <T>    数组元素类型
+     * @param array  数组
+     * @param values 被检查的多个元素
+     * @return 是否包含指定元素中的任意一个
+     */
+    public static <T> boolean containsAny(T[] array, T... values) {
+        for (T value : values) {
+            if (contains(array, value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 数组中是否包含指定元素中的全部
+     *
+     * @param <T>    数组元素类型
+     * @param array  数组
+     * @param values 被检查的多个元素
+     * @return 是否包含指定元素中的全部
+     */
+    public static <T> boolean containsAll(T[] array, T... values) {
+        for (T value : values) {
+            if (false == contains(array, value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 返回指定数组的长度
      *
      * <pre>

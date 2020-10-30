@@ -281,6 +281,9 @@ public class RandomKit {
      * @return 随机元素
      */
     public static <T> T randomEle(List<T> list, int limit) {
+        if (list.size() < limit) {
+            limit = list.size();
+        }
         return list.get(randomInt(limit));
     }
 

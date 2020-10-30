@@ -1426,8 +1426,9 @@ public class ImageKit {
             imageType = FileType.TYPE_JPG;
         }
 
-        final ImageWriter writer = getWriter(image, imageType);
-        return write(toBufferedImage(image, imageType), writer, destImageStream, quality);
+        final BufferedImage bufferedImage = toBufferedImage(image, imageType);
+        final ImageWriter writer = getWriter(bufferedImage, imageType);
+        return write(bufferedImage, writer, destImageStream, quality);
     }
 
     /**

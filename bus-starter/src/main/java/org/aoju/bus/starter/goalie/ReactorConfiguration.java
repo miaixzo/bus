@@ -15,7 +15,6 @@ import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.WebExceptionHandler;
 import org.springframework.web.server.WebFilter;
-
 import reactor.netty.http.server.HttpServer;
 
 import java.util.List;
@@ -69,7 +68,7 @@ public class ReactorConfiguration {
         HttpHandler handler = RouterFunctions.toHttpHandler(routerFunction, handlerStrategies);
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
         HttpServer server = HttpServer.create()
-               .port(goalieProperties.getServer().getPort()).handle(adapter);
+                .port(goalieProperties.getServer().getPort()).handle(adapter);
 
         return new Athlete(server);
     }
