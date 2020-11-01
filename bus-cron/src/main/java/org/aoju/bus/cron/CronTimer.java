@@ -80,7 +80,7 @@ public class CronTimer extends Thread {
 
     @Override
     public void run() {
-        final long timerUnit = this.scheduler.matchSecond ? TIMER_UNIT_SECOND : TIMER_UNIT_MINUTE;
+        final long timerUnit = this.scheduler.config.matchSecond ? TIMER_UNIT_SECOND : TIMER_UNIT_MINUTE;
 
         long thisTime = System.currentTimeMillis();
         long nextTime;

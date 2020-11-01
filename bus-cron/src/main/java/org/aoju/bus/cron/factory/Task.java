@@ -31,6 +31,7 @@ package org.aoju.bus.cron.factory;
  * @version 6.1.1
  * @since JDK 1.8+
  */
+@FunctionalInterface
 public interface Task {
 
     /**
