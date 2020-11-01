@@ -92,7 +92,11 @@ public final class ThreadPerformanceData {
                         .longValue() / 10_000L;
                 int priority = ((Integer) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.PRIORITYCURRENT)).intValue();
                 int threadState = ((Integer) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.THREADSTATE)).intValue();
-                long startAddr = ((Long) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.STARTADDRESS)).longValue();
+                // Start address is pointer sized when fetched from registry, so this could be
+                // either Integer (uint32) or Long depending on OS bitness
+                Object addr = threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.STARTADDRESS);
+                long startAddr = addr.getClass().equals(Long.class) ? (Long) addr
+                        : Integer.toUnsignedLong((Integer) addr);
                 int contextSwitches = ((Integer) threadInstanceMap.get(ThreadInformation.ThreadPerformanceProperty.CONTEXTSWITCHESPERSEC))
                         .intValue();
                 threadMap.put(tid, new PerfCounterBlock(name, tid, pid, now - upTime, user, kernel, priority,

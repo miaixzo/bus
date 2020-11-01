@@ -270,10 +270,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             WinNT.TOKEN_PRIVILEGES tkp = new WinNT.TOKEN_PRIVILEGES(1);
             tkp.Privileges[0] = new WinNT.LUID_AND_ATTRIBUTES(luid, new DWORD(WinNT.SE_PRIVILEGE_ENABLED));
             success = Advapi32.INSTANCE.AdjustTokenPrivileges(hToken.getValue(), false, tkp, 0, null, null);
-            // Possible to partially succeed, only need to check LastError
             int err = Native.getLastError();
-            if (err != WinError.ERROR_SUCCESS) {
+            if (!success) {
                 Logger.error("AdjustTokenPrivileges failed. Error: {}", err);
+                return false;
+            } else if (err == WinError.ERROR_NOT_ALL_ASSIGNED) {
+                Logger.debug("Debug privileges not enabled.");
                 return false;
             }
         } finally {
@@ -384,7 +386,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         } finally {
             Kernel32.INSTANCE.CloseHandle(snapshot);
         }
-        List<OSProcess> procList = getProcesses(childPids);
+        List<OSProcess> procList = processMapToList(childPids);
         List<OSProcess> sorted = processSort(procList, limit, sort);
         return Collections.unmodifiableList(sorted);
     }
