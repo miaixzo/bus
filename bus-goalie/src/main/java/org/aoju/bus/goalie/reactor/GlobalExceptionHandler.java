@@ -2,6 +2,7 @@ package org.aoju.bus.goalie.reactor;
 
 import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.RuntimeKit;
@@ -32,21 +33,23 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         response.setStatusCode(HttpStatus.BAD_REQUEST);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         Logger.error(RuntimeKit.getStackTrace(ex));
-        DataBuffer db;
+        Object message;
         if (ex instanceof BusinessException) {
             BusinessException e = (BusinessException) ex;
             if (StringKit.isNotBlank(e.getErrcode())) {
-                db = response
-                        .bufferFactory()
-                        .wrap(JSON.toJSONString(Controller.write(e.getErrcode())).getBytes());
-
+                message = Controller.write(e.getErrcode());
             } else {
-                db = response.bufferFactory().wrap((JSON.toJSONString(Controller.write(ErrorCode.EM_100513, e.getMessage())).getBytes()));
+                message = Controller.write(ErrorCode.EM_100513, e.getMessage());
             }
         } else {
-            db = response.bufferFactory().wrap((JSON.toJSONString(Controller.write(ErrorCode.EM_100513)).getBytes()));
+            message = Controller.write(ErrorCode.EM_100513);
         }
-
+        Object contextObj = exchange.getAttribute(ExchangeContext.$);
+        if (contextObj instanceof ExchangeContext) {
+            ExchangeContext context = (ExchangeContext) contextObj;
+            context.setResponseMsg((Message) message);
+        }
+        DataBuffer db = response.bufferFactory().wrap(JSON.toJSONString(message).getBytes());
         return response.writeWith(Mono.just(db));
     }
 }

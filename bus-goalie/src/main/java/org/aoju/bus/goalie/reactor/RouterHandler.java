@@ -17,7 +17,7 @@ import reactor.util.annotation.NonNull;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -50,12 +50,13 @@ public class RouterHandler {
 
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
-        if (Objects.equals(request.method(), HttpMethod.GET)) {
-            MultiValueMap<String, String> params = request.queryParams();
+        Object contextObj = request.attribute(ExchangeContext.$).orElse(Optional.empty());
+        if (contextObj instanceof ExchangeContext) {
+            ExchangeContext context = (ExchangeContext) contextObj;
+            MultiValueMap<String, String> params = context.getRequestMap();
             return proxy(request, params);
-        } else {
-            return request.exchange().getFormData().flatMap(params -> proxy(request, params));
         }
+        return Mono.error(new BusinessException(ErrorCode.EM_100513));
     }
 
     Mono<ServerResponse> proxy(ServerRequest request, MultiValueMap<String, String> params) {
