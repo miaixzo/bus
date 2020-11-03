@@ -3,7 +3,11 @@ package org.aoju.bus.goalie.reactor;
 import lombok.Data;
 import org.aoju.bus.base.entity.Message;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 /**
  * 上下文传参
@@ -17,7 +21,8 @@ public class ExchangeContext {
     /**
      * 交换内容
      */
-    public final static String $ = "exchange_context";
+    private final static String $ = "exchange_context";
+
     /**
      * 请求参数
      */
@@ -26,14 +31,25 @@ public class ExchangeContext {
     /**
      * 返回消息
      */
-    private Message responseMsg;
+    private Mono<Message> responseMsg;
 
-    public static Message getMessage(ServerWebExchange exchange) {
-       return exchange.getAttribute(ExchangeContext.$);
+    private Asset asset;
+
+    public static ExchangeContext get(ServerWebExchange exchange) {
+        ExchangeContext context = exchange.getAttribute(ExchangeContext.$);
+
+        return Optional.ofNullable(context).orElseGet(() -> {
+            ExchangeContext empty = new ExchangeContext();
+            exchange.getAttributes().put(ExchangeContext.$, empty);
+            return empty;
+        });
     }
 
-    public static void setMessage() {
-
+    public static ExchangeContext get(ServerRequest request) {
+        return (ExchangeContext) request.attribute(ExchangeContext.$).orElseGet(() -> {
+            ExchangeContext empty = new ExchangeContext();
+            request.attributes().put(ExchangeContext.$, empty);
+            return empty;
+        });
     }
-
 }

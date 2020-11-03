@@ -1,17 +1,20 @@
 package org.aoju.bus.starter.goalie.filter;
 
 import com.alibaba.fastjson.JSON;
+import org.aoju.bus.base.consts.Consts;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.goalie.reactor.ExchangeContext;
-import org.aoju.bus.logger.Logger;
 import org.aoju.bus.starter.goalie.GoalieProperties;
 import org.aoju.bus.starter.goalie.ReactorConfiguration;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
@@ -19,6 +22,8 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 /**
@@ -40,33 +45,17 @@ public class EncryptFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
+        ServerWebExchange.Builder builder = exchange.mutate();
         if (decrypt.isEnabled()) {
-            Object contextObj = exchange.getAttributes().get(ExchangeContext.$);
-            if (contextObj instanceof ExchangeContext) {
-                ExchangeContext context = (ExchangeContext) contextObj;
-                doDecrypt(context.getRequestMap());
-            }
-
+            doDecrypt(ExchangeContext.get(exchange).getRequestMap());
         }
 
         if (encrypt.isEnabled()) {
-            exchange.getResponse().beforeCommit(() -> {
-                ServerHttpResponse response = exchange.getResponse();
-                Object contextObj = exchange.getAttributes().get(ExchangeContext.$);
-                if (contextObj instanceof ExchangeContext) {
-
-                    ExchangeContext context = (ExchangeContext) contextObj;
-                    Message message = context.getResponseMsg();
-                    doEncrypt(message);
-                    response.writeWith(Mono.just(response.bufferFactory().wrap(JSON.toJSONString(message).getBytes())));
-                }
-                return Mono.empty();
-            });
+            builder.response(processResponse(exchange));
         }
 
 
-        return chain.filter(exchange);
+        return chain.filter(builder.build());
     }
 
     /**
@@ -85,10 +74,29 @@ public class EncryptFilter implements WebFilter {
      * @param message 消息
      */
     private void doEncrypt(Message message) {
-        if (StringKit.isBlank((CharSequence) message.getData())) return;
-        message.setData(org.aoju.bus.crypto.Builder.encrypt(encrypt.getType(), encrypt.getKey(), JSON.toJSONString(message.getData()), Charset.UTF_8));
-        Logger.info("我加密了:{}", message);
+        if (ObjectKit.isNotNull(message.getData())) {
+            message.setData(org.aoju.bus.crypto.Builder.encrypt(encrypt.getType(), encrypt.getKey(), JSON.toJSONString(message.getData()), Charset.UTF_8));
+        }
     }
 
+    private ServerHttpResponseDecorator processResponse(ServerWebExchange exchange) {
+        return new ServerHttpResponseDecorator(exchange.getResponse()) {
+            @Override
+            public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                boolean isSign = Consts.STATUS_ONE.equals(ExchangeContext.get(exchange).getAsset().getSign());
+                if (isSign && body instanceof Mono) {
+                    Mono<? extends DataBuffer> mono = (Mono<? extends DataBuffer>) body;
+                    return super.writeWith(mono.map(dataBuffer -> {
+                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(dataBuffer.asByteBuffer());
+                        DataBufferUtils.release(dataBuffer);
+                        Message message = JSON.parseObject(charBuffer.toString(), Message.class);
+                        doEncrypt(message);
+                        return bufferFactory().wrap(JSON.toJSONString(message).getBytes());
+                    }));
+                }
+                return super.writeWith(body);
+            }
+        };
+    }
 
 }

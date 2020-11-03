@@ -31,16 +31,13 @@ public class FirstFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        ExchangeContext context = new ExchangeContext();
         if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
             MultiValueMap<String, String> params = request.getQueryParams();
-            context.setRequestMap(params);
-            exchange.getAttributes().put(ExchangeContext.$, context);
+            ExchangeContext.get(exchange).setRequestMap(params);
             return chain.filter(exchange);
         } else {
             return exchange.getFormData().flatMap(params -> {
-                context.setRequestMap(params);
-                exchange.getAttributes().put(ExchangeContext.$, context);
+                ExchangeContext.get(exchange).setRequestMap(params);
                 return chain.filter(exchange);
             });
         }

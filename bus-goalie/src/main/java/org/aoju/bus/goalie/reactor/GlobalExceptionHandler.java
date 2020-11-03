@@ -44,11 +44,7 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         } else {
             message = Controller.write(ErrorCode.EM_100513);
         }
-        Object contextObj = exchange.getAttribute(ExchangeContext.$);
-        if (contextObj instanceof ExchangeContext) {
-            ExchangeContext context = (ExchangeContext) contextObj;
-            context.setResponseMsg((Message) message);
-        }
+        ExchangeContext.get(exchange).setResponseMsg(Mono.just((Message) message));
         DataBuffer db = response.bufferFactory().wrap(JSON.toJSONString(message).getBytes());
         return response.writeWith(Mono.just(db));
     }
