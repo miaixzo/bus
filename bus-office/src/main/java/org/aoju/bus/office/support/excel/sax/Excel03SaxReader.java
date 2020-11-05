@@ -25,12 +25,11 @@
 package org.aoju.bus.office.support.excel.sax;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.*;
 import org.apache.poi.hssf.eventusermodel.dummyrecord.LastCellOfRowDummyRecord;
@@ -39,7 +38,6 @@ import org.apache.poi.hssf.model.HSSFFormulaParser;
 import org.apache.poi.hssf.record.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.DateUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -309,11 +307,9 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
             case NumberRecord.sid: // 数字类型
                 final NumberRecord numrec = (NumberRecord) record;
-                final String formatString = formatListener.getFormatString(numrec);
-                if (false == StringKit.contains(formatString, Symbol.C_PERCENT)
-                        && false == "General".equalsIgnoreCase(formatString)) {
+                if (ExcelSaxKit.isDateFormat(numrec, formatListener)) {
                     // 可能为日期格式
-                    value = DateKit.date(DateUtil.getJavaDate(numrec.getValue()));
+                    value = ExcelSaxKit.getDateValue(numrec.getValue());
                 } else {
                     final double doubleValue = numrec.getValue();
                     final long longPart = (long) doubleValue;

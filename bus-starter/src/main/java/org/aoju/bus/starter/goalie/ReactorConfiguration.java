@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
@@ -47,7 +46,6 @@ public class ReactorConfiguration {
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
     Athlete athlete() {
-
         RouterHandler routerHandler = new RouterHandler(assetRegistries);
 
         RouterFunction<ServerResponse> routerFunction = RouterFunctions
@@ -57,12 +55,10 @@ public class ReactorConfiguration {
         HandlerStrategies.Builder builder = HandlerStrategies.builder();
 
         if (CollKit.isNotEmpty(webExceptionHandlers)) {
-            AnnotationAwareOrderComparator.sort(webExceptionHandlers);
             webExceptionHandlers.forEach(builder::exceptionHandler);
         }
 
         if (CollKit.isNotEmpty(webFilters)) {
-            AnnotationAwareOrderComparator.sort(webFilters);
             webFilters.forEach(builder::webFilter);
         }
 
