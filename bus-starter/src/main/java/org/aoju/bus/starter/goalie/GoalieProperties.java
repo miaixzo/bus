@@ -42,10 +42,29 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class GoalieProperties {
     private Server server;
 
+    @EnableConfigurationProperties({Server.Encrypt.class, Server.Decrypt.class})
     @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server")
     @Data
     public static class Server {
         private String path;
         private int port;
+        private Encrypt encrypt;
+        private Decrypt decrypt;
+
+        @Data
+        @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server.encrypt")
+        public static class Encrypt {
+            private boolean enabled;
+            private String key;
+            private String type;
+        }
+
+        @Data
+        @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server.decrypt")
+        public static class Decrypt {
+            private boolean enabled;
+            private String key;
+            private String type;
+        }
     }
 }
