@@ -41,9 +41,9 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = {GoalieProperties.class})
 public class GoalieConfiguration {
 
-    @Bean
-    public WebMvcRegistrations customWebMvcRegistrations() {
-        return new CustomWebMvcRegistrations();
-    }
+  @Bean
+  public WebMvcRegistrations customWebMvcRegistrations() {
+    return new CustomWebMvcRegistrations();
+  }
 
 }
