@@ -5,6 +5,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractors;
@@ -62,7 +63,7 @@ public class RouterHandler {
         if (clientResponse.statusCode().is2xxSuccessful()) {
           Flux<DataBuffer> flux = clientResponse.body(BodyExtractors.toDataBuffers());
           context.setBody(flux);
-          return ServerResponse.ok().body(flux, DataBuffer.class);
+          return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(flux, DataBuffer.class);
         }
         return Mono.error(new BusinessException(ErrorCode.EM_100509));
       });
