@@ -1,4 +1,4 @@
-package org.aoju.bus.goalie.reactor.filter;
+package org.aoju.bus.starter.goalie.filter;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.goalie.reactor.ExchangeContext;
@@ -25,29 +25,26 @@ import java.util.Map;
 @ConditionalOnBean(ReactorConfiguration.class)
 @Order(FilterOrders.DECRYPT)
 public class DecryptFilter implements WebFilter {
-  @Autowired
-  GoalieProperties.Server.Encrypt encrypt;
+    @Autowired
+    GoalieProperties.Server.Decrypt decrypt;
 
-  @Autowired
-  GoalieProperties.Server.Decrypt decrypt;
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        ServerWebExchange.Builder builder = exchange.mutate();
+        if (decrypt.isEnabled()) {
+            doDecrypt(ExchangeContext.get(exchange).getRequestMap());
+        }
 
-  @Override
-  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-    ServerWebExchange.Builder builder = exchange.mutate();
-    if (decrypt.isEnabled()) {
-      doDecrypt(ExchangeContext.get(exchange).getRequestMap());
+        return chain.filter(builder.build());
     }
 
-    return chain.filter(builder.build());
-  }
-
-  /**
-   * 解密
-   *
-   * @param map 参数
-   */
-  private void doDecrypt(Map<String, String> map) {
-    map.forEach((k, v) -> map.put(k, org.aoju.bus.crypto.Builder.decrypt(encrypt.getType(), encrypt.getKey(), v, Charset.UTF_8)));
-  }
+    /**
+     * 解密
+     *
+     * @param map 参数
+     */
+    private void doDecrypt(Map<String, String> map) {
+        map.forEach((k, v) -> map.put(k, org.aoju.bus.crypto.Builder.decrypt(encrypt.getType(), encrypt.getKey(), v, Charset.UTF_8)));
+    }
 
 }
