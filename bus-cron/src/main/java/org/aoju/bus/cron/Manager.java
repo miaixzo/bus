@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
+import org.aoju.bus.cron.factory.CronTask;
 import org.aoju.bus.cron.factory.Task;
 
 import java.util.ArrayList;
@@ -55,14 +56,11 @@ public class Manager {
      * @param task {@link Task}
      * @return {@link Executor}
      */
-    public Executor spawnExecutor(Task task) {
+    public Executor spawnExecutor(CronTask task) {
         final Executor executor = new Executor(this.scheduler, task);
         synchronized (this.executors) {
             this.executors.add(executor);
         }
-        // 子线程是否为deamon线程取决于父线程,因此此处无需显示调用
-        // executor.setDaemon(this.scheduler.daemon);
-//		executor.start();
         this.scheduler.threadExecutor.execute(executor);
         return executor;
     }

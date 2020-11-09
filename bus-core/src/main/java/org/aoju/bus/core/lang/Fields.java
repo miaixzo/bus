@@ -992,6 +992,11 @@ public class Fields {
          */
         UNDECIMBER(Calendar.UNDECIMBER);
 
+        /**
+         * 每月最后一天
+         */
+        private static final int[] MOHTH_OF_LASTDAY = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, -1};
+
         private int value;
 
         Month(int value) {
@@ -1050,9 +1055,36 @@ public class Fields {
             }
         }
 
+        /**
+         * 获得指定月的最后一天
+         *
+         * @param month      月份
+         * @param isLeapYear 是否为闰年，闰年只对二月有影响
+         * @return 最后一天，可能为28,29,30,31
+         */
+        public static int getLastDay(int month, boolean isLeapYear) {
+            int lastDay = MOHTH_OF_LASTDAY[month];
+            if (isLeapYear && Calendar.FEBRUARY == month) {
+                // 闰年二月
+                lastDay += 1;
+            }
+            return lastDay;
+        }
+
         public int getValue() {
             return this.value;
         }
+
+        /**
+         * 获取此月份最后一天的值，不支持的月份（例如UNDECIMBER）返回-1
+         *
+         * @param isLeapYear 是否闰年
+         * @return 此月份最后一天的值
+         */
+        public int getLastDay(boolean isLeapYear) {
+            return getLastDay(this.value, isLeapYear);
+        }
+
     }
 
     /**

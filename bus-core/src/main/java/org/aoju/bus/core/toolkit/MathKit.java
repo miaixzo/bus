@@ -2229,6 +2229,10 @@ public class MathKit {
      * @return 去掉标识的字符串
      */
     private static String removeNumberFlag(String number) {
+        // 去掉千位分隔符
+        if (StringKit.contains(number, Symbol.C_COMMA)) {
+            number = StringKit.removeAll(number, Symbol.C_COMMA);
+        }
         // 去掉类型标识的结尾
         final int lastPos = number.length() - 1;
         final char lastCharUpper = Character.toUpperCase(number.charAt(lastPos));
@@ -2870,6 +2874,23 @@ public class MathKit {
     }
 
     /**
+     * 检查是否为有效的数字
+     * 检查Double和Float是否为无限大，或者Not a Number
+     * 非数字类型和Null将返回true
+     *
+     * @param number 被检查类型
+     * @return 检查结果，非数字类型和Null将返回true
+     */
+    public static boolean isValidNumber(Number number) {
+        if (number instanceof Double) {
+            return (false == ((Double) number).isInfinite()) && (false == ((Double) number).isNaN());
+        } else if (number instanceof Float) {
+            return (false == ((Float) number).isInfinite()) && (false == ((Float) number).isNaN());
+        }
+        return true;
+    }
+
+    /**
      * 是否为负数，不包括0
      *
      * @return 负数返回true，否则false
@@ -2921,23 +2942,6 @@ public class MathKit {
      */
     public long toTerabytes() {
         return this.bytes / Normal.BYTES_PER_TB;
-    }
-
-    /**
-     * 检查是否为有效的数字
-     * 检查Double和Float是否为无限大，或者Not a Number
-     * 非数字类型和Null将返回true
-     *
-     * @param number 被检查类型
-     * @return 检查结果，非数字类型和Null将返回true
-     */
-    public static boolean isValidNumber(Number number) {
-        if (number instanceof Double) {
-            return (false == ((Double) number).isInfinite()) && (false == ((Double) number).isNaN());
-        } else if (number instanceof Float) {
-            return (false == ((Float) number).isInfinite()) && (false == ((Float) number).isNaN());
-        }
-        return true;
     }
 
 }

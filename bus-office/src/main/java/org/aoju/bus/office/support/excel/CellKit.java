@@ -28,6 +28,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.cell.FormulaCellValue;
@@ -243,6 +244,32 @@ public class CellKit {
         } else {
             cell.setCellValue(value.toString());
         }
+    }
+
+    /**
+     * 为特定单元格添加批注
+     *
+     * @param cell   单元格
+     * @param text   批注内容
+     * @param author 作者
+     * @param anchor 批注的位置、大小等信息，null表示使用默认
+     */
+    public static void setComment(Cell cell, String text, String author, ClientAnchor anchor) {
+        final Sheet sheet = cell.getSheet();
+        final Workbook wb = sheet.getWorkbook();
+        final Drawing<?> drawing = sheet.createDrawingPatriarch();
+        final CreationHelper factory = wb.getCreationHelper();
+        if (anchor == null) {
+            anchor = factory.createClientAnchor();
+            anchor.setCol1(cell.getColumnIndex() + 1);
+            anchor.setCol2(cell.getColumnIndex() + 3);
+            anchor.setRow1(cell.getRowIndex());
+            anchor.setRow2(cell.getRowIndex() + 2);
+        }
+        Comment comment = drawing.createCellComment(anchor);
+        comment.setString(factory.createRichTextString(text));
+        comment.setAuthor(StringKit.nullToEmpty(author));
+        cell.setCellComment(comment);
     }
 
     /**

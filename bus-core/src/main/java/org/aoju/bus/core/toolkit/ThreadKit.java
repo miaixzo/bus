@@ -192,6 +192,21 @@ public class ThreadKit {
     }
 
     /**
+     * 执行异步方法
+     *
+     * @param runnable 需要执行的方法体
+     * @param isDaemon 是否守护线程。守护线程会在主线程结束后自动结束
+     * @return 执行的方法体
+     */
+    public static Runnable execAsync(Runnable runnable, boolean isDaemon) {
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(isDaemon);
+        thread.start();
+
+        return runnable;
+    }
+
+    /**
      * 新建一个CompletionService,调用其submit方法可以异步执行多个任务,最后调用take方法按照完成的顺序获得其结果
      * 若未完成,则会阻塞
      *

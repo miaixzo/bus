@@ -134,3 +134,16 @@ public class TController {
 
 }
 ```
+
+
+### reactor server config
+
+- .e.g
+
+```
+extend:
+    server:
+        port: #start port
+        path: # router patten
+```
+        

@@ -35,9 +35,9 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
  */
 public class AtomicIntegerArrayConverter extends AbstractConverter<AtomicIntegerArray> {
 
-	@Override
-	protected AtomicIntegerArray convertInternal(Object value) {
-		return new AtomicIntegerArray(Convert.convert(int[].class, value));
-	}
+    @Override
+    protected AtomicIntegerArray convertInternal(Object value) {
+        return new AtomicIntegerArray(Convert.convert(int[].class, value));
+    }
 
 }

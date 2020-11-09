@@ -24,6 +24,7 @@
  ********************************************************************************/
 package org.aoju.bus.cron;
 
+import org.aoju.bus.cron.factory.CronTask;
 import org.aoju.bus.cron.factory.Task;
 
 /**
@@ -36,21 +37,36 @@ import org.aoju.bus.cron.factory.Task;
  */
 public class Executor implements Runnable {
 
-    private Scheduler scheduler;
-    private Task task;
+    private final Scheduler scheduler;
+    private final CronTask task;
 
-    public Executor(Scheduler scheduler, Task task) {
+    /**
+     * 构造
+     *
+     * @param scheduler 调度器
+     * @param task      被执行的任务
+     */
+    public Executor(Scheduler scheduler, CronTask task) {
         this.scheduler = scheduler;
         this.task = task;
     }
 
     /**
-     * 获得任务对象
+     * 获得原始任务对象
      *
      * @return 任务对象
      */
     public Task getTask() {
-        return task;
+        return this.task.getRaw();
+    }
+
+    /**
+     * 获得原始任务对象
+     *
+     * @return 任务对象
+     */
+    public CronTask getCronTask() {
+        return this.task;
     }
 
     @Override

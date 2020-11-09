@@ -512,20 +512,22 @@ public class Assert {
      * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含
      * 并使用指定的函数获取错误信息返回
      * <pre class="code">
-     * Assert.noNullElements(array, () -&gt; {
-     *      return "relation message to return";
+     * Assert.noNullElements(array, ()-&gt;{
+     *      return new IllegalArgumentException("relation message to return ");
      *  });
      * </pre>
      *
-     * @param <T>              数组元素类型
-     * @param array            被检查的数组
-     * @param errorMsgSupplier 错误抛出异常附带的消息生产接口
+     * @param <T>           数组元素类型
+     * @param <X>           异常类型
+     * @param array         被检查的数组
+     * @param errorSupplier 错误抛出异常附带的消息生产接口
      * @return 被检查的数组
-     * @throws IllegalArgumentException if the object array contains a {@code null} element
+     * @throws X if the object array contains a {@code null} element
+     * @see ArrayKit#hasNull(Object[])
      */
-    public static <T> T[] noNullElements(T[] array, Supplier<String> errorMsgSupplier) throws IllegalArgumentException {
+    public static <T, X extends Throwable> T[] noNullElements(T[] array, Supplier<X> errorSupplier) throws X {
         if (ArrayKit.hasNull(array)) {
-            throw new IllegalArgumentException(errorMsgSupplier.get());
+            throw errorSupplier.get();
         }
         return array;
     }

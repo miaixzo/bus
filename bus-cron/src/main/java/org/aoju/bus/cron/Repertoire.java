@@ -25,12 +25,13 @@
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.cron.factory.CronTask;
 import org.aoju.bus.cron.factory.Task;
 import org.aoju.bus.cron.pattern.CronPattern;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -46,24 +47,33 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class Repertoire {
 
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    public static final int DEFAULT_CAPACITY = 10;
 
-    private Scheduler scheduler;
-    private TimeZone timezone;
+    private final ReadWriteLock lock;
 
-    private List<String> ids = new ArrayList<>();
-    private List<CronPattern> patterns = new ArrayList<>();
-    private List<Task> tasks = new ArrayList<>();
+    private final List<String> ids;
+    private final List<CronPattern> patterns;
+    private final List<Task> tasks;
     private int size;
 
     /**
      * 构造
-     *
-     * @param scheduler {@link Scheduler}
      */
-    public Repertoire(Scheduler scheduler) {
-        this.scheduler = scheduler;
-        this.timezone = scheduler.getTimeZone();
+    public Repertoire() {
+        this(DEFAULT_CAPACITY);
+    }
+
+    /**
+     * 构造
+     *
+     * @param initialCapacity 容量，即预估的最大任务数
+     */
+    public Repertoire(int initialCapacity) {
+        lock = new ReentrantReadWriteLock();
+
+        ids = new ArrayList<>(initialCapacity);
+        patterns = new ArrayList<>(initialCapacity);
+        tasks = new ArrayList<>(initialCapacity);
     }
 
     /**
@@ -76,8 +86,8 @@ public class Repertoire {
      */
     public Repertoire add(String id, CronPattern pattern, Task task) {
         final Lock writeLock = lock.writeLock();
+        writeLock.lock();
         try {
-            writeLock.lock();
             if (ids.contains(id)) {
                 throw new InstrumentException("Id [{}] has been existed!", id);
             }
@@ -92,14 +102,59 @@ public class Repertoire {
     }
 
     /**
+     * 获取所有ID，返回不可变列表，即列表不可修改
+     *
+     * @return ID列表
+     */
+    public List<String> getIds() {
+        final Lock readLock = lock.readLock();
+        readLock.lock();
+        try {
+            return Collections.unmodifiableList(this.ids);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    /**
+     * 获取所有定时任务表达式，返回不可变列表，即列表不可修改
+     *
+     * @return 定时任务表达式列表
+     */
+    public List<CronPattern> getPatterns() {
+        final Lock readLock = lock.readLock();
+        readLock.lock();
+        try {
+            return Collections.unmodifiableList(this.patterns);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    /**
+     * 获取所有定时任务，返回不可变列表，即列表不可修改
+     *
+     * @return 定时任务列表
+     */
+    public List<Task> getTasks() {
+        final Lock readLock = lock.readLock();
+        readLock.lock();
+        try {
+            return Collections.unmodifiableList(this.tasks);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    /**
      * 移除Task
      *
      * @param id Task的ID
      */
     public void remove(String id) {
         final Lock writeLock = lock.writeLock();
+        writeLock.lock();
         try {
-            writeLock.lock();
             final int index = ids.indexOf(id);
             if (index > -1) {
                 tasks.remove(index);
@@ -117,12 +172,12 @@ public class Repertoire {
      *
      * @param id      Task的ID
      * @param pattern 新的表达式
-     * @return 是否更新成功, 如果id对应的规则不存在则不更新
+     * @return 是否更新成功，如果id对应的规则不存在则不更新
      */
     public boolean updatePattern(String id, CronPattern pattern) {
         final Lock writeLock = lock.writeLock();
+        writeLock.lock();
         try {
-            writeLock.lock();
             final int index = ids.indexOf(id);
             if (index > -1) {
                 patterns.set(index, pattern);
@@ -142,8 +197,8 @@ public class Repertoire {
      */
     public Task getTask(int index) {
         final Lock readLock = lock.readLock();
+        readLock.lock();
         try {
-            readLock.lock();
             return tasks.get(index);
         } finally {
             readLock.unlock();
@@ -172,8 +227,8 @@ public class Repertoire {
      */
     public CronPattern getPattern(int index) {
         final Lock readLock = lock.readLock();
+        readLock.lock();
         try {
-            readLock.lock();
             return patterns.get(index);
         } finally {
             readLock.unlock();
@@ -215,13 +270,14 @@ public class Repertoire {
     /**
      * 如果时间匹配则执行相应的Task,带读锁
      *
-     * @param millis 时间毫秒
+     * @param scheduler {@link Scheduler}
+     * @param millis    时间毫秒
      */
-    public void executeTaskIfMatch(long millis) {
+    public void executeTaskIfMatch(Scheduler scheduler, long millis) {
         final Lock readLock = lock.readLock();
+        readLock.lock();
         try {
-            readLock.lock();
-            executeTaskIfMatchInternal(millis);
+            executeTaskIfMatchInternal(scheduler, millis);
         } finally {
             readLock.unlock();
         }
@@ -230,12 +286,13 @@ public class Repertoire {
     /**
      * 如果时间匹配则执行相应的Task,无锁
      *
-     * @param millis 时间毫秒
+     * @param scheduler {@link Scheduler}
+     * @param millis    时间毫秒
      */
-    protected void executeTaskIfMatchInternal(long millis) {
+    protected void executeTaskIfMatchInternal(Scheduler scheduler, long millis) {
         for (int i = 0; i < size; i++) {
-            if (patterns.get(i).match(timezone, millis, this.scheduler.matchSecond)) {
-                this.scheduler.manager.spawnExecutor(tasks.get(i));
+            if (patterns.get(i).match(scheduler.config.timezone, millis, scheduler.config.matchSecond)) {
+                scheduler.manager.spawnExecutor(new CronTask(ids.get(i), patterns.get(i), tasks.get(i)));
             }
         }
     }

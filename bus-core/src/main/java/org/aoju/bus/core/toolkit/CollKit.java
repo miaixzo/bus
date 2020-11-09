@@ -1595,7 +1595,7 @@ public class CollKit {
      * @param <R>        结果类型
      * @param collection 原集合
      * @param func       编辑函数
-     * @param ignoreNull 是否忽略空值
+     * @param ignoreNull 是否忽略空值，这里的空值包括函数处理前和处理后的null值
      * @return 抽取后的新列表
      */
     public static <T, R> List<R> map(Iterable<T> collection, Function<? super T, ? extends R> func, boolean ignoreNull) {
@@ -1605,8 +1605,11 @@ public class CollKit {
         }
 
         R value;
-        for (T bean : collection) {
-            value = func.apply(bean);
+        for (T t : collection) {
+            if (null == t && ignoreNull) {
+                continue;
+            }
+            value = func.apply(t);
             if (null == value && ignoreNull) {
                 continue;
             }
@@ -1665,19 +1668,16 @@ public class CollKit {
      * @return 满足条件的第一个元素
      */
     public static <T> T findOneByField(Iterable<T> collection, final String fieldName, final Object fieldValue) {
-        return findOne(collection, new Filter<T>() {
-            @Override
-            public boolean accept(T t) {
-                if (t instanceof Map) {
-                    final Map<?, ?> map = (Map<?, ?>) t;
-                    final Object value = map.get(fieldName);
-                    return ObjectKit.equal(value, fieldValue);
-                }
-
-                // 普通Bean
-                final Object value = ReflectKit.getFieldValue(t, fieldName);
+        return findOne(collection, t -> {
+            if (t instanceof Map) {
+                final Map<?, ?> map = (Map<?, ?>) t;
+                final Object value = map.get(fieldName);
                 return ObjectKit.equal(value, fieldValue);
             }
+
+            // 普通Bean
+            final Object value = ReflectKit.getFieldValue(t, fieldName);
+            return ObjectKit.equal(value, fieldValue);
         });
     }
 

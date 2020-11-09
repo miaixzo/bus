@@ -35,9 +35,15 @@ package org.aoju.bus.cron;
  */
 public class Launcher implements Runnable {
 
-    private Scheduler scheduler;
-    private long millis;
+    private final Scheduler scheduler;
+    private final long millis;
 
+    /**
+     * 构造
+     *
+     * @param scheduler {@link Scheduler}
+     * @param millis    毫秒数
+     */
     public Launcher(Scheduler scheduler, long millis) {
         this.scheduler = scheduler;
         this.millis = millis;
@@ -46,7 +52,7 @@ public class Launcher implements Runnable {
     @Override
     public void run() {
         //匹配秒部分由用户定义决定,始终不匹配年
-        scheduler.repertoire.executeTaskIfMatchInternal(millis);
+        scheduler.repertoire.executeTaskIfMatch(this.scheduler, this.millis);
 
         //结束通知
         scheduler.supervisor.notifyLauncherCompleted(this);

@@ -57,6 +57,7 @@ public class BoolArrayValueMatcher implements ValueMatcher {
 
     @Override
     public String toString() {
-        return StringKit.format("Matcher:{}", this.bValues);
+        return StringKit.format("Matcher:{}", new Object[]{this.bValues});
     }
+
 }
