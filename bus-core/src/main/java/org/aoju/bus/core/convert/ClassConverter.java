@@ -24,7 +24,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 
 /**
@@ -37,14 +36,27 @@ import org.aoju.bus.core.toolkit.ClassKit;
  */
 public class ClassConverter extends AbstractConverter<Class<?>> {
 
+    private final boolean isInitialized;
+
+    /**
+     * 构造
+     */
+    public ClassConverter() {
+        this(true);
+    }
+
+    /**
+     * 构造
+     *
+     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     */
+    public ClassConverter(boolean isInitialized) {
+        this.isInitialized = isInitialized;
+    }
+
     @Override
     protected Class<?> convertInternal(Object value) {
-        String valueStr = convertString(value);
-        try {
-            return ClassKit.getClassLoader().loadClass(valueStr);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+        return ClassKit.loadClass(convertString(value), isInitialized);
     }
 
 }

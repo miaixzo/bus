@@ -33,33 +33,34 @@ import java.util.stream.Collectors;
 @Order(FilterOrders.PERMISSION)
 public class PermissionFilter implements WebFilter {
 
-  @Autowired
-  Athlete athlete;
+    @Autowired
+    Athlete athlete;
 
-  @Override
-  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-    ExchangeContext context = ExchangeContext.get(exchange);
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        ExchangeContext context = ExchangeContext.get(exchange);
 
-    Map<String, String> params = context.getRequestMap();
+        Map<String, String> params = context.getRequestMap();
 
-    String method = params.get(Constant.METHOD);
-    String version = params.get(Constant.VERSION);
+        String method = params.get(Constant.METHOD);
+        String version = params.get(Constant.VERSION);
 
-    Set<Asset> assets = athlete.getAssets();
+        Set<Asset> assets = athlete.getAssets();
 
-    List<Asset> assetsList = assets.parallelStream()
-      .filter(asset -> Objects.equals(method, asset.getMethod())).collect(Collectors.toList());
+        List<Asset> assetsList = assets.parallelStream()
+                .filter(asset -> Objects.equals(method, asset.getMethod())).collect(Collectors.toList());
 
-    if (assetsList.size() < 1) {
-      return Mono.error(new BusinessException(ErrorCode.EM_100103));
+        if (assetsList.size() < 1) {
+            return Mono.error(new BusinessException(ErrorCode.EM_100103));
+        }
+
+        Asset asset = assetsList.parallelStream()
+                .filter(c -> Objects.equals(version, c.getVersion())).findFirst()
+                .orElseThrow(() -> new BusinessException(ErrorCode.EM_100102));
+
+        context.setAsset(asset);
+
+        return chain.filter(exchange);
     }
 
-    Asset asset = assetsList.parallelStream()
-      .filter(c -> Objects.equals(version, c.getVersion())).findFirst()
-      .orElseThrow(() -> new BusinessException(ErrorCode.EM_100102));
-
-    context.setAsset(asset);
-
-    return chain.filter(exchange);
-  }
 }

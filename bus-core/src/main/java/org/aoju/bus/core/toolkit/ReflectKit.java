@@ -1012,7 +1012,6 @@ public class ReflectKit {
         return Normal.SET + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
 
-
     /**
      * 设置方法为可访问(私有方法可以被外部调用)
      *

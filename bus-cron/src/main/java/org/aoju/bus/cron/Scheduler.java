@@ -80,13 +80,13 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Scheduler {
 
     /**
-     * 是否为守护线程
-     */
-    protected boolean daemon;
-    /**
      * 同步锁
      */
     private final Lock lock = new ReentrantLock();
+    /**
+     * 是否为守护线程
+     */
+    protected boolean daemon;
     /**
      * 启动管理器
      */

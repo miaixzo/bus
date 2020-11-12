@@ -28,46 +28,46 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RouterHandler {
 
-  private final Map<String, WebClient> clients = new ConcurrentHashMap<>();
+    private final Map<String, WebClient> clients = new ConcurrentHashMap<>();
 
 
-  @NonNull
-  public Mono<ServerResponse> handle(ServerRequest request) {
+    @NonNull
+    public Mono<ServerResponse> handle(ServerRequest request) {
 
-    ExchangeContext context = ExchangeContext.get(request);
+        ExchangeContext context = ExchangeContext.get(request);
 
-    Asset asset = context.getAsset();
+        Asset asset = context.getAsset();
 
-    Map<String, String> params = context.getRequestMap();
+        Map<String, String> params = context.getRequestMap();
 
-    String baseUrl = asset.getHost() + Symbol.C_COLON + asset.getPort();
+        String baseUrl = asset.getHost() + Symbol.C_COLON + asset.getPort();
 
-    WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.create(baseUrl));
-    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(asset.getUrl());
-    MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-    multiValueMap.setAll(params);
-    if (HttpMethod.GET.equals(asset.getHttpMethod())) {
+        WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.create(baseUrl));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(asset.getUrl());
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.setAll(params);
+        if (HttpMethod.GET.equals(asset.getHttpMethod())) {
 
-      builder.queryParams(multiValueMap);
-    }
-    WebClient.RequestBodySpec bodySpec = webClient
-      .method(asset.getHttpMethod())
-      .uri(builder.build().toUri())
-      .headers((headers) -> request.headers());
-    if (!HttpMethod.GET.equals(asset.getHttpMethod())) {
-      bodySpec.bodyValue(multiValueMap);
-    }
-    return bodySpec
-      .exchange()
-      .flatMap(clientResponse -> {
-        if (clientResponse.statusCode().is2xxSuccessful()) {
-          Flux<DataBuffer> flux = clientResponse.body(BodyExtractors.toDataBuffers());
-          context.setBody(flux);
-          return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(flux, DataBuffer.class);
+            builder.queryParams(multiValueMap);
         }
-        return Mono.error(new BusinessException(ErrorCode.EM_100509));
-      });
+        WebClient.RequestBodySpec bodySpec = webClient
+                .method(asset.getHttpMethod())
+                .uri(builder.build().toUri())
+                .headers((headers) -> request.headers());
+        if (!HttpMethod.GET.equals(asset.getHttpMethod())) {
+            bodySpec.bodyValue(multiValueMap);
+        }
+        return bodySpec
+                .exchange()
+                .flatMap(clientResponse -> {
+                    if (clientResponse.statusCode().is2xxSuccessful()) {
+                        Flux<DataBuffer> flux = clientResponse.body(BodyExtractors.toDataBuffers());
+                        context.setBody(flux);
+                        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(flux, DataBuffer.class);
+                    }
+                    return Mono.error(new BusinessException(ErrorCode.EM_100509));
+                });
 
-  }
+    }
 
 }

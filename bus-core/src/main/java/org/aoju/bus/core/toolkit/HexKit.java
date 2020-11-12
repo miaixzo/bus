@@ -204,8 +204,7 @@ public class HexKit {
         if (StringKit.isEmpty(hexStr)) {
             return null;
         }
-        hexStr = StringKit.removeAll(hexStr, Symbol.C_SPACE);
-        return decodeHex(hexStr.toCharArray());
+        return decodeHex(StringKit.cleanBlank(hexStr).toCharArray());
     }
 
     /**
@@ -358,6 +357,25 @@ public class HexKit {
             return null;
         }
         return new BigInteger(hexStr, 16);
+    }
+
+    /**
+     * 格式化Hex字符串，结果为每2位加一个空格，类似于：
+     * <pre>
+     *     e8 8c 67 03 80 cb 22 00 95 26 8f
+     * </pre>
+     *
+     * @param hexStr Hex字符串
+     * @return 格式化后的字符串
+     */
+    public static String format(String hexStr) {
+        final int length = hexStr.length();
+        final StringBuilder builder = StringKit.builder(length + length / 2);
+        builder.append(hexStr.charAt(0)).append(hexStr.charAt(1));
+        for (int i = 1; i < length - 1; i += 2) {
+            builder.append(Symbol.C_SPACE).append(hexStr.charAt(i)).append(hexStr.charAt(i + 1));
+        }
+        return builder.toString();
     }
 
 }

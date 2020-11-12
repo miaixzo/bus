@@ -773,4 +773,39 @@ public class IterKit {
         return Collections.emptyIterator();
     }
 
+    /**
+     * 返回 Iterable 对象的元素数量
+     *
+     * @param iterable Iterable对象
+     * @return Iterable对象的元素数量
+     */
+    public static int size(final Iterable<?> iterable) {
+        if (null == iterable) {
+            return 0;
+        }
+
+        if (iterable instanceof Collection<?>) {
+            return ((Collection<?>) iterable).size();
+        } else {
+            return size(iterable.iterator());
+        }
+    }
+
+    /**
+     * 返回 Iterator 对象的元素数量
+     *
+     * @param iterator Iterator对象
+     * @return Iterator对象的元素数量
+     */
+    public static int size(final Iterator<?> iterator) {
+        int size = 0;
+        if (iterator != null) {
+            while (iterator.hasNext()) {
+                iterator.next();
+                size++;
+            }
+        }
+        return size;
+    }
+
 }

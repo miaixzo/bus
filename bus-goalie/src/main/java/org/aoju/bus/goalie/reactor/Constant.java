@@ -8,10 +8,10 @@ package org.aoju.bus.goalie.reactor;
  */
 public interface Constant {
 
-  String METHOD = "method";
+    String METHOD = "method";
 
-  String VERSION = "v";
+    String VERSION = "v";
 
-  String X_ACCESS_TOKEN = "X-Access-Token";
+    String X_ACCESS_TOKEN = "X-Access-Token";
 
 }

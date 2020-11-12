@@ -32,28 +32,28 @@ import java.util.Map;
 @Order(FilterOrders.AUTH)
 public class AuthFilter implements WebFilter {
 
-  @Autowired
-  AuthProvider provider;
+    @Autowired
+    AuthProvider provider;
 
-  @Override
-  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-    ExchangeContext context = ExchangeContext.get(exchange);
-    Asset asset = context.getAsset();
-    Map<String, String> requestMap = context.getRequestMap();
-    if (asset.isToken()) {
-      String token = exchange.getRequest().getHeaders().getFirst(Constant.X_ACCESS_TOKEN);
-      LoginResponse response = provider.authorize(token);
-      if (response.isOk()) {
-        OAuth2 auth2 = response.getOAuth2();
-        Map<String, Object> map = BeanKit.beanToMap(auth2, false, true);
-        map.forEach((k, v) -> requestMap.put(k, v.toString()));
-      } else {
-        throw new BusinessException(ErrorCode.EM_FAILURE, response.getMessage().errmsg);
-      }
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        ExchangeContext context = ExchangeContext.get(exchange);
+        Asset asset = context.getAsset();
+        Map<String, String> requestMap = context.getRequestMap();
+        if (asset.isToken()) {
+            String token = exchange.getRequest().getHeaders().getFirst(Constant.X_ACCESS_TOKEN);
+            LoginResponse response = provider.authorize(token);
+            if (response.isOk()) {
+                OAuth2 auth2 = response.getOAuth2();
+                Map<String, Object> map = BeanKit.beanToMap(auth2, false, true);
+                map.forEach((k, v) -> requestMap.put(k, v.toString()));
+            } else {
+                throw new BusinessException(ErrorCode.EM_FAILURE, response.getMessage().errmsg);
+            }
 
 
+        }
+        return chain.filter(exchange);
     }
-    return chain.filter(exchange);
-  }
 
 }

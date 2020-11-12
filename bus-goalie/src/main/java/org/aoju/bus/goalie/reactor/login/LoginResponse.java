@@ -12,10 +12,11 @@ import org.aoju.bus.base.entity.OAuth2;
 @Data
 public class LoginResponse {
 
-  private Message message;
-  private OAuth2 oAuth2;
+    private Message message;
+    private OAuth2 oAuth2;
 
-  public boolean isOk() {
-    return Consts.STATUS_ZERO.equals(message.getErrcode());
-  }
+    public boolean isOk() {
+        return Consts.STATUS_ZERO.equals(message.getErrcode());
+    }
+
 }

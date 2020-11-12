@@ -10,6 +10,6 @@ import java.util.Set;
  */
 public interface AssetRegistry {
 
-  Set<Asset> init();
+    Set<Asset> init();
 
 }

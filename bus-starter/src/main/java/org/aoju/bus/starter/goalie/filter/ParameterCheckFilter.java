@@ -27,18 +27,19 @@ import java.util.Map;
 @Order(FilterOrders.PARAMETER_CHECK)
 public class ParameterCheckFilter implements WebFilter {
 
-  @Override
-  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-    ExchangeContext context = ExchangeContext.get(exchange);
-    Map<String, String> params = context.getRequestMap();
+        ExchangeContext context = ExchangeContext.get(exchange);
+        Map<String, String> params = context.getRequestMap();
 
-    if (StringKit.isBlank(params.get(Constant.METHOD))) {
-      throw new BusinessException(ErrorCode.EM_100108);
+        if (StringKit.isBlank(params.get(Constant.METHOD))) {
+            throw new BusinessException(ErrorCode.EM_100108);
+        }
+        if (StringKit.isBlank(params.get(Constant.VERSION))) {
+            throw new BusinessException(ErrorCode.EM_100107);
+        }
+        return chain.filter(exchange);
     }
-    if (StringKit.isBlank(params.get(Constant.VERSION))) {
-      throw new BusinessException(ErrorCode.EM_100107);
-    }
-    return chain.filter(exchange);
-  }
+
 }

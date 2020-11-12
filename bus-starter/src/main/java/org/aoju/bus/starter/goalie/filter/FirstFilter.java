@@ -27,19 +27,19 @@ import java.util.Objects;
 @Order(FilterOrders.FIRST)
 public class FirstFilter implements WebFilter {
 
-  @Override
-  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-    ServerHttpRequest request = exchange.getRequest();
-    if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
-      MultiValueMap<String, String> params = request.getQueryParams();
-      ExchangeContext.get(exchange).setRequestMap(params.toSingleValueMap());
-      return chain.filter(exchange);
-    } else {
-      return exchange.getFormData().flatMap(params -> {
-        ExchangeContext.get(exchange).setRequestMap(params.toSingleValueMap());
-        return chain.filter(exchange);
-      });
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        ServerHttpRequest request = exchange.getRequest();
+        if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
+            MultiValueMap<String, String> params = request.getQueryParams();
+            ExchangeContext.get(exchange).setRequestMap(params.toSingleValueMap());
+            return chain.filter(exchange);
+        } else {
+            return exchange.getFormData().flatMap(params -> {
+                ExchangeContext.get(exchange).setRequestMap(params.toSingleValueMap());
+                return chain.filter(exchange);
+            });
+        }
     }
-  }
 
 }
