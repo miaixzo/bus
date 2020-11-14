@@ -600,7 +600,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         List<String> systemctl = Executor.runNative("systemctl list-unit-files");
         for (String str : systemctl) {
             String[] split = RegEx.SPACES.split(str);
-            if (split.length == 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
+            if (split.length >= 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);
                 int index = name.lastIndexOf(Symbol.C_DOT);

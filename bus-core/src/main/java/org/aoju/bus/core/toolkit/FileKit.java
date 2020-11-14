@@ -258,7 +258,7 @@ public class FileKit {
         if (StringKit.isBlank(path)) {
             throw new NullPointerException("File path is blank!");
         }
-        return checkSlip(parent, new File(parent, path));
+        return checkSlip(parent, buildFile(parent, path));
     }
 
     /**
@@ -3846,6 +3846,35 @@ public class FileKit {
      */
     public static Resource getResourceObj(String path) {
         return FileKit.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);
+    }
+
+    /**
+     * 根据压缩包中的路径构建目录结构，在Win下直接构建，在Linux下拆分路径单独构建
+     *
+     * @param outFile  最外部路径
+     * @param fileName 文件名，可以包含路径
+     * @return 文件或目录
+     */
+    private static File buildFile(File outFile, String fileName) {
+        // 替换Windows路径分隔符为Linux路径分隔符，便于统一处理
+        fileName = fileName.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH);
+        if (false == isWindows()
+                // 检查文件名中是否包含"/"，不考虑以"/"结尾的情况
+                && fileName.lastIndexOf(Symbol.C_SLASH, fileName.length() - 2) > 0) {
+            // 在Linux下多层目录创建存在问题，/会被当成文件名的一部分，此处做处理
+            // 使用/拆分路径（zip中无\），级联创建父目录
+            final List<String> pathParts = StringKit.split(fileName, Symbol.C_SLASH, false, true);
+            final int lastPartIndex = pathParts.size() - 1;//目录个数
+            for (int i = 0; i < lastPartIndex; i++) {
+                //由于路径拆分，slip不检查，在最后一步检查
+                outFile = new File(outFile, pathParts.get(i));
+            }
+            //noinspection ResultOfMethodCallIgnored
+            outFile.mkdirs();
+            // 最后一个部分如果非空，作为文件名
+            fileName = pathParts.get(lastPartIndex);
+        }
+        return new File(outFile, fileName);
     }
 
 }

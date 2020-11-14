@@ -73,16 +73,6 @@ public final class ProcessorInformation {
     }
 
     /**
-     * Returns system performance counters.
-     *
-     * @return Performance Counters for the total of all processors.
-     */
-    public static Map<SystemTickCountProperty, Long> querySystemCounters() {
-        return PerfCounterQuery.queryValues(SystemTickCountProperty.class, PROCESSOR,
-                WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL);
-    }
-
-    /**
      * Returns system interrupts counters.
      *
      * @return Interrupts counter for the total of all processors.
@@ -119,32 +109,6 @@ public final class ProcessorInformation {
 
         ProcessorTickCountProperty(String counter) {
             this.counter = counter;
-        }
-
-        @Override
-        public String getCounter() {
-            return counter;
-        }
-    }
-
-    /**
-     * System performance counters
-     */
-    public enum SystemTickCountProperty implements PdhCounterProperty {
-        PERCENTDPCTIME(PerfCounterQuery.TOTAL_INSTANCE, "% DPC Time"), //
-        PERCENTINTERRUPTTIME(PerfCounterQuery.TOTAL_INSTANCE, "% Interrupt Time");
-
-        private final String instance;
-        private final String counter;
-
-        SystemTickCountProperty(String instance, String counter) {
-            this.instance = instance;
-            this.counter = counter;
-        }
-
-        @Override
-        public String getInstance() {
-            return instance;
         }
 
         @Override

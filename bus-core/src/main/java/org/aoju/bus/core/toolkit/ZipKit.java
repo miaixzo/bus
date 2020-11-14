@@ -454,7 +454,7 @@ public class ZipKit {
             File outItemFile;
             while (em.hasMoreElements()) {
                 zipEntry = em.nextElement();
-                outItemFile = buildFile(outFile, zipEntry.getName());
+                outItemFile = FileKit.file(outFile, zipEntry.getName());
                 if (zipEntry.isDirectory()) {
                     // 创建对应目录
                     outItemFile.mkdirs();
@@ -1065,13 +1065,13 @@ public class ZipKit {
      */
     private static File buildFile(File outFile, String fileName) {
         // 替换Windows路径分隔符为Linux路径分隔符，便于统一处理
-        fileName = fileName.replace('\\', '/');
+        fileName = fileName.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH);
         if (false == FileKit.isWindows()
                 // 检查文件名中是否包含"/"，不考虑以"/"结尾的情况
                 && fileName.lastIndexOf(Symbol.SLASH, fileName.length() - 2) > 0) {
             // 在Linux下多层目录创建存在问题，/会被当成文件名的一部分，此处做处理
             // 使用/拆分路径（zip中无\），级联创建父目录
-            final List<String> pathParts = StringKit.split(fileName, '/', false, true);
+            final List<String> pathParts = StringKit.split(fileName, Symbol.C_SLASH, false, true);
             final int lastPartIndex = pathParts.size() - 1;//目录个数
             for (int i = 0; i < lastPartIndex; i++) {
                 //由于路径拆分，slip不检查，在最后一步检查

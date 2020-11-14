@@ -25,7 +25,6 @@
 package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.Memory;
-import com.sun.jna.Native;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
@@ -141,6 +140,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         String cpuFamily = Normal.EMPTY;
         String cpuModel = Normal.EMPTY;
         String cpuStepping = Normal.EMPTY;
+        long cpuVendorFreq = 0L;
         String processorID;
         boolean cpu64bit = false;
 
@@ -154,6 +154,12 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                     "ProcessorNameString");
             cpuIdentifier = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath,
                     "Identifier");
+            try {
+                cpuVendorFreq = Advapi32Util.registryGetIntValue(WinReg.HKEY_LOCAL_MACHINE, cpuRegistryPath, "~MHz")
+                        * 1_000_000L;
+            } catch (Win32Exception e) {
+                // Leave as 0, parse the identifier as backup
+            }
         }
         if (!cpuIdentifier.isEmpty()) {
             cpuFamily = parseIdentifier(cpuIdentifier, "Family");
@@ -175,7 +181,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             processorID = createProcessorID(cpuStepping, cpuModel, cpuFamily,
                     cpu64bit ? new String[]{"ia64"} : new String[0]);
         }
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
+                cpuVendorFreq);
     }
 
     @Override
@@ -306,33 +313,20 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[] querySystemCpuLoadTicks() {
-        long[] ticks = new long[CentralProcessor.TickType.values().length];
-        WinBase.FILETIME lpIdleTime = new WinBase.FILETIME();
-        WinBase.FILETIME lpKernelTime = new WinBase.FILETIME();
-        WinBase.FILETIME lpUserTime = new WinBase.FILETIME();
-        if (!Kernel32.INSTANCE.GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime)) {
-            Logger.error("Failed to update system idle/kernel/user times. Error code: {}", Native.getLastError());
-            return ticks;
+        // To get load in processor group scenario, we need perfmon counters, but the
+        // _Total instance is an average rather than total (scaled) number of ticks
+        // which matches GetSystemTimes() results. We can just query the per-processor
+        // ticks and add them up. Calling the get() method gains the benefit of
+        // synchronizing this output with the memoized result of per-processor ticks as
+        // well.
+        long[] ticks = new long[TickType.values().length];
+        // Sum processor ticks
+        long[][] procTicks = getProcessorCpuLoadTicks();
+        for (int i = 0; i < ticks.length; i++) {
+            for (long[] procTick : procTicks) {
+                ticks[i] += procTick[i];
+            }
         }
-        // IOwait:
-        // Windows does not measure IOWait.
-
-        // IRQ and ticks:
-        // Percent time raw value is cumulative 100NS-ticks
-        // Divide by 10_000 to get milliseconds
-
-        Map<ProcessorInformation.SystemTickCountProperty, Long> valueMap = ProcessorInformation.querySystemCounters();
-        ticks[CentralProcessor.TickType.IRQ.getIndex()] = valueMap.getOrDefault(ProcessorInformation.SystemTickCountProperty.PERCENTINTERRUPTTIME, 0L)
-                / 10_000L;
-        ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()] = valueMap.getOrDefault(ProcessorInformation.SystemTickCountProperty.PERCENTDPCTIME, 0L)
-                / 10_000L;
-
-        ticks[CentralProcessor.TickType.IDLE.getIndex()] = lpIdleTime.toDWordLong().longValue() / 10_000L;
-        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = lpKernelTime.toDWordLong().longValue() / 10_000L
-                - ticks[CentralProcessor.TickType.IDLE.getIndex()];
-        ticks[CentralProcessor.TickType.USER.getIndex()] = lpUserTime.toDWordLong().longValue() / 10_000L;
-        // Additional decrement to avoid double counting in the total array
-        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] -= ticks[CentralProcessor.TickType.IRQ.getIndex()] + ticks[CentralProcessor.TickType.SOFTIRQ.getIndex()];
         return ticks;
     }
 

@@ -45,6 +45,8 @@ import java.util.List;
 @Immutable
 final class LinuxDisplay extends AbstractDisplay {
 
+    private static final String[] XRANDR_VERBOSE = {"xrandr", "--verbose"};
+
     /**
      * Constructor for LinuxDisplay.
      *
@@ -61,7 +63,7 @@ final class LinuxDisplay extends AbstractDisplay {
      * @return An array of Display objects representing monitors, etc.
      */
     public static List<Display> getDisplays() {
-        List<String> xrandr = Executor.runNative("xrandr --verbose");
+        List<String> xrandr = Executor.runNative(XRANDR_VERBOSE, null);
         // xrandr reports edid in multiple lines. After seeing a line containing
         // EDID, read subsequent lines of hex until 256 characters are reached
         if (xrandr.isEmpty()) {

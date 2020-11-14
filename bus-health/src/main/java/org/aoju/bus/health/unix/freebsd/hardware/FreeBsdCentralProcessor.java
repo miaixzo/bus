@@ -178,6 +178,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         String cpuModel = Normal.EMPTY;
         String cpuStepping = Normal.EMPTY;
         String processorID;
+        long cpuFreq = BsdSysctlKit.sysctl("hw.clockrate", 0L) * 1_000_000L;
+
         boolean cpu64bit;
 
         // Parsing dmesg.boot is apparently the only reliable source for processor
@@ -210,7 +212,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         cpu64bit = Executor.getFirstAnswer("uname -m").trim().contains("64");
         processorID = getProcessorIDfromDmiDecode(processorIdBits);
 
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
+                cpuFreq);
     }
 
     @Override
