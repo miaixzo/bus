@@ -44,7 +44,7 @@ public class DecryptFilter implements WebFilter {
      * @param map 参数
      */
     private void doDecrypt(Map<String, String> map) {
-        map.forEach((k, v) -> map.put(k, org.aoju.bus.crypto.Builder.decrypt(encrypt.getType(), encrypt.getKey(), v, Charset.UTF_8)));
+        map.forEach((k, v) -> map.put(k, org.aoju.bus.crypto.Builder.decrypt(decrypt.getType(), decrypt.getKey(), v, Charset.UTF_8)));
     }
 
 }
