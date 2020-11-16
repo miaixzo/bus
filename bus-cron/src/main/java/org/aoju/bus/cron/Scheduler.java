@@ -320,7 +320,7 @@ public class Scheduler {
     /**
      * 获取定时任务表，注意此方法返回非复制对象，对返回对象的修改将影响已有定时任务
      *
-     * @return 定时任务表{@link TaskTable}
+     * @return 定时任务表 {@link Repertoire}
      */
     public Repertoire getTaskTable() {
         return this.repertoire;
