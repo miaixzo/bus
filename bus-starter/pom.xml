@@ -17,19 +17,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
-        <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.73</fastjson.version>
-        <aspectj.version>1.9.5</aspectj.version>
+        <spring.boot.version>2.4.0</spring.boot.version>
+        <lombok.version>1.18.16</lombok.version>
+        <fastjson.version>1.2.75</fastjson.version>
+        <aspectj.version>1.9.6</aspectj.version>
         <persistence.version>2.2</persistence.version>
-        <guava.version>29.0-jre</guava.version>
+        <guava.version>30.0-jre</guava.version>
         <guice.version>4.2.3</guice.version>
-        <mybatis.version>3.5.5</mybatis.version>
-        <mybatis.spring.version>2.0.5</mybatis.spring.version>
+        <mybatis.version>3.5.6</mybatis.version>
+        <mybatis.spring.version>2.0.6</mybatis.spring.version>
         <validation.version>2.0.1.Final</validation.version>
         <jsqlparser.version>3.1</jsqlparser.version>
-        <mysql.version>8.0.21</mysql.version>
-        <druid.version>1.1.24</druid.version>
+        <mysql.version>8.0.22</mysql.version>
+        <druid.version>1.2.3</druid.version>
         <dubbo.version>2.7.8</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
     </properties>

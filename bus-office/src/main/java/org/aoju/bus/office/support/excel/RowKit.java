@@ -96,7 +96,7 @@ public class RowKit {
         Object cellValue;
         boolean isAllNull = true;
         for (int i = startCellNumInclude; i < size; i++) {
-            cellValue = CellKit.getCellValue(row.getCell(i), cellEditor);
+            cellValue = CellKit.getCellValue(CellKit.getCell(row, i), cellEditor);
             isAllNull &= StringKit.emptyIfStr(cellValue);
             cellValues.add(cellValue);
         }

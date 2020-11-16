@@ -17,8 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
-        <lombok.version>1.18.12</lombok.version>
+        <spring.boot.version>2.4.0</spring.boot.version>
+        <lombok.version>1.18.16</lombok.version>
         <dubbo.version>2.7.8</dubbo.version>
         <servlet.version>4.0.1</servlet.version>
         <cxf.version>2.7.18</cxf.version>

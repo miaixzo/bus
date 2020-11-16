@@ -17,8 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.73</fastjson.version>
+        <lombok.version>1.18.16</lombok.version>
+        <fastjson.version>1.2.75</fastjson.version>
     </properties>
 
     <dependencies>

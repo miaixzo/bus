@@ -20,7 +20,7 @@
         <javassist.version>3.27.0-GA</javassist.version>
         <hession.version>4.0.63</hession.version>
         <cglib.version>3.3.0</cglib.version>
-        <aspectj.version>1.9.5</aspectj.version>
+        <aspectj.version>1.9.6</aspectj.version>
     </properties>
 
     <dependencies>

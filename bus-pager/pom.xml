@@ -17,8 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <mybatis.version>3.5.5</mybatis.version>
-        <guava.version>29.0-jre</guava.version>
+        <mybatis.version>3.5.6</mybatis.version>
+        <guava.version>30.0-jre</guava.version>
         <jsqlparser.version>3.1</jsqlparser.version>
     </properties>
 

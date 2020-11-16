@@ -1642,21 +1642,20 @@ public class StringKit {
         return subBetween(str, beforeAndAfter, beforeAndAfter);
     }
 
-
     /**
      * 截取指定字符串多段中间部分，不包括标识字符串
      * <pre>
-     * subBetweenAll("wx[b]y[z]", "[", "]") 		= ["b","z"]
-     * subBetweenAll(null, *, *)          			= []
-     * subBetweenAll(*, null, *)          			= []
-     * subBetweenAll(*, *, null)          			= []
-     * subBetweenAll("", "", "")          			= []
-     * subBetweenAll("", "", "]")         			= []
-     * subBetweenAll("", "[", "]")        			= []
-     * subBetweenAll("yabcz", "", "")     			= []
-     * subBetweenAll("yabcz", "y", "z")   			= ["abc"]
-     * subBetweenAll("yabczyabcz", "y", "z")   		= ["abc","abc"]
-     * subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           重叠时只截取内部，
+     * StringKit.subBetweenAll("wx[b]y[z]", "[", "]") 		= ["b","z"]
+     * StringKit.subBetweenAll(null, *, *)          			= []
+     * StringKit.subBetweenAll(*, null, *)          			= []
+     * StringKit.subBetweenAll(*, *, null)          			= []
+     * StringKit.subBetweenAll("", "", "")          			= []
+     * StringKit.subBetweenAll("", "", "]")         			= []
+     * StringKit.subBetweenAll("", "[", "]")        			= []
+     * StringKit.subBetweenAll("yabcz", "", "")     			= []
+     * StringKit.subBetweenAll("yabcz", "y", "z")   			= ["abc"]
+     * StringKit.subBetweenAll("yabczyabcz", "y", "z")   		= ["abc","abc"]
+     * StringKit.subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           重叠时只截取内部，
      * </pre>
      *
      * @param str    被切割的字符串
@@ -1665,19 +1664,52 @@ public class StringKit {
      * @return 截取后的字符串
      */
     public static String[] subBetweenAll(CharSequence str, CharSequence prefix, CharSequence suffix) {
-        if (hasEmpty(str, prefix, suffix) || false == contains(str, prefix)) {
+        if (hasEmpty(str, prefix, suffix) ||
+                // 不包含起始字符串，则肯定没有子串
+                false == contains(str, prefix)) {
             return new String[0];
         }
 
         final List<String> result = new LinkedList<>();
-        for (String fragment : split(str, prefix)) {
-            int suffixIndex = fragment.indexOf(suffix.toString());
-            if (suffixIndex > 0) {
-                result.add(fragment.substring(0, suffixIndex));
+        final String[] split = split(str, prefix);
+        if (prefix.equals(suffix)) {
+            // 前后缀字符相同，单独处理
+            for (int i = 1, length = split.length - 1; i < length; i += 2) {
+                result.add(split[i]);
+            }
+        } else {
+            int suffixIndex;
+            for (String fragment : split) {
+                suffixIndex = fragment.indexOf(suffix.toString());
+                if (suffixIndex > 0) {
+                    result.add(fragment.substring(0, suffixIndex));
+                }
             }
         }
 
         return result.toArray(new String[0]);
+    }
+
+    /**
+     * 截取指定字符串多段中间部分，不包括标识字符串
+     * <pre>
+     * StringKit.subBetweenAll(null, *)          			= []
+     * StringKit.subBetweenAll(*, null)          			= []
+     * StringKit.subBetweenAll(*, *)          			= []
+     * StringKit.subBetweenAll("", "")          			= []
+     * StringKit.subBetweenAll("", "#")         			= []
+     * StringKit.subBetweenAll("abcd", "")     		    = []
+     * StringKit.subBetweenAll("#abcd#", "#")   		    = ["abcd"]
+     * StringKit.subBetweenAll("#hello# #world#!", "#")   = ["hello", "world"]
+     * StringKit.subBetweenAll("#hello# world#!", "#");   = ["hello"]
+     * </pre>
+     *
+     * @param str             被切割的字符串
+     * @param prefixAndSuffix 截取开始和结束的字符串标识
+     * @return 截取后的字符串
+     */
+    public static String[] subBetweenAll(CharSequence str, CharSequence prefixAndSuffix) {
+        return subBetweenAll(str, prefixAndSuffix, prefixAndSuffix);
     }
 
     /**

@@ -17,9 +17,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
-        <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.73</fastjson.version>
+        <spring.boot.version>2.4.0</spring.boot.version>
+        <lombok.version>1.18.16</lombok.version>
+        <fastjson.version>1.2.75</fastjson.version>
         <netty.version>4.1.51.Final</netty.version>
     </properties>
 

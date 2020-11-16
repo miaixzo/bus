@@ -197,6 +197,17 @@ public class FileKit {
     }
 
     /**
+     * 判断是否为目录，如果file为null，则返回false
+     * 此方法不会追踪到软链对应的真实地址，即软链被当作文件
+     *
+     * @param path {@link Path}
+     * @return 如果为目录true
+     */
+    public static boolean isDirectory(Path path) {
+        return isDirectory(path, false);
+    }
+
+    /**
      * 判断是否为目录,如果file为null,则返回false
      *
      * @param file 文件
@@ -232,56 +243,6 @@ public class FileKit {
             throw new NullPointerException("File path is blank!");
         }
         return new File(getAbsolutePath(path));
-    }
-
-    /**
-     * 创建File对象
-     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
-     *
-     * @param parent 父目录
-     * @param path   文件路径
-     * @return File
-     */
-    public static File file(String parent, String path) {
-        return file(new File(parent), path);
-    }
-
-    /**
-     * 创建File对象
-     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
-     *
-     * @param parent 父文件对象
-     * @param path   文件路径
-     * @return File
-     */
-    public static File file(File parent, String path) {
-        if (StringKit.isBlank(path)) {
-            throw new NullPointerException("File path is blank!");
-        }
-        return checkSlip(parent, buildFile(parent, path));
-    }
-
-    /**
-     * 通过多层目录参数创建文件
-     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
-     *
-     * @param directory 父目录
-     * @param names     元素名(多层目录名)
-     * @return the file 文件
-     */
-    public static File file(File directory, String... names) {
-        Assert.notNull(directory, "directorydirectory must not be null");
-        if (ArrayKit.isEmpty(names)) {
-            return directory;
-        }
-
-        File file = directory;
-        for (String name : names) {
-            if (null != name) {
-                file = file(file, name);
-            }
-        }
-        return file;
     }
 
     /**
@@ -332,6 +293,76 @@ public class FileKit {
     }
 
     /**
+     * 创建File对象
+     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     *
+     * @param parent 父目录
+     * @param path   文件路径
+     * @return File
+     */
+    public static File file(String parent, String path) {
+        return file(new File(parent), path);
+    }
+
+    /**
+     * 创建File对象
+     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     *
+     * @param parent 父文件对象
+     * @param path   文件路径
+     * @return File
+     */
+    public static File file(File parent, String path) {
+        if (StringKit.isBlank(path)) {
+            throw new NullPointerException("File path is blank!");
+        }
+        return checkSlip(parent, buildFile(parent, path));
+    }
+
+    /**
+     * 通过多层目录参数创建文件
+     * 此方法会检查slip漏洞,漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     *
+     * @param directory 父目录
+     * @param names     元素名(多层目录名)
+     * @return the file 文件
+     */
+    public static File file(File directory, String... names) {
+        Assert.notNull(directory, "Directory must not be null");
+        if (ArrayKit.isEmpty(names)) {
+            return directory;
+        }
+
+        File file = directory;
+        for (String name : names) {
+            if (null != name) {
+                file = file(file, name);
+            }
+        }
+        return file;
+    }
+
+    /**
+     * 递归遍历目录以及子目录中的所有文件
+     *
+     * @param path 当前遍历文件或目录的路径
+     * @return 文件列表
+     */
+    public static List<File> loopFiles(String path) {
+        return loopFiles(file(path));
+    }
+
+    /**
+     * 递归遍历目录以及子目录中的所有文件
+     *
+     * @param file 当前遍历文件
+     * @return 文件列表
+     */
+    public static List<File> loopFiles(File file) {
+        return loopFiles(file, null);
+    }
+
+    /**
      * 递归遍历目录以及子目录中的所有文件
      * 如果提供file为文件,直接返回过滤结果
      *
@@ -352,7 +383,7 @@ public class FileKit {
      * @return 文件列表
      */
     public static List<File> loopFiles(File file, FileFilter fileFilter) {
-        List<File> fileList = new ArrayList<File>();
+        List<File> fileList = new ArrayList<>();
         if (null == file) {
             return fileList;
         } else if (false == file.exists()) {
@@ -379,62 +410,57 @@ public class FileKit {
      * 递归遍历目录以及子目录中的所有文件
      * 如果提供file为文件，直接返回过滤结果
      *
-     * @param file       当前遍历文件或目录
+     * @param path       当前遍历文件或目录
      * @param maxDepth   遍历最大深度，-1表示遍历到没有目录为止
      * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
      * @return 文件列表
      */
-    public static List<File> loopFiles(File file, int maxDepth, final FileFilter fileFilter) {
+    public static List<File> loopFiles(Path path, int maxDepth, final FileFilter fileFilter) {
         final List<File> fileList = new ArrayList<>();
-        if (null == file || false == file.exists()) {
+
+        if (null == path || false == Files.exists(path)) {
             return fileList;
-        } else if (false == file.isDirectory()) {
+        } else if (false == isDirectory(path)) {
+            final File file = path.toFile();
             if (null == fileFilter || fileFilter.accept(file)) {
                 fileList.add(file);
             }
             return fileList;
         }
 
-        if (maxDepth < 0) {
-            maxDepth = Integer.MAX_VALUE;
-        }
+        loopFiles(path, maxDepth, new SimpleFileVisitor<Path>() {
 
-        try {
-            Files.walkFileTree(file.toPath(), EnumSet.noneOf(FileVisitOption.class), maxDepth, new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                    final File file = path.toFile();
-                    if (null == fileFilter || fileFilter.accept(file)) {
-                        fileList.add(file);
-                    }
-                    return FileVisitResult.CONTINUE;
+            @Override
+            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                final File file = path.toFile();
+                if (null == fileFilter || fileFilter.accept(file)) {
+                    fileList.add(file);
                 }
-            });
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
+                return FileVisitResult.CONTINUE;
+            }
+        });
 
         return fileList;
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
+     * 遍历指定path下的文件并做处理
      *
-     * @param path 当前遍历文件或目录的路径
-     * @return 文件列表
+     * @param start    起始路径，必须为目录
+     * @param maxDepth 最大遍历深度，-1表示不限制深度
+     * @param visitor  {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
+     * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
      */
-    public static List<File> loopFiles(String path) {
-        return loopFiles(file(path));
-    }
+    public static void loopFiles(Path start, int maxDepth, FileVisitor<? super Path> visitor) {
+        if (maxDepth < 0) {
+            maxDepth = Integer.MAX_VALUE;
+        }
 
-    /**
-     * 递归遍历目录以及子目录中的所有文件
-     *
-     * @param file 当前遍历文件
-     * @return 文件列表
-     */
-    public static List<File> loopFiles(File file) {
-        return loopFiles(file, null);
+        try {
+            Files.walkFileTree(start, EnumSet.noneOf(FileVisitOption.class), maxDepth, visitor);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     /**
@@ -658,7 +684,7 @@ public class FileKit {
         }
 
         try {
-            if (Files.isDirectory(path)) {
+            if (isDirectory(path)) {
                 Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
 
                     @Override
@@ -857,9 +883,9 @@ public class FileKit {
      */
     public static Path copyFile(Path src, Path dest, StandardCopyOption... options) throws InstrumentException {
         Assert.notNull(src, "Source File is null !");
-        Assert.notNull(dest, "Destination File or directiory is null !");
+        Assert.notNull(dest, "Dest File or directiory is null !");
 
-        Path destPath = dest.toFile().isDirectory() ? dest.resolve(src.getFileName()) : dest;
+        Path destPath = isDirectory(dest) ? dest.resolve(src.getFileName()) : dest;
         try {
             return Files.copy(src, destPath, options);
         } catch (IOException e) {
@@ -958,60 +984,14 @@ public class FileKit {
     }
 
     /**
-     * 移动文件或者目录
-     *
-     * @param src        源文件或者目录
-     * @param dest       目标文件或者目录
-     * @param isOverride 是否覆盖目标,只有目标为文件才覆盖
-     * @throws InstrumentException 异常
-     */
-    public static void move(File src, File dest, boolean isOverride) throws InstrumentException {
-        // check
-        if (false == src.exists()) {
-            throw new InstrumentException("File not found: " + src);
-        }
-
-        // 来源为文件夹,目标为文件
-        if (src.isDirectory() && dest.isFile()) {
-            throw new InstrumentException(StringKit.format("Can not move directory [{}] to file [{}]", src, dest));
-        }
-
-        if (isOverride && dest.isFile()) {// 只有目标为文件的情况下覆盖之
-            dest.delete();
-        }
-
-        // 来源为文件,目标为文件夹
-        if (src.isFile() && dest.isDirectory()) {
-            dest = new File(dest, src.getName());
-        }
-
-        if (false == src.renameTo(dest)) {
-            // 在文件系统不同的情况下,renameTo会失败,此时使用copy,然后删除原文件
-            try {
-                copy(src, dest, isOverride);
-                src.delete();
-            } catch (Exception e) {
-                throw new InstrumentException(StringKit.format("Move [{}] to [{}] failed!", src, dest), e);
-            }
-
-        }
-    }
-
-    /**
-     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
-     * 重命名有两种模式：
-     * isRetainExt为true时，保留原扩展名：
+     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名，不保留扩展名
      *
      * <pre>
-     * FileKit.rename(file, "aaa", true) xx/xx.png = xx/aaa.png
-     * </pre>
-     *
-     * <pre>
-     * FileKit.rename(file, "aaa.jpg", false) xx/xx.png = xx/aaa.jpg
+     * FileKit.rename(file, "aaa.png", true) xx/xx.png =》xx/aaa.png
      * </pre>
      *
      * @param file       被修改的文件
-     * @param newName    新的文件名，包括扩展名
+     * @param newName    新的文件名，如需扩展名，需自行在此参数加上，原文件名的扩展名不会被保留
      * @param isOverride 是否覆盖目标文件
      * @return 目标文件
      */
@@ -1020,37 +1000,83 @@ public class FileKit {
     }
 
     /**
-     * 修改文件或目录的文件名,不变更路径,只是简单修改文件名
-     * 重命名有两种模式：
-     * 1、isRetainExt为true时,保留原扩展名：
+     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
      *
      * <pre>
-     *  rename(file, "aaa", true) xx/xx.png = xx/aaa.png
+     * FileKit.rename(file, "aaa.jpg", false) xx/xx.png =》xx/aaa.jpg
      * </pre>
-     * <p>
-     * 2、isRetainExt为false时,不保留原扩展名,需要在newName中
+     *
+     * @param path       被修改的文件
+     * @param newName    新的文件名，包括扩展名
+     * @param isOverride 是否覆盖目标文件
+     * @return 目标文件Path
+     */
+    public static Path rename(Path path, String newName, boolean isOverride) {
+        return move(path, path.resolveSibling(newName), isOverride);
+    }
+
+    /**
+     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
+     * 重命名有两种模式：
+     * 1、isRetainExt为true时，保留原扩展名：
      *
      * <pre>
-     *  rename(file, "aaa.jpg", false) xx/xx.png = xx/aaa.jpg
+     * FileKit.rename(file, "aaa", true) xx/xx.png =》xx/aaa.png
+     * </pre>
+     *
+     * <p>
+     * 2、isRetainExt为false时，不保留原扩展名，需要在newName中
+     *
+     * <pre>
+     * FileKit.rename(file, "aaa.jpg", false) xx/xx.png =》xx/aaa.jpg
      * </pre>
      *
      * @param file        被修改的文件
-     * @param newName     新的文件名,包括扩展名
-     * @param isRetainExt 是否保留原文件的扩展名,如果保留,则newName不需要加扩展名
+     * @param newName     新的文件名，包括扩展名
+     * @param isRetainExt 是否保留原文件的扩展名，如果保留，则newName不需要加扩展名
      * @param isOverride  是否覆盖目标文件
      * @return 目标文件
      */
     public static File rename(File file, String newName, boolean isRetainExt, boolean isOverride) {
         if (isRetainExt) {
-            final String extName = FileKit.extName(file);
+            final String extName = extName(file);
             if (StringKit.isNotBlank(extName)) {
-                newName = newName.concat(Symbol.DOT).concat(extName);
+                newName = newName.concat(".").concat(extName);
             }
         }
-        final Path path = file.toPath();
+        return rename(file.toPath(), newName, isOverride).toFile();
+    }
+
+    /**
+     * 移动文件或者目录
+     *
+     * @param src        源文件或者目录
+     * @param target     目标文件或者目录
+     * @param isOverride 是否覆盖目标，只有目标为文件才覆盖
+     * @throws InstrumentException IO异常
+     */
+    public static void move(File src, File target, boolean isOverride) throws InstrumentException {
+        move(src.toPath(), target.toPath(), isOverride);
+    }
+
+    /**
+     * 移动文件或目录
+     * 当目标是目录时，会将源文件或文件夹整体移动至目标目录下
+     *
+     * @param src        源文件或目录路径
+     * @param target     目标路径，如果为目录，则移动到此目录下
+     * @param isOverride 是否覆盖目标文件
+     * @return 目标文件Path
+     */
+    public static Path move(Path src, Path target, boolean isOverride) {
+        Assert.notNull(src, "Src path must be not null !");
+        Assert.notNull(target, "Target path must be not null !");
         final CopyOption[] options = isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{};
+        if (isDirectory(target)) {
+            target = target.resolve(src.getFileName());
+        }
         try {
-            return Files.move(path, path.resolveSibling(newName), options).toFile();
+            return Files.move(src, target, options);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -1072,7 +1098,6 @@ public class FileKit {
             throw new InstrumentException(e);
         }
     }
-
 
     /**
      * 获取绝对路径,相对于ClassPath的目录

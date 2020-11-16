@@ -17,19 +17,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.3.0.RELEASE</spring.boot.version>
-        <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.73</fastjson.version>
+        <spring.boot.version>2.4.0</spring.boot.version>
+        <lombok.version>1.18.16</lombok.version>
+        <fastjson.version>1.2.75</fastjson.version>
         <guice.version>4.2.3</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <xmemcached.version>2.4.6</xmemcached.version>
         <ehcache.version>3.8.1</ehcache.version>
         <curator.version>4.3.0</curator.version>
-        <guava.version>29.0-jre</guava.version>
+        <guava.version>30.0-jre</guava.version>
         <yaml.version>1.26</yaml.version>
         <hession.version>4.0.63</hession.version>
-        <druid.version>1.1.24</druid.version>
-        <mysql.version>8.0.21</mysql.version>
+        <druid.version>1.2.3</druid.version>
+        <mysql.version>8.0.22</mysql.version>
     </properties>
 
     <dependencies>
