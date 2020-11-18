@@ -26,6 +26,7 @@ package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.PoiChecker;
@@ -100,6 +101,7 @@ public class ExcelKit {
      * @param rowHandler 行处理器
      */
     public static void readBySax(InputStream in, int rid, RowHandler rowHandler) {
+        in = IoKit.toMarkSupportStream(in);
         final ExcelSaxReader<?> reader = ExcelSaxKit.createSaxReader(ExcelFileKit.isXlsx(in), rowHandler);
         reader.read(in, rid);
     }
@@ -112,6 +114,7 @@ public class ExcelKit {
      * @param rowHandler 行处理器
      */
     public static void readBySax(InputStream in, String idOrRid, RowHandler rowHandler) {
+        in = IoKit.toMarkSupportStream(in);
         final ExcelSaxReader<?> reader = ExcelSaxKit.createSaxReader(ExcelFileKit.isXlsx(in), rowHandler);
         reader.read(in, idOrRid);
     }

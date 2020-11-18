@@ -72,6 +72,15 @@ public class AES extends Symmetric {
     }
 
     /**
+     * 构造，使用默认的AES/ECB/PKCS5Padding
+     *
+     * @param key 密钥
+     */
+    public AES(SecretKey key) {
+        super(Algorithm.AES, key);
+    }
+
+    /**
      * 构造，使用随机密钥
      *
      * @param mode    模式{@link Mode}

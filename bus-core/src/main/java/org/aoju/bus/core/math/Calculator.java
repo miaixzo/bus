@@ -93,7 +93,7 @@ public class Calculator {
                 }
             }
         }
-        if (arr[0] == Symbol.C_TILDE || arr[1] == Symbol.C_PARENTHESE_LEFT) {
+        if (arr[0] == Symbol.C_TILDE || (arr.length > 1 && arr[1] == Symbol.C_PARENTHESE_LEFT)) {
             arr[0] = Symbol.C_HYPHEN;
             return Symbol.ZERO + new String(arr);
         } else {
