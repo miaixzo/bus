@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.text;
 
@@ -45,11 +46,12 @@ import java.util.Objects;
  */
 public class Builders implements CharSequence, Appendable, Serializable, Builder<String> {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 默认容量
      */
-    static final int CAPACITY = 32;
-    private static final long serialVersionUID = 1L;
+    private static final int CAPACITY = 16;
     /**
      * 存放的字符数组
      */
@@ -66,14 +68,6 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * null字符串
      */
     private String nullText;
-    /**
-     * 存放的字符数组
-     */
-    private char[] value;
-    /**
-     * 当前指针位置，或者叫做已经加入的字符数，此位置总在最后一个字符之后
-     */
-    private int position;
 
     /**
      * 构造
@@ -92,7 +86,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         if (initialCapacity <= 0) {
             initialCapacity = CAPACITY;
         }
-        buffer = new char[initialCapacity];
+        this.buffer = new char[initialCapacity];
     }
 
     /**
@@ -103,9 +97,9 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     public Builders(final String str) {
         super();
         if (str == null) {
-            buffer = new char[CAPACITY];
+            this.buffer = new char[CAPACITY];
         } else {
-            buffer = new char[str.length() + CAPACITY];
+            this.buffer = new char[str.length() + CAPACITY];
             append(str);
         }
     }
@@ -160,26 +154,26 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     private static int totalLength(CharSequence... strs) {
         int totalLength = 0;
-        for (int i = 0; i < strs.length; i++) {
-            totalLength += (null == strs[i] ? 4 : strs[i].length());
+        for (CharSequence str : strs) {
+            totalLength += (null == str ? 4 : str.length());
         }
         return totalLength;
     }
 
     @Override
     public int length() {
-        return size;
+        return this.size;
     }
 
     @Override
     public char charAt(int index) {
         if (index < 0) {
-            index = this.position + index;
+            index = this.size + index;
         }
-        if ((index < 0) || (index > this.position)) {
+        if ((index < 0) || (index > this.size)) {
             throw new StringIndexOutOfBoundsException(index);
         }
-        return this.value[index];
+        return this.buffer[index];
     }
 
     public String getNewLineText() {
@@ -214,15 +208,15 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         if (length < 0) {
             throw new StringIndexOutOfBoundsException(length);
         }
-        if (length < size) {
-            size = length;
-        } else if (length > size) {
+        if (length < this.size) {
+            this.size = length;
+        } else if (length > this.size) {
             ensureCapacity(length);
-            final int oldEnd = size;
+            final int oldEnd = this.size;
             final int newEnd = length;
-            size = length;
+            this.size = length;
             for (int i = oldEnd; i < newEnd; i++) {
-                buffer[i] = '\0';
+                this.buffer[i] = '\0';
             }
         }
         return this;
@@ -247,26 +241,16 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         return this;
     }
 
-    public Builders minimizeCapacity() {
-        if (buffer.length > length()) {
-            final char[] old = buffer;
-            buffer = new char[length()];
-            System.arraycopy(old, 0, buffer, 0, size);
-        }
-        return this;
-    }
-
     public int size() {
-        return size;
+        return this.size;
     }
 
     public boolean isEmpty() {
-        return size == 0;
+        return this.size == 0;
     }
 
     public Builders clear() {
-        size = 0;
-        return this;
+        return reset();
     }
 
     /**
@@ -275,7 +259,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders reset() {
-        this.position = 0;
+        this.size = 0;
         return this;
     }
 
@@ -2304,6 +2288,23 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     @Override
     public String toString() {
         return new String(buffer, 0, size);
+    }
+
+    /**
+     * 生成字符串
+     *
+     * @param isReset 是否重置，重置后相当于空的构建器
+     * @return 生成的字符串
+     */
+    public String toString(boolean isReset) {
+        if (this.size > 0) {
+            final String s = new String(this.buffer, 0, this.size);
+            if (isReset) {
+                reset();
+            }
+            return s;
+        }
+        return Normal.EMPTY;
     }
 
     /**
