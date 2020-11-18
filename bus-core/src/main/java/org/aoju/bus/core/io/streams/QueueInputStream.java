@@ -32,7 +32,7 @@ import java.util.LinkedList;
 
 /**
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class QueueInputStream extends InputStream {

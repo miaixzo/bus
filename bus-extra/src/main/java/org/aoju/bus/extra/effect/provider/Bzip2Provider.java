@@ -36,7 +36,7 @@ import java.io.IOException;
  * 基于bzip2算法的数据解压缩
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class Bzip2Provider implements EffectProvider {

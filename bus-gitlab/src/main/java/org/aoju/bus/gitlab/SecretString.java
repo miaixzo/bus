@@ -31,7 +31,7 @@ import java.util.Arrays;
  * This class is utilized to pass around secrets (passwords) instead of a String instance.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class SecretString implements CharSequence, AutoCloseable {

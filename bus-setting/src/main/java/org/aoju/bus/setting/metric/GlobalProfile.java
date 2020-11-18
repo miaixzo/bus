@@ -31,7 +31,7 @@ import org.aoju.bus.setting.magic.PopSetting;
  * 全局的Profile配置中心
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class GlobalProfile {

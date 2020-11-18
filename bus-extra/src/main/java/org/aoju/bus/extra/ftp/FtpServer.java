@@ -48,7 +48,7 @@ import java.util.List;
  * 基于 Apache FtpServer的服务端简单封装
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class FtpServer {

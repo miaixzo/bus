@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 判断是否为身份证号码
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Documented

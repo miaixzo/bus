@@ -38,7 +38,7 @@ import java.util.Date;
  * 此对象只用于标注单元格所在位置信息
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class NullCell implements Cell {

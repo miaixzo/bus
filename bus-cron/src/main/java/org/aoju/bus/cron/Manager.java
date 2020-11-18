@@ -35,7 +35,7 @@ import java.util.List;
  * 负责管理作业的启动、停止等
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class Manager {

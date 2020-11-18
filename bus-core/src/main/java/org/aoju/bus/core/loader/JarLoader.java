@@ -43,7 +43,7 @@ import java.util.jar.JarFile;
  * Jar包资源加载器
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class JarLoader extends ResourceLoader implements Loader {

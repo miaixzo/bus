@@ -28,7 +28,7 @@ package org.aoju.bus.core.image.element;
  * 合并元素抽象类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public abstract class AbstractElement<T extends AbstractElement> {

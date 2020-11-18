@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * 非线程安全
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class Builder {

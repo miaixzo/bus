@@ -32,7 +32,7 @@ import org.aoju.bus.cache.metric.MemoryCache;
  * 默认缓存实现
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public enum StorageCache implements ExtendCache {

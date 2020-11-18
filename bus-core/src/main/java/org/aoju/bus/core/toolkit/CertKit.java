@@ -35,7 +35,7 @@ import java.security.cert.X509Certificate;
  * 获取ssl证书信息工具类
  *
  * @author zhaocy
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class CertKit {

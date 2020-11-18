@@ -38,7 +38,7 @@ import java.io.Serializable;
  * 配置入口
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Data

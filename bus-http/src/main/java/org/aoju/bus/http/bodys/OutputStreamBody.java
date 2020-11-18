@@ -41,7 +41,7 @@ import java.net.SocketTimeoutException;
  * 正文的字节才会被知道
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public abstract class OutputStreamBody extends RequestBody {

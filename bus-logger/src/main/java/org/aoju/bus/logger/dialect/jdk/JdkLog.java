@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * java.util.logging log.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class JdkLog extends AbstractAware {

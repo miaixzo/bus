@@ -30,7 +30,7 @@ import org.apache.poi.xwpf.usermodel.Document;
  * Word中的图片类型
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public enum PicType {

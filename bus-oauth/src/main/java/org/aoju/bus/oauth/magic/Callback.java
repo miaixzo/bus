@@ -31,7 +31,7 @@ import lombok.Setter;
  * 授权回调时的参数类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Getter

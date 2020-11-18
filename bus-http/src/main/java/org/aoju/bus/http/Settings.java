@@ -34,7 +34,7 @@ import java.util.Arrays;
  * 设置的作用域是{@link Http2Connection connection}
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public final class Settings {

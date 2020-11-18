@@ -37,7 +37,7 @@ import java.nio.charset.Charset;
  * CSV工具
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class CsvKit {

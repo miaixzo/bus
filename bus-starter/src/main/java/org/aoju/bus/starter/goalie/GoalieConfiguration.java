@@ -34,7 +34,7 @@ import org.springframework.context.annotation.Bean;
  * 路由自动配置
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8++
  */
 @ConditionalOnWebApplication

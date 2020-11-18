@@ -43,7 +43,7 @@ import java.util.List;
  * 此值对象描述完成的握手。使用{@link ConnectionSuite}设置新的握手策略
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public final class Handshake {

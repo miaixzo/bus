@@ -33,7 +33,7 @@ import java.io.IOException;
  * 基于snappy的数据压缩
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class SnappyProvider implements EffectProvider {

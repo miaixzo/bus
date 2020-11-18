@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * Baseboard data obtained from ioreg
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Immutable

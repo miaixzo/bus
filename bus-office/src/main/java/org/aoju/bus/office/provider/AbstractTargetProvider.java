@@ -30,7 +30,7 @@ import java.io.File;
  * 所有目标文档规范实现的基类.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public abstract class AbstractTargetProvider extends AbstractDocumentProvider

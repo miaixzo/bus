@@ -38,7 +38,7 @@ import java.util.Map.Entry;
  * This class extends the standard JAX-RS Form class to make it fluent.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class GitLabApiForm extends Form {

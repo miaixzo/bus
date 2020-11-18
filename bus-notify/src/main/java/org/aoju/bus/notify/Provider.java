@@ -35,7 +35,7 @@ import java.util.List;
  * 通知器,用于发送通知,如: 短信,邮件,语音,微信等s
  *
  * @author Justubborn
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK1.8+
  */
 public interface Provider<T extends Property> {

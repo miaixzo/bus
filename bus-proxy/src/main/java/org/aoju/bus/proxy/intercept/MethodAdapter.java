@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * 接口适应于Proxy的{@link Interceptor}接口
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class MethodAdapter implements Interceptor {

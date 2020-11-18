@@ -28,7 +28,7 @@ package org.aoju.bus.mapper.criteria;
  * 字段转换方式
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public enum Style {

@@ -36,7 +36,7 @@ import java.util.Map.Entry;
  * Jsch会话池
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public enum JschSessionPool {

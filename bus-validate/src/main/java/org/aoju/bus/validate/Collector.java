@@ -34,7 +34,7 @@ import java.util.List;
  * 校验结果收集器
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Data
