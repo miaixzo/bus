@@ -13,12 +13,6 @@
     <description>Bus OpenCV</description>
     <url>https://github.com/aoju/bus</url>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.compiler.version>1.8</project.compiler.version>
-    </properties>
-
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
@@ -43,6 +37,12 @@
         <system>Github Issue</system>
         <url>https://github.com/aoju/bus/issues</url>
     </issueManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.compiler.version>1.8</project.compiler.version>
+    </properties>
 
     <build>
         <plugins>

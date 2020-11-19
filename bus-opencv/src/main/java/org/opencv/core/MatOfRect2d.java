@@ -20,10 +20,6 @@ public class MatOfRect2d extends Mat {
         //FIXME: do we need release() here?
     }
 
-    public static MatOfRect2d fromNativeAddr(long addr) {
-        return new MatOfRect2d(addr);
-    }
-
     public MatOfRect2d(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -34,6 +30,10 @@ public class MatOfRect2d extends Mat {
     public MatOfRect2d(Rect2d... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfRect2d fromNativeAddr(long addr) {
+        return new MatOfRect2d(addr);
     }
 
     public void alloc(int elemNumber) {
@@ -69,6 +69,7 @@ public class MatOfRect2d extends Mat {
             a[i] = new Rect2d(buff[i * _channels], buff[i * _channels + 1], buff[i * _channels + 2], buff[i * _channels + 3]);
         return a;
     }
+
     public void fromList(List<Rect2d> lr) {
         Rect2d ap[] = lr.toArray(new Rect2d[0]);
         fromArray(ap);

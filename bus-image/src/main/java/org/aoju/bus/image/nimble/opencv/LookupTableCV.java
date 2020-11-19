@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
@@ -160,9 +161,6 @@ public class LookupTableCV {
         return data.getElem(band, value - offsets[band]);
     }
 
-    /**
-     * Returns the index offset of entry 0 for a specific band.
-     */
     public int getOffset(int band) {
         return offsets[band];
     }

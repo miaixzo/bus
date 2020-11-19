@@ -20,10 +20,6 @@ public class MatOfRect extends Mat {
         //FIXME: do we need release() here?
     }
 
-    public static MatOfRect fromNativeAddr(long addr) {
-        return new MatOfRect(addr);
-    }
-
     public MatOfRect(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -34,6 +30,10 @@ public class MatOfRect extends Mat {
     public MatOfRect(Rect... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfRect fromNativeAddr(long addr) {
+        return new MatOfRect(addr);
     }
 
     public void alloc(int elemNumber) {
@@ -69,6 +69,7 @@ public class MatOfRect extends Mat {
             a[i] = new Rect(buff[i * _channels], buff[i * _channels + 1], buff[i * _channels + 2], buff[i * _channels + 3]);
         return a;
     }
+
     public void fromList(List<Rect> lr) {
         Rect ap[] = lr.toArray(new Rect[0]);
         fromArray(ap);

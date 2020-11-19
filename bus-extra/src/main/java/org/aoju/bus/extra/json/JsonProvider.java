@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.extra.json;
 
@@ -78,6 +79,7 @@ public interface JsonProvider {
      * 解析json字符串到List
      *
      * @param json 要解析的json字符串
+     * @param <T>  泛型参数类型
      * @return 返回List
      */
     <T> List<T> toList(String json);
@@ -106,6 +108,8 @@ public interface JsonProvider {
      * 解析json字符串到Map
      *
      * @param json 要解析的json字符串
+     * @param <K>  键类型
+     * @param <V>  值类型
      * @return 返回Map
      */
     <K, V> Map<K, V> toMap(String json);
@@ -114,6 +118,8 @@ public interface JsonProvider {
      * 转换对象到Map
      *
      * @param object 与Map可兼容的对象
+     * @param <K>    键类型
+     * @param <V>    值类型
      * @return 返回Map对象
      */
     <K, V> Map<K, V> toMap(Object object);

@@ -13,20 +13,6 @@
     <description>Bus Cron</description>
     <url>https://github.com/aoju/bus</url>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.compiler.version>1.8</project.compiler.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bus-setting</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
@@ -51,6 +37,20 @@
         <system>Github Issue</system>
         <url>https://github.com/aoju/bus/issues</url>
     </issueManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.compiler.version>1.8</project.compiler.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-setting</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
