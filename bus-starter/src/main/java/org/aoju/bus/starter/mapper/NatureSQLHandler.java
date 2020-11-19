@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.starter.mapper;
 
@@ -52,7 +53,7 @@ import java.util.regex.Matcher;
  * 数据库操作性能拦截器,记录耗时
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Intercepts(value = {

@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.lang.exception;
 
@@ -34,7 +35,7 @@ import java.lang.reflect.InvocationTargetException;
  * 自定义异常: 未受检异常
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Data

@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.mapper.builder;
 
@@ -54,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通用Mapper模板类,扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public abstract class MapperTemplate {

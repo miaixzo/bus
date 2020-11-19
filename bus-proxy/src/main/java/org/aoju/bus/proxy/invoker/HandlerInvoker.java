@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.proxy.invoker;
 
@@ -33,7 +34,7 @@ import java.lang.reflect.Method;
  * 适配器类，将JDK的{@link InvocationHandler}接口调整为Commons Proxy的{@link Invoker}接口
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class HandlerInvoker implements Invoker {

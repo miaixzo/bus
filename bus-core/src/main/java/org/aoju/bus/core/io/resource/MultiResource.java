@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
@@ -41,7 +42,7 @@ import java.util.List;
  * 此资源为一个利用游标自循环资源,只有调用{@link #next()} 方法才会获取下一个资源,使用完毕后调用{@link #reset()}方法重置游标
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource> {

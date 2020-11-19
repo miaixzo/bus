@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
@@ -43,7 +44,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class RandomKit {
@@ -76,21 +77,27 @@ public class RandomKit {
      * @return {@link SecureRandom}
      */
     public static SecureRandom getSecureRandom() {
-        try {
-            return SecureRandom.getInstance(Algorithm.SHAPRNG);
-        } catch (NoSuchAlgorithmException e) {
-            throw new InstrumentException(e);
-        }
+        return getSecureRandom(null);
     }
 
     /**
-     * 创建{@link SecureRandom},类提供加密的强随机数生成器 (RNG)
+     * 获取SHA1PRNG的{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)
+     * 注意：此方法获取的是伪随机序列发生器PRNG（pseudo-random number generator）
      *
-     * @param seed 自定义随机种子
+     * @param seed 随机数种子
      * @return {@link SecureRandom}
      */
     public static SecureRandom getSecureRandom(byte[] seed) {
-        return (null == seed) ? new SecureRandom() : new SecureRandom(seed);
+        SecureRandom random;
+        try {
+            random = SecureRandom.getInstance(Algorithm.SHAPRNG);
+        } catch (NoSuchAlgorithmException e) {
+            throw new InstrumentException(e);
+        }
+        if (null != seed) {
+            random.setSeed(seed);
+        }
+        return random;
     }
 
     /**

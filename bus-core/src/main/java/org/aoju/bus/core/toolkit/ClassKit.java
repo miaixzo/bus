@@ -21,10 +21,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.beans.BeanDesc;
+import org.aoju.bus.core.beans.WrapperBean;
 import org.aoju.bus.core.beans.copier.BeanCopier;
 import org.aoju.bus.core.beans.copier.CopyOptions;
 import org.aoju.bus.core.beans.copier.ValueProvider;
@@ -51,7 +53,7 @@ import java.util.*;
  * Class工具类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class ClassKit {
@@ -149,7 +151,13 @@ public class ClassKit {
         Object obj;
         for (int i = 0; i < objects.length; i++) {
             obj = objects[i];
-            classes[i] = (null == obj) ? Object.class : obj.getClass();
+            if (obj instanceof WrapperBean) {
+                classes[i] = ((WrapperBean) obj).getWrappedClass();
+            } else if (null == obj) {
+                classes[i] = Object.class;
+            } else {
+                classes[i] = obj.getClass();
+            }
         }
         return classes;
     }

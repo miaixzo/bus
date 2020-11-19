@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.goalie.annotation;
 
@@ -34,7 +35,7 @@ import java.lang.annotation.*;
  * 规则，自动放置于路径开始部分；不做method做版本，避免难以维护
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8++
  */
 @Target({ElementType.METHOD, ElementType.TYPE})

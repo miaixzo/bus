@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
@@ -37,7 +38,7 @@ import java.util.*;
  * 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class ReflectKit {
@@ -1011,7 +1012,6 @@ public class ReflectKit {
     public static String getSetMethodName(String fieldName) {
         return Normal.SET + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
     }
-
 
     /**
      * 设置方法为可访问(私有方法可以被外部调用)

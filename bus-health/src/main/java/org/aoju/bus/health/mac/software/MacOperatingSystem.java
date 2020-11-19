@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.mac.software;
 
@@ -47,7 +48,7 @@ import java.util.*;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -79,9 +80,21 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     private int maxProc = 1024;
 
     public MacOperatingSystem() {
-        this.osXVersion = System.getProperty("os.version");
-        this.major = Builder.getFirstIntValue(this.osXVersion);
-        this.minor = Builder.getNthIntValue(this.osXVersion, 2);
+        String version = System.getProperty("os.version");
+        int verMajor = Builder.getFirstIntValue(version);
+        int verMinor = Builder.getNthIntValue(version, 2);
+        // Big Sur (11.x) may return 10.16
+        if (verMajor == 10 && verMinor > 15) {
+            String swVers = Executor.getFirstAnswer("sw_vers -productVersion");
+            if (!swVers.isEmpty()) {
+                version = swVers;
+            }
+            verMajor = Builder.getFirstIntValue(version);
+            verMinor = Builder.getNthIntValue(version, 2);
+        }
+        this.osXVersion = version;
+        this.major = verMajor;
+        this.minor = verMinor;
         // Set max processes
         this.maxProc = SysctlKit.sysctl("kern.maxproc", 0x1000);
     }
@@ -101,14 +114,15 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public FamilyVersionInfo queryFamilyVersionInfo() {
-        String family = this.major == 10 && this.minor >= 12 ? "macOS" : System.getProperty("os.name");
+        String family = this.major > 10 || (this.major == 10 && this.minor >= 12) ? "macOS"
+                : System.getProperty("os.name");
         String codeName = parseCodeName();
         String buildNumber = SysctlKit.sysctl("kern.osversion", Normal.EMPTY);
         return new FamilyVersionInfo(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
     private String parseCodeName() {
-        if (this.major == 10) {
+        if (this.major >= 10) {
             switch (this.minor) {
                 case 15:
                     return "Catalina";

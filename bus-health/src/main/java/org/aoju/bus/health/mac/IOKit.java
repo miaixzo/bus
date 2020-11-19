@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.mac;
 
@@ -33,7 +34,7 @@ import com.sun.jna.ptr.NativeLongByReference;
  * I/O Kit框架通过设备接口机制实现对I/O Kit对象(驱动程序和nub)的非内核访问
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public interface IOKit extends com.sun.jna.platform.mac.IOKit {

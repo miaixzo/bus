@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.crypto;
 
@@ -87,7 +88,7 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -227,16 +228,7 @@ public final class Builder {
      * @return {@link SecretKey}
      */
     public static SecretKey generateKey(String algorithm, int keySize) {
-        algorithm = getMainAlgorithm(algorithm);
-
-        final KeyGenerator keyGenerator = getKeyGenerator(algorithm);
-        if (keySize > 0) {
-            keyGenerator.init(keySize);
-        } else if (Algorithm.AES.equals(algorithm)) {
-            // 对于AES的密钥，除非指定，否则强制使用128位
-            keyGenerator.init(128);
-        }
-        return keyGenerator.generateKey();
+        return generateKey(algorithm, keySize, null);
     }
 
     /**
@@ -251,7 +243,7 @@ public final class Builder {
         SecretKey secretKey;
         if (algorithm.startsWith("PBE")) {
             // PBE密钥
-            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringKit.toString(key, Charset.UTF_8).toCharArray());
+            secretKey = generatePBEKey(algorithm, (null == key) ? null : StringKit.toString(key).toCharArray());
         } else if (algorithm.startsWith(Algorithm.DES)) {
             // DES密钥
             secretKey = generateDESKey(algorithm, key);
@@ -260,6 +252,34 @@ public final class Builder {
             secretKey = (null == key) ? generateKey(algorithm) : new SecretKeySpec(key, algorithm);
         }
         return secretKey;
+    }
+
+    /**
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成<br>
+     * 当指定keySize&lt;0时，AES默认长度为128，其它算法不指定。
+     *
+     * @param algorithm 算法，支持PBE算法
+     * @param keySize   密钥长度，&lt;0表示不设定密钥长度，即使用默认长度
+     * @param random    随机数生成器，null表示默认
+     * @return {@link SecretKey}
+     */
+    public static SecretKey generateKey(String algorithm, int keySize, SecureRandom random) {
+        algorithm = getMainAlgorithm(algorithm);
+
+        final KeyGenerator keyGenerator = getKeyGenerator(algorithm);
+        if (keySize <= 0 && Algorithm.AES.equals(algorithm)) {
+            // 对于AES的密钥，除非指定，否则强制使用128位
+            keySize = 128;
+        }
+
+        if (keySize > 0) {
+            if (null == random) {
+                keyGenerator.init(keySize);
+            } else {
+                keyGenerator.init(keySize, random);
+            }
+        }
+        return keyGenerator.generateKey();
     }
 
     /**

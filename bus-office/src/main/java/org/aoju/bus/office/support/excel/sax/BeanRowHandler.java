@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
@@ -37,7 +38,7 @@ import java.util.List;
  * 将一行数据转换为Map，key为指定行，value为当前行对应位置的值
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public abstract class BeanRowHandler<T> extends AbstractRowHandler<T> {

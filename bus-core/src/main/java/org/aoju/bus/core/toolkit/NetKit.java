@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
@@ -38,7 +39,7 @@ import java.util.*;
  * 网络相关工具
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class NetKit {
@@ -201,7 +202,7 @@ public class NetKit {
 
     /**
      * 判定是否为内网IP
-     * 私有IP：A类 10.0.0.0-10.255.255.255 B类 172.16.1.1-172.31.255.255 C类 192.168.0.0-192.168.255.255 当然,还有127这个网段是环回地址
+     * 私有IP：A类 10.0.0.0-10.255.255.255 B类 172.16.1.2-172.31.255.255 C类 192.168.0.0-192.168.255.255 当然,还有127这个网段是环回地址
      *
      * @param ipAddress IP地址
      * @return 是否为内网IP
@@ -213,7 +214,7 @@ public class NetKit {
         long aBegin = ipv4ToLong("10.0.0.0");
         long aEnd = ipv4ToLong("10.255.255.255");
 
-        long bBegin = ipv4ToLong("172.16.1.1");
+        long bBegin = ipv4ToLong("172.16.1.2");
         long bEnd = ipv4ToLong("172.31.255.255");
 
         long cBegin = ipv4ToLong("192.168.0.0");
@@ -460,7 +461,7 @@ public class NetKit {
         final LinkedHashSet<InetAddress> localAddressList = localAddressList(address -> {
             // 非loopback地址,指127.*.*.*的地址
             return false == address.isLoopbackAddress()
-                    // 非地区本地地址,指10.0.0.0 ~ 10.255.255.255、172.16.1.1 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
+                    // 非地区本地地址,指10.0.0.0 ~ 10.255.255.255、172.16.1.2 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
                     && false == address.isSiteLocalAddress()
                     // 需为IPV4地址
                     && address instanceof Inet4Address;

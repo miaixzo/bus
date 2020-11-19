@@ -21,13 +21,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.BooleanKit;
-import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+
+import java.util.function.Function;
 
 /**
  * 原始类型转换器
@@ -44,7 +46,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class PrimitiveConverter extends AbstractConverter<Object> {
@@ -66,103 +68,34 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
         this.targetType = clazz;
     }
 
-    @Override
-    protected Object convertInternal(Object value) {
-        try {
-            if (byte.class == this.targetType) {
-                if (value instanceof Number) {
-                    return ((Number) value).byteValue();
-                } else if (value instanceof Boolean) {
-                    return BooleanKit.toByte((Boolean) value);
-                }
-                final String valueStr = convertString(value);
-                if (StringKit.isBlank(valueStr)) {
-                    return 0;
-                }
-                return Byte.parseByte(valueStr);
-
-            } else if (short.class == this.targetType) {
-                if (value instanceof Number) {
-                    return ((Number) value).shortValue();
-                } else if (value instanceof Boolean) {
-                    return BooleanKit.toShort((Boolean) value);
-                }
-                final String valueStr = convertString(value);
-                if (StringKit.isBlank(valueStr)) {
-                    return 0;
-                }
-                return Short.parseShort(valueStr);
-
-            } else if (int.class == this.targetType) {
-                if (value instanceof Number) {
-                    return ((Number) value).intValue();
-                } else if (value instanceof Boolean) {
-                    return BooleanKit.toInt((Boolean) value);
-                }
-                final String valueStr = convertString(value);
-                if (StringKit.isBlank(valueStr)) {
-                    return 0;
-                }
-                return MathKit.parseInt(valueStr);
-
-            } else if (long.class == this.targetType) {
-                if (value instanceof Number) {
-                    return ((Number) value).longValue();
-                } else if (value instanceof Boolean) {
-                    return BooleanKit.toLong((Boolean) value);
-                }
-                final String valueStr = convertString(value);
-                if (StringKit.isBlank(valueStr)) {
-                    return 0;
-                }
-                return MathKit.parseLong(valueStr);
-
-            } else if (float.class == this.targetType) {
-                if (value instanceof Number) {
-                    return ((Number) value).floatValue();
-                } else if (value instanceof Boolean) {
-                    return BooleanKit.toFloat((Boolean) value);
-                }
-                final String valueStr = convertString(value);
-                if (StringKit.isBlank(valueStr)) {
-                    return 0;
-                }
-                return Float.parseFloat(valueStr);
-
-            } else if (double.class == this.targetType) {
-                if (value instanceof Number) {
-                    return ((Number) value).doubleValue();
-                } else if (value instanceof Boolean) {
-                    return BooleanKit.toDouble((Boolean) value);
-                }
-                final String valueStr = convertString(value);
-                if (StringKit.isBlank(valueStr)) {
-                    return 0;
-                }
-                return Double.parseDouble(valueStr);
-
-            } else if (char.class == this.targetType) {
-                if (value instanceof Character) {
-                    return ((Character) value).charValue();
-                } else if (value instanceof Boolean) {
-                    return BooleanKit.toChar((Boolean) value);
-                }
-                final String valueStr = convertString(value);
-                if (StringKit.isBlank(valueStr)) {
-                    return 0;
-                }
-                return valueStr.charAt(0);
-            } else if (boolean.class == this.targetType) {
-                if (value instanceof Boolean) {
-                    return ((Boolean) value).booleanValue();
-                }
-                String valueStr = convertString(value);
-                return BooleanKit.toBoolean(valueStr);
-            }
-        } catch (Exception e) {
-            throw new InstrumentException(e);
+    /**
+     * 将指定值转换为原始类型的值
+     *
+     * @param value          值
+     * @param primitiveClass 原始类型
+     * @param toStringFunc   当无法直接转换时，转为字符串后再转换的函数
+     * @return 转换结果
+     */
+    protected static Object convert(Object value, Class<?> primitiveClass, Function<Object, String> toStringFunc) {
+        if (byte.class == primitiveClass) {
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Byte.class, toStringFunc), 0);
+        } else if (short.class == primitiveClass) {
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Short.class, toStringFunc), 0);
+        } else if (int.class == primitiveClass) {
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Integer.class, toStringFunc), 0);
+        } else if (long.class == primitiveClass) {
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Long.class, toStringFunc), 0);
+        } else if (float.class == primitiveClass) {
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Float.class, toStringFunc), 0);
+        } else if (double.class == primitiveClass) {
+            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Double.class, toStringFunc), 0);
+        } else if (char.class == primitiveClass) {
+            return Convert.convert(Character.class, value);
+        } else if (boolean.class == primitiveClass) {
+            return Convert.convert(Boolean.class, value);
         }
-        return 0;
+
+        throw new InstrumentException("Unsupported target type: {}", primitiveClass);
     }
 
     @Override
@@ -173,6 +106,11 @@ public class PrimitiveConverter extends AbstractConverter<Object> {
     @Override
     public Class<Object> getTargetType() {
         return (Class<Object>) this.targetType;
+    }
+
+    @Override
+    protected Object convertInternal(Object value) {
+        return PrimitiveConverter.convert(value, this.targetType, this::convertString);
     }
 
 }

@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.io.file;
 
@@ -48,7 +49,7 @@ import java.util.List;
  * 4、目录下的文件和目录复制到另一个目录
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class FileCopier extends Duplicate<File, FileCopier> {
@@ -86,7 +87,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      *
      * @param srcPath  源文件路径(相对ClassPath路径或绝对路径)
      * @param destPath 目标文件路径(相对ClassPath路径或绝对路径)
-     * @return {@link FileCopier}
+     * @return this
      */
     public static FileCopier create(String srcPath, String destPath) {
         return new FileCopier(FileKit.file(srcPath), FileKit.file(destPath));
@@ -97,7 +98,7 @@ public class FileCopier extends Duplicate<File, FileCopier> {
      *
      * @param src  源文件
      * @param dest 目标文件
-     * @return {@link FileCopier}
+     * @return this
      */
     public static FileCopier create(File src, File dest) {
         return new FileCopier(src, dest);
@@ -218,8 +219,8 @@ public class FileCopier extends Duplicate<File, FileCopier> {
                 //源为目录,目标为文件,抛出IO异常
                 throw new InstrumentException("Src is a directory but dest is a file!");
             }
-            final File subDest = isCopyContentIfDir ? dest : FileKit.mkdir(FileKit.file(dest, src.getName()));
-            internalCopyDirContent(src, subDest);
+            final File subTarget = isCopyContentIfDir ? dest : FileKit.mkdir(FileKit.file(dest, src.getName()));
+            internalCopyDirContent(src, subTarget);
         } else {// 复制文件
             internalCopyFile(src, dest);
         }

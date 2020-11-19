@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.bridge;
 
@@ -46,7 +47,7 @@ import java.net.URL;
  * 它将向LibreOffice在线服务器发送转换请求，并等待任务完成或达到配置的任务执行超时.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {

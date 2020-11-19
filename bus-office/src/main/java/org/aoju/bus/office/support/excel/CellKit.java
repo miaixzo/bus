@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
@@ -32,6 +33,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.cell.FormulaCellValue;
+import org.aoju.bus.office.support.excel.cell.NullCell;
 import org.aoju.bus.office.support.excel.editors.TrimEditor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -51,7 +53,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -88,10 +90,7 @@ public class CellKit {
      * @return 值, 类型可能为：Date、Double、Boolean、String
      */
     public static Object getCellValue(Cell cell, CellEditor cellEditor) {
-        if (null == cell) {
-            return null;
-        }
-        return getCellValue(cell, cell.getCellType(), cellEditor);
+        return getCellValue(cell, null, cellEditor);
     }
 
     /**
@@ -118,6 +117,9 @@ public class CellKit {
     public static Object getCellValue(Cell cell, CellType cellType, CellEditor cellEditor) {
         if (null == cell) {
             return null;
+        }
+        if (cell instanceof NullCell) {
+            return null == cellEditor ? null : cellEditor.edit(cell, null);
         }
         if (null == cellType) {
             cellType = cell.getCellType();
@@ -270,6 +272,21 @@ public class CellKit {
         comment.setString(factory.createRichTextString(text));
         comment.setAuthor(StringKit.nullToEmpty(author));
         cell.setCellComment(comment);
+    }
+
+    /**
+     * 获取单元格，如果单元格不存在，返回{@link NullCell}
+     *
+     * @param row       Excel表的行
+     * @param cellIndex 列号
+     * @return {@link Row}
+     */
+    public static Cell getCell(Row row, int cellIndex) {
+        Cell cell = row.getCell(cellIndex);
+        if (null == cell) {
+            return new NullCell(row, cellIndex);
+        }
+        return cell;
     }
 
     /**

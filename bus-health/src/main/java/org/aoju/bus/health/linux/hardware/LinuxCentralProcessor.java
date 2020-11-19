@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.linux.hardware;
 
@@ -42,12 +43,13 @@ import org.aoju.bus.health.linux.software.LinuxOperatingSystem;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.LongStream;
 
 /**
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -159,6 +161,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         String cpuFamily = Normal.EMPTY;
         String cpuModel = Normal.EMPTY;
         String cpuStepping = Normal.EMPTY;
+        long cpuFreq = 0L;
         String processorID;
         boolean cpu64bit = false;
 
@@ -211,8 +214,21 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 case "cpu family":
                     cpuFamily = splitLine[1];
                     break;
+                case "cpu MHz":
+                    cpuFreq = Builder.parseHertz(splitLine[1]);
+                    break;
                 default:
                     // Do nothing
+            }
+        }
+        if (cpuName.contains("Hz")) {
+            // if Name contains CPU vendor frequency, ignore cpuinfo and use it
+            cpuFreq = -1L;
+        } else {
+            // Try lshw and use it in preference to cpuinfo
+            long cpuCapacity = Lshw.queryCpuCapacity();
+            if (cpuCapacity > cpuFreq) {
+                cpuFreq = cpuCapacity;
             }
         }
         if (cpuStepping.isEmpty()) {
@@ -227,7 +243,8 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 }
             }
         }
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
+                cpuFreq);
     }
 
     @Override
@@ -266,6 +283,10 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     public long[] querySystemCpuLoadTicks() {
         // convert the Linux Jiffies to Milliseconds.
         long[] ticks = CpuStat.getSystemCpuLoadTicks();
+        // In rare cases, /proc/stat reading fails. If so, try again.
+        if (LongStream.of(ticks).sum() == 0) {
+            ticks = CpuStat.getSystemCpuLoadTicks();
+        }
         long hz = LinuxOperatingSystem.getHz();
         for (int i = 0; i < ticks.length; i++) {
             ticks[i] = ticks[i] * 1000L / hz;
@@ -314,6 +335,10 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     public long queryMaxFreq() {
         String cpuFreqPath = Config.get(CPUFREQ_PATH, Normal.EMPTY);
         long max = Arrays.stream(this.getCurrentFreq()).max().orElse(-1L);
+        // Max of current freq, if populated, is in units of Hz, convert to kHz
+        if (max > 0) {
+            max /= 1000L;
+        }
         // Iterating CPUs only gets the existing policy, so we need to iterate the
         // policy directories to find the system-wide policy max
         File cpufreqdir = new File(cpuFreqPath + "/cpufreq");
@@ -361,6 +386,12 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
         long[][] ticks = CpuStat.getProcessorCpuLoadTicks(getLogicalProcessorCount());
+        // In rare cases, /proc/stat reading fails. If so, try again.
+        // In theory we should check all of them, but on failure we can expect all 0's
+        // so we only need to check for processor 0
+        if (LongStream.of(ticks[0]).sum() == 0) {
+            ticks = CpuStat.getProcessorCpuLoadTicks(getLogicalProcessorCount());
+        }
         // convert the Linux Jiffies to Milliseconds.
         long hz = LinuxOperatingSystem.getHz();
         for (int i = 0; i < ticks.length; i++) {

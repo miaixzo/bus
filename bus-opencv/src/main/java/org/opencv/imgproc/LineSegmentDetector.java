@@ -109,52 +109,6 @@ public class LineSegmentDetector extends Algorithm {
     }
 
     /**
-     * Finds lines in the input image.
-     * <p>
-     * This is the output of the default parameters of the algorithm on the above shown image.
-     * <p>
-     * ![image](pics/building_lsd.png)
-     *
-     * @param _image A grayscale (CV_8UC1) input image. If only a roi needs to be selected, use:
-     *               {@code lsd_ptr-&gt;detect(image(roi), lines, ...); lines += Scalar(roi.x, roi.y, roi.x, roi.y);}
-     * @param _lines A vector of Vec4i or Vec4f elements specifying the beginning and ending point of a line. Where
-     *               Vec4i/Vec4f is (x1, y1, x2, y2), point 1 is the start, point 2 - end. Returned lines are strictly
-     *               oriented depending on the gradient.
-     *               bigger the value, logarithmically better the detection.
-     *               <ul>
-     *                 <li>
-     *                    -1 corresponds to 10 mean false alarms
-     *                 </li>
-     *                 <li>
-     *                    0 corresponds to 1 mean false alarm
-     *                 </li>
-     *                 <li>
-     *                    1 corresponds to 0.1 mean false alarms
-     *                   This vector will be calculated only when the objects type is #LSD_REFINE_ADV.
-     *                 </li>
-     *               </ul>
-     */
-    public void detect(Mat _image, Mat _lines) {
-        detect_3(nativeObj, _image.nativeObj, _lines.nativeObj);
-    }
-
-    /**
-     * Draws the line segments on a given image.
-     *
-     * @param _image The image, where the lines will be drawn. Should be bigger or equal to the image,
-     *               where the lines were found.
-     * @param lines  A vector of the lines that needed to be drawn.
-     */
-    public void drawSegments(Mat _image, Mat lines) {
-        drawSegments_0(nativeObj, _image.nativeObj, lines.nativeObj);
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        delete(nativeObj);
-    }
-
-    /**
      * Draws two groups of lines in blue and red, counting the non overlapping (mismatching) pixels.
      *
      * @param size   The size of the image, where lines1 and lines2 were found.
@@ -228,6 +182,52 @@ public class LineSegmentDetector extends Algorithm {
      */
     public void detect(Mat _image, Mat _lines, Mat width) {
         detect_2(nativeObj, _image.nativeObj, _lines.nativeObj, width.nativeObj);
+    }
+
+    /**
+     * Finds lines in the input image.
+     * <p>
+     * This is the output of the default parameters of the algorithm on the above shown image.
+     * <p>
+     * ![image](pics/building_lsd.png)
+     *
+     * @param _image A grayscale (CV_8UC1) input image. If only a roi needs to be selected, use:
+     *               {@code lsd_ptr-&gt;detect(image(roi), lines, ...); lines += Scalar(roi.x, roi.y, roi.x, roi.y);}
+     * @param _lines A vector of Vec4i or Vec4f elements specifying the beginning and ending point of a line. Where
+     *               Vec4i/Vec4f is (x1, y1, x2, y2), point 1 is the start, point 2 - end. Returned lines are strictly
+     *               oriented depending on the gradient.
+     *               bigger the value, logarithmically better the detection.
+     *               <ul>
+     *                 <li>
+     *                    -1 corresponds to 10 mean false alarms
+     *                 </li>
+     *                 <li>
+     *                    0 corresponds to 1 mean false alarm
+     *                 </li>
+     *                 <li>
+     *                    1 corresponds to 0.1 mean false alarms
+     *                   This vector will be calculated only when the objects type is #LSD_REFINE_ADV.
+     *                 </li>
+     *               </ul>
+     */
+    public void detect(Mat _image, Mat _lines) {
+        detect_3(nativeObj, _image.nativeObj, _lines.nativeObj);
+    }
+
+    /**
+     * Draws the line segments on a given image.
+     *
+     * @param _image The image, where the lines will be drawn. Should be bigger or equal to the image,
+     *               where the lines were found.
+     * @param lines  A vector of the lines that needed to be drawn.
+     */
+    public void drawSegments(Mat _image, Mat lines) {
+        drawSegments_0(nativeObj, _image.nativeObj, lines.nativeObj);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        delete(nativeObj);
     }
 
 }

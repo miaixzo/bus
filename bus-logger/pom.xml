@@ -6,12 +6,37 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-logger</artifactId>
-    <version>6.1.1</version>
+    <version>6.1.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>Bus Logger</description>
     <url>https://github.com/aoju/bus</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git@github.com:aoju/bus.git</connection>
+        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
+        <url>git@github.com:aoju/bus.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Kimi Liu</name>
+            <url>https://github.com/aoju/bus.git</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/aoju/bus/issues</url>
+    </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,7 +45,7 @@
         <slf4j.version>1.7.30</slf4j.version>
         <logback.version>1.2.3</logback.version>
         <log4j.version>1.2.17</log4j.version>
-        <log4j2.version>2.13.2</log4j2.version>
+        <log4j2.version>2.14.0</log4j2.version>
         <commons.logging.version>1.2</commons.logging.version>
         <tinylog.version>2.1.2</tinylog.version>
         <jboss.logging.version>3.4.1.Final</jboss.logging.version>
@@ -81,31 +106,6 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <licenses>
-        <license>
-            <name>The MIT License (MIT)</name>
-            <url>https://opensource.org/licenses/MIT</url>
-        </license>
-    </licenses>
-
-    <scm>
-        <connection>scm:git@github.com:aoju/bus.git</connection>
-        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
-        <url>git@github.com:aoju/bus.git</url>
-    </scm>
-
-    <developers>
-        <developer>
-            <name>Kimi Liu</name>
-            <url>https://github.com/aoju/bus.git</url>
-        </developer>
-    </developers>
-
-    <issueManagement>
-        <system>Github Issue</system>
-        <url>https://github.com/aoju/bus/issues</url>
-    </issueManagement>
 
     <build>
         <plugins>

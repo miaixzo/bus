@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.mac.drivers;
 
@@ -41,7 +42,7 @@ import java.util.Map;
  * Utility to query NetStat.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -99,10 +100,10 @@ public final class NetStat {
                 if2m.read();
                 if (index < 0 || index == if2m.ifm_index) {
                     data.put((int) if2m.ifm_index,
-                            new IFdata(if2m.ifm_data.ifi_type, if2m.ifm_data.ifi_opackets, if2m.ifm_data.ifi_ipackets,
-                                    if2m.ifm_data.ifi_obytes, if2m.ifm_data.ifi_ibytes, if2m.ifm_data.ifi_oerrors,
-                                    if2m.ifm_data.ifi_ierrors, if2m.ifm_data.ifi_collisions, if2m.ifm_data.ifi_iqdrops,
-                                    if2m.ifm_data.ifi_baudrate, now));
+                            new IFdata(0xff & if2m.ifm_data.ifi_type, if2m.ifm_data.ifi_opackets,
+                                    if2m.ifm_data.ifi_ipackets, if2m.ifm_data.ifi_obytes, if2m.ifm_data.ifi_ibytes,
+                                    if2m.ifm_data.ifi_oerrors, if2m.ifm_data.ifi_ierrors, if2m.ifm_data.ifi_collisions,
+                                    if2m.ifm_data.ifi_iqdrops, if2m.ifm_data.ifi_baudrate, now));
                     if (index >= 0) {
                         return data;
                     }

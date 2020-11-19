@@ -21,10 +21,10 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.convert;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.ClassKit;
 
 /**
@@ -32,19 +32,32 @@ import org.aoju.bus.core.toolkit.ClassKit;
  * 将类名转换为类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class ClassConverter extends AbstractConverter<Class<?>> {
 
+    private final boolean isInitialized;
+
+    /**
+     * 构造
+     */
+    public ClassConverter() {
+        this(true);
+    }
+
+    /**
+     * 构造
+     *
+     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     */
+    public ClassConverter(boolean isInitialized) {
+        this.isInitialized = isInitialized;
+    }
+
     @Override
     protected Class<?> convertInternal(Object value) {
-        String valueStr = convertString(value);
-        try {
-            return ClassKit.getClassLoader().loadClass(valueStr);
-        } catch (Exception e) {
-            throw new InstrumentException(e);
-        }
+        return ClassKit.loadClass(convertString(value), isInitialized);
     }
 
 }

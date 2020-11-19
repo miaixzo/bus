@@ -21,21 +21,20 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.concurrent.TimeUnit;
 
 /**
  * 用于附加单元或在数字类型之间转换的格式化实用程序
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -190,18 +189,6 @@ public final class Formats {
         eTime -= TimeUnit.MINUTES.toSeconds(min);
         final long sec = eTime;
         return String.format("%d days, %02d:%02d:%02d", days, hr, min, sec);
-    }
-
-    /**
-     * Round to certain number of decimals.
-     *
-     * @param d            Number to be rounded
-     * @param decimalPlace Number of decimal places to round to
-     * @return rounded result
-     */
-    public static float round(float d, int decimalPlace) {
-        final BigDecimal bd = new BigDecimal(Float.toString(d)).setScale(decimalPlace, RoundingMode.HALF_UP);
-        return bd.floatValue();
     }
 
     /**

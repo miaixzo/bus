@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
@@ -43,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * 所有应用程序拦截器、Httpd核心、所有网络拦截器，最后是网络调用者.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public final class RealInterceptorChain implements Interceptor.Chain {

@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.starter.goalie;
 
@@ -33,38 +34,40 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * 路由配置
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Data
 @EnableConfigurationProperties(GoalieProperties.Server.class)
 @ConfigurationProperties(BusXExtend.GOALIE)
 public class GoalieProperties {
-  private Server server;
 
-  @EnableConfigurationProperties({Server.Encrypt.class, Server.Decrypt.class})
-  @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server")
-  @Data
-  public static class Server {
-    private String path;
-    private int port;
-    private Encrypt encrypt;
-    private Decrypt decrypt;
+    private Server server;
 
+    @EnableConfigurationProperties({Server.Encrypt.class, Server.Decrypt.class})
+    @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server")
     @Data
-    @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server.encrypt")
-    public static class Encrypt {
-      private boolean enabled;
-      private String key;
-      private String type;
+    public static class Server {
+        private String path;
+        private int port;
+        private Encrypt encrypt;
+        private Decrypt decrypt;
+
+        @Data
+        @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server.encrypt")
+        public static class Encrypt {
+            private boolean enabled;
+            private String key;
+            private String type;
+        }
+
+        @Data
+        @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server.decrypt")
+        public static class Decrypt {
+            private boolean enabled;
+            private String key;
+            private String type;
+        }
     }
 
-    @Data
-    @ConfigurationProperties(prefix = BusXExtend.GOALIE + ".server.decrypt")
-    public static class Decrypt {
-      private boolean enabled;
-      private String key;
-      private String type;
-    }
-  }
 }

@@ -21,11 +21,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.toolkit.FileKit;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.File;
@@ -35,7 +37,7 @@ import java.io.OutputStream;
  * 大数据量Excel写出
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class BigExcelWriter extends ExcelWriter {
@@ -138,6 +140,24 @@ public class BigExcelWriter extends ExcelWriter {
      */
     public BigExcelWriter(Sheet sheet) {
         super(sheet);
+    }
+
+    @Override
+    public BigExcelWriter autoSizeColumn(int columnIndex) {
+        final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
+        sheet.trackColumnForAutoSizing(columnIndex);
+        super.autoSizeColumn(columnIndex);
+        sheet.untrackColumnForAutoSizing(columnIndex);
+        return this;
+    }
+
+    @Override
+    public BigExcelWriter autoSizeColumnAll() {
+        final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
+        sheet.trackAllColumnsForAutoSizing();
+        super.autoSizeColumnAll();
+        sheet.untrackAllColumnsForAutoSizing();
+        return this;
     }
 
     @Override

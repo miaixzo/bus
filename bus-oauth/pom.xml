@@ -6,20 +6,45 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>6.1.1</version>
+    <version>6.1.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>Bus OAuth</description>
     <url>https://github.com/aoju/bus</url>
 
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git@github.com:aoju/bus.git</connection>
+        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
+        <url>git@github.com:aoju/bus.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Kimi Liu</name>
+            <url>https://github.com/aoju/bus.git</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/aoju/bus/issues</url>
+    </issueManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <alipay.sdk.version>3.7.4.ALL</alipay.sdk.version>
-        <lombok.version>1.18.12</lombok.version>
-        <fastjson.version>1.2.73</fastjson.version>
+        <lombok.version>1.18.16</lombok.version>
+        <fastjson.version>1.2.75</fastjson.version>
     </properties>
 
     <dependencies>
@@ -52,31 +77,6 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <licenses>
-        <license>
-            <name>The MIT License (MIT)</name>
-            <url>https://opensource.org/licenses/MIT</url>
-        </license>
-    </licenses>
-
-    <scm>
-        <connection>scm:git@github.com:aoju/bus.git</connection>
-        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
-        <url>git@github.com:aoju/bus.git</url>
-    </scm>
-
-    <developers>
-        <developer>
-            <name>Kimi Liu</name>
-            <url>https://github.com/aoju/bus.git</url>
-        </developer>
-    </developers>
-
-    <issueManagement>
-        <system>Github Issue</system>
-        <url>https://github.com/aoju/bus/issues</url>
-    </issueManagement>
 
     <build>
         <plugins>

@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.metric;
 
@@ -33,7 +34,7 @@ import java.io.File;
  * 当需要某个office实例执行转换时，该类提供{@link AbstractOfficePoolManager}的配置
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class OfficeProcessManagerPoolBuilder extends OfficeProcessManagerEntryBuilder

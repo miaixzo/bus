@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
@@ -43,7 +44,7 @@ import java.util.stream.IntStream;
  * Excel中的行{@link Row}封装工具类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class RowKit {
@@ -96,7 +97,7 @@ public class RowKit {
         Object cellValue;
         boolean isAllNull = true;
         for (int i = startCellNumInclude; i < size; i++) {
-            cellValue = CellKit.getCellValue(row.getCell(i), cellEditor);
+            cellValue = CellKit.getCellValue(CellKit.getCell(row, i), cellEditor);
             isAllNull &= StringKit.emptyIfStr(cellValue);
             cellValues.add(cellValue);
         }

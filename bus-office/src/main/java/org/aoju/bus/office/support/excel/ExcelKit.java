@@ -21,11 +21,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.PatternKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.PoiChecker;
@@ -41,7 +43,7 @@ import java.io.OutputStream;
  * Excel工具类
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class ExcelKit {
@@ -100,6 +102,7 @@ public class ExcelKit {
      * @param rowHandler 行处理器
      */
     public static void readBySax(InputStream in, int rid, RowHandler rowHandler) {
+        in = IoKit.toMarkSupportStream(in);
         final ExcelSaxReader<?> reader = ExcelSaxKit.createSaxReader(ExcelFileKit.isXlsx(in), rowHandler);
         reader.read(in, rid);
     }
@@ -112,6 +115,7 @@ public class ExcelKit {
      * @param rowHandler 行处理器
      */
     public static void readBySax(InputStream in, String idOrRid, RowHandler rowHandler) {
+        in = IoKit.toMarkSupportStream(in);
         final ExcelSaxReader<?> reader = ExcelSaxKit.createSaxReader(ExcelFileKit.isXlsx(in), rowHandler);
         reader.read(in, idOrRid);
     }

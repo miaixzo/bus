@@ -21,24 +21,23 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.extra.json;
 
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.extra.pinyin.PinyinProvider;
 import org.aoju.bus.logger.Logger;
-
-import java.util.Iterator;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
 
 /**
  * 用于根据用户引入的json库
  * 自动创建对应的json解析器
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class JsonFactory {
@@ -53,35 +52,18 @@ public class JsonFactory {
     }
 
     /**
-     * 根据用户引入的json解析工具jar，自动创建对应的json解析对象
-     * 推荐创建的解析单例使用，此方法每次调用会返回新的解析器
+     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象
+     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
-     * @return {@link JsonProvider}
+     * @return {@link PinyinProvider}
      */
     public static JsonProvider create() {
-        final JsonProvider engine = doCreate(JsonProvider.class);
+        final JsonProvider engine = ClassKit.loadFirstAvailable(JsonProvider.class);
+        if (null == engine) {
+            throw new InstrumentException("No json jar found ! Please add one of it to your project !");
+        }
         Logger.debug("Use [{}] provider as default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Provider"));
         return engine;
-    }
-
-    /**
-     * 根据用户引入的json解析工具jar，自动创建对应的json解析对象
-     * 推荐创建的解析单例使用，此方法每次调用会返回新的解析
-     *
-     * @param clazz 解析器
-     * @param <T>   泛型参数类型
-     * @return {@link JsonProvider}
-     */
-    public static <T> T doCreate(Class<T> clazz) {
-        final Iterator<T> iterator = ServiceLoader.load(clazz).iterator();
-        while (iterator.hasNext()) {
-            try {
-                return iterator.next();
-            } catch (ServiceConfigurationError e) {
-                throw new InstrumentException("No json jar found ! Please add one of it to your project !");
-            }
-        }
-        return null;
     }
 
 }

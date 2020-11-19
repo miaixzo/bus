@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect.mysql;
 
@@ -48,7 +49,7 @@ import java.util.stream.Collectors;
  * 元数据查询，查询的数据库表为INFORMATION_SCHEMA
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class MySqlDataBaseQuery extends AbstractDatabaseQuery {

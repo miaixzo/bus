@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.cron;
 
@@ -74,19 +75,19 @@ import java.util.concurrent.locks.ReentrantLock;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class Scheduler {
 
     /**
-     * 是否为守护线程
-     */
-    protected boolean daemon;
-    /**
      * 同步锁
      */
     private final Lock lock = new ReentrantLock();
+    /**
+     * 是否为守护线程
+     */
+    protected boolean daemon;
     /**
      * 启动管理器
      */
@@ -320,7 +321,7 @@ public class Scheduler {
     /**
      * 获取定时任务表，注意此方法返回非复制对象，对返回对象的修改将影响已有定时任务
      *
-     * @return 定时任务表{@link TaskTable}
+     * @return 定时任务表 {@link Repertoire}
      */
     public Repertoire getTaskTable() {
         return this.repertoire;

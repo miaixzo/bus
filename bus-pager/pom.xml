@@ -6,19 +6,44 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-pager</artifactId>
-    <version>6.1.1</version>
+    <version>6.1.2</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>Bus Pager</description>
     <url>https://github.com/aoju/bus</url>
 
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git@github.com:aoju/bus.git</connection>
+        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
+        <url>git@github.com:aoju/bus.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Kimi Liu</name>
+            <url>https://github.com/aoju/bus.git</url>
+        </developer>
+    </developers>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/aoju/bus/issues</url>
+    </issueManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <mybatis.version>3.5.5</mybatis.version>
-        <guava.version>29.0-jre</guava.version>
+        <mybatis.version>3.5.6</mybatis.version>
+        <guava.version>30.0-jre</guava.version>
         <jsqlparser.version>3.1</jsqlparser.version>
     </properties>
 
@@ -47,31 +72,6 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <licenses>
-        <license>
-            <name>The MIT License (MIT)</name>
-            <url>https://opensource.org/licenses/MIT</url>
-        </license>
-    </licenses>
-
-    <scm>
-        <connection>scm:git@github.com:aoju/bus.git</connection>
-        <developerConnection>scm:git@github.com:aoju/bus.git</developerConnection>
-        <url>git@github.com:aoju/bus.git</url>
-    </scm>
-
-    <developers>
-        <developer>
-            <name>Kimi Liu</name>
-            <url>https://github.com/aoju/bus.git</url>
-        </developer>
-    </developers>
-
-    <issueManagement>
-        <system>Github Issue</system>
-        <url>https://github.com/aoju/bus/issues</url>
-    </issueManagement>
 
     <build>
         <plugins>

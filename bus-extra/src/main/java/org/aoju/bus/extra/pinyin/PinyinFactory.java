@@ -21,24 +21,22 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.extra.pinyin;
 
 import org.aoju.bus.core.instance.Instances;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.logger.Logger;
-
-import java.util.Iterator;
-import java.util.ServiceConfigurationError;
-import java.util.ServiceLoader;
 
 /**
  * 用于根据用户引入的拼音库jar
  * 自动创建对应的拼音引擎对象
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class PinyinFactory {
@@ -59,29 +57,12 @@ public class PinyinFactory {
      * @return {@link PinyinProvider}
      */
     public static PinyinProvider create() {
-        final PinyinProvider engine = doCreate(PinyinProvider.class);
+        final PinyinProvider engine = ClassKit.loadFirstAvailable(PinyinProvider.class);
+        if (null == engine) {
+            throw new InstrumentException("No pinyin jar found ! Please add one of it to your project !");
+        }
         Logger.debug("Use [{}] provider as default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Provider"));
         return engine;
-    }
-
-    /**
-     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象
-     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
-     *
-     * @param clazz 解析器
-     * @param <T>   泛型参数类型
-     * @return {@link PinyinProvider}
-     */
-    public static <T> T doCreate(Class<T> clazz) {
-        final Iterator<T> iterator = ServiceLoader.load(clazz).iterator();
-        while (iterator.hasNext()) {
-            try {
-                return iterator.next();
-            } catch (ServiceConfigurationError e) {
-                throw new InstrumentException("No pinyin jar found ! Please add one of it to your project !");
-            }
-        }
-        return null;
     }
 
 }

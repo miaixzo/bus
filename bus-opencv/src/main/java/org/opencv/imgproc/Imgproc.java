@@ -109,6 +109,20 @@ public class Imgproc {
             GC_FGD = 1,
             GC_PR_BGD = 2,
             GC_PR_FGD = 3;
+    // C++: enum InterpolationFlags
+    public static final int
+            INTER_NEAREST = 0,
+            INTER_LINEAR = 1,
+            INTER_CUBIC = 2,
+            INTER_AREA = 3,
+            INTER_LANCZOS4 = 4,
+            INTER_LINEAR_EXACT = 5,
+            INTER_NEAREST_EXACT = 6,
+            INTER_MAX = 7,
+            WARP_FILL_OUTLIERS = 8,
+            WARP_INVERSE_MAP = 16;
+
+
     // C++: enum HistCompMethods
     public static final int
             HISTCMP_CORREL = 0,
@@ -118,37 +132,14 @@ public class Imgproc {
             HISTCMP_HELLINGER = HISTCMP_BHATTACHARYYA,
             HISTCMP_CHISQR_ALT = 4,
             HISTCMP_KL_DIV = 5;
+
+
     // C++: enum LineTypes
     public static final int
             FILLED = -1,
             LINE_4 = 4,
             LINE_8 = 8,
             LINE_AA = 16;
-    // C++: enum InterpolationFlags
-    public static final int
-            INTER_NEAREST = 0,
-            INTER_LINEAR = 1,
-            INTER_CUBIC = 2,
-            INTER_AREA = 3,
-            INTER_LANCZOS4 = 4,
-            INTER_LINEAR_EXACT = 5,
-            INTER_MAX = 7,
-            WARP_FILL_OUTLIERS = 8,
-            WARP_INVERSE_MAP = 16;
-    // C++: enum SpecialFilter
-    public static final int
-            FILTER_SCHARR = -1;
-    // C++: enum ContourApproximationModes
-    public static final int
-            CHAIN_APPROX_NONE = 1,
-            CHAIN_APPROX_SIMPLE = 2,
-            CHAIN_APPROX_TC89_L1 = 3,
-            CHAIN_APPROX_TC89_KCOS = 4;
-    // C++: enum RectanglesIntersectTypes
-    public static final int
-            INTERSECT_NONE = 0,
-            INTERSECT_PARTIAL = 1,
-            INTERSECT_FULL = 2;
     // C++: enum <unnamed>
     public static final int
             CV_GAUSSIAN_5x5 = 7,
@@ -191,15 +182,41 @@ public class Imgproc {
             CV_HOUGH_PROBABILISTIC = 1,
             CV_HOUGH_MULTI_SCALE = 2,
             CV_HOUGH_GRADIENT = 3;
+
+
+    // C++: enum SpecialFilter
+    public static final int
+            FILTER_SCHARR = -1;
+
+
+    // C++: enum ContourApproximationModes
+    public static final int
+            CHAIN_APPROX_NONE = 1,
+            CHAIN_APPROX_SIMPLE = 2,
+            CHAIN_APPROX_TC89_L1 = 3,
+            CHAIN_APPROX_TC89_KCOS = 4;
+
+
+    // C++: enum RectanglesIntersectTypes
+    public static final int
+            INTERSECT_NONE = 0,
+            INTERSECT_PARTIAL = 1,
+            INTERSECT_FULL = 2;
+
+
     // C++: enum ShapeMatchModes
     public static final int
             CONTOURS_MATCH_I1 = 1,
             CONTOURS_MATCH_I2 = 2,
             CONTOURS_MATCH_I3 = 3;
+
+
     // C++: enum WarpPolarMode
     public static final int
             WARP_POLAR_LINEAR = 0,
             WARP_POLAR_LOG = 256;
+
+
     // C++: enum ColorConversionCodes
     public static final int
             COLOR_BGR2BGRA = 0,
@@ -408,11 +425,15 @@ public class Imgproc {
             COLOR_BayerRG2RGBA = COLOR_BayerBG2BGRA,
             COLOR_BayerGR2RGBA = COLOR_BayerGB2BGRA,
             COLOR_COLORCVT_MAX = 143;
+
+
     // C++: enum LineSegmentDetectorModes
     public static final int
             LSD_REFINE_NONE = 0,
             LSD_REFINE_STD = 1,
             LSD_REFINE_ADV = 2;
+
+
     // C++: enum ThresholdTypes
     public static final int
             THRESH_BINARY = 0,
@@ -1873,7 +1894,7 @@ public class Imgproc {
      * represents the background label. ltype specifies the output label image type, an important
      * consideration based on the total number of labels or alternatively the total number of pixels in
      * the source image. ccltype specifies the connected components labeling algorithm to use, currently
-     * Grana (BBDT) and Wu's (SAUF) algorithms are supported, see the #ConnectedComponentsAlgorithmsTypes
+     * Grana (BBDT) and Wu's (SAUF) CITE: Wu2009 algorithms are supported, see the #ConnectedComponentsAlgorithmsTypes
      * for details. Note that SAUF algorithm forces a row major ordering of labels while BBDT does not.
      * This function uses parallel version of both Grana and Wu's algorithms if at least one allowed
      * parallel framework is enabled and if the rows of the image are at least twice the number returned by #getNumberOfCPUs.
@@ -1936,7 +1957,7 @@ public class Imgproc {
      * represents the background label. ltype specifies the output label image type, an important
      * consideration based on the total number of labels or alternatively the total number of pixels in
      * the source image. ccltype specifies the connected components labeling algorithm to use, currently
-     * Grana's (BBDT) and Wu's (SAUF) algorithms are supported, see the #ConnectedComponentsAlgorithmsTypes
+     * Grana's (BBDT) and Wu's (SAUF) CITE: Wu2009 algorithms are supported, see the #ConnectedComponentsAlgorithmsTypes
      * for details. Note that SAUF algorithm forces a row major ordering of labels while BBDT does not.
      * This function uses parallel version of both Grana and Wu's algorithms (statistics included) if at least one allowed
      * parallel framework is enabled and if the rows of the image are at least twice the number returned by #getNumberOfCPUs.
@@ -4886,8 +4907,8 @@ public class Imgproc {
     /**
      * Refines the corner locations.
      * <p>
-     * The function iterates to find the sub-pixel accurate location of corners or radial saddle points, as
-     * shown on the figure below.
+     * The function iterates to find the sub-pixel accurate location of corners or radial saddle
+     * points as described in CITE: forstner1987fast, and as shown on the figure below.
      * <p>
      * ![image](pics/cornersubpix.png)
      * <p>

@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.math;
 
@@ -36,7 +37,7 @@ import java.util.Stack;
  * 数学表达式计算
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class Calculator {
@@ -93,7 +94,7 @@ public class Calculator {
                 }
             }
         }
-        if (arr[0] == Symbol.C_TILDE || arr[1] == Symbol.C_PARENTHESE_LEFT) {
+        if (arr[0] == Symbol.C_TILDE || (arr.length > 1 && arr[1] == Symbol.C_PARENTHESE_LEFT)) {
             arr[0] = Symbol.C_HYPHEN;
             return Symbol.ZERO + new String(arr);
         } else {

@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.crypto.symmetric;
 
@@ -48,7 +49,7 @@ import javax.crypto.spec.IvParameterSpec;
  * 相关概念见：https://blog.csdn.net/OrangeJack/article/details/82913804
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class AES extends Symmetric {
@@ -68,6 +69,15 @@ public class AES extends Symmetric {
      * @param key 密钥
      */
     public AES(byte[] key) {
+        super(Algorithm.AES, key);
+    }
+
+    /**
+     * 构造，使用默认的AES/ECB/PKCS5Padding
+     *
+     * @param key 密钥
+     */
+    public AES(SecretKey key) {
         super(Algorithm.AES, key);
     }
 

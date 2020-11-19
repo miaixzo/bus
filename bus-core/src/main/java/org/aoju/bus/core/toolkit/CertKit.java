@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
@@ -30,16 +31,31 @@ import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.logging.Logger;
 
 /**
  * 获取ssl证书信息工具类
  *
  * @author zhaocy
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class CertKit {
+
+    static TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+    }};
+
     /**
      * @param httpsUrl https url
      * @return x509Certificate 证书信息
@@ -60,7 +76,7 @@ public class CertKit {
             conn.connect();
             Certificate[] certificates = conn.getServerCertificates();
             //证书链第一个就是证书
-             x509Certificate = (X509Certificate) certificates[0];
+            x509Certificate = (X509Certificate) certificates[0];
             conn.disconnect();
             return x509Certificate;
         } catch (Exception e) {
@@ -68,21 +84,6 @@ public class CertKit {
         }
         return x509Certificate;
     }
-
-    static TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-        @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-
-        @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
-
-        @Override
-        public X509Certificate[] getAcceptedIssuers() {
-            return null;
-        }
-    }};
 
     public class NullHostNameVerifier implements HostnameVerifier {
         @Override

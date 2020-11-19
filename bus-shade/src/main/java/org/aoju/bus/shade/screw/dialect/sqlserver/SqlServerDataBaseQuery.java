@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.shade.screw.dialect.sqlserver;
 
@@ -48,7 +49,7 @@ import java.util.stream.Collectors;
  * 通过文档发现，查询列和查询表的 REMARKS  字段SQL Server 不会为此列返回值。所以对于SQL server 自己写SQL语句了,差缺补全
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class SqlServerDataBaseQuery extends AbstractDatabaseQuery {

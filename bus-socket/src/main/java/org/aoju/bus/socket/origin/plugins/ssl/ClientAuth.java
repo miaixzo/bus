@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.socket.origin.plugins.ssl;
 
@@ -28,7 +29,7 @@ package org.aoju.bus.socket.origin.plugins.ssl;
  * 配置引擎请求客户端验证 此选项只对服务器模式的引擎有用
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public enum ClientAuth {

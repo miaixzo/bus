@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.linux.hardware;
 
@@ -39,11 +40,13 @@ import java.util.List;
  * A Display
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @Immutable
 final class LinuxDisplay extends AbstractDisplay {
+
+    private static final String[] XRANDR_VERBOSE = {"xrandr", "--verbose"};
 
     /**
      * Constructor for LinuxDisplay.
@@ -61,7 +64,7 @@ final class LinuxDisplay extends AbstractDisplay {
      * @return An array of Display objects representing monitors, etc.
      */
     public static List<Display> getDisplays() {
-        List<String> xrandr = Executor.runNative("xrandr --verbose");
+        List<String> xrandr = Executor.runNative(XRANDR_VERBOSE, null);
         // xrandr reports edid in multiple lines. After seeing a line containing
         // EDID, read subsequent lines of hex until 256 characters are reached
         if (xrandr.isEmpty()) {

@@ -39,12 +39,20 @@ public class TickMeter {
     // C++:   cv::TickMeter::TickMeter()
     //
 
+    // C++:   cv::TickMeter::TickMeter()
+    private static native long TickMeter_0();
+
+
+    //
+    // C++:  double cv::TickMeter::getAvgTimeMilli()
+    //
+
     // C++:  double cv::TickMeter::getAvgTimeMilli()
     private static native double getAvgTimeMilli_0(long nativeObj);
 
 
     //
-    // C++:  double cv::TickMeter::getAvgTimeMilli()
+    // C++:  double cv::TickMeter::getAvgTimeSec()
     //
 
     // C++:  double cv::TickMeter::getAvgTimeSec()
@@ -52,19 +60,11 @@ public class TickMeter {
 
 
     //
-    // C++:  double cv::TickMeter::getAvgTimeSec()
+    // C++:  double cv::TickMeter::getFPS()
     //
 
     // C++:  double cv::TickMeter::getFPS()
     private static native double getFPS_0(long nativeObj);
-
-
-    //
-    // C++:  double cv::TickMeter::getFPS()
-    //
-
-    // C++:   cv::TickMeter::TickMeter()
-    private static native long TickMeter_0();
 
 
     //

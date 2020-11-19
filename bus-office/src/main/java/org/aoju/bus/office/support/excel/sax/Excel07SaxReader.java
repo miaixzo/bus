@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.office.support.excel.sax;
 
@@ -55,7 +56,7 @@ import java.util.List;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<Excel07SaxReader> {

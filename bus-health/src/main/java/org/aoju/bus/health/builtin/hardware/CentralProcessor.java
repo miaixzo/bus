@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.builtin.hardware;
 
@@ -44,7 +45,7 @@ import java.util.regex.Pattern;
  * 多个逻辑处理器(操作系统看到的内容，可能包括超线程内核)
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -418,7 +419,7 @@ public interface CentralProcessor {
             sb.append(" Stepping ").append(cpuStepping);
             this.cpuIdentifier = sb.toString();
 
-            if (vendorFreq >= 0) {
+            if (vendorFreq > 0) {
                 this.cpuVendorFreq = vendorFreq;
             } else {
                 // Parse Freq from name string

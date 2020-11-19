@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.hl7;
 
@@ -29,7 +30,7 @@ import org.aoju.bus.image.galaxy.ConfigurationCache;
 
 /**
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL7Application>

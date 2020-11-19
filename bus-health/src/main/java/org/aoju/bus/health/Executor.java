@@ -21,12 +21,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.BufferedReader;
@@ -42,7 +42,7 @@ import java.util.List;
  * execution.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -77,7 +77,7 @@ public final class Executor {
      * string if the command failed
      */
     public static List<String> runNative(String cmdToRun) {
-        String[] cmd = cmdToRun.split(Symbol.SPACE);
+        String[] cmd = cmdToRun.split(" ");
         return runNative(cmd);
     }
 
@@ -94,15 +94,34 @@ public final class Executor {
      * string if the command failed
      */
     public static List<String> runNative(String[] cmdToRunWithArgs) {
-        Process p = null;
+        return runNative(cmdToRunWithArgs, DEFAULT_ENV);
+    }
+
+    /**
+     * Executes a command on the native command line and returns the result line by
+     * line. This is a convenience method to call
+     * {@link java.lang.Runtime#exec(String[])} and capture the resulting output in
+     * a list of Strings. On Windows, built-in commands not associated with an
+     * executable program may require the strings {@code cmd.exe} and {@code /c} to
+     * be prepended to the array.
+     *
+     * @param cmdToRunWithArgs Command to run and args, in an array
+     * @param envp             array of strings, each element of which has environment variable
+     *                         settings in the format name=value, or null if the subprocess
+     *                         should inherit the environment of the current process.
+     * @return A list of Strings representing the result of the command, or empty
+     * string if the command failed
+     */
+    public static List<String> runNative(String[] cmdToRunWithArgs, String[] envp) {
+        Process p;
         try {
-            p = Runtime.getRuntime().exec(cmdToRunWithArgs, DEFAULT_ENV);
+            p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
         } catch (SecurityException | IOException e) {
             Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
             return new ArrayList<>(0);
         }
 
-        List<String> sa = new ArrayList<>();
+        ArrayList<String> sa = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(p.getInputStream(), Charset.defaultCharset()))) {
             String line;

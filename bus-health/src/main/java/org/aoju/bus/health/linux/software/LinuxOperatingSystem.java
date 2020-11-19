@@ -21,6 +21,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
  * THE SOFTWARE.                                                                 *
+ *                                                                               *
  ********************************************************************************/
 package org.aoju.bus.health.linux.software;
 
@@ -54,7 +55,7 @@ import java.util.*;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.1.1
+ * @version 6.1.2
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -600,7 +601,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         List<String> systemctl = Executor.runNative("systemctl list-unit-files");
         for (String str : systemctl) {
             String[] split = RegEx.SPACES.split(str);
-            if (split.length == 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
+            if (split.length >= 2 && split[0].endsWith(".service") && "enabled".equals(split[1])) {
                 // remove .service extension
                 String name = split[0].substring(0, split[0].length() - 8);
                 int index = name.lastIndexOf(Symbol.C_DOT);
