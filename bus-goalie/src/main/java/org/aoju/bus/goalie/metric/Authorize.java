@@ -1,5 +1,8 @@
 package org.aoju.bus.goalie.metric;
 
+/**
+ * 访问授权认证
+ */
 public interface Authorize {
 
     /**

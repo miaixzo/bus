@@ -31,6 +31,8 @@ import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.entity.OAuth2;
 
 /**
+ * 认证及委托处理
+ *
  * @author Justubborn
  * @since 2020/11/6
  */

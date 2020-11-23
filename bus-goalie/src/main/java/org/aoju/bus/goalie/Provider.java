@@ -26,8 +26,11 @@
 package org.aoju.bus.goalie;
 
 /**
- * @author Justubborn
- * @since 2020/11/6
+ * 数据序列化
+ *
+ * @author Kimi Liu
+ * @version 6.1.2
+ * @since JDK 1.8++
  */
 public interface Provider {
 
