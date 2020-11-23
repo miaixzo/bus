@@ -277,7 +277,7 @@ public class ExecCmd {
         if (Symbol.BACKSLASH.equals(File.separator)) {
             rootPath = classPath + path;
             rootPath = rootPath.replaceAll(Symbol.SLASH, "\\\\");
-            if (rootPath.startsWith("\\")) {
+            if (rootPath.startsWith(Symbol.BACKSLASH)) {
                 rootPath = rootPath.substring(1);
             }
         }

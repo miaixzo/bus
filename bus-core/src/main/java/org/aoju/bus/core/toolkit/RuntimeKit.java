@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
@@ -269,6 +270,39 @@ public class RuntimeKit {
      */
     public static void addShutdownHook(Runnable hook) {
         Runtime.getRuntime().addShutdownHook((hook instanceof Thread) ? (Thread) hook : new Thread(hook));
+    }
+
+    /**
+     * 获得当前进程的PID
+     * 当失败时返回-1
+     */
+    public static int getPid() {
+        String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+        String[] split = jvmName.split("@");
+        if (split.length != 2) {
+            return -1;
+        }
+
+        try {
+            return Integer.parseInt(split[0]);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    /**
+     * 返回应用启动到现在的毫秒数
+     */
+    public static long getUpTime() {
+        return ManagementFactory.getRuntimeMXBean().getUptime();
+    }
+
+    /**
+     * 返回输入的JVM参数列表
+     */
+    public static String getVmArguments() {
+        List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        return CollKit.join(vmArguments, Symbol.SPACE);
     }
 
     /**

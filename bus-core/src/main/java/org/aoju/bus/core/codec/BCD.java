@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.codec;
 
+import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 
 /**
@@ -51,12 +52,11 @@ public class BCD {
             asc = Symbol.ZERO + asc;
             len = asc.length();
         }
-        byte abt[] = new byte[len];
         if (len >= 2) {
             len >>= 1;
         }
         byte bbt[] = new byte[len];
-        abt = asc.getBytes();
+        byte abt[] = asc.getBytes();
         int j;
         int k;
         for (int p = 0; p < asc.length() / 2; p++) {
@@ -99,6 +99,7 @@ public class BCD {
      * @return BCD
      */
     public static byte[] ascToBcd(byte[] ascii, int ascLength) {
+        Assert.notNull(ascii, "Ascii must be not null!");
         byte[] bcd = new byte[ascLength / 2];
         int j = 0;
         for (int i = 0; i < (ascLength + 1) / 2; i++) {
@@ -115,6 +116,7 @@ public class BCD {
      * @return ASCII字符串
      */
     public static String bcdToStr(byte[] bytes) {
+        Assert.notNull(bytes, "Bcd bytes must be not null!");
         char temp[] = new char[bytes.length * 2], val;
 
         for (int i = 0; i < bytes.length; i++) {
