@@ -115,6 +115,11 @@ public class FastJsonProvider extends AbstractJsonProvider {
     }
 
     @Override
+    public <T> T getValue(String json, String field) {
+        return (T) JSON.parseObject(json).get(field);
+    }
+
+    @Override
     public boolean isJson(String json) {
         try {
             JSON.parseObject(json);
