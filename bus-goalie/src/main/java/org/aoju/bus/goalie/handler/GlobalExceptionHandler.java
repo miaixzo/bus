@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.handler;
 
-import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.RuntimeKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.logger.Logger;
@@ -53,7 +53,6 @@ import java.util.Map;
  * @since 2020/10/27
  */
 public class GlobalExceptionHandler extends Controller implements ErrorWebExceptionHandler {
-
 
     @NonNull
     @Override
@@ -81,7 +80,7 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         } else {
             message = Controller.write(ErrorCode.EM_100513);
         }
-        DataBuffer db = response.bufferFactory().wrap(JSON.toJSONString(message).getBytes());
+        DataBuffer db = response.bufferFactory().wrap(JsonKit.toJsonString(message).getBytes());
         return response.writeWith(Mono.just(db));
     }
 
