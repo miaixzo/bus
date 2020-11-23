@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
  * @version 6.1.2
  * @since JDK 1.8++
  */
-public class CustomRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
+public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 
     /**
      * 重写此处，保证读取我们的注解apiversion
@@ -82,10 +82,10 @@ public class CustomRequestMappingHandlerMapping extends RequestMappingHandlerMap
             return null;
         }
         if (clientVersion.value() != null && clientVersion.value().length > 0) {
-            return new VersionRequestCondition(clientVersion.value());
+            return new ApiVersionRequestCondition(clientVersion.value());
         }
         if (clientVersion.expression() != null && clientVersion.expression().length > 0) {
-            return new VersionRequestCondition(clientVersion.expression());
+            return new ApiVersionRequestCondition(clientVersion.expression());
         }
         return null;
     }

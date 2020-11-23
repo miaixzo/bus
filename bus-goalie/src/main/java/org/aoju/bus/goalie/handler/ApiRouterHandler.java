@@ -23,11 +23,13 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.goalie.reactor;
+package org.aoju.bus.goalie.handler;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.BusinessException;
+import org.aoju.bus.goalie.Assets;
+import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -51,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Justubborn
  * @since 2020/10/27
  */
-public class RouterHandler {
+public class ApiRouterHandler {
 
     private final Map<String, WebClient> clients = new ConcurrentHashMap<>();
 
@@ -59,27 +61,27 @@ public class RouterHandler {
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
 
-        ExchangeContext context = ExchangeContext.get(request);
+        Context context = Context.get(request);
 
-        Asset asset = context.getAsset();
+        Assets assets = context.getAssets();
 
         Map<String, String> params = context.getRequestMap();
 
-        String baseUrl = asset.getHost() + Symbol.C_COLON + asset.getPort();
+        String baseUrl = assets.getHost() + Symbol.C_COLON + assets.getPort();
 
         WebClient webClient = clients.computeIfAbsent(baseUrl, client -> WebClient.create(baseUrl));
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(asset.getUrl());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl).path(assets.getUrl());
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.setAll(params);
-        if (HttpMethod.GET.equals(asset.getHttpMethod())) {
+        if (HttpMethod.GET.equals(assets.getHttpMethod())) {
 
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-                .method(asset.getHttpMethod())
+                .method(assets.getHttpMethod())
                 .uri(builder.build().toUri())
                 .headers((headers) -> request.headers());
-        if (!HttpMethod.GET.equals(asset.getHttpMethod())) {
+        if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             bodySpec.bodyValue(multiValueMap);
         }
         return bodySpec

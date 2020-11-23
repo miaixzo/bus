@@ -28,9 +28,9 @@ package org.aoju.bus.starter.goalie.filter;
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.goalie.reactor.Constant;
-import org.aoju.bus.goalie.reactor.ExchangeContext;
-import org.aoju.bus.starter.goalie.ReactorConfiguration;
+import org.aoju.bus.goalie.Consts;
+import org.aoju.bus.goalie.Context;
+import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -48,20 +48,20 @@ import java.util.Map;
  * @since 2020/11/6
  */
 @Component
-@ConditionalOnBean(ReactorConfiguration.class)
+@ConditionalOnBean(GoalieConfiguration.class)
 @Order(FilterOrders.PARAMETER_CHECK)
 public class ParameterCheckFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        ExchangeContext context = ExchangeContext.get(exchange);
+        Context context = Context.get(exchange);
         Map<String, String> params = context.getRequestMap();
 
-        if (StringKit.isBlank(params.get(Constant.METHOD))) {
+        if (StringKit.isBlank(params.get(Consts.METHOD))) {
             throw new BusinessException(ErrorCode.EM_100108);
         }
-        if (StringKit.isBlank(params.get(Constant.VERSION))) {
+        if (StringKit.isBlank(params.get(Consts.VERSION))) {
             throw new BusinessException(ErrorCode.EM_100107);
         }
         return chain.filter(exchange);

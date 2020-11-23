@@ -30,8 +30,8 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
         }
 
         @Override
-        public void onResponse(NewCall call, Response response) throws IOException {
-            Logger.info("onResponse: " + response.body().string());
+        public void onResponse(NewCall call, Response delegate) throws IOException {
+            Logger.info("onResponse: " + delegate.body().string());
         }
     });
 ```
@@ -50,8 +50,8 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
         @Override
         public void run() {
             try {
-                Response response = call.execute();
-                Logger.info("run: " + response.body().string());
+                Response delegate = call.execute();
+                Logger.info("run: " + delegate.body().string());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -77,13 +77,13 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
        }
     
        @Override
-       public void onResponse(NewCall call, Response response) throws IOException {
-           Logger.info(response.protocol() + " " + response.code() + " " + response.message());
-           Headers headers = response.headers();
+       public void onResponse(NewCall call, Response delegate) throws IOException {
+           Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+           Headers headers = delegate.headers();
            for (int i = 0; i < headers.size(); i++) {
                Logger.info(headers.name(i) + ":" + headers.value(i));
            }
-           Logger.info("onResponse: " + response.body().string());
+           Logger.info("onResponse: " + delegate.body().string());
        }
     });
 ``` 
@@ -140,13 +140,13 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
         }
     
         @Override
-        public void onResponse(NewCall call, Response response) throws IOException {
-            Logger.info(response.protocol() + " " + response.code() + " " + response.message());
-            Headers headers = response.headers();
+        public void onResponse(NewCall call, Response delegate) throws IOException {
+            Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+            Headers headers = delegate.headers();
             for (int i = 0; i < headers.size(); i++) {
                 Logger.info(headers.name(i) + ":" + headers.value(i));
             }
-            Logger.info("onResponse: " + response.body().string());
+            Logger.info("onResponse: " + delegate.body().string());
         }
     });
 ```
@@ -167,13 +167,13 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
        }
     
        @Override
-       public void onResponse(NewCall call, Response response) throws IOException {
-           Logger.info(response.protocol() + " " + response.code() + " " + response.message());
-           Headers headers = response.headers();
+       public void onResponse(NewCall call, Response delegate) throws IOException {
+           Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+           Headers headers = delegate.headers();
            for (int i = 0; i < headers.size(); i++) {
                Logger.info(headers.name(i) + ":" + headers.value(i));
            }
-           Logger.info("onResponse: " + response.body().string());
+           Logger.info("onResponse: " + delegate.body().string());
        }
     });
 ```
@@ -197,13 +197,13 @@ HTTP是现代应用常用的一种交换数据和媒体的网络方式，高效�
         }
     
         @Override
-        public void onResponse(NewCall call, Response response) throws IOException {
-            Logger.info(response.protocol() + " " + response.code() + " " + response.message());
-            Headers headers = response.headers();
+        public void onResponse(NewCall call, Response delegate) throws IOException {
+            Logger.info(delegate.protocol() + " " + delegate.code() + " " + delegate.message());
+            Headers headers = delegate.headers();
             for (int i = 0; i < headers.size(); i++) {
                 Logger.info(headers.name(i) + ":" + headers.value(i));
             }
-            Logger.info("onResponse: " + response.body().string());
+            Logger.info("onResponse: " + delegate.body().string());
         }
     });
 ```
@@ -236,8 +236,8 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
         }
     
         @Override
-        public void onResponse(NewCall call, Response response) throws IOException {
-            Logger.info(response.body().string());
+        public void onResponse(NewCall call, Response delegate) throws IOException {
+            Logger.info(delegate.body().string());
     
         }
     
@@ -261,13 +261,13 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
             Logger.info(String.format("Sending request %s on %s%n%s",
                     request.url(), chain.connection(), request.headers()));
 
-            Response response = chain.proceed(request);
+            Response delegate = chain.proceed(request);
 
             long endTime = System.nanoTime();
-            Logger.info(String.format("Received response for %s in %.1fms%n%s",
-                    response.request().url(), (endTime - startTime) / 1e6d, response.headers()));
+            Logger.info(String.format("Received delegate for %s in %.1fms%n%s",
+                    delegate.request().url(), (endTime - startTime) / 1e6d, delegate.headers()));
 
-            return response;
+            return delegate;
         }
     }
 ```
@@ -287,10 +287,10 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
         }
     
         @Override
-        public void onResponse(NewCall call, Response response) throws IOException {
-            ResponseBody body = response.body();
+        public void onResponse(NewCall call, Response delegate) throws IOException {
+            ResponseBody body = delegate.body();
             if (body != null) {
-                Logger.info("onResponse: " + response.body().string());
+                Logger.info("onResponse: " + delegate.body().string());
                 body.close();
             }
         }
@@ -301,7 +301,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
     Sending request http://www.publicobject.com/helloworld.txt on null
     User-Agent: Httpd Example
             
-    Received response for https://publicobject.com/helloworld.txt in 1265.9ms
+    Received delegate for https://publicobject.com/helloworld.txt in 1265.9ms
     Server: nginx/1.10.0 (Ubuntu)
     Date: Wed, 28 Mar 2018 08:19:48 GMT
     Content-Type: text/plain
@@ -321,7 +321,7 @@ MultipartBody 可以构建复杂的请求体，与HTML文件上传形式兼容�
     Httpd client = Httpd.newBuilder()
             .readTimeout(500, TimeUnit.MILLISECONDS)
             .build();
-    Response response = client.newCall(request).execute();
+    Response delegate = client.newCall(request).execute();
 ```
  2. 每一个Call(其实现是RealCall)只能执行一次，否则会报异常，具体参见 RealCall#execute()
   
@@ -735,8 +735,8 @@ call.cancel();  // 取消上传
                 }
     
                 @Override
-                public void onSuccess(NewCall call, String response, int id) {
-                    Logger.info("response:{}", response);
+                public void onSuccess(NewCall call, String delegate, int id) {
+                    Logger.info("delegate:{}", delegate);
                 }
             });
 ```
@@ -797,18 +797,18 @@ call.cancel();  // 取消上传
 ```java
     String url = "https://www.xxx.com";
     byte[] imageContent = FileKit.readBytes("/tmp/test.png");
-    Response response = FastHttpClient.post()
+    Response delegate = FastHttpClient.post()
             .url(url)
             .addFile("file", "b.jpg", imageContent)
             .build()
             .execute();
-    System.out.println(response.body().string());
+    System.out.println(delegate.body().string());
 ```
 
 7.上传文件(通过文件流)
 ```java
     InputStream is = new FileInputStream("/tmp/logo.jpg");
-    HttpResponse response = Httpz.newBuilder()
+    HttpResponse delegate = Httpz.newBuilder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .build()
             .post()
@@ -816,7 +816,7 @@ call.cancel();  // 取消上传
             .addFile("file", "logo.jpg", is)
             .build()
             .execute();
-    Logger.info(response.body().string());
+    Logger.info(delegate.body().string());
 ```
 
 8.设置网络代理
@@ -830,7 +830,7 @@ call.cancel();  // 取消上传
             return authentication;
         }
     });
-    HttpResponse response = Httpz.
+    HttpResponse delegate = Httpz.
             newBuilder().
             proxy(proxy).
             build().
@@ -838,32 +838,32 @@ call.cancel();  // 取消上传
             url("http://ip111.cn/").
             build().
             execute();
-    Logger.info(response.string());
+    Logger.info(delegate.string());
 ```
 
 9.设置Http头部信息
 ```java
     String url="https://www.baidu.com";
-    HttpResponse response=Httpz.
+    HttpResponse delegate=Httpz.
             get().
             addHeader("Referer","http://news.baidu.com/").
             addHeader("cookie", "uin=test;skey=111111;").
             url(url).
             build().
             execute();
-    System.out.println(response.string());
+    System.out.println(delegate.string());
 ```
 
 9.设置https证书
 ```java
     SSLContext sslContext = getxxx();
-    Response response = Httpz
+    Response delegate = Httpz
             .get()
             .sslContext(sslContext)
             .url(url)
             .build()
             .execute();
-    System.out.println(response.toString());
+    System.out.println(delegate.toString());
 ```
 
 10.自动携带Cookie进行请求
@@ -907,7 +907,7 @@ call.cancel();  // 取消上传
 11.设置Content-Type为application/json
 ```java
     String url="https://wx.qq.com";
-    HttpResponse response=Httpz.post().
+    HttpResponse delegate=Httpz.post().
             addHeader("Content-Type","application/json").
             body("{\"username\":\"test\",\"password\":\"111111\"}").
             url(url).
@@ -921,7 +921,7 @@ call.cancel();  // 取消上传
     RequestCall call = Httpz.get().
             url("https://www.baidu.com").
             build();
-    HttpResponse response = call.execute();
+    HttpResponse delegate = call.execute();
     call.cancel();
-    System.out.println(response.string());
+    System.out.println(delegate.string());
 ```

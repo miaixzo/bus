@@ -23,53 +23,62 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.goalie.reactor;
+package org.aoju.bus.goalie;
 
-import org.aoju.bus.core.collection.ConcurrentHashSet;
-import org.aoju.bus.core.toolkit.CollKit;
-import org.aoju.bus.logger.Logger;
-import reactor.netty.DisposableServer;
-import reactor.netty.http.server.HttpServer;
-
-import java.util.List;
-import java.util.Set;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 
 /**
- * 服务端
+ * 拦截器，原理同spring拦截器
  *
- * @author Justubborn
- * @since 2020/10/27
+ * @author Kimi Liu
+ * @version 6.1.2
+ * @since JDK 1.8++
  */
-public class Athlete {
+public interface Handler {
 
-    private final HttpServer httpServer;
-    private final Set<Asset> assets = new ConcurrentHashSet<>();
-    private final List<AssetRegistry> assetRegistries;
-    private DisposableServer disposableServer;
-
-
-    public Athlete(HttpServer httpServer, List<AssetRegistry> assetRegistries) {
-        this.httpServer = httpServer;
-        this.assetRegistries = assetRegistries;
+    /**
+     * 预处理回调方法，在方法调用前执行。返回false不继续向下执行，此时可使用response返回错误信息
+     *
+     * @param request  网络请求
+     * @param response 响应信息
+     * @param service  service类
+     * @param args     方法参数
+     * @return 返回false不继续向下执行，此时可使用response返回错误信息
+     */
+    default boolean preHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args) {
+        return true;
     }
 
-    public Set<Asset> getAssets() {
-        return assets;
+    /**
+     * 接口方法执行完后调用此方法。
+     *
+     * @param request  网络请求
+     * @param response 响应信息
+     * @param service  service类
+     * @param args     参数
+     * @param result   返回结果
+     * @throws Exception 异常
+     */
+    default void postHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
+                            Object result) {
+
     }
 
-    private void init() {
-        if (CollKit.isNotEmpty(assetRegistries)) {
-            assetRegistries.forEach(assetRegistry -> {
-                assets.addAll(assetRegistry.init());
-            });
-        }
-        disposableServer = httpServer.bindNow();
-        Logger.info("reactor server start on port:{} success", disposableServer.port());
-    }
+    /**
+     * 结果包装完成后执行
+     *
+     * @param request   网络请求
+     * @param response  响应信息
+     * @param service   service类
+     * @param args      参数
+     * @param result    最终结果，被包装过
+     * @param exception 业务异常
+     * @throws Exception 异常
+     */
+    default void afterCompletion(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
+                                 Object result, Exception exception) {
 
-    private void destroy() {
-        disposableServer.disposeNow();
-        Logger.info("reactor server stop on port:{} success", disposableServer.port());
     }
 
 }

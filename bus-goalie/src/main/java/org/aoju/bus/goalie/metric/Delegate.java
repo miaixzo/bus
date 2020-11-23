@@ -23,22 +23,25 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.goalie.reactor.login;
+package org.aoju.bus.goalie.metric;
+
+import lombok.Data;
+import org.aoju.bus.base.consts.Consts;
+import org.aoju.bus.base.entity.Message;
+import org.aoju.bus.base.entity.OAuth2;
 
 /**
  * @author Justubborn
  * @since 2020/11/6
  */
-public interface AuthProvider {
+@Data
+public class Delegate {
 
-    /**
-     * 认证接口
-     *
-     * @param token 授权令牌
-     * @return OAuth2
-     */
-    default LoginResponse authorize(String token) {
-        return new LoginResponse();
+    private Message message;
+    private OAuth2 oAuth2;
+
+    public boolean isOk() {
+        return Consts.STATUS_ZERO.equals(message.getErrcode());
     }
 
 }

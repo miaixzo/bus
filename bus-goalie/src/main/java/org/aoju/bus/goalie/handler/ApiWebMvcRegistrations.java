@@ -23,20 +23,35 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.goalie.reactor;
+package org.aoju.bus.goalie.handler;
+
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
- * 常量
+ * spring boot专用，避免继承webconfigurationsupport对spring的自动配置侵入和破坏
  *
- * @author Justubborn
- * @since 2020/11/6
+ * @author Kimi Liu
+ * @version 6.1.2
+ * @since JDK 1.8++
  */
-public interface Constant {
+public class ApiWebMvcRegistrations implements WebMvcRegistrations {
 
-    String METHOD = "method";
+    @Override
+    public RequestMappingHandlerMapping getRequestMappingHandlerMapping() {
+        return new ApiRequestMappingHandlerMapping();
+    }
 
-    String VERSION = "v";
+    @Override
+    public RequestMappingHandlerAdapter getRequestMappingHandlerAdapter() {
+        return null;
+    }
 
-    String X_ACCESS_TOKEN = "X-Access-Token";
+    @Override
+    public ExceptionHandlerExceptionResolver getExceptionHandlerExceptionResolver() {
+        return null;
+    }
 
 }

@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.starter.goalie.filter;
 
-import org.aoju.bus.goalie.reactor.ExchangeContext;
-import org.aoju.bus.starter.goalie.ReactorConfiguration;
+import org.aoju.bus.goalie.Context;
+import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -47,7 +47,7 @@ import java.util.Objects;
  * @since 2020/10/29
  */
 @Component
-@ConditionalOnBean(ReactorConfiguration.class)
+@ConditionalOnBean(GoalieConfiguration.class)
 @Order(FilterOrders.FIRST)
 public class FirstFilter implements WebFilter {
 
@@ -56,11 +56,11 @@ public class FirstFilter implements WebFilter {
         ServerHttpRequest request = exchange.getRequest();
         if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
             MultiValueMap<String, String> params = request.getQueryParams();
-            ExchangeContext.get(exchange).setRequestMap(params.toSingleValueMap());
+            Context.get(exchange).setRequestMap(params.toSingleValueMap());
             return chain.filter(exchange);
         } else {
             return exchange.getFormData().flatMap(params -> {
-                ExchangeContext.get(exchange).setRequestMap(params.toSingleValueMap());
+                Context.get(exchange).setRequestMap(params.toSingleValueMap());
                 return chain.filter(exchange);
             });
         }

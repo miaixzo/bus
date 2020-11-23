@@ -23,25 +23,20 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.goalie.reactor.login;
-
-import lombok.Data;
-import org.aoju.bus.base.consts.Consts;
-import org.aoju.bus.base.entity.Message;
-import org.aoju.bus.base.entity.OAuth2;
+package org.aoju.bus.goalie;
 
 /**
  * @author Justubborn
  * @since 2020/11/6
  */
-@Data
-public class LoginResponse {
+public interface Provider {
 
-    private Message message;
-    private OAuth2 oAuth2;
-
-    public boolean isOk() {
-        return Consts.STATUS_ZERO.equals(message.getErrcode());
-    }
+    /**
+     * 序列化
+     *
+     * @param obj 对象
+     * @return 返回序列化后的结果
+     */
+    String serialize(Object obj);
 
 }

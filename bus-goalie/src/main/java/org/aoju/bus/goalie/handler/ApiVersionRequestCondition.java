@@ -42,20 +42,20 @@ import java.util.regex.Pattern;
  * @version 6.1.2
  * @since JDK 1.8++
  */
-public class VersionRequestCondition extends AbstractRequestCondition<VersionRequestCondition> {
+public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVersionRequestCondition> {
 
     private final Set<TerminalVersionExpression> expressions;
 
-    protected VersionRequestCondition(Set<TerminalVersionExpression> expressions) {
+    protected ApiVersionRequestCondition(Set<TerminalVersionExpression> expressions) {
         this.expressions = expressions;
     }
 
-    public VersionRequestCondition(String[] stringExpressions) {
+    public ApiVersionRequestCondition(String[] stringExpressions) {
         // 待实现，适配string，可以使用正则快速匹配
         expressions = Collections.unmodifiableSet(parseByExpression(stringExpressions));
     }
 
-    public VersionRequestCondition(TerminalVersion[] terminalVersions) {
+    public ApiVersionRequestCondition(TerminalVersion[] terminalVersions) {
         expressions = Collections.unmodifiableSet(parseByTerminalVersion(terminalVersions));
     }
 
@@ -118,14 +118,14 @@ public class VersionRequestCondition extends AbstractRequestCondition<VersionReq
     }
 
     @Override
-    public VersionRequestCondition combine(VersionRequestCondition other) {
+    public ApiVersionRequestCondition combine(ApiVersionRequestCondition other) {
         Set<TerminalVersionExpression> set = new LinkedHashSet<TerminalVersionExpression>(this.expressions);
         set.addAll(other.expressions);
-        return new VersionRequestCondition(set);
+        return new ApiVersionRequestCondition(set);
     }
 
     @Override
-    public VersionRequestCondition getMatchingCondition(HttpServletRequest request) {
+    public ApiVersionRequestCondition getMatchingCondition(HttpServletRequest request) {
         for (TerminalVersionExpression expression : expressions) {
             if (!expression.match(request)) {//同param condition,任意一个失败则失败
                 return null;
@@ -135,7 +135,7 @@ public class VersionRequestCondition extends AbstractRequestCondition<VersionReq
     }
 
     @Override
-    public int compareTo(VersionRequestCondition other, HttpServletRequest request) {
+    public int compareTo(ApiVersionRequestCondition other, HttpServletRequest request) {
         return 0;
     }
 

@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.goalie.reactor;
+package org.aoju.bus.goalie.handler;
 
 import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.consts.ErrorCode;
@@ -31,6 +31,8 @@ import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.RuntimeKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.goalie.Consts;
+import org.aoju.bus.goalie.Context;
 import org.aoju.bus.logger.Logger;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -60,10 +62,10 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.BAD_REQUEST);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        Map<String, String> map = ExchangeContext.get(exchange).getRequestMap();
+        Map<String, String> map = Context.get(exchange).getRequestMap();
         String method = null;
         if (null != map) {
-            method = map.get(Constant.METHOD);
+            method = map.get(Consts.METHOD);
         }
         Logger.error("request: {},error:{}", method, RuntimeKit.getMessage(ex));
         Object message;

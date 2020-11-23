@@ -42,6 +42,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @ConfigurationProperties(BusXExtend.GOALIE)
 public class GoalieProperties {
 
+    private boolean condition;
     private Server server;
 
     @EnableConfigurationProperties({Server.Encrypt.class, Server.Decrypt.class})

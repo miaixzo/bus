@@ -29,9 +29,9 @@ import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.goalie.reactor.ExchangeContext;
+import org.aoju.bus.goalie.Context;
+import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.aoju.bus.starter.goalie.GoalieProperties;
-import org.aoju.bus.starter.goalie.ReactorConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.annotation.Order;
@@ -51,7 +51,7 @@ import reactor.core.publisher.Mono;
  * @since 2020/10/29
  */
 @Component
-@ConditionalOnBean(ReactorConfiguration.class)
+@ConditionalOnBean(GoalieConfiguration.class)
 @Order(FilterOrders.ENCRYPT)
 public class EncryptFilter implements WebFilter {
 
@@ -65,8 +65,8 @@ public class EncryptFilter implements WebFilter {
         Mono<Void> mono = chain.filter(exchange);
         if (encrypt.isEnabled()) {
             return mono.then(Mono.defer(() -> {
-                boolean isSign = ExchangeContext.get(exchange).getAsset().isSign();
-                Flux<DataBuffer> body = ExchangeContext.get(exchange).getBody();
+                boolean isSign = Context.get(exchange).getAssets().isSign();
+                Flux<DataBuffer> body = Context.get(exchange).getBody();
                 return Mono.from(body).flatMap(dataBuffer -> {
                     if (isSign && dataBuffer instanceof Message) {
                         Message message = (Message) dataBuffer;

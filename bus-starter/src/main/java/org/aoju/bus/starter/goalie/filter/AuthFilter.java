@@ -29,12 +29,12 @@ import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.OAuth2;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.BeanKit;
-import org.aoju.bus.goalie.reactor.Asset;
-import org.aoju.bus.goalie.reactor.Constant;
-import org.aoju.bus.goalie.reactor.ExchangeContext;
-import org.aoju.bus.goalie.reactor.login.AuthProvider;
-import org.aoju.bus.goalie.reactor.login.LoginResponse;
-import org.aoju.bus.starter.goalie.ReactorConfiguration;
+import org.aoju.bus.goalie.Assets;
+import org.aoju.bus.goalie.Consts;
+import org.aoju.bus.goalie.Context;
+import org.aoju.bus.goalie.metric.Authorize;
+import org.aoju.bus.goalie.metric.Delegate;
+import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.annotation.Order;
@@ -53,27 +53,27 @@ import java.util.Map;
  * @since 2020/11/6
  */
 @Component
-@ConditionalOnBean(ReactorConfiguration.class)
+@ConditionalOnBean(GoalieConfiguration.class)
 @Order(FilterOrders.AUTH)
 public class AuthFilter implements WebFilter {
 
     @Autowired
-    AuthProvider provider;
+    Authorize authorize;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ExchangeContext context = ExchangeContext.get(exchange);
-        Asset asset = context.getAsset();
+        Context context = Context.get(exchange);
+        Assets assets = context.getAssets();
         Map<String, String> requestMap = context.getRequestMap();
-        if (asset.isToken()) {
-            String token = exchange.getRequest().getHeaders().getFirst(Constant.X_ACCESS_TOKEN);
-            LoginResponse response = provider.authorize(token);
-            if (response.isOk()) {
-                OAuth2 auth2 = response.getOAuth2();
+        if (assets.isToken()) {
+            String token = exchange.getRequest().getHeaders().getFirst(Consts.X_ACCESS_TOKEN);
+            Delegate delegate = authorize.authorize(token);
+            if (delegate.isOk()) {
+                OAuth2 auth2 = delegate.getOAuth2();
                 Map<String, Object> map = BeanKit.beanToMap(auth2, false, true);
                 map.forEach((k, v) -> requestMap.put(k, v.toString()));
             } else {
-                throw new BusinessException(ErrorCode.EM_FAILURE, response.getMessage().errmsg);
+                throw new BusinessException(ErrorCode.EM_FAILURE, delegate.getMessage().errmsg);
             }
 
 

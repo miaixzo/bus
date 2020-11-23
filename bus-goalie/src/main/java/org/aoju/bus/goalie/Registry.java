@@ -23,46 +23,18 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.goalie.reactor;
+package org.aoju.bus.goalie;
 
-import lombok.Data;
-import org.springframework.http.HttpMethod;
-
-import java.util.Objects;
+import java.util.Set;
 
 /**
- * api definition
+ * api registry
  *
  * @author Justubborn
  * @since 2020/10/27
  */
-@Data
-public class Asset {
+public interface Registry {
 
-    private String id;
-    private String name;
-    private String host;
-    private int port;
-    private String url;
-    private String method;
-    private HttpMethod httpMethod;
-    private boolean token;
-    private boolean sign;
-    private boolean firewall;
-    private String version;
-    private String description;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Asset asset = (Asset) o;
-        return id.equals(asset.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    Set<Assets> init();
 
 }
