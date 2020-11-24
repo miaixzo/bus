@@ -34,7 +34,7 @@ import java.nio.ByteBuffer;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public class FixedLengthDecoder implements SmartDecoder {
+public class FixedLengthDecoder implements SocketDecoder {
 
     private final ByteBuffer buffer;
     private boolean finishRead;

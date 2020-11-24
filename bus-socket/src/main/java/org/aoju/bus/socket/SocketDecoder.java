@@ -32,7 +32,7 @@ import java.nio.ByteBuffer;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public interface SmartDecoder {
+public interface SocketDecoder {
 
     /**
      * 解码算法

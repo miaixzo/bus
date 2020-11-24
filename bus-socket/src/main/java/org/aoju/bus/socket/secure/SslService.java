@@ -48,12 +48,8 @@ import java.security.cert.X509Certificate;
  */
 public final class SslService {
 
-    private SSLContext sslContext;
-
     private final boolean isClient;
-
     private final ClientAuth clientAuth;
-
     private final CompletionHandler<Integer, HandshakeModel> handshakeCompletionHandler = new CompletionHandler<Integer, HandshakeModel>() {
         @Override
         public void completed(Integer result, HandshakeModel attachment) {
@@ -71,6 +67,7 @@ public final class SslService {
             attachment.getHandshakeCallback().callback();
         }
     };
+    private SSLContext sslContext;
 
     public SslService(boolean isClient, ClientAuth clientAuth) {
         this.isClient = isClient;

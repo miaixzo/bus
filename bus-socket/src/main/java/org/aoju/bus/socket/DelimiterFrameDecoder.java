@@ -36,8 +36,12 @@ import java.util.List;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public class DelimiterFrameDecoder implements SmartDecoder {
+public class DelimiterFrameDecoder implements SocketDecoder {
 
+    /**
+     * 存储已解析的数据
+     */
+    private final List<ByteBuffer> bufferList;
     /**
      * 消息结束标志
      */
@@ -46,10 +50,6 @@ public class DelimiterFrameDecoder implements SmartDecoder {
      * 期望本次校验的结束标索引位置
      */
     private int exceptIndex;
-    /**
-     * 存储已解析的数据
-     */
-    private final List<ByteBuffer> bufferList;
     /**
      * 是否解析完成
      */
