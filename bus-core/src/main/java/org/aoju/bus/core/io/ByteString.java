@@ -52,12 +52,16 @@ import java.util.Arrays;
 public class ByteString implements Serializable, Comparable<ByteString> {
 
     public static final ByteString EMPTY = ByteString.of();
-    final byte[] data;
     public transient int hashCode;
-    transient String utf8;
+
+    private byte[] data;
+    private transient String utf8;
 
     public ByteString(byte[] data) {
         this.data = data;
+    }
+
+    public ByteString() {
     }
 
     public static ByteString of(byte... data) {

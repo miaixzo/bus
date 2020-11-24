@@ -39,13 +39,16 @@ public final class VirtualBuffer {
     /**
      * 当前虚拟buffer的归属内存页
      */
-    private final PageBuffer pageBuffer;
+    private final PageBuffer bufferPage;
     /**
      * 通过ByteBuffer.slice()隐射出来的虚拟ByteBuffer
      *
      * @see ByteBuffer#slice()
      */
     private ByteBuffer buffer;
+    /**
+     * 是否已回收
+     */
     private boolean clean = false;
     /**
      * 当前虚拟buffer映射的实际buffer.position
@@ -57,8 +60,8 @@ public final class VirtualBuffer {
      */
     private int parentLimit;
 
-    VirtualBuffer(PageBuffer pageBuffer, ByteBuffer buffer, int parentPosition, int parentLimit) {
-        this.pageBuffer = pageBuffer;
+    VirtualBuffer(PageBuffer bufferPage, ByteBuffer buffer, int parentPosition, int parentLimit) {
+        this.bufferPage = bufferPage;
         this.buffer = buffer;
         this.parentPosition = parentPosition;
         this.parentLimit = parentLimit;
@@ -80,24 +83,41 @@ public final class VirtualBuffer {
         this.parentLimit = parentLimit;
     }
 
+    /**
+     * 获取真实缓冲区
+     *
+     * @return 真实缓冲区
+     */
     public ByteBuffer buffer() {
         return buffer;
     }
 
+    /**
+     * 设置真实缓冲区
+     *
+     * @param buffer 真实缓冲区
+     */
     void buffer(ByteBuffer buffer) {
         this.buffer = buffer;
         clean = false;
     }
 
+    /**
+     * 释放虚拟缓冲区
+     */
     public void clean() {
         if (clean) {
-            System.err.println("buffer has cleaned");
-            throw new RuntimeException();
+            throw new UnsupportedOperationException("buffer has cleaned");
         }
         clean = true;
-        if (pageBuffer != null) {
-            pageBuffer.clean(this);
+        if (bufferPage != null) {
+            bufferPage.clean(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "VirtualBuffer{parentPosition=" + parentPosition + ", parentLimit=" + parentLimit + '}';
     }
 
 }

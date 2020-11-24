@@ -275,6 +275,8 @@ public class RuntimeKit {
     /**
      * 获得当前进程的PID
      * 当失败时返回-1
+     *
+     * @return the int
      */
     public static int getPid() {
         String jvmName = ManagementFactory.getRuntimeMXBean().getName();
@@ -292,6 +294,8 @@ public class RuntimeKit {
 
     /**
      * 返回应用启动到现在的毫秒数
+     *
+     * @return the long
      */
     public static long getUpTime() {
         return ManagementFactory.getRuntimeMXBean().getUptime();
@@ -299,6 +303,7 @@ public class RuntimeKit {
 
     /**
      * 返回输入的JVM参数列表
+     * @return the string
      */
     public static String getVmArguments() {
         List<String> vmArguments = ManagementFactory.getRuntimeMXBean().getInputArguments();
