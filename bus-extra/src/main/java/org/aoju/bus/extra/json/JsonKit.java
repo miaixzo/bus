@@ -147,6 +147,18 @@ public class JsonKit {
     }
 
     /**
+     * 获取json字符串指定属性值
+     *
+     * @param json  要解析的json字符串
+     * @param field 属性名称
+     * @param <T>   泛型参数类型
+     * @return 返回解析后的属性值
+     */
+    public static <T> T getValue(String json, String field) {
+        return getProvider().getValue(json, field);
+    }
+
+    /**
      * 判断是否为标准json
      *
      * @param json 字符串
