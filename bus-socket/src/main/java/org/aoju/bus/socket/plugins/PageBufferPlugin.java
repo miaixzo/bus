@@ -28,7 +28,7 @@ package org.aoju.bus.socket.plugins;
 import org.aoju.bus.core.io.ByteBuffer;
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.AioQuickServer;
+import org.aoju.bus.socket.QuickAioServer;
 import org.aoju.bus.socket.QuickTimer;
 
 import java.lang.reflect.Field;
@@ -44,14 +44,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class PageBufferPlugin<T> extends AbstractPlugin {
 
-    private final AioQuickServer<T> server;
+    private final QuickAioServer<T> server;
     /**
      * 任务执行频率
      */
     private int seconds = 0;
     private ScheduledFuture<?> future;
 
-    public PageBufferPlugin(AioQuickServer<T> server, int seconds) {
+    public PageBufferPlugin(QuickAioServer<T> server, int seconds) {
         this.seconds = seconds;
         this.server = server;
         init();
@@ -67,7 +67,7 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
                     return;
                 }
                 try {
-                    Field bufferPoolField = AioQuickServer.class.getDeclaredField("bufferPool");
+                    Field bufferPoolField = QuickAioServer.class.getDeclaredField("bufferPool");
                     bufferPoolField.setAccessible(true);
                     ByteBuffer pagePool = (ByteBuffer) bufferPoolField.get(server);
                     if (pagePool == null) {

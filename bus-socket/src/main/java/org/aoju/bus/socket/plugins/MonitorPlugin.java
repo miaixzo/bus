@@ -28,7 +28,7 @@ package org.aoju.bus.socket.plugins;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.AioSession;
 import org.aoju.bus.socket.QuickTimer;
-import org.aoju.bus.socket.StateMachine;
+import org.aoju.bus.socket.SocketStatus;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
@@ -98,8 +98,8 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     }
 
     @Override
-    public void stateEvent(StateMachine stateMachine, AioSession session, Throwable throwable) {
-        switch (stateMachine) {
+    public void stateEvent(SocketStatus socketStatus, AioSession session, Throwable throwable) {
+        switch (socketStatus) {
             case PROCESS_EXCEPTION:
                 processFailNum.increment();
                 break;
@@ -110,7 +110,6 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
                 disConnect.increment();
                 break;
             default:
-                //ignore other state
                 break;
         }
     }

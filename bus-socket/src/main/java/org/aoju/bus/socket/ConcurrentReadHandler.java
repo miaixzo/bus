@@ -51,7 +51,6 @@ final class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
         this.semaphore = semaphore;
     }
 
-
     @Override
     public void completed(final Integer result, final TcpAioSession<T> aioSession) {
         if (threadLocal.get() != null) {
@@ -81,4 +80,5 @@ final class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
     public void shutdown() {
         executorService.shutdown();
     }
+
 }

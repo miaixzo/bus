@@ -65,7 +65,7 @@ public class UdpBootstrap<R> {
     /**
      * 服务配置
      */
-    private final IoServerConfig<R> config = new IoServerConfig<>();
+    private final ServerConfig<R> config = new ServerConfig<>();
     /**
      * 服务状态
      */
@@ -167,9 +167,9 @@ public class UdpBootstrap<R> {
             workerGroup[i] = new UdpDispatcher<>(config.getProcessor());
             new Thread(workerGroup[i], "UDP-Worker-" + i).start();
         }
-        //启动Boss线程组
+        // 启动Boss线程组
         new Thread(() -> {
-            //读缓冲区
+            // 读缓冲区
             VirtualBuffer readBuffer = bufferPage.allocate(config.getReadBufferSize());
             try {
                 while (true) {
@@ -198,7 +198,7 @@ public class UdpBootstrap<R> {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                //读缓冲区内存回收
+                // 读缓冲区内存回收
                 readBuffer.clean();
             }
         }, "UDP-Boss-" + uid).start();
@@ -235,13 +235,13 @@ public class UdpBootstrap<R> {
             try {
                 request = config.getProtocol().decode(buffer, aioSession);
             } catch (Exception e) {
-                config.getProcessor().stateEvent(aioSession, StateMachine.DECODE_EXCEPTION, e);
+                config.getProcessor().stateEvent(aioSession, SocketStatus.DECODE_EXCEPTION, e);
                 aioSession.close();
                 throw e;
             }
             // 理论上每个UDP包都是一个完整的消息
             if (request == null) {
-                config.getProcessor().stateEvent(aioSession, StateMachine.DECODE_EXCEPTION, new InstrumentException("decode result is null"));
+                config.getProcessor().stateEvent(aioSession, SocketStatus.DECODE_EXCEPTION, new InstrumentException("decode result is null"));
                 return;
             }
 

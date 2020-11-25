@@ -50,7 +50,7 @@ class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpAioSessi
             if (monitor != null) {
                 monitor.afterRead(aioSession, result);
             }
-            //触发读回调
+            // 触发读回调
             aioSession.readCompleted(result == -1);
         } catch (Exception e) {
             failed(e, aioSession);
@@ -60,13 +60,12 @@ class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpAioSessi
     @Override
     public final void failed(Throwable exc, TcpAioSession<T> aioSession) {
         try {
-            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, StateMachine.INPUT_EXCEPTION, exc);
+            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.INPUT_EXCEPTION, exc);
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            //兼容性处理，windows要强制关闭,其他系统优雅关闭
-            //aioSession.close(IOUtil.OS_WINDOWS);
+            // 兼容性处理，windows要强制关闭,其他系统优雅关闭
             aioSession.close(false);
         } catch (Exception e) {
             e.printStackTrace();

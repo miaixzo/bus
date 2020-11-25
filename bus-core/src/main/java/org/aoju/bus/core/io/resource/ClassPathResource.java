@@ -41,9 +41,9 @@ import org.aoju.bus.core.toolkit.*;
  */
 public class ClassPathResource extends UriResource {
 
-    private String path;
-    private ClassLoader classLoader;
-    private Class<?> clazz;
+    private final String path;
+    private final ClassLoader classLoader;
+    private final Class<?> clazz;
 
     /**
      * 构造

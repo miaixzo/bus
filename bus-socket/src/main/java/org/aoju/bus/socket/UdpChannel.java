@@ -27,6 +27,7 @@ package org.aoju.bus.socket;
 
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
+import org.aoju.bus.core.io.WriteBuffer;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -61,7 +62,7 @@ public final class UdpChannel<Request> {
      */
     private final ConcurrentLinkedQueue<ResponseTask> responseTasks;
     private final Semaphore writeSemaphore = new Semaphore(1);
-    IoServerConfig<Request> config;
+    ServerConfig<Request> config;
     /**
      * 真实的UDP通道
      */
@@ -69,7 +70,7 @@ public final class UdpChannel<Request> {
     private SelectionKey selectionKey;
     private ResponseTask failWriteEvent;
 
-    UdpChannel(final DatagramChannel channel, SelectionKey selectionKey, IoServerConfig<Request> config, PageBuffer bufferPage) {
+    UdpChannel(final DatagramChannel channel, SelectionKey selectionKey, ServerConfig<Request> config, PageBuffer bufferPage) {
         this.channel = channel;
         responseTasks = new ConcurrentLinkedQueue<>();
         this.selectionKey = selectionKey;

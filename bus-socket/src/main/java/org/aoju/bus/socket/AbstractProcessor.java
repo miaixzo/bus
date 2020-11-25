@@ -104,24 +104,24 @@ public abstract class AbstractProcessor<T> implements MessageProcessor<T>, NetMo
 
     /**
      * @param session      本次触发状态机的AioSession对象
-     * @param stateMachine 状态枚举
+     * @param socketStatus 状态枚举
      * @param throwable    异常对象，如果存在的话
      */
     @Override
-    public final void stateEvent(AioSession session, StateMachine stateMachine, Throwable throwable) {
+    public final void stateEvent(AioSession session, SocketStatus socketStatus, Throwable throwable) {
         for (Plugin<T> plugin : plugins) {
-            plugin.stateEvent(stateMachine, session, throwable);
+            plugin.stateEvent(socketStatus, session, throwable);
         }
-        stateEvent0(session, stateMachine, throwable);
+        stateEvent0(session, socketStatus, throwable);
     }
 
     /**
      * @param session      会话
-     * @param stateMachine 状态
+     * @param socketStatus 状态
      * @param throwable    线程
-     * @see #stateEvent(AioSession, StateMachine, Throwable)
+     * @see #stateEvent(AioSession, SocketStatus, Throwable)
      */
-    public abstract void stateEvent0(AioSession session, StateMachine stateMachine, Throwable throwable);
+    public abstract void stateEvent0(AioSession session, SocketStatus socketStatus, Throwable throwable);
 
     public final void addPlugin(Plugin<T> plugin) {
         this.plugins.add(plugin);

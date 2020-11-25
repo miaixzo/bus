@@ -51,13 +51,16 @@ import java.util.function.Function;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public final class AioQuickServer<T> {
+public final class QuickAioServer<T> {
+
+    private static final String BUS_ASYNCHRONOUS_CHANNEL_PROVIDER = "org.aoju.bus.socket.AsynchronousChannelProvider";
+    private static final String AIO_ASYNCHRONOUS_CHANNEL_PROVIDER = "java.nio.channels.spi.AsynchronousChannelProvider";
 
     /**
      * Server端服务配置。
      * 调用AioQuickServer的各setXX()方法，都是为了设置config的各配置项
      */
-    private final IoServerConfig<T> config = new IoServerConfig<>();
+    private final ServerConfig<T> config = new ServerConfig<>();
     /**
      * 内存池
      */
@@ -92,7 +95,7 @@ public final class AioQuickServer<T> {
      * @param protocol         协议编解码
      * @param messageProcessor 消息处理器
      */
-    public AioQuickServer(int port, Protocol<T> protocol, MessageProcessor<T> messageProcessor) {
+    public QuickAioServer(int port, Protocol<T> protocol, MessageProcessor<T> messageProcessor) {
         config.setPort(port);
         config.setProtocol(protocol);
         config.setProcessor(messageProcessor);
@@ -105,7 +108,7 @@ public final class AioQuickServer<T> {
      * @param protocol         协议编解码
      * @param messageProcessor 消息处理器
      */
-    public AioQuickServer(String host, int port, Protocol<T> protocol, MessageProcessor<T> messageProcessor) {
+    public QuickAioServer(String host, int port, Protocol<T> protocol, MessageProcessor<T> messageProcessor) {
         this(port, protocol, messageProcessor);
         config.setHost(host);
     }
@@ -134,7 +137,11 @@ public final class AioQuickServer<T> {
                 this.innerBufferPool = bufferPool;
             }
             this.aioSessionFunction = aioSessionFunction;
-            aioCompletionReadHandler = new ConcurrentReadHandler<>(new Semaphore(config.getThreadNum() - 1));
+            if (BUS_ASYNCHRONOUS_CHANNEL_PROVIDER.equals(System.getProperty(AIO_ASYNCHRONOUS_CHANNEL_PROVIDER))) {
+                aioCompletionReadHandler = new CompletionReadHandler<>();
+            } else {
+                aioCompletionReadHandler = new ConcurrentReadHandler<>(new Semaphore(config.getThreadNum() - 1));
+            }
             asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(config.getThreadNum(), new ThreadFactory() {
                 private byte index = 0;
 
@@ -144,13 +151,13 @@ public final class AioQuickServer<T> {
                 }
             });
             this.serverSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);
-            // set socket options
+            // 设置socket属性
             if (config.getSocketOptions() != null) {
                 for (Map.Entry<SocketOption<Object>, Object> entry : config.getSocketOptions().entrySet()) {
                     this.serverSocketChannel.setOption(entry.getKey(), entry.getValue());
                 }
             }
-            // bind host
+            // 绑定地址
             if (config.getHost() != null) {
                 serverSocketChannel.bind(new InetSocketAddress(config.getHost(), config.getPort()), config.getBacklog());
             } else {
@@ -174,7 +181,7 @@ public final class AioQuickServer<T> {
                 try {
                     serverSocketChannel.accept(attachment, this);
                 } catch (Throwable throwable) {
-                    config.getProcessor().stateEvent(null, StateMachine.ACCEPT_EXCEPTION, throwable);
+                    config.getProcessor().stateEvent(null, SocketStatus.ACCEPT_EXCEPTION, throwable);
                     failed(throwable, attachment);
                     serverSocketChannel.accept(attachment, this);
                 }
@@ -215,7 +222,7 @@ public final class AioQuickServer<T> {
                 session = aioSessionFunction.apply(acceptChannel);
                 session.initSession();
             } else {
-                config.getProcessor().stateEvent(null, StateMachine.REJECT_ACCEPT, null);
+                config.getProcessor().stateEvent(null, SocketStatus.REJECT_ACCEPT, null);
                 IoKit.close(channel);
             }
         } catch (Exception e) {
@@ -265,7 +272,7 @@ public final class AioQuickServer<T> {
      * @param size 单位：byte
      * @return 当前AioQuickServer对象
      */
-    public final AioQuickServer<T> setReadBufferSize(int size) {
+    public final QuickAioServer<T> setReadBufferSize(int size) {
         this.config.setReadBufferSize(size);
         return this;
     }
@@ -281,7 +288,7 @@ public final class AioQuickServer<T> {
      * @param <V>          配置项类型
      * @return 当前AioQuickServer对象
      */
-    public final <V> AioQuickServer<T> setOption(SocketOption<V> socketOption, V value) {
+    public final <V> QuickAioServer<T> setOption(SocketOption<V> socketOption, V value) {
         config.setOption(socketOption, value);
         return this;
     }
@@ -292,7 +299,7 @@ public final class AioQuickServer<T> {
      * @param threadNum 线程数
      * @return 当前AioQuickServer对象
      */
-    public final AioQuickServer<T> setThreadNum(int threadNum) {
+    public final QuickAioServer<T> setThreadNum(int threadNum) {
         if (threadNum <= 1) {
             throw new InvalidParameterException("threadNum must >= 2");
         }
@@ -308,7 +315,7 @@ public final class AioQuickServer<T> {
      * @param bufferCapacity 内存块数量上限
      * @return 当前AioQuickServer对象
      */
-    public final AioQuickServer<T> setWriteBuffer(int bufferSize, int bufferCapacity) {
+    public final QuickAioServer<T> setWriteBuffer(int bufferSize, int bufferCapacity) {
         config.setWriteBufferSize(bufferSize);
         config.setWriteBufferCapacity(bufferCapacity);
         return this;
@@ -320,7 +327,7 @@ public final class AioQuickServer<T> {
      * @param backlog backlog大小
      * @return 当前AioQuickServer对象
      */
-    public final AioQuickServer<T> setBacklog(int backlog) {
+    public final QuickAioServer<T> setBacklog(int backlog) {
         config.setBacklog(backlog);
         return this;
     }
@@ -334,7 +341,7 @@ public final class AioQuickServer<T> {
      * @param bufferPool 内存池对象
      * @return 当前AioQuickServer对象
      */
-    public final AioQuickServer<T> setBufferPagePool(ByteBuffer bufferPool) {
+    public final QuickAioServer<T> setBufferPagePool(ByteBuffer bufferPool) {
         this.bufferPool = bufferPool;
         this.config.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
         return this;
@@ -349,7 +356,7 @@ public final class AioQuickServer<T> {
      * @param bufferFactory 内存池工厂
      * @return 当前AioQuickServer对象
      */
-    public final AioQuickServer<T> setBufferFactory(BufferFactory bufferFactory) {
+    public final QuickAioServer<T> setBufferFactory(BufferFactory bufferFactory) {
         this.config.setBufferFactory(bufferFactory);
         this.bufferPool = null;
         return this;

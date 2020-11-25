@@ -25,75 +25,59 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import java.nio.ByteBuffer;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.logger.Logger;
+
+import java.io.IOException;
+import java.nio.channels.*;
 
 /**
- * 列举了当前bus-socket所关注的各类状态枚举。
- *
- * <p>当前枚举的各状态机事件在发生后都会及时触发{@link MessageProcessor#stateEvent(AioSession, StateMachine, Throwable)}方法。因此用户在实现的{@linkplain MessageProcessor}接口中可对自己关心的状态机事件进行处理。</p>
+ * 接入完成回调，单例使用
  *
  * @author Kimi Liu
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public enum StateMachine {
+public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, QuickNioServer> {
 
     /**
-     * 连接已建立并构建Session对象
+     * 注册通道的指定操作到指定Selector上
+     *
+     * @param selector Selector
+     * @param channel  通道
+     * @param ops      注册的通道监听（操作）类型
      */
-    NEW_SESSION,
-    /**
-     * 读通道已被关闭
-     * 通常由以下几种情况会触发该状态：
-     * <ol>
-     * <li>对端主动关闭write通道，致使本通常满足了EOF条件</li>
-     * <li>当前AioSession处理完读操作后检测到自身正处于{@link StateMachine#SESSION_CLOSING}状态</li>
-     * </ol>
-     * 未来该状态机可能会废除，并转移至NetMonitor
-     */
-    INPUT_SHUTDOWN,
-    /**
-     * 业务处理异常
-     * 执行{@link MessageProcessor#process(AioSession, Object)}期间发生用户未捕获的异常
-     */
-    PROCESS_EXCEPTION,
+    public static void registerChannel(Selector selector, SelectableChannel channel, int ops) {
+        try {
+            if (channel == null) {
+                return;
+            }
+            channel.configureBlocking(false);
+            // 注册通道
+            channel.register(selector, ops);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
 
-    /**
-     * 协议解码异常
-     * 执行{@link Protocol#decode(ByteBuffer, AioSession)}期间发生未捕获的异常
-     */
-    DECODE_EXCEPTION,
-    /**
-     * 读操作异常
-     * <p>
-     * 在底层服务执行read操作期间因发生异常情况出发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
-     * 未来该状态机可能会废除，并转移至NetMonitor
-     */
-    INPUT_EXCEPTION,
-    /**
-     * 写操作异常。
-     * 在底层服务执行write操作期间因发生异常情况出发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
-     * 未来该状态机可能会废除，并转移至NetMonitor
-     */
-    OUTPUT_EXCEPTION,
-    /**
-     * 会话正在关闭中
-     * 执行了{@link AioSession#close(boolean)}方法，并且当前还存在待输出的数据
-     */
-    SESSION_CLOSING,
-    /**
-     * 会话关闭成功
-     */
-    SESSION_CLOSED,
+    @Override
+    public void completed(ServerSocketChannel serverSocketChannel, QuickNioServer quickNioServer) {
+        SocketChannel socketChannel;
+        try {
+            // 获取连接到此服务器的客户端通道
+            socketChannel = serverSocketChannel.accept();
+            Logger.debug("Client [{}] accepted.", socketChannel.getRemoteAddress());
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
 
-    /**
-     * 拒绝接受连接,仅Server端有效
-     */
-    REJECT_ACCEPT,
+        // SocketChannel通道的可读事件注册到Selector中
+        registerChannel(quickNioServer.getSelector(), socketChannel, SelectionKey.OP_READ);
+    }
 
-    /**
-     * 服务端接受连接异常
-     */
-    ACCEPT_EXCEPTION,
+    @Override
+    public void failed(Throwable exc, QuickNioServer quickNioServer) {
+        Logger.error(exc);
+    }
 
 }

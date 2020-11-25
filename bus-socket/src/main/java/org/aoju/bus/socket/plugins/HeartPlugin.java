@@ -28,7 +28,7 @@ package org.aoju.bus.socket.plugins;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.AioSession;
 import org.aoju.bus.socket.QuickTimer;
-import org.aoju.bus.socket.StateMachine;
+import org.aoju.bus.socket.SocketStatus;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -83,9 +83,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
 
     /**
      * 心跳插件
-     * <p>
      * 心跳插件在断网场景可能会触发TCP Retransmission,导致无法感知到网络实际状态,可通过设置timeout关闭连接
-     * </p>
      *
      * @param heartRate       心跳触发频率
      * @param timeout         消息超时时间
@@ -104,21 +102,21 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     @Override
     public final boolean preProcess(AioSession session, T t) {
         sessionMap.put(session, System.currentTimeMillis());
-        //是否心跳响应消息
-        //延长心跳监测时间
+        // 是否心跳响应消息
+        // 延长心跳监测时间
         return !isHeartMessage(session, t);
     }
 
     @Override
-    public final void stateEvent(StateMachine stateMachine, AioSession session, Throwable throwable) {
-        switch (stateMachine) {
+    public final void stateEvent(SocketStatus socketStatus, AioSession session, Throwable throwable) {
+        switch (socketStatus) {
             case NEW_SESSION:
                 sessionMap.put(session, System.currentTimeMillis());
                 registerHeart(session, heartRate);
-                //注册心跳监测
+                // 注册心跳监测
                 break;
             case SESSION_CLOSED:
-                //移除心跳监测
+                // 移除心跳监测
                 sessionMap.remove(session);
                 break;
             default:
@@ -165,11 +163,11 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
                     sessionMap.put(session, lastTime);
                 }
                 long current = System.currentTimeMillis();
-                //超时未收到消息，关闭连接
+                // 超时未收到消息，关闭连接
                 if (timeout > 0 && (current - lastTime) > timeout) {
                     timeoutCallback.callback(session, lastTime);
                 }
-                //超时未收到消息,尝试发送心跳消息
+                // 超时未收到消息,尝试发送心跳消息
                 else if (current - lastTime > heartRate) {
                     try {
                         sendHeartRequest(session);

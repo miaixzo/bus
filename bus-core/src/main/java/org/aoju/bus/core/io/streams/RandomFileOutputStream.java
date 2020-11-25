@@ -36,7 +36,7 @@ import java.io.RandomAccessFile;
  */
 public class RandomFileOutputStream extends OutputStream {
 
-    private RandomAccessFile raf;
+    private final RandomAccessFile raf;
 
     public RandomFileOutputStream(RandomAccessFile raf) {
         this.raf = raf;

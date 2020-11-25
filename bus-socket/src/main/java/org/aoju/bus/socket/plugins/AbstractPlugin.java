@@ -26,7 +26,7 @@
 package org.aoju.bus.socket.plugins;
 
 import org.aoju.bus.socket.AioSession;
-import org.aoju.bus.socket.StateMachine;
+import org.aoju.bus.socket.SocketStatus;
 
 import java.nio.channels.AsynchronousSocketChannel;
 
@@ -43,7 +43,7 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
     }
 
     @Override
-    public void stateEvent(StateMachine stateMachine, AioSession session, Throwable throwable) {
+    public void stateEvent(SocketStatus socketStatus, AioSession session, Throwable throwable) {
 
     }
 

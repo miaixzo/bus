@@ -71,4 +71,5 @@ public class FixedLengthDecoder implements SocketDecoder {
     public ByteBuffer getBuffer() {
         return buffer;
     }
+
 }

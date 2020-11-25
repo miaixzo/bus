@@ -39,9 +39,9 @@ import java.util.LinkedList;
 public class QueueInputStream extends InputStream {
 
     //原始流
-    private InputStream is;
+    private final InputStream is;
     //缓存
-    private LinkedList<Integer> cache = new LinkedList<>();
+    private final LinkedList<Integer> cache = new LinkedList<>();
     //peek索引
     private int peekindex = 0;
     //是否到流尾

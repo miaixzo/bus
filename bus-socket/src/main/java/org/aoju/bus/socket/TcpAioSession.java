@@ -27,6 +27,7 @@ package org.aoju.bus.socket;
 
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
+import org.aoju.bus.core.io.WriteBuffer;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -90,7 +91,7 @@ final class TcpAioSession<T> extends AioSession {
     /**
      * 服务配置
      */
-    private final IoServerConfig<T> ioServerConfig;
+    private final ServerConfig<T> serverConfig;
     /**
      * 写缓冲
      */
@@ -107,11 +108,11 @@ final class TcpAioSession<T> extends AioSession {
      * @param completionWriteHandler 写回调
      * @param bufferPage             绑定内存页
      */
-    TcpAioSession(AsynchronousSocketChannel channel, final IoServerConfig<T> config, CompletionReadHandler<T> completionReadHandler, CompletionWriteHandler<T> completionWriteHandler, PageBuffer bufferPage) {
+    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig<T> config, CompletionReadHandler<T> completionReadHandler, CompletionWriteHandler<T> completionWriteHandler, PageBuffer bufferPage) {
         this.channel = channel;
         this.completionReadHandler = completionReadHandler;
         this.completionWriteHandler = completionWriteHandler;
-        this.ioServerConfig = config;
+        this.serverConfig = config;
 
         this.readBuffer = bufferPage.allocate(config.getReadBufferSize());
 
@@ -127,9 +128,9 @@ final class TcpAioSession<T> extends AioSession {
             }
             return null;
         };
-        byteBuf = new WriteBuffer(bufferPage, flushFunction, ioServerConfig.getWriteBufferSize(), ioServerConfig.getWriteBufferCapacity());
+        byteBuf = new WriteBuffer(bufferPage, flushFunction, serverConfig.getWriteBufferSize(), serverConfig.getWriteBufferCapacity());
         //触发状态机
-        config.getProcessor().stateEvent(this, StateMachine.NEW_SESSION, null);
+        config.getProcessor().stateEvent(this, SocketStatus.NEW_SESSION, null);
     }
 
     /**
@@ -141,7 +142,7 @@ final class TcpAioSession<T> extends AioSession {
 
     /**
      * 触发AIO的写操作,
-     * <p>需要调用控制同步</p>
+     * 需要调用控制同步
      */
     void writeCompleted() {
         if (writeBuffer == null) {
@@ -156,11 +157,11 @@ final class TcpAioSession<T> extends AioSession {
             return;
         }
         semaphore.release();
-        //此时可能是Closing或Closed状态
+        // 此时可能是Closing或Closed状态
         if (status != SESSION_STATUS_ENABLED) {
             close();
         } else {
-            //也许此时有新的消息通过write方法添加到writeCacheQueue中
+            // 也许此时有新的消息通过write方法添加到writeCacheQueue中
             byteBuf.flush();
         }
     }
@@ -178,7 +179,6 @@ final class TcpAioSession<T> extends AioSession {
      * @param immediate true:立即关闭,false:响应消息发送完后关闭
      */
     public synchronized void close(boolean immediate) {
-        //status == SESSION_STATUS_CLOSED说明close方法被重复调用
         if (status == SESSION_STATUS_CLOSED) {
             System.out.println("ignore, session:" + getSessionID() + " is closed:");
             return;
@@ -192,11 +192,11 @@ final class TcpAioSession<T> extends AioSession {
                 writeBuffer = null;
             }
             IoKit.close(channel);
-            ioServerConfig.getProcessor().stateEvent(this, StateMachine.SESSION_CLOSED, null);
+            serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);
         } else if ((writeBuffer == null || !writeBuffer.buffer().hasRemaining()) && !byteBuf.hasData()) {
             close(true);
         } else {
-            ioServerConfig.getProcessor().stateEvent(this, StateMachine.SESSION_CLOSING, null);
+            serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSING, null);
             byteBuf.flush();
         }
     }
@@ -231,30 +231,28 @@ final class TcpAioSession<T> extends AioSession {
         }
         final ByteBuffer readBuffer = this.readBuffer.buffer();
         readBuffer.flip();
-        final MessageProcessor<T> messageProcessor = ioServerConfig.getProcessor();
+        final MessageProcessor<T> messageProcessor = serverConfig.getProcessor();
         while (readBuffer.hasRemaining() && status == SESSION_STATUS_ENABLED) {
             T dataEntry;
             try {
-                dataEntry = ioServerConfig.getProtocol().decode(readBuffer, this);
+                dataEntry = serverConfig.getProtocol().decode(readBuffer, this);
             } catch (Exception e) {
-                messageProcessor.stateEvent(this, StateMachine.DECODE_EXCEPTION, e);
+                messageProcessor.stateEvent(this, SocketStatus.DECODE_EXCEPTION, e);
                 throw e;
             }
             if (dataEntry == null) {
                 break;
             }
-
-            //处理消息
             try {
                 messageProcessor.process(this, dataEntry);
             } catch (Exception e) {
-                messageProcessor.stateEvent(this, StateMachine.PROCESS_EXCEPTION, e);
+                messageProcessor.stateEvent(this, SocketStatus.PROCESS_EXCEPTION, e);
             }
         }
 
         if (eof || status == SESSION_STATUS_CLOSING) {
             close(false);
-            messageProcessor.stateEvent(this, StateMachine.INPUT_SHUTDOWN, null);
+            messageProcessor.stateEvent(this, SocketStatus.INPUT_SHUTDOWN, null);
             return;
         }
         if (status == SESSION_STATUS_CLOSED) {
@@ -264,10 +262,10 @@ final class TcpAioSession<T> extends AioSession {
         byteBuf.flush();
 
         readBuffer.compact();
-        //读缓冲区已满
+        // 读缓冲区已满
         if (!readBuffer.hasRemaining()) {
             RuntimeException exception = new RuntimeException("readBuffer overflow");
-            messageProcessor.stateEvent(this, StateMachine.DECODE_EXCEPTION, exception);
+            messageProcessor.stateEvent(this, SocketStatus.DECODE_EXCEPTION, exception);
             throw exception;
         }
 
@@ -347,17 +345,15 @@ final class TcpAioSession<T> extends AioSession {
         }
     }
 
-    IoServerConfig<T> getServerConfig() {
-        return this.ioServerConfig;
+    ServerConfig<T> getServerConfig() {
+        return this.serverConfig;
     }
 
     /**
      * 获得数据输入流对象。
      * <p>
-     * faster模式下调用该方法会触发UnsupportedOperationException异常。
-     * </p>
-     * <p>
-     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常。
+     * faster模式下调用该方法会触发UnsupportedOperationException异常
+     * MessageProcessor采用异步处理消息的方式时，调用该方法可能会出现异常
      * </p>
      *
      * @return 同步读操作的流对象
@@ -390,6 +386,7 @@ final class TcpAioSession<T> extends AioSession {
      * 同步读操作的InputStream
      */
     private class InnerInputStream extends InputStream {
+
         /**
          * 当前InputSteam可读字节数
          */

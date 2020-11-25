@@ -53,7 +53,7 @@ final class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpA
     @Override
     public void failed(Throwable exc, TcpAioSession<T> aioSession) {
         try {
-            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, StateMachine.OUTPUT_EXCEPTION, exc);
+            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.OUTPUT_EXCEPTION, exc);
         } catch (Exception e) {
             e.printStackTrace();
         }

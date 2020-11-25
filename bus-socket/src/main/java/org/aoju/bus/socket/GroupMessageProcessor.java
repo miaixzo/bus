@@ -43,8 +43,8 @@ abstract class GroupMessageProcessor<T> implements MessageProcessor<T>, GroupIo 
     /**
      * 将AioSession加入群组group
      *
-     * @param group
-     * @param session
+     * @param group   群组
+     * @param session 会话
      */
     @Override
     public final synchronized void join(String group, AioSession session) {

@@ -28,7 +28,7 @@ package org.aoju.bus.socket;
 import java.nio.channels.AsynchronousSocketChannel;
 
 /**
- * 网络监控器，提供通讯层面监控功能的接口。
+ * 网络监控器，提供通讯层面监控功能的接口
  * <p>
  * bus-socket并未单独提供配置监控服务的接口，用户在使用时仅需在MessageProcessor实现类中同时实现当前NetMonitor接口即可。
  * 在注册消息处理器时，若服务监测到该处理器同时实现了NetMonitor接口，则该监视器便会生效。
@@ -44,7 +44,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  * <p>
  * 实现本接口时要关注acceptMonitor接口的返回值,如无特殊需求直接返回true，若返回false会拒绝本次连接。
  * </p>
- * <b>非必要情况下请勿使用该接口，未来可能会调整接口设计</b>
+ * 非必要情况下请勿使用该接口，未来可能会调整接口设计
  *
  * @author Kimi Liu
  * @version 6.1.2

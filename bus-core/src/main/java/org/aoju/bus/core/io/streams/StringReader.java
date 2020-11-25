@@ -35,7 +35,7 @@ import java.io.Reader;
  */
 public class StringReader extends Reader {
 
-    private CharSequence cs;
+    private final CharSequence cs;
     private int index;
 
     public StringReader(CharSequence cs) {

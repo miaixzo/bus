@@ -31,6 +31,7 @@ package org.aoju.bus.socket;
  * @since JDK 1.8+
  */
 public interface GroupIo {
+
     /**
      * 将AioSession加入群组group
      *

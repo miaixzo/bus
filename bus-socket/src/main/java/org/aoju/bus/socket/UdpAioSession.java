@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
+import org.aoju.bus.core.io.WriteBuffer;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -46,7 +48,7 @@ final class UdpAioSession extends AioSession {
         this.udpChannel = udpChannel;
         this.remote = remote;
         this.writeBuffer = writeBuffer;
-        udpChannel.config.getProcessor().stateEvent(this, StateMachine.NEW_SESSION, null);
+        udpChannel.config.getProcessor().stateEvent(this, SocketStatus.NEW_SESSION, null);
     }
 
     @Override
@@ -57,7 +59,7 @@ final class UdpAioSession extends AioSession {
     @Override
     public void close(boolean immediate) {
         writeBuffer.close();
-        udpChannel.config.getProcessor().stateEvent(this, StateMachine.SESSION_CLOSED, null);
+        udpChannel.config.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);
         udpChannel.removeSession(remote);
     }
 

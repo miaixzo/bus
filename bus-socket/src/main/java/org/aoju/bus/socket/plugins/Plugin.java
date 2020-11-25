@@ -28,7 +28,7 @@ package org.aoju.bus.socket.plugins;
 import org.aoju.bus.socket.AioSession;
 import org.aoju.bus.socket.MessageProcessor;
 import org.aoju.bus.socket.NetMonitor;
-import org.aoju.bus.socket.StateMachine;
+import org.aoju.bus.socket.SocketStatus;
 
 /**
  * @author Kimi Liu
@@ -51,11 +51,11 @@ public interface Plugin<T> extends NetMonitor {
     /**
      * 监听状态机事件
      *
-     * @param stateMachine 状态
+     * @param socketStatus 状态
      * @param session      会话
      * @param throwable    线程
-     * @see MessageProcessor#stateEvent(AioSession, StateMachine, Throwable)
+     * @see MessageProcessor#stateEvent(AioSession, SocketStatus, Throwable)
      */
-    void stateEvent(StateMachine stateMachine, AioSession session, Throwable throwable);
+    void stateEvent(SocketStatus socketStatus, AioSession session, Throwable throwable);
 
 }

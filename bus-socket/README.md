@@ -4,12 +4,12 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
 ## 运行环境
 要求JDK1.8+
 
-  <dependency>
-      <groupId>org.aoju</groupId>
-      <artifactId>bus-socket</artifactId>
-      <version>6.1.2</version>
-  </dependency>
-  
+ * 
+ * 通常情况下仅需实现{@link org.aoju.bus.socket.Protocol}、{@link org.aoju.bus.socket.MessageProcessor}即可
+ * 如需仅需通讯层面的监控，bus-socket提供了接口{@link org.aoju.bus.socket.NetMonitor}以供使用
+ * 
+ * 完成本package的接口开发后，便可使用{@link org.aoju.bus.socket.QuickAioClient} / {@link org.aoju.bus.socket.QuickAioServer}提供AIO的客户端/服务端通信服务
+ * 
   
   服务端开发主要分两步：
 
@@ -20,9 +20,9 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
       
 ```java
  public class Server {
+
      public static void main(String[] args) throws IOException {
-         // 1
-         AioQuickServer<String> server = new AioQuickServer<String>(8080, new StringProtocol(), new MessageProcessor<String>() {
+         AioQuickServer<String> server = new AioQuickServer<String>(8080, new DemoProtocol(), new DemoService() {
              public void process(AioSession<String> session, String msg) {
                  System.out.println("接受到客户端消息:" + msg);
  
@@ -36,12 +36,99 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
                  }
              }
  
-             public void stateEvent(AioSession<String> session, StateMachineEnum stateMachineEnum, Throwable throwable) {
+             public void stateEvent(AioSession<String> session, SocketStatus SocketStatus, Throwable throwable) {
              }
          });
-         //2
          server.start();
      }
+
+    class DemoProtocol implements Protocol<byte[]> {
+    
+        public byte[] decode(ByteBuffer readBuffer, AioSession<byte[]> session) {
+            if (readBuffer.remaining() > 0) {
+                byte[] data = new byte[readBuffer.remaining()];
+                readBuffer.get(data);
+                return data;
+            }
+            return null;
+        }
+    
+        public ByteBuffer encode(byte[] msg, AioSession<byte[]> session) {
+            ByteBuffer buffer = ByteBuffer.allocate(msg.length);
+            buffer.put(msg);
+            buffer.flip();
+            return buffer;
+        }
+    }
+
+
+    class DemoService implements MessageProcessor<byte[]>, Runnable {
+        private HashMap<String, AioSession<byte[]>> clients = new HashMap<String, AioSession<byte[]>>();
+        private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(12);
+        
+        public DemoService() {
+            executorService.scheduleAtFixedRate(this, 2, 2, TimeUnit.SECONDS);
+        }
+        
+        public void run() {
+            if (this.clients.isEmpty()) return;
+            for (AioSession<byte[]> session: this.clients.values()) {
+                try {
+                    session.write("Hey! bus-socket it's work...".getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    
+        public void process(AioSession<byte[]> session, byte[] msg) {
+            JSONObject jsonObject = JSON.parseObject(msg, JSONObject.class);
+            System.out.println(jsonObject.getString("content"));
+            try {
+                session.write("{\"result\": \"OK\"}".getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    
+        public void stateEvent(AioSession<byte[]> session, SocketStatus SocketStatus, Throwable throwable) {
+            switch (SocketStatus) {
+                case NEW_SESSION:
+                    System.out.println("SocketStatus.NEW_SESSION");
+                    break;
+                case INPUT_SHUTDOWN:
+                    System.out.println("SocketStatus.INPUT_SHUTDOWN");
+                    break;
+                case PROCESS_EXCEPTION:
+                    System.out.println("SocketStatus.PROCESS_EXCEPTION");
+                    break;
+                case DECODE_EXCEPTION:
+                    System.out.println("SocketStatus.DECODE_EXCEPTION");
+                    break;
+                case INPUT_EXCEPTION:
+                    System.out.println("SocketStatus.INPUT_EXCEPTION");
+                    break;
+                case OUTPUT_EXCEPTION:
+                    System.out.println("SocketStatus.OUTPUT_EXCEPTION");
+                    break;
+                case SESSION_CLOSING:
+                    System.out.println("SocketStatus.SESSION_CLOSING");
+                    break;
+                case SESSION_CLOSED:
+                    System.out.println("SocketStatus.SESSION_CLOSED");
+                    break;
+                case FLOW_LIMIT:
+                    System.out.println("SocketStatus.FLOW_LIMIT");
+                    break;
+                case RELEASE_FLOW_LIMIT:
+                    System.out.println("SocketStatus.RELEASE_FLOW_LIMIT");
+                    break;
+                default:
+                    System.out.println("SocketStatus.default");
+            }
+        }
+    }
+
  }
  ```
 
@@ -65,4 +152,4 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
     | 4096 | 922589.53 | 128.46MB|
 
 ### 致谢
-- 感谢 JetBrains 为 bus-socket 提供的 IDEA License
+- 此项目部分程序来源于[smart-socket](https://gitee.com/smartboot/smart-socket) 经作者三刀(zhengjunweimail@163.com)同意后使用MIT开源，使用程序请遵守相关开源协议

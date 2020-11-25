@@ -35,7 +35,7 @@ import java.io.Writer;
  */
 public class StringWriter extends Writer {
 
-    private StringBuilder sb;
+    private final StringBuilder sb;
 
     public StringWriter(StringBuilder sb) {
         this.sb = sb;

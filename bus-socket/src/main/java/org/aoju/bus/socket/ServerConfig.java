@@ -36,7 +36,7 @@ import java.util.Map;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-final class IoServerConfig<T> {
+final class ServerConfig<T> {
 
     /**
      * 消息体缓存大小,字节

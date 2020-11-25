@@ -47,7 +47,6 @@ public abstract class QuickTimer implements Runnable {
         }
     });
 
-
     public QuickTimer() {
         SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(this, getDelay(), getPeriod(), TimeUnit.MILLISECONDS);
         Logger.info("Regist QuickTimerTask---- " + this.getClass().getSimpleName());
