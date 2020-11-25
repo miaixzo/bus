@@ -41,10 +41,7 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
+import java.nio.channels.*;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -1024,6 +1021,30 @@ public class IoKit {
                 throw rethrown;
             } catch (Exception ignored) {
             }
+        }
+    }
+
+    /**
+     * @param channel 需要被关闭的通道
+     */
+    public static void close(AsynchronousSocketChannel channel) {
+        if (channel == null) {
+            throw new NullPointerException();
+        }
+        try {
+            channel.shutdownInput();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            channel.shutdownOutput();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            channel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

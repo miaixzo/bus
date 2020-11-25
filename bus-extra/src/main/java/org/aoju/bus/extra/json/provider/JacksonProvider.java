@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -135,6 +136,15 @@ public class JacksonProvider extends AbstractJsonProvider {
     @Override
     public <K, V> Map<K, V> toMap(Object object) {
         return objectMapper.convertValue(object, Map.class);
+    }
+
+    @Override
+    public <T> T getValue(String json, String field) {
+        try {
+            return (T) objectMapper.readTree(json).get(field);
+        } catch (JsonProcessingException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     @Override

@@ -64,9 +64,9 @@ public class WmiQueryHandler {
     }
 
     // 缓存失败的wmi类
-    private final Set<String> failedWmiClassNames = new HashSet<>();
+    protected final Set<String> failedWmiClassNames = new HashSet<>();
     // WMI查询超时
-    private int wmiTimeout = globalTimeout;
+    protected int wmiTimeout = globalTimeout;
     // 首选的线程模型
     private int comThreading = Ole32.COINIT_MULTITHREADED;
     // 安全跟踪初始化
@@ -197,12 +197,11 @@ public class WmiQueryHandler {
     }
 
     /**
-     * <p>
-     * initCOM.
-     * </p>
+     * Initializes COM with a specific threading model
      *
-     * @param coInitThreading a int.
-     * @return a boolean.
+     * @param coInitThreading The threading model
+     * @return True if COM was initialized and needs to be uninitialized, false
+     * otherwise
      */
     protected boolean initCOM(int coInitThreading) {
         WinNT.HRESULT hres = Ole32.INSTANCE.CoInitializeEx(null, coInitThreading);

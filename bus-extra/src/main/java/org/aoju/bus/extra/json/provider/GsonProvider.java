@@ -136,6 +136,11 @@ public class GsonProvider extends AbstractJsonProvider {
     }
 
     @Override
+    public <T> T getValue(String json, String field) {
+        return (T) JsonParser.parseString(json).getAsJsonObject().get(field);
+    }
+
+    @Override
     public boolean isJson(String json) {
         try {
             gson.fromJson(json, Object.class);

@@ -225,7 +225,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
             String volume;
             if (type != 4) {
                 char[] chrVolume = new char[BUFSIZE];
-                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + "\\", chrVolume, BUFSIZE);
+                Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(name + Symbol.BACKSLASH, chrVolume, BUFSIZE);
                 volume = new String(chrVolume).trim();
             } else {
                 volume = WmiKit.getString(drives, LogicalDiskProperty.PROVIDERNAME, i);

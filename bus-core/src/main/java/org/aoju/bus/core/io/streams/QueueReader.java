@@ -41,9 +41,9 @@ import java.util.LinkedList;
 public class QueueReader extends Reader {
 
     //原始流
-    private Reader is;
+    private final Reader is;
     //缓存
-    private LinkedList<Integer> cache = new LinkedList<>();
+    private final LinkedList<Integer> cache = new LinkedList<>();
     //peek索引
     private int peekindex = 0;
     //是否到流尾

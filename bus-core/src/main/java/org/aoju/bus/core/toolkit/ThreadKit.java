@@ -542,4 +542,10 @@ public class ThreadKit {
         }
     }
 
+    public static final class FastBufferThread extends Thread {
+        public FastBufferThread(Runnable target, String name) {
+            super(target, name);
+        }
+    }
+
 }

@@ -27,6 +27,7 @@ package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
@@ -170,7 +171,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             mAnt = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.ANTECEDENT, i));
             mDep = DEVICE_ID.matcher(WmiKit.getRefString(drivePartitionMap, Win32DiskDriveToDiskPartition.DriveToPartitionProperty.DEPENDENT, i));
             if (mAnt.matches() && mDep.matches()) {
-                maps.driveToPartitionMap.computeIfAbsent(mAnt.group(1).replace("\\\\", "\\"), x -> new ArrayList<>())
+                maps.driveToPartitionMap.computeIfAbsent(mAnt.group(1).replace(Symbol.BACKSLASH + Symbol.BACKSLASH, Symbol.BACKSLASH), x -> new ArrayList<>())
                         .add(mDep.group(1));
             }
         }
@@ -184,10 +185,10 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
                     - WmiKit.getUint64(diskPartitionMap, Win32LogicalDiskToPartition.DiskToPartitionProperty.STARTINGADDRESS, i) + 1L;
             if (mAnt.matches() && mDep.matches()) {
                 if (maps.partitionToLogicalDriveMap.containsKey(mAnt.group(1))) {
-                    maps.partitionToLogicalDriveMap.get(mAnt.group(1)).add(Pair.of(mDep.group(1) + "\\", size));
+                    maps.partitionToLogicalDriveMap.get(mAnt.group(1)).add(Pair.of(mDep.group(1) + Symbol.BACKSLASH, size));
                 } else {
                     List<Pair<String, Long>> list = new ArrayList<>();
-                    list.add(Pair.of(mDep.group(1) + "\\", size));
+                    list.add(Pair.of(mDep.group(1) + Symbol.BACKSLASH, size));
                     maps.partitionToLogicalDriveMap.put(mAnt.group(1), list);
                 }
             }

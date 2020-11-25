@@ -61,9 +61,9 @@ public class DateKit extends GregorianCalendar {
     /**
      * 支持的最小日期1850-02-12
      */
-    public final static int MINI_YEAR = 1850;
-    public final static int MINI_MONTH = 1;
-    public final static int MINI_DATE = 12;
+    public final static int MIN_YEAR = 1850;
+    public final static int MIN_MONTH = 1;
+    public final static int MIN_DATE = 12;
     /**
      * 支持的最大日期2150-12-31
      */
@@ -3763,9 +3763,9 @@ public class DateKit extends GregorianCalendar {
      * @param solarDate  公历日
      */
     private void lunar(final int solarYear, final int solarMonth, final int solarDate) {
-        if (solarYear < MINI_YEAR
-                || (solarYear == MINI_YEAR && solarMonth < MINI_MONTH)
-                || (solarYear == MINI_YEAR && solarMonth == MINI_MONTH && solarDate < MINI_DATE)
+        if (solarYear < MIN_YEAR
+                || (solarYear == MIN_YEAR && solarMonth < MIN_MONTH)
+                || (solarYear == MIN_YEAR && solarMonth == MIN_MONTH && solarDate < MIN_DATE)
                 || solarYear > MAX_YEAR
                 || (solarYear == MAX_YEAR && solarMonth > MAX_MONTH)
                 || (solarYear == MAX_YEAR && solarMonth == MAX_MONTH && solarDate > MAX_DATE)
@@ -3774,7 +3774,7 @@ public class DateKit extends GregorianCalendar {
             return;
         }
         int solarCode = solarYear * 10000 + 100 * (1 + solarMonth) + solarDate; // 公历码
-        leapMonth = Fields.CN_LUNAR[solarYear - MINI_YEAR][0];
+        leapMonth = Fields.CN_LUNAR[solarYear - MIN_YEAR][0];
         int[] solarCodes = builder(solarYear);
         int newMonth = binFind(solarCodes, solarCode);
         if (-1 == newMonth) {
@@ -3783,7 +3783,7 @@ public class DateKit extends GregorianCalendar {
         int xDate = Long.valueOf(solarDiff(solarCode, solarCodes[newMonth], Calendar.DATE)).intValue();
         if (0 == newMonth) {// 在上一年
             int preYear = solarYear - 1;
-            short[] preSolarCodes = Fields.CN_LUNAR[preYear - MINI_YEAR];
+            short[] preSolarCodes = Fields.CN_LUNAR[preYear - MIN_YEAR];
             // 取上年农历12月1号公历日期码
             int nearSolarCode = preSolarCodes[preSolarCodes.length - 1]; // 上一年12月1号
             // 下一年公历1月表示为了13月，这里做翻译，并计算出日期码
@@ -3807,7 +3807,7 @@ public class DateKit extends GregorianCalendar {
         } else if (solarCodes.length == newMonth + 1 && xDate >= 30) {// 在下一年(公历12月只有30天)
             newMonth = 1; // 农历肯定是1月
             // 取下一年的公历日期码
-            short[] nextSolarCodes = Fields.CN_LUNAR[solarYear + 1 - MINI_YEAR];
+            short[] nextSolarCodes = Fields.CN_LUNAR[solarYear + 1 - MIN_YEAR];
             // 取下一年农历1月1号公历日期码
             int nearSolarCode = solarYear * 10000 + nextSolarCodes[1]; // 下一年农历1月1号公历日期码
             xDate = Long.valueOf(solarDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
@@ -3843,18 +3843,18 @@ public class DateKit extends GregorianCalendar {
      */
     private void lunar(final int lunarYear, final int lunarMonth, final int lunarDate,
                        final boolean isLeapMonth) {
-        if (lunarYear < MINI_YEAR || lunarYear > MAX_YEAR) {
-            throw new IllegalArgumentException("LunarYear must in (" + MINI_YEAR + Symbol.COMMA + MAX_YEAR + ")");
+        if (lunarYear < MIN_YEAR || lunarYear > MAX_YEAR) {
+            throw new IllegalArgumentException("LunarYear must in (" + MIN_YEAR + Symbol.COMMA + MAX_YEAR + ")");
         }
         this.lunarYear = lunarYear;
         this.lunarMonth = lunarMonth;
         this.lunarDay = lunarDate;
-        int solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth];
-        leapMonth = Fields.CN_LUNAR[lunarYear - MINI_YEAR][0];
+        int solarMontDate = Fields.CN_LUNAR[lunarYear - MIN_YEAR][lunarMonth];
+        leapMonth = Fields.CN_LUNAR[lunarYear - MIN_YEAR][0];
         if (leapMonth != 0 && (lunarMonth > leapMonth || (lunarMonth == leapMonth && isLeapMonth))) {
             // 闰月，且当前农历月大于闰月月份，取下一个月的LunarInfo码
             // 闰月，且当前农历月等于闰月月份，并且此农历月为闰月，取下一个月的LunarInfo码
-            solarMontDate = Fields.CN_LUNAR[lunarYear - MINI_YEAR][lunarMonth + 1];
+            solarMontDate = Fields.CN_LUNAR[lunarYear - MIN_YEAR][lunarMonth + 1];
         }
         this.set(Calendar.YEAR, lunarYear);
         this.set(Calendar.MONTH, (solarMontDate / 100) - 1);
@@ -3870,10 +3870,10 @@ public class DateKit extends GregorianCalendar {
      * @return 公历日历编码
      */
     private int[] builder(int solarYear) {
-        if (solarYear < MINI_YEAR || solarYear > MAX_YEAR) {
+        if (solarYear < MIN_YEAR || solarYear > MAX_YEAR) {
             throw new IllegalArgumentException("Illegal solar year: " + solarYear);
         }
-        int lunarIndex = solarYear - MINI_YEAR;
+        int lunarIndex = solarYear - MIN_YEAR;
         int[] solarCodes = new int[Fields.CN_LUNAR[lunarIndex].length];
         for (int i = 0; i < solarCodes.length; i++) {
             if (0 == i) { // 第一个数表示闰月，不用更改
@@ -3912,7 +3912,7 @@ public class DateKit extends GregorianCalendar {
 
     @Override
     public String toString() {
-        if (this.lunarYear < MINI_YEAR || this.lunarYear > MAX_YEAR || this.lunarMonth < 1
+        if (this.lunarYear < MIN_YEAR || this.lunarYear > MAX_YEAR || this.lunarMonth < 1
                 || this.lunarMonth > 12 || this.lunarDay < 1
                 || this.lunarDay > 30) {
             return "Wrong lunar date: " + lunarYear + Symbol.SPACE + lunarMonth + Symbol.SPACE + lunarDay;

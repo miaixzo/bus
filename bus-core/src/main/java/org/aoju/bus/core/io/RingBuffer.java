@@ -64,7 +64,7 @@ public final class RingBuffer<T> {
 
     private volatile boolean needEmptySingle = false;
 
-    private EventFactory<T> eventFactory;
+    private final EventFactory<T> eventFactory;
 
     public RingBuffer(int capacity, EventFactory<T> factory) {
         if (capacity <= 0)

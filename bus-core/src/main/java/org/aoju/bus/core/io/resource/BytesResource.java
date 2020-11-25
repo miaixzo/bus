@@ -45,8 +45,8 @@ import java.nio.charset.Charset;
  */
 public class BytesResource implements Resource {
 
-    private byte[] bytes;
-    private String name;
+    private final byte[] bytes;
+    private final String name;
 
     /**
      * 构造

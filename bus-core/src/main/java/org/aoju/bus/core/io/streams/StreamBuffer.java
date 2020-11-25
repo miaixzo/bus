@@ -26,7 +26,7 @@
 package org.aoju.bus.core.io.streams;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Lang;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 
 import java.io.IOException;
@@ -42,7 +42,7 @@ import java.util.List;
  */
 public class StreamBuffer extends InputStream {
 
-    private OutputStreamBuffer buffer = new OutputStreamBuffer();
+    private final OutputStreamBuffer buffer = new OutputStreamBuffer();
     private int index = 0;
     private int cursor = 0;
 
@@ -86,7 +86,7 @@ public class StreamBuffer extends InputStream {
         try {
             return toString(Charset.DEFAULT_CHARSET);
         } catch (IOException e) {
-            throw Lang.wrapThrow(e);
+            throw new InstrumentException(e);
         }
     }
 
@@ -105,8 +105,8 @@ public class StreamBuffer extends InputStream {
 
     private static class OutputStreamBuffer extends OutputStream {
 
-        private List<byte[]> bytes = new ArrayList<>();
-        private int width = 1024;
+        private final List<byte[]> bytes = new ArrayList<>();
+        private final int width = 1024;
         private int index = 0;
         private int cursor = 0;
 

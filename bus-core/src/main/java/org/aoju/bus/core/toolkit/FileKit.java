@@ -1656,7 +1656,7 @@ public class FileKit {
         pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH).trim();
         //兼容Windows下的共享目录路径（原始路径如果以\\开头，则保留这种路径）
         if (path.startsWith("\\\\")) {
-            pathToUse = "\\" + pathToUse;
+            pathToUse = Symbol.BACKSLASH + pathToUse;
         }
 
         String prefix = Normal.EMPTY;

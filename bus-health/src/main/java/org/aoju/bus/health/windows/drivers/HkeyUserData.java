@@ -33,6 +33,7 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.software.OSSession;
 import org.aoju.bus.logger.Logger;
 
@@ -67,14 +68,14 @@ public final class HkeyUserData {
                     String device = DEFAULT_DEVICE;
                     String host = a.domain; // temporary default
                     long loginTime = 0;
-                    String keyPath = sidKey + "\\" + VOLATILE_ENV_SUBKEY;
+                    String keyPath = sidKey + Symbol.BACKSLASH + VOLATILE_ENV_SUBKEY;
                     if (Advapi32Util.registryKeyExists(WinReg.HKEY_USERS, keyPath)) {
                         HKEY hKey = Advapi32Util.registryGetKey(WinReg.HKEY_USERS, keyPath, WinNT.KEY_READ).getValue();
                         // InfoKey write time is user login time
                         InfoKey info = Advapi32Util.registryQueryInfoKey(hKey, 0);
                         loginTime = info.lpftLastWriteTime.toTime();
                         for (String subKey : Advapi32Util.registryGetKeys(hKey)) {
-                            String subKeyPath = keyPath + "\\" + subKey;
+                            String subKeyPath = keyPath + Symbol.BACKSLASH + subKey;
                             // Check for session and client name
                             if (Advapi32Util.registryValueExists(WinReg.HKEY_USERS, subKeyPath, SESSIONNAME)) {
                                 String session = Advapi32Util.registryGetStringValue(WinReg.HKEY_USERS, subKeyPath,

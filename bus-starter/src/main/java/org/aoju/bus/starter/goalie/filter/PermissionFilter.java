@@ -27,11 +27,11 @@ package org.aoju.bus.starter.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.exception.BusinessException;
-import org.aoju.bus.goalie.reactor.Asset;
-import org.aoju.bus.goalie.reactor.Athlete;
-import org.aoju.bus.goalie.reactor.Constant;
-import org.aoju.bus.goalie.reactor.ExchangeContext;
-import org.aoju.bus.starter.goalie.ReactorConfiguration;
+import org.aoju.bus.goalie.Assets;
+import org.aoju.bus.goalie.Athlete;
+import org.aoju.bus.goalie.Consts;
+import org.aoju.bus.goalie.Context;
+import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.annotation.Order;
@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * @since 2020/11/7
  */
 @Component
-@ConditionalOnBean(ReactorConfiguration.class)
+@ConditionalOnBean(GoalieConfiguration.class)
 @Order(FilterOrders.PERMISSION)
 public class PermissionFilter implements WebFilter {
 
@@ -63,27 +63,27 @@ public class PermissionFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ExchangeContext context = ExchangeContext.get(exchange);
+        Context context = Context.get(exchange);
 
         Map<String, String> params = context.getRequestMap();
 
-        String method = params.get(Constant.METHOD);
-        String version = params.get(Constant.VERSION);
+        String method = params.get(Consts.METHOD);
+        String version = params.get(Consts.VERSION);
 
-        Set<Asset> assets = athlete.getAssets();
+        Set<Assets> assets = athlete.getAssets();
 
-        List<Asset> assetsList = assets.parallelStream()
+        List<Assets> assetsList = assets.parallelStream()
                 .filter(asset -> Objects.equals(method, asset.getMethod())).collect(Collectors.toList());
 
         if (assetsList.size() < 1) {
             return Mono.error(new BusinessException(ErrorCode.EM_100103));
         }
 
-        Asset asset = assetsList.parallelStream()
+        Assets asset = assetsList.parallelStream()
                 .filter(c -> Objects.equals(version, c.getVersion())).findFirst()
                 .orElseThrow(() -> new BusinessException(ErrorCode.EM_100102));
 
-        context.setAsset(asset);
+        context.setAssets(asset);
 
         return chain.filter(exchange);
     }

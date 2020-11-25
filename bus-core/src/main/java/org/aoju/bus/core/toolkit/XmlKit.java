@@ -514,6 +514,7 @@ public class XmlKit {
             final Transformer xformer = factory.newTransformer();
             if (indent > 0) {
                 xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                xformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
                 xformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", String.valueOf(indent));
             }
             if (StringKit.isNotBlank(charset)) {
