@@ -32,6 +32,7 @@ import org.aoju.bus.goalie.Assets;
 import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -85,15 +86,16 @@ public class ApiRouterHandler {
             bodySpec.bodyValue(multiValueMap);
         }
         return bodySpec
-                .exchange()
-                .flatMap(clientResponse -> {
-                    if (clientResponse.statusCode().is2xxSuccessful()) {
-                        Flux<DataBuffer> flux = clientResponse.body(BodyExtractors.toDataBuffers());
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        Flux<DataBuffer> flux = response.body(BodyExtractors.toDataBuffers()).log();
                         context.setBody(flux);
                         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(flux, DataBuffer.class);
+                    } else {
+                        return Mono.error(new BusinessException(ErrorCode.EM_100509));
                     }
-                    return Mono.error(new BusinessException(ErrorCode.EM_100509));
-                });
+
+                }).log();
 
     }
 
