@@ -39,6 +39,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
@@ -68,7 +69,7 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         }
         Logger.error("request: {},error:{}", method, RuntimeKit.getMessage(ex));
         Object message;
-        if (ex instanceof ConnectException) {
+        if (ex instanceof WebClientRequestException) {
             message = Controller.write(ErrorCode.EM_FAILURE);
         } else if (ex instanceof BusinessException) {
             BusinessException e = (BusinessException) ex;
