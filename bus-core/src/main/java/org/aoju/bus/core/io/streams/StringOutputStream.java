@@ -39,8 +39,8 @@ import java.io.OutputStream;
 public class StringOutputStream extends OutputStream {
 
     private final StringBuilder sb;
-    private ByteArrayOutputStream baos;
     private final String charset;
+    private ByteArrayOutputStream baos;
 
     public StringOutputStream(StringBuilder sb) {
         this(sb, Charset.DEFAULT_UTF_8);

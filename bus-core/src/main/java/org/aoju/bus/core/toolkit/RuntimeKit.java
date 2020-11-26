@@ -303,6 +303,7 @@ public class RuntimeKit {
 
     /**
      * 返回输入的JVM参数列表
+     *
      * @return the string
      */
     public static String getVmArguments() {

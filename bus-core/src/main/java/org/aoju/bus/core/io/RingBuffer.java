@@ -52,6 +52,7 @@ public final class RingBuffer<T> {
      * 等待权条件
      */
     private final Condition notFull;
+    private final EventFactory<T> eventFactory;
     /**
      * 项目索引为下一次采取，投票删除
      */
@@ -61,10 +62,7 @@ public final class RingBuffer<T> {
      */
     private int putIndex;
     private volatile boolean needFullSingle = false;
-
     private volatile boolean needEmptySingle = false;
-
-    private final EventFactory<T> eventFactory;
 
     public RingBuffer(int capacity, EventFactory<T> factory) {
         if (capacity <= 0)

@@ -49,6 +49,10 @@ public class WatchServer extends Thread implements Closeable, Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
+     * WatchKey 和 Path的对应表
+     */
+    private final Map<WatchKey, Path> watchKeyPathMap = new HashMap<>();
+    /**
      * 监听事件列表
      */
     protected WatchEvent.Kind<?>[] events;
@@ -64,10 +68,6 @@ public class WatchServer extends Thread implements Closeable, Serializable {
      * 监听选项，例如监听频率等
      */
     private WatchEvent.Modifier[] modifiers;
-    /**
-     * WatchKey 和 Path的对应表
-     */
-    private final Map<WatchKey, Path> watchKeyPathMap = new HashMap<>();
 
     /**
      * 初始化
