@@ -31,6 +31,7 @@ import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.aoju.bus.starter.goalie.GoalieProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -41,14 +42,14 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 /**
- * 解密
+ * 数据解密
  *
  * @author Justubborn
  * @since 2020/11/7
  */
 @Component
 @ConditionalOnBean(GoalieConfiguration.class)
-@Order(FilterOrders.DECRYPT)
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class DecryptFilter implements WebFilter {
 
     @Autowired

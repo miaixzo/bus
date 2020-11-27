@@ -34,6 +34,7 @@ import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.aoju.bus.starter.goalie.GoalieProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -45,14 +46,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * 加密拦截
+ * 数据加密
  *
  * @author Justubborn
  * @since 2020/10/29
  */
 @Component
 @ConditionalOnBean(GoalieConfiguration.class)
-@Order(FilterOrders.ENCRYPT)
+@Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class EncryptFilter implements WebFilter {
 
     @Autowired
@@ -60,8 +61,6 @@ public class EncryptFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
-
         Mono<Void> mono = chain.filter(exchange);
         if (encrypt.isEnabled()) {
             return mono.then(Mono.defer(() -> {

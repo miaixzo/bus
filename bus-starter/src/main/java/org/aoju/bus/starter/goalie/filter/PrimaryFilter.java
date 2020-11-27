@@ -25,9 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.starter.goalie.filter;
 
+import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.core.lang.exception.BusinessException;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -38,18 +43,19 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
- * 参数过滤
+ * 参数过滤/校验
  *
  * @author Justubborn
  * @since 2020/10/29
  */
 @Component
 @ConditionalOnBean(GoalieConfiguration.class)
-@Order(FilterOrders.FIRST)
-public class FirstFilter implements WebFilter {
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class PrimaryFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -57,12 +63,31 @@ public class FirstFilter implements WebFilter {
         if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
             MultiValueMap<String, String> params = request.getQueryParams();
             Context.get(exchange).setRequestMap(params.toSingleValueMap());
+            doParams(exchange);
             return chain.filter(exchange);
         } else {
             return exchange.getFormData().flatMap(params -> {
                 Context.get(exchange).setRequestMap(params.toSingleValueMap());
+                doParams(exchange);
                 return chain.filter(exchange);
             });
+        }
+    }
+
+    /**
+     * 参数校验
+     *
+     * @param exchange 消息
+     */
+    private void doParams(ServerWebExchange exchange) {
+        Context context = Context.get(exchange);
+        Map<String, String> params = context.getRequestMap();
+
+        if (StringKit.isBlank(params.get(Consts.METHOD))) {
+            throw new BusinessException(ErrorCode.EM_100108);
+        }
+        if (StringKit.isBlank(params.get(Consts.VERSION))) {
+            throw new BusinessException(ErrorCode.EM_100107);
         }
     }
 

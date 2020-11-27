@@ -77,7 +77,6 @@ public class GoalieConfiguration {
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
     Athlete athlete() {
-
         ApiRouterHandler apiRouterHandler = new ApiRouterHandler();
 
         RouterFunction<ServerResponse> routerFunction = RouterFunctions
@@ -97,7 +96,6 @@ public class GoalieConfiguration {
         }
 
         HandlerStrategies handlerStrategies = builder.build();
-
 
         HttpHandler handler = RouterFunctions.toHttpHandler(routerFunction, handlerStrategies);
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
