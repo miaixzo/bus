@@ -350,6 +350,16 @@ public class RuntimeKit {
     }
 
     /**
+     * 将指定的消息包装为运行时异常
+     *
+     * @param message 异常消息
+     * @return 运行时异常
+     */
+    public static RuntimeException wrapRuntime(String message) {
+        return new RuntimeException(message);
+    }
+
+    /**
      * 包装一个异常
      *
      * @param <T>           对象
@@ -378,6 +388,15 @@ public class RuntimeKit {
             throw (Error) throwable;
         }
         throw new UndeclaredThrowableException(throwable);
+    }
+
+    /**
+     * 将消息包装为运行时异常并抛出
+     *
+     * @param message 异常消息
+     */
+    public static void wrapRuntimeAndThrow(String message) {
+        throw new RuntimeException(message);
     }
 
     /**

@@ -28,6 +28,7 @@ package org.aoju.bus.core.codec;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.IoKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.File;
 import java.io.IOException;
@@ -189,6 +190,26 @@ public class Base64 {
      */
     public static String encodeUrlSafe(File file) {
         return Base64Encoder.encodeUrlSafe(FileKit.readBytes(file));
+    }
+
+    /**
+     * base64编码，不进行padding(末尾不会填充'=')
+     *
+     * @param source 被编码的base64字符串
+     * @return 被加密后的字符串
+     */
+    public static String encodeWithoutPadding(byte[] source) {
+        return java.util.Base64.getEncoder().withoutPadding().encodeToString(source);
+    }
+
+    /**
+     * base64编码，不进行padding(末尾不会填充'=')
+     *
+     * @param source 被编码的base64字符串
+     * @return 被加密后的字符串
+     */
+    public static String encodeWithoutPadding(CharSequence source, String charset) {
+        return encodeWithoutPadding(StringKit.bytes(source, charset));
     }
 
     /**
