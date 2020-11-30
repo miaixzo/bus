@@ -26,59 +26,74 @@
 package org.aoju.bus.starter.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
-import org.aoju.bus.base.entity.OAuth2;
 import org.aoju.bus.core.lang.exception.BusinessException;
-import org.aoju.bus.core.toolkit.BeanKit;
-import org.aoju.bus.goalie.Assets;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
-import org.aoju.bus.goalie.metric.Authorize;
-import org.aoju.bus.goalie.metric.Delegate;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * 权限认证
+ * 参数过滤/校验
  *
  * @author Justubborn
- * @since 2020/11/6
+ * @since 2020/10/29
  */
 @Component
 @ConditionalOnBean(GoalieConfiguration.class)
-@Order(FilterOrders.AUTH)
-public class AuthFilter implements WebFilter {
-
-    @Autowired
-    Authorize authorize;
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class PrimaryFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        Context context = Context.get(exchange);
-        Assets assets = context.getAssets();
-        Map<String, String> requestMap = context.getRequestMap();
-        if (assets.isToken()) {
-            String token = exchange.getRequest().getHeaders().getFirst(Consts.X_ACCESS_TOKEN);
-            Delegate delegate = authorize.authorize(token);
-            if (delegate.isOk()) {
-                OAuth2 auth2 = delegate.getOAuth2();
-                Map<String, Object> map = BeanKit.beanToMap(auth2, false, true);
-                map.forEach((k, v) -> requestMap.put(k, v.toString()));
-            } else {
-                throw new BusinessException(ErrorCode.EM_FAILURE, delegate.getMessage().errmsg);
-            }
-
-
+        ServerHttpRequest request = exchange.getRequest();
+        if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
+            MultiValueMap<String, String> params = request.getQueryParams();
+            Context.get(exchange).setRequestMap(params.toSingleValueMap());
+            doParams(exchange);
+            return chain.filter(exchange);
+        } else {
+            return exchange.getFormData().flatMap(params -> {
+                Context.get(exchange).setRequestMap(params.toSingleValueMap());
+                doParams(exchange);
+                return chain.filter(exchange);
+            });
         }
-        return chain.filter(exchange);
+    }
+
+    /**
+     * 参数校验
+     *
+     * @param exchange 消息
+     */
+    private void doParams(ServerWebExchange exchange) {
+        Context context = Context.get(exchange);
+        Map<String, String> params = context.getRequestMap();
+
+        if (StringKit.isBlank(params.get(Consts.METHOD))) {
+            throw new BusinessException(ErrorCode.EM_100108);
+        }
+        if (StringKit.isBlank(params.get(Consts.VERSION))) {
+            throw new BusinessException(ErrorCode.EM_100107);
+        }
+        String format = params.get(Consts.FORMAT);
+        if (StringKit.isBlank(format)) {
+            throw new BusinessException(ErrorCode.EM_100111);
+        }
+        context.setFormat(Context.Format.valueOf(format));
     }
 
 }

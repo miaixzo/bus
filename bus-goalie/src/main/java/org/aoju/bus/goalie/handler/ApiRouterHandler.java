@@ -25,9 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.handler;
 
-import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.goalie.Assets;
 import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -35,7 +33,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -78,23 +75,15 @@ public class ApiRouterHandler {
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-                .method(assets.getHttpMethod())
-                .uri(builder.build().toUri())
-                .headers((headers) -> request.headers());
+            .method(assets.getHttpMethod())
+            .uri(builder.build().toUri())
+            .headers((headers) -> request.headers());
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             bodySpec.bodyValue(multiValueMap);
         }
-        return bodySpec
-                .exchange()
-                .flatMap(clientResponse -> {
-                    if (clientResponse.statusCode().is2xxSuccessful()) {
-                        Flux<DataBuffer> flux = clientResponse.body(BodyExtractors.toDataBuffers());
-                        context.setBody(flux);
-                        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(flux, DataBuffer.class);
-                    }
-                    return Mono.error(new BusinessException(ErrorCode.EM_100509));
-                });
-
+        Flux<DataBuffer> flux = bodySpec
+                .exchangeToFlux(response -> response.bodyToFlux(DataBuffer.class));
+        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(flux, DataBuffer.class);
     }
 
 }

@@ -77,7 +77,6 @@ public class GoalieConfiguration {
 
     @Bean(initMethod = "init", destroyMethod = "destroy")
     Athlete athlete() {
-
         ApiRouterHandler apiRouterHandler = new ApiRouterHandler();
 
         RouterFunction<ServerResponse> routerFunction = RouterFunctions
@@ -95,9 +94,7 @@ public class GoalieConfiguration {
             AnnotationAwareOrderComparator.sort(webFilters);
             webFilters.forEach(builder::webFilter);
         }
-
         HandlerStrategies handlerStrategies = builder.build();
-
 
         HttpHandler handler = RouterFunctions.toHttpHandler(routerFunction, handlerStrategies);
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);

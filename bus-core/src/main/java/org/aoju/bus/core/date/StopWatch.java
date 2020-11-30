@@ -121,6 +121,16 @@ public class StopWatch {
     }
 
     /**
+     * 创建计时任务（秒表）
+     *
+     * @param id 用于标识秒表的唯一ID
+     * @return StopWatch
+     */
+    public static StopWatch create(String id) {
+        return new StopWatch(id);
+    }
+
+    /**
      * 获取{@link StopWatch} 的ID,用于多个秒表对象的区分
      *
      * @return the ID 空字符串为

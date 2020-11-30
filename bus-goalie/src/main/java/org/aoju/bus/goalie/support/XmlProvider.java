@@ -27,7 +27,10 @@ package org.aoju.bus.goalie.support;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.XmlKit;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Provider;
+
+import java.util.Map;
 
 /**
  * Xml序列化
@@ -41,11 +44,16 @@ public class XmlProvider implements Provider {
     @Override
     public String serialize(Object obj) {
         try {
-            return XmlKit.beanToXml(obj);
+            StringBuffer buffer = new StringBuffer();
+            buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            Map<String, Object> map = JsonKit.getProvider().toMap(obj);
+            XmlKit.toXml(map, buffer);
+            return buffer.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Normal.EMPTY;
     }
+
 
 }

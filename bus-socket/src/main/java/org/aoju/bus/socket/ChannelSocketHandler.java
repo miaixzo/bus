@@ -37,12 +37,12 @@ import java.nio.channels.SocketChannel;
 @FunctionalInterface
 public interface ChannelSocketHandler {
 
-	/**
-	 * 处理NIO数据
-	 *
-	 * @param socketChannel {@link SocketChannel}
-	 * @throws Exception 可能的处理异常
-	 */
-	void handle(SocketChannel socketChannel) throws Exception;
+    /**
+     * 处理NIO数据
+     *
+     * @param socketChannel {@link SocketChannel}
+     * @throws Exception 可能的处理异常
+     */
+    void handle(SocketChannel socketChannel) throws Exception;
 
 }

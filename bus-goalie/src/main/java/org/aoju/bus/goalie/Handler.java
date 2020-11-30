@@ -58,7 +58,6 @@ public interface Handler {
      * @param service  service类
      * @param args     参数
      * @param result   返回结果
-     * @throws Exception 异常
      */
     default void postHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
                             Object result) {
@@ -74,7 +73,6 @@ public interface Handler {
      * @param args      参数
      * @param result    最终结果，被包装过
      * @param exception 业务异常
-     * @throws Exception 异常
      */
     default void afterCompletion(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
                                  Object result, Exception exception) {

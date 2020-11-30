@@ -1159,6 +1159,35 @@ public class XmlKit {
     }
 
     /**
+     * map 转xml
+     * @param map map 对象
+     * @param buffer 返回字符
+     */
+    @SuppressWarnings("unchecked")
+    public static void toXml(Map<String, Object> map, StringBuffer buffer) {
+        map.forEach((key, value) -> {
+            if (value instanceof Map) {
+                buffer.append("<").append(key).append(">");
+                toXml((Map<String, Object>) value, buffer);
+                buffer.append("</").append(key).append(">");
+            } else if (value instanceof List) {
+                List<Object> list = (List<Object>) value;
+                for (Object object : list) {
+                    buffer.append("<").append(key).append(">");
+                    toXml((Map<String, Object>) object, buffer);
+                    buffer.append("</").append(key).append(">");
+                }
+            } else {
+                buffer.append("<").append(key).append(">")
+                        .append(value)
+                        .append("</").append(key).append(">");
+            }
+
+        });
+
+    }
+
+    /**
      * 关闭XXE,避免漏洞攻击
      * see: https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
      *

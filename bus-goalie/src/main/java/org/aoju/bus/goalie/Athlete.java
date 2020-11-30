@@ -56,6 +56,24 @@ public class Athlete {
         return assets;
     }
 
+    public boolean addAssets(Assets assets) {
+        return this.assets.add(assets);
+    }
+
+    public boolean amendAssets(Assets assets) {
+        if (this.assets.contains(assets)) {
+            this.assets.remove(assets);
+            return this.assets.add(assets);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean removeAssets(Assets assets) {
+        return this.assets.remove(assets);
+    }
+
+
     private void init() {
         if (CollKit.isNotEmpty(assetRegistries)) {
             assetRegistries.forEach(registry -> assets.addAll(registry.init()));

@@ -450,7 +450,7 @@ public class ZipKit {
      */
     public static File unzip(ZipFile zipFile, File outFile) {
         try {
-            final Enumeration<ZipEntry> em = (Enumeration<ZipEntry>) zipFile.entries();
+            final Enumeration<? extends ZipEntry> em = zipFile.entries();
             ZipEntry zipEntry;
             File outItemFile;
             while (em.hasMoreElements()) {
@@ -1182,6 +1182,40 @@ public class ZipKit {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 获取压缩包中的指定文件流
+     *
+     * @param zipFile 压缩文件
+     * @param path    需要提取文件的文件名或路径
+     * @return 压缩文件流，如果未找到返回{@code null}
+     */
+    public static InputStream get(File zipFile, Charset charset, String path) {
+        try {
+            return get(new ZipFile(zipFile, charset), path);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 获取压缩包中的指定文件流
+     *
+     * @param zipFile 压缩文件
+     * @param path    需要提取文件的文件名或路径
+     * @return 压缩文件流，如果未找到返回{@code null}
+     */
+    public static InputStream get(ZipFile zipFile, String path) {
+        final ZipEntry entry = zipFile.getEntry(path);
+        if (null != entry) {
+            try {
+                return zipFile.getInputStream(entry);
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
+        }
+        return null;
     }
 
 }

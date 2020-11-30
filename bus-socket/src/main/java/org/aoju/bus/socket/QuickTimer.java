@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,7 +27,10 @@ package org.aoju.bus.socket;
 
 import org.aoju.bus.logger.Logger;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 服务器定时任务
@@ -38,18 +41,15 @@ import java.util.concurrent.*;
  */
 public abstract class QuickTimer implements Runnable {
 
-    public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = new ScheduledThreadPoolExecutor(1, new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread thread = new Thread(r, "Quick Timer");
-            thread.setDaemon(true);
-            return thread;
-        }
+    public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE = new ScheduledThreadPoolExecutor(1, r -> {
+        Thread thread = new Thread(r, "Quick Timer");
+        thread.setDaemon(true);
+        return thread;
     });
 
     public QuickTimer() {
         SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(this, getDelay(), getPeriod(), TimeUnit.MILLISECONDS);
-        Logger.info("Regist QuickTimerTask---- " + this.getClass().getSimpleName());
+        Logger.info("Register QuickTimer---- " + this.getClass().getSimpleName());
     }
 
     public static void cancelQuickTask() {

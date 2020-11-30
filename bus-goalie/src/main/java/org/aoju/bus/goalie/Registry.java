@@ -37,4 +37,9 @@ public interface Registry {
 
     Set<Assets> init();
 
+    boolean add(Assets assets);
+
+    boolean remove(String id);
+
+
 }
