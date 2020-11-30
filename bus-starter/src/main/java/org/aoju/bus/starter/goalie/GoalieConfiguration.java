@@ -94,7 +94,6 @@ public class GoalieConfiguration {
             AnnotationAwareOrderComparator.sort(webFilters);
             webFilters.forEach(builder::webFilter);
         }
-
         HandlerStrategies handlerStrategies = builder.build();
 
         HttpHandler handler = RouterFunctions.toHttpHandler(routerFunction, handlerStrategies);

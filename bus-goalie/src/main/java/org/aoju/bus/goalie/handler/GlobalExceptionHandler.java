@@ -30,7 +30,6 @@ import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.RuntimeKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.logger.Logger;
@@ -61,7 +60,8 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.BAD_REQUEST);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        Map<String, String> map = Context.get(exchange).getRequestMap();
+        Context context = Context.get(exchange);
+        Map<String, String> map = context.getRequestMap();
         String method = null;
         if (null != map) {
             method = map.get(Consts.METHOD);
@@ -80,7 +80,8 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         } else {
             message = Controller.write(ErrorCode.EM_100513);
         }
-        DataBuffer db = response.bufferFactory().wrap(JsonKit.toJsonString(message).getBytes());
+        String formatBody = context.getFormat().getProvider().serialize(message);
+        DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes());
         return response.writeWith(Mono.just(db));
     }
 

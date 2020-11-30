@@ -37,6 +37,8 @@ public interface Consts {
 
     String VERSION = "v";
 
+    String FORMAT = "format";
+
     String X_ACCESS_TOKEN = "X-Access-Token";
 
 }

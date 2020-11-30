@@ -89,6 +89,11 @@ public class PrimaryFilter implements WebFilter {
         if (StringKit.isBlank(params.get(Consts.VERSION))) {
             throw new BusinessException(ErrorCode.EM_100107);
         }
+        String format = params.get(Consts.FORMAT);
+        if (StringKit.isBlank(format)) {
+            throw new BusinessException(ErrorCode.EM_100111);
+        }
+        context.setFormat(Context.Format.valueOf(format));
     }
 
 }

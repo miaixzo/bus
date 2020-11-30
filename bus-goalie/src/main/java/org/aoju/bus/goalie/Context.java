@@ -25,11 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.goalie;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.core.io.buffer.DataBuffer;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.aoju.bus.goalie.support.JsonProvider;
+import org.aoju.bus.goalie.support.XmlProvider;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 
 import java.util.Map;
 import java.util.Optional;
@@ -53,12 +57,9 @@ public class Context {
      */
     private Map<String, String> requestMap;
 
-    /**
-     * 返回body
-     */
-    private Flux<DataBuffer> body;
-
     private Assets assets;
+
+    private Format format = Format.json;
 
     public static Context get(ServerWebExchange exchange) {
         Context context = exchange.getAttribute(Context.$);
@@ -78,4 +79,15 @@ public class Context {
         });
     }
 
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public enum Format {
+        xml(new XmlProvider(), MediaType.APPLICATION_XML),
+        json(new JsonProvider(), MediaType.APPLICATION_JSON),
+        binary;
+        private Provider provider;
+
+        private MediaType mediaType;
+    }
 }
