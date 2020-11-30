@@ -83,7 +83,7 @@ public class Context {
     @NoArgsConstructor
     @AllArgsConstructor
     public enum Format {
-        xml(new XmlProvider(), MediaType.APPLICATION_XML),
+        xml(new XmlProvider(), MediaType.parseMediaType(MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8")),
         json(new JsonProvider(), MediaType.APPLICATION_JSON),
         binary;
         private Provider provider;

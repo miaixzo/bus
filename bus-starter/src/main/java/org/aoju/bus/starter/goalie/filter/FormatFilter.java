@@ -1,5 +1,7 @@
 package org.aoju.bus.starter.goalie.filter;
 
+import org.aoju.bus.base.entity.Message;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.reactivestreams.Publisher;
@@ -49,7 +51,8 @@ public class FormatFilter implements WebFilter {
                     exchange.getResponse().getHeaders().setContentType(context.getFormat().getMediaType());
 
                     String bodyString = Charset.defaultCharset().decode(dataBuffer.asByteBuffer()).toString();
-                    String formatBody = context.getFormat().getProvider().serialize(bodyString);
+                    Message message = JsonKit.toPojo(bodyString,Message.class);
+                    String formatBody = context.getFormat().getProvider().serialize(message);
                     return bufferFactory().wrap(formatBody.getBytes());
                 }));
             }
