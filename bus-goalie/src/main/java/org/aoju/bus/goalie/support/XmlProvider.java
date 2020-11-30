@@ -25,14 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.support;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.toolkit.XmlKit;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Provider;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Xml序列化
@@ -48,42 +46,13 @@ public class XmlProvider implements Provider {
         try {
             StringBuffer buffer = new StringBuffer();
             buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            JSONObject jObj = JSON.parseObject(JSON.toJSONString(obj));
-            json2Xml(jObj, buffer);
+            Map<String, Object> map = JsonKit.getProvider().toMap(obj);
+            XmlKit.toXml(map, buffer);
             return buffer.toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Normal.EMPTY;
-    }
-
-
-    public static void json2Xml(JSONObject jObj, StringBuffer buffer) {
-        Set<Map.Entry<String, Object>> se = jObj.entrySet();
-        for (Map.Entry<String, Object> en : se) {
-            switch (en.getValue().getClass().getName()) {
-                case "com.alibaba.fastjson.JSONObject":
-                    buffer.append("<").append(en.getKey()).append(">");
-                    JSONObject jo = jObj.getJSONObject(en.getKey());
-                    json2Xml(jo, buffer);
-                    buffer.append("</").append(en.getKey()).append(">");
-                    break;
-                case "com.alibaba.fastjson.JSONArray":
-                    JSONArray jsonArray = jObj.getJSONArray(en.getKey());
-                    for (int i = 0; i < jsonArray.size(); i++) {
-                        buffer.append("<").append(en.getKey()).append(">");
-                        JSONObject jsonobject = jsonArray.getJSONObject(i);
-                        json2Xml(jsonobject, buffer);
-                        buffer.append("</").append(en.getKey()).append(">");
-                    }
-                    break;
-                case "java.lang.String":
-                    buffer.append("<").append(en.getKey()).append(">").append(en.getValue());
-                    buffer.append("</").append(en.getKey()).append(">");
-                    break;
-            }
-
-        }
     }
 
 
