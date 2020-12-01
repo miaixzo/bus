@@ -1160,7 +1160,8 @@ public class XmlKit {
 
     /**
      * map 转xml
-     * @param map map 对象
+     *
+     * @param map    map 对象
      * @param buffer 返回字符
      */
     @SuppressWarnings("unchecked")

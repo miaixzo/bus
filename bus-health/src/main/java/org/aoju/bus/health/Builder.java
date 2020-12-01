@@ -40,7 +40,6 @@ import org.aoju.bus.health.builtin.*;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.setting.dialect.Props;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -729,10 +728,10 @@ public final class Builder {
      * Read a configuration file from the class path and return its properties
      *
      * @param fileName The filename
-     * @return A {@link Properties} object containing the properties.
+     * @return A {@link java.util.Properties} object containing the properties.
      */
-    public static Properties readProperties(String fileName) {
-        return Props.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName, Builder.class);
+    public static java.util.Properties readProperties(String fileName) {
+        return org.aoju.bus.setting.magic.Properties.getProp(Symbol.SLASH + Normal.META_DATA_INF + "/healthy/" + fileName, Builder.class);
     }
 
     /**

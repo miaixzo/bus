@@ -429,7 +429,7 @@ public class FileKit {
             return fileList;
         }
 
-        loopFiles(path, maxDepth, new SimpleFileVisitor<Path>() {
+        walkFiles(path, maxDepth, new SimpleFileVisitor<Path>() {
 
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
@@ -447,12 +447,23 @@ public class FileKit {
     /**
      * 遍历指定path下的文件并做处理
      *
+     * @param start   起始路径，必须为目录
+     * @param visitor {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
+     * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
+     */
+    public static void walkFiles(Path start, FileVisitor<? super Path> visitor) {
+        walkFiles(start, -1, visitor);
+    }
+
+    /**
+     * 遍历指定path下的文件并做处理
+     *
      * @param start    起始路径，必须为目录
      * @param maxDepth 最大遍历深度，-1表示不限制深度
      * @param visitor  {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
      * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
      */
-    public static void loopFiles(Path start, int maxDepth, FileVisitor<? super Path> visitor) {
+    public static void walkFiles(Path start, int maxDepth, FileVisitor<? super Path> visitor) {
         if (maxDepth < 0) {
             maxDepth = Integer.MAX_VALUE;
         }
@@ -3872,6 +3883,17 @@ public class FileKit {
      */
     public static Resource getResourceObj(String path) {
         return FileKit.isAbsolutePath(path) ? new FileResource(path) : new ClassPathResource(path);
+    }
+
+    /**
+     * 根据文件名检查文件类型，忽略大小写
+     *
+     * @param fileName 文件名，例如bus.png
+     * @param extNames 被检查的扩展名数组，同一文件类型可能有多种扩展名，扩展名不带“.”
+     * @return 是否是指定扩展名的类型
+     */
+    public static boolean isType(String fileName, String... extNames) {
+        return StringKit.equalsAnyIgnoreCase(extName(fileName), extNames);
     }
 
     /**

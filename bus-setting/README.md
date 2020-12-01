@@ -1,10 +1,10 @@
 ### 读取 properties
 ```java
-    Props props = new Props("test.properties");
-    String user = props.getProperty("user");
+    Properties properties = new Properties("test.properties");
+    String user = properties.getProperty("user");
     Assert.assertEquals(user, "root");
 
-    String driver = props.getStr("driver");
+    String driver = properties.getStr("driver");
     Assert.assertEquals(driver, "com.mysql.jdbc.Driver");
     
     // 或者使用

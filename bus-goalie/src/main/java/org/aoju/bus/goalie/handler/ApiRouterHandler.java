@@ -75,9 +75,9 @@ public class ApiRouterHandler {
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-            .method(assets.getHttpMethod())
-            .uri(builder.build().toUri())
-            .headers((headers) -> request.headers());
+                .method(assets.getHttpMethod())
+                .uri(builder.build().toUri())
+                .headers((headers) -> request.headers());
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             bodySpec.bodyValue(multiValueMap);
         }

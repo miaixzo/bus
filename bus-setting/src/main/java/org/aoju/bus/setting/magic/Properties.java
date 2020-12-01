@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.setting.dialect;
+package org.aoju.bus.setting.magic;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.getter.BasicType;
@@ -53,7 +53,6 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.util.Date;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Properties文件读取封装类
@@ -62,7 +61,7 @@ import java.util.Properties;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public final class Props extends Properties implements BasicType<String>, OptBasicType<String> {
+public final class Properties extends java.util.Properties implements BasicType<String>, OptBasicType<String> {
 
     private static final long serialVersionUID = 1L;
 
@@ -79,7 +78,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
     /**
      * 构造
      */
-    public Props() {
+    public Properties() {
         super();
     }
 
@@ -88,7 +87,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      *
      * @param path 路径
      */
-    public Props(String path) {
+    public Properties(String path) {
         this(path, Charset.ISO_8859_1);
     }
 
@@ -98,7 +97,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param path        相对或绝对路径
      * @param charsetName 字符集
      */
-    public Props(String path, String charsetName) {
+    public Properties(String path, String charsetName) {
         this(path, Charset.charset(charsetName));
     }
 
@@ -108,7 +107,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param path    相对或绝对路径
      * @param charset 字符集
      */
-    public Props(String path, java.nio.charset.Charset charset) {
+    public Properties(String path, java.nio.charset.Charset charset) {
         Assert.notBlank(path, "Blank properties file path !");
         if (null != charset) {
             this.charset = charset;
@@ -121,7 +120,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      *
      * @param propertiesFile 配置文件对象
      */
-    public Props(File propertiesFile) {
+    public Properties(File propertiesFile) {
         this(propertiesFile, StandardCharsets.ISO_8859_1);
     }
 
@@ -131,7 +130,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param propertiesFile 配置文件对象
      * @param charsetName    字符集
      */
-    public Props(File propertiesFile, String charsetName) {
+    public Properties(File propertiesFile, String charsetName) {
         this(propertiesFile, java.nio.charset.Charset.forName(charsetName));
     }
 
@@ -141,7 +140,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param propertiesFile 配置文件对象
      * @param charset        字符集
      */
-    public Props(File propertiesFile, java.nio.charset.Charset charset) {
+    public Properties(File propertiesFile, java.nio.charset.Charset charset) {
         Assert.notNull(propertiesFile, "Null properties file!");
         this.charset = charset;
         this.load(new FileResource(propertiesFile));
@@ -153,7 +152,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param path  相对路径
      * @param clazz 基准类
      */
-    public Props(String path, Class<?> clazz) {
+    public Properties(String path, Class<?> clazz) {
         this(path, clazz, Charset.ISO_8859_1);
     }
 
@@ -164,7 +163,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param clazz       基准类
      * @param charsetName 字符集
      */
-    public Props(String path, Class<?> clazz, String charsetName) {
+    public Properties(String path, Class<?> clazz, String charsetName) {
         this(path, clazz, Charset.charset(charsetName));
     }
 
@@ -175,7 +174,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param clazz   基准类
      * @param charset 字符集
      */
-    public Props(String path, Class<?> clazz, java.nio.charset.Charset charset) {
+    public Properties(String path, Class<?> clazz, java.nio.charset.Charset charset) {
         Assert.notBlank(path, "Blank properties file path !");
         if (null != charset) {
             this.charset = charset;
@@ -188,7 +187,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      *
      * @param propertiesUrl 属性文件路径
      */
-    public Props(URL propertiesUrl) {
+    public Properties(URL propertiesUrl) {
         this(propertiesUrl, Charset.ISO_8859_1);
     }
 
@@ -198,7 +197,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param propertiesUrl 属性文件路径
      * @param charsetName   字符集
      */
-    public Props(URL propertiesUrl, String charsetName) {
+    public Properties(URL propertiesUrl, String charsetName) {
         this(propertiesUrl, Charset.charset(charsetName));
     }
 
@@ -208,7 +207,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param propertiesUrl 属性文件路径
      * @param charset       字符集
      */
-    public Props(URL propertiesUrl, java.nio.charset.Charset charset) {
+    public Properties(URL propertiesUrl, java.nio.charset.Charset charset) {
         Assert.notNull(propertiesUrl, "Null properties URL !");
         if (null != charset) {
             this.charset = charset;
@@ -221,7 +220,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      *
      * @param properties 属性文件路径
      */
-    public Props(Properties properties) {
+    public Properties(java.util.Properties properties) {
         if (CollKit.isNotEmpty(properties)) {
             this.putAll(properties);
         }
@@ -233,8 +232,8 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param resource 资源(相对Classpath的路径)
      * @return Properties
      */
-    public static Properties getProp(String resource) {
-        return new Props(resource);
+    public static java.util.Properties getProp(String resource) {
+        return new Properties(resource);
     }
 
     /**
@@ -244,8 +243,8 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param charsetName 字符集
      * @return Properties
      */
-    public static Properties getProp(String resource, String charsetName) {
-        return new Props(resource, charsetName);
+    public static java.util.Properties getProp(String resource, String charsetName) {
+        return new Properties(resource, charsetName);
     }
 
     /**
@@ -255,8 +254,8 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param charset  字符集
      * @return Properties
      */
-    public static Properties getProp(String resource, java.nio.charset.Charset charset) {
-        return new Props(resource, charset);
+    public static java.util.Properties getProp(String resource, java.nio.charset.Charset charset) {
+        return new Properties(resource, charset);
     }
 
     /**
@@ -266,21 +265,31 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * @param clazz    基准类
      * @return Properties
      */
-    public static Properties getProp(String resource, Class<?> clazz) {
-        return new Props(resource, clazz);
+    public static java.util.Properties getProp(String resource, Class<?> clazz) {
+        return new Properties(resource, clazz);
     }
 
     /**
      * 初始化配置文件
      *
-     * @param urlResource {@link UriResource}
+     * @param url {@link URL}
      */
-    public void load(Resource urlResource) {
-        this.propertiesFileUrl = urlResource.getUrl();
+    public void load(URL url) {
+        load(new UriResource(url));
+    }
+
+    /**
+     * 初始化配置文件
+     *
+     * @param resource {@link Resource}
+     */
+    public void load(Resource resource) {
+        this.propertiesFileUrl = resource.getUrl();
         if (null == this.propertiesFileUrl) {
-            throw new InstrumentException("Can not find properties file: [{}]", urlResource);
+            throw new InstrumentException("Can not find properties file: [{}]", resource);
         }
-        try (final BufferedReader reader = urlResource.getReader(charset)) {
+
+        try (final BufferedReader reader = resource.getReader(charset)) {
             super.load(reader);
         } catch (IOException e) {
             throw new InstrumentException(e);
@@ -291,7 +300,7 @@ public final class Props extends Properties implements BasicType<String>, OptBas
      * 重新加载配置文件
      */
     public void load() {
-        this.load(new UriResource(this.propertiesFileUrl));
+        this.load(this.propertiesFileUrl);
     }
 
     /**

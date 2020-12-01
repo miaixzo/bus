@@ -205,7 +205,8 @@ public class Base64 {
     /**
      * base64编码，不进行padding(末尾不会填充'=')
      *
-     * @param source 被编码的base64字符串
+     * @param source  被编码的base64字符串
+     * @param charset 编码
      * @return 被加密后的字符串
      */
     public static String encodeWithoutPadding(CharSequence source, String charset) {

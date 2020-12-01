@@ -122,16 +122,16 @@ public class Readers {
     /**
      * 加载设置文件
      *
-     * @param uriResource 配置文件URL
+     * @param resource 配置文件URL
      * @return 加载是否成功
      */
-    public boolean load(UriResource uriResource) {
-        if (uriResource == null) {
+    public boolean load(UriResource resource) {
+        if (resource == null) {
             throw new NullPointerException("Null setting url define!");
         }
         InputStream settingStream;
         try {
-            settingStream = uriResource.getStream();
+            settingStream = resource.getStream();
             load(settingStream);
         } catch (Exception e) {
             return false;

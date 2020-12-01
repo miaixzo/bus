@@ -26,10 +26,12 @@
 package org.aoju.bus.core.io.resource;
 
 import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.core.toolkit.UriKit;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
 
 /**
  * 文件资源访问对象
@@ -38,7 +40,19 @@ import java.io.File;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public class FileResource extends UriResource {
+public class FileResource implements Resource {
+
+    private final File file;
+
+    /**
+     * 构造
+     *
+     * @param path 文件
+     * @since 4.4.1
+     */
+    public FileResource(Path path) {
+        this(path.toFile());
+    }
 
     /**
      * 构造
@@ -53,19 +67,53 @@ public class FileResource extends UriResource {
      * 构造
      *
      * @param file     文件
-     * @param fileName 文件名,如果为null获取文件本身的文件名
+     * @param fileName 文件名，如果为null获取文件本身的文件名
      */
     public FileResource(File file, String fileName) {
-        super(UriKit.getURL(file), StringKit.isBlank(fileName) ? file.getName() : fileName);
+        this.file = file;
     }
 
     /**
      * 构造
      *
-     * @param path 文件绝对路径或相对ClassPath路径,但是这个路径不能指向一个jar包中的文件
+     * @param path 文件绝对路径或相对ClassPath路径，但是这个路径不能指向一个jar包中的文件
      */
     public FileResource(String path) {
         this(FileKit.file(path));
+    }
+
+    @Override
+    public String getName() {
+        return this.file.getName();
+    }
+
+    @Override
+    public URL getUrl() {
+        return UriKit.getURL(this.file);
+    }
+
+    @Override
+    public InputStream getStream() {
+        return FileKit.getInputStream(this.file);
+    }
+
+    /**
+     * 获取文件
+     *
+     * @return 文件
+     */
+    public File getFile() {
+        return this.file;
+    }
+
+    /**
+     * 返回路径
+     *
+     * @return 返回URL路径
+     */
+    @Override
+    public String toString() {
+        return (null == this.file) ? "null" : this.file.toString();
     }
 
 }

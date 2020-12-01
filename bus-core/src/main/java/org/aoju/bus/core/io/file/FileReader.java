@@ -270,17 +270,33 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 将文件写入流中
+     * 将文件写入流中，此方法不会关闭比输出流
      *
      * @param out 流
-     * @return File
-     * @throws InstrumentException 异常
+     * @return 写出的流byte数
+     * @throws InstrumentException IO异常
      */
     public long writeToStream(OutputStream out) throws InstrumentException {
+        return writeToStream(out, false);
+    }
+
+    /**
+     * 将文件写入流中
+     *
+     * @param out     流
+     * @param isClose 是否关闭输出流
+     * @return 写出的流byte数
+     * @throws InstrumentException IO异常
+     */
+    public long writeToStream(OutputStream out, boolean isClose) throws InstrumentException {
         try (FileInputStream in = new FileInputStream(this.file)) {
             return IoKit.copy(in, out);
         } catch (IOException e) {
             throw new InstrumentException(e);
+        } finally {
+            if (isClose) {
+                IoKit.close(out);
+            }
         }
     }
 

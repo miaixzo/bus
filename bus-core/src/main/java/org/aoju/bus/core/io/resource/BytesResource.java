@@ -28,10 +28,8 @@ package org.aoju.bus.core.io.resource;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -81,11 +79,6 @@ public class BytesResource implements Resource {
     @Override
     public InputStream getStream() {
         return new ByteArrayInputStream(this.bytes);
-    }
-
-    @Override
-    public BufferedReader getReader(Charset charset) {
-        return new BufferedReader(new StringReader(readString(charset)));
     }
 
     @Override

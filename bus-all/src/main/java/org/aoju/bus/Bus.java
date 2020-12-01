@@ -26,6 +26,11 @@
 package org.aoju.bus;
 
 import org.aoju.bus.core.Version;
+import org.aoju.bus.core.lang.Console;
+import org.aoju.bus.core.lang.Scaner;
+import org.aoju.bus.core.toolkit.StringKit;
+
+import java.util.Set;
 
 /**
  * <p>
@@ -46,60 +51,26 @@ import org.aoju.bus.core.Version;
  * @version 6.1.2
  * @since JDK 1.8+
  */
-public class Bus {
+public class Bus extends Version {
 
     /**
-     * 版本号信息
-     *
-     * @return 版本号
+     * 显示所有的工具类
      */
-    public static String get() {
-        return Version.get();
+    public static Set<Class<?>> getAll() {
+        return Scaner.scanPackage("org.aoju",
+                (clazz) -> (false == clazz.isInterface()) && StringKit.endWith(clazz.getSimpleName(), "Kit"));
     }
 
     /**
-     * 主要版本号
-     *
-     * @return 版本号
+     * 控制台打印所有工具类
      */
-    public static String major() {
-        return Version.major();
-    }
-
-    /**
-     * 次要版本号
-     *
-     * @return 次要号
-     */
-    public static String minor() {
-        return Version.minor();
-    }
-
-    /**
-     * 阶段版本号
-     *
-     * @return 阶段号
-     */
-    public static String stage() {
-        return Version.stage();
-    }
-
-    /**
-     * 版本质量
-     *
-     * @return 质量
-     */
-    public static String level() {
-        return Version.level();
-    }
-
-    /**
-     * 完整版本号
-     *
-     * @return the agent
-     */
-    public static String all() {
-        return Version.all();
+    public static void print() {
+        final Set<Class<?>> allUtils = getAll();
+        final Console.Table table = Console.Table.create().addHeader("Kit name", "Package");
+        for (Class<?> clazz : allUtils) {
+            table.addBody(clazz.getSimpleName(), clazz.getPackage().getName());
+        }
+        table.print();
     }
 
 }

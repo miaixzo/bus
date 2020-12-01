@@ -468,14 +468,26 @@ public class IoKit {
     }
 
     /**
-     * 从Reader中读取String,读取完毕后并不关闭Reader
+     * 从Reader中读取String,读取完毕后并关闭Reader
      *
      * @param reader Reader
      * @return String
      * @throws InstrumentException 异常
      */
     public static String read(Reader reader) throws InstrumentException {
-        final StringBuilder builder = new StringBuilder();
+        return read(reader, true);
+    }
+
+    /**
+     * 从{@link Reader}中读取String
+     *
+     * @param reader  {@link Reader}
+     * @param isClose 是否关闭{@link Reader}
+     * @return String
+     * @throws InstrumentException IO异常
+     */
+    public static String read(Reader reader, boolean isClose) throws InstrumentException {
+        final StringBuilder builder = StringKit.builder();
         final CharBuffer buffer = CharBuffer.allocate(DEFAULT_BUFFER_SIZE);
         try {
             while (-1 != reader.read(buffer)) {
@@ -483,6 +495,10 @@ public class IoKit {
             }
         } catch (IOException e) {
             throw new InstrumentException(e);
+        } finally {
+            if (isClose) {
+                IoKit.close(reader);
+            }
         }
         return builder.toString();
     }

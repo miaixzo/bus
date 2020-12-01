@@ -28,15 +28,12 @@ package org.aoju.bus.core.io.resource;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
-import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.UriKit;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 /**
  * URL资源访问类
@@ -86,39 +83,6 @@ public class UriResource implements Resource {
             throw new InstrumentException("Resource URL is null!");
         }
         return UriKit.getStream(url);
-    }
-
-    /**
-     * 获得Reader
-     *
-     * @param charset 编码
-     * @return {@link BufferedReader}
-     */
-    @Override
-    public BufferedReader getReader(Charset charset) {
-        return UriKit.getReader(this.url, charset);
-    }
-
-    @Override
-    public String readString(Charset charset) throws InstrumentException {
-        BufferedReader reader = null;
-        try {
-            reader = getReader(charset);
-            return IoKit.read(reader);
-        } finally {
-            IoKit.close(reader);
-        }
-    }
-
-    @Override
-    public byte[] readBytes() throws InstrumentException {
-        InputStream in = null;
-        try {
-            in = getStream();
-            return IoKit.readBytes(in);
-        } finally {
-            IoKit.close(in);
-        }
     }
 
     /**

@@ -1393,6 +1393,17 @@ public class UriKit {
     }
 
     /**
+     * 获取string协议的URL，类似于string:///xxxxx
+     *
+     * @param content 正文
+     * @return URL
+     */
+    public static URI getStringURI(CharSequence content) {
+        final String contentStr = StringKit.addPrefixIfNot(content, "string:///");
+        return URI.create(contentStr);
+    }
+
+    /**
      * 获取协议，例如http
      *
      * @return 协议，例如http
