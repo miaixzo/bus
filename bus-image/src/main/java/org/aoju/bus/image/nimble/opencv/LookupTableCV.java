@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
@@ -237,11 +238,11 @@ public class LookupTableCV {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
             short[] sDstData =
                     !scrByte && channels >= lkbBands ? sSrcData : new short[width * height * lkbBands];
-            if (scrByte) {
+            if (scrByte && ObjectKit.isNotNull(bSrcData) && ObjectKit.isNotNull(sTblData)) {
                 lookup(bSrcData, sDstData, tblOffsets, sTblData);
-            } else if (srcDataType == DataBuffer.TYPE_USHORT) {
+            } else if (srcDataType == DataBuffer.TYPE_USHORT && ObjectKit.isNotNull(sSrcData) && ObjectKit.isNotNull(sTblData)) {
                 lookupU(sSrcData, sDstData, tblOffsets, sTblData);
-            } else if (srcDataType == DataBuffer.TYPE_SHORT) {
+            } else if (srcDataType == DataBuffer.TYPE_SHORT && ObjectKit.isNotNull(sSrcData) && ObjectKit.isNotNull(sTblData)) {
                 lookup(sSrcData, sDstData, tblOffsets, sTblData);
             } else {
                 throw new IllegalArgumentException(
