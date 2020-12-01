@@ -63,7 +63,6 @@ public class FormatFilter implements WebFilter {
             exchange = exchange.mutate().response(process(exchange)).build();
         }
         return chain.filter(exchange);
-
     }
 
     private ServerHttpResponseDecorator process(ServerWebExchange exchange) {
@@ -83,4 +82,5 @@ public class FormatFilter implements WebFilter {
             }
         };
     }
+
 }
