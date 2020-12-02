@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.annotation;
 
-import org.aoju.bus.core.Version;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -45,4 +45,40 @@ public @interface TerminalVersion {
 
     String version() default Normal.EMPTY;
 
+    /**
+     * 版本
+     */
+    enum Version {
+
+        NIL(Normal.EMPTY),
+        LT(Symbol.LT),
+        GT(Symbol.GT),
+        GTE(Symbol.GT + Symbol.EQUAL),
+        LE(Symbol.LE),
+        LTE(Symbol.LE + Symbol.EQUAL),
+        GE(Symbol.GE),
+        NE(Symbol.NOT + Symbol.EQUAL),
+        EQ(Symbol.EQUAL + Symbol.EQUAL);
+
+
+        private final String code;
+
+        Version(String code) {
+            this.code = code;
+        }
+
+        public static Version parse(String code) {
+            for (Version operator : Version.values()) {
+                if (operator.getCode().equalsIgnoreCase(code)) {
+                    return operator;
+                }
+            }
+            return null;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+    }
 }
