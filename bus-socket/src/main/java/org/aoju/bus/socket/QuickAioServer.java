@@ -48,7 +48,7 @@ import java.util.function.Function;
  *
  * @param <T> 消息对象类型
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public final class QuickAioServer<T> {

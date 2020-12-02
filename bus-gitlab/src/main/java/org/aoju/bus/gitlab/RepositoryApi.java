@@ -47,7 +47,7 @@ import java.util.stream.Stream;
  * <a href="https://docs.gitlab.com/ce/api/branches.html">Branches API</a>
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class RepositoryApi extends AbstractApi {

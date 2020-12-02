@@ -38,7 +38,7 @@ import java.sql.SQLException;
  * 数据库查询工厂
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @Data

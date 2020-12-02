@@ -35,7 +35,7 @@ import java.nio.channels.*;
  * 接入完成回调，单例使用
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, QuickNioServer> {

@@ -38,7 +38,7 @@ import java.util.List;
  * Utility to read CPU statistics from {@code /proc/stat}
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @ThreadSafe

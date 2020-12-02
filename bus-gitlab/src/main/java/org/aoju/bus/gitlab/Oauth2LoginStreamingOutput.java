@@ -36,7 +36,7 @@ import java.nio.charset.StandardCharsets;
  * contained in a SecretString that is cleared when an instance of this class is finalized.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseable {

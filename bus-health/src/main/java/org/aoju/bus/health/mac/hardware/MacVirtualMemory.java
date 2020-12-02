@@ -44,7 +44,7 @@ import java.util.function.Supplier;
  * Memory obtained by host_statistics (vm_stat) and sysctl.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @ThreadSafe

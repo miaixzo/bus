@@ -31,7 +31,7 @@ import java.util.concurrent.*;
  * 读写事件回调处理类
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 final class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {

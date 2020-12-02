@@ -35,7 +35,7 @@ import java.util.List;
  * 方式，磁盘存储代表文件系统用于文件存储的硬件
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @ThreadSafe

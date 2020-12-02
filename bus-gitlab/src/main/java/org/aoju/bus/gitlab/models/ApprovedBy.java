@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * which can contain a User or Group instance.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class ApprovedBy {

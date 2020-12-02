@@ -33,7 +33,7 @@ import org.aoju.bus.image.galaxy.data.Attributes;
  * 复合DIMSE服务
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public enum Dimse {

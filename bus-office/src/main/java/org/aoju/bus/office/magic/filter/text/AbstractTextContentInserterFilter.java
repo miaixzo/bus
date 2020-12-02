@@ -39,7 +39,7 @@ import java.util.Map;
  * 用于将文本内容插入文档的所有筛选器的基类.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public abstract class AbstractTextContentInserterFilter implements Filter {

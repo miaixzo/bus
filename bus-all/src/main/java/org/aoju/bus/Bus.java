@@ -48,7 +48,7 @@ import java.util.Set;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Bus extends Version {

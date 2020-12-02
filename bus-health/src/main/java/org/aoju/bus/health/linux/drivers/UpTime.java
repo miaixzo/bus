@@ -34,7 +34,7 @@ import org.aoju.bus.health.linux.ProcPath;
  * Utility to read system uptime from {@code /proc/uptime}
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @ThreadSafe
