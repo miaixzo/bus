@@ -277,7 +277,7 @@ public class AndroidPlatform extends Platform {
     @Override
     public SSLContext getSSLContext() {
         try {
-            return SSLContext.getInstance(Http.TLS_12);
+            return SSLContext.getInstance(Http.TLS_V_12);
         } catch (NoSuchAlgorithmException e) {
             // fallback to TLS
         }

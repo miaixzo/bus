@@ -1433,11 +1433,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        boolean tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1456,11 +1453,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        byte tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1479,11 +1473,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        char tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1502,11 +1493,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        double tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1525,11 +1513,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        float tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1548,11 +1533,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        int tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1571,11 +1553,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        long tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1594,11 +1573,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        Object tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
@@ -1617,11 +1593,8 @@ public class ArrayKit {
         }
         int i = startIndex < 0 ? 0 : startIndex;
         int j = Math.min(array.length, endIndex) - 1;
-        short tmp;
         while (j > i) {
-            tmp = array[j];
-            array[j] = array[i];
-            array[i] = tmp;
+            swap(array, i, j);
             j--;
             i++;
         }
