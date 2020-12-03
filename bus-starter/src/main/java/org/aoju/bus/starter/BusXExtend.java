@@ -91,9 +91,9 @@ public class BusXExtend {
      */
     public static final String SENSITIVE = "extend.sensitive";
     /**
-     * websocket
+     * socket
      */
-    public static final String WEBSOCKET = "extend.websocket";
+    public static final String SOCKET = "extend.socket";
     /**
      * 存储设置
      */
