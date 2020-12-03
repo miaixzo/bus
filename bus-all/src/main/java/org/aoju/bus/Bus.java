@@ -26,11 +26,6 @@
 package org.aoju.bus;
 
 import org.aoju.bus.core.Version;
-import org.aoju.bus.core.lang.Console;
-import org.aoju.bus.core.lang.Scaner;
-import org.aoju.bus.core.toolkit.StringKit;
-
-import java.util.Set;
 
 /**
  * <p>
@@ -52,25 +47,5 @@ import java.util.Set;
  * @since JDK 1.8+
  */
 public class Bus extends Version {
-
-    /**
-     * 显示所有的工具类
-     */
-    public static Set<Class<?>> getAll() {
-        return Scaner.scanPackage("org.aoju",
-                (clazz) -> (false == clazz.isInterface()) && StringKit.endWith(clazz.getSimpleName(), "Kit"));
-    }
-
-    /**
-     * 控制台打印所有工具类
-     */
-    public static void print() {
-        final Set<Class<?>> allUtils = getAll();
-        final Console.Table table = Console.Table.create().addHeader("Kit name", "Package");
-        for (Class<?> clazz : allUtils) {
-            table.addBody(clazz.getSimpleName(), clazz.getPackage().getName());
-        }
-        table.print();
-    }
 
 }
