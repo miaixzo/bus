@@ -26,9 +26,7 @@
 package org.aoju.bus.starter.socket;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 
 /**
  * Socket配置
@@ -42,11 +40,5 @@ public class SocketConfiguration {
 
     @Autowired
     SocketProperties properties;
-
-    @Bean(initMethod = "start")
-    @ConditionalOnMissingBean
-    public WebSocketServerStarter initialization() {
-        return new WebSocketServerStarter(this.properties);
-    }
 
 }
