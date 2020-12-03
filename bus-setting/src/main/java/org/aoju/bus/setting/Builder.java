@@ -27,6 +27,7 @@ package org.aoju.bus.setting;
 
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.setting.magic.Properties;
 import org.aoju.bus.setting.magic.*;
 
 import java.util.*;
@@ -38,7 +39,7 @@ import java.util.function.Supplier;
  * 非线程安全
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Builder {
@@ -46,8 +47,12 @@ public class Builder {
     /**
      * 配置文件缓存
      */
-    private static Map<String, PopSetting> settingMap = new ConcurrentHashMap<>();
-    private static Object lock = new Object();
+    private static final Map<String, Properties> CACHE_PROPS = new ConcurrentHashMap<>();
+    /**
+     * 配置文件缓存
+     */
+    private static final Map<String, PopSetting> CACHE_SETTING = new ConcurrentHashMap<>();
+
     /**
      * 元素
      */
@@ -98,23 +103,31 @@ public class Builder {
      * @param name 文件名,如果没有扩展名,默认为.setting
      * @return 当前环境下配置文件
      */
-    public static PopSetting get(String name) {
-        PopSetting popSetting = settingMap.get(name);
-        if (null == popSetting) {
-            synchronized (lock) {
-                popSetting = settingMap.get(name);
-                if (null == popSetting) {
-                    String filePath = name;
-                    String extName = FileKit.extName(filePath);
-                    if (StringKit.isEmpty(extName)) {
-                        filePath = filePath + ".setting";
-                    }
-                    popSetting = new PopSetting(filePath, true);
-                    settingMap.put(name, popSetting);
-                }
+    public static PopSetting getSetting(String name) {
+        return CACHE_SETTING.computeIfAbsent(name, (filePath) -> {
+            final String extName = FileKit.extName(filePath);
+            if (StringKit.isEmpty(extName)) {
+                filePath = filePath + ".setting";
             }
-        }
-        return popSetting;
+            return new PopSetting(filePath, true);
+        });
+    }
+
+    /**
+     * 获取当前环境下的配置文件<br>
+     * name可以为不包括扩展名的文件名（默认.properties），也可以是文件名全称
+     *
+     * @param name 文件名，如果没有扩展名，默认为.properties
+     * @return 当前环境下配置文件
+     */
+    public static Properties getProperties(String name) {
+        return CACHE_PROPS.computeIfAbsent(name, (filePath) -> {
+            final String extName = FileKit.extName(filePath);
+            if (StringKit.isEmpty(extName)) {
+                filePath = filePath + ".properties";
+            }
+            return new Properties(filePath);
+        });
     }
 
     /**
@@ -308,7 +321,7 @@ public class Builder {
      * @param properties properties
      * @return 当前类对象信息
      */
-    public Builder plusProperties(Properties properties) {
+    public Builder plusProperties(java.util.Properties properties) {
         final Set<String> names = properties.stringPropertyNames();
         for (String key : names) {
             String value = properties.getProperty(key);
@@ -324,7 +337,7 @@ public class Builder {
      * @param comment    描述信息
      * @return 当前类对象信息
      */
-    public Builder plusProperties(Properties properties, IniComment comment) {
+    public Builder plusProperties(java.util.Properties properties, IniComment comment) {
         final Set<String> names = properties.stringPropertyNames();
         for (String key : names) {
             String value = properties.getProperty(key);
@@ -340,7 +353,7 @@ public class Builder {
      * @param commentValue 描述信息
      * @return 当前类对象信息
      */
-    public Builder plusProperties(Properties properties, String commentValue) {
+    public Builder plusProperties(java.util.Properties properties, String commentValue) {
         final Set<String> names = properties.stringPropertyNames();
         for (String key : names) {
             String value = properties.getProperty(key);

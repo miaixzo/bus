@@ -35,7 +35,7 @@ import org.aoju.bus.validate.validators.Matcher;
  * 中文校验
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class ChineseStrategy implements Matcher<String, Chinese> {

@@ -29,7 +29,7 @@ package org.aoju.bus.starter.banner;
  * 版本旗标生成
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class VersionBanner extends AbstractBanner {

@@ -23,33 +23,78 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.socket;
+package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.thread.ThreadBuilder;
-import org.aoju.bus.socket.netty.SocketService;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.IoKit;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import javax.tools.FileObject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
+ * {@link FileObject} 资源包装
+ *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
-public class WebSocketServerStarter {
+public class FileObjectResource implements Resource {
 
-    private SocketProperties properties;
+    private final FileObject fileObject;
 
-    private ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new ThreadBuilder().setNamePrefix("websocket-server-%d").build());
-
-
-    public WebSocketServerStarter(SocketProperties properties) {
-        this.properties = properties;
+    /**
+     * 构造
+     *
+     * @param fileObject {@link FileObject}
+     */
+    public FileObjectResource(FileObject fileObject) {
+        this.fileObject = fileObject;
     }
 
-    public void start() {
-        executor.execute(() -> SocketService.start(properties.getPort(), properties.getBossGroupThreads(), properties.getWorkerGroupThreads(), properties.getEndPoint()));
+    /**
+     * 获取原始的{@link FileObject}
+     *
+     * @return {@link FileObject}
+     */
+    public FileObject getFileObject() {
+        return this.fileObject;
+    }
+
+    @Override
+    public String getName() {
+        return this.fileObject.getName();
+    }
+
+    @Override
+    public URL getUrl() {
+        try {
+            return this.fileObject.toUri().toURL();
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public InputStream getStream() {
+        try {
+            return this.fileObject.openInputStream();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    @Override
+    public BufferedReader getReader(Charset charset) {
+        try {
+            return IoKit.getReader(this.fileObject.openReader(false));
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
     }
 
 }

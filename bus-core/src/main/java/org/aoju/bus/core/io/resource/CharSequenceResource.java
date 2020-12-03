@@ -23,50 +23,91 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.socket;
+package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.starter.annotation.EnableSocket;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.type.AnnotationMetadata;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.IoKit;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
+ * {@link CharSequence}资源，字符串做为资源
+ *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
-public class SocketScannerRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware {
+public class CharSequenceResource implements Resource {
 
-    private ResourceLoader resourceLoader;
+	private final CharSequence data;
+	private final CharSequence name;
+	private final Charset charset;
 
-    @Override
-    public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
-        AnnotationAttributes attributes = AnnotationAttributes.fromMap(annotationMetadata.getAnnotationAttributes(EnableSocket.class.getName()));
-        ClassPathSocketScanner scanner = new ClassPathSocketScanner(beanDefinitionRegistry);
-        if (resourceLoader != null) {
-            scanner.setResourceLoader(resourceLoader);
-        }
+	/**
+	 * 构造，使用UTF8编码
+	 *
+	 * @param data 资源数据
+	 */
+	public CharSequenceResource(CharSequence data) {
+		this(data, null);
+	}
 
-        List<String> basePackages = new ArrayList<>();
-        for (String pkg : attributes.getStringArray("basePackages")) {
-            if (StringKit.hasText(pkg)) {
-                basePackages.add(pkg);
-            }
-        }
-        scanner.registerFilters();
-        scanner.doScan(StringKit.toStringArray(basePackages));
-    }
+	/**
+	 * 构造，使用UTF8编码
+	 *
+	 * @param data 资源数据
+	 * @param name 资源名称
+	 */
+	public CharSequenceResource(CharSequence data, String name) {
+		this(data, name, org.aoju.bus.core.lang.Charset.UTF_8);
+	}
 
-    @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
+	/**
+	 * 构造
+	 *
+	 * @param data    资源数据
+	 * @param name    资源名称
+	 * @param charset 编码
+	 */
+	public CharSequenceResource(CharSequence data, CharSequence name, Charset charset) {
+		this.data = data;
+		this.name = name;
+		this.charset = charset;
+	}
+
+	@Override
+	public String getName() {
+		return this.name.toString();
+	}
+
+	@Override
+	public URL getUrl() {
+		return null;
+	}
+
+	@Override
+	public InputStream getStream() {
+		return new ByteArrayInputStream(readBytes());
+	}
+
+	@Override
+	public BufferedReader getReader(Charset charset) {
+		return IoKit.getReader(new StringReader(this.data.toString()));
+	}
+
+	@Override
+	public String readString(Charset charset) throws InstrumentException {
+		return this.data.toString();
+	}
+
+	@Override
+	public byte[] readBytes() throws InstrumentException {
+		return this.data.toString().getBytes(this.charset);
+	}
 
 }

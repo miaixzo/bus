@@ -31,7 +31,7 @@ import org.aoju.bus.core.annotation.Immutable;
  * The Firmware represents the low level BIOS or equivalent.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @Immutable

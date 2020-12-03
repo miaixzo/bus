@@ -35,7 +35,7 @@ import java.net.URL;
  * 图片合并元素
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class ImageElement extends AbstractElement<ImageElement> {

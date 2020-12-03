@@ -41,7 +41,7 @@ import java.io.OutputStream;
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示,长度比原来增加1/3
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Base64 {
@@ -205,7 +205,8 @@ public class Base64 {
     /**
      * base64编码，不进行padding(末尾不会填充'=')
      *
-     * @param source 被编码的base64字符串
+     * @param source  被编码的base64字符串
+     * @param charset 编码
      * @return 被加密后的字符串
      */
     public static String encodeWithoutPadding(CharSequence source, String charset) {

@@ -61,7 +61,7 @@ import java.util.List;
  * 支持Android 6.0+ {@code NetworkSecurityPolicy}
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Platform {
@@ -270,7 +270,7 @@ public class Platform {
         try {
             if ("1.7".equals(jvmVersion)) {
                 // JDK 1.7(公共版本)只支持带命名协议的> TLSv1
-                return SSLContext.getInstance(Http.TLS_12);
+                return SSLContext.getInstance(Http.TLS_V_12);
             }
             return SSLContext.getInstance(Http.TLS);
         } catch (NoSuchAlgorithmException e) {

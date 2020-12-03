@@ -42,7 +42,7 @@ import static org.aoju.bus.shade.Builder.NOT_SUPPORTED;
  * db2 数据库查询
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Db2DataBaseQuery extends AbstractDatabaseQuery {

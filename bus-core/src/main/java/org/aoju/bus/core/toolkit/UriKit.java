@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
  * URL相关工具
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class UriKit {
@@ -1390,6 +1390,17 @@ public class UriKit {
         builder.append(Symbol.C_COMMA).append(data);
 
         return builder.toString();
+    }
+
+    /**
+     * 获取string协议的URL，类似于string:///xxxxx
+     *
+     * @param content 正文
+     * @return URL
+     */
+    public static URI getStringURI(CharSequence content) {
+        final String contentStr = StringKit.addPrefixIfNot(content, "string:///");
+        return URI.create(contentStr);
     }
 
     /**

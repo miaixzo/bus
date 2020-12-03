@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * HTTP 相关常量
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Http {
@@ -133,17 +133,33 @@ public class Http {
      */
     public static final String ALL = "ALL";
     /**
-     * HTTP SSL
+     * Supports some version of SSL; may support other versions
      */
     public static final String SSL = "SSL";
     /**
-     * HTTP TLS
+     * Supports some version of TLS; may support other versions
      */
     public static final String TLS = "TLS";
     /**
-     * HTTP TLS v1.2
+     * Supports RFC 2246: TLS version 1.0 ; may support other versions
      */
-    public static final String TLS_12 = "TLSv1.2";
+    public static final String TLS_V_10 = "TLSv1";
+    /**
+     * Supports RFC 4346: TLS version 1.1 ; may support other versions
+     */
+    public static final String TLS_V_11 = "TLSv1.1";
+    /**
+     * Supports RFC 5246: TLS version 1.2 ; may support other versions
+     */
+    public static final String TLS_V_12 = "TLSv1.2";
+    /**
+     * Supports SSL version 2 or later; may support other versions
+     */
+    public static final String SSL_V_20 = "SSLv2";
+    /**
+     * Supports SSL version 3; may support other versions
+     */
+    public static final String SSL_V_30 = "SSLv3";
     /**
      * The use status
      */

@@ -35,7 +35,7 @@ import java.util.concurrent.TimeoutException;
  * @param <V> 泛型对象
  * @param <A> 泛型对象
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 final class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V>, Runnable {

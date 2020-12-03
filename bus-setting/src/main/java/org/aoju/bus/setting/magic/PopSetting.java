@@ -39,7 +39,6 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.setting.Readers;
-import org.aoju.bus.setting.dialect.Props;
 import org.aoju.bus.setting.metric.GroupMap;
 
 import java.io.File;
@@ -61,7 +60,7 @@ import java.util.function.Consumer;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class PopSetting extends AbstractSetting implements Map<String, String> {
@@ -324,8 +323,8 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return Properties对象
      */
-    public Properties getProperties(String group) {
-        final Properties properties = new Properties();
+    public java.util.Properties getProperties(String group) {
+        final java.util.Properties properties = new java.util.Properties();
         properties.putAll(getMap(group));
         return properties;
     }
@@ -336,10 +335,10 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @param group 分组
      * @return Props对象
      */
-    public Props getProps(String group) {
-        final Props props = new Props();
-        props.putAll(getMap(group));
-        return props;
+    public Properties getProps(String group) {
+        final Properties properties = new Properties();
+        properties.putAll(getMap(group));
+        return properties;
     }
 
     /**
@@ -379,8 +378,8 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      *
      * @return Properties对象
      */
-    public Properties toProperties() {
-        final Properties properties = new Properties();
+    public java.util.Properties toProperties() {
+        final java.util.Properties properties = new java.util.Properties();
         String group;
         for (Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupMap.entrySet()) {
             group = groupEntry.getKey();

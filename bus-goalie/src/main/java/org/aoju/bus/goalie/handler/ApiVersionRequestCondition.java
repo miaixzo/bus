@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.handler;
 
-import org.aoju.bus.core.Version;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8++
  */
 public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVersionRequestCondition> {
@@ -60,7 +60,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
     }
 
     private static Set<TerminalVersionExpression> parseByTerminalVersion(TerminalVersion[] terminalVersions) {
-        Set<TerminalVersionExpression> expressions = new LinkedHashSet<TerminalVersionExpression>();
+        Set<TerminalVersionExpression> expressions = new LinkedHashSet<>();
         for (TerminalVersion terminalVersion : terminalVersions) {
             expressions.add(new TerminalVersionExpression(terminalVersion.terminals(), terminalVersion.version(), terminalVersion.op()));
         }
@@ -68,15 +68,15 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
     }
 
     private static Set<TerminalVersionExpression> parseByExpression(String[] stringExpressions) {
-        Set<TerminalVersionExpression> terminalExpressions = new LinkedHashSet<TerminalVersionExpression>();
+        Set<TerminalVersionExpression> terminalExpressions = new LinkedHashSet<>();
         for (String expression : stringExpressions) {
             String regex = "([\\d,*]+)([!=<>]*)([\\d\\.]*)";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(expression);
             while (matcher.find()) {
                 int[] terminals = new int[]{};
-                String version = "";
-                Version operator = Version.NIL;
+                String version = Normal.EMPTY;
+                TerminalVersion.Version operator = TerminalVersion.Version.NIL;
                 for (int i = 1; i <= matcher.groupCount(); i++) {
                     String content = matcher.group(i);
                     if (i == 1) {
@@ -92,7 +92,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                             }
                         }
                     } else if (i == 2) {
-                        operator = Version.parse(content);
+                        operator = TerminalVersion.Version.parse(content);
                         if (operator == null) {
                             throw new IllegalArgumentException("check the versionOperator!!!");
                         }
@@ -127,7 +127,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
     @Override
     public ApiVersionRequestCondition getMatchingCondition(HttpServletRequest request) {
         for (TerminalVersionExpression expression : expressions) {
-            if (!expression.match(request)) {//同param condition,任意一个失败则失败
+            if (!expression.match(request)) {
                 return null;
             }
         }
@@ -144,12 +144,12 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
         public static final String HEADER_VERSION = "cv";
         public static final String HEADER_TERMINAL = "terminal";
         private final String version;
-        private final Version operator;
+        private final TerminalVersion.Version operator;
         private int[] terminals;
 
-        public TerminalVersionExpression(int[] terminals, String version, Version operator) {
+        public TerminalVersionExpression(int[] terminals, String version, TerminalVersion.Version operator) {
             Arrays.sort(terminals);
-            if (StringKit.isNotBlank(version) && operator == Version.NIL) {
+            if (StringKit.isNotBlank(version) && operator == TerminalVersion.Version.NIL) {
                 throw new IllegalArgumentException("opetator cant be nil when version is existing...");
             }
             this.terminals = terminals;
@@ -211,7 +211,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                     return false;
                 }
             }
-            if (this.operator != null && this.operator != Version.NIL) {
+            if (this.operator != null && this.operator != TerminalVersion.Version.NIL) {
                 String clientVersion = getVersion(request);
                 String checkVersion = getVersion();
                 if (StringKit.isBlank(clientVersion)) {

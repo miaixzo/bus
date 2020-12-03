@@ -25,46 +25,34 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.IoKit;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * 字符串资源,字符串做为资源
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
-public class StringResource implements Resource {
-
-    private final String data;
-    private final String name;
-    private final java.nio.charset.Charset charset;
+public class StringResource extends CharSequenceResource {
 
     /**
-     * 构造,使用UTF8编码
+     * 构造，使用UTF8编码
      *
      * @param data 资源数据
      */
     public StringResource(String data) {
-        this(data, null);
+        super(data, null);
     }
 
     /**
-     * 构造,使用UTF8编码
+     * 构造，使用UTF8编码
      *
      * @param data 资源数据
      * @param name 资源名称
      */
     public StringResource(String data, String name) {
-        this(data, name, Charset.UTF_8);
+        super(data, name, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -74,40 +62,8 @@ public class StringResource implements Resource {
      * @param name    资源名称
      * @param charset 编码
      */
-    public StringResource(String data, String name, java.nio.charset.Charset charset) {
-        this.data = data;
-        this.name = name;
-        this.charset = charset;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public URL getUrl() {
-        return null;
-    }
-
-    @Override
-    public InputStream getStream() {
-        return new ByteArrayInputStream(readBytes());
-    }
-
-    @Override
-    public BufferedReader getReader(java.nio.charset.Charset charset) {
-        return IoKit.getReader(new StringReader(this.data));
-    }
-
-    @Override
-    public String readString(java.nio.charset.Charset charset) throws InstrumentException {
-        return this.data;
-    }
-
-    @Override
-    public byte[] readBytes() throws InstrumentException {
-        return this.data.getBytes(this.charset);
+    public StringResource(String data, String name, Charset charset) {
+        super(data, name, charset);
     }
 
 }

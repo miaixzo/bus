@@ -36,7 +36,7 @@ import java.io.Serializable;
  * 实现了一些通用的接口
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8++
  */
 public abstract class AbstractAware implements Log, Serializable {

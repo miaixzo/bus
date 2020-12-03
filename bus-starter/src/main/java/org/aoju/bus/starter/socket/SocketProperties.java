@@ -31,19 +31,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @Data
 @ConfigurationProperties(prefix = BusXExtend.WEBSOCKET)
 public class SocketProperties {
 
-    private int port = 80;
-
-    private int bossGroupThreads = 1;
-
-    private int workerGroupThreads = 0;
-
-    private String endPoint = "/ws";
+    private int port;
 
 }

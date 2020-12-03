@@ -33,7 +33,7 @@ import org.aoju.bus.gitlab.GitLabApiForm;
  * This class is used to filter Projects when getting lists of projects for a specified group.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class GroupProjectsFilter {

@@ -49,7 +49,7 @@ import java.util.stream.LongStream;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -322,7 +322,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         int proc = 0;
         for (String s : cpuInfo) {
             if (s.toLowerCase().contains("cpu mhz")) {
-                freqs[proc] = (long) (Builder.parseLastDouble(s, 0d) * 1_000_000);
+                freqs[proc] = Math.round(Builder.parseLastDouble(s, 0d) * 1_000_000d);
                 if (++proc >= freqs.length) {
                     break;
                 }

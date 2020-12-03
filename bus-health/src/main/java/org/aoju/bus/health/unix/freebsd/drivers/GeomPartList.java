@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  * Utility to query geom part list
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -38,7 +38,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab Releases API calls.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @see <a href="https://docs.gitlab.com/ce/api/releases">Releases API at GitLab</a>
  * @since JDK 1.8+
  */

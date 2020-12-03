@@ -41,7 +41,7 @@ import java.util.Map.Entry;
  * 文件写入器
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class FileWriter extends FileWrapper {
@@ -322,14 +322,26 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将流的内容写入文件
-     * 此方法不会关闭输入流
+     * 将流的内容写入文件<br>
+     * 此方法会自动关闭输入流
      *
-     * @param in 输入流,不关闭
+     * @param in 输入流，不关闭
      * @return dest
      * @throws InstrumentException IO异常
      */
     public File writeFromStream(InputStream in) throws InstrumentException {
+        return writeFromStream(in, true);
+    }
+
+    /**
+     * 将流的内容写入文件
+     *
+     * @param in      输入流，不关闭
+     * @param isClose 是否关闭输入流
+     * @return dest
+     * @throws InstrumentException IO异常
+     */
+    public File writeFromStream(InputStream in, boolean isClose) throws InstrumentException {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(FileKit.touch(file));
@@ -338,6 +350,9 @@ public class FileWriter extends FileWrapper {
             throw new InstrumentException(e);
         } finally {
             IoKit.close(out);
+            if (isClose) {
+                IoKit.close(in);
+            }
         }
         return file;
     }

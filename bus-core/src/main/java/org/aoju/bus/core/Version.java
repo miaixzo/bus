@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -35,20 +34,10 @@ import org.aoju.bus.core.toolkit.StringKit;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
-public enum Version {
-
-    NIL(Normal.EMPTY),
-    LT(Symbol.LT),
-    GT(Symbol.GT),
-    GTE(Symbol.GT + Symbol.EQUAL),
-    LE(Symbol.LE),
-    LTE(Symbol.LE + Symbol.EQUAL),
-    GE(Symbol.GE),
-    NE(Symbol.NOT + Symbol.EQUAL),
-    EQ(Symbol.EQUAL + Symbol.EQUAL);
+public class Version {
 
     /**
      * 是否完整模式,默认使用完整模式
@@ -71,24 +60,8 @@ public enum Version {
      *
      * @return 项目的版本号
      */
-
-    private String code;
-
-    Version(String code) {
-        this.code = code;
-    }
-
-    public static Version parse(String code) {
-        for (Version operator : Version.values()) {
-            if (operator.getCode().equalsIgnoreCase(code)) {
-                return operator;
-            }
-        }
-        return null;
-    }
-
     public static String get() {
-        return "6.1.2.RELEASE";
+        return "6.1.3.RELEASE";
     }
 
     /**
@@ -136,10 +109,6 @@ public enum Version {
         return major() + minor() + stage();
     }
 
-    public String getCode() {
-        return code;
-    }
-
     /**
      * 不完整模式
      *
@@ -152,7 +121,6 @@ public enum Version {
 
     /**
      * 比较版本号是否相同
-     * <p>
      * example:
      * * Version.of("v0.3").eq("v0.4")
      *

@@ -38,7 +38,7 @@ import java.io.RandomAccessFile;
  * 这个类保留一个最近从上游读取的字节的小缓冲区。减少文件I/O和数据复制
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 final class RelayBuffer {

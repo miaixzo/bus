@@ -59,7 +59,7 @@ import java.lang.reflect.Modifier;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class ReflectionBuilder implements Builder<DifferentResult> {

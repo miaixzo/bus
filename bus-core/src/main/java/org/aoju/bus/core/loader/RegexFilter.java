@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * 正则表达式过滤器
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class RegexFilter implements Filter {

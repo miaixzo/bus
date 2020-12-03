@@ -40,7 +40,7 @@ import java.nio.charset.Charset;
  * 资源可以是文件、URL、ClassPath中的文件亦或者jar包中的文件
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public interface Resource {
@@ -72,7 +72,9 @@ public interface Resource {
      * @param charset 编码
      * @return {@link BufferedReader}
      */
-    BufferedReader getReader(Charset charset);
+    default BufferedReader getReader(Charset charset) {
+        return IoKit.getReader(getStream(), charset);
+    }
 
     /**
      * 读取资源内容,读取完毕后会关闭流
@@ -82,7 +84,9 @@ public interface Resource {
      * @return 读取资源内容
      * @throws InstrumentException 包装{@link IOException}
      */
-    String readString(Charset charset) throws InstrumentException;
+    default String readString(Charset charset) throws InstrumentException {
+        return IoKit.read(getReader(charset));
+    }
 
     /**
      * 读取资源内容,读取完毕后会关闭流
@@ -91,8 +95,9 @@ public interface Resource {
      * @return 读取资源内容
      * @throws InstrumentException 包装IOException
      */
-    byte[] readBytes() throws InstrumentException;
-
+    default byte[] readBytes() throws InstrumentException {
+        return IoKit.readBytes(getStream());
+    }
 
     /**
      * 将资源内容写出到流，不关闭输出流，但是关闭资源流

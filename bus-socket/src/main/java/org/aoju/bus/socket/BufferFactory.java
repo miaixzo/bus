@@ -31,7 +31,7 @@ import org.aoju.bus.core.io.ByteBuffer;
  * 内存池工厂
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public interface BufferFactory {

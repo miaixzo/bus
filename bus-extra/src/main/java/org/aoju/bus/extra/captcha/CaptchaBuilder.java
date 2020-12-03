@@ -26,6 +26,7 @@
 package org.aoju.bus.extra.captcha;
 
 import org.aoju.bus.extra.captcha.provider.CircleProvider;
+import org.aoju.bus.extra.captcha.provider.GifProvider;
 import org.aoju.bus.extra.captcha.provider.LineProvider;
 import org.aoju.bus.extra.captcha.provider.ShearProvider;
 
@@ -33,7 +34,7 @@ import org.aoju.bus.extra.captcha.provider.ShearProvider;
  * 图形验证码工具
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class CaptchaBuilder {
@@ -108,6 +109,29 @@ public class CaptchaBuilder {
      */
     public static ShearProvider createShearCaptcha(int width, int height, int codeCount, int thickness) {
         return new ShearProvider(width, height, codeCount, thickness);
+    }
+
+    /**
+     * 创建GIF验证码
+     *
+     * @param width  宽
+     * @param height 高
+     * @return {@link GifProvider}
+     */
+    public static GifProvider createGifCaptcha(int width, int height) {
+        return new GifProvider(width, height);
+    }
+
+    /**
+     * 创建GIF验证码
+     *
+     * @param width     宽
+     * @param height    高
+     * @param codeCount 字符个数
+     * @return {@link GifProvider}
+     */
+    public static GifProvider createGifCaptcha(int width, int height, int codeCount) {
+        return new GifProvider(width, height, codeCount);
     }
 
 }

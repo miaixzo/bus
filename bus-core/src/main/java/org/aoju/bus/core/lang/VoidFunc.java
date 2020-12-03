@@ -33,7 +33,7 @@ package org.aoju.bus.core.lang;
  *
  * @param <P> 参数类型
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @FunctionalInterface

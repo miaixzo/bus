@@ -32,7 +32,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
  * Baseboard data obtained by dmidecode
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @Immutable

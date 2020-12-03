@@ -36,7 +36,7 @@ import java.awt.image.BufferedImage;
  * 扭曲干扰验证码
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class ShearProvider extends AbstractProvider {

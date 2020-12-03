@@ -25,9 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.starter.annotation;
 
-import org.aoju.bus.socket.spring.extension.MessageConfiguration;
-import org.aoju.bus.socket.spring.support.MessageMatcher;
-import org.aoju.bus.starter.socket.SocketScannerRegistrar;
+import org.aoju.bus.starter.socket.SocketConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -36,16 +34,14 @@ import java.lang.annotation.*;
  * 开启WebSocket
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @Inherited
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Import({SocketScannerRegistrar.class, MessageConfiguration.class, MessageMatcher.class})
+@Import({SocketConfiguration.class})
 public @interface EnableSocket {
-
-    String[] basePackage() default {};
 
 }

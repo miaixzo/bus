@@ -25,20 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.core.io.resource;
 
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.toolkit.IoKit;
-
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
 
 /**
  * 基于{@link InputStream}的资源获取器
  * 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class InputStreamResource implements Resource {
@@ -79,33 +74,6 @@ public class InputStreamResource implements Resource {
     @Override
     public InputStream getStream() {
         return this.in;
-    }
-
-    @Override
-    public BufferedReader getReader(Charset charset) {
-        return IoKit.getReader(this.in, charset);
-    }
-
-    @Override
-    public String readString(Charset charset) throws InstrumentException {
-        BufferedReader reader = null;
-        try {
-            reader = getReader(charset);
-            return IoKit.read(reader);
-        } finally {
-            IoKit.close(reader);
-        }
-    }
-
-    @Override
-    public byte[] readBytes() throws InstrumentException {
-        InputStream in = null;
-        try {
-            in = getStream();
-            return IoKit.readBytes(in);
-        } finally {
-            IoKit.close(in);
-        }
     }
 
 }

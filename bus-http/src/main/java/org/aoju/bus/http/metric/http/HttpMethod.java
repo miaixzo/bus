@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Http;
  * Http请求方法
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public final class HttpMethod {

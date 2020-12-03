@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -223,7 +223,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
         StringBuilder sb = new StringBuilder();
         sb.append("Name: ").append(getName()).append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
         sb.append("  MAC Address: ").append(getMacaddr()).append(Symbol.LF);
-        sb.append("  MTU: ").append(getMTU()).append(", ").append("Speed: ").append(getSpeed()).append(Symbol.LF);
+        sb.append("  MTU: ").append(Builder.unsignedIntToLong(getMTU())).append(", ").append("Speed: ")
+                .append(getSpeed()).append("\n");
         String[] ipv4withmask = getIPv4addr();
         if (this.ipv4.length == this.subnetMasks.length) {
             for (int i = 0; i < this.subnetMasks.length; i++) {

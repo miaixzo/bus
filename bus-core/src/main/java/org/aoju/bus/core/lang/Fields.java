@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * 日期场景属性
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Fields {

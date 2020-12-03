@@ -41,7 +41,7 @@ import java.util.Objects;
  * 提供比StringBuffer更灵活和更强大的API.
  *
  * @author Kimi Liu
- * @version 6.1.2
+ * @version 6.1.3
  * @since JDK 1.8+
  */
 public class Builders implements CharSequence, Appendable, Serializable, Builder<String> {
