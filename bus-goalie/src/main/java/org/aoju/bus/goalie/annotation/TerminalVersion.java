@@ -46,7 +46,7 @@ public @interface TerminalVersion {
     String version() default Normal.EMPTY;
 
     /**
-     * 版本
+     * 版本信息
      */
     enum Version {
 
@@ -81,4 +81,5 @@ public @interface TerminalVersion {
         }
 
     }
+
 }
