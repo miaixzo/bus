@@ -101,4 +101,25 @@ public class Controller {
                 .build();
     }
 
+    /**
+     * 返回值:自定义处理
+     *
+     * @param errcode 错误编码
+     * @param errmsg  错误信息
+     * @param format  输出格式
+     * @return body 返回值
+     */
+    public static Object write(String errcode, String errmsg, String format) {
+        if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
+            return Message.builder()
+                    .errcode(errcode)
+                    .errmsg(StringKit.format(format, errmsg))
+                    .build();
+        }
+        return Message.builder()
+                .errcode(ErrorCode.EM_FAILURE)
+                .errmsg(ErrorCode.require(ErrorCode.EM_FAILURE))
+                .build();
+    }
+
 }
