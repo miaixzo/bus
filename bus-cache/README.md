@@ -20,7 +20,7 @@
 
 ```java
 @Cached
-Object func(@CacheKey("#arg0[#i]") List<Long> fIds, @CacheKey("#arg1[#i]") List<Long> aIds);
+Object func(@CacheKey("#arg0[#i]") List<Long> fIds,@CacheKey("#arg1[#i]") List<Long> aIds);
 ```
 
 > 该模式会导致CacheX对方法参数做**笛卡尔积**, 结果将会计算产生大量的缓存`key`, 性能损耗较大, 因此不支持.
@@ -47,9 +47,9 @@ Object func(@CacheKey("#arg0.keySet()[#i]") Map<Long, Object> map);
 
 ```java
 @Cached
-Object func(@CacheKey("#arg0[#i]") List<Long> ids) {
-    return Collections.emptyList();
-}
+Object func(@CacheKey("#arg0[#i]") List<Long> ids){
+        return Collections.emptyList();
+        }
 ```
 
 > 由于在批量模式下, Cache会在构造容器返回值时反射调用容器类的默认构造方法, 以及向容器内添加元素, 但这些容器并未暴露这些方法, 因此不能支持.

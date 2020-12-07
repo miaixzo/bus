@@ -31,11 +31,11 @@ import com.sun.jna.platform.unix.solaris.LibKstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.logger.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -95,7 +95,7 @@ public final class KstatKit {
         KstatNamed data = new KstatNamed(p);
         switch (data.data_type) {
             case LibKstat.KSTAT_DATA_CHAR:
-                return new String(data.value.charc, StandardCharsets.UTF_8).trim();
+                return Native.toString(data.value.charc, Charset.UTF_8);
             case LibKstat.KSTAT_DATA_INT32:
                 return Integer.toString(data.value.i32);
             case LibKstat.KSTAT_DATA_UINT32:
@@ -133,8 +133,8 @@ public final class KstatKit {
         if (p == null) {
             if (Logger.get().isError()) {
                 Logger.error("Failed lo lookup kstat value on {}:{}:{} for key {}",
-                        new String(ksp.ks_module, StandardCharsets.US_ASCII).trim(), ksp.ks_instance,
-                        new String(ksp.ks_name, StandardCharsets.US_ASCII).trim(), name);
+                        Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
+                        Native.toString(ksp.ks_name, Charset.US_ASCII), name);
             }
             return 0L;
         }
@@ -168,7 +168,7 @@ public final class KstatKit {
 
         private KstatChain() {
             CHAIN.lock();
-            this.update();
+            update();
         }
 
         /**
@@ -183,14 +183,14 @@ public final class KstatKit {
          * @param ksp The kstat from which to retrieve data
          * @return {@code true} if successful; {@code false} otherwise
          */
-        public boolean read(LibKstat.Kstat ksp) {
+        public static boolean read(LibKstat.Kstat ksp) {
             int retry = 0;
             while (0 > KS.kstat_read(KC, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.get().isError()) {
                         Logger.error("Failed to read kstat {}:{}:{}",
-                                new String(ksp.ks_module, StandardCharsets.US_ASCII).trim(), ksp.ks_instance,
-                                new String(ksp.ks_name, StandardCharsets.US_ASCII).trim());
+                                Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
+                                Native.toString(ksp.ks_name, Charset.US_ASCII));
                     }
                     return false;
                 }
@@ -212,7 +212,7 @@ public final class KstatKit {
          * @return The first match of the requested Kstat structure if found, or
          * {@code null}
          */
-        public LibKstat.Kstat lookup(String module, int instance, String name) {
+        public static LibKstat.Kstat lookup(String module, int instance, String name) {
             return KS.kstat_lookup(KC, module, instance, name);
         }
 
@@ -230,12 +230,12 @@ public final class KstatKit {
          * @return All matches of the requested Kstat structure if found, or an empty
          * list otherwise
          */
-        public List<LibKstat.Kstat> lookupAll(String module, int instance, String name) {
+        public static List<LibKstat.Kstat> lookupAll(String module, int instance, String name) {
             List<LibKstat.Kstat> kstats = new ArrayList<>();
             for (LibKstat.Kstat ksp = KS.kstat_lookup(KC, module, instance, name); ksp != null; ksp = ksp.next()) {
-                if ((module == null || module.equals(new String(ksp.ks_module, StandardCharsets.US_ASCII).trim()))
+                if ((module == null || module.equals(Native.toString(ksp.ks_module, Charset.US_ASCII)))
                         && (instance < 0 || instance == ksp.ks_instance)
-                        && (name == null || name.equals(new String(ksp.ks_name, StandardCharsets.US_ASCII).trim()))) {
+                        && (name == null || name.equals(Native.toString(ksp.ks_name, Charset.US_ASCII)))) {
                     kstats.add(ksp);
                 }
             }
@@ -252,7 +252,7 @@ public final class KstatKit {
          * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or -1 on
          * failure.
          */
-        public int update() {
+        public static int update() {
             return KS.kstat_chain_update(KC);
         }
 

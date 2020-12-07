@@ -20,44 +20,44 @@ JDK 1.8+ +
 
 ```java
 // Spring-Boot Jar包加密
-String password = "forest";
-Key key = Builder.key(password);
-Boot.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key);
+String password="forest";
+        Key key=Builder.key(password);
+        Boot.encrypt("/path/to/read/forest.jar","/path/to/save/enforest.jar",key);
 ```
 
 ```java
 // 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
-String password = "forest";
-Key key = Builder.key(password);
-Boot.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key, Builder.MODE_DANGER);
+String password="forest";
+        Key key=Builder.key(password);
+        Boot.encrypt("/path/to/read/forest.jar","/path/to/save/enforest.jar",key,Builder.MODE_DANGER);
 ```
 
 ```java
 // Spring-Boot Jar包解密
-String password = "forest";
-Key key = Builder.key(password);
-Boot.decrypt("/path/to/read/forest.jar", "/path/to/save/deforest.jar", key);
+String password="forest";
+        Key key=Builder.key(password);
+        Boot.decrypt("/path/to/read/forest.jar","/path/to/save/deforest.jar",key);
 ```
 
 ```java
 // Jar包加密
-String password = "forest";
-Key key = Builder.key(password);
-Jar.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key);
+String password="forest";
+        Key key=Builder.key(password);
+        Jar.encrypt("/path/to/read/forest.jar","/path/to/save/enforest.jar",key);
 ```
 
 ```java
 // 危险加密模式，即不需要输入密码即可启动的加密方式，这种方式META-INF/MANIFEST.MF中会保留密钥，请谨慎使用！
-String password = "forest";
-Key key = Kit.key(password);
-Jar.encrypt("/path/to/read/forest.jar", "/path/to/save/enforest.jar", key, Builder.MODE_DANGER);
+String password="forest";
+        Key key=Kit.key(password);
+        Jar.encrypt("/path/to/read/forest.jar","/path/to/save/enforest.jar",key,Builder.MODE_DANGER);
 ```
 
 ```java
 // Jar包解密
-String password = "forest";
-Key key = Builder.key(password);
-Jar.decrypt("/path/to/read/forest.jar", "/path/to/save/deforest.jar", key);
+String password="forest";
+        Key key=Builder.key(password);
+        Jar.decrypt("/path/to/read/forest.jar","/path/to/save/deforest.jar",key);
 ```
 
 ## 启动命令

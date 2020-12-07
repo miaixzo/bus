@@ -52,48 +52,48 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
         return data;
       }
       return null;
-        }
-
-        public ByteBuffer encode(byte[] msg, AioSession<byte[]> session) {
-            ByteBuffer buffer = ByteBuffer.allocate(msg.length);
-            buffer.put(msg);
-            buffer.flip();
-            return buffer;
-        }
     }
 
+    public ByteBuffer encode(byte[] msg, AioSession<byte[]> session) {
+      ByteBuffer buffer = ByteBuffer.allocate(msg.length);
+      buffer.put(msg);
+      buffer.flip();
+      return buffer;
+    }
+  }
 
-    class DemoService implements MessageProcessor<byte[]>, Runnable {
-        private HashMap<String, AioSession<byte[]>> clients = new HashMap<String, AioSession<byte[]>>();
-        private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(12);
 
-        public DemoService() {
-            executorService.scheduleAtFixedRate(this, 2, 2, TimeUnit.SECONDS);
+  class DemoService implements MessageProcessor<byte[]>, Runnable {
+    private HashMap<String, AioSession<byte[]>> clients = new HashMap<String, AioSession<byte[]>>();
+    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(12);
+
+    public DemoService() {
+      executorService.scheduleAtFixedRate(this, 2, 2, TimeUnit.SECONDS);
+    }
+
+    public void run() {
+      if (this.clients.isEmpty()) return;
+      for (AioSession<byte[]> session : this.clients.values()) {
+        try {
+          session.write("Hey! bus-socket it's work...".getBytes());
+        } catch (IOException e) {
+          e.printStackTrace();
         }
+      }
+    }
 
-        public void run() {
-          if (this.clients.isEmpty()) return;
-          for (AioSession<byte[]> session : this.clients.values()) {
-            try {
-                    session.write("Hey! bus-socket it's work...".getBytes());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-      public void process(AioSession<byte[]> session, byte[] msg) {
-            JSONObject jsonObject = JSON.parseObject(msg, JSONObject.class);
-            System.out.println(jsonObject.getString("content"));
+    public void process(AioSession<byte[]> session, byte[] msg) {
+      JSONObject jsonObject = JSON.parseObject(msg, JSONObject.class);
+      System.out.println(jsonObject.getString("content"));
             try {
                 session.write("{\"result\": \"OK\"}".getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+    }
 
-      public void stateEvent(AioSession<byte[]> session, SocketStatus SocketStatus, Throwable throwable) {
-            switch (SocketStatus) {
+    public void stateEvent(AioSession<byte[]> session, SocketStatus SocketStatus, Throwable throwable) {
+      switch (SocketStatus) {
                 case NEW_SESSION:
                     System.out.println("SocketStatus.NEW_SESSION");
                     break;
@@ -113,22 +113,22 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
                     System.out.println("SocketStatus.OUTPUT_EXCEPTION");
                     break;
                 case SESSION_CLOSING:
-                    System.out.println("SocketStatus.SESSION_CLOSING");
-                    break;
-                case SESSION_CLOSED:
-                    System.out.println("SocketStatus.SESSION_CLOSED");
-                    break;
-                case FLOW_LIMIT:
-                    System.out.println("SocketStatus.FLOW_LIMIT");
-                    break;
-                case RELEASE_FLOW_LIMIT:
-                    System.out.println("SocketStatus.RELEASE_FLOW_LIMIT");
+                  System.out.println("SocketStatus.SESSION_CLOSING");
                   break;
-              default:
-                System.out.println("SocketStatus.default");
-            }
+        case SESSION_CLOSED:
+          System.out.println("SocketStatus.SESSION_CLOSED");
+          break;
+        case FLOW_LIMIT:
+          System.out.println("SocketStatus.FLOW_LIMIT");
+          break;
+        case RELEASE_FLOW_LIMIT:
+          System.out.println("SocketStatus.RELEASE_FLOW_LIMIT");
+          break;
+        default:
+          System.out.println("SocketStatus.default");
       }
     }
+  }
 
 }
  ```

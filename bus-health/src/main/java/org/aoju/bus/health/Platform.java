@@ -78,8 +78,8 @@ public class Platform {
         }
     }
 
-    private final Supplier<OperatingSystem> os = Memoize.memoize(this::createOperatingSystem);
-    private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(this::createHardware);
+    private final Supplier<OperatingSystem> os = Memoize.memoize(Platform::createOperatingSystem);
+    private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
 
     /**
      * Getter for the field <code>currentPlatformEnum</code>.
@@ -461,17 +461,7 @@ public class Platform {
         builder.append(caption).append(StringKit.nullToDefault(Convert.toString(value), "[n/a]")).append(Symbol.LF);
     }
 
-    /**
-     * Creates a new instance of the appropriate platform-specific
-     * {@link  OperatingSystem}.
-     *
-     * @return A new instance of {@link  OperatingSystem}.
-     */
-    public OperatingSystem getOperatingSystem() {
-        return os.get();
-    }
-
-    private OperatingSystem createOperatingSystem() {
+    private static OperatingSystem createOperatingSystem() {
         switch (OS_CURRENT_PLATFORM) {
 
             case WINDOWS:
@@ -491,17 +481,7 @@ public class Platform {
         }
     }
 
-    /**
-     * Creates a new instance of the appropriate platform-specific
-     * {@link  HardwareAbstractionLayer}.
-     *
-     * @return A new instance of {@link  HardwareAbstractionLayer}.
-     */
-    public HardwareAbstractionLayer getHardware() {
-        return hardware.get();
-    }
-
-    private HardwareAbstractionLayer createHardware() {
+    private static HardwareAbstractionLayer createHardware() {
         switch (OS_CURRENT_PLATFORM) {
 
             case WINDOWS:
@@ -519,6 +499,26 @@ public class Platform {
             default:
                 throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
         }
+    }
+
+    /**
+     * Creates a new instance of the appropriate platform-specific
+     * {@link  OperatingSystem}.
+     *
+     * @return A new instance of {@link  OperatingSystem}.
+     */
+    public OperatingSystem getOperatingSystem() {
+        return os.get();
+    }
+
+    /**
+     * Creates a new instance of the appropriate platform-specific
+     * {@link  HardwareAbstractionLayer}.
+     *
+     * @return A new instance of {@link  HardwareAbstractionLayer}.
+     */
+    public HardwareAbstractionLayer getHardware() {
+        return hardware.get();
     }
 
     /**

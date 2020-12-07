@@ -40,7 +40,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -120,8 +119,8 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
     protected String sign(String stringToSign) {
         try {
             Mac mac = Mac.getInstance(Algorithm.HmacSHA1);
-            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(StandardCharsets.UTF_8), Algorithm.HmacSHA1));
-            byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
+            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HmacSHA1));
+            byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new InstrumentException("aliyun specialUrlEncode error");

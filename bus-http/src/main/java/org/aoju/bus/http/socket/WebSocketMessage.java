@@ -32,7 +32,6 @@ import org.aoju.bus.http.metric.TaskExecutor;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Kimi Liu
@@ -62,7 +61,7 @@ public class WebSocketMessage extends AbstractBody implements WebSocketCover.Soc
     @Override
     public byte[] toBytes() {
         if (text != null) {
-            return text.getBytes(StandardCharsets.UTF_8);
+            return text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8);
         }
         if (bytes != null) {
             return bytes.toByteArray();
@@ -97,7 +96,7 @@ public class WebSocketMessage extends AbstractBody implements WebSocketCover.Soc
     @Override
     public InputStream toByteStream() {
         if (text != null) {
-            return new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
+            return new ByteArrayInputStream(text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8));
         }
         if (bytes != null) {
             ByteBuffer buffer = bytes.asByteBuffer();

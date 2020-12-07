@@ -25,14 +25,15 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.drivers;
 
+import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.OSSession;
 import org.aoju.bus.health.linux.LinuxLibc;
 import org.aoju.bus.health.linux.LinuxLibc.LinuxUtmpx;
 import org.aoju.bus.health.unix.CLibrary;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,8 +66,8 @@ public final class Who {
             // Iterate
             while ((ut = LIBC.getutxent()) != null) {
                 if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
-                    String user = new String(ut.ut_user, Charset.defaultCharset()).trim();
-                    String device = new String(ut.ut_line, Charset.defaultCharset()).trim();
+                    String user = Native.toString(ut.ut_user, Charset.defaultCharset());
+                    String device = Native.toString(ut.ut_line, Charset.defaultCharset());
                     String host = Builder.parseUtAddrV6toIP(ut.ut_addr_v6);
                     long loginTime = ut.ut_tv.tv_sec * 1000L + ut.ut_tv.tv_usec / 1000L;
                     // Sanity check. If errors, default to who command line

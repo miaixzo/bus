@@ -162,13 +162,13 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
 ### 授权许可 `Authorization Grant`
 
 - Authorization Code
-  - 结合普通服务器端应用使用(**web**端常用的授权方式)
+    - 结合普通服务器端应用使用(**web**端常用的授权方式)
 - Implicit
-  - 结合移动应用或 Web App 使用
+    - 结合移动应用或 Web App 使用
 - Resource Owner Password Credentials
-  - 适用于受信任客户端应用，例如同个组织的内部或外部应用
+    - 适用于受信任客户端应用，例如同个组织的内部或外部应用
 - Client Credentials
-  - 适用于客户端调用主服务API型应用(比如百度API Store)
+    - 适用于客户端调用主服务API型应用(比如百度API Store)
 
 ## 致谢
 

@@ -25,17 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.health.mac.hardware;
 
+import com.sun.jna.Native;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quintet;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 /**
@@ -68,27 +69,27 @@ final class MacFirmware extends AbstractFirmware {
                         case "rom":
                             byte[] data = entry.getByteArrayProperty("vendor");
                             if (data != null) {
-                                manufacturer = new String(data, StandardCharsets.UTF_8).trim();
+                                manufacturer = Native.toString(data, Charset.UTF_8);
                             }
                             data = entry.getByteArrayProperty("version");
                             if (data != null) {
-                                version = new String(data, StandardCharsets.UTF_8).trim();
+                                version = Native.toString(data, Charset.UTF_8);
                             }
                             data = entry.getByteArrayProperty("release-date");
                             if (data != null) {
-                                releaseDate = new String(data, StandardCharsets.UTF_8).trim();
+                                releaseDate = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         case "chosen":
                             data = entry.getByteArrayProperty("booter-name");
                             if (data != null) {
-                                name = new String(data, StandardCharsets.UTF_8).trim();
+                                name = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         case "efi":
                             data = entry.getByteArrayProperty("firmware-abi");
                             if (data != null) {
-                                description = new String(data, StandardCharsets.UTF_8).trim();
+                                description = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         default:

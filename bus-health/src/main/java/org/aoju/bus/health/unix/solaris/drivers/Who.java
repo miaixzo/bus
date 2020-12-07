@@ -25,13 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.drivers;
 
+import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.health.builtin.software.OSSession;
 import org.aoju.bus.health.unix.CLibrary;
 import org.aoju.bus.health.unix.solaris.SolarisLibc;
 import org.aoju.bus.health.unix.solaris.SolarisLibc.SolarisUtmpx;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,10 +61,10 @@ public final class Who {
             // Iterate
             while ((ut = LIBC.getutxent()) != null) {
                 if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
-                    String user = new String(ut.ut_user, StandardCharsets.US_ASCII).trim();
+                    String user = Native.toString(ut.ut_user, Charset.US_ASCII);
                     if (!"LOGIN".equals(user)) {
-                        String device = new String(ut.ut_line, StandardCharsets.US_ASCII).trim();
-                        String host = new String(ut.ut_host, StandardCharsets.US_ASCII).trim();
+                        String device = Native.toString(ut.ut_line, Charset.US_ASCII);
+                        String host = Native.toString(ut.ut_host, Charset.US_ASCII);
                         long loginTime = ut.ut_tv.tv_sec.longValue() * 1000L + ut.ut_tv.tv_usec.longValue() / 1000L;
                         // Sanity check. If errors, default to who command line
                         if (user.isEmpty() || device.isEmpty() || loginTime < 0

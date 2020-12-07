@@ -49,7 +49,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.beans.XMLDecoder;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -801,7 +800,7 @@ public class XmlKit {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(javaBean.getClass());
             Unmarshaller um = jaxbContext.createUnmarshaller();
-            return um.unmarshal(new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8)));
+            return um.unmarshal(new ByteArrayInputStream(text.getBytes(Charset.UTF_8)));
         } catch (JAXBException e) {
             throw new InstrumentException(e);
         }

@@ -29,7 +29,6 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.logger.Logger;
@@ -132,12 +131,12 @@ public final class BsdSysctlKit {
      */
     public static Memory sysctl(String name) {
         IntByReference size = new IntByReference();
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, null, size, null, 0)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }
         Memory m = new Memory(size.getValue());
-        if (0 != SystemB.INSTANCE.sysctlbyname(name, m, size, null, 0)) {
+        if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, m, size, null, 0)) {
             Logger.error(SYSCTL_FAIL, name, Native.getLastError());
             return null;
         }

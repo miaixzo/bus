@@ -25,16 +25,17 @@
  ********************************************************************************/
 package org.aoju.bus.health.mac.hardware;
 
+import com.sun.jna.Native;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 /**
@@ -60,15 +61,15 @@ final class MacBaseboard extends AbstractBaseboard {
         if (platformExpert != null) {
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
             if (data != null) {
-                manufacturer = new String(data, StandardCharsets.UTF_8).trim();
+                manufacturer = Native.toString(data, Charset.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("board-id");
             if (data != null) {
-                model = new String(data, StandardCharsets.UTF_8).trim();
+                model = Native.toString(data, Charset.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("version");
             if (data != null) {
-                version = new String(data, StandardCharsets.UTF_8).trim();
+                version = Native.toString(data, Charset.UTF_8);
             }
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
             platformExpert.release();

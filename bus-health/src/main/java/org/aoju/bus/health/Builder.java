@@ -28,10 +28,7 @@ package org.aoju.bus.health;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.instance.Instances;
-import org.aoju.bus.core.lang.Fields;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.FileKit;
@@ -41,13 +38,13 @@ import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.builtin.software.OperatingSystem;
 import org.aoju.bus.logger.Logger;
 
+import java.lang.System;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalTime;
@@ -55,6 +52,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -409,7 +407,7 @@ public final class Builder {
      * otherwise the map may contain only a single element for {@code pid}
      */
     public static Map<Integer, String> getCwdMap(int pid) {
-        List<String> lsof = Executor.runNative("lsof -Fn -d cwd" + (pid < 0 ? Normal.EMPTY : " -p " + pid));
+        List<String> lsof = Executor.runNative("lsof -F n -d cwd" + (pid < 0 ? "" : " -p " + pid));
         Map<Integer, String> cwdMap = new HashMap<>();
         Integer key = -1;
         for (String line : lsof) {
@@ -439,7 +437,7 @@ public final class Builder {
      * @return the current working directory for that process.
      */
     public static String getCwd(int pid) {
-        List<String> lsof = Executor.runNative("lsof -Fn -d cwd -p " + pid);
+        List<String> lsof = Executor.runNative("lsof -F n -d cwd -p " + pid);
         for (String line : lsof) {
             if (!line.isEmpty() && line.charAt(0) == 'n') {
                 return line.substring(1).trim();
@@ -721,7 +719,7 @@ public final class Builder {
      * @return Plain text starting at the 4th byte
      */
     public static String getDescriptorText(byte[] desc) {
-        return new String(Arrays.copyOfRange(desc, 4, 18), StandardCharsets.US_ASCII).trim();
+        return new String(Arrays.copyOfRange(desc, 4, 18), Charset.US_ASCII).trim();
     }
 
     /**
@@ -924,7 +922,7 @@ public final class Builder {
      * string length, will be filled with zeroes.
      */
     public static byte[] asciiStringToByteArray(String text, int length) {
-        return Arrays.copyOf(text.getBytes(StandardCharsets.US_ASCII), length);
+        return Arrays.copyOf(text.getBytes(Charset.US_ASCII), length);
     }
 
     /**
@@ -959,7 +957,7 @@ public final class Builder {
      * a byte
      */
     public static long strToLong(String str, int size) {
-        return byteArrayToLong(str.getBytes(StandardCharsets.US_ASCII), size);
+        return byteArrayToLong(str.getBytes(Charset.US_ASCII), size);
     }
 
     /**
@@ -1687,8 +1685,8 @@ public final class Builder {
      * @return the number of open files.
      */
     public static long getOpenFiles(int pid) {
-        // subtract 1 from size for header
-        return Executor.runNative(String.format("lsof -p %d", pid)).size() - 1L;
+        int openFiles = Executor.runNative("lsof -p " + pid).size();
+        return openFiles > 0 ? openFiles - 1L : 0L;
     }
 
     /**

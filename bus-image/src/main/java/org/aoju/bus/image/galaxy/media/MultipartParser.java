@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -33,7 +34,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -156,7 +156,7 @@ public class MultipartParser {
         if (boundaryStr == null || (ckeckMultipartType != null && !parser.hasKey(ckeckMultipartType))) {
             return null;
         }
-        return boundaryStr.getBytes(StandardCharsets.ISO_8859_1);
+        return boundaryStr.getBytes(Charset.ISO_8859_1);
     }
 
     public void parse(InputStream in, Handler handler) throws IOException {

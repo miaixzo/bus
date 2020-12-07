@@ -31,13 +31,13 @@ import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
 import org.aoju.bus.health.unix.freebsd.FreeBsdLibc;
+import org.aoju.bus.health.unix.freebsd.ProcstatKit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +97,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
 
     @Override
     public String getCurrentWorkingDirectory() {
-        return Builder.getCwd(getProcessID());
+        return ProcstatKit.getCwd(getProcessID());
     }
 
     @Override
@@ -182,7 +182,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
 
     @Override
     public long getOpenFiles() {
-        return Builder.getOpenFiles(getProcessID());
+        return ProcstatKit.getOpenFiles(getProcessID());
     }
 
     @Override
@@ -270,7 +270,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
 
     @Override
     public boolean updateAttributes() {
-        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,args,majflt,minflt -p "
+        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,majflt,minflt,args -p "
                 + getProcessID();
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
@@ -326,11 +326,10 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.kernelTime = Builder.parseDHMSOrDefault(split[12], 0L);
         this.userTime = Builder.parseDHMSOrDefault(split[13], 0L) - this.kernelTime;
         this.path = split[14];
-        this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
-        this.commandLine = split[15];
-        this.minorFaults = Builder.parseLongOrDefault(split[16], 0L);
-        this.majorFaults = Builder.parseLongOrDefault(split[17], 0L);
-
+        this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
+        this.minorFaults = Builder.parseLongOrDefault(split[15], 0L);
+        this.majorFaults = Builder.parseLongOrDefault(split[16], 0L);
+        this.commandLine = split[17];
         return true;
     }
 

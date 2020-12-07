@@ -31,9 +31,9 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
-import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.unix.CLibrary;
 import org.aoju.bus.health.unix.NetStatTcp;
+import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.util.function.Supplier;
 
@@ -46,7 +46,7 @@ public class FreeBsdInternetProtocolStats implements InternetProtocolStats {
 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();
-        Memory m = SysctlKit.sysctl("net.inet.tcp.stats");
+        Memory m = BsdSysctlKit.sysctl("net.inet.tcp.stats");
         if (m != null && m.size() >= 128) {
             ft.tcps_connattempt = m.getInt(0);
             ft.tcps_accepts = m.getInt(4);
@@ -65,7 +65,7 @@ public class FreeBsdInternetProtocolStats implements InternetProtocolStats {
 
     private static CLibrary.BsdUdpstat queryUdpstat() {
         CLibrary.BsdUdpstat ut = new CLibrary.BsdUdpstat();
-        Memory m = SysctlKit.sysctl("net.inet.udp.stats");
+        Memory m = BsdSysctlKit.sysctl("net.inet.udp.stats");
         if (m != null && m.size() >= 1644) {
             ut.udps_ipackets = m.getInt(0);
             ut.udps_hdrops = m.getInt(4);
