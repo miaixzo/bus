@@ -2892,6 +2892,54 @@ public class MathKit {
     }
 
     /**
+     * 检查value是否在[min,max]范围内
+     *
+     * @param min   最小值
+     * @param max   最大值
+     * @param value 被检查值
+     * @return 检查结果，范围内将返回true，否则返回false
+     */
+    public static boolean isBetween(int min, int max, int value) {
+        return value >= min && value <= max;
+    }
+
+    /**
+     * 检查value是否在[min,max]范围内
+     *
+     * @param min   最小值
+     * @param max   最大值
+     * @param value 被检查值
+     * @return 检查结果，范围内将返回true，否则返回false
+     */
+    public static boolean isBetween(long min, long max, long value) {
+        return value >= min && value <= max;
+    }
+
+    /**
+     * 检查value是否在[min,max]范围内
+     *
+     * @param min   最小值
+     * @param max   最大值
+     * @param value 被检查值
+     * @return 检查结果，范围内将返回true，否则返回false
+     */
+    public static boolean isBetween(float min, float max, float value) {
+        return value >= min && value <= max;
+    }
+
+    /**
+     * 检查value是否在[min,max]范围内
+     *
+     * @param min   最小值
+     * @param max   最大值
+     * @param value 被检查值
+     * @return 检查结果，范围内将返回true，否则返回false
+     */
+    public static boolean isBetween(double min, double max, double value) {
+        return value >= min && value <= max;
+    }
+
+    /**
      * 是否为负数，不包括0
      *
      * @return 负数返回true，否则false

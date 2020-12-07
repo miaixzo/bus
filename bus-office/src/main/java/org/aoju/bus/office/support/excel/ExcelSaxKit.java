@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.sax.*;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
-import org.apache.poi.hssf.record.NumberRecord;
+import org.apache.poi.hssf.record.CellValueRecordInterface;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.util.XMLHelper;
 import org.apache.poi.xssf.model.SharedStringsTable;
@@ -60,6 +60,19 @@ public class ExcelSaxKit {
     public static final char CELL_FILL_CHAR = Symbol.C_AT;
     // 列的最大位数
     public static final int MAX_CELL_BIT = 3;
+
+    /**
+     * 创建 {@link ExcelSaxReader}
+     *
+     * @param isXlsx     是否为xlsx格式（07格式）
+     * @param rowHandler 行处理器
+     * @return {@link ExcelSaxReader}
+     */
+    public static ExcelSaxReader<?> createSaxReader(boolean isXlsx, RowHandler rowHandler) {
+        return isXlsx
+                ? new Excel07SaxReader(rowHandler)
+                : new Excel03SaxReader(rowHandler);
+    }
 
     /**
      * 根据数据类型获取数据
@@ -205,29 +218,46 @@ public class ExcelSaxKit {
     }
 
     /**
-     * 创建 {@link ExcelSaxReader}
-     *
-     * @param isXlsx     是否为xlsx格式（07格式）
-     * @param rowHandler 行处理器
-     * @return {@link ExcelSaxReader}
-     */
-    public static ExcelSaxReader<?> createSaxReader(boolean isXlsx, RowHandler rowHandler) {
-        return isXlsx
-                ? new Excel07SaxReader(rowHandler)
-                : new Excel03SaxReader(rowHandler);
-    }
-
-    /**
      * 判断数字Record中是否为日期格式
      *
-     * @param numrec         单元格记录
+     * @param cell           单元格记录
      * @param formatListener {@link FormatTrackingHSSFListener}
      * @return 是否为日期格式
      */
-    public static boolean isDateFormat(NumberRecord numrec, FormatTrackingHSSFListener formatListener) {
-        final int formatIndex = formatListener.getFormatIndex(numrec);
-        final String formatString = formatListener.getFormatString(numrec);
+    public static boolean isDateFormat(CellValueRecordInterface cell, FormatTrackingHSSFListener formatListener) {
+        final int formatIndex = formatListener.getFormatIndex(cell);
+        final String formatString = formatListener.getFormatString(cell);
+        return isDateFormat(formatIndex, formatString);
+    }
+
+    /**
+     * 判断日期格式
+     *
+     * @param formatIndex  格式索引，一般用于内建格式
+     * @param formatString 格式字符串
+     * @return 是否为日期格式
+     */
+    public static boolean isDateFormat(int formatIndex, String formatString) {
+        if (formatIndex == 28 || formatIndex == 31) {
+            return true;
+        }
         return org.apache.poi.ss.usermodel.DateUtil.isADateFormat(formatIndex, formatString);
+    }
+
+    /**
+     * 在Excel03 sax读取中获取日期或数字类型的结果值
+     *
+     * @param cell           记录单元格
+     * @param value          值
+     * @param formatListener {@link FormatTrackingHSSFListener}
+     * @return 值，可能为Date或Double或Long
+     */
+    public static Object getNumberOrDateValue(CellValueRecordInterface cell, double value, FormatTrackingHSSFListener formatListener) {
+        if (isDateFormat(cell, formatListener)) {
+            // 可能为日期格式
+            return getDateValue(value);
+        }
+        return getNumberValue(value, formatListener.getFormatString(cell));
     }
 
     /**
@@ -235,15 +265,25 @@ public class ExcelSaxKit {
      *
      * @param value        值
      * @param numFmtString 格式
-     * @return 数字, 可以是Double、Long
+     * @return 数字，可以是Double、Long
      */
     private static Number getNumberValue(String value, String numFmtString) {
         if (StringKit.isBlank(value)) {
             return null;
         }
-        double numValue = Double.parseDouble(value);
+        return getNumberValue(Double.parseDouble(value), numFmtString);
+    }
+
+    /**
+     * 获取数字类型值，除非格式中明确数字保留小数，否则无小数情况下按照long返回
+     *
+     * @param numValue     值
+     * @param numFmtString 格式
+     * @return 数字，可以是Double、Long
+     */
+    private static Number getNumberValue(double numValue, String numFmtString) {
         // 普通数字
-        if (null != numFmtString && numFmtString.indexOf(Symbol.C_DOT) < 0) {
+        if (null != numFmtString && false == StringKit.contains(numFmtString, Symbol.DOT)) {
             return (long) numValue;
         }
         return numValue;

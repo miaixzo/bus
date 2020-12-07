@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.text.Builders;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.MathKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -396,7 +397,6 @@ public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<E
      * @param attributes 属性
      */
     private void setCellType(Attributes attributes) {
-        // numFmtString的值
         numFmtString = Normal.EMPTY;
         this.cellDataType = CellDataType.of(AttributeName.t.getValue(attributes));
 
@@ -404,14 +404,13 @@ public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<E
         if (null != this.stylesTable) {
             final String xfIndexStr = AttributeName.s.getValue(attributes);
             if (null != xfIndexStr) {
-                int xfIndex = Integer.parseInt(xfIndexStr);
-                this.xssfCellStyle = stylesTable.getStyleAt(xfIndex);
-                numFmtString = xssfCellStyle.getDataFormatString();
+                this.xssfCellStyle = stylesTable.getStyleAt(Integer.parseInt(xfIndexStr));
                 // 单元格存储格式的索引，对应style.xml中的numFmts元素的子元素索引
-                int numFmtIndex = xssfCellStyle.getDataFormat();
-                if (numFmtString == null) {
-                    numFmtString = BuiltinFormats.getBuiltinFormat(numFmtIndex);
-                } else if (CellDataType.NUMBER == this.cellDataType && org.apache.poi.ss.usermodel.DateUtil.isADateFormat(numFmtIndex, numFmtString)) {
+                final int numFmtIndex = xssfCellStyle.getDataFormat();
+                this.numFmtString = ObjectKit.defaultIfNull(
+                        xssfCellStyle.getDataFormatString(),
+                        BuiltinFormats.getBuiltinFormat(numFmtIndex));
+                if (CellDataType.NUMBER == this.cellDataType && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }
             }
