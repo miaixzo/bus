@@ -55,7 +55,7 @@ public class MybatisPluginBuilder {
             p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
             p.setProperty("reasonable", mybatisProperties.getReasonable());
             p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
-            p.setProperty("returnPageInfo", mybatisProperties.getReturnPageInfo());
+            p.setProperty("returnPage", mybatisProperties.getReturnPage());
             p.setProperty("params", mybatisProperties.getParams());
 
             PageInterceptor interceptor = new PageInterceptor();

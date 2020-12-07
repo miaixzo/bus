@@ -332,7 +332,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return this;
     }
 
-    public Pages<E> toPageInfo() {
+    public Pages<E> toPages() {
         return new Pages<>(this);
     }
 
@@ -345,9 +345,9 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return (Page<E>) this;
     }
 
-    public <E> Pages<E> doSelectPageInfo(ISelect select) {
+    public <E> Pages<E> doSelectPages(ISelect select) {
         select.doSelect();
-        return (Pages<E>) this.toPageInfo();
+        return (Pages<E>) this.toPages();
     }
 
     public <E> PageSerializable<E> doSelectPageSerializable(ISelect select) {

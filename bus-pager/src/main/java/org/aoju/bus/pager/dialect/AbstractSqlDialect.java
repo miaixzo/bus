@@ -46,7 +46,7 @@ import java.util.*;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public abstract class AbstractHelperDialect extends AbstractDialect {
+public abstract class AbstractSqlDialect extends AbstractDialect {
 
     /**
      * 获取分页参数

@@ -134,28 +134,28 @@ public class ByteBuffer extends ByteString {
 
     /**
      * @param pageSize 内存页大小
-     * @param pageNum  内存页个数
+     * @param pageNo   内存页个数
      * @param isDirect 是否使用直接缓冲区
      */
-    public ByteBuffer(final int pageSize, final int pageNum, final boolean isDirect) {
-        this(pageSize, pageNum, -1, isDirect);
+    public ByteBuffer(final int pageSize, final int pageNo, final boolean isDirect) {
+        this(pageSize, pageNo, -1, isDirect);
     }
 
     /**
      * @param pageSize       内存页大小
-     * @param pageNum        内存页个数
+     * @param pageNo         内存页个数
      * @param sharedPageSize 共享内存页大小
      * @param isDirect       是否使用直接缓冲区
      */
-    public ByteBuffer(final int pageSize, final int pageNum, final int sharedPageSize, final boolean isDirect) {
+    public ByteBuffer(final int pageSize, final int pageNo, final int sharedPageSize, final boolean isDirect) {
         if (sharedPageSize > 0) {
             sharedPageBuffer = new PageBuffer(null, null, sharedPageSize, isDirect);
         }
-        pageBuffers = new PageBuffer[pageNum];
-        for (int i = 0; i < pageNum; i++) {
+        pageBuffers = new PageBuffer[pageNo];
+        for (int i = 0; i < pageNo; i++) {
             pageBuffers[i] = new PageBuffer(pageBuffers, sharedPageBuffer, pageSize, isDirect);
         }
-        if ((pageNum == 0 || pageSize == 0) && sharedPageSize <= 0) {
+        if ((pageNo == 0 || pageSize == 0) && sharedPageSize <= 0) {
             future.cancel(false);
         }
     }

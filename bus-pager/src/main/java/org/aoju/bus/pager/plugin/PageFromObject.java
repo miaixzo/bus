@@ -57,7 +57,7 @@ public abstract class PageFromObject {
         } catch (Throwable e) {
             hasRequest = false;
         }
-        PARAMS.put("pageNum", "pageNum");
+        PARAMS.put("pageNo", "pageNo");
         PARAMS.put("pageSize", "pageSize");
         PARAMS.put("count", "countSql");
         PARAMS.put("orderBy", "orderBy");
@@ -80,8 +80,8 @@ public abstract class PageFromObject {
         if (params instanceof IPage) {
             IPage pageParams = (IPage) params;
             Page page = null;
-            if (pageParams.getPageNum() != null && pageParams.getPageSize() != null) {
-                page = new Page(pageParams.getPageNum(), pageParams.getPageSize());
+            if (pageParams.getPageNo() != null && pageParams.getPageSize() != null) {
+                page = new Page(pageParams.getPageNo(), pageParams.getPageSize());
             }
             if (isNotEmpty(pageParams.getOrderBy())) {
                 if (page != null) {
@@ -94,7 +94,7 @@ public abstract class PageFromObject {
             }
             return page;
         }
-        int pageNum;
+        int pageNo;
         int pageSize;
         org.apache.ibatis.reflection.MetaObject paramsObject = null;
         if (hasRequest && requestClass.isAssignableFrom(params.getClass())) {
@@ -115,9 +115,9 @@ public abstract class PageFromObject {
             hasOrderBy = true;
         }
         try {
-            Object _pageNum = getParamValue(paramsObject, "pageNum", required);
+            Object _pageNo = getParamValue(paramsObject, "pageNo", required);
             Object _pageSize = getParamValue(paramsObject, "pageSize", required);
-            if (_pageNum == null || _pageSize == null) {
+            if (_pageNo == null || _pageSize == null) {
                 if (hasOrderBy) {
                     Page page = new Page();
                     page.setOrderBy(orderBy.toString());
@@ -126,12 +126,12 @@ public abstract class PageFromObject {
                 }
                 return null;
             }
-            pageNum = Integer.parseInt(String.valueOf(_pageNum));
+            pageNo = Integer.parseInt(String.valueOf(_pageNo));
             pageSize = Integer.parseInt(String.valueOf(_pageSize));
         } catch (NumberFormatException e) {
             throw new PageException("分页参数不是合法的数字类型!", e);
         }
-        Page page = new Page(pageNum, pageSize);
+        Page page = new Page(pageNo, pageSize);
         //count查询
         Object _count = getParamValue(paramsObject, "count", false);
         if (_count != null) {

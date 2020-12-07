@@ -29,7 +29,7 @@ import org.aoju.bus.mapper.criteria.Assert;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.cache.Cache;
 import org.aoju.bus.pager.cache.CacheFactory;
-import org.aoju.bus.pager.dialect.AbstractHelperDialect;
+import org.aoju.bus.pager.dialect.AbstractSqlDialect;
 import org.aoju.bus.pager.dialect.ReplaceSql;
 import org.aoju.bus.pager.dialect.replace.RegexWithNolockReplaceSql;
 import org.aoju.bus.pager.dialect.replace.SimpleWithNolockReplaceSql;
@@ -51,7 +51,7 @@ import java.util.Properties;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public class SqlServerDialect extends AbstractHelperDialect {
+public class SqlServerDialect extends AbstractSqlDialect {
     protected SqlServerParser pageSql = new SqlServerParser();
     protected Cache<String, String> CACHE_COUNTSQL;
     protected Cache<String, String> CACHE_PAGESQL;

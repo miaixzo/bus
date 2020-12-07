@@ -34,7 +34,7 @@ package org.aoju.bus.pager;
  */
 public interface IPage {
 
-    Integer getPageNum();
+    Integer getPageNo();
 
     Integer getPageSize();
 

@@ -53,9 +53,9 @@ public class MybatisProperties {
      */
     private String typeAliasesPackage;
     /**
-     * 检查返回类型是否为PageInfo
+     * 检查返回类型是否为Page
      */
-    private String returnPageInfo;
+    private String returnPage;
     /**
      * 参数信息
      */
