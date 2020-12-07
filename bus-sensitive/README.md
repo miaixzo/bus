@@ -4,23 +4,22 @@
 
 本工具是基于mybatis的插件机制编写的一套敏感数据加解密以及数据脱敏工具。
 
-在使用时通过注解指定一个字段是需要加密的字段，该插件会在存储时自动加密存储。
-而查询时会自动解密出明文在程序内部使用。
-在使用时也可以通过注解指定一个字段是需要脱敏的字段，该插件会在入库时将字段脱敏存储。
-内置了一些常用数据的脱敏处理方式。
-
+在使用时通过注解指定一个字段是需要加密的字段，该插件会在存储时自动加密存储。 而查询时会自动解密出明文在程序内部使用。 在使用时也可以通过注解指定一个字段是需要脱敏的字段，该插件会在入库时将字段脱敏存储。 内置了一些常用数据的脱敏处理方式。
 
 ## 设计目标
 
 #### 对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小。
+
 #### 加密算法可扩展。
 
 ## 实现原理
-1，拦截mybatis的StatementHandler 对读写请求进行脱敏和字段的加密。
-2，拦截mybatis的ResultSetHandler，对读请求的响应进行加密字段的解密赋值。
+
+1，拦截mybatis的StatementHandler 对读写请求进行脱敏和字段的加密。 2，拦截mybatis的ResultSetHandler，对读请求的响应进行加密字段的解密赋值。
+
 ## 使用方式
 
 1,编写加解密实现类以及配置mybatis的插件，下面在springboot场景下的一个配置案例。
+
 ```java
     /**
      * 插件配置
@@ -32,12 +31,15 @@
         return imports.toArray(new String[0]);
     }
 ```
+
 2，在vo类上添加功能注解使得插件生效：
+
 ```java
+
 @Data
 public class Entity {
 
-   private String id;
+    private String id;
     /**
      * 用户名
      */
@@ -50,7 +52,7 @@ public class Entity {
     /**
      * 值的赋值不从数据库取，而是从name字段获得。
      */
-    @Field(field = "name",type = Builder.Type.NAME)
+    @Field(field = "name", type = Builder.Type.NAME)
     private String userNameOnlyDTO;
     /**
      * 身份证号-加密
@@ -61,15 +63,15 @@ public class Entity {
     /**
      * 脱敏的身份证号
      */
-    @Field(field = "idCard",value = Builder.Type.CITIZENID)
+    @Field(field = "idCard", value = Builder.Type.CITIZENID)
     private String idcardSensitive;
     /**
      * 一个json串，需要脱敏
      * SensitiveJSONField标记json中需要脱敏的字段
      */
-    @JSON( {
-            @Field(key = "idCard",type = Builder.Type.CITIZENID),
-            @Field(key = "name",type = Builder.Type.NAME),
+    @JSON({
+            @Field(key = "idCard", type = Builder.Type.CITIZENID),
+            @Field(key = "name", type = Builder.Type.NAME),
     })
     private String jsonStr;
 
@@ -79,13 +81,15 @@ public class Entity {
     private String email;
 }
 ```
+
 ## 注解详解
+
 #### @Sensitive
-    
+
     标记在类上，声明此数据库映射的model对象开启数据加密和脱敏功能。
-    
+
 #### @Field(Builder.Type.NAME)
-    
+
     标记在字段上，必须是字符串。
     声明此字段在入库或者修改时，会脱敏存储。
     Builder.Type是脱敏类型，详见脱敏类型章节。
@@ -109,6 +113,7 @@ public class Entity {
     ......
     此时，数据库两个字段，一个会加密，一个会脱敏。
     在查询请求的响应结果集里，phone是明文，phoneSensitive是脱敏的。
+
 #### @JSON
 
     标记在json字符串上，声明此json串在入库前会将json中指定的字段脱敏。
@@ -138,7 +143,7 @@ public class Entity {
     使用场景：
     有时候数据库会存储一些第三方返回的json串，可能会包含敏感信息。
     业务里不需要用到敏感信息的明文，此时可以脱敏存储整个json串。
-    
+
 #### @Field(field = "userName",value = Builder.Type.NAME)
 
      此注解适用于如下场景：
@@ -153,75 +158,83 @@ public class Entity {
      
      则当查询出结果时，userNameOnlyDTO会赋值为username解密后再脱敏的值。
      相当于数据库的一个字段的值以不同的形式映射到了对象的两个字段上。
+
 ## 脱敏类型
+
 ```java
     public enum Type {
-       /**
-        * 不脱敏
-        */
-       NONE,
-       /**
-        * 默认脱敏方式
-        */
-       DEFAUL,
-       /**
-        * 中文名
-        */
-       NAME,
-       /**
-        * 身份证号
-        */
-       CITIZENID,
-       /**
-        * 座机号
-        */
-       PHONE,
-       /**
-        * 手机号
-        */
-       MOBILE,
-       /**
-        * 地址
-        */
-       ADDRESS,
-       /**
-        * 电子邮件
-        */
-       EMAIL,
-       /**
-        * 银行卡
-        */
-       BANK_CARD,
-       /**
-        * 企业银行联号
-        */
-       CNAPS_CODE,
-       /**
-        * 支付签约协议号
-        */
-       PAY_SIGN_NO,
-       /**
-        * 密码
-        */
-       PASSWORD,
-       /**
-        * 普通号码
-        */
-       GENERIC
-    }
+    /**
+     * 不脱敏
+     */
+    NONE,
+    /**
+     * 默认脱敏方式
+     */
+    DEFAUL,
+    /**
+     * 中文名
+     */
+    NAME,
+    /**
+     * 身份证号
+     */
+    CITIZENID,
+    /**
+     * 座机号
+     */
+    PHONE,
+    /**
+     * 手机号
+     */
+    MOBILE,
+    /**
+     * 地址
+     */
+    ADDRESS,
+    /**
+     * 电子邮件
+     */
+    EMAIL,
+    /**
+     * 银行卡
+     */
+    BANK_CARD,
+    /**
+     * 企业银行联号
+     */
+    CNAPS_CODE,
+    /**
+     * 支付签约协议号
+     */
+    PAY_SIGN_NO,
+    /**
+     * 密码
+     */
+    PASSWORD,
+    /**
+     * 普通号码
+     */
+    GENERIC
+}
 ```
+
 ## 注意事项
 
 #### 使用领域对象化的参数和响应
+
 必须使用javabean类入参声明方式才能使得本插件生效。例如：
+
 ```java
  int insert(Entity entity);
 ```
+
 使用如下的方式操作mybatis，则本插件无效。
+
 ```java
  int insert(Map map);
  int insert(String name,String idCard);
 ```
+
 #### sql应该是预编译类型的
 
 sql语句应该使用如#{userName}这种预编译的方式组织变量，不能使用'${userName}'这种方式

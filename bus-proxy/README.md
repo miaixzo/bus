@@ -1,8 +1,8 @@
 #### 项目说明
+
 公共代理:使动态代理变得简单
 
 代理设计模式允许您提供“另一个对象的代理或占位符来控制对它的访问”。代理可以以多种方式使用，其中一些是:
-
 
 延迟初始化——代理充当实际实现的“替身”，允许仅在绝对必要时实例化它。
 
@@ -14,24 +14,18 @@
 
 Proxy支持使用代理工厂、对象提供程序、调用程序和拦截器动态生成代理。
 
-
 JDK动态代理封装，提供非IOC下的切面支持
-
 
 AOP模块主要针对JDK中动态代理进行封装，抽象动态代理为切面类Aspect，通过Builder代理工具类将切面对象与被代理对象融合，产生一个代理对象，从而可以针对每个方法执行前后做通用的功能。
 
 在aop模块中，默认实现可以下两个切面对象：
 
-SimpleAspect 简单切面对象，不做任何操作，继承此对象可重写需要的方法即可，不必实现所有方法
-TimeIntervalAspect 执行时间切面对象，用于简单计算方法执行时间，然后通过日志打印方法执行时间
-
+SimpleAspect 简单切面对象，不做任何操作，继承此对象可重写需要的方法即可，不必实现所有方法 TimeIntervalAspect 执行时间切面对象，用于简单计算方法执行时间，然后通过日志打印方法执行时间
 
 #### 原理
 
 动态代理对象的创建原理是假设创建的代理对象名为 $Proxy0：
 
-根据传入的interfaces动态生成一个类，实现interfaces中的接口
-通过传入的classloder将刚生成的类加载到jvm中。即将$Proxy0类load
-调用$Proxy0的$Proxy0(InvocationHandler)构造函数 创建$Proxy0的对象，并且用interfaces参数遍历其所有接口的方法，并生成实现方法，这些实现方法的实现本质上是通过反射调用被代理对象的方法。
-将$Proxy0的实例返回给客户端。
-当调用代理类的相应方法时，相当于调用 InvocationHandler.invoke(Object, Method, Object []) 方法。
+根据传入的interfaces动态生成一个类，实现interfaces中的接口 通过传入的classloder将刚生成的类加载到jvm中。即将$Proxy0类load 调用$Proxy0的$Proxy0(InvocationHandler)
+构造函数 创建$Proxy0的对象，并且用interfaces参数遍历其所有接口的方法，并生成实现方法，这些实现方法的实现本质上是通过反射调用被代理对象的方法。 将$Proxy0的实例返回给客户端。 当调用代理类的相应方法时，相当于调用
+InvocationHandler.invoke(Object, Method, Object []) 方法。

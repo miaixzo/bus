@@ -38,18 +38,19 @@
 ---
 
 ## 项目说明
+
 Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
 
 很开心地告诉大家这套组件上手和学习难度非常小。如果是以学会使用为目的，只要你会Java语言即可。之前做项目的时候，往往会遇到各种各样的问题，这些问题有可能是会遇到很多次，不善于总结沉淀，这是很多人的一个通病，包括我自己也是。
 
-于是我就萌生了把这些问题沉淀成组件的想法，分享自己成长路线,当然也参考了部分开源项目，资料，文章进行整合的一个提供基础功能的项目。
-本项目旨在实现基础能力，不设计具体业务，希望能帮助到大家，也让大家见证我的勤奋与努力，一起进步。
+于是我就萌生了把这些问题沉淀成组件的想法，分享自己成长路线,当然也参考了部分开源项目，资料，文章进行整合的一个提供基础功能的项目。 本项目旨在实现基础能力，不设计具体业务，希望能帮助到大家，也让大家见证我的勤奋与努力，一起进步。
 
 欢迎大家来 这里 踩踩,生命有限！少写重复代码！给颗星奖励下呗~
 
 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测等，快速实现业务需求的全栈式技术解决方案。
 
 ## 组件信息
+
 | 完成 |模块 | 描述信息 |
 |------| ------ | ------- |
 |[ √ ]|bus-all|为微服务提供统一的pom管理，以及通用组件| 
@@ -80,20 +81,19 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ √ ]|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
 |[ × ]|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|
 |[ √ ]|bus-validate|参数校验，会默认拦截所有的标记有`@Valid`的方法或类|
- 
 
 ## 功能概述
 
-
 #### 功能概述
-1. Java基础工具类，对文件、流、加密解密、转码、正则、线程、XML等JDK方法进行封装，组成各种工具类；
-   以及结合springboot封装常用工具按需加载例如mybatis、xss、i18n、sensitive、validate等框架
+
+1. Java基础工具类，对文件、流、加密解密、转码、正则、线程、XML等JDK方法进行封装，组成各种工具类； 以及结合springboot封装常用工具按需加载例如mybatis、xss、i18n、sensitive、validate等框架
 
 2. 详细说明以及使用姿势请参考每个模块下README介绍
 
-
 ## 安装使用
+
 ### Maven
+
 ```
 <dependency>
     <groupId>org.aoju</groupId>
@@ -101,7 +101,9 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
     <version>6.1.3</version>
 </dependency>
 ```
+
 或者单独使用某个组件
+
 ```
 <dependency>
     <groupId>org.aoju</groupId>
@@ -111,6 +113,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 ```
 
 ### Gradle
+
 ```
 implementation 'org.aoju:bus-all:6.1.3'
 ```
@@ -125,8 +128,7 @@ implementation 'org.aoju:bus-all:6.1.3'
 
 为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
 
-- 地址: [https://github.com/aoju/abarth](https://github.com/aoju/abarth) 
-
+- 地址: [https://github.com/aoju/abarth](https://github.com/aoju/abarth)
 
 > 注意
 > Bus项目支持JDK8+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。
@@ -142,34 +144,40 @@ implementation 'org.aoju:bus-all:6.1.3'
 
 ## 意见建议
 
-All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are welcome.
+All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are
+welcome.
 
 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 BUG 的报告。
 
 ### Issue:
+
 - [版本情况]：jdk-openjdk_8_201 bus-xxx-6.x.x（请确保最新版本尝试是否还存在问题）
 - [问题描述]：（包括截图）
 - [复现代码]：
 - [堆栈信息]：
 
 ### Features:
+
 - [增加功能]： 内容
 - [修改描述]： 内容
 
- 注意：测试涉及到的文件请脱敏
-  
+注意：测试涉及到的文件请脱敏
+
 ## 许可证(license)
 
 ### MIT
+
 Open sourced under the MIT license.
 
 根据 MIT 许可证开源。
 
-### JetBrains 
+### JetBrains
 
 Thanks JetBrains for the OpenSource license.
 
 感谢JetBrains提供IDEA免费license
 
 ##
-源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"Talk is cheap, Show me the code."，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。
+
+源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"Talk is cheap, Show me the code."
+，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。

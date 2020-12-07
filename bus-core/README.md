@@ -1,12 +1,15 @@
 ## 功能概述
+
 核心功能及工具类,包括常量、线程、类加载器、反射、集合、日期等常用工具
 
 ## 运行环境
+
 要求JDK1.8+
 
 ## 快速开始
 
 - 引入依赖
+
 ```xml
 <dependency>
     <groupId>org.aoju</groupId>
@@ -20,6 +23,7 @@
 ###### 由于ClassLoader#getResources(name)方法提供的资源加载能力非常有限，不支持递归和搜索的特性，但是开发一个框架往往需要按照约定或配置去加载一些当前项目的资源或者扫描指定包目录下的类，能提供非常便利的API以满足需求
 
 ## **功能特性**
+
 * 纯JDK的API，无第三方依赖
 * 支持多种路径风格的资源加载
 * 完全惰性加载，避免性能浪费
@@ -28,6 +32,7 @@
 * 传递URLStreamHandler，支持自定义的URLStreamHandler
 
 ## **示例代码**
+
 ```java
 // 从当前的classpath中加载org/aoju/bus/core/loader目录的资源，但不递归加载子目录
 Loaders.std().load("org/aoju/bus/core/loader");
@@ -94,11 +99,12 @@ Filters.all(Filter...filters); // AND 连接的混合过滤器的另一种表达
 Filters.any(Filter...filters); // OR 连接的混合过滤器的另一种表达方式
 ```
 
+## ImageKit使用
 
-##  ImageKit使用
+ImageKit-图片合并功能使用起来相当简单，主要的类只用一个对象，指定背景图片和输出格式，然后加入各种素材元素，设置元素的位置、大小和效果（如圆角、颜色、透明度等），调用merge()
+方法即可merge方法直接返回BufferedImage对象，getInputStream()获得流，方便上传oss等后续操作，或者调用out()方法保存到本地，调试的时候比较方便。
 
-ImageKit-图片合并功能使用起来相当简单，主要的类只用一个对象，指定背景图片和输出格式，然后加入各种素材元素，设置元素的位置、大小和效果（如圆角、颜色、透明度等），调用merge()方法即可merge方法直接返回BufferedImage对象，getInputStream()获得流，方便上传oss等后续操作，或者调用out()方法保存到本地，调试的时候比较方便。
-##  完整示例
+## 完整示例
 
 ```java
   public void demo() throws Exception {
@@ -171,8 +177,9 @@ ImageKit-图片合并功能使用起来相当简单，主要的类只用一个�
         image.out("E://topic.png");
     }
 ```
- 
-##  元素支持的特性
+
+## 元素支持的特性
+
 具体`ImageElement`和`TextElement`对象支持的特性如下表：
 
 | 元素类型        | 特性    | 相关方法                                 |
