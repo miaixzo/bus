@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGroup {
+public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGroup {
 
     /**
      * 递归回调次数上限

@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.LongAdder;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
+public class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnable {
 
     /**
      * 当前周期内消息 流量监控

@@ -34,7 +34,7 @@ import java.nio.channels.CompletionHandler;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-final class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
+public class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
 
     @Override
     public void completed(final Integer result, final TcpAioSession<T> aioSession) {

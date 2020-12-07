@@ -46,7 +46,7 @@ import java.security.cert.X509Certificate;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public final class SslService {
+public class SslService {
 
     private final boolean isClient;
     private final ClientAuth clientAuth;

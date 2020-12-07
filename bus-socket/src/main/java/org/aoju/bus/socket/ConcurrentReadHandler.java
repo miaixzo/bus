@@ -34,7 +34,7 @@ import java.util.concurrent.*;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-final class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
+public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
 
     /**
      * 读回调资源信号量

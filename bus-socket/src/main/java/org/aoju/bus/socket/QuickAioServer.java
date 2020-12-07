@@ -51,7 +51,7 @@ import java.util.function.Function;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public final class QuickAioServer<T> {
+public class QuickAioServer<T> {
 
     private static final String BUS_ASYNCHRONOUS_CHANNEL_PROVIDER = "org.aoju.bus.socket.AsynchronousChannelProvider";
     private static final String AIO_ASYNCHRONOUS_CHANNEL_PROVIDER = "java.nio.channels.spi.AsynchronousChannelProvider";

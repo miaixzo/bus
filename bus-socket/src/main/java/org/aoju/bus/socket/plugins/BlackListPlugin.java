@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public final class BlackListPlugin<T> extends AbstractPlugin<T> {
+public class BlackListPlugin<T> extends AbstractPlugin<T> {
 
     private final ConcurrentLinkedQueue<BlackListRule> ipBlackList = new ConcurrentLinkedQueue<>();
 

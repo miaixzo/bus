@@ -37,7 +37,7 @@ import java.util.concurrent.Future;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-final class AsynchronousServerSocketChannel extends java.nio.channels.AsynchronousServerSocketChannel {
+public class AsynchronousServerSocketChannel extends java.nio.channels.AsynchronousServerSocketChannel {
 
     private final ServerSocketChannel serverSocketChannel;
     private final AsynchronousChannelGroup asynchronousChannelGroup;

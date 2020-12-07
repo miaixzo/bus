@@ -35,7 +35,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-class HandshakeModel {
+public class HandshakeModel {
 
     private AsynchronousSocketChannel socketChannel;
     private SSLEngine sslEngine;

@@ -37,7 +37,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-class UdpDispatcher<T> implements Runnable {
+public class UdpDispatcher<T> implements Runnable {
 
     public final RequestTask EXECUTE_TASK_OR_SHUTDOWN = new RequestTask(null, null);
     private final BlockingQueue<RequestTask> taskQueue = new LinkedBlockingQueue<>();

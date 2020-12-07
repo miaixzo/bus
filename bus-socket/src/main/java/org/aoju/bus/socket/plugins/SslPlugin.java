@@ -41,7 +41,7 @@ import java.nio.channels.AsynchronousSocketChannel;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public final class SslPlugin<T> extends AbstractPlugin<T> {
+public class SslPlugin<T> extends AbstractPlugin<T> {
 
     private final ByteBuffer bufferPool;
     private SslService sslService;

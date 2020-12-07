@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-final class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSocketChannel {
+public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSocketChannel {
 
     private final SocketChannel channel;
     private final AsynchronousChannelGroup group;

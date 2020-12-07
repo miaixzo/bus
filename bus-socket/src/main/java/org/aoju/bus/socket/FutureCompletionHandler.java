@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-final class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V>, Runnable {
+public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, Future<V>, Runnable {
 
     private CompletionHandler<V, A> completionHandler;
     private A attach;
