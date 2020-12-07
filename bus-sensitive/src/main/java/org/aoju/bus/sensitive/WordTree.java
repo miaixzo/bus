@@ -44,7 +44,7 @@ import java.util.*;
  */
 public class WordTree extends HashMap<Character, WordTree> {
 
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 敏感词字符末尾标识，用于标识单词末尾字符
