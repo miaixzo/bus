@@ -215,4 +215,35 @@ public class BufferKit {
         return null;
     }
 
+    /**
+     * 创建新Buffer
+     *
+     * @param data 数据
+     * @return {@link ByteBuffer}
+     */
+    public static ByteBuffer create(byte[] data) {
+        return ByteBuffer.wrap(data);
+    }
+
+    /**
+     * 从字符串创建新Buffer，使用UTF-8编码
+     *
+     * @param data 数据
+     * @return {@link ByteBuffer}
+     */
+    public static ByteBuffer create(CharSequence data) {
+        return create(StringKit.bytes(data));
+    }
+
+    /**
+     * 从字符串创建新Buffer
+     *
+     * @param data    数据
+     * @param charset 编码
+     * @return {@link ByteBuffer}
+     */
+    public static ByteBuffer create(CharSequence data, Charset charset) {
+        return create(StringKit.bytes(data, charset));
+    }
+
 }
