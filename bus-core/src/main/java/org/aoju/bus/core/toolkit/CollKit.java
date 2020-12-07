@@ -2165,8 +2165,7 @@ public class CollKit {
             index += size;
         }
 
-        // 检查越界
-        if (index >= size) {
+        if (index >= size || index < 0) {
             return null;
         }
 
