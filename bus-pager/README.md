@@ -32,7 +32,7 @@
 
 由于使用了sql 解析工具，你还需要下载 jsqlparser.jar(需要和bus-pager依赖的版本一致) ：
 
-- http://repo1.maven.org/maven2/com/github/jsqlparser/jsqlparser/
+- https://repo1.maven.org/maven2/com/github/jsqlparser/jsqlparser/
 
 #### 2). 使用 Maven
 
