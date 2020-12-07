@@ -1,8 +1,4 @@
-## **功能特性**
-
-## 支持 [MyBatis 3.1.0+](https://github.com/mybatis/mybatis-3)
-
-## 物理分页
+## Mybatis物理分页
 
 该插件目前支持以下数据库的<b>物理分页</b>:
 
