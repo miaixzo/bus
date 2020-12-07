@@ -26,6 +26,7 @@
 package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.platform.win32.*;
@@ -35,6 +36,7 @@ import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APITypeMapper;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.builtin.hardware.AbstractPowerSource;
 import org.aoju.bus.health.builtin.hardware.PowerSource;
@@ -44,7 +46,6 @@ import org.aoju.bus.health.windows.PowrProf.BATTERY_MANUFACTURE_DATE;
 import org.aoju.bus.health.windows.PowrProf.BATTERY_QUERY_INFORMATION;
 import org.aoju.bus.health.windows.PowrProf.SystemBatteryState;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
@@ -207,7 +208,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                                 if (0 == (bi.Capabilities & BATTERY_CAPACITY_RELATIVE)) {
                                                     psCapacityUnits = CapacityUnits.MWH;
                                                 }
-                                                psChemistry = new String(bi.Chemistry, StandardCharsets.US_ASCII);
+                                                psChemistry = Native.toString(bi.Chemistry, Charset.US_ASCII);
                                                 psDesignCapacity = bi.DesignedCapacity;
                                                 psMaxCapacity = bi.FullChargedCapacity;
                                                 psCycleCount = bi.CycleCount;

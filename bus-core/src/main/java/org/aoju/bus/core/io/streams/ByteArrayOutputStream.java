@@ -28,6 +28,7 @@ package org.aoju.bus.core.io.streams;
 import org.aoju.bus.core.io.FastByteBuffer;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.core.toolkit.ObjectKit;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -104,7 +105,6 @@ public class ByteArrayOutputStream extends OutputStream {
         }
     }
 
-
     /**
      * 转为Byte数组
      *
@@ -116,7 +116,7 @@ public class ByteArrayOutputStream extends OutputStream {
 
     @Override
     public String toString() {
-        return new String(toByteArray());
+        return toString(Charset.defaultCharset());
     }
 
     /**
@@ -136,7 +136,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * @return 字符串
      */
     public String toString(java.nio.charset.Charset charset) {
-        return new String(toByteArray(), charset);
+        return new String(toByteArray(), ObjectKit.defaultIfNull(charset, Charset.defaultCharset()));
     }
 
 }

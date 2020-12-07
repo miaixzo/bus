@@ -1,6 +1,9 @@
 #### 项目说明
+
 文件存储组件,支持阿里云、七牛集成，提供了工厂模式和spring注入两种集成方式。
+
 #### 添加依赖(华为SDK需要添加至私服)
+
 ```xml
     <aliyun.oss.version>3.4.2</aliyun.oss.version>
     <baidu.bos.version>0.10.48</baidu.bos.version>
@@ -102,10 +105,13 @@
         <optional>true</optional>
     </dependency>
 ```
+
 #### 工厂模式
+
 ##### 配置文件,xx.yml
 
 # 服务提供者可选值(qiniu，aliyun)
+
 ```yaml
 extend:
   storage:
@@ -125,6 +131,7 @@ extend:
 ```
 
 参数说明：
+
 - bucket：多个组用“,”隔开，对应的`bucket`
 
 ##### 用法①
@@ -136,6 +143,7 @@ context.setSecretKey(xxx);
 StorageProvider provider = new AliyunossProvider(context);
 provider.upload("test", null, new File("/Users/leaves/logo.gif"));
 ```
+
 ##### 用法②
 
 ```java

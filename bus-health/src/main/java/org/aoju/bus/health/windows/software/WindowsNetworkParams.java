@@ -26,6 +26,7 @@
 package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Native;
 import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
 import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
@@ -34,13 +35,13 @@ import com.sun.jna.platform.win32.Kernel32Util;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 import org.aoju.bus.logger.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +87,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
             Logger.error("Failed to get dns domain name. Error code: {}", Kernel32.INSTANCE.GetLastError());
             return Normal.EMPTY;
         }
-        return new String(buffer).trim();
+        return Native.toString(buffer);
     }
 
     @Override
@@ -111,7 +112,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
         while (dns != null) {
             // a char array of size 16.
             // This array holds an IPv4 address in dotted decimal notation.
-            String addr = new String(dns.IpAddress.String, StandardCharsets.US_ASCII);
+            String addr = Native.toString(dns.IpAddress.String, Charset.US_ASCII);
             int nullPos = addr.indexOf(0);
             if (nullPos != -1) {
                 addr = addr.substring(0, nullPos);

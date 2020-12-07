@@ -1,5 +1,5 @@
-
 如你所见，它仅仅是一个**第三方授权登录**的**工具类库**，它可以让我们脱离繁琐的第三方登录SDK，让登录变得**So easy!**
+
 ## 特点
 
 废话不多说，就俩字：
@@ -10,26 +10,30 @@
 ## 快速开始
 
 - 引入依赖
+
 ```xml
+
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
     <version>6.1.3</version>
 </dependency>
 ```
+
 - 调用api
+
 ```java
 // 创建授权request
-Provider provider = new GiteeProvider(Context.builder()
+Provider provider=new GiteeProvider(Context.builder()
         .clientId("clientId")
         .clientSecret("clientSecret")
         .redirectUri("redirectUri")
         .build());
 // 生成授权页面
-provider.authorize("state");
+        provider.authorize("state");
 // 授权登录后会返回code(auth_code(仅限支付宝))、state，1.8.0版本后，可以用Callback类作为回调接口的参数
 // 注：默认保存state的时效为3分钟，3分钟内未使用则会自动清除过期的state
-provider.login(callback);
+        provider.login(callback);
 ```
 
 ### 获取授权链接
@@ -37,8 +41,8 @@ provider.login(callback);
 ```
 String authorizeUrl = shooting.authorize("state");
 ```
-获取到`authorizeUrl`后，可以手动实现redirect到`authorizeUrl`上
 
+获取到`authorizeUrl`后，可以手动实现redirect到`authorizeUrl`上
 
 **注：`state`建议必传！`state`在`OAuth`的流程中的主要作用就是保证请求完整性，防止**CSRF**风险，此处传的`state`将在回调时传回
 
@@ -69,6 +73,7 @@ provider.revoke(AccToken.builder().accessToken(token).build());
 ```
 
 #### API列表
+
 |  平台  |  API  |  SDK  |
 |:------:|:-------:|:-------:|
 |  gitee | [GiteeProvider](https://github.com/aoju/bus/tree/master/bus-oauth/src/main/java/org/aoju/bus/oauth/provider/GiteeProvider.java)  | <a href="https://gitee.com/api/v5/oauth_doc#list_1" target="_blank">参考文档</a> |
@@ -106,7 +111,6 @@ provider.revoke(AccToken.builder().accessToken(token).build());
 
 _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经下线。如果以前申请过的应用，可以继续使用，但是不再支持申请新的应用, 本项目中的CSDN登录只能针对少部分用户使用了
 
-
 # 关于OAuth
 
 请先查阅以下资料：
@@ -125,6 +129,7 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
 - `Client` 客户端，即代表意图访问受限资源的**第三方应用**
 
 ### 授权流程
+
 ```
      +--------+                               +---------------+
      |        |--(A)- Authorization Request ->|   Resource    |
@@ -157,14 +162,14 @@ _请知悉：经咨询CSDN官方客服得知，CSDN的授权开放平台已经�
 ### 授权许可 `Authorization Grant`
 
 - Authorization Code
-  - 结合普通服务器端应用使用(**web**端常用的授权方式)
+    - 结合普通服务器端应用使用(**web**端常用的授权方式)
 - Implicit
-  - 结合移动应用或 Web App 使用
+    - 结合移动应用或 Web App 使用
 - Resource Owner Password Credentials
-  - 适用于受信任客户端应用，例如同个组织的内部或外部应用
+    - 适用于受信任客户端应用，例如同个组织的内部或外部应用
 - Client Credentials
-  - 适用于客户端调用主服务API型应用(比如百度API Store)
-  
+    - 适用于客户端调用主服务API型应用(比如百度API Store)
+
 ## 致谢
 
 - [JustAuth](https://github.com/justauth/JustAuth): 第三方登录授权 SDK

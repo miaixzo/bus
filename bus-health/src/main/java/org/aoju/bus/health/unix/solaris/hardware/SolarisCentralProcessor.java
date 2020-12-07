@@ -108,14 +108,15 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
         // Get first result
         try (KstatChain kc = KstatKit.openChain()) {
-            com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp = kc.lookup(CPU_INFO, -1, null);
+            LibKstat.Kstat ksp = KstatChain.lookup(CPU_INFO, -1, null);
             // Set values
-            if (ksp != null && kc.read(ksp)) {
+            if (ksp != null && KstatChain.read(ksp)) {
                 cpuVendor = KstatKit.dataLookupString(ksp, "vendor_id");
                 cpuName = KstatKit.dataLookupString(ksp, "brand");
                 cpuFamily = KstatKit.dataLookupString(ksp, "family");
                 cpuModel = KstatKit.dataLookupString(ksp, "model");
                 cpuStepping = KstatKit.dataLookupString(ksp, "stepping");
+                cpuFreq = KstatKit.dataLookupLong(ksp, "clock_MHz") * 1_000_000L;
             }
         }
         boolean cpu64bit = "64".equals(Executor.getFirstAnswer("isainfo -b").trim());
@@ -128,23 +129,23 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
     @Override
     protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
         Map<Integer, Integer> numaNodeMap = mapNumaNodes();
-        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
+        List<LogicalProcessor> logProcs = new ArrayList<>();
         try (KstatChain kc = KstatKit.openChain()) {
-            List<LibKstat.Kstat> kstats = kc.lookupAll(CPU_INFO, -1, null);
+            List<LibKstat.Kstat> kstats = KstatChain.lookupAll(CPU_INFO, -1, null);
 
             for (LibKstat.Kstat ksp : kstats) {
-                if (ksp != null && kc.read(ksp)) {
+                if (ksp != null && KstatChain.read(ksp)) {
                     int procId = logProcs.size(); // 0-indexed
                     String chipId = KstatKit.dataLookupString(ksp, "chip_id");
                     String coreId = KstatKit.dataLookupString(ksp, "core_id");
-                    CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(procId, Builder.parseIntOrDefault(coreId, 0),
+                    LogicalProcessor logProc = new LogicalProcessor(procId, Builder.parseIntOrDefault(coreId, 0),
                             Builder.parseIntOrDefault(chipId, 0), numaNodeMap.getOrDefault(procId, 0));
                     logProcs.add(logProc);
                 }
             }
         }
         if (logProcs.isEmpty()) {
-            logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
+            logProcs.add(new LogicalProcessor(0, 0, 0));
         }
         return logProcs;
     }
@@ -169,8 +170,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         Arrays.fill(freqs, -1);
         try (KstatChain kc = KstatKit.openChain()) {
             for (int i = 0; i < freqs.length; i++) {
-                for (LibKstat.Kstat ksp : kc.lookupAll(CPU_INFO, i, null)) {
-                    if (kc.read(ksp)) {
+                for (LibKstat.Kstat ksp : KstatChain.lookupAll(CPU_INFO, i, null)) {
+                    if (KstatChain.read(ksp)) {
                         freqs[i] = KstatKit.dataLookupLong(ksp, "current_clock_Hz");
                     }
                 }
@@ -183,8 +184,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
     public long queryMaxFreq() {
         long max = -1L;
         try (KstatChain kc = KstatKit.openChain()) {
-            for (com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp : kc.lookupAll(CPU_INFO, 0, null)) {
-                if (kc.read(ksp)) {
+            for (LibKstat.Kstat ksp : KstatChain.lookupAll(CPU_INFO, 0, null)) {
+                if (KstatChain.read(ksp)) {
                     String suppFreq = KstatKit.dataLookupString(ksp, "supported_frequencies_Hz");
                     if (!suppFreq.isEmpty()) {
                         for (String s : suppFreq.split(Symbol.COLON)) {
@@ -220,16 +221,16 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
         int cpu = -1;
         try (KstatChain kc = KstatKit.openChain()) {
-            for (com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp : kc.lookupAll("cpu", -1, "sys")) {
+            for (LibKstat.Kstat ksp : KstatChain.lookupAll("cpu", -1, "sys")) {
                 // This is a new CPU
                 if (++cpu >= ticks.length) {
                     // Shouldn't happen
                     break;
                 }
-                if (kc.read(ksp)) {
-                    ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_idle");
-                    ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_kernel");
-                    ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_user");
+                if (KstatChain.read(ksp)) {
+                    ticks[cpu][TickType.IDLE.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_idle");
+                    ticks[cpu][TickType.SYSTEM.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_kernel");
+                    ticks[cpu][TickType.USER.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_user");
                 }
             }
         }

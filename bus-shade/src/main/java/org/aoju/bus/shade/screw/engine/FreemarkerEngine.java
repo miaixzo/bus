@@ -38,7 +38,6 @@ import org.aoju.bus.shade.Builder;
 import org.aoju.bus.shade.screw.metadata.DataSchema;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -114,7 +113,7 @@ public class FreemarkerEngine extends AbstractEngine {
             File file = getFile(docName);
             // writer freemarker
             try (Writer out = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+                    new OutputStreamWriter(new FileOutputStream(file), Charset.UTF_8))) {
                 // process
                 template.process(info, out);
                 // open the output directory

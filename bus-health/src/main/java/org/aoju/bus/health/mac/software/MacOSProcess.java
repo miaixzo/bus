@@ -32,8 +32,10 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.*;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
@@ -41,7 +43,6 @@ import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.mac.ThreadInfo;
 import org.aoju.bus.logger.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,6 +129,11 @@ public class MacOSProcess extends AbstractOSProcess {
         IntByReference size = new IntByReference(argmax);
         // Fetch arguments
         if (0 != SystemB.INSTANCE.sysctl(mib, mib.length, procargs, size, null, 0)) {
+            // Beginning in macOS 11, this call has become unreliable. Use ps as a backup.
+            String cmdLine = Executor.getFirstAnswer("ps -o command= -p " + getProcessID());
+            if (!cmdLine.isEmpty()) {
+                return cmdLine;
+            }
             Logger.warn(
                     "Failed syctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
                     getProcessID(), Native.getLastError());
@@ -316,13 +322,7 @@ public class MacOSProcess extends AbstractOSProcess {
         }
         if (this.name.isEmpty()) {
             // pbi_comm contains first 16 characters of name
-            // null terminated
-            for (int t = 0; t < taskAllInfo.pbsd.pbi_comm.length; t++) {
-                if (taskAllInfo.pbsd.pbi_comm[t] == 0) {
-                    this.name = new String(taskAllInfo.pbsd.pbi_comm, 0, t, StandardCharsets.UTF_8);
-                    break;
-                }
-            }
+            this.name = Native.toString(taskAllInfo.pbsd.pbi_comm, Charset.UTF_8);
         }
 
         switch (taskAllInfo.pbsd.pbi_status) {
@@ -389,7 +389,7 @@ public class MacOSProcess extends AbstractOSProcess {
                 }
                 len++;
             }
-            this.currentWorkingDirectory = new String(vpi.pvi_cdir.vip_path, 0, len, StandardCharsets.US_ASCII);
+            this.currentWorkingDirectory = new String(vpi.pvi_cdir.vip_path, 0, len, Charset.US_ASCII);
         }
         return true;
     }

@@ -25,10 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.image.metric.internal.pdu;
 
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.galaxy.Property;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Kimi Liu
@@ -87,11 +86,11 @@ public class IdentityRQ {
     }
 
     private static byte[] toBytes(String s) {
-        return s.getBytes(StandardCharsets.UTF_8);
+        return s.getBytes(Charset.UTF_8);
     }
 
     private static String toString(byte[] b) {
-        return new String(b, StandardCharsets.UTF_8);
+        return new String(b, Charset.UTF_8);
     }
 
     public final int getType() {

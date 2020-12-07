@@ -1,4 +1,4 @@
-##  Quick Start
+## Quick Start
 
 添加`@EnableLimiter` 注解
 
@@ -12,13 +12,13 @@ public class Application {
 }
 ```
 
-##  How  To Use
+## How  To Use
 
-  以`Lock`组件为例
+以`Lock`组件为例
 
 **Step 0. 定义锁资源**
 
-  下面的代码向`BeanFactory`中注册了一个`BeanId`为 `jdkLock`的实例
+下面的代码向`BeanFactory`中注册了一个`BeanId`为 `jdkLock`的实例
 
 ```java
 @Bean
@@ -30,7 +30,7 @@ Lock jdkLock() {
 
 **Step 1. 编写业务接口**
 
-  我们假设有这样一个业务场景，用户可以使用一个Vip兑换码来延长自己的VIP期限，理所当然的是，每个兑换码只能被使用一次，通常情况下，我们会在数据库中查询该兑换码是否存在并且是否已经使用。
+我们假设有这样一个业务场景，用户可以使用一个Vip兑换码来延长自己的VIP期限，理所当然的是，每个兑换码只能被使用一次，通常情况下，我们会在数据库中查询该兑换码是否存在并且是否已经使用。
 
 ```java
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
@@ -41,17 +41,19 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
 
 **Step 2.添加`HLock`注解**
 
-  上面的接口并不安全，假如在极短的的时间内用户发起了多次相同兑换的请求，由于数据库的事务隔离特性，该兑换码便会被多次兑换，这个漏洞可能被用户恶意使用，造成损失。  这里涉及的重放攻击问题此处不再深入讨论,(欢迎移步我的[博客](https://blog.higgs.site/2019/06/24/从接口幂等性到重放攻击/#))。现在我们添加HLock注解保护该接口。
+上面的接口并不安全，假如在极短的的时间内用户发起了多次相同兑换的请求，由于数据库的事务隔离特性，该兑换码便会被多次兑换，这个漏洞可能被用户恶意使用，造成损失。 这里涉及的重放攻击问题此处不再深入讨论,(
+欢迎移步我的[博客](https://blog.higgs.site/2019/06/24/从接口幂等性到重放攻击/#))。现在我们添加HLock注解保护该接口。
 
 ```java
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 @HLock(limiter = "jdkLock", key = "#request.vipCode", fallback = "fallbackToBusy")
-public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
-   return demoService.exchangeVip(request, SpringAware.getCurrentUser());
-}
+public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request){
+        return demoService.exchangeVip(request,SpringAware.getCurrentUser());
+        }
 ```
 
- 该注解的含义是，在请求到达时，使用`jdkLock`这个锁锁住`#request.vipCode`这个资源，如果锁成功了，后面的逻辑继续进行，在业务逻辑完成后便会释放该资源，如果`#request.vipCode`这个资源已经被锁定，便会降级到`fallbackToBusy`方法进行。这样其他相同 `#request.vipCode`的请求便会被拦截，
+该注解的含义是，在请求到达时，使用`jdkLock`这个锁锁住`#request.vipCode`这个资源，如果锁成功了，后面的逻辑继续进行，在业务逻辑完成后便会释放该资源，如果`#request.vipCode`
+这个资源已经被锁定，便会降级到`fallbackToBusy`方法进行。这样其他相同 `#request.vipCode`的请求便会被拦截，
 
 在同一class下添加降级方法 `fallbackToBusy`
 
@@ -63,7 +65,7 @@ ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
 
 **Step 3. 使用分布式锁**
 
-  随着业务发展，单实例应用不能再满足业务的需求，分布式改造开始了。上面的jdkLock是一个存储在内存的锁，这意味着切换到多实例环境后，仍然可能在多个实例上同时发起多个相同的请求。要解决这个问题，只需要将锁切换至分布式锁即可，这里我们以RedisLock为例。
+随着业务发展，单实例应用不能再满足业务的需求，分布式改造开始了。上面的jdkLock是一个存储在内存的锁，这意味着切换到多实例环境后，仍然可能在多个实例上同时发起多个相同的请求。要解决这个问题，只需要将锁切换至分布式锁即可，这里我们以RedisLock为例。
 
 注入一个RedisLock
 
@@ -93,12 +95,9 @@ ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
 @HLock(limiter = "redisLock", key = "#request.vipCode", fallback = "fallback")
 ```
 
-
 **Step 4. star this niubility project**
 
-
 ## Document
-
 
 `limiter`是作为顶层抽象，所有类型的限制组件均实现自该接口。limiter的定义非常简单
 
@@ -118,13 +117,11 @@ public interface Limiter<T extends Annotation> {
 
 具体类型的组件在继承limiter后进行更细粒度的抽象。例如Lock在作为进一步抽象，而用RedisLock和ZookeeperLock进行进一步的实现。
 
-
-
 ## 自带组件介绍
 
 ### 1. Lock
 
-  资源锁组件，用于限制资源的并发数量为1，抽象接口为 `Lock`
+资源锁组件，用于限制资源的并发数量为1，抽象接口为 `Lock`
 
 对应的注解为`HLock`
 
@@ -147,7 +144,7 @@ public abstract class Lock implements Limiter<HLock> {
 }
 ```
 
- **提供三种实现**：
+**提供三种实现**：
 
 - 以`ConcurrentHashMap`和`ReentrantLock` 为基础的`JdkLock`，适应于单实例环境。
 - 以Redis 为基础的`RedisLock`，适应于对资源容量和速度要求较高的分布式环境。底层为`redisson`实现，有完善的锁延期和防死锁机制。
@@ -182,10 +179,9 @@ public abstract class RateLimiter implements Limiter<HRateLimiter> {
 - 以`GuavaCache`和令牌桶算法为基础的`JdkRateLimiter`
 - 以`Redis`和令牌桶算法为基础的`RedisRatelimiter`
 
+### 3. Peak
 
-###  3. Peak
-
-  限制一个资源的并发数小于固定值，抽象接口为`PeakLimiter`,对应的注解为
+限制一个资源的并发数小于固定值，抽象接口为`PeakLimiter`,对应的注解为
 
 `HPeak`
 
@@ -213,16 +209,13 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 - 以`GuavaCache`和`Semaphore`为基础的`JdkPeakLimiter`，适应于单实例环境。
 - 以`Redis`为基础的`RedisPeakLimiter`，适应于多实例环境。
 
+## 注解介绍
 
-
-##  注解介绍
-
-###  1. 注解通用基础属性
+### 1. 注解通用基础属性
 
 所有类型的注解都默认包含下面5个属性
 
-- **limiter** : 使用的限流器的BeanId,将会从Spring的BeanFacotry中获取，不能为空。
-  例如：设置limiter="jdkLock" 便会使用该限流组件
+- **limiter** : 使用的限流器的BeanId,将会从Spring的BeanFacotry中获取，不能为空。 例如：设置limiter="jdkLock" 便会使用该限流组件
 
 ```java
   @Bean
@@ -254,7 +247,9 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
   }
 ```
 
-- **errorHandler** :   从BeanFactory中获取。 限流组件出现错误时的处理方法，比如使用RedisLock作为分布式锁时，Redis宕机了，如果不想影响业务进行可以选择跳过该限流器。更好的策略应该在具体的限流实现中处理，此处作为一个兜底方法， 默认策略为`defaultErrorHandler`，即抛出异常。该对象应该实现 接口
+- **errorHandler** :   从BeanFactory中获取。
+  限流组件出现错误时的处理方法，比如使用RedisLock作为分布式锁时，Redis宕机了，如果不想影响业务进行可以选择跳过该限流器。更好的策略应该在具体的限流实现中处理，此处作为一个兜底方法，
+  默认策略为`defaultErrorHandler`，即抛出异常。该对象应该实现 接口
 
 ```java
   public class MyErrorHandler implements ErrorHandler {
@@ -267,9 +262,9 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
   
 ```
 
-
-
-- **argumentInjectors**  ：从BeanFactory中获取，可配置多个。参数注入器。如果我们想要使用方法入参之外的参数作为key的变量，可以使用参数注入器注入，比如从用户上下文中注入用户id、从请求上下文中注入ip。该对象应该实现`ArgumentInjector`接口
+- **argumentInjectors**
+  ：从BeanFactory中获取，可配置多个。参数注入器。如果我们想要使用方法入参之外的参数作为key的变量，可以使用参数注入器注入，比如从用户上下文中注入用户id、从请求上下文中注入ip。该对象应该实现`ArgumentInjector`
+  接口
 
 ```java
   public class UserInfoArgumentInjector implements ArgumentInjector {
@@ -291,46 +286,36 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 
 ```java
   // 注入userInfo 信息 并在key中使用 
-  @HLock(limiter = "jdkLock", key = "#request.vipCode +  #userInfo.userId", fallback ="fallback",argumentInjectors = "userInfoArgumentInjector")
-  public ResponseMessage exchangeVipOnJDKLock(@RequestBody ExchangeVipRequest request) {
-      // ...
-  }
+@HLock(limiter = "jdkLock", key = "#request.vipCode +  #userInfo.userId", fallback = "fallback", argumentInjectors = "userInfoArgumentInjector")
+public ResponseMessage exchangeVipOnJDKLock(@RequestBody ExchangeVipRequest request){
+        // ...
+        }
 ```
 
 #### 2. @HLock 注解
 
-  
-
-   业务中最常见的需要，限制某一个资源的并发数量。下面的例子即为限制相同`vipCode`的请求最大并发数为1
+业务中最常见的需要，限制某一个资源的并发数量。下面的例子即为限制相同`vipCode`的请求最大并发数为1
 
 ```java
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
 @HLock(limiter = "jdkLock", key = "#request.vipCode", fallback = "fallbackToBusy")
-public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
-   return demoService.exchangeVip(request, SpringAware.getCurrentUser());
-}
+public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request){
+        return demoService.exchangeVip(request,SpringAware.getCurrentUser());
+        }
 ```
-
-
 
 #### 3. @HPeak 注解
 
-  如果你对Java中的信号量(`Semaphore`)熟悉，则你会很容易理解这个注解。该注解的含义是限制一个资源的并发数量。
+如果你对Java中的信号量(`Semaphore`)熟悉，则你会很容易理解这个注解。该注解的含义是限制一个资源的并发数量。
 
 - **max** ： 最多的并发数量，默认值为10.
 
-
-
 #### 4. @HRateLimiter注解
 
-  从名字便可以看出，这是用来限制调用频率的，额外的配置
+从名字便可以看出，这是用来限制调用频率的，额外的配置
 
 - **rate** ： 限制该资源的调用频率，单位为 次/秒，默认值为10
 - **capacity** ： 该资源最多可累计的数量， 比如该资源限制调用的频率为10次/秒，但是该资源已经3秒没有被调用过了，如果最大可累计数量为20，那该资源可在短期内超出10次/秒的限制。更多细节可以参考令牌桶算法。
-
-
-
-
 
 ## 如何扩展
 
@@ -344,8 +329,6 @@ Limiter提供了标准的扩展方式，开发者可以添加自定义组件。
 - 使该组件生效
 
 假设我们需要一个黑名单限制组件，我们想要实现一个简单的效果：在请求到达时，检查请求发起者是否是该接口的黑名单用户，如果是黑名单用户，则降级该请求。我们开始实现一个简陋的黑名单校验。
-
-
 
 **SETP 0. 添加黑名单的注解**
 
@@ -392,8 +375,6 @@ public abstract class BlacklistLimiter implements Limiter<HBlacklist> {
     }
 }
 ```
-
-
 
 **STEP 2. 定义该组件的resource和meta**
 
@@ -457,8 +438,6 @@ public class BlacklistAnnotationParser extends AbstractLimiterAnnotationParser<B
 }
 ```
 
-
-
 **SETP 4. 添加一个实现**
 
 我们添加一个简单的实现，从Redis中检查该用户是否是该serciceId的该黑名单用户。
@@ -501,7 +480,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 
 ### 测试环境
 
-- Docker 1.13.1   8核16G
+- Docker 1.13.1 8核16G
 - Redis CGroup 2核4G
 - Application CGroup 2核4G
 
@@ -510,7 +489,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 - 4线程1000连接压测120秒
 - tomcat.max-threads=1000，
 - 业务代码执行时间均为1000ms
-- JDK1.8 
+- JDK1.8
 - Zoookeeper和Redis和应用处于同一主机
 - Zookeeper为3节点
 
@@ -526,7 +505,7 @@ public class RedisBlacklistLimiter extends BlacklistLimiter {
 - 4线程1000连接压测120秒
 - tomcat.max-threads=1000，
 - 业务代码执行时间均为1000ms
-- JDK1.8 
+- JDK1.8
 - Zoookeeper和Redis和应用处于同一主机
 
 |                  | AVG RT    | AVG-QPS |

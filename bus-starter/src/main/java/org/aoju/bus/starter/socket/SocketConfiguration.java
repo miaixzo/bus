@@ -25,8 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.starter.socket;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 /**
  * Socket配置
@@ -38,7 +39,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties(SocketProperties.class)
 public class SocketConfiguration {
 
-    @Autowired
-    SocketProperties properties;
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    @ConditionalOnMissingBean
+    public SocketQuickService initialization(SocketProperties properties) {
+        return new SocketQuickService(properties);
+    }
 
 }

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.mac.software;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
@@ -39,6 +40,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
@@ -47,7 +49,6 @@ import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -151,7 +152,7 @@ public class MacFileSystem extends AbstractFileSystem {
                     // Byte arrays are null-terminated strings
 
                     // Get volume name
-                    String volume = new String(fs[f].f_mntfromname, StandardCharsets.UTF_8).trim();
+                    String volume = Native.toString(fs[f].f_mntfromname, Charset.UTF_8);
                     // Skip non-local drives if requested, skip system types
                     final int flags = fs[f].f_flags;
                     if ((localOnly && (flags & MNT_LOCAL) == 0) || volume.equals("devfs")
@@ -159,7 +160,7 @@ public class MacFileSystem extends AbstractFileSystem {
                         continue;
                     }
 
-                    String type = new String(fs[f].f_fstypename, StandardCharsets.UTF_8).trim();
+                    String type = Native.toString(fs[f].f_fstypename, Charset.UTF_8);
                     String description = "Volume";
                     if (LOCAL_DISK.matcher(volume).matches()) {
                         description = "Local Disk";
@@ -167,7 +168,7 @@ public class MacFileSystem extends AbstractFileSystem {
                             || NETWORK_FS_TYPES.contains(type)) {
                         description = "Network Drive";
                     }
-                    String path = new String(fs[f].f_mntonname, StandardCharsets.UTF_8).trim();
+                    String path = Native.toString(fs[f].f_mntonname, Charset.UTF_8);
                     String name = Normal.EMPTY;
                     File file = new File(path);
                     if (name.isEmpty()) {

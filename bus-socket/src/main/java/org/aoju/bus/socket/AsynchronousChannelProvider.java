@@ -36,7 +36,7 @@ import java.util.concurrent.*;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public final class AsynchronousChannelProvider extends java.nio.channels.spi.AsynchronousChannelProvider {
+public class AsynchronousChannelProvider extends java.nio.channels.spi.AsynchronousChannelProvider {
 
     @Override
     public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(int nThreads, ThreadFactory threadFactory) throws IOException {

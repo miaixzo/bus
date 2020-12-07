@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.software;
 
+import com.sun.jna.platform.unix.solaris.LibKstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
@@ -77,7 +78,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     private static long querySystemUptime() {
         try (KstatChain kc = KstatKit.openChain()) {
-            com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp = kc.lookup("unix", 0, "system_misc");
+            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
             if (ksp != null) {
                 // Snap Time is in nanoseconds; divide for seconds
                 return ksp.ks_snaptime / 1_000_000_000L;
@@ -88,8 +89,8 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     private static long querySystemBootTime() {
         try (KstatChain kc = KstatKit.openChain()) {
-            com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp = kc.lookup("unix", 0, "system_misc");
-            if (ksp != null && kc.read(ksp)) {
+            LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
+            if (ksp != null && KstatChain.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "boot_time");
             }
         }

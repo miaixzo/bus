@@ -34,7 +34,7 @@ import java.nio.channels.Selector;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-interface WorkerRegister {
+public interface WorkerRegister {
 
     /**
      * selector回调

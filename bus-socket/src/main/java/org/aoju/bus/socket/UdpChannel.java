@@ -50,7 +50,7 @@ import java.util.function.Function;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-public final class UdpChannel<Request> {
+public class UdpChannel<Request> {
 
     private final PageBuffer bufferPage;
     /**

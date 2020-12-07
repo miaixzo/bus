@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @version V1.0.0
  */
-public final class QuickAioClient<T> {
+public class QuickAioClient<T> {
 
     /**
      * 客户端服务配置。

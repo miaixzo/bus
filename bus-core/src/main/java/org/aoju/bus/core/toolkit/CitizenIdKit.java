@@ -98,6 +98,7 @@ public class CitizenIdKit {
         AREA_CODE.put("71", "台湾");
         AREA_CODE.put("81", "香港");
         AREA_CODE.put("82", "澳门");
+        AREA_CODE.put("83", "台湾");
         AREA_CODE.put("91", "国外");
 
         AREA_TW_CODE.put("A", 10);
@@ -337,7 +338,7 @@ public class CitizenIdKit {
             sum = sum + Integer.parseInt(String.valueOf(c)) * iflag;
             iflag--;
         }
-        if ("A".equals(end.toUpperCase())) {
+        if ("A".equalsIgnoreCase(end)) {
             sum += 10;
         } else {
             sum += Integer.parseInt(end);

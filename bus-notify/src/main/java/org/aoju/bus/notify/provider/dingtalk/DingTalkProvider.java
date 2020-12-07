@@ -25,10 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.dingtalk;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import lombok.Setter;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.notify.Builder;
@@ -77,10 +76,10 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
         }
         param.put("to_all_user", entity.isToAllUser());
         String response = Httpx.post(DingTalk_NOTIFY_API, param);
-        JSONObject object = JSON.parseObject(response);
+        String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
-                .errcode(SUCCESS_RESULT.equals(object.getString("errcode")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("errcode"))
-                .errmsg(object.getString("errmsg"))
+                .errcode(SUCCESS_RESULT.equals(errcode) ? Builder.ErrorCode.SUCCESS.getCode() : errcode)
+                .errmsg(JsonKit.getValue(response, "errmsg"))
                 .build();
     }
 
@@ -101,15 +100,15 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
         paramMap.put("corpid", properties.getAppKey());
         paramMap.put("corpsecret", properties.getAppSecret());
         String response = Httpx.get(DINGTALK_TOKEN_API, paramMap);
-        JSONObject object = JSON.parseObject(response);
-        if (SUCCESS_RESULT.equals(object.getString("errcode"))) {
-            String token = object.getString("access_token");
+        String errcode = JsonKit.getValue(response, "errcode");
+        if (SUCCESS_RESULT.equals(errcode)) {
+            String access_token = JsonKit.getValue(response, "access_token");
             refreshTokenTime = System.currentTimeMillis();
-            accessToken.set(token);
-            return token;
+            accessToken.set(access_token);
+            return access_token;
         }
 
-        Logger.error("获取钉钉token失败：{}", object.getString("errmsg"));
+        Logger.error("获取钉钉token失败：{}", JsonKit.getValue(response, "errmsg"));
         return null;
     }
 

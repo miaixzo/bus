@@ -2352,6 +2352,9 @@ public class CollKit {
         final int[] startEnd = transToStartEnd(pageNo, pageSize);
         if (startEnd[1] > resultSize) {
             startEnd[1] = resultSize;
+            if (startEnd[0] > startEnd[1]) {
+                return Collections.emptyList();
+            }
         }
         return list.subList(startEnd[0], startEnd[1]);
     }

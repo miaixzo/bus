@@ -38,7 +38,7 @@ import java.nio.channels.AsynchronousChannelGroup;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-class ReconnectPlugin<T> extends AbstractPlugin<T> {
+public class ReconnectPlugin<T> extends AbstractPlugin<T> {
 
     private final AsynchronousChannelGroup asynchronousChannelGroup;
     private final QuickAioClient<T> client;

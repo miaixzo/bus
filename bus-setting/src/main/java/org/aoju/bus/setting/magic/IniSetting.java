@@ -31,7 +31,6 @@ import org.aoju.bus.setting.Builder;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -176,7 +175,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * @see #write(OutputStream, Charset, boolean)
      */
     public void write(OutputStream out, boolean withComment) throws IOException {
-        write(out, StandardCharsets.UTF_8, withComment);
+        write(out, org.aoju.bus.core.lang.Charset.UTF_8, withComment);
     }
 
 
@@ -245,7 +244,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * @throws IOException io exception
      */
     public void write(File file, boolean withComment) throws IOException {
-        write(file, StandardCharsets.UTF_8, withComment);
+        write(file, org.aoju.bus.core.lang.Charset.UTF_8, withComment);
     }
 
     /**
@@ -275,7 +274,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * @throws IOException io exception
      */
     public void write(Path path, boolean withComment) throws IOException {
-        write(path, StandardCharsets.UTF_8, withComment);
+        write(path, org.aoju.bus.core.lang.Charset.UTF_8, withComment);
     }
 
 }

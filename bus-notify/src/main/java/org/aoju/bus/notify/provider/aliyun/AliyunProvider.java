@@ -25,12 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
@@ -41,7 +40,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -121,8 +119,8 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
     protected String sign(String stringToSign) {
         try {
             Mac mac = Mac.getInstance(Algorithm.HmacSHA1);
-            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(StandardCharsets.UTF_8), Algorithm.HmacSHA1));
-            byte[] signData = mac.doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
+            mac.init(new SecretKeySpec((properties.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HmacSHA1));
+            byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new InstrumentException("aliyun specialUrlEncode error");
@@ -130,10 +128,10 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
     }
 
     protected Message checkResponse(String response) {
-        JSONObject object = JSON.parseObject(response);
+        String code = JsonKit.getValue(response, "Code");
         return Message.builder()
-                .errcode(SUCCESS_RESULT.equals(object.getString("Code")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("Code"))
-                .errmsg(object.getString("Code")).build();
+                .errcode(SUCCESS_RESULT.equals(code) ? Builder.ErrorCode.SUCCESS.getCode() : code)
+                .errmsg(code).build();
     }
 
 }

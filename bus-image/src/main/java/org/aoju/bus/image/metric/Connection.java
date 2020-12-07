@@ -26,6 +26,7 @@
 package org.aoju.bus.image.metric;
 
 import org.aoju.bus.core.codec.Base64;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -43,7 +44,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1063,7 +1063,7 @@ public class Connection implements Serializable {
                 .append(" HTTP/1.1\r\nHost: ")
                 .append(hostname).append(Symbol.C_COLON).append(port);
         if (userauth != null) {
-            byte[] b = userauth.getBytes(StandardCharsets.UTF_8);
+            byte[] b = userauth.getBytes(Charset.UTF_8);
             char[] base64 = new char[(b.length + 2) / 3 * 4];
             Base64.encode(b, 0, b.length, base64, 0);
             request.append("\r\nProxy-Authorization: basic ")
@@ -1071,7 +1071,7 @@ public class Connection implements Serializable {
         }
         request.append("\r\n\r\n");
         OutputStream out = s.getOutputStream();
-        out.write(request.toString().getBytes(StandardCharsets.US_ASCII));
+        out.write(request.toString().getBytes(Charset.US_ASCII));
         out.flush();
 
         s.setSoTimeout(connectTimeout);
@@ -1189,7 +1189,7 @@ public class Connection implements Serializable {
                 write(b);
                 if (b == Symbol.C_LF) {
                     if (eol) {
-                        rsp = new String(super.buf, 0, super.count, StandardCharsets.US_ASCII);
+                        rsp = new String(super.buf, 0, super.count, Charset.US_ASCII);
                         return;
                     }
                     eol = true;

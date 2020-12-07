@@ -1,4 +1,5 @@
 # 介绍
+
 一个简单易用的接口开放平台，平台封装了常用的参数校验、结果返回等功能，开发者只需实现业务代码即可。
 
 功能类似于[淘宝开放平台](http://open.taobao.com/docs/api.htm?spm=a219a.7629065.0.0.6cQDnQ&apiId=4)，它的所有接口只提供一个url，通过参数来区分不同业务。这样做的好处是接口url管理方便了，平台管理者只需维护好接口参数即可。由于参数的数量是可知的，这样可以在很大程度上进行封装。封装完后平台开发者只需要写业务代码，其它功能可以通过配置来完成。
@@ -69,20 +70,22 @@ public Goods getGoods(GoodsParam param) {
 }
 ```
 
-
 - **@ApiVersion**
->* 通过此注解，自动为requestmappinginfo合并一个以版本号开头的路径；建议：大版本在类上配置，小版本可以通过配置在方法上，此时将替换类上面的大版本配置
+
+> * 通过此注解，自动为requestmappinginfo合并一个以版本号开头的路径；建议：大版本在类上配置，小版本可以通过配置在方法上，此时将替换类上面的大版本配置
 
 - **@ClientVersion**
->* 通过此注解，可以通过接口header中的cv,terminal参数路由倒不同的处理方法（handler method，基于RequestMappingHandlerMapping中的getCustom**Condition方法扩展）；
 
-- **@VersionMapping** 
->* 组合注解，实现了RequestMapping的功能，同时提供了上述两种注解的配置
+> * 通过此注解，可以通过接口header中的cv,terminal参数路由倒不同的处理方法（handler method，基于RequestMappingHandlerMapping中的getCustom**Condition方法扩展）；
+
+- **@VersionMapping**
+
+> * 组合注解，实现了RequestMapping的功能，同时提供了上述两种注解的配置
 
 业务场景：
+
 - ApiVersion：替换之前的版本定义在路径中，导致的接口升级需要重新定义类或者在代码中做判断的问题
 - ClientVersion：碰到客户端已经在使用的接口，区分对待的情况下，通过通过ClientVersion优雅的避免在代码中写大量版本判断逻辑的问题
-
 
 ```java
 
@@ -134,7 +137,6 @@ public class TController {
 
 }
 ```
-
 
 ### reactor server config
 

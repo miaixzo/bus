@@ -37,7 +37,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Kimi Liu
@@ -60,7 +59,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     public static byte[] getBytes(char[] chars) {
-        Charset cs = StandardCharsets.UTF_8;
+        Charset cs = org.aoju.bus.core.lang.Charset.UTF_8;
         CharBuffer cb = CharBuffer.allocate(chars.length);
         cb.put(chars);
         cb.flip();

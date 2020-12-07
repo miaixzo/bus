@@ -61,7 +61,7 @@ import java.util.function.Function;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-final class TcpAioSession<T> extends AioSession {
+public class TcpAioSession<T> extends AioSession {
 
     /**
      * 底层通信channel对象

@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 6.1.3
  * @since JDK 1.8+
  */
-abstract class GroupMessageProcessor<T> implements MessageProcessor<T>, GroupIo {
+public abstract class GroupMessageProcessor<T> implements MessageProcessor<T>, GroupIo {
 
     private final Map<String, GroupUnit> sessionGroup = new ConcurrentHashMap<>();
 

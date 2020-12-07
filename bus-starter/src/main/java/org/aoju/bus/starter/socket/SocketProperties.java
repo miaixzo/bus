@@ -30,14 +30,18 @@ import org.aoju.bus.starter.BusXExtend;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
+ * 配置信息
+ * 1. 默认读取配置文件信息
+ * 2. 可以自己从写部分类等
+ *
  * @author Kimi Liu
  * @version 6.1.3
  * @since JDK 1.8+
  */
 @Data
-@ConfigurationProperties(prefix = BusXExtend.WEBSOCKET)
+@ConfigurationProperties(prefix = BusXExtend.SOCKET)
 public class SocketProperties {
 
-    private int port;
+    private int port = 8080;
 
 }

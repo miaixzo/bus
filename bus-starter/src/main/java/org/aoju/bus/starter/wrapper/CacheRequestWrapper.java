@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.starter.wrapper;
 
-import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -56,7 +55,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
     CacheRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         // 从ParameterMap获取参数，并保存以便多次获取
-        Logger.info(Symbol.DELIM, JSON.toJSON(request.getParameterMap()).toString());
+        Logger.info(Symbol.DELIM, JsonKit.toJsonString(request.getParameterMap()));
         // 从InputStream获取参数，并保存以便多次获取
         this.body = IoKit.readBytes(request.getInputStream());
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body != null ? this.body : DEFAULT_BYTE);

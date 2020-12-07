@@ -66,7 +66,7 @@ public class GifProvider extends AbstractProvider {
      * @param height 验证码高度
      */
     public GifProvider(int width, int height) {
-        this(width, height, 100);
+        this(width, height, 5);
     }
 
     /**

@@ -48,7 +48,6 @@ import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.util.Date;
@@ -121,7 +120,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      * @param propertiesFile 配置文件对象
      */
     public Properties(File propertiesFile) {
-        this(propertiesFile, StandardCharsets.ISO_8859_1);
+        this(propertiesFile, Charset.ISO_8859_1);
     }
 
     /**
