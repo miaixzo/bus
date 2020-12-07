@@ -44,7 +44,6 @@
         <project.compiler.version>1.8</project.compiler.version>
         <spring.boot.version>2.4.0</spring.boot.version>
         <lombok.version>1.18.16</lombok.version>
-        <fastjson.version>1.2.75</fastjson.version>
         <guice.version>4.2.3</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <xmemcached.version>2.4.6</xmemcached.version>
@@ -60,6 +59,11 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>bus-extra</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>bus-proxy</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -67,12 +71,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

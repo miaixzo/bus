@@ -44,7 +44,6 @@
         <project.compiler.version>1.8</project.compiler.version>
         <spring.boot.version>2.4.0</spring.boot.version>
         <lombok.version>1.18.16</lombok.version>
-        <fastjson.version>1.2.75</fastjson.version>
         <aspectj.version>1.9.6</aspectj.version>
         <persistence.version>2.2</persistence.version>
         <guava.version>30.0-jre</guava.version>
@@ -184,12 +183,6 @@
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
             <version>${persistence.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

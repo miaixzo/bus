@@ -51,7 +51,6 @@
         <lombok.version>1.18.16</lombok.version>
         <guava.version>30.0-jre</guava.version>
         <netty.version>4.1.51.Final</netty.version>
-        <fastjson.version>1.2.75</fastjson.version>
         <marshalling.version>2.0.5.Final</marshalling.version>
         <asm.version>7.2</asm.version>
     </properties>
@@ -82,12 +81,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

@@ -44,70 +44,70 @@ import java.nio.charset.Charset;
  */
 public class CharSequenceResource implements Resource {
 
-	private final CharSequence data;
-	private final CharSequence name;
-	private final Charset charset;
+    private final CharSequence data;
+    private final CharSequence name;
+    private final Charset charset;
 
-	/**
-	 * 构造，使用UTF8编码
-	 *
-	 * @param data 资源数据
-	 */
-	public CharSequenceResource(CharSequence data) {
-		this(data, null);
-	}
+    /**
+     * 构造，使用UTF8编码
+     *
+     * @param data 资源数据
+     */
+    public CharSequenceResource(CharSequence data) {
+        this(data, null);
+    }
 
-	/**
-	 * 构造，使用UTF8编码
-	 *
-	 * @param data 资源数据
-	 * @param name 资源名称
-	 */
-	public CharSequenceResource(CharSequence data, String name) {
-		this(data, name, org.aoju.bus.core.lang.Charset.UTF_8);
-	}
+    /**
+     * 构造，使用UTF8编码
+     *
+     * @param data 资源数据
+     * @param name 资源名称
+     */
+    public CharSequenceResource(CharSequence data, String name) {
+        this(data, name, org.aoju.bus.core.lang.Charset.UTF_8);
+    }
 
-	/**
-	 * 构造
-	 *
-	 * @param data    资源数据
-	 * @param name    资源名称
-	 * @param charset 编码
-	 */
-	public CharSequenceResource(CharSequence data, CharSequence name, Charset charset) {
-		this.data = data;
-		this.name = name;
-		this.charset = charset;
-	}
+    /**
+     * 构造
+     *
+     * @param data    资源数据
+     * @param name    资源名称
+     * @param charset 编码
+     */
+    public CharSequenceResource(CharSequence data, CharSequence name, Charset charset) {
+        this.data = data;
+        this.name = name;
+        this.charset = charset;
+    }
 
-	@Override
-	public String getName() {
-		return this.name.toString();
-	}
+    @Override
+    public String getName() {
+        return this.name.toString();
+    }
 
-	@Override
-	public URL getUrl() {
-		return null;
-	}
+    @Override
+    public URL getUrl() {
+        return null;
+    }
 
-	@Override
-	public InputStream getStream() {
-		return new ByteArrayInputStream(readBytes());
-	}
+    @Override
+    public InputStream getStream() {
+        return new ByteArrayInputStream(readBytes());
+    }
 
-	@Override
-	public BufferedReader getReader(Charset charset) {
-		return IoKit.getReader(new StringReader(this.data.toString()));
-	}
+    @Override
+    public BufferedReader getReader(Charset charset) {
+        return IoKit.getReader(new StringReader(this.data.toString()));
+    }
 
-	@Override
-	public String readString(Charset charset) throws InstrumentException {
-		return this.data.toString();
-	}
+    @Override
+    public String readString(Charset charset) throws InstrumentException {
+        return this.data.toString();
+    }
 
-	@Override
-	public byte[] readBytes() throws InstrumentException {
-		return this.data.toString().getBytes(this.charset);
-	}
+    @Override
+    public byte[] readBytes() throws InstrumentException {
+        return this.data.toString().getBytes(this.charset);
+    }
 
 }

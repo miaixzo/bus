@@ -25,12 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.notify.provider.aliyun;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.notify.Builder;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
@@ -130,10 +129,10 @@ public class AliyunProvider<T extends Property, K extends Context> extends Abstr
     }
 
     protected Message checkResponse(String response) {
-        JSONObject object = JSON.parseObject(response);
+        String code = JsonKit.getValue(response, "Code");
         return Message.builder()
-                .errcode(SUCCESS_RESULT.equals(object.getString("Code")) ? Builder.ErrorCode.SUCCESS.getCode() : object.getString("Code"))
-                .errmsg(object.getString("Code")).build();
+                .errcode(SUCCESS_RESULT.equals(code) ? Builder.ErrorCode.SUCCESS.getCode() : code)
+                .errmsg(code).build();
     }
 
 }

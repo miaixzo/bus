@@ -43,7 +43,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <lombok.version>1.18.16</lombok.version>
-        <fastjson.version>1.2.75</fastjson.version>
         <mail.version>1.6.2</mail.version>
     </properties>
 
@@ -55,6 +54,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>bus-extra</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>bus-http</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -62,12 +66,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
