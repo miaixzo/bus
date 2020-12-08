@@ -100,10 +100,6 @@ public enum SocketStatus {
     /**
      * 服务端接受连接异常
      */
-    ACCEPT_EXCEPTION,
-
-    HANDSHAKE,
-
-    DATAFRAME
+    ACCEPT_EXCEPTION
 
 }
