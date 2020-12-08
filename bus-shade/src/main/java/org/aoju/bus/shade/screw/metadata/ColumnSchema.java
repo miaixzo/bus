@@ -31,7 +31,7 @@ import lombok.Data;
  * 表列领域对象
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @Data

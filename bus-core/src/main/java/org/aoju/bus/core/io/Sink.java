@@ -36,7 +36,7 @@ import java.io.IOException;
  * {@link BufferSink#outputStream}使一个接收器适应{@code outputStream}
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public interface Sink extends Closeable, Flushable {

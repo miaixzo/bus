@@ -32,7 +32,7 @@ import org.aoju.bus.core.io.ByteString;
  * web socket协议信息
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public final class WebSocketProtocol {

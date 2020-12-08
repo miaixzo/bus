@@ -44,7 +44,7 @@ import java.util.List;
  * BaseService 接口实现
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class BaseServiceImpl<Mapper extends BaseMapper<T>, T extends BaseEntity>

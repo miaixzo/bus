@@ -27,7 +27,7 @@ package org.aoju.bus.image.nimble.codec.jpeg;
 
 /**
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public enum PatchJPEGLS {

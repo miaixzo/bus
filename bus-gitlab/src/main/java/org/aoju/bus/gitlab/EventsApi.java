@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab events calls.
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class EventsApi extends AbstractApi {

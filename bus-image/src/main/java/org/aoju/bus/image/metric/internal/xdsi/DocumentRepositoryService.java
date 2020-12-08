@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 /**
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @WebServiceClient(name = "DocumentRepository_Service", wsdlLocation = "/wsdl/XDS.b_DocumentRepository.wsdl", targetNamespace = "urn:ihe:iti:xds-b:2007")

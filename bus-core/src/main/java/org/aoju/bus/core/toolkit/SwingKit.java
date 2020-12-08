@@ -44,7 +44,7 @@ import java.net.URI;
  * 显示器等相关工具
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class SwingKit {

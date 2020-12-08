@@ -46,7 +46,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 基础方言信息
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class PageAutoDialect {

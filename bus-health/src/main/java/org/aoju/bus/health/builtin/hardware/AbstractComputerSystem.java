@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * 计算机系统数据
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @Immutable

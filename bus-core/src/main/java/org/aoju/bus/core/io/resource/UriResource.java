@@ -39,7 +39,7 @@ import java.net.URL;
  * URL资源访问类
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class UriResource implements Resource {

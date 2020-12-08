@@ -48,7 +48,7 @@ import java.util.jar.Manifest;
  * 加密的URL连接
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class BootURLConnection extends JarURLConnection {

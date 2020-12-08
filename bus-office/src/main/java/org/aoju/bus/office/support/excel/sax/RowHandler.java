@@ -33,7 +33,7 @@ import java.util.List;
  * Sax方式读取Excel行处理器
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @FunctionalInterface
