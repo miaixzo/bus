@@ -92,11 +92,12 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
     private boolean running = true;
 
     /**
-     * Initialize a new instance of this class.
+     * 初始化该类的新实例
      *
-     * @param provider            The asynchronous channel provider for this group
+     * @param provider            此组的异步通道提供程序
      * @param readExecutorService 执行服务
      * @param threadNum           线程数量
+     * @throws IOException 异常
      */
     protected AsynchronousChannelGroup(AsynchronousChannelProvider provider, ExecutorService readExecutorService, int threadNum) throws IOException {
         super(provider);
