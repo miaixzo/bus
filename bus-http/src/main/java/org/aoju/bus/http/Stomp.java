@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
-import org.aoju.bus.http.socket.WebSocketCover;
+import org.aoju.bus.http.socket.CoverWebSocket;
 import org.aoju.bus.logger.Logger;
 
 import java.util.*;
@@ -45,16 +45,16 @@ public class Stomp {
     private static final String TOPIC = "/topic";
     private static final String QUEUE = "/queue";
     private final boolean autoAck;
-    private final WebSocketCover cover;
+    private final CoverWebSocket.Client cover;
     private final Map<String, Subscriber> subscribers;
     private boolean connected;
-    private WebSocketCover.Sockets websocket;
+    private CoverWebSocket websocket;
     private boolean legacyWhitespace = false;
     private OnBack<Stomp> onConnected;
-    private OnBack<WebSocketCover.Sockets.Close> onDisconnected;
+    private OnBack<CoverWebSocket.Close> onDisconnected;
     private OnBack<Message> onError;
 
-    private Stomp(WebSocketCover cover, boolean autoAck) {
+    private Stomp(CoverWebSocket.Client cover, boolean autoAck) {
         this.cover = cover;
         this.autoAck = autoAck;
         this.subscribers = new HashMap<>();
@@ -66,7 +66,7 @@ public class Stomp {
      * @param task 底层的 WebSocket 连接
      * @return Stomp
      */
-    public static Stomp over(WebSocketCover task) {
+    public static Stomp over(CoverWebSocket.Client task) {
         return over(task, true);
     }
 
@@ -77,7 +77,7 @@ public class Stomp {
      * @param autoAck 是否自动确定消息
      * @return Stomp
      */
-    public static Stomp over(WebSocketCover task, boolean autoAck) {
+    public static Stomp over(CoverWebSocket.Client task, boolean autoAck) {
         return new Stomp(task, autoAck);
     }
 
@@ -148,7 +148,7 @@ public class Stomp {
      * @param onDisconnected 断开连接回调
      * @return Stomp
      */
-    public Stomp setOnDisconnected(OnBack<WebSocketCover.Sockets.Close> onDisconnected) {
+    public Stomp setOnDisconnected(OnBack<CoverWebSocket.Close> onDisconnected) {
         this.onDisconnected = onDisconnected;
         return this;
     }
