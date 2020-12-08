@@ -3,6 +3,7 @@ package org.aoju.bus.http.socket;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.*;
+import org.aoju.bus.http.bodys.AbstractBody;
 import org.aoju.bus.http.magic.RealResult;
 import org.aoju.bus.http.metric.Cancelable;
 import org.aoju.bus.http.metric.Convertor;
@@ -10,65 +11,110 @@ import org.aoju.bus.http.metric.TaskExecutor;
 import org.aoju.bus.http.metric.TaskListener;
 import org.aoju.bus.http.metric.http.CoverHttp;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface CoverWebSocket extends Cancelable {
+public class CoverWebSocket implements Cancelable {
 
-    /**
-     * 若连接已打开，则：
-     * 同 {@link CoverWebSocket#queueSize()}，返回排序消息的字节数
-     * 否则：
-     *
-     * @return 排队消息的数量
-     */
-    long queueSize();
+    private final List<Object> queues = new ArrayList<>();
+    private final TaskExecutor taskExecutor;
+    private boolean cancelOrClosed;
+    private WebSocket webSocket;
+    private Charset charset;
 
-    /**
-     * @param object 待发送的对象，可以是 String | ByteString | byte[] | Java Bean
-     * @return 如果连接已断开 返回 false
-     */
-    boolean send(Object object);
+    private String msgType;
 
-    /**
-     * 同 {@link CoverWebSocket#close(int, String)}
-     *
-     * @param code   编码
-     * @param reason 原因
-     * @return 是否关闭
-     */
-    boolean close(int code, String reason);
-
-    /**
-     * 设置消息类型
-     *
-     * @param type 消息类型，如 json、xml、protobuf 等
-     */
-    void msgType(String type);
-
-    /**
-     * WebSocket 消息
-     */
-    interface Message extends Toable {
-
-        /**
-         * 判断是文本消息还是二进制消息
-         *
-         * @return 是否是文本消息
-         */
-        boolean isText();
-
+    public CoverWebSocket(TaskExecutor taskExecutor, String msgType) {
+        this.taskExecutor = taskExecutor;
+        this.msgType = msgType;
     }
 
-    interface Listener<T> {
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+    }
+
+    @Override
+    public synchronized boolean cancel() {
+        if (webSocket != null) {
+            webSocket.cancel();
+        }
+        cancelOrClosed = true;
+        return true;
+    }
+
+    public synchronized boolean close(int code, String reason) {
+        if (webSocket != null) {
+            webSocket.close(code, reason);
+        }
+        cancelOrClosed = true;
+        return true;
+    }
+
+    public void msgType(String type) {
+        if (type == null || type.equalsIgnoreCase(Builder.FORM)) {
+            throw new IllegalArgumentException("msgType 不可为空 或 form");
+        }
+        this.msgType = type;
+    }
+
+    public long queueSize() {
+        if (webSocket != null) {
+            return webSocket.queueSize();
+        }
+        return queues.size();
+    }
+
+    public boolean send(Object msg) {
+        if (msg == null) {
+            return false;
+        }
+        synchronized (queues) {
+            if (webSocket != null) {
+                return send(webSocket, msg);
+            } else {
+                queues.add(msg);
+            }
+        }
+        return true;
+    }
+
+    void setWebSocket(WebSocket webSocket) {
+        synchronized (queues) {
+            for (Object msg : queues) {
+                send(webSocket, msg);
+            }
+            this.webSocket = webSocket;
+            queues.clear();
+        }
+    }
+
+    boolean send(WebSocket webSocket, Object msg) {
+        if (msg == null) {
+            return false;
+        }
+        if (msg instanceof String) {
+            return webSocket.send((String) msg);
+        }
+        if (msg instanceof ByteString) {
+            return webSocket.send((ByteString) msg);
+        }
+        if (msg instanceof byte[]) {
+            return webSocket.send(ByteString.of((byte[]) msg));
+        }
+        byte[] bytes = taskExecutor.doMsgConvert(msgType, (Convertor c) -> c.serialize(msg, charset)).data;
+        return webSocket.send(new String(bytes, charset));
+    }
+
+    public interface Register<T> {
 
         void on(CoverWebSocket ws, T data);
 
     }
 
-    class Close {
+    public static class Close {
 
         public static int CANCELED = 0;
         public static int EXCEPTION = -1;
@@ -131,14 +177,14 @@ public interface CoverWebSocket extends Cancelable {
         }
     }
 
-    class MessageListener extends WebSocketListener {
+    public static class Listener extends WebSocketListener {
 
         private final Client client;
-        WebSocketImpl webSocket;
+        CoverWebSocket webSocket;
 
         Charset charset;
 
-        public MessageListener(Client client, WebSocketImpl webSocket) {
+        public Listener(Client client, CoverWebSocket webSocket) {
             this.client = client;
             this.webSocket = webSocket;
         }
@@ -162,14 +208,14 @@ public interface CoverWebSocket extends Cancelable {
         @Override
         public void onMessage(WebSocket webSocket, String text) {
             if (client.onMessage != null) {
-                client.execute(() -> client.onMessage.on(this.webSocket, new WebSocketMessage(text, client.httpv.executor(), charset)), client.messageOnIO);
+                client.execute(() -> client.onMessage.on(this.webSocket, new Message(text, client.httpv.executor(), charset)), client.messageOnIO);
             }
         }
 
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
             if (client.onMessage != null) {
-                client.execute(() -> client.onMessage.on(this.webSocket, new WebSocketMessage(bytes, client.httpv.executor(), charset)), client.messageOnIO);
+                client.execute(() -> client.onMessage.on(this.webSocket, new Message(bytes, client.httpv.executor(), charset)), client.messageOnIO);
             }
         }
 
@@ -230,115 +276,18 @@ public interface CoverWebSocket extends Cancelable {
 
     }
 
-    class WebSocketImpl implements CoverWebSocket {
-
-        private final List<Object> queues = new ArrayList<>();
-        private final TaskExecutor taskExecutor;
-        private boolean cancelOrClosed;
-        private WebSocket webSocket;
-        private Charset charset;
-
-        private String msgType;
-
-        public WebSocketImpl(TaskExecutor taskExecutor, String msgType) {
-            this.taskExecutor = taskExecutor;
-            this.msgType = msgType;
-        }
-
-        public void setCharset(Charset charset) {
-            this.charset = charset;
-        }
-
-        @Override
-        public synchronized boolean cancel() {
-            if (webSocket != null) {
-                webSocket.cancel();
-            }
-            cancelOrClosed = true;
-            return true;
-        }
-
-        @Override
-        public synchronized boolean close(int code, String reason) {
-            if (webSocket != null) {
-                webSocket.close(code, reason);
-            }
-            cancelOrClosed = true;
-            return true;
-        }
-
-        @Override
-        public void msgType(String type) {
-            if (type == null || type.equalsIgnoreCase(Builder.FORM)) {
-                throw new IllegalArgumentException("msgType 不可为空 或 form");
-            }
-            this.msgType = type;
-        }
-
-        @Override
-        public long queueSize() {
-            if (webSocket != null) {
-                return webSocket.queueSize();
-            }
-            return queues.size();
-        }
-
-        @Override
-        public boolean send(Object msg) {
-            if (msg == null) {
-                return false;
-            }
-            synchronized (queues) {
-                if (webSocket != null) {
-                    return send(webSocket, msg);
-                } else {
-                    queues.add(msg);
-                }
-            }
-            return true;
-        }
-
-        void setWebSocket(WebSocket webSocket) {
-            synchronized (queues) {
-                for (Object msg : queues) {
-                    send(webSocket, msg);
-                }
-                this.webSocket = webSocket;
-                queues.clear();
-            }
-        }
-
-        boolean send(WebSocket webSocket, Object msg) {
-            if (msg == null) {
-                return false;
-            }
-            if (msg instanceof String) {
-                return webSocket.send((String) msg);
-            }
-            if (msg instanceof ByteString) {
-                return webSocket.send((ByteString) msg);
-            }
-            if (msg instanceof byte[]) {
-                return webSocket.send(ByteString.of((byte[]) msg));
-            }
-            byte[] bytes = taskExecutor.doMsgConvert(msgType, (Convertor c) -> c.serialize(msg, charset)).data;
-            return webSocket.send(new String(bytes, charset));
-        }
-
-    }
-
     /**
      * @author Kimi Liu
      * @version 6.1.5
      * @since JDK 1.8+
      */
-    class Client extends CoverHttp<Client> {
+    public static class Client extends CoverHttp<Client> {
 
-        private Listener<Results> onOpen;
-        private Listener<Throwable> onException;
-        private Listener<Message> onMessage;
-        private Listener<Close> onClosing;
-        private Listener<Close> onClosed;
+        private Register<Results> onOpen;
+        private Register<Throwable> onException;
+        private Register<Message> onMessage;
+        private Register<Close> onClosing;
+        private Register<Close> onClosed;
 
         private boolean openOnIO;
         private boolean exceptionOnIO;
@@ -383,7 +332,7 @@ public interface CoverWebSocket extends Cancelable {
         public CoverWebSocket listen() {
             String bodyType = getBodyType();
             String msgType = Builder.FORM.equalsIgnoreCase(bodyType) ? Builder.JSON : bodyType;
-            WebSocketImpl socket = new WebSocketImpl(httpv.executor(), msgType);
+            CoverWebSocket socket = new CoverWebSocket(httpv.executor(), msgType);
             registeTagTask(socket);
             httpv.preprocess(this, () -> {
                 synchronized (socket) {
@@ -391,7 +340,7 @@ public interface CoverWebSocket extends Cancelable {
                         removeTagTask();
                     } else {
                         Request request = prepareRequest("GET");
-                        httpv.webSocket(request, new MessageListener(this, socket));
+                        httpv.webSocket(request, new Listener(this, socket));
                     }
                 }
             }, skipPreproc, skipSerialPreproc);
@@ -408,7 +357,7 @@ public interface CoverWebSocket extends Cancelable {
          * @param onOpen 监听器
          * @return WebSocketCover
          */
-        public Client setOnOpen(Listener<Results> onOpen) {
+        public Client setOnOpen(Register<Results> onOpen) {
             this.onOpen = onOpen;
             openOnIO = nextOnIO;
             nextOnIO = false;
@@ -421,7 +370,7 @@ public interface CoverWebSocket extends Cancelable {
          * @param onException 监听器
          * @return WebSocketCover
          */
-        public Client setOnException(Listener<Throwable> onException) {
+        public Client setOnException(Register<Throwable> onException) {
             this.onException = onException;
             exceptionOnIO = nextOnIO;
             nextOnIO = false;
@@ -434,7 +383,7 @@ public interface CoverWebSocket extends Cancelable {
          * @param onMessage 监听器
          * @return WebSocketCover
          */
-        public Client setOnMessage(Listener<Message> onMessage) {
+        public Client setOnMessage(Register<Message> onMessage) {
             this.onMessage = onMessage;
             messageOnIO = nextOnIO;
             nextOnIO = false;
@@ -447,7 +396,7 @@ public interface CoverWebSocket extends Cancelable {
          * @param onClosing 监听器
          * @return WebSocketCover
          */
-        public Client setOnClosing(Listener<Close> onClosing) {
+        public Client setOnClosing(Register<Close> onClosing) {
             this.onClosing = onClosing;
             closingOnIO = nextOnIO;
             nextOnIO = false;
@@ -460,7 +409,7 @@ public interface CoverWebSocket extends Cancelable {
          * @param onClosed 监听器
          * @return WebSocketCover
          */
-        public Client setOnClosed(Listener<Close> onClosed) {
+        public Client setOnClosed(Register<Close> onClosed) {
             this.onClosed = onClosed;
             closedOnIO = nextOnIO;
             nextOnIO = false;
@@ -473,6 +422,88 @@ public interface CoverWebSocket extends Cancelable {
 
         public int pongSeconds() {
             return pongSeconds;
+        }
+
+    }
+
+    /**
+     * @author Kimi Liu
+     * @version 6.1.5
+     * @since JDK 1.8+
+     */
+    public static class Message extends AbstractBody {
+
+        private String text;
+        private ByteString bytes;
+
+        public Message(String text, TaskExecutor taskExecutor, Charset charset) {
+            super(taskExecutor, charset);
+            this.text = text;
+        }
+
+        public Message(ByteString bytes, TaskExecutor taskExecutor, Charset charset) {
+            super(taskExecutor, charset);
+            this.bytes = bytes;
+        }
+
+        public boolean isText() {
+            return text != null;
+        }
+
+        @Override
+        public byte[] toBytes() {
+            if (text != null) {
+                return text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8);
+            }
+            if (bytes != null) {
+                return bytes.toByteArray();
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            if (text != null) {
+                return text;
+            }
+            if (bytes != null) {
+                return bytes.utf8();
+            }
+            return null;
+        }
+
+        @Override
+        public ByteString toByteString() {
+            if (text != null) {
+                return ByteString.encodeUtf8(text);
+            }
+            return bytes;
+        }
+
+        @Override
+        public Reader toCharStream() {
+            return new InputStreamReader(toByteStream());
+        }
+
+        @Override
+        public InputStream toByteStream() {
+            if (text != null) {
+                return new ByteArrayInputStream(text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8));
+            }
+            if (bytes != null) {
+                ByteBuffer buffer = bytes.asByteBuffer();
+                return new InputStream() {
+
+                    @Override
+                    public int read() throws IOException {
+                        if (buffer.hasRemaining()) {
+                            return buffer.get();
+                        }
+                        return -1;
+                    }
+                };
+            }
+            return null;
         }
 
     }
