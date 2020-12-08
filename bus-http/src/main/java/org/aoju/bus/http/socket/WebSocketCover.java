@@ -59,8 +59,33 @@ public class WebSocketCover extends CoverHttp<WebSocketCover> {
     private boolean closingOnIO;
     private boolean closedOnIO;
 
+    private int pingSeconds = -1;
+    private int pongSeconds = -1;
+
     public WebSocketCover(Httpv httpClient, String url) {
         super(httpClient, url);
+    }
+
+    /**
+     * 设置心跳间隔
+     * 覆盖 OkHttp 原有的心跳模式，主要区别如下：
+     * <p>
+     * 1、客户端发送的任何消息都具有一次心跳作用
+     * 2、服务器发送的任何消息都具有一次心跳作用
+     * 3、若服务器超过 3 * pongSeconds 秒没有回复心跳，才判断心跳超时
+     * 4、可指定心跳的具体内容（默认为空）
+     *
+     * @param pingSeconds 客户端心跳间隔秒数（0 表示不需要心跳）
+     * @param pongSeconds 服务器心跳间隔秒数（0 表示不需要心跳）
+     * @return this
+     */
+    public WebSocketCover heatbeat(int pingSeconds, int pongSeconds) {
+        if (pingSeconds < 0 || pongSeconds < 0) {
+            throw new IllegalArgumentException("pingSeconds and pongSeconds must greater equal than 0!");
+        }
+        this.pingSeconds = pingSeconds;
+        this.pongSeconds = pongSeconds;
+        return this;
     }
 
     /**
@@ -466,6 +491,14 @@ public class WebSocketCover extends CoverHttp<WebSocketCover> {
             }
         }
 
+    }
+
+    public int pingSeconds() {
+        return pingSeconds;
+    }
+
+    public int pongSeconds() {
+        return pongSeconds;
     }
 
 }

@@ -138,7 +138,7 @@ public class RealResult implements Results {
     }
 
     @Override
-    public Body getBody() {
+    public synchronized Body getBody() {
         if (body == null && response != null) {
             body = new ResultBody(coverHttp, response, taskExecutor);
         }
