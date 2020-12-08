@@ -26,7 +26,7 @@
 package org.aoju.bus.pager.dialect.general;
 
 import org.aoju.bus.pager.Page;
-import org.aoju.bus.pager.dialect.AbstractHelperDialect;
+import org.aoju.bus.pager.dialect.AbstractSqlDialect;
 import org.aoju.bus.pager.reflect.MetaObject;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
@@ -41,10 +41,10 @@ import java.util.Map;
  * 数据库方言 informix
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
-public class InformixDialect extends AbstractHelperDialect {
+public class InformixDialect extends AbstractSqlDialect {
 
     @Override
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {

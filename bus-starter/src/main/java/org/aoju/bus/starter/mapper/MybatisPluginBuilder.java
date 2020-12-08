@@ -41,7 +41,7 @@ import java.util.Properties;
  * mybatis 插件启用
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class MybatisPluginBuilder {
@@ -55,7 +55,7 @@ public class MybatisPluginBuilder {
             p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
             p.setProperty("reasonable", mybatisProperties.getReasonable());
             p.setProperty("supportMethodsArguments", mybatisProperties.getSupportMethodsArguments());
-            p.setProperty("returnPageInfo", mybatisProperties.getReturnPageInfo());
+            p.setProperty("returnPage", mybatisProperties.getReturnPage());
             p.setProperty("params", mybatisProperties.getParams());
 
             PageInterceptor interceptor = new PageInterceptor();

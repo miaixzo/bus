@@ -36,13 +36,13 @@ import java.util.List;
  * 新增分页的多项属性
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class Pages<T> extends PageSerializable<T> {
 
     //当前页
-    private int pageNum;
+    private int pageNo;
     //每页的数量
     private int pageSize;
     //当前页的数量
@@ -74,7 +74,7 @@ public class Pages<T> extends PageSerializable<T> {
     //导航页码数
     private int navigatePages;
     //所有导航页号
-    private int[] navigatepageNums;
+    private int[] navigatePageNo;
     //导航条上的第一页
     private int navigateFirstPage;
     //导航条上的最后一页
@@ -102,7 +102,7 @@ public class Pages<T> extends PageSerializable<T> {
         super(list);
         if (list instanceof Page) {
             Page page = (Page) list;
-            this.pageNum = page.getPageNo();
+            this.pageNo = page.getPageNo();
             this.pageSize = page.getPageSize();
 
             this.pages = page.getPages();
@@ -117,7 +117,7 @@ public class Pages<T> extends PageSerializable<T> {
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {
-            this.pageNum = 1;
+            this.pageNo = 1;
             this.pageSize = list.size();
 
             this.pages = this.pageSize > 0 ? 1 : 0;
@@ -128,7 +128,7 @@ public class Pages<T> extends PageSerializable<T> {
         if (list instanceof Collection) {
             this.navigatePages = navigatePages;
             //计算导航页
-            calcNavigatepageNums();
+            calcNavigatePageNo();
             //计算前后页,第一页,最后一页
             calcPage();
             //判断页面边界
@@ -147,34 +147,34 @@ public class Pages<T> extends PageSerializable<T> {
     /**
      * 计算导航页
      */
-    private void calcNavigatepageNums() {
+    private void calcNavigatePageNo() {
         //当总页数小于或等于导航页码数时
         if (pages <= navigatePages) {
-            navigatepageNums = new int[pages];
+            navigatePageNo = new int[pages];
             for (int i = 0; i < pages; i++) {
-                navigatepageNums[i] = i + 1;
+                navigatePageNo[i] = i + 1;
             }
         } else { //当总页数大于导航页码数时
-            navigatepageNums = new int[navigatePages];
-            int startNum = pageNum - navigatePages / 2;
-            int endNum = pageNum + navigatePages / 2;
+            navigatePageNo = new int[navigatePages];
+            int startNum = pageNo - navigatePages / 2;
+            int endNum = pageNo + navigatePages / 2;
 
             if (startNum < 1) {
                 startNum = 1;
                 //(最前navigatePages页
                 for (int i = 0; i < navigatePages; i++) {
-                    navigatepageNums[i] = startNum++;
+                    navigatePageNo[i] = startNum++;
                 }
             } else if (endNum > pages) {
                 endNum = pages;
                 //最后navigatePages页
                 for (int i = navigatePages - 1; i >= 0; i--) {
-                    navigatepageNums[i] = endNum--;
+                    navigatePageNo[i] = endNum--;
                 }
             } else {
                 //所有中间页
                 for (int i = 0; i < navigatePages; i++) {
-                    navigatepageNums[i] = startNum++;
+                    navigatePageNo[i] = startNum++;
                 }
             }
         }
@@ -184,14 +184,14 @@ public class Pages<T> extends PageSerializable<T> {
      * 计算前后页,第一页,最后一页
      */
     private void calcPage() {
-        if (navigatepageNums != null && navigatepageNums.length > 0) {
-            navigateFirstPage = navigatepageNums[0];
-            navigateLastPage = navigatepageNums[navigatepageNums.length - 1];
-            if (pageNum > 1) {
-                prePage = pageNum - 1;
+        if (navigatePageNo != null && navigatePageNo.length > 0) {
+            navigateFirstPage = navigatePageNo[0];
+            navigateLastPage = navigatePageNo[navigatePageNo.length - 1];
+            if (pageNo > 1) {
+                prePage = pageNo - 1;
             }
-            if (pageNum < pages) {
-                nextPage = pageNum + 1;
+            if (pageNo < pages) {
+                nextPage = pageNo + 1;
             }
         }
     }
@@ -200,18 +200,18 @@ public class Pages<T> extends PageSerializable<T> {
      * 判定页面边界
      */
     private void judgePageBoudary() {
-        isFirstPage = pageNum == 1;
-        isLastPage = pageNum == pages || pages == 0;
-        hasPreviousPage = pageNum > 1;
-        hasNextPage = pageNum < pages;
+        isFirstPage = pageNo == 1;
+        isLastPage = pageNo == pages || pages == 0;
+        hasPreviousPage = pageNo > 1;
+        hasNextPage = pageNo < pages;
     }
 
-    public int getPageNum() {
-        return pageNum;
+    public int getPageNo() {
+        return pageNo;
     }
 
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
+    public void setPageNo(int pageNo) {
+        this.pageNo = pageNo;
     }
 
     public int getPageSize() {
@@ -310,12 +310,12 @@ public class Pages<T> extends PageSerializable<T> {
         this.navigatePages = navigatePages;
     }
 
-    public int[] getNavigatepageNums() {
-        return navigatepageNums;
+    public int[] getNavigatePageNo() {
+        return navigatePageNo;
     }
 
-    public void setNavigatepageNums(int[] navigatepageNums) {
-        this.navigatepageNums = navigatepageNums;
+    public void setNavigatePageNo(int[] navigatePageNo) {
+        this.navigatePageNo = navigatePageNo;
     }
 
     public int getNavigateFirstPage() {
@@ -337,7 +337,7 @@ public class Pages<T> extends PageSerializable<T> {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Pages{");
-        sb.append("pageNum=").append(pageNum);
+        sb.append("pageNo=").append(pageNo);
         sb.append(", pageSize=").append(pageSize);
         sb.append(", size=").append(size);
         sb.append(", startRow=").append(startRow);
@@ -354,13 +354,13 @@ public class Pages<T> extends PageSerializable<T> {
         sb.append(", navigatePages=").append(navigatePages);
         sb.append(", navigateFirstPage=").append(navigateFirstPage);
         sb.append(", navigateLastPage=").append(navigateLastPage);
-        sb.append(", navigatepageNums=");
-        if (navigatepageNums == null) {
+        sb.append(", navigatePageNo=");
+        if (navigatePageNo == null) {
             sb.append(Normal.NULL);
         } else {
             sb.append(Symbol.C_BRACKET_LEFT);
-            for (int i = 0; i < navigatepageNums.length; ++i) {
-                sb.append(i == 0 ? Normal.EMPTY : ", ").append(navigatepageNums[i]);
+            for (int i = 0; i < navigatePageNo.length; ++i) {
+                sb.append(i == 0 ? Normal.EMPTY : ", ").append(navigatePageNo[i]);
             }
             sb.append(Symbol.C_BRACKET_RIGHT);
         }

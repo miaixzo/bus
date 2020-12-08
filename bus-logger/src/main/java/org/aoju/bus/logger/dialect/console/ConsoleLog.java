@@ -38,7 +38,7 @@ import org.aoju.bus.logger.level.Level;
  * 利用System.out.println()打印日志
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class ConsoleLog extends AbstractAware {

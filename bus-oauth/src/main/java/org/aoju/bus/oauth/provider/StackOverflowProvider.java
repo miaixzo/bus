@@ -47,7 +47,7 @@ import java.util.Map;
  * Stack Overflow登录
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class StackOverflowProvider extends AbstractProvider {

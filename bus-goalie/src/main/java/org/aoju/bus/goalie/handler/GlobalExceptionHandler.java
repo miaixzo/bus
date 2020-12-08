@@ -56,7 +56,6 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
     @NonNull
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.BAD_REQUEST);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);

@@ -36,7 +36,7 @@ import java.util.Map;
  * @param <K> Key类型
  * @param <V> Value类型
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class MapBuilder<K, V> implements Serializable {

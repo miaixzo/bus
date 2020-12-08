@@ -45,7 +45,7 @@ import java.util.function.Supplier;
  * 一些通用的函数
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class ObjectKit {
@@ -265,6 +265,26 @@ public class ObjectKit {
      */
     public static final boolean isNotEmpty(Object... object) {
         return !isEmpty(object);
+    }
+
+    /**
+     * 是否全都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     *
+     * @param objs 被检查的对象,一个或者多个
+     * @return 是否都为空
+     */
+    public static boolean isAllEmpty(Object... objs) {
+        return ArrayKit.isAllEmpty(objs);
+    }
+
+    /**
+     * 是否全都不为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     *
+     * @param objs 被检查的对象,一个或者多个
+     * @return 是否都不为空
+     */
+    public static boolean isAllNotEmpty(Object... objs) {
+        return ArrayKit.isAllNotEmpty(objs);
     }
 
     /**

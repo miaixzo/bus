@@ -27,7 +27,7 @@ package org.aoju.bus.gitlab.models;
 
 /**
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class DiffRef {

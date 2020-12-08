@@ -30,7 +30,7 @@ import org.aoju.bus.image.metric.WebApplication;
 
 /**
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public interface ApplicationCache {

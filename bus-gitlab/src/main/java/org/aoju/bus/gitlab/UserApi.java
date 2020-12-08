@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API users calls.
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @see <a href="https://docs.gitlab.com/ce/api/users.html">Users API at GitLab</a>
  * @since JDK 1.8+
  */

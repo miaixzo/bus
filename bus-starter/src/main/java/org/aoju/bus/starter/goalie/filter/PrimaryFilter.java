@@ -35,6 +35,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.FormFieldPart;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -43,6 +47,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -66,11 +71,40 @@ public class PrimaryFilter implements WebFilter {
             doParams(exchange);
             return chain.filter(exchange);
         } else {
-            return exchange.getFormData().flatMap(params -> {
-                Context.get(exchange).setRequestMap(params.toSingleValueMap());
-                doParams(exchange);
-                return chain.filter(exchange);
-            });
+            MediaType mediaType = request.getHeaders().getContentType();
+            if (null == mediaType) {
+                mediaType = MediaType.APPLICATION_FORM_URLENCODED;
+            }
+            String contentType = mediaType.toString().toLowerCase();
+            //文件
+            if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+                return exchange.getMultipartData().flatMap(params -> {
+                    Map<String, String> formMap = new LinkedHashMap<>();
+                    Map<String, Part> fileMap = new LinkedHashMap<>();
+
+                    Map<String, Part> map = params.toSingleValueMap();
+                    map.forEach((k, v) -> {
+                        if (v instanceof FormFieldPart) {
+                            formMap.put(k, ((FormFieldPart) v).value());
+                        }
+                        if (v instanceof FilePart) {
+                            fileMap.put(k, v);
+                        }
+                    });
+                    Context.get(exchange).setRequestMap(formMap);
+                    Context.get(exchange).setFilePartMap(fileMap);
+                    doParams(exchange);
+                    return chain.filter(exchange);
+                });
+
+            } else {
+                return exchange.getFormData().flatMap(params -> {
+                    Context.get(exchange).setRequestMap(params.toSingleValueMap());
+                    doParams(exchange);
+                    return chain.filter(exchange);
+                });
+            }
+
         }
     }
 

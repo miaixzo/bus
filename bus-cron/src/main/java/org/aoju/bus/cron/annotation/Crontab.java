@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * annotation for cron handler
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @Target({ElementType.TYPE})

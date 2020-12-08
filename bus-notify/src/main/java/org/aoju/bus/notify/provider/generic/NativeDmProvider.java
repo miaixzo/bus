@@ -52,7 +52,7 @@ import java.util.List;
  * 邮件消息
  *
  * @author Justubborn
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK1.8+
  */
 public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context> {

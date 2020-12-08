@@ -32,7 +32,7 @@ import org.aoju.bus.health.unix.aix.Perfstat;
  * Utility to query performance stats for network interfaces
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe

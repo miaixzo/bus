@@ -31,7 +31,7 @@ import org.aoju.bus.cron.pattern.CronPattern;
  * 定时作业，除了定义了作业，也定义了作业的执行周期以及ID
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class CronTask implements Task {

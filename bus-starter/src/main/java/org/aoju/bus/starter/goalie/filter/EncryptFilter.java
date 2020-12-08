@@ -25,10 +25,10 @@
  ********************************************************************************/
 package org.aoju.bus.starter.goalie.filter;
 
+import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.aoju.bus.starter.goalie.GoalieProperties;
@@ -48,6 +48,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 数据加密
@@ -79,7 +80,7 @@ public class EncryptFilter implements WebFilter {
      */
     private void doEncrypt(Message message) {
         if (ObjectKit.isNotNull(message.getData())) {
-            message.setData(org.aoju.bus.crypto.Builder.encrypt(encrypt.getType(), encrypt.getKey(), JsonKit.toJsonString(message.getData()), Charset.UTF_8));
+            message.setData(org.aoju.bus.crypto.Builder.encrypt(encrypt.getType(), encrypt.getKey(), JSON.toJSONString(message.getData()), Charset.UTF_8));
         }
     }
 
@@ -91,11 +92,11 @@ public class EncryptFilter implements WebFilter {
                 if (isSign) {
                     Flux<? extends DataBuffer> flux = Flux.from(body);
                     return super.writeWith(DataBufferUtils.join(flux).map(dataBuffer -> {
-                        CharBuffer charBuffer = Charset.UTF_8.decode(dataBuffer.asByteBuffer());
+                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(dataBuffer.asByteBuffer());
                         DataBufferUtils.release(dataBuffer);
-                        Message message = JsonKit.toPojo(charBuffer.toString(), Message.class);
+                        Message message = JSON.parseObject(charBuffer.toString(), Message.class);
                         doEncrypt(message);
-                        return bufferFactory().wrap(JsonKit.toJsonString(message).getBytes());
+                        return bufferFactory().wrap(JSON.toJSONString(message).getBytes());
                     }));
                 }
                 return super.writeWith(body);

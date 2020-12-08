@@ -33,7 +33,7 @@ import org.aoju.bus.shade.screw.metadata.Table;
  * 表信息
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @Data

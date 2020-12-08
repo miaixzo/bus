@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.goalie.handler;
 
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -39,7 +38,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8++
  */
 public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVersionRequestCondition> {
@@ -75,7 +74,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
             Matcher matcher = pattern.matcher(expression);
             while (matcher.find()) {
                 int[] terminals = new int[]{};
-                String version = Normal.EMPTY;
+                String version = "";
                 TerminalVersion.Version operator = TerminalVersion.Version.NIL;
                 for (int i = 1; i <= matcher.groupCount(); i++) {
                     String content = matcher.group(i);
@@ -127,7 +126,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
     @Override
     public ApiVersionRequestCondition getMatchingCondition(HttpServletRequest request) {
         for (TerminalVersionExpression expression : expressions) {
-            if (!expression.match(request)) {
+            if (!expression.match(request)) {// 同param condition,任意一个失败则失败
                 return null;
             }
         }

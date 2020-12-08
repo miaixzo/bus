@@ -29,7 +29,7 @@ package org.aoju.bus.mapper.criteria;
  * 主键处理
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public enum Identity {

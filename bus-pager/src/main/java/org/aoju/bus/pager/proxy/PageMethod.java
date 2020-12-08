@@ -35,7 +35,7 @@ import java.util.Properties;
  * 基础分页方法
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public abstract class PageMethod {
@@ -103,38 +103,38 @@ public abstract class PageMethod {
      * 开始分页
      *
      * @param <E>      对象
-     * @param pageNum  页码
+     * @param pageNo   页码
      * @param pageSize 每页显示数量
      * @return 结果
      */
-    public static <E> Page<E> startPage(int pageNum, int pageSize) {
-        return startPage(pageNum, pageSize, DEFAULT_COUNT);
+    public static <E> Page<E> startPage(int pageNo, int pageSize) {
+        return startPage(pageNo, pageSize, DEFAULT_COUNT);
     }
 
     /**
      * 开始分页
      *
      * @param <E>      对象
-     * @param pageNum  页码
+     * @param pageNo   页码
      * @param pageSize 每页显示数量
      * @param count    是否进行count查询
      * @return 结果
      */
-    public static <E> Page<E> startPage(int pageNum, int pageSize, boolean count) {
-        return startPage(pageNum, pageSize, count, null, null);
+    public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count) {
+        return startPage(pageNo, pageSize, count, null, null);
     }
 
     /**
      * 开始分页
      *
      * @param <E>      对象
-     * @param pageNum  页码
+     * @param pageNo   页码
      * @param pageSize 每页显示数量
      * @param orderBy  排序
      * @return 结果
      */
-    public static <E> Page<E> startPage(int pageNum, int pageSize, String orderBy) {
-        Page<E> page = startPage(pageNum, pageSize);
+    public static <E> Page<E> startPage(int pageNo, int pageSize, String orderBy) {
+        Page<E> page = startPage(pageNo, pageSize);
         page.setOrderBy(orderBy);
         return page;
     }
@@ -143,15 +143,15 @@ public abstract class PageMethod {
      * 开始分页
      *
      * @param <E>          对象
-     * @param pageNum      页码
+     * @param pageNo       页码
      * @param pageSize     每页显示数量
      * @param count        是否进行count查询
      * @param reasonable   分页合理化,null时用默认配置
      * @param pageSizeZero true且pageSize=0时返回全部结果,false时分页,null时用默认配置
      * @return 结果
      */
-    public static <E> Page<E> startPage(int pageNum, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
-        Page<E> page = new Page<>(pageNum, pageSize, count);
+    public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
+        Page<E> page = new Page<>(pageNo, pageSize, count);
         page.setReasonable(reasonable);
         page.setPageSizeZero(pageSizeZero);
         //当已经执行过orderBy的时候

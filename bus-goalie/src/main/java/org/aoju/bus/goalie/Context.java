@@ -32,6 +32,7 @@ import lombok.NoArgsConstructor;
 import org.aoju.bus.goalie.support.JsonProvider;
 import org.aoju.bus.goalie.support.XmlProvider;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -56,6 +57,8 @@ public class Context {
      * 请求参数
      */
     private Map<String, String> requestMap;
+
+    private Map<String, Part> filePartMap;
 
     private Assets assets;
 
@@ -90,4 +93,5 @@ public class Context {
 
         private MediaType mediaType;
     }
+
 }

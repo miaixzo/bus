@@ -33,7 +33,7 @@ import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
  * Enum for the various Job status values.
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public enum JobStatus {

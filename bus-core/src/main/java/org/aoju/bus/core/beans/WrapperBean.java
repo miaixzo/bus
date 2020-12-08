@@ -30,7 +30,7 @@ package org.aoju.bus.core.beans;
  *
  * @param <T> Null值对应的类型
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class WrapperBean<T> {

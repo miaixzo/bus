@@ -34,7 +34,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query WMI class {@code Win32_PnPEntity}
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe

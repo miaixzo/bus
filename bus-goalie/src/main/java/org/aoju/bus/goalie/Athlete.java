@@ -73,11 +73,19 @@ public class Athlete {
         return this.assets.remove(assets);
     }
 
+    public void refreshAssets() {
+        assets.clear();
+        if (CollKit.isNotEmpty(assetRegistries)) {
+            assetRegistries.forEach(registry -> {
+                assets.addAll(registry.init());
+                registry.setAthlete(this);
+            });
+        }
+    }
 
     private void init() {
-        if (CollKit.isNotEmpty(assetRegistries)) {
-            assetRegistries.forEach(registry -> assets.addAll(registry.init()));
-        }
+
+        refreshAssets();
         disposableServer = httpServer.bindNow();
         Logger.info("reactor server start on port:{} success", disposableServer.port());
     }

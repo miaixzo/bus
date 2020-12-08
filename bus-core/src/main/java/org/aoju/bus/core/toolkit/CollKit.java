@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.1.3
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -2165,8 +2165,7 @@ public class CollKit {
             index += size;
         }
 
-        // 检查越界
-        if (index >= size) {
+        if (index >= size || index < 0) {
             return null;
         }
 
