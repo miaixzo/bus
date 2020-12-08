@@ -56,7 +56,6 @@ public class ApiRouterHandler {
 
     private final Map<String, WebClient> clients = new ConcurrentHashMap<>();
 
-
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
 
@@ -84,7 +83,7 @@ public class ApiRouterHandler {
             if (request.headers().contentType().isPresent()) {
                 MediaType mediaType = request.headers().contentType().get();
                 String contentType = mediaType.toString().toLowerCase();
-                //文件
+                // 文件
                 if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
                     MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>();
                     partMap.setAll(context.getFilePartMap());

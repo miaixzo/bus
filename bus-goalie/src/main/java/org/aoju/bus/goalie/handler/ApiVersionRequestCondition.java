@@ -126,7 +126,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
     @Override
     public ApiVersionRequestCondition getMatchingCondition(HttpServletRequest request) {
         for (TerminalVersionExpression expression : expressions) {
-            if (!expression.match(request)) {//同param condition,任意一个失败则失败
+            if (!expression.match(request)) {// 同param condition,任意一个失败则失败
                 return null;
             }
         }
@@ -252,4 +252,5 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
         }
 
     }
+
 }
