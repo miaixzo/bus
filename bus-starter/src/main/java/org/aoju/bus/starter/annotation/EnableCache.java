@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * 启用缓存
+ * 启用缓存支持
  *
  * @author Kimi Liu
  * @version 6.1.5

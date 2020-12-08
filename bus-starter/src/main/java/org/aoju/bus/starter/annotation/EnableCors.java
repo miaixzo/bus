@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * 开启跨域支持
+ * 启用跨域支持
  *
  * @author Kimi Liu
  * @version 6.1.5

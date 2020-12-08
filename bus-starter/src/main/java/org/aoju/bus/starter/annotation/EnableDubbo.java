@@ -34,7 +34,7 @@ import org.springframework.core.annotation.AliasFor;
 import java.lang.annotation.*;
 
 /**
- * Dubbo 支持
+ * 启用Dubbo支持
  *
  * @author Kimi Liu
  * @version 6.1.5

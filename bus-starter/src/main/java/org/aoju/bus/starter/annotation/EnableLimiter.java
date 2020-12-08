@@ -33,7 +33,7 @@ import org.springframework.core.Ordered;
 import java.lang.annotation.*;
 
 /**
- * 限流降级
+ * 启用限流降级
  *
  * @author Kimi Liu
  * @version 6.1.5

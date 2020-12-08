@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * Druid 监控
+ * 启用Druid监控
  *
  * @author Kimi Liu
  * @version 6.1.5

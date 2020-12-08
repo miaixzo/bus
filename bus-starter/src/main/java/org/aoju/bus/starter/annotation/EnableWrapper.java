@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * Request/Response请求包装
+ * 启用Request/Response请求包装
  *
  * @author Kimi Liu
  * @version 6.1.5

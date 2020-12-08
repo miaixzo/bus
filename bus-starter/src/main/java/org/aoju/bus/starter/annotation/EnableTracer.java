@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * 链路追踪
+ * 启用链路追踪
  *
  * @author Kimi Liu
  * @version 6.1.5

@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * 开启WebSocket
+ * 启用WebSocket
  *
  * @author Kimi Liu
  * @version 6.1.5
