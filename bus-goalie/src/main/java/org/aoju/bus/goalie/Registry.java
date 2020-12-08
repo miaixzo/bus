@@ -35,11 +35,47 @@ import java.util.Set;
  */
 public interface Registry {
 
+    /**
+     * 注入服务
+     *
+     * @param athlete 运动员
+     */
+    void setAthlete(Athlete athlete);
+
+    /**
+     * 初始化
+     *
+     * @return 路由
+     */
     Set<Assets> init();
 
+    /**
+     * 添加
+     *
+     * @param assets 路由
+     * @return true or false
+     */
     boolean add(Assets assets);
 
+    /**
+     * 删除
+     *
+     * @param id 路由id
+     * @return true or false
+     */
     boolean remove(String id);
 
+    /**
+     * 修改
+     *
+     * @param assets 路由
+     * @return true or false
+     */
+    boolean amendAssets(Assets assets);
+
+    /**
+     * 刷新路由
+     */
+    void refresh();
 
 }

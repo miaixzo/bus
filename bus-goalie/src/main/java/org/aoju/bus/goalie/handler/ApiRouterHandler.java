@@ -31,8 +31,10 @@ import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.Part;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -75,15 +77,26 @@ public class ApiRouterHandler {
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-                .method(assets.getHttpMethod())
-                .uri(builder.build().toUri())
-                .headers((headers) -> request.headers());
+            .method(assets.getHttpMethod())
+            .uri(builder.build().encode().toUri())
+            .headers((headers) -> request.headers());
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
-            bodySpec.bodyValue(multiValueMap);
+            if (request.headers().contentType().isPresent()) {
+                MediaType mediaType = request.headers().contentType().get();
+                String contentType = mediaType.toString().toLowerCase();
+                //文件
+                if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+                    MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>();
+                    partMap.setAll(context.getFilePartMap());
+                    bodySpec.body(BodyInserters.fromMultipartData(partMap).with(new LinkedMultiValueMap(multiValueMap)));
+                } else {
+                    bodySpec.bodyValue(multiValueMap);
+                }
+            }
         }
         Flux<DataBuffer> flux = bodySpec
-                .exchangeToFlux(response -> response.bodyToFlux(DataBuffer.class));
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(flux, DataBuffer.class);
+            .retrieve().bodyToFlux(DataBuffer.class);
+        return ServerResponse.ok().body(flux, DataBuffer.class);
     }
 
 }
