@@ -268,6 +268,26 @@ public class ObjectKit {
     }
 
     /**
+     * 是否全都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     *
+     * @param objs 被检查的对象,一个或者多个
+     * @return 是否都为空
+     */
+    public static boolean isAllEmpty(Object... objs) {
+        return ArrayKit.isAllEmpty(objs);
+    }
+
+    /**
+     * 是否全都不为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
+     *
+     * @param objs 被检查的对象,一个或者多个
+     * @return 是否都不为空
+     */
+    public static boolean isAllNotEmpty(Object... objs) {
+        return ArrayKit.isAllNotEmpty(objs);
+    }
+
+    /**
      * 比较两个对象是否相等
      *
      * @param obj1 对象1

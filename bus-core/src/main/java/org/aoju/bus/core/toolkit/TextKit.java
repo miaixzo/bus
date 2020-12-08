@@ -375,7 +375,7 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      */
     public TextKit insert(int index, CharSequence csq) {
         if (null == csq) {
-            csq = Normal.NULL;
+            csq = Normal.EMPTY;
         }
         int len = csq.length();
         moveDataAfterIndex(index, csq.length());
