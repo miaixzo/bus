@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,53 +23,76 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.handler;
 
-import java.nio.ByteBuffer;
+import org.aoju.bus.logger.Logger;
+import org.aoju.bus.logger.level.Level;
+import org.aoju.bus.socket.SocketRequest;
+import org.aoju.bus.socket.SocketResponse;
 
 /**
- * 指定长度的解码器
+ * 默认拦截器
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class FixedLengthDecoder implements SocketDecoder {
+public class SocketDefaultHandler extends AbstractSocketHandler {
 
-    private final ByteBuffer buffer;
-    private boolean finishRead;
+    @Override
+    public final void doHandle(SocketRequest request, SocketResponse response) {
 
-    public FixedLengthDecoder(int frameLength) {
-        if (frameLength <= 0) {
-            throw new IllegalArgumentException("frameLength must be a positive integer: " + frameLength);
-        } else {
-            buffer = ByteBuffer.allocate(frameLength);
-        }
     }
 
-    public boolean decode(ByteBuffer byteBuffer) {
-        if (finishRead) {
-            throw new RuntimeException("delimiter has finish read");
-        }
-        if (buffer.remaining() >= byteBuffer.remaining()) {
-            buffer.put(byteBuffer);
-        } else {
-            int limit = byteBuffer.limit();
-            byteBuffer.limit(byteBuffer.position() + buffer.remaining());
-            buffer.put(byteBuffer);
-            byteBuffer.limit(limit);
-        }
-
-        if (buffer.hasRemaining()) {
-            return false;
-        }
-        buffer.flip();
-        finishRead = true;
-        return true;
+    /**
+     * 握手成功
+     *
+     * @param request  请求
+     * @param response 响应
+     */
+    public void onHandShark(SocketRequest request, SocketResponse response) {
+        Logger.get().log(Level.FATAL, "handShark success");
     }
 
-    public ByteBuffer getBuffer() {
-        return buffer;
+    /**
+     * 握手成功
+     *
+     * @param request  请求
+     * @param response 响应
+     */
+    public void onClose(SocketRequest request, SocketResponse response) {
+        Logger.get().log(Level.FATAL, "close connection");
+    }
+
+    /**
+     * 处理字符串请求消息
+     *
+     * @param request  请求
+     * @param response 响应
+     * @param data     数据
+     */
+    public void handleTextMessage(SocketRequest request, SocketResponse response, String data) {
+
+    }
+
+    /**
+     * 处理二进制请求消息
+     *
+     * @param request  请求
+     * @param response 响应
+     * @param data     数据
+     */
+    public void handleBinaryMessage(SocketRequest request, SocketResponse response, byte[] data) {
+
+    }
+
+    /**
+     * 处理错误请求消息
+     *
+     * @param throwable 异常信息
+     */
+    public void onError(Throwable throwable) {
+        throwable.printStackTrace();
     }
 
 }

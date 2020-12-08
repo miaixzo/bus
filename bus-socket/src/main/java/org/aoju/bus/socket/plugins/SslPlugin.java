@@ -27,9 +27,9 @@ package org.aoju.bus.socket.plugins;
 
 import org.aoju.bus.core.io.ByteBuffer;
 import org.aoju.bus.socket.BufferFactory;
-import org.aoju.bus.socket.secure.ClientAuth;
-import org.aoju.bus.socket.secure.SslService;
-import org.aoju.bus.socket.secure.SslSocketChannel;
+import org.aoju.bus.socket.security.ClientAuth;
+import org.aoju.bus.socket.security.SslService;
+import org.aoju.bus.socket.security.SslSocketChannel;
 
 import java.io.InputStream;
 import java.nio.channels.AsynchronousSocketChannel;

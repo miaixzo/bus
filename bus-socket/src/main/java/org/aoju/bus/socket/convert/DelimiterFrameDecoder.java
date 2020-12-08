@@ -23,7 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.convert;
+
+import org.aoju.bus.socket.SocketDecoder;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

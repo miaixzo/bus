@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
+import org.aoju.bus.socket.process.MessageProcessor;
+
 import java.net.SocketOption;
 import java.util.HashMap;
 import java.util.Map;

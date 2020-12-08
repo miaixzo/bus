@@ -23,9 +23,13 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.handler;
 
-import java.util.concurrent.*;
+import org.aoju.bus.socket.NetMonitor;
+import org.aoju.bus.socket.SocketStatus;
+import org.aoju.bus.socket.TcpAioSession;
+
+import java.nio.channels.CompletionHandler;
 
 /**
  * 读写事件回调处理类
@@ -34,51 +38,46 @@ import java.util.concurrent.*;
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
+public class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
 
     /**
-     * 读回调资源信号量
+     * 处理消息读回调事件
+     *
+     * @param result     已读消息字节数
+     * @param aioSession 当前触发读回调的会话
      */
-    private final Semaphore semaphore;
-
-    private final ThreadLocal<ConcurrentReadHandler<T>> threadLocal = new ThreadLocal<>();
-
-    private final LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
-    private final ExecutorService executorService = new ThreadPoolExecutor(1, 1,
-            60L, TimeUnit.SECONDS, taskQueue);
-
-    ConcurrentReadHandler(final Semaphore semaphore) {
-        this.semaphore = semaphore;
+    @Override
+    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
+        try {
+            // 接收到的消息进行预处理
+            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
+            if (monitor != null) {
+                monitor.afterRead(aioSession, result);
+            }
+            // 触发读回调
+            aioSession.readCompleted(result == -1);
+        } catch (Exception e) {
+            failed(e, aioSession);
+        }
     }
 
     @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        if (threadLocal.get() != null) {
-            super.completed(result, aioSession);
-            return;
+    public final void failed(Throwable exc, TcpAioSession<T> aioSession) {
+        try {
+            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.INPUT_EXCEPTION, exc);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (semaphore.tryAcquire()) {
-            threadLocal.set(this);
-            //处理当前读回调任务
-            super.completed(result, aioSession);
-            Runnable task;
-            while ((task = taskQueue.poll()) != null) {
-                task.run();
-            }
-            semaphore.release();
-            threadLocal.set(null);
-            return;
+        try {
+            // 兼容性处理，windows要强制关闭,其他系统优雅关闭
+            aioSession.close(false);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //线程资源不足,暂时积压任务
-        executorService.execute(() -> ConcurrentReadHandler.super.completed(result, aioSession));
-
     }
 
-    /**
-     * 停止内部线程
-     */
     public void shutdown() {
-        executorService.shutdown();
+
     }
 
 }

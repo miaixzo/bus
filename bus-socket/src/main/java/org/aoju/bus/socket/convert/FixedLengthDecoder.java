@@ -23,57 +23,55 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.convert;
 
-import java.nio.channels.CompletionHandler;
+import org.aoju.bus.socket.SocketDecoder;
+
+import java.nio.ByteBuffer;
 
 /**
- * 读写事件回调处理类
+ * 指定长度的解码器
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
+public class FixedLengthDecoder implements SocketDecoder {
 
-    /**
-     * 处理消息读回调事件
-     *
-     * @param result     已读消息字节数
-     * @param aioSession 当前触发读回调的会话
-     */
-    @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        try {
-            // 接收到的消息进行预处理
-            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (monitor != null) {
-                monitor.afterRead(aioSession, result);
-            }
-            // 触发读回调
-            aioSession.readCompleted(result == -1);
-        } catch (Exception e) {
-            failed(e, aioSession);
+    private final ByteBuffer buffer;
+    private boolean finishRead;
+
+    public FixedLengthDecoder(int frameLength) {
+        if (frameLength <= 0) {
+            throw new IllegalArgumentException("frameLength must be a positive integer: " + frameLength);
+        } else {
+            buffer = ByteBuffer.allocate(frameLength);
         }
     }
 
-    @Override
-    public final void failed(Throwable exc, TcpAioSession<T> aioSession) {
-        try {
-            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.INPUT_EXCEPTION, exc);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public boolean decode(ByteBuffer byteBuffer) {
+        if (finishRead) {
+            throw new RuntimeException("delimiter has finish read");
         }
-        try {
-            // 兼容性处理，windows要强制关闭,其他系统优雅关闭
-            aioSession.close(false);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (buffer.remaining() >= byteBuffer.remaining()) {
+            buffer.put(byteBuffer);
+        } else {
+            int limit = byteBuffer.limit();
+            byteBuffer.limit(byteBuffer.position() + buffer.remaining());
+            buffer.put(byteBuffer);
+            byteBuffer.limit(limit);
         }
+
+        if (buffer.hasRemaining()) {
+            return false;
+        }
+        buffer.flip();
+        finishRead = true;
+        return true;
     }
 
-    public void shutdown() {
-
+    public ByteBuffer getBuffer() {
+        return buffer;
     }
 
 }

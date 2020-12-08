@@ -23,38 +23,64 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.handler;
+
+import org.aoju.bus.socket.TcpAioSession;
+
+import java.util.concurrent.*;
 
 /**
- * 消息处理器。
+ * 读写事件回调处理类
  *
- * <p>
- * 通过实现该接口，对完成解码的消息进行业务处理。
- * </p>
- *
- * @param <T> 消息对象实体类型
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public interface MessageProcessor<T> {
+public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
 
     /**
-     * 处理接收到的消息
-     *
-     * @param session 通信会话
-     * @param msg     待处理的业务消息
+     * 读回调资源信号量
      */
-    void process(AioSession session, T msg);
+    private final Semaphore semaphore;
+
+    private final ThreadLocal<ConcurrentReadHandler<T>> threadLocal = new ThreadLocal<>();
+
+    private final LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
+    private final ExecutorService executorService = new ThreadPoolExecutor(1, 1,
+            60L, TimeUnit.SECONDS, taskQueue);
+
+    ConcurrentReadHandler(final Semaphore semaphore) {
+        this.semaphore = semaphore;
+    }
+
+    @Override
+    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
+        if (threadLocal.get() != null) {
+            super.completed(result, aioSession);
+            return;
+        }
+        if (semaphore.tryAcquire()) {
+            threadLocal.set(this);
+            //处理当前读回调任务
+            super.completed(result, aioSession);
+            Runnable task;
+            while ((task = taskQueue.poll()) != null) {
+                task.run();
+            }
+            semaphore.release();
+            threadLocal.set(null);
+            return;
+        }
+        //线程资源不足,暂时积压任务
+        executorService.execute(() -> ConcurrentReadHandler.super.completed(result, aioSession));
+
+    }
 
     /**
-     * 状态机事件,当枚举事件发生时由框架触发该方法
-     *
-     * @param session      本次触发状态机的AioSession对象
-     * @param socketStatus 状态枚举
-     * @param throwable    异常对象，如果存在的话
-     * @see SocketStatus
+     * 停止内部线程
      */
-    void stateEvent(AioSession session, SocketStatus socketStatus, Throwable throwable);
+    public void shutdown() {
+        executorService.shutdown();
+    }
 
 }

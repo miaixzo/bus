@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,45 +23,26 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.handler;
 
-import java.nio.channels.CompletionHandler;
+import java.nio.channels.SocketChannel;
 
 /**
- * 读写事件回调处理类
+ * NIO数据处理接口，通过实现此接口，可以从{@link SocketChannel}中读写数据
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
+@FunctionalInterface
+public interface ChannelSocketHandler {
 
-    @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        try {
-            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (monitor != null) {
-                monitor.afterWrite(aioSession, result);
-            }
-            aioSession.writeCompleted();
-        } catch (Exception e) {
-            failed(e, aioSession);
-        }
-    }
-
-
-    @Override
-    public void failed(Throwable exc, TcpAioSession<T> aioSession) {
-        try {
-            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.OUTPUT_EXCEPTION, exc);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            aioSession.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    /**
+     * 处理NIO数据
+     *
+     * @param socketChannel {@link SocketChannel}
+     * @throws Exception 可能的处理异常
+     */
+    void handle(SocketChannel socketChannel) throws Exception;
 
 }

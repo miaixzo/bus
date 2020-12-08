@@ -25,24 +25,47 @@
  ********************************************************************************/
 package org.aoju.bus.socket;
 
-import java.nio.channels.SocketChannel;
+import java.net.InetSocketAddress;
 
 /**
- * NIO数据处理接口，通过实现此接口，可以从{@link SocketChannel}中读写数据
+ * WebSocket消息请求接口
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-@FunctionalInterface
-public interface ChannelSocketHandler {
+public interface SocketRequest {
 
     /**
-     * 处理NIO数据
-     *
-     * @param socketChannel {@link SocketChannel}
-     * @throws Exception 可能的处理异常
+     * @return 状态信息
      */
-    void handle(SocketChannel socketChannel) throws Exception;
+    SocketStatus getWebsocketStatus();
+
+    /**
+     * @return the int
+     */
+    int getFrameOpode();
+
+    /**
+     * @return 请求数据流
+     */
+    byte[] getPayload();
+
+    /**
+     * @return 请求路径
+     */
+    String getRequestURI();
+
+    /**
+     * @return 通讯地址信息
+     */
+    InetSocketAddress getRemoteAddress();
+
+    /**
+     * 获取套接字绑定的本地地址
+     *
+     * @return {@link InetSocketAddress}
+     */
+    InetSocketAddress getLocalAddress();
 
 }

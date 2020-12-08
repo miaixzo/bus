@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.secure;
+package org.aoju.bus.socket.security;
 
 import org.aoju.bus.core.io.VirtualBuffer;
 

@@ -23,7 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.channel;
+
+import org.aoju.bus.socket.handler.FutureCompletionHandler;
 
 import java.io.IOException;
 import java.net.SocketAddress;

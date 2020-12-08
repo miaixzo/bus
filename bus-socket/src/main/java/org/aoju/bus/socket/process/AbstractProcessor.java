@@ -23,8 +23,11 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.process;
 
+import org.aoju.bus.socket.AioSession;
+import org.aoju.bus.socket.NetMonitor;
+import org.aoju.bus.socket.SocketStatus;
 import org.aoju.bus.socket.plugins.Plugin;
 
 import java.nio.channels.AsynchronousSocketChannel;
