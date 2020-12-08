@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * 开启内容脱敏
+ * 数据内容脱敏
  *
  * @author Kimi Liu
  * @version 6.1.5
