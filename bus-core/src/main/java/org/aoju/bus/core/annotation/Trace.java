@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  * 日志追溯
  *
  * @author Kimi Liu
- * @version 5.9.9
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})

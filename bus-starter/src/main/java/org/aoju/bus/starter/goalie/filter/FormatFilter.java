@@ -49,7 +49,8 @@ import java.nio.charset.Charset;
  * 格式化
  *
  * @author Justubborn
- * @since 2020/11/26
+ * @version 6.1.5
+ * @since JDK 1.8+
  */
 @Component
 @ConditionalOnBean(GoalieConfiguration.class)

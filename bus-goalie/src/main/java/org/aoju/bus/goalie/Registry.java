@@ -31,7 +31,8 @@ import java.util.Set;
  * api registry
  *
  * @author Justubborn
- * @since 2020/10/27
+ * @version 6.1.5
+ * @since JDK 1.8+
  */
 public interface Registry {
 

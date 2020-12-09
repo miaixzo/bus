@@ -859,7 +859,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param style 样式
      * @return this
      * @see Row#setRowStyle(CellStyle)
-     * @since 5.4.5
      */
     public ExcelWriter setRowStyle(int y, CellStyle style) {
         getOrCreateRow(y).setRowStyle(style);

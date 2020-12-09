@@ -38,7 +38,8 @@ import java.util.Set;
  * 服务端
  *
  * @author Justubborn
- * @since 2020/10/27
+ * @version 6.1.5
+ * @since JDK 1.8+
  */
 public class Athlete {
 

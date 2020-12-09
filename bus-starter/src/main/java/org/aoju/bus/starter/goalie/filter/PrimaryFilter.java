@@ -55,7 +55,8 @@ import java.util.Objects;
  * 参数过滤/校验
  *
  * @author Justubborn
- * @since 2020/10/29
+ * @version 6.1.5
+ * @since JDK 1.8+
  */
 @Component
 @ConditionalOnBean(GoalieConfiguration.class)
