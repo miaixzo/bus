@@ -27,9 +27,13 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 
 /**
  * {@link ByteBuffer} 工具类
@@ -211,8 +215,27 @@ public class BufferKit {
         } else if (endPosition == startPosition) {
             return Normal.EMPTY;
         }
-
         return null;
+    }
+    
+    /**
+     * 将字节内容解码为新的字符
+     *
+     * @param buffer ByteBuffer
+     * @return 解码后的字符串信息
+     */
+    public static String readLine(ByteBuffer buffer) {
+        try {
+            CharsetDecoder decode = org.aoju.bus.core.lang.Charset.UTF_8.newDecoder();
+            decode.onMalformedInput(CodingErrorAction.REPORT);
+            decode.onUnmappableCharacter(CodingErrorAction.REPORT);
+            buffer.mark();
+            String str = decode.decode(buffer).toString();
+            buffer.reset();
+            return str;
+        } catch (CharacterCodingException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     /**
@@ -244,6 +267,28 @@ public class BufferKit {
      */
     public static ByteBuffer create(CharSequence data, Charset charset) {
         return create(StringKit.bytes(data, charset));
+    }
+
+    /**
+     * 检查提供的BytebBuffer是否包含有效的utf8编码字符串
+     *
+     * @param data the ByteBuffer
+     * @param off  偏移量(出于性能原因)
+     * @return 字节缓冲区是否包含一个有效的utf8编码字符串
+     */
+    public static boolean isValidUTF8(ByteBuffer data, int off) {
+        int len = data.remaining();
+        if (len < off) {
+            return false;
+        }
+        int state = 0;
+        for (int i = off; i < len; ++i) {
+            state = Normal.DECODE_64_TABLE[256 + (state << 4) + Normal.DECODE_64_TABLE[(0xff & data.get(i))]];
+            if (state == 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
