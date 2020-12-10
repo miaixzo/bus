@@ -29,6 +29,10 @@ import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.crypto.Padding;
+import org.aoju.bus.crypto.symmetric.AES;
+import org.aoju.bus.crypto.symmetric.Symmetric;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.aoju.bus.starter.goalie.GoalieProperties;
@@ -47,6 +51,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -65,10 +70,19 @@ public class EncryptFilter implements WebFilter {
     @Autowired
     GoalieProperties.Server.Encrypt encrypt;
 
+    private Symmetric symmetric;
+
+    @PostConstruct
+    public void init() {
+        if ("AES".equals(encrypt.getType())) {
+            symmetric = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
+        }
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        if (encrypt.isEnabled()) {
+        if (encrypt.isEnabled() && !Context.Format.binary.equals(Context.get(exchange).getFormat())) {
             exchange = exchange.mutate().response(process(exchange)).build();
         }
         return chain.filter(exchange);
@@ -81,7 +95,10 @@ public class EncryptFilter implements WebFilter {
      */
     private void doEncrypt(Message message) {
         if (ObjectKit.isNotNull(message.getData())) {
-            message.setData(org.aoju.bus.crypto.Builder.encrypt(encrypt.getType(), encrypt.getKey(), JSON.toJSONString(message.getData()), Charset.UTF_8));
+            if ("AES".equals(encrypt.getType())) {
+                message.setData(symmetric.encryptBase64(JSON.toJSONString(message.getData()), Charset.UTF_8));
+            }
+
         }
     }
 

@@ -54,5 +54,4 @@ public class HsqldbRowBoundsDialect extends AbstractRowBoundsDialect {
         }
         return sqlBuilder.toString();
     }
-
 }

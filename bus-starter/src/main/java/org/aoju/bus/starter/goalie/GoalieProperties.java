@@ -60,6 +60,7 @@ public class GoalieProperties {
             private boolean enabled;
             private String key;
             private String type;
+            private String offset;
         }
 
         @Data
@@ -68,6 +69,7 @@ public class GoalieProperties {
             private boolean enabled;
             private String key;
             private String type;
+            private String offset;
         }
     }
 

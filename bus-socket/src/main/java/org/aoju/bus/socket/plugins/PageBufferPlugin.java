@@ -75,7 +75,7 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
                         shutdown();
                         return;
                     }
-                    Field field = ByteBuffer.class.getDeclaredField("pageBuffers");
+                    Field field = ByteBuffer.class.getDeclaredField("bufferPages");
                     field.setAccessible(true);
                     PageBuffer[] pages = (PageBuffer[]) field.get(pagePool);
                     String logger = "";

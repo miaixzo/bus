@@ -28,18 +28,22 @@ package org.aoju.bus.starter.goalie.filter;
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
@@ -65,21 +69,24 @@ public class PrimaryFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
+
+        ServerWebExchange mutate = setDefaultContentTypeIfNecessary(exchange);
+
+        Context context = Context.get(mutate);
+        context.setStartTime(System.currentTimeMillis());
+        ServerHttpRequest request = mutate.getRequest();
         if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
             MultiValueMap<String, String> params = request.getQueryParams();
-            Context.get(exchange).setRequestMap(params.toSingleValueMap());
-            doParams(exchange);
-            return chain.filter(exchange);
+            context.setRequestMap(params.toSingleValueMap());
+            doParams(mutate);
+            return chain.filter(mutate)
+                .then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
         } else {
-            MediaType mediaType = request.getHeaders().getContentType();
-            if (null == mediaType) {
-                mediaType = MediaType.APPLICATION_FORM_URLENCODED;
-            }
-            String contentType = mediaType.toString().toLowerCase();
+
+            String contentType = Objects.requireNonNull(mutate.getRequest().getHeaders().getContentType()).toString().toLowerCase();
             //文件
             if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
-                return exchange.getMultipartData().flatMap(params -> {
+                return mutate.getMultipartData().flatMap(params -> {
                     Map<String, String> formMap = new LinkedHashMap<>();
                     Map<String, Part> fileMap = new LinkedHashMap<>();
 
@@ -92,17 +99,19 @@ public class PrimaryFilter implements WebFilter {
                             fileMap.put(k, v);
                         }
                     });
-                    Context.get(exchange).setRequestMap(formMap);
-                    Context.get(exchange).setFilePartMap(fileMap);
-                    doParams(exchange);
-                    return chain.filter(exchange);
+                    context.setRequestMap(formMap);
+                    context.setFilePartMap(fileMap);
+                    doParams(mutate);
+                    return chain.filter(mutate)
+                        .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
 
             } else {
-                return exchange.getFormData().flatMap(params -> {
-                    Context.get(exchange).setRequestMap(params.toSingleValueMap());
-                    doParams(exchange);
-                    return chain.filter(exchange);
+                return mutate.getFormData().flatMap(params -> {
+                    context.setRequestMap(params.toSingleValueMap());
+                    doParams(mutate);
+                    return chain.filter(mutate)
+                        .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
             }
 
@@ -124,11 +133,39 @@ public class PrimaryFilter implements WebFilter {
         if (StringKit.isBlank(params.get(Consts.VERSION))) {
             throw new BusinessException(ErrorCode.EM_100107);
         }
-        String format = params.get(Consts.FORMAT);
-        if (StringKit.isBlank(format)) {
+        if (StringKit.isBlank(params.get(Consts.FORMAT))) {
             throw new BusinessException(ErrorCode.EM_100111);
         }
-        context.setFormat(Context.Format.valueOf(format));
+
+        if (StringKit.isNotBlank(params.get(Consts.SIGN))) {
+            context.setNeedDecrypt(true);
+        }
+        Logger.info("traceId:{},method:{},req =>{}", exchange.getLogPrefix(), params.get(Consts.METHOD), JsonKit.toJsonString(context.getRequestMap()));
+    }
+
+    /**
+     * 设置默认值
+     *
+     * @param exchange 消息
+     */
+    private ServerWebExchange setDefaultContentTypeIfNecessary(ServerWebExchange exchange) {
+        ServerHttpRequest request = exchange.getRequest();
+        MediaType mediaType = request.getHeaders().getContentType();
+        if (null == mediaType) {
+            mediaType = MediaType.APPLICATION_FORM_URLENCODED;
+            HttpHeaders headers = new HttpHeaders();
+            headers.putAll(exchange.getRequest().getHeaders());
+            headers.setContentType(mediaType);
+            //变异
+            ServerHttpRequest requestDecorator = new ServerHttpRequestDecorator(request) {
+                @Override
+                public HttpHeaders getHeaders() {
+                    return headers;
+                }
+            };
+            return exchange.mutate().request(requestDecorator).build();
+        }
+        return exchange;
     }
 
 }

@@ -409,7 +409,7 @@ public class ByteBuffer extends ByteString {
      *
      * @return 缓存页对象
      */
-    public PageBuffer allocatePageBuffer() {
+    public PageBuffer allocateBufferPage() {
         assertEnabled();
         //轮训游标，均衡分配内存页
         int index = cursor.getAndIncrement();

@@ -40,6 +40,8 @@ public interface Consts {
 
     String FORMAT = "format";
 
+    String SIGN = "sign";
+
     String X_ACCESS_TOKEN = "X-Access-Token";
 
 }

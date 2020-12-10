@@ -26,6 +26,10 @@
 package org.aoju.bus.starter.goalie.filter;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.crypto.Padding;
+import org.aoju.bus.crypto.symmetric.AES;
+import org.aoju.bus.crypto.symmetric.Symmetric;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.aoju.bus.starter.goalie.GoalieProperties;
@@ -39,6 +43,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 
 /**
@@ -56,10 +61,19 @@ public class DecryptFilter implements WebFilter {
     @Autowired
     GoalieProperties.Server.Decrypt decrypt;
 
+    private Symmetric symmetric;
+
+    @PostConstruct
+    public void init() {
+        if ("AES".equals(decrypt.getType())) {
+            symmetric = new AES(Mode.CBC, Padding.PKCS7Padding, decrypt.getKey().getBytes(), decrypt.getOffset().getBytes());
+        }
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerWebExchange.Builder builder = exchange.mutate();
-        if (decrypt.isEnabled()) {
+        if (decrypt.isEnabled() && Context.get(exchange).isNeedDecrypt()) {
             doDecrypt(Context.get(exchange).getRequestMap());
         }
 
@@ -72,7 +86,10 @@ public class DecryptFilter implements WebFilter {
      * @param map 参数
      */
     private void doDecrypt(Map<String, String> map) {
-        map.forEach((k, v) -> map.put(k, org.aoju.bus.crypto.Builder.decrypt(decrypt.getType(), decrypt.getKey(), v, Charset.UTF_8)));
+        if (null == symmetric) {
+            return;
+        }
+        map.forEach((k, v) -> map.put(k, symmetric.decryptStr(v, Charset.UTF_8)));
     }
 
 }

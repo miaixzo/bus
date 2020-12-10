@@ -28,7 +28,6 @@ package org.aoju.bus.goalie.handler;
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.lang.exception.BusinessException;
-import org.aoju.bus.core.toolkit.RuntimeKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
@@ -58,7 +57,7 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(HttpStatus.BAD_REQUEST);
+        response.setStatusCode(HttpStatus.OK);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         Context context = Context.get(exchange);
         Map<String, String> map = context.getRequestMap();
@@ -66,7 +65,8 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         if (null != map) {
             method = map.get(Consts.METHOD);
         }
-        Logger.error("request: {},error:{}", method, RuntimeKit.getMessage(ex));
+        Logger.error("traceId:{},request: {},error:{}", exchange.getLogPrefix(), method, ex.getMessage());
+        Logger.error(ex);
         Object message;
         if (ex instanceof WebClientRequestException) {
             message = Controller.write(ErrorCode.EM_FAILURE);
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         }
         String formatBody = context.getFormat().getProvider().serialize(message);
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes());
-        return response.writeWith(Mono.just(db));
+        return response.writeWith(Mono.just(db))
+            .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
     }
-
 }

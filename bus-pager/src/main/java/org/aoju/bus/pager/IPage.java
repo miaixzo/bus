@@ -25,59 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
- * 分页信息
+ * 分页接口
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class Serialize<T> implements Serializable {
+public interface IPage {
 
-    private static final long serialVersionUID = 1L;
+    Integer getPageNo();
 
-    /**
-     * 总记录数
-     */
-    protected long total;
-    /**
-     * 结果集
-     */
-    protected List<T> list;
+    Integer getPageSize();
 
-    public Serialize() {
-    }
-
-    public Serialize(List<T> list) {
-        this.list = list;
-        if (list instanceof Page) {
-            this.total = ((Page) list).getTotal();
-        } else {
-            this.total = list.size();
-        }
-    }
-
-    public static <T> Serialize<T> of(List<T> list) {
-        return new Serialize<>(list);
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public List<T> getList() {
-        return list;
-    }
-
-    public void setList(List<T> list) {
-        this.list = list;
-    }
+    String getOrderBy();
 
 }

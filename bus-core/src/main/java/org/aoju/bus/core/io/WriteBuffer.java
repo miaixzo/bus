@@ -60,7 +60,7 @@ public final class WriteBuffer extends OutputStream {
     /**
      * 为当前 WriteBuffer 提供数据存放功能的缓存页
      */
-    private final PageBuffer pageBuffer;
+    private final PageBuffer bufferPage;
     /**
      * 缓冲区数据刷新Function
      */
@@ -98,8 +98,8 @@ public final class WriteBuffer extends OutputStream {
      */
     private byte[] cacheByte;
 
-    public WriteBuffer(PageBuffer pageBuffer, Function<WriteBuffer, Void> flushFunction, int chunkSize, int capacity) {
-        this.pageBuffer = pageBuffer;
+    public WriteBuffer(PageBuffer bufferPage, Function<WriteBuffer, Void> flushFunction, int chunkSize, int capacity) {
+        this.bufferPage = bufferPage;
         this.function = flushFunction;
         this.items = new VirtualBuffer[capacity];
         this.chunkSize = chunkSize;
@@ -137,7 +137,7 @@ public final class WriteBuffer extends OutputStream {
         lock.lock();
         try {
             if (writeInBuf == null) {
-                writeInBuf = pageBuffer.allocate(chunkSize);
+                writeInBuf = bufferPage.allocate(chunkSize);
             }
             writeInBuf.buffer().put(b);
             flushWriteBuffer();
@@ -203,7 +203,7 @@ public final class WriteBuffer extends OutputStream {
             waitPreWriteFinish();
             do {
                 if (writeInBuf == null) {
-                    writeInBuf = pageBuffer.allocate(Math.max(chunkSize, len));
+                    writeInBuf = bufferPage.allocate(Math.max(chunkSize, len));
                 }
                 ByteBuffer writeBuffer = writeInBuf.buffer();
                 if (closed) {

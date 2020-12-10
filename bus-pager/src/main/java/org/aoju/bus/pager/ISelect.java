@@ -26,35 +26,17 @@
 package org.aoju.bus.pager;
 
 /**
- * 分页结果信息
+ * 分页查询接口
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class RowBounds extends org.apache.ibatis.session.RowBounds {
+public interface ISelect {
 
-    private Long total;
-    private Boolean count;
-
-    public RowBounds(int offset, int limit) {
-        super(offset, limit);
-    }
-
-    public Long getTotal() {
-        return total;
-    }
-
-    public void setTotal(Long total) {
-        this.total = total;
-    }
-
-    public Boolean getCount() {
-        return count;
-    }
-
-    public void setCount(Boolean count) {
-        this.count = count;
-    }
+    /**
+     * 在接口中调用自己的查询方法,不要在该方法内写过多代码,只要一行查询方法最好
+     */
+    void doSelect();
 
 }

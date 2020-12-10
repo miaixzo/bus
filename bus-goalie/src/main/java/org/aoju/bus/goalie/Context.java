@@ -65,6 +65,10 @@ public class Context {
 
     private Format format = Format.json;
 
+    private boolean needDecrypt = false;
+
+    private long startTime;
+
     public static Context get(ServerWebExchange exchange) {
         Context context = exchange.getAttribute(Context.$);
 

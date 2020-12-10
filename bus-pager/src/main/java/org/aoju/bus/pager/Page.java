@@ -155,7 +155,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setPageNo(int pageNo) {
-        // 分页合理化,针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
@@ -193,7 +193,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         } else {
             pages = 0;
         }
-        // 分页合理化,针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         if ((reasonable != null && reasonable) && pageNo > pages) {
             if (pages != 0) {
                 pageNo = pages;
@@ -211,7 +211,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
             return this;
         }
         this.reasonable = reasonable;
-        // 分页合理化,针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         if (this.reasonable && this.pageNo <= 0) {
             this.pageNo = 1;
             calculateStartAndEndRow();
@@ -271,7 +271,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @return 结果
      */
     public Page<E> pageNo(int pageNo) {
-        // 分页合理化,针对不合理的页码自动处理
+        //分页合理化,针对不合理的页码自动处理
         this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
@@ -332,30 +332,30 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return this;
     }
 
-    public Paginating<E> toPages() {
-        return new Paginating<>(this);
+    public Pages<E> toPages() {
+        return new Pages<>(this);
     }
 
-    public Serialize<E> toPageSerializable() {
-        return new Serialize<>(this);
+    public PageSerializable<E> toPageSerializable() {
+        return new PageSerializable<>(this);
     }
 
-    public <E> Page<E> doSelectPage(Querying select) {
+    public <E> Page<E> doSelectPage(ISelect select) {
         select.doSelect();
         return (Page<E>) this;
     }
 
-    public <E> Paginating<E> doSelectPages(Querying select) {
+    public <E> Pages<E> doSelectPages(ISelect select) {
         select.doSelect();
-        return (Paginating<E>) this.toPages();
+        return (Pages<E>) this.toPages();
     }
 
-    public <E> Serialize<E> doSelectPageSerializable(Querying select) {
+    public <E> PageSerializable<E> doSelectPageSerializable(ISelect select) {
         select.doSelect();
-        return (Serialize<E>) this.toPageSerializable();
+        return (PageSerializable<E>) this.toPageSerializable();
     }
 
-    public long doCount(Querying select) {
+    public long doCount(ISelect select) {
         this.pageSizeZero = true;
         this.pageSize = 0;
         select.doSelect();

@@ -73,13 +73,12 @@ public class ApiRouterHandler {
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.setAll(params);
         if (HttpMethod.GET.equals(assets.getHttpMethod())) {
-
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-                .method(assets.getHttpMethod())
-                .uri(builder.build().encode().toUri())
-                .headers((headers) -> request.headers());
+            .method(assets.getHttpMethod())
+            .uri(builder.build().encode().toUri())
+            .headers((headers) -> request.headers());
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             if (request.headers().contentType().isPresent()) {
                 MediaType mediaType = request.headers().contentType().get();
@@ -88,14 +87,16 @@ public class ApiRouterHandler {
                 if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
                     MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>();
                     partMap.setAll(context.getFilePartMap());
-                    bodySpec.body(BodyInserters.fromMultipartData(partMap).with(new LinkedMultiValueMap(multiValueMap)));
+                    BodyInserters.MultipartInserter multipartInserter = BodyInserters.fromMultipartData(partMap);
+                    multiValueMap.forEach(multipartInserter::with);
+                    bodySpec.body(multipartInserter);
                 } else {
                     bodySpec.bodyValue(multiValueMap);
                 }
             }
         }
         Flux<DataBuffer> flux = bodySpec
-                .retrieve().bodyToFlux(DataBuffer.class);
+            .retrieve().bodyToFlux(DataBuffer.class);
         return ServerResponse.ok().body(flux, DataBuffer.class);
     }
 

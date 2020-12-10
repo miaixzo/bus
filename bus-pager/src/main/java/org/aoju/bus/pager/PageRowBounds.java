@@ -25,19 +25,38 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
+import org.apache.ibatis.session.RowBounds;
+
 /**
- * 分页接口
+ * 分页结果信息
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public interface Paging {
+public class PageRowBounds extends RowBounds {
 
-    Integer getPageNo();
+    private Long total;
+    private Boolean count;
 
-    Integer getPageSize();
+    public PageRowBounds(int offset, int limit) {
+        super(offset, limit);
+    }
 
-    String getOrderBy();
+    public Long getTotal() {
+        return total;
+    }
+
+    public void setTotal(Long total) {
+        this.total = total;
+    }
+
+    public Boolean getCount() {
+        return count;
+    }
+
+    public void setCount(Boolean count) {
+        this.count = count;
+    }
 
 }

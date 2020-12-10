@@ -51,7 +51,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class PageAutoDialect {
 
-    private static final Map<String, Class<? extends Dialect>> DIALECT_ALIAS_MAP = new HashMap<>();
+    private static Map<String, Class<? extends Dialect>> dialectAliasMap = new HashMap<>();
 
     static {
         registerDialectAlias("db2", Db2Dialect.class);
@@ -84,36 +84,23 @@ public class PageAutoDialect {
         registerDialectAlias("derby", SqlServer2012Dialect.class);
     }
 
-    /**
-     * 缓存
-     */
+    // 缓存
     private final Map<String, AbstractSqlDialect> urlDialectMap = new ConcurrentHashMap<>();
     private final ThreadLocal<AbstractSqlDialect> dialectThreadLocal = new ThreadLocal<>();
-    //
-    private final ReentrantLock lock = new ReentrantLock();
-    /**
-     * 自动获取dialect,如果没有setProperties或setSqlUtilConfig,也可以正常进行
-     */
+    // 自动获取dialect,如果没有setProperties或setSqlUtilConfig,也可以正常进行
     private boolean autoDialect = true;
-    /**
-     * 多数据源时,获取jdbcurl后是否关闭数据源
-     */
+    // 多数据源时,获取jdbcurl后是否关闭数据源
     private boolean closeConn = true;
-    /**
-     * 属性配置
-     */
+    private ReentrantLock lock = new ReentrantLock();
+    // 属性配置
     private Properties properties;
     private AbstractSqlDialect delegate;
 
     public static void registerDialectAlias(String alias, Class<? extends Dialect> dialectClass) {
-        DIALECT_ALIAS_MAP.put(alias, dialectClass);
+        dialectAliasMap.put(alias, dialectClass);
     }
 
-    /**
-     * 多数据动态获取时,每次需要初始化
-     *
-     * @param ms 执行映射的语句
-     */
+    // 多数据动态获取时,每次需要初始化
     public void initDelegateDialect(MappedStatement ms) {
         if (delegate == null) {
             if (autoDialect) {
@@ -138,7 +125,7 @@ public class PageAutoDialect {
     }
 
     private String fromJdbcUrl(String jdbcUrl) {
-        for (String dialect : DIALECT_ALIAS_MAP.keySet()) {
+        for (String dialect : dialectAliasMap.keySet()) {
             if (jdbcUrl.indexOf(Symbol.COLON + dialect + Symbol.COLON) != -1) {
                 return dialect;
             }
@@ -154,8 +141,8 @@ public class PageAutoDialect {
      * @throws Exception 异常
      */
     private Class resloveDialectClass(String className) throws Exception {
-        if (DIALECT_ALIAS_MAP.containsKey(className.toLowerCase())) {
-            return DIALECT_ALIAS_MAP.get(className.toLowerCase());
+        if (dialectAliasMap.containsKey(className.toLowerCase())) {
+            return dialectAliasMap.get(className.toLowerCase());
         } else {
             return Class.forName(className);
         }

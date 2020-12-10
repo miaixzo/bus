@@ -68,9 +68,9 @@ public class SslSocketChannel extends AsynchronousSocketChannel {
      */
     private int adaptiveWriteSize = -1;
 
-    public SslSocketChannel(AsynchronousSocketChannel asynchronousSocketChannel, SslService sslService, PageBuffer pageBuffer) {
+    public SslSocketChannel(AsynchronousSocketChannel asynchronousSocketChannel, SslService sslService, PageBuffer bufferPage) {
         super(null);
-        this.handshakeModel = sslService.createSSLEngine(asynchronousSocketChannel, pageBuffer);
+        this.handshakeModel = sslService.createSSLEngine(asynchronousSocketChannel, bufferPage);
         this.sslService = sslService;
         this.asynchronousSocketChannel = asynchronousSocketChannel;
         this.sslEngine = handshakeModel.getSslEngine();
