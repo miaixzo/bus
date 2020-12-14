@@ -46,10 +46,10 @@ public class Oracle9iDialect extends AbstractSqlDialect {
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getEndRow());
         paramMap.put(PAGEPARAMETER_SECOND, page.getStartRow());
-        //处理pageKey
+        // 处理pageKey
         pageKey.update(page.getEndRow());
         pageKey.update(page.getStartRow());
-        //处理参数配置
+        // 处理参数配置
         handleParameter(boundSql, ms);
         return paramMap;
     }

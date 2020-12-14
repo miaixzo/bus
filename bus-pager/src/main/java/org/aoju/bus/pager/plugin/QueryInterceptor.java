@@ -60,18 +60,17 @@ public class QueryInterceptor implements Interceptor {
         Executor executor = (Executor) invocation.getTarget();
         CacheKey cacheKey;
         BoundSql boundSql;
-        //由于逻辑关系,只会进入一次
+        // 由于逻辑关系,只会进入一次
         if (args.length == 4) {
-            //4 个参数时
+            // 4 个参数时
             boundSql = ms.getBoundSql(parameter);
             cacheKey = executor.createCacheKey(ms, parameter, rowBounds, boundSql);
         } else {
-            //6 个参数时
+            // 6 个参数时
             cacheKey = (CacheKey) args[4];
             boundSql = (BoundSql) args[5];
         }
-        //TODO 自己要进行的各种处理
-        //注：下面的方法可以根据自己的逻辑调用多次,在分页插件中,count 和 proxy 各调用了一次
+        // 注：下面的方法可以根据自己的逻辑调用多次,在分页插件中,count 和 proxy 各调用了一次
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }
 

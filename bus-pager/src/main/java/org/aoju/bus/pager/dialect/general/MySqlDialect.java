@@ -50,10 +50,10 @@ public class MySqlDialect extends AbstractSqlDialect {
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
-        //处理pageKey
+        // 处理pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
-        //处理参数配置
+        // 处理参数配置
         if (boundSql.getParameterMappings() != null) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             if (page.getStartRow() == 0) {

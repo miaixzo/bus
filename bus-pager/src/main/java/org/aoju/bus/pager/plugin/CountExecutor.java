@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.pager.plugin;
 
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.pager.PageException;
 import org.aoju.bus.pager.dialect.Dialect;
 import org.apache.ibatis.cache.CacheKey;
@@ -49,12 +50,12 @@ import java.util.Map;
  */
 public abstract class CountExecutor {
 
-    private static Field additionalParametersField;
+    private static final Field ADDITIONAL_PARAMETERS_FIELD;
 
     static {
         try {
-            additionalParametersField = BoundSql.class.getDeclaredField("additionalParameters");
-            additionalParametersField.setAccessible(true);
+            ADDITIONAL_PARAMETERS_FIELD = BoundSql.class.getDeclaredField("additionalParameters");
+            ADDITIONAL_PARAMETERS_FIELD.setAccessible(true);
         } catch (NoSuchFieldException e) {
             throw new PageException("获取 BoundSql 属性 additionalParameters 失败: " + e, e);
         }
@@ -68,7 +69,7 @@ public abstract class CountExecutor {
      */
     public static Map<String, Object> getAdditionalParameter(BoundSql boundSql) {
         try {
-            return (Map<String, Object>) additionalParametersField.get(boundSql);
+            return (Map<String, Object>) ADDITIONAL_PARAMETERS_FIELD.get(boundSql);
         } catch (IllegalAccessException e) {
             throw new PageException("获取 BoundSql 属性值 additionalParameters 失败: " + e, e);
         }
@@ -86,7 +87,7 @@ public abstract class CountExecutor {
         try {
             mappedStatement = configuration.getMappedStatement(msId, false);
         } catch (Throwable t) {
-            //ignore
+            Logger.warn(t.getMessage());
         }
         return mappedStatement;
     }
@@ -108,8 +109,7 @@ public abstract class CountExecutor {
         CacheKey countKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, boundSql);
         BoundSql countBoundSql = countMs.getBoundSql(parameter);
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
-        Long count = ((Number) ((List) countResultList).get(0)).longValue();
-        return count;
+        return ((Number) ((List) countResultList).get(0)).longValue();
     }
 
     /**
@@ -129,20 +129,19 @@ public abstract class CountExecutor {
                                         Object parameter, BoundSql boundSql,
                                         RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
         Map<String, Object> additionalParameters = getAdditionalParameter(boundSql);
-        //创建 count 查询的缓存 key
+        // 创建 count 查询的缓存 key
         CacheKey countKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, boundSql);
-        //调用方言获取 count sql
+        // 调用方言获取 count sql
         String countSql = dialect.getCountSql(countMs, boundSql, parameter, rowBounds, countKey);
-        //countKey.update(countSql);
+        // countKey.update(countSql);
         BoundSql countBoundSql = new BoundSql(countMs.getConfiguration(), countSql, boundSql.getParameterMappings(), parameter);
-        //当使用动态 SQL 时,可能会产生临时的参数,这些参数需要手动设置到新的 BoundSql 中
+        // 当使用动态 SQL 时,可能会产生临时的参数,这些参数需要手动设置到新的 BoundSql 中
         for (String key : additionalParameters.keySet()) {
             countBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
         }
-        //执行 count 查询
+        // 执行 count 查询
         Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
-        Long count = (Long) ((List) countResultList).get(0);
-        return count;
+        return (Long) ((List) countResultList).get(0);
     }
 
     /**
@@ -163,25 +162,25 @@ public abstract class CountExecutor {
     public static <E> List<E> pageQuery(Dialect dialect, Executor executor, MappedStatement ms, Object parameter,
                                         RowBounds rowBounds, ResultHandler resultHandler,
                                         BoundSql boundSql, CacheKey cacheKey) throws SQLException {
-        //判断是否需要进行分页查询
+        // 判断是否需要进行分页查询
         if (dialect.beforePage(ms, parameter, rowBounds)) {
-            //生成分页的缓存 key
+            // 生成分页的缓存 key
             CacheKey pageKey = cacheKey;
-            //处理参数对象
+            // 处理参数对象
             parameter = dialect.processParameterObject(ms, parameter, boundSql, pageKey);
-            //调用方言获取分页 sql
+            // 调用方言获取分页 sql
             String pageSql = dialect.getPageSql(ms, boundSql, parameter, rowBounds, pageKey);
             BoundSql pageBoundSql = new BoundSql(ms.getConfiguration(), pageSql, boundSql.getParameterMappings(), parameter);
 
             Map<String, Object> additionalParameters = getAdditionalParameter(boundSql);
-            //设置动态参数
+            // 设置动态参数
             for (String key : additionalParameters.keySet()) {
                 pageBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
             }
-            //执行分页查询
+            // 执行分页查询
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, pageKey, pageBoundSql);
         } else {
-            //不执行分页的情况下,也不执行内存分页
+            // 不执行分页的情况下,也不执行内存分页
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, boundSql);
         }
     }

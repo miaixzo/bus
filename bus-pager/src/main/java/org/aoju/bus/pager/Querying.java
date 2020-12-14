@@ -25,54 +25,18 @@
  ********************************************************************************/
 package org.aoju.bus.pager;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
- * 分页信息
+ * 分页查询接口
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class PageSerializable<T> implements Serializable {
+public interface Querying {
 
-    private static final long serialVersionUID = 1L;
-    //总记录数
-    protected long total;
-    //结果集
-    protected List<T> list;
-
-    public PageSerializable() {
-    }
-
-    public PageSerializable(List<T> list) {
-        this.list = list;
-        if (list instanceof Page) {
-            this.total = ((Page) list).getTotal();
-        } else {
-            this.total = list.size();
-        }
-    }
-
-    public static <T> PageSerializable<T> of(List<T> list) {
-        return new PageSerializable<>(list);
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public List<T> getList() {
-        return list;
-    }
-
-    public void setList(List<T> list) {
-        this.list = list;
-    }
+    /**
+     * 在接口中调用自己的查询方法,不要在该方法内写过多代码,只要一行查询方法最好
+     */
+    void doSelect();
 
 }
