@@ -76,19 +76,18 @@ public class ApiRouterHandler {
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-                .method(assets.getHttpMethod())
-                .uri(builder.build().encode().toUri())
-                .headers((headers) -> request.headers());
+            .method(assets.getHttpMethod())
+            .uri(builder.build().encode().toUri())
+            .headers((headers) -> request.headers());
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             if (request.headers().contentType().isPresent()) {
                 MediaType mediaType = request.headers().contentType().get();
-                String contentType = mediaType.toString().toLowerCase();
-                // 文件
-                if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+                //文件
+                if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>();
                     partMap.setAll(context.getFilePartMap());
                     BodyInserters.MultipartInserter multipartInserter = BodyInserters.fromMultipartData(partMap);
-                    multiValueMap.forEach(multipartInserter::with);
+                    params.forEach(multipartInserter::with);
                     bodySpec.body(multipartInserter);
                 } else {
                     bodySpec.bodyValue(multiValueMap);
@@ -96,7 +95,7 @@ public class ApiRouterHandler {
             }
         }
         Flux<DataBuffer> flux = bodySpec
-                .retrieve().bodyToFlux(DataBuffer.class);
+            .retrieve().bodyToFlux(DataBuffer.class);
         return ServerResponse.ok().body(flux, DataBuffer.class);
     }
 

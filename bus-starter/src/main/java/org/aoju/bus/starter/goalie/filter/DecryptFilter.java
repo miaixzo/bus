@@ -26,6 +26,7 @@
 package org.aoju.bus.starter.goalie.filter;
 
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.crypto.Mode;
 import org.aoju.bus.crypto.Padding;
 import org.aoju.bus.crypto.symmetric.AES;
@@ -89,7 +90,12 @@ public class DecryptFilter implements WebFilter {
         if (null == symmetric) {
             return;
         }
-        map.forEach((k, v) -> map.put(k, symmetric.decryptStr(v, Charset.UTF_8)));
+        map.forEach((k, v) -> {
+            if(StringKit.isNotBlank(v)) {
+                map.put(k, symmetric.decryptStr(v, Charset.UTF_8));
+            }
+
+        });
     }
 
 }

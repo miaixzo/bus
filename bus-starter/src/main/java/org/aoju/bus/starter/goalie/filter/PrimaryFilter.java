@@ -82,10 +82,8 @@ public class PrimaryFilter implements WebFilter {
             return chain.filter(mutate)
                 .then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
         } else {
-
-            String contentType = Objects.requireNonNull(mutate.getRequest().getHeaders().getContentType()).toString().toLowerCase();
             //文件
-            if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+            if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mutate.getRequest().getHeaders().getContentType())) {
                 return mutate.getMultipartData().flatMap(params -> {
                     Map<String, String> formMap = new LinkedHashMap<>();
                     Map<String, Part> fileMap = new LinkedHashMap<>();
