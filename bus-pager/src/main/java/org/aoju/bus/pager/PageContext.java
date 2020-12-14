@@ -56,13 +56,13 @@ public class PageContext extends PageMethod implements Dialect {
     @Override
     public boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
         if (ms.getId().endsWith(CountMappedStatement.COUNT)) {
-            throw new RuntimeException("在系统中发现了多个分页插件,请检查系统配置!");
+            throw new RuntimeException("Multiple paging plug-ins found, please check the system configuration!");
         }
         Page page = pageParams.getPage(parameterObject, rowBounds);
         if (page == null) {
             return true;
         } else {
-            //设置默认的 count 列
+            // 设置默认的 count 列
             if (PageFromObject.isEmpty(page.getCountColumn())) {
                 page.setCountColumn(pageParams.getCountColumn());
             }
@@ -107,7 +107,7 @@ public class PageContext extends PageMethod implements Dialect {
 
     @Override
     public Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds) {
-        //这个方法即使不分页也会被执行,所以要判断 null
+        // 这个方法即使不分页也会被执行,所以要判断 null
         AbstractSqlDialect delegate = autoDialect.getDelegate();
         if (delegate != null) {
             return delegate.afterPage(pageList, parameterObject, rowBounds);
@@ -117,7 +117,7 @@ public class PageContext extends PageMethod implements Dialect {
 
     @Override
     public void afterAll() {
-        //这个方法即使不分页也会被执行,所以要判断 null
+        // 这个方法即使不分页也会被执行,所以要判断 null
         AbstractSqlDialect delegate = autoDialect.getDelegate();
         if (delegate != null) {
             delegate.afterAll();
@@ -133,7 +133,7 @@ public class PageContext extends PageMethod implements Dialect {
         autoDialect = new PageAutoDialect();
         pageParams.setProperties(properties);
         autoDialect.setProperties(properties);
-        //20180902新增 aggregateFunctions, 允许手动添加聚合函数(影响行数)
+        // 20180902新增 aggregateFunctions, 允许手动添加聚合函数(影响行数)
         CountSqlParser.addAggregateFunctions(properties.getProperty("aggregateFunctions"));
     }
 

@@ -57,26 +57,46 @@ import java.util.*;
  */
 public class SqlServerParser {
 
-    //开始行号
+    /**
+     * 开始行号
+     */
     public static final String START_ROW = String.valueOf(Long.MIN_VALUE);
-    //结束行号
+    /**
+     * 结束行号
+     */
     public static final String PAGE_SIZE = String.valueOf(Long.MAX_VALUE);
-    //外层包装表
+    /**
+     * 外层包装表
+     */
     protected static final String WRAP_TABLE = "WRAP_OUTER_TABLE";
-    //表别名名字
+    /**
+     * 表别名名字
+     */
     protected static final String PAGE_TABLE_NAME = "PAGE_TABLE_ALIAS";
-    //protected
+    /**
+     * protected
+     */
     public static final Alias PAGE_TABLE_ALIAS = new Alias(PAGE_TABLE_NAME);
-    //行号
+    /**
+     * 行号
+     */
     protected static final String PAGE_ROW_NUMBER = "PAGE_ROW_NUMBER";
-    //行号列
+    /**
+     * 行号列
+     */
     protected static final Column PAGE_ROW_NUMBER_COLUMN = new Column(PAGE_ROW_NUMBER);
-    //TOP 100 PERCENT
+    /**
+     * TOP 100 PERCENT
+     */
     protected static final Top TOP100_PERCENT;
-    //别名前缀
+    /**
+     * 别名前缀
+     */
     protected static final String PAGE_COLUMN_ALIAS_PREFIX = "ROW_ALIAS_";
 
-    //静态方法处理
+    /**
+     * 静态方法处理
+     */
     static {
         TOP100_PERCENT = new Top();
         TOP100_PERCENT.setExpression(new LongValue(100));
@@ -102,7 +122,7 @@ public class SqlServerParser {
      * @return the string
      */
     public String convertToPageSql(String sql, Integer offset, Integer limit) {
-        //解析SQL
+        // 解析SQL
         Statement stmt;
         try {
             stmt = CCJSqlParserUtil.parse(sql);
@@ -112,10 +132,10 @@ public class SqlServerParser {
         if (!(stmt instanceof Select)) {
             throw new PageException("分页语句必须是Select查询!");
         }
-        //获取分页查询的select
+        // 获取分页查询的select
         Select pageSelect = getPageSelect((Select) stmt);
         String pageSql = pageSelect.toString();
-        //缓存移到外面了,所以不替换参数
+        // 缓存移到外面了,所以不替换参数
         if (offset != null) {
             pageSql = pageSql.replace(START_ROW, String.valueOf(offset));
         }
@@ -136,23 +156,23 @@ public class SqlServerParser {
         if (selectBody instanceof SetOperationList) {
             selectBody = wrapSetOperationList((SetOperationList) selectBody);
         }
-        //这里的selectBody一定是PlainSelect
+        // 这里的selectBody一定是PlainSelect
         if (((PlainSelect) selectBody).getTop() != null) {
             throw new PageException("被分页的语句已经包含了Top,不能再通过分页插件进行分页查询!");
         }
-        //获取查询列
+        // 获取查询列
         List<SelectItem> selectItems = getSelectItems((PlainSelect) selectBody);
-        //对一层的SQL增加ROW_NUMBER()
+        // 对一层的SQL增加ROW_NUMBER()
         List<SelectItem> autoItems = new ArrayList<>();
         SelectItem orderByColumn = addRowNumber((PlainSelect) selectBody, autoItems);
-        //加入自动生成列
+        // 加入自动生成列
         ((PlainSelect) selectBody).addSelectItems(autoItems.toArray(new SelectItem[autoItems.size()]));
-        //处理子语句中的order by
+        // 处理子语句中的order by
         processSelectBody(selectBody, 0);
 
-        //中层子查询
+        // 中层子查询
         PlainSelect innerSelectBody = new PlainSelect();
-        //PAGE_ROW_NUMBER
+        // PAGE_ROW_NUMBER
         innerSelectBody.addSelectItems(orderByColumn);
         innerSelectBody.addSelectItems(selectItems.toArray(new SelectItem[selectItems.size()]));
         //将原始查询作为内层子查询
@@ -161,29 +181,30 @@ public class SqlServerParser {
         fromInnerItem.setAlias(PAGE_TABLE_ALIAS);
         innerSelectBody.setFromItem(fromInnerItem);
 
-        //新建一个select
+        // 新建一个select
         Select newSelect = new Select();
         PlainSelect newSelectBody = new PlainSelect();
-        //设置top
+        // 设置top
         Top top = new Top();
         top.setExpression(new LongValue(Long.MAX_VALUE));
         newSelectBody.setTop(top);
-        //设置order by
+        // 设置order by
         List<OrderByElement> orderByElements = new ArrayList<>();
         OrderByElement orderByElement = new OrderByElement();
         orderByElement.setExpression(PAGE_ROW_NUMBER_COLUMN);
         orderByElements.add(orderByElement);
         newSelectBody.setOrderByElements(orderByElements);
-        //设置where
+        // 设置where
         GreaterThan greaterThan = new GreaterThan();
         greaterThan.setLeftExpression(PAGE_ROW_NUMBER_COLUMN);
         greaterThan.setRightExpression(new LongValue(Long.MIN_VALUE));
         newSelectBody.setWhere(greaterThan);
-        //设置selectItems
+        // 设置selectItems
         newSelectBody.setSelectItems(selectItems);
-        //设置fromIterm
+        // 设置fromIterm
         SubSelect fromItem = new SubSelect();
-        fromItem.setSelectBody(innerSelectBody); //中层子查询
+        // 中层子查询
+        fromItem.setSelectBody(innerSelectBody);
         fromItem.setAlias(PAGE_TABLE_ALIAS);
         newSelectBody.setFromItem(fromItem);
 
@@ -201,7 +222,7 @@ public class SqlServerParser {
      * @return the selectBody
      */
     protected SelectBody wrapSetOperationList(SetOperationList setOperationList) {
-        //获取最后一个plainSelect
+        // 获取最后一个plainSelect
         SelectBody setSelectBody = setOperationList.getSelects().get(setOperationList.getSelects().size() - 1);
         if (!(setSelectBody instanceof PlainSelect)) {
             throw new PageException("目前无法处理该SQL,您可以将该SQL发送给abel533@gmail.com协助作者解决!");
@@ -211,12 +232,12 @@ public class SqlServerParser {
         List<SelectItem> selectItems = getSelectItems(plainSelect);
         selectBody.setSelectItems(selectItems);
 
-        //设置fromIterm
+        // 设置fromIterm
         SubSelect fromItem = new SubSelect();
         fromItem.setSelectBody(setOperationList);
         fromItem.setAlias(new Alias(WRAP_TABLE));
         selectBody.setFromItem(fromItem);
-        //order by
+        // order by
         if (isNotEmptyList(plainSelect.getOrderByElements())) {
             selectBody.setOrderByElements(plainSelect.getOrderByElements());
             plainSelect.setOrderByElements(null);
@@ -231,14 +252,14 @@ public class SqlServerParser {
      * @return 结果
      */
     protected List<SelectItem> getSelectItems(PlainSelect plainSelect) {
-        //设置selectItems
+        // 设置selectItems
         List<SelectItem> selectItems = new ArrayList<>();
         for (SelectItem selectItem : plainSelect.getSelectItems()) {
-            //别名需要特殊处理
+            // 别名需要特殊处理
             if (selectItem instanceof SelectExpressionItem) {
                 SelectExpressionItem selectExpressionItem = (SelectExpressionItem) selectItem;
                 if (selectExpressionItem.getAlias() != null) {
-                    //直接使用别名
+                    // 直接使用别名
                     Column column = new Column(selectExpressionItem.getAlias().getName());
                     SelectExpressionItem expressionItem = new SelectExpressionItem(column);
                     selectItems.add(expressionItem);
@@ -282,13 +303,13 @@ public class SqlServerParser {
      * @return ROW_NUMBER() 列
      */
     protected SelectItem addRowNumber(PlainSelect plainSelect, List<SelectItem> autoItems) {
-        //增加ROW_NUMBER()
+        // 增加ROW_NUMBER()
         StringBuilder orderByBuilder = new StringBuilder();
         orderByBuilder.append("ROW_NUMBER() OVER (");
         if (isNotEmptyList(plainSelect.getOrderByElements())) {
             orderByBuilder.append(PlainSelect.orderByToString(
                     getOrderByElements(plainSelect, autoItems)).substring(1));
-            //清空排序列表
+            // 清空排序列表
             plainSelect.setOrderByElements(null);
         } else {
             orderByBuilder.append("ORDER BY RAND()");
@@ -385,7 +406,6 @@ public class SqlServerParser {
                 }
             }
         }
-        //Table时不用处理
     }
 
     public boolean isNotEmptyList(List<?> list) {

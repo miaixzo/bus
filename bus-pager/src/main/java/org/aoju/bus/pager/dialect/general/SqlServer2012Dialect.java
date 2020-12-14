@@ -45,10 +45,10 @@ public class SqlServer2012Dialect extends SqlServerDialect {
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
-        //处理pageKey
+        // 处理pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
-        //处理参数配置
+        // 处理参数配置
         handleParameter(boundSql, ms);
         return paramMap;
     }

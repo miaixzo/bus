@@ -26,9 +26,10 @@
 package org.aoju.bus.pager.plugin;
 
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.pager.IPage;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageException;
+import org.aoju.bus.pager.Paging;
 import org.aoju.bus.pager.reflect.MetaObject;
 
 import java.lang.reflect.Method;
@@ -44,18 +45,18 @@ import java.util.Map;
  */
 public abstract class PageFromObject {
 
-    protected static Boolean hasRequest;
-    protected static Class<?> requestClass;
-    protected static Method getParameterMap;
+    protected static Boolean HAS_REQUEST;
+    protected static Class<?> REQUEST_CLASS;
+    protected static Method GET_PARAMETER_MAP;
     protected static Map<String, String> PARAMS = new HashMap<>(6, 1);
 
     static {
         try {
-            requestClass = Class.forName("javax.servlet.ServletRequest");
-            getParameterMap = requestClass.getMethod("getParameterMap", new Class[]{});
-            hasRequest = true;
+            REQUEST_CLASS = Class.forName("javax.servlet.ServletRequest");
+            GET_PARAMETER_MAP = REQUEST_CLASS.getMethod("getParameterMap");
+            HAS_REQUEST = true;
         } catch (Throwable e) {
-            hasRequest = false;
+            HAS_REQUEST = false;
         }
         PARAMS.put("pageNo", "pageNo");
         PARAMS.put("pageSize", "pageSize");
@@ -77,8 +78,8 @@ public abstract class PageFromObject {
         if (params == null) {
             throw new PageException("无法获取分页查询参数!");
         }
-        if (params instanceof IPage) {
-            IPage pageParams = (IPage) params;
+        if (params instanceof Paging) {
+            Paging pageParams = (Paging) params;
             Page page = null;
             if (pageParams.getPageNo() != null && pageParams.getPageSize() != null) {
                 page = new Page(pageParams.getPageNo(), pageParams.getPageSize());
@@ -97,11 +98,12 @@ public abstract class PageFromObject {
         int pageNo;
         int pageSize;
         org.apache.ibatis.reflection.MetaObject paramsObject = null;
-        if (hasRequest && requestClass.isAssignableFrom(params.getClass())) {
+        if (HAS_REQUEST && REQUEST_CLASS.isAssignableFrom(params.getClass())) {
             try {
-                paramsObject = MetaObject.forObject(getParameterMap.invoke(params, new Object[]{}));
+                paramsObject = MetaObject.forObject(GET_PARAMETER_MAP.invoke(params));
             } catch (Exception e) {
-                //忽略
+                // 忽略
+                Logger.warn(e.getMessage());
             }
         } else {
             paramsObject = MetaObject.forObject(params);
@@ -132,21 +134,21 @@ public abstract class PageFromObject {
             throw new PageException("分页参数不是合法的数字类型!", e);
         }
         Page page = new Page(pageNo, pageSize);
-        //count查询
+        // count查询
         Object _count = getParamValue(paramsObject, "count", false);
         if (_count != null) {
             page.setCount(Boolean.valueOf(String.valueOf(_count)));
         }
-        //排序
+        // 排序
         if (hasOrderBy) {
             page.setOrderBy(orderBy.toString());
         }
-        //分页合理化
+        // 分页合理化
         Object reasonable = getParamValue(paramsObject, "reasonable", false);
         if (reasonable != null) {
             page.setReasonable(Boolean.valueOf(String.valueOf(reasonable)));
         }
-        //查询全部
+        // 查询全部
         Object pageSizeZero = getParamValue(paramsObject, "pageSizeZero", false);
         if (pageSizeZero != null) {
             page.setPageSizeZero(Boolean.valueOf(String.valueOf(pageSizeZero)));

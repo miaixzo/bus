@@ -39,48 +39,76 @@ import java.util.List;
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class Pages<T> extends PageSerializable<T> {
+public class Paginating<T> extends Serialize<T> {
 
-    //当前页
+    /**
+     * 当前页
+     */
     private int pageNo;
-    //每页的数量
+    /**
+     * 每页的数量
+     */
     private int pageSize;
-    //当前页的数量
+    /**
+     * 当前页的数量
+     */
     private int size;
-
-    //由于startRow和endRow不常用,这里说个具体的用法
-    //可以在页面中"显示startRow到endRow 共size条数据"
-
-    //当前页面第一个元素在数据库中的行号
+    /**
+     * 由于startRow和endRow不常用,这里说个具体的用法
+     * 可以在页面中"显示startRow到endRow 共size条数据"
+     * 当前页面第一个元素在数据库中的行号
+     */
     private int startRow;
-    //当前页面最后一个元素在数据库中的行号
+    /**
+     * 当前页面最后一个元素在数据库中的行号
+     */
     private int endRow;
-    //总页数
+    /**
+     * 总页数
+     */
     private int pages;
-
-    //前一页
+    /**
+     * 前一页
+     */
     private int prePage;
-    //下一页
+    /**
+     * 下一页
+     */
     private int nextPage;
-
-    //是否为第一页
+    /**
+     * 是否为第一页
+     */
     private boolean isFirstPage = false;
-    //是否为最后一页
+    /**
+     * 是否为最后一页
+     */
     private boolean isLastPage = false;
-    //是否有前一页
+    /**
+     * 是否有前一页
+     */
     private boolean hasPreviousPage = false;
-    //是否有下一页
+    /**
+     * 是否有下一页
+     */
     private boolean hasNextPage = false;
-    //导航页码数
+    /**
+     * 导航页码数
+     */
     private int navigatePages;
-    //所有导航页号
+    /**
+     * 所有导航页号
+     */
     private int[] navigatePageNo;
-    //导航条上的第一页
+    /**
+     * 导航条上的第一页
+     */
     private int navigateFirstPage;
-    //导航条上的最后一页
+    /**
+     * 导航条上的最后一页
+     */
     private int navigateLastPage;
 
-    public Pages() {
+    public Paginating() {
     }
 
     /**
@@ -88,7 +116,7 @@ public class Pages<T> extends PageSerializable<T> {
      *
      * @param list 对象
      */
-    public Pages(List<T> list) {
+    public Paginating(List<T> list) {
         this(list, 8);
     }
 
@@ -98,7 +126,7 @@ public class Pages<T> extends PageSerializable<T> {
      * @param list          page结果
      * @param navigatePages 页码数量
      */
-    public Pages(List<T> list, int navigatePages) {
+    public Paginating(List<T> list, int navigatePages) {
         super(list);
         if (list instanceof Page) {
             Page page = (Page) list;
@@ -107,13 +135,13 @@ public class Pages<T> extends PageSerializable<T> {
 
             this.pages = page.getPages();
             this.size = page.size();
-            //由于结果是>startRow的,所以实际的需要+1
+            // 由于结果是>startRow的,所以实际的需要+1
             if (this.size == 0) {
                 this.startRow = 0;
                 this.endRow = 0;
             } else {
                 this.startRow = page.getStartRow() + 1;
-                //计算实际的endRow(最后一页的时候特殊)
+                // 计算实际的endRow(最后一页的时候特殊)
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {
@@ -127,52 +155,52 @@ public class Pages<T> extends PageSerializable<T> {
         }
         if (list instanceof Collection) {
             this.navigatePages = navigatePages;
-            //计算导航页
+            // 计算导航页
             calcNavigatePageNo();
-            //计算前后页,第一页,最后一页
+            // 计算前后页,第一页,最后一页
             calcPage();
-            //判断页面边界
+            // 判断页面边界
             judgePageBoudary();
         }
     }
 
-    public static <T> Pages<T> of(List<T> list) {
-        return new Pages<>(list);
+    public static <T> Paginating<T> of(List<T> list) {
+        return new Paginating<>(list);
     }
 
-    public static <T> Pages<T> of(List<T> list, int navigatePages) {
-        return new Pages<>(list, navigatePages);
+    public static <T> Paginating<T> of(List<T> list, int navigatePages) {
+        return new Paginating<>(list, navigatePages);
     }
 
     /**
      * 计算导航页
      */
     private void calcNavigatePageNo() {
-        //当总页数小于或等于导航页码数时
+        // 当总页数小于或等于导航页码数时
         if (pages <= navigatePages) {
             navigatePageNo = new int[pages];
             for (int i = 0; i < pages; i++) {
                 navigatePageNo[i] = i + 1;
             }
-        } else { //当总页数大于导航页码数时
+        } else { // 当总页数大于导航页码数时
             navigatePageNo = new int[navigatePages];
             int startNum = pageNo - navigatePages / 2;
             int endNum = pageNo + navigatePages / 2;
 
             if (startNum < 1) {
                 startNum = 1;
-                //(最前navigatePages页
+                // 最前navigatePages页
                 for (int i = 0; i < navigatePages; i++) {
                     navigatePageNo[i] = startNum++;
                 }
             } else if (endNum > pages) {
                 endNum = pages;
-                //最后navigatePages页
+                // 最后navigatePages页
                 for (int i = navigatePages - 1; i >= 0; i--) {
                     navigatePageNo[i] = endNum--;
                 }
             } else {
-                //所有中间页
+                // 所有中间页
                 for (int i = 0; i < navigatePages; i++) {
                     navigatePageNo[i] = startNum++;
                 }

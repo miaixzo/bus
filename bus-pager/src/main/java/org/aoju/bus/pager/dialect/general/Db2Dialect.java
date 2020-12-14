@@ -46,10 +46,10 @@ public class Db2Dialect extends AbstractSqlDialect {
     public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
         paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());
-        //处理pageKey
+        // 处理pageKey
         pageKey.update(page.getStartRow() + 1);
         pageKey.update(page.getEndRow());
-        //处理参数配置
+        // 处理参数配置
         handleParameter(boundSql, ms);
         return paramMap;
     }

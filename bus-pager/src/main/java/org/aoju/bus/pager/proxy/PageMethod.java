@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.pager.proxy;
 
-import org.aoju.bus.pager.ISelect;
 import org.aoju.bus.pager.Page;
+import org.aoju.bus.pager.Querying;
 import org.aoju.bus.pager.plugin.PageFromObject;
 
 import java.util.Properties;
@@ -75,7 +75,7 @@ public abstract class PageMethod {
      * @param select 查询对象
      * @return the long
      */
-    public static long count(ISelect select) {
+    public static long count(Querying select) {
         Page<?> page = startPage(1, -1, true);
         select.doSelect();
         return page.getTotal();
@@ -90,7 +90,7 @@ public abstract class PageMethod {
      */
     public static <E> Page<E> startPage(Object params) {
         Page<E> page = PageFromObject.getPageFromObject(params, true);
-        //当已经执行过orderBy的时候
+        // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
@@ -154,7 +154,7 @@ public abstract class PageMethod {
         Page<E> page = new Page<>(pageNo, pageSize, count);
         page.setReasonable(reasonable);
         page.setPageSizeZero(pageSizeZero);
-        //当已经执行过orderBy的时候
+        // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
@@ -186,7 +186,7 @@ public abstract class PageMethod {
      */
     public static <E> Page<E> offsetPage(int offset, int limit, boolean count) {
         Page<E> page = new Page<>(new int[]{offset, limit}, count);
-        //当已经执行过orderBy的时候
+        // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
@@ -218,7 +218,7 @@ public abstract class PageMethod {
      * @param properties 插件属性
      */
     protected static void setStaticProperties(Properties properties) {
-        //defaultCount,这是一个全局生效的参数,多数据源时也是统一的行为
+        // defaultCount,这是一个全局生效的参数,多数据源时也是统一的行为
         if (properties != null) {
             DEFAULT_COUNT = Boolean.valueOf(properties.getProperty("defaultCount", "true"));
         }
