@@ -217,7 +217,7 @@ public class BufferKit {
         }
         return null;
     }
-    
+
     /**
      * 将字节内容解码为新的字符
      *

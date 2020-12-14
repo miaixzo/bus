@@ -35,29 +35,29 @@
 ### 创建/输出 ini
 
 ```java
-    Builder b = new Builder()
+    Builder b=new Builder()
         .plusComment("this is a test ini")
         .skipLine(2)
-        .plusSection("sec1", "this is a section")
-        .plusProperty("key1", "value")
-        .plusProperty("key2", "value")
-        .plusProperty("key3", "value")
-        .plusProperty("key4", "value")
-        .plusProperty("key5", "value")
-        .plusProperty("key6", "value")
+        .plusSection("sec1","this is a section")
+        .plusProperty("key1","value")
+        .plusProperty("key2","value")
+        .plusProperty("key3","value")
+        .plusProperty("key4","value")
+        .plusProperty("key5","value")
+        .plusProperty("key6","value")
         .plusSection("sec2")
-        .plusProperty("key1", "value")
-        .plusProperty("key2", "value")
-        .plusProperty("key3", "value")
-        .plusProperty("key4", "value")
-        .plusProperty("key5", "value")
-        .plusProperty("key6", "value");
- 
-    final Builder ini = b.build();
- 
-    System.out.println(ini);
+        .plusProperty("key1","value")
+        .plusProperty("key2","value")
+        .plusProperty("key3","value")
+        .plusProperty("key4","value")
+        .plusProperty("key5","value")
+        .plusProperty("key6","value");
 
-    ini.write(Paths.get("F:\\test.ini"), true);
+final Builder ini=b.build();
+
+        System.out.println(ini);
+
+        ini.write(Paths.get("F:\\test.ini"),true);
 ```
 
 ## 特性

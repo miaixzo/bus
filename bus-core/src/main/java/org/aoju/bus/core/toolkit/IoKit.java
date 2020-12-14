@@ -264,6 +264,50 @@ public class IoKit {
     }
 
     /**
+     * 拷贝文件Channel，使用NIO，拷贝后不会关闭channel
+     *
+     * @param inChannel  {@link FileChannel}
+     * @param outChannel {@link FileChannel}
+     * @return 拷贝的字节数
+     * @throws InstrumentException IO异常
+     */
+    public static long copy(FileChannel inChannel, FileChannel outChannel) throws InstrumentException {
+        Assert.notNull(inChannel, "In channel is null!");
+        Assert.notNull(outChannel, "Out channel is null!");
+
+        try {
+            return inChannel.transferTo(0, inChannel.size(), outChannel);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 拷贝流，使用NIO，不会关闭channel
+     *
+     * @param in  {@link ReadableByteChannel}
+     * @param out {@link WritableByteChannel}
+     * @return 拷贝的字节数
+     * @throws InstrumentException IO异常
+     */
+    public static long copy(ReadableByteChannel in, WritableByteChannel out) throws InstrumentException {
+        return copy(in, out, DEFAULT_BUFFER_SIZE);
+    }
+
+    /**
+     * 拷贝流，使用NIO，不会关闭channel
+     *
+     * @param in         {@link ReadableByteChannel}
+     * @param out        {@link WritableByteChannel}
+     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
+     * @return 拷贝的字节数
+     * @throws InstrumentException IO异常
+     */
+    public static long copy(ReadableByteChannel in, WritableByteChannel out, int bufferSize) throws InstrumentException {
+        return copy(in, out, bufferSize, null);
+    }
+
+    /**
      * 拷贝流 thanks to: https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java
      * 本方法不会关闭流
      *
@@ -542,6 +586,32 @@ public class IoKit {
             throw new InstrumentException(e);
         }
         return StringKit.toString(buffer, charset);
+    }
+
+    /**
+     * 从流中读取内容，读取完毕后并不关闭流
+     *
+     * @param channel 可读通道，读取完毕后并不关闭通道
+     * @param charset 字符集
+     * @return 内容
+     * @throws InstrumentException IO异常
+     */
+    public static String read(ReadableByteChannel channel, java.nio.charset.Charset charset) throws InstrumentException {
+        ByteArrayOutputStream out = read(channel);
+        return null == charset ? out.toString() : out.toString(charset);
+    }
+
+    /**
+     * 从流中读取内容，读到输出流中
+     *
+     * @param channel 可读通道，读取完毕后并不关闭通道
+     * @return 输出流
+     * @throws InstrumentException IO异常
+     */
+    public static ByteArrayOutputStream read(ReadableByteChannel channel) throws InstrumentException {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        copy(channel, Channels.newChannel(out));
+        return out;
     }
 
     /**

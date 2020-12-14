@@ -22,78 +22,78 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
 ```java
  public class AioServer {
 
-  public static void main(String[] args) {
-    AioQuickServer<String> server = new AioQuickServer<String>(8080, new DemoProtocol(), new DemoService() {
-      public void process(AioSession<String> session, String msg) {
-        System.out.println("接受到客户端消息:" + msg);
+    public static void main(String[] args) {
+        AioQuickServer<String> server = new AioQuickServer<String>(8080, new DemoProtocol(), new DemoService() {
+            public void process(AioSession<String> session, String msg) {
+                System.out.println("接受到客户端消息:" + msg);
 
-        byte[] response = "Hi Client!".getBytes();
-        byte[] head = {(byte) response.length};
-        try {
-          session.writeBuffer().write(head);
-          session.writeBuffer().write(response);
-        } catch (IOException e) {
-          e.printStackTrace();
+                byte[] response = "Hi Client!".getBytes();
+                byte[] head = {(byte) response.length};
+                try {
+                    session.writeBuffer().write(head);
+                    session.writeBuffer().write(response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void stateEvent(AioSession<String> session, SocketStatus SocketStatus, Throwable throwable) {
+            }
+        });
+        server.start();
+    }
+
+    class DemoProtocol implements Protocol<byte[]> {
+
+        public byte[] decode(ByteBuffer readBuffer, AioSession<byte[]> session) {
+            if (readBuffer.remaining() > 0) {
+                byte[] data = new byte[readBuffer.remaining()];
+                readBuffer.get(data);
+                return data;
+            }
+            return null;
         }
-      }
 
-      public void stateEvent(AioSession<String> session, SocketStatus SocketStatus, Throwable throwable) {
-      }
-    });
-    server.start();
-  }
-
-  class DemoProtocol implements Protocol<byte[]> {
-
-    public byte[] decode(ByteBuffer readBuffer, AioSession<byte[]> session) {
-      if (readBuffer.remaining() > 0) {
-        byte[] data = new byte[readBuffer.remaining()];
-        readBuffer.get(data);
-        return data;
-      }
-      return null;
-    }
-
-    public ByteBuffer encode(byte[] msg, AioSession<byte[]> session) {
-      ByteBuffer buffer = ByteBuffer.allocate(msg.length);
-      buffer.put(msg);
-      buffer.flip();
-      return buffer;
-    }
-  }
-
-
-  class DemoService implements MessageProcessor<byte[]>, Runnable {
-    private HashMap<String, AioSession<byte[]>> clients = new HashMap<String, AioSession<byte[]>>();
-    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(12);
-
-    public DemoService() {
-      executorService.scheduleAtFixedRate(this, 2, 2, TimeUnit.SECONDS);
-    }
-
-    public void run() {
-      if (this.clients.isEmpty()) return;
-      for (AioSession<byte[]> session : this.clients.values()) {
-        try {
-          session.write("Hey! bus-socket it's work...".getBytes());
-        } catch (IOException e) {
-          e.printStackTrace();
+        public ByteBuffer encode(byte[] msg, AioSession<byte[]> session) {
+            ByteBuffer buffer = ByteBuffer.allocate(msg.length);
+            buffer.put(msg);
+            buffer.flip();
+            return buffer;
         }
-      }
     }
 
-    public void process(AioSession<byte[]> session, byte[] msg) {
-      JSONObject jsonObject = JSON.parseObject(msg, JSONObject.class);
-      System.out.println(jsonObject.getString("content"));
+
+    class DemoService implements MessageProcessor<byte[]>, Runnable {
+        private HashMap<String, AioSession<byte[]>> clients = new HashMap<String, AioSession<byte[]>>();
+        private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(12);
+
+        public DemoService() {
+            executorService.scheduleAtFixedRate(this, 2, 2, TimeUnit.SECONDS);
+        }
+
+        public void run() {
+            if (this.clients.isEmpty()) return;
+            for (AioSession<byte[]> session : this.clients.values()) {
+                try {
+                    session.write("Hey! bus-socket it's work...".getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void process(AioSession<byte[]> session, byte[] msg) {
+            JSONObject jsonObject = JSON.parseObject(msg, JSONObject.class);
+            System.out.println(jsonObject.getString("content"));
             try {
                 session.write("{\"result\": \"OK\"}".getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-    }
+        }
 
-    public void stateEvent(AioSession<byte[]> session, SocketStatus SocketStatus, Throwable throwable) {
-      switch (SocketStatus) {
+        public void stateEvent(AioSession<byte[]> session, SocketStatus SocketStatus, Throwable throwable) {
+            switch (SocketStatus) {
                 case NEW_SESSION:
                     System.out.println("SocketStatus.NEW_SESSION");
                     break;
@@ -113,22 +113,22 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
                     System.out.println("SocketStatus.OUTPUT_EXCEPTION");
                     break;
                 case SESSION_CLOSING:
-                  System.out.println("SocketStatus.SESSION_CLOSING");
-                  break;
-        case SESSION_CLOSED:
-          System.out.println("SocketStatus.SESSION_CLOSED");
-          break;
-        case FLOW_LIMIT:
-          System.out.println("SocketStatus.FLOW_LIMIT");
-          break;
-        case RELEASE_FLOW_LIMIT:
-          System.out.println("SocketStatus.RELEASE_FLOW_LIMIT");
-          break;
-        default:
-          System.out.println("SocketStatus.default");
-      }
+                    System.out.println("SocketStatus.SESSION_CLOSING");
+                    break;
+                case SESSION_CLOSED:
+                    System.out.println("SocketStatus.SESSION_CLOSED");
+                    break;
+                case FLOW_LIMIT:
+                    System.out.println("SocketStatus.FLOW_LIMIT");
+                    break;
+                case RELEASE_FLOW_LIMIT:
+                    System.out.println("SocketStatus.RELEASE_FLOW_LIMIT");
+                    break;
+                default:
+                    System.out.println("SocketStatus.default");
+            }
+        }
     }
-  }
 
 }
  ```
@@ -136,51 +136,51 @@ MessageProcessor，消息处理器，对Protocol解析出来的消息进行业�
 ```java
 public class AioClient {
 
-  public static void main(String[] args) throws Exception {
-    AioQuickClient<String> aioQuickClient = new AioQuickClient<>("localhost", 8888, new ClientProtocol(), new ClientProcessor());
-    AioSession session = aioQuickClient.start();
-    session.writeBuffer().writeInt(1);
-    aioQuickClient.shutdownNow();
-  }
-
-  static class ClientProcessor implements MessageProcessor<String> {
-
-    @Override
-    public void process(AioSession session, String msg) {
-      System.out.println("Receive data from server：" + msg);
+    public static void main(String[] args) throws Exception {
+        AioQuickClient<String> aioQuickClient = new AioQuickClient<>("localhost", 8888, new ClientProtocol(), new ClientProcessor());
+        AioSession session = aioQuickClient.start();
+        session.writeBuffer().writeInt(1);
+        aioQuickClient.shutdownNow();
     }
 
-    @Override
-    public void stateEvent(AioSession session, StateMachineEnum stateMachineEnum, Throwable throwable) {
-      System.out.println("State:" + stateMachineEnum);
-      if (stateMachineEnum == StateMachineEnum.OUTPUT_EXCEPTION) {
-        throwable.printStackTrace();
-      }
-    }
-  }
+    static class ClientProcessor implements MessageProcessor<String> {
 
-  static class ClientProtocol implements Protocol<String> {
+        @Override
+        public void process(AioSession session, String msg) {
+            System.out.println("Receive data from server：" + msg);
+        }
 
-    @Override
-    public String decode(ByteBuffer data, AioSession session) {
-      int remaining = data.remaining();
-      if (remaining < 4) {
-        return null;
-      }
-      data.mark();
-      int length = data.getInt();
-      if (length > data.remaining()) {
-        data.reset();
-        System.out.println("reset");
-        return null;
-      }
-      byte[] b = new byte[length];
-      data.get(b);
-      data.mark();
-      return new String(b);
+        @Override
+        public void stateEvent(AioSession session, StateMachineEnum stateMachineEnum, Throwable throwable) {
+            System.out.println("State:" + stateMachineEnum);
+            if (stateMachineEnum == StateMachineEnum.OUTPUT_EXCEPTION) {
+                throwable.printStackTrace();
+            }
+        }
     }
 
-  }
+    static class ClientProtocol implements Protocol<String> {
+
+        @Override
+        public String decode(ByteBuffer data, AioSession session) {
+            int remaining = data.remaining();
+            if (remaining < 4) {
+                return null;
+            }
+            data.mark();
+            int length = data.getInt();
+            if (length > data.remaining()) {
+                data.reset();
+                System.out.println("reset");
+                return null;
+            }
+            byte[] b = new byte[length];
+            data.get(b);
+            data.mark();
+            return new String(b);
+        }
+
+    }
 
 }
 ```

@@ -3897,6 +3897,18 @@ public class FileKit {
     }
 
     /**
+     * 判断文件或目录是否存在
+     *
+     * @param path          文件
+     * @param isFollowLinks 是否跟踪软链（快捷方式）
+     * @return 是否存在
+     */
+    public static boolean isEexist(Path path, boolean isFollowLinks) {
+        final LinkOption[] options = isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+        return Files.exists(path, options);
+    }
+
+    /**
      * 根据压缩包中的路径构建目录结构，在Win下直接构建，在Linux下拆分路径单独构建
      *
      * @param outFile  最外部路径

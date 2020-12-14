@@ -52,26 +52,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class PageAutoDialect {
 
     private static final Map<String, Class<? extends Dialect>> DIALECT_ALIAS_MAP = new HashMap<>();
-    /**
-     * 缓存
-     */
-    private final Map<String, AbstractSqlDialect> urlDialectMap = new ConcurrentHashMap<>();
-    private final ThreadLocal<AbstractSqlDialect> dialectThreadLocal = new ThreadLocal<>();
-    //
-    private final ReentrantLock lock = new ReentrantLock();
-    /**
-     * 自动获取dialect,如果没有setProperties或setSqlUtilConfig,也可以正常进行
-     */
-    private boolean autoDialect = true;
-    /**
-     * 多数据源时,获取jdbcurl后是否关闭数据源
-     */
-    private boolean closeConn = true;
-    /**
-     * 属性配置
-     */
-    private Properties properties;
-    private AbstractSqlDialect delegate;
 
     static {
         registerDialectAlias("db2", Db2Dialect.class);
@@ -103,6 +83,27 @@ public class PageAutoDialect {
         registerDialectAlias("sqlserver2012", SqlServer2012Dialect.class);
         registerDialectAlias("derby", SqlServer2012Dialect.class);
     }
+
+    /**
+     * 缓存
+     */
+    private final Map<String, AbstractSqlDialect> urlDialectMap = new ConcurrentHashMap<>();
+    private final ThreadLocal<AbstractSqlDialect> dialectThreadLocal = new ThreadLocal<>();
+    //
+    private final ReentrantLock lock = new ReentrantLock();
+    /**
+     * 自动获取dialect,如果没有setProperties或setSqlUtilConfig,也可以正常进行
+     */
+    private boolean autoDialect = true;
+    /**
+     * 多数据源时,获取jdbcurl后是否关闭数据源
+     */
+    private boolean closeConn = true;
+    /**
+     * 属性配置
+     */
+    private Properties properties;
+    private AbstractSqlDialect delegate;
 
     public static void registerDialectAlias(String alias, Class<? extends Dialect> dialectClass) {
         DIALECT_ALIAS_MAP.put(alias, dialectClass);
