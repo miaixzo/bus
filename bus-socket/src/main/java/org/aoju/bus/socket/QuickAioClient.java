@@ -141,7 +141,7 @@ public class QuickAioClient<T> {
                 throw new RuntimeException("NetMonitor refuse channel");
             }
             // 连接成功则构造AIOSession对象
-            session = new TcpAioSession<>(connectedChannel, config, new CompletionReadHandler<>(), new CompletionWriteHandler<>(), bufferPool.allocateBufferPage());
+            session = new TcpAioSession<>(connectedChannel, config, new CompletionReadHandler<>(), new CompletionWriteHandler<>(), bufferPool.allocatePageBuffer());
             session.initSession();
             return session;
         } catch (Exception e) {
@@ -254,7 +254,7 @@ public class QuickAioClient<T> {
      * @param bufferPool 内存池对象
      * @return 当前客户端实例
      */
-    public final QuickAioClient<T> setBufferPagePool(ByteBuffer bufferPool) {
+    public final QuickAioClient<T> setPageBufferPool(ByteBuffer bufferPool) {
         this.bufferPool = bufferPool;
         this.config.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
         return this;

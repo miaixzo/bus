@@ -62,7 +62,7 @@ public class UdpBootstrap<R> {
     /**
      * 缓存页
      */
-    private final PageBuffer bufferPage = new org.aoju.bus.core.io.ByteBuffer(1024, 1, -1, true).allocateBufferPage();
+    private final PageBuffer pageBuffer = new org.aoju.bus.core.io.ByteBuffer(1024, 1, -1, true).allocatePageBuffer();
     /**
      * 服务配置
      */
@@ -141,7 +141,7 @@ public class UdpBootstrap<R> {
             selector.wakeup();
         }
         SelectionKey selectionKey = channel.register(selector, SelectionKey.OP_READ);
-        UdpChannel<R> udpChannel = new UdpChannel<>(channel, selectionKey, config, bufferPage);
+        UdpChannel<R> udpChannel = new UdpChannel<>(channel, selectionKey, config, pageBuffer);
         selectionKey.attach(udpChannel);
 
         //启动线程服务
@@ -171,7 +171,7 @@ public class UdpBootstrap<R> {
         // 启动Boss线程组
         new Thread(() -> {
             // 读缓冲区
-            VirtualBuffer readBuffer = bufferPage.allocate(config.getReadBufferSize());
+            VirtualBuffer readBuffer = pageBuffer.allocate(config.getReadBufferSize());
             try {
                 while (true) {
                     Set<SelectionKey> selectionKeys = selector.selectedKeys();
