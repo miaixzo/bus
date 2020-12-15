@@ -124,7 +124,7 @@ public class SslService {
         }
     }
 
-    HandshakeModel createSSLEngine(AsynchronousSocketChannel socketChannel, PageBuffer bufferPage) {
+    HandshakeModel createSSLEngine(AsynchronousSocketChannel socketChannel, PageBuffer pageBuffer) {
         try {
             HandshakeModel handshakeModel = new HandshakeModel();
             SSLEngine sslEngine = sslContext.createSSLEngine();
@@ -145,11 +145,11 @@ public class SslService {
                 }
             }
             handshakeModel.setSslEngine(sslEngine);
-            handshakeModel.setAppWriteBuffer(bufferPage.allocate(session.getApplicationBufferSize()));
-            handshakeModel.setNetWriteBuffer(bufferPage.allocate(session.getPacketBufferSize()));
+            handshakeModel.setAppWriteBuffer(pageBuffer.allocate(session.getApplicationBufferSize()));
+            handshakeModel.setNetWriteBuffer(pageBuffer.allocate(session.getPacketBufferSize()));
             handshakeModel.getNetWriteBuffer().buffer().flip();
-            handshakeModel.setAppReadBuffer(bufferPage.allocate(session.getApplicationBufferSize()));
-            handshakeModel.setNetReadBuffer(bufferPage.allocate(session.getPacketBufferSize()));
+            handshakeModel.setAppReadBuffer(pageBuffer.allocate(session.getApplicationBufferSize()));
+            handshakeModel.setNetReadBuffer(pageBuffer.allocate(session.getPacketBufferSize()));
             sslEngine.beginHandshake();
 
             handshakeModel.setSocketChannel(socketChannel);

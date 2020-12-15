@@ -109,15 +109,15 @@ public class TcpAioSession<T> extends AioSession {
      * @param config                 配置项
      * @param completionReadHandler  读回调
      * @param completionWriteHandler 写回调
-     * @param bufferPage             绑定内存页
+     * @param pageBuffer             绑定内存页
      */
-    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig<T> config, CompletionReadHandler<T> completionReadHandler, CompletionWriteHandler<T> completionWriteHandler, PageBuffer bufferPage) {
+    TcpAioSession(AsynchronousSocketChannel channel, final ServerConfig<T> config, CompletionReadHandler<T> completionReadHandler, CompletionWriteHandler<T> completionWriteHandler, PageBuffer pageBuffer) {
         this.channel = channel;
         this.completionReadHandler = completionReadHandler;
         this.completionWriteHandler = completionWriteHandler;
         this.serverConfig = config;
 
-        this.readBuffer = bufferPage.allocate(config.getReadBufferSize());
+        this.readBuffer = pageBuffer.allocate(config.getReadBufferSize());
 
         Function<WriteBuffer, Void> flushFunction = var -> {
             if (!semaphore.tryAcquire()) {
@@ -131,7 +131,7 @@ public class TcpAioSession<T> extends AioSession {
             }
             return null;
         };
-        byteBuf = new WriteBuffer(bufferPage, flushFunction, serverConfig.getWriteBufferSize(), serverConfig.getWriteBufferCapacity());
+        byteBuf = new WriteBuffer(pageBuffer, flushFunction, serverConfig.getWriteBufferSize(), serverConfig.getWriteBufferCapacity());
         //触发状态机
         config.getProcessor().stateEvent(this, SocketStatus.NEW_SESSION, null);
     }

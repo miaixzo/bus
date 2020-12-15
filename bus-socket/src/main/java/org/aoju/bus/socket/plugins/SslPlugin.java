@@ -80,7 +80,7 @@ public class SslPlugin<T> extends AbstractPlugin<T> {
 
     @Override
     public final AsynchronousSocketChannel shouldAccept(AsynchronousSocketChannel channel) {
-        return new SslSocketChannel(channel, sslService, bufferPool.allocateBufferPage());
+        return new SslSocketChannel(channel, sslService, bufferPool.allocatePageBuffer());
     }
 
 }

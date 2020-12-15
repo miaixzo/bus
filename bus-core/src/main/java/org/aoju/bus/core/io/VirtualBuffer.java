@@ -39,7 +39,7 @@ public final class VirtualBuffer {
     /**
      * 当前虚拟buffer的归属内存页
      */
-    private final PageBuffer bufferPage;
+    private final PageBuffer pageBuffer;
     /**
      * 通过ByteBuffer.slice()隐射出来的虚拟ByteBuffer
      *
@@ -60,8 +60,8 @@ public final class VirtualBuffer {
      */
     private int parentLimit;
 
-    VirtualBuffer(PageBuffer bufferPage, ByteBuffer buffer, int parentPosition, int parentLimit) {
-        this.bufferPage = bufferPage;
+    VirtualBuffer(PageBuffer pageBuffer, ByteBuffer buffer, int parentPosition, int parentLimit) {
+        this.pageBuffer = pageBuffer;
         this.buffer = buffer;
         this.parentPosition = parentPosition;
         this.parentLimit = parentLimit;
@@ -110,8 +110,8 @@ public final class VirtualBuffer {
             throw new UnsupportedOperationException("buffer has cleaned");
         }
         clean = true;
-        if (bufferPage != null) {
-            bufferPage.clean(this);
+        if (pageBuffer != null) {
+            pageBuffer.clean(this);
         }
     }
 

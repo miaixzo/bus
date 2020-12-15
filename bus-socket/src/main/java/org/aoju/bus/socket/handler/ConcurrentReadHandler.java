@@ -49,7 +49,7 @@ public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
     private final ExecutorService executorService = new ThreadPoolExecutor(1, 1,
             60L, TimeUnit.SECONDS, taskQueue);
 
-    ConcurrentReadHandler(final Semaphore semaphore) {
+    public ConcurrentReadHandler(final Semaphore semaphore) {
         this.semaphore = semaphore;
     }
 

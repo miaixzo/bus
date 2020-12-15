@@ -123,7 +123,7 @@ public class QuickAioServer<T> {
      * @throws IOException IO异常
      */
     public void start() throws IOException {
-        start0(channel -> new TcpAioSession<>(channel, config, aioCompletionReadHandler, aioCompletionWriteHandler, bufferPool.allocateBufferPage()));
+        start0(channel -> new TcpAioSession<>(channel, config, aioCompletionReadHandler, aioCompletionWriteHandler, bufferPool.allocatePageBuffer()));
     }
 
     /**
@@ -345,7 +345,7 @@ public class QuickAioServer<T> {
      * @param bufferPool 内存池对象
      * @return 当前AioQuickServer对象
      */
-    public final QuickAioServer<T> setBufferPagePool(ByteBuffer bufferPool) {
+    public final QuickAioServer<T> setPageBufferPool(ByteBuffer bufferPool) {
         this.bufferPool = bufferPool;
         this.config.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
         return this;
