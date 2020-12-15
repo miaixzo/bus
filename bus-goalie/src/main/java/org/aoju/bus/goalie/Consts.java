@@ -29,7 +29,8 @@ package org.aoju.bus.goalie;
  * 常量
  *
  * @author Justubborn
- * @since 2020/11/6
+ * @version 6.1.5
+ * @since JDK 1.8+
  */
 public interface Consts {
 

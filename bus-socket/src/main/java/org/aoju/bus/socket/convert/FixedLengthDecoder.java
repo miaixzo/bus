@@ -23,30 +23,55 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket.secure;
+package org.aoju.bus.socket.convert;
+
+import org.aoju.bus.socket.SocketDecoder;
+
+import java.nio.ByteBuffer;
 
 /**
- * 配置引擎请求客户端验证 此选项只对服务器模式的引擎有用
+ * 指定长度的解码器
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public enum ClientAuth {
+public class FixedLengthDecoder implements SocketDecoder {
 
-    /**
-     * 不需要客户端验证
-     */
-    NONE,
-    /**
-     * 请求的客户端验证
-     * 如果设置了此选项并且客户端选择不提供其自身的验证信息,则协商将会继续
-     */
-    OPTIONAL,
-    /**
-     * 必须的客户端验证
-     * 如果设置了此选项并且客户端选择不提供其自身的验证信息,则协商将会停止且引擎将开始它的关闭过程
-     */
-    REQUIRE
+    private final ByteBuffer buffer;
+    private boolean finishRead;
+
+    public FixedLengthDecoder(int frameLength) {
+        if (frameLength <= 0) {
+            throw new IllegalArgumentException("frameLength must be a positive integer: " + frameLength);
+        } else {
+            buffer = ByteBuffer.allocate(frameLength);
+        }
+    }
+
+    public boolean decode(ByteBuffer byteBuffer) {
+        if (finishRead) {
+            throw new RuntimeException("delimiter has finish read");
+        }
+        if (buffer.remaining() >= byteBuffer.remaining()) {
+            buffer.put(byteBuffer);
+        } else {
+            int limit = byteBuffer.limit();
+            byteBuffer.limit(byteBuffer.position() + buffer.remaining());
+            buffer.put(byteBuffer);
+            byteBuffer.limit(limit);
+        }
+
+        if (buffer.hasRemaining()) {
+            return false;
+        }
+        buffer.flip();
+        finishRead = true;
+        return true;
+    }
+
+    public ByteBuffer getBuffer() {
+        return buffer;
+    }
 
 }

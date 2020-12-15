@@ -34,7 +34,8 @@ import java.util.Objects;
  * api definition
  *
  * @author Justubborn
- * @since 2020/10/27
+ * @version 6.1.5
+ * @since JDK 1.8+
  */
 @Data
 public class Assets {

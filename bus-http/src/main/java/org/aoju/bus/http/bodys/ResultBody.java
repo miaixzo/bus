@@ -52,7 +52,7 @@ import java.net.URLDecoder;
  */
 public class ResultBody extends AbstractBody implements Body {
 
-    private Response response;
+    private final Response response;
     private boolean onIO = false;
     private OnBack<Process> onProcess;
     private long stepBytes = 0;
@@ -264,8 +264,10 @@ public class ResultBody extends AbstractBody implements Body {
     }
 
     private byte[] cacheBytes() {
-        if (data == null) {
-            data = bodyToBytes();
+        synchronized (response) {
+            if (data == null) {
+                data = bodyToBytes();
+            }
         }
         return data;
     }

@@ -36,7 +36,6 @@ import org.aoju.bus.pager.dialect.ReplaceSql;
  */
 public class SimpleWithNolockReplaceSql implements ReplaceSql {
 
-    //with(nolock)
     protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
 
     @Override

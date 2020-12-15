@@ -522,11 +522,9 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                 if (streamsToClose != null) {
                     listener.onClosed(this, receivedCloseCode, receivedCloseReason);
                 }
-
             } else {
                 throw new AssertionError();
             }
-
             return true;
         } finally {
             IoKit.close(streamsToClose);

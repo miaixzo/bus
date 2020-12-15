@@ -26,6 +26,7 @@
 package org.aoju.bus.socket;
 
 import org.aoju.bus.logger.Logger;
+import org.aoju.bus.socket.process.MessageProcessor;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,62 +23,20 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
-
-import java.util.concurrent.*;
+package org.aoju.bus.pager;
 
 /**
- * 读写事件回调处理类
+ * 分页查询接口
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
+public interface Querying {
 
     /**
-     * 读回调资源信号量
+     * 在接口中调用自己的查询方法,不要在该方法内写过多代码,只要一行查询方法最好
      */
-    private final Semaphore semaphore;
-
-    private final ThreadLocal<ConcurrentReadHandler<T>> threadLocal = new ThreadLocal<>();
-
-    private final LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
-    private final ExecutorService executorService = new ThreadPoolExecutor(1, 1,
-            60L, TimeUnit.SECONDS, taskQueue);
-
-    ConcurrentReadHandler(final Semaphore semaphore) {
-        this.semaphore = semaphore;
-    }
-
-    @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        if (threadLocal.get() != null) {
-            super.completed(result, aioSession);
-            return;
-        }
-        if (semaphore.tryAcquire()) {
-            threadLocal.set(this);
-            //处理当前读回调任务
-            super.completed(result, aioSession);
-            Runnable task;
-            while ((task = taskQueue.poll()) != null) {
-                task.run();
-            }
-            semaphore.release();
-            threadLocal.set(null);
-            return;
-        }
-        //线程资源不足,暂时积压任务
-        executorService.execute(() -> ConcurrentReadHandler.super.completed(result, aioSession));
-
-    }
-
-    /**
-     * 停止内部线程
-     */
-    public void shutdown() {
-        executorService.shutdown();
-    }
+    void doSelect();
 
 }

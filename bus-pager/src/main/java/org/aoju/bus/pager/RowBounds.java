@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,49 +23,38 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
-
-import org.aoju.bus.core.lang.exception.InstrumentException;
-
-import java.io.IOException;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.*;
+package org.aoju.bus.pager;
 
 /**
+ * 分页结果信息
+ *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class AsynchronousChannelProvider extends java.nio.channels.spi.AsynchronousChannelProvider {
+public class RowBounds extends org.apache.ibatis.session.RowBounds {
 
-    @Override
-    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(int nThreads, ThreadFactory threadFactory) throws IOException {
-        return new AsynchronousChannelGroup(this, new ThreadPoolExecutor(nThreads, nThreads,
-                0L, TimeUnit.MILLISECONDS,
-                new ArrayBlockingQueue<>(nThreads),
-                threadFactory), nThreads);
+    private Long total;
+    private Boolean count;
+
+    public RowBounds(int offset, int limit) {
+        super(offset, limit);
     }
 
-    @Override
-    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(ExecutorService executor, int initialSize) throws IOException {
-        return new AsynchronousChannelGroup(this, executor, initialSize);
+    public Long getTotal() {
+        return total;
     }
 
-    @Override
-    public java.nio.channels.AsynchronousServerSocketChannel openAsynchronousServerSocketChannel(java.nio.channels.AsynchronousChannelGroup group) throws IOException {
-        return new AsynchronousServerSocketChannel(checkAndGet(group));
+    public void setTotal(Long total) {
+        this.total = total;
     }
 
-    @Override
-    public java.nio.channels.AsynchronousSocketChannel openAsynchronousSocketChannel(java.nio.channels.AsynchronousChannelGroup group) throws IOException {
-        return new AsynchronousSocketChannel(checkAndGet(group), SocketChannel.open());
+    public Boolean getCount() {
+        return count;
     }
 
-    private AsynchronousChannelGroup checkAndGet(java.nio.channels.AsynchronousChannelGroup group) {
-        if (!(group instanceof AsynchronousChannelGroup)) {
-            throw new InstrumentException("invalid class");
-        }
-        return (AsynchronousChannelGroup) group;
+    public void setCount(Boolean count) {
+        this.count = count;
     }
 
 }

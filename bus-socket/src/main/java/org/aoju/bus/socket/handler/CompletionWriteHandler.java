@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,56 +23,49 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager;
+package org.aoju.bus.socket.handler;
 
-import java.io.Serializable;
-import java.util.List;
+import org.aoju.bus.socket.NetMonitor;
+import org.aoju.bus.socket.SocketStatus;
+import org.aoju.bus.socket.TcpAioSession;
+
+import java.nio.channels.CompletionHandler;
 
 /**
- * 分页信息
+ * 读写事件回调处理类
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class PageSerializable<T> implements Serializable {
+public class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
 
-    private static final long serialVersionUID = 1L;
-    //总记录数
-    protected long total;
-    //结果集
-    protected List<T> list;
-
-    public PageSerializable() {
-    }
-
-    public PageSerializable(List<T> list) {
-        this.list = list;
-        if (list instanceof Page) {
-            this.total = ((Page) list).getTotal();
-        } else {
-            this.total = list.size();
+    @Override
+    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
+        try {
+            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
+            if (monitor != null) {
+                monitor.afterWrite(aioSession, result);
+            }
+            aioSession.writeCompleted();
+        } catch (Exception e) {
+            failed(e, aioSession);
         }
     }
 
-    public static <T> PageSerializable<T> of(List<T> list) {
-        return new PageSerializable<>(list);
-    }
 
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public List<T> getList() {
-        return list;
-    }
-
-    public void setList(List<T> list) {
-        this.list = list;
+    @Override
+    public void failed(Throwable exc, TcpAioSession<T> aioSession) {
+        try {
+            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.OUTPUT_EXCEPTION, exc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            aioSession.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

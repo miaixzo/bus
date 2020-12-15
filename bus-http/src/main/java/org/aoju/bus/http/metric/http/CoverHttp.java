@@ -58,11 +58,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private static final String PATH_PARAM_REGEX = "[A-Za-z0-9_\\-/]*\\{[A-Za-z0-9_\\-]+\\}[A-Za-z0-9_\\-/]*";
 
-    protected Httpv httpClient;
-    protected boolean nothrow;
-    protected boolean nextOnIO = false;
-    protected boolean skipPreproc = false;
-    protected boolean skipSerialPreproc = false;
+    public Httpv httpv;
+    public boolean nothrow;
+    public boolean nextOnIO = false;
+    public boolean skipPreproc = false;
+    public boolean skipSerialPreproc = false;
     private String urlPath;
     private String tag;
     private Map<String, String> headers;
@@ -82,12 +82,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     private Cancelable canceler;
     private Charset charset;
 
-
-    public CoverHttp(Httpv httpClient, String url) {
+    public CoverHttp(Httpv httpv, String url) {
         this.urlPath = url;
-        this.httpClient = httpClient;
-        this.charset = httpClient.charset();
-        this.bodyType = httpClient.bodyType();
+        this.httpv = httpv;
+        this.charset = httpv.charset();
+        this.bodyType = httpv.bodyType();
     }
 
     /**
@@ -516,7 +515,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     protected void registeTagTask(Cancelable canceler) {
         if (tag != null && tagTask == null) {
-            tagTask = httpClient.addTagTask(tag, canceler, this);
+            tagTask = httpv.addTagTask(tag, canceler, this);
         }
         this.canceler = canceler;
     }
@@ -531,13 +530,13 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     protected void removeTagTask() {
         if (tag != null) {
-            httpClient.removeTagTask(this);
+            httpv.removeTagTask(this);
         }
     }
 
     protected NewCall prepareCall(String method) {
         Request request = prepareRequest(method);
-        return httpClient.request(request);
+        return httpv.request(request);
     }
 
     protected Request prepareRequest(String method) {
@@ -557,7 +556,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                     stepBytes = Process.DEFAULT_STEP_BYTES;
                 }
                 reqBody = new ProcessRequestBody(reqBody, onProcess,
-                        httpClient.executor().getExecutor(processOnIO),
+                        httpv.executor().getExecutor(processOnIO),
                         contentLength, stepBytes);
             }
             builder.method(method, reqBody);
@@ -589,7 +588,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         }
     }
 
-    protected State toState(IOException e) {
+    public State toState(IOException e) {
         if (e instanceof SocketTimeoutException) {
             return State.TIMEOUT;
         } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -615,7 +614,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             }
             for (String name : files.keySet()) {
                 FilePara file = files.get(name);
-                MediaType type = httpClient.mediaType(file.type);
+                MediaType type = httpv.mediaType(file.type);
                 RequestBody bodyPart;
                 if (file.file != null) {
                     bodyPart = RequestBody.create(type, file.file);
@@ -645,11 +644,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private RequestBody toRequestBody(Object object) {
         if (object instanceof byte[] || object instanceof String) {
-            String mediaType = httpClient.executor().doMsgConvert(bodyType, null).mediaType;
+            String mediaType = httpv.executor().doMsgConvert(bodyType, null).mediaType;
             byte[] body = object instanceof byte[] ? (byte[]) object : ((String) object).getBytes(charset);
             return RequestBody.create(MediaType.valueOf(mediaType + "; charset=" + charset.name()), body);
         }
-        TaskExecutor.Data<byte[]> data = httpClient.executor()
+        TaskExecutor.Data<byte[]> data = httpv.executor()
                 .doMsgConvert(bodyType, (Convertor c) -> c.serialize(object, dateFormat, charset));
         return RequestBody.create(MediaType.valueOf(data.mediaType + "; charset=" + charset.name()), data.data);
     }
@@ -727,7 +726,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      */
     protected boolean timeoutAwait(CountDownLatch latch) {
         try {
-            return latch.await(httpClient.preprocTimeoutMillis(),
+            return latch.await(httpv.preprocTimeoutMillis(),
                     TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new InstrumentException("TimeOut " + State.TIMEOUT);

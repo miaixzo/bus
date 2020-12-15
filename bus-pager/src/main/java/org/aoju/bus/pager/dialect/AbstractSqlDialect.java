@@ -27,7 +27,7 @@ package org.aoju.bus.pager.dialect;
 
 import org.aoju.bus.pager.Page;
 import org.aoju.bus.pager.PageContext;
-import org.aoju.bus.pager.PageRowBounds;
+import org.aoju.bus.pager.RowBounds;
 import org.aoju.bus.pager.parser.OrderByParser;
 import org.aoju.bus.pager.plugin.PageFromObject;
 import org.aoju.bus.pager.reflect.MetaObject;
@@ -35,7 +35,6 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.session.RowBounds;
 
 import java.util.*;
 
@@ -59,19 +58,19 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     }
 
     @Override
-    public final boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
-        //该方法不会被调用
+    public final boolean skip(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
+        // 该方法不会被调用
         return true;
     }
 
     @Override
-    public boolean beforeCount(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
+    public boolean beforeCount(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         return !page.isOrderByOnly() && page.isCount();
     }
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
+    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds, CacheKey countKey) {
         Page<Object> page = getLocalPage();
         String countColumn = page.getCountColumn();
         if (PageFromObject.isNotEmpty(countColumn)) {
@@ -81,14 +80,14 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     }
 
     @Override
-    public boolean afterCount(long count, Object parameterObject, RowBounds rowBounds) {
+    public boolean afterCount(long count, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         page.setTotal(count);
-        if (rowBounds instanceof PageRowBounds) {
-            ((PageRowBounds) rowBounds).setTotal(count);
+        if (rowBounds instanceof RowBounds) {
+            ((RowBounds) rowBounds).setTotal(count);
         }
-        //pageSize < 0 的时候,不执行分页查询
-        //pageSize = 0 的时候,还需要执行后续查询,但是不会分页
+        // pageSize < 0 的时候,不执行分页查询
+        // pageSize = 0 的时候,还需要执行后续查询,但是不会分页
         if (page.getPageSize() < 0) {
             return false;
         }
@@ -97,9 +96,9 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
 
     @Override
     public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey) {
-        //处理参数
+        // 处理参数
         Page page = getLocalPage();
-        //如果只是 order by 就不必处理参数
+        // 如果只是 order by 就不必处理参数
         if (page.isOrderByOnly()) {
             return parameterObject;
         }
@@ -107,22 +106,22 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
         if (parameterObject == null) {
             paramMap = new HashMap<>();
         } else if (parameterObject instanceof Map) {
-            //解决不可变Map的情况
+            // 解决不可变Map的情况
             paramMap = new HashMap<>();
             paramMap.putAll((Map) parameterObject);
         } else {
             paramMap = new HashMap<>();
-            //动态sql时的判断条件不会出现在ParameterMapping中,但是必须有,所以这里需要收集所有的getter属性
-            //TypeHandlerRegistry可以直接处理的会作为一个直接使用的对象进行处理
+            // 动态sql时的判断条件不会出现在ParameterMapping中,但是必须有,所以这里需要收集所有的getter属性
+            // TypeHandlerRegistry可以直接处理的会作为一个直接使用的对象进行处理
             boolean hasTypeHandler = ms.getConfiguration().getTypeHandlerRegistry().hasTypeHandler(parameterObject.getClass());
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(parameterObject);
-            //需要针对注解形式的MyProviderSqlSource保存原值
+            // 需要针对注解形式的MyProviderSqlSource保存原值
             if (!hasTypeHandler) {
                 for (String name : metaObject.getGetterNames()) {
                     paramMap.put(name, metaObject.getValue(name));
                 }
             }
-            //下面这段方法,主要解决一个常见类型的参数时的问题
+            // 下面这段方法,主要解决一个常见类型的参数时的问题
             if (boundSql.getParameterMappings() != null && boundSql.getParameterMappings().size() > 0) {
                 for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
                     String name = parameterMapping.getProperty();
@@ -154,7 +153,7 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     public abstract Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey);
 
     @Override
-    public boolean beforePage(MappedStatement ms, Object parameterObject, RowBounds rowBounds) {
+    public boolean beforePage(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         if (page.isOrderByOnly() || page.getPageSize() > 0) {
             return true;
@@ -163,10 +162,10 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     }
 
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey) {
+    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
         String sql = boundSql.getSql();
         Page page = getLocalPage();
-        //支持 order by
+        // 支持 order by
         String orderBy = page.getOrderBy();
         if (PageFromObject.isNotEmpty(orderBy)) {
             pageKey.update(orderBy);
@@ -189,7 +188,7 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     public abstract String getPageSql(String sql, Page page, CacheKey pageKey);
 
     @Override
-    public Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds) {
+    public Object afterPage(List pageList, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         if (page == null) {
             return pageList;

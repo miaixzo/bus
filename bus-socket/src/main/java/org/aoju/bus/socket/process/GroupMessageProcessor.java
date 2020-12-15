@@ -23,53 +23,75 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.process;
 
-import java.nio.ByteBuffer;
+import org.aoju.bus.socket.AioSession;
+import org.aoju.bus.socket.GroupIo;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 指定长度的解码器
- *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class FixedLengthDecoder implements SocketDecoder {
+public abstract class GroupMessageProcessor<T> implements MessageProcessor<T>, GroupIo {
 
-    private final ByteBuffer buffer;
-    private boolean finishRead;
+    private final Map<String, GroupUnit> sessionGroup = new ConcurrentHashMap<>();
 
-    public FixedLengthDecoder(int frameLength) {
-        if (frameLength <= 0) {
-            throw new IllegalArgumentException("frameLength must be a positive integer: " + frameLength);
-        } else {
-            buffer = ByteBuffer.allocate(frameLength);
+    /**
+     * 将AioSession加入群组group
+     *
+     * @param group   群组
+     * @param session 会话
+     */
+    @Override
+    public final synchronized void join(String group, AioSession session) {
+        GroupUnit groupUnit = sessionGroup.get(group);
+        if (groupUnit == null) {
+            groupUnit = new GroupUnit();
+            sessionGroup.put(group, groupUnit);
+        }
+        groupUnit.groupList.add(session);
+    }
+
+    @Override
+    public final synchronized void remove(String group, AioSession session) {
+        GroupUnit groupUnit = sessionGroup.get(group);
+        if (groupUnit == null) {
+            return;
+        }
+        groupUnit.groupList.remove(session);
+        if (groupUnit.groupList.isEmpty()) {
+            sessionGroup.remove(group);
         }
     }
 
-    public boolean decode(ByteBuffer byteBuffer) {
-        if (finishRead) {
-            throw new RuntimeException("delimiter has finish read");
+    @Override
+    public final void remove(AioSession session) {
+        for (String group : sessionGroup.keySet()) {
+            remove(group, session);
         }
-        if (buffer.remaining() >= byteBuffer.remaining()) {
-            buffer.put(byteBuffer);
-        } else {
-            int limit = byteBuffer.limit();
-            byteBuffer.limit(byteBuffer.position() + buffer.remaining());
-            buffer.put(byteBuffer);
-            byteBuffer.limit(limit);
-        }
-
-        if (buffer.hasRemaining()) {
-            return false;
-        }
-        buffer.flip();
-        finishRead = true;
-        return true;
     }
 
-    public ByteBuffer getBuffer() {
-        return buffer;
+    @Override
+    public void writeToGroup(String group, byte[] t) {
+        GroupUnit groupUnit = sessionGroup.get(group);
+        for (AioSession aioSession : groupUnit.groupList) {
+            try {
+                aioSession.writeBuffer().write(t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class GroupUnit {
+        Set<AioSession> groupList = new HashSet<>();
     }
 
 }

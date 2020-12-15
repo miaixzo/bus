@@ -183,14 +183,13 @@ public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<E
      * @param idOrRid    Excel中的sheet id或者rid编号，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
      * @return this
      * @throws InstrumentException POI异常
-     * @since 5.4.4
      */
     public Excel07SaxReader read(XSSFReader xssfReader, String idOrRid) throws InstrumentException {
-        // 获取共享样式表
+        // 获取共享样式表，样式非必须
         try {
-            stylesTable = xssfReader.getStylesTable();
-        } catch (Exception e) {
-            //ignore
+            this.stylesTable = xssfReader.getStylesTable();
+        } catch (IOException | InvalidFormatException ignore) {
+            // ignore
         }
 
         // 获取共享字符串表

@@ -102,7 +102,7 @@ public class SqlServerDialect extends AbstractSqlDialect {
 
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        //处理pageKey
+        // 处理pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
         String cacheSql = CACHE_PAGESQL.get(sql);

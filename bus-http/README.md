@@ -441,7 +441,7 @@ Websocket 方法：
 * `webSocket(String url)`  开始一个 WebSocket 连接
 * `cancel(String tag)` 按标签取消（同步 | 异步 | WebSocket）连接
 * `cancelAll()`        取消所有（同步 | 异步 | WebSocket）连接
-* `request(Request request)`  OkHttp 原生 HTTP 请求
+* `request(Request request)`  原生 HTTP 请求
 * `webSocket(Request request, WebSocketListener listener)` Httpv 原生 WebSocket 连接
 
 ```java

@@ -137,9 +137,9 @@ public class CountSqlParser {
         TABLE_ALIAS.setUseAs(false);
     }
 
-    //<editor-fold desc="聚合函数">
+    // <editor-fold desc="聚合函数">
     private final Set<String> skipFunctions = Collections.synchronizedSet(new HashSet<>());
-    //</editor-fold>
+    // </editor-fold>
     private final Set<String> falseFunctions = Collections.synchronizedSet(new HashSet<>());
 
     /**
@@ -174,30 +174,30 @@ public class CountSqlParser {
      * @return the string
      */
     public String getSmartCountSql(String sql, String name) {
-        //解析SQL
+        // 解析SQL
         Statement stmt;
-        //特殊sql不需要去掉order by时,使用注释前缀
+        // 特殊sql不需要去掉order by时,使用注释前缀
         if (sql.indexOf(KEEP_ORDERBY) >= 0) {
             return getSimpleCountSql(sql, name);
         }
         try {
             stmt = CCJSqlParserUtil.parse(sql);
         } catch (Throwable e) {
-            //无法解析的用一般方法返回count语句
+            // 无法解析的用一般方法返回count语句
             return getSimpleCountSql(sql, name);
         }
         Select select = (Select) stmt;
         SelectBody selectBody = select.getSelectBody();
         try {
-            //处理body-去order by
+            // 处理body-去order by
             processSelectBody(selectBody);
         } catch (Exception e) {
-            //当 sql 包含 group by 时,不去除 order by
+            // 当 sql 包含 group by 时,不去除 order by
             return getSimpleCountSql(sql, name);
         }
-        //处理with-去order by
+        // 处理with-去order by
         processWithItemsList(select.getWithItemsList());
-        //处理为count查询
+        // 处理为count查询
         sqlToCount(select, name);
         return select.toString();
     }
@@ -260,11 +260,11 @@ public class CountSqlParser {
      * @return the boolean
      */
     public boolean isSimpleCount(PlainSelect select) {
-        //包含group by的时候不可以
+        // 包含group by的时候不可以
         if (select.getGroupBy() != null) {
             return false;
         }
-        //包含distinct的时候不可以
+        // 包含distinct的时候不可以
         if (select.getDistinct() != null) {
             return false;
         }
@@ -273,7 +273,7 @@ public class CountSqlParser {
             if (item.toString().contains(Symbol.QUESTION_MARK)) {
                 return false;
             }
-            //如果查询列中包含函数,也不可以,函数可能会聚合列
+            // 如果查询列中包含函数,也不可以,函数可能会聚合列
             if (item instanceof SelectExpressionItem) {
                 Expression expression = ((SelectExpressionItem) item).getExpression();
                 if (expression instanceof Function) {
@@ -392,7 +392,7 @@ public class CountSqlParser {
                 }
             }
         }
-        //Table时不用处理
+        // Table时不用处理
     }
 
     /**

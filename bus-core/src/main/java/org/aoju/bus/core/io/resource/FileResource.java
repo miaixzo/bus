@@ -48,7 +48,6 @@ public class FileResource implements Resource {
      * 构造
      *
      * @param path 文件
-     * @since 4.4.1
      */
     public FileResource(Path path) {
         this(path.toFile());

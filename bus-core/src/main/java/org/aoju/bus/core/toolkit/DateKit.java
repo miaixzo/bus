@@ -1816,7 +1816,7 @@ public class DateKit extends GregorianCalendar {
 
     /**
      * 计算两个日期相差月数
-     * 在非重置情况下,如果起始日期的天小于结束日期的天,月数要少算1(不足1个月)
+     * 在非重置情况下,如果起始日期的天大于结束日期的天,月数要少算1（不足1个月）
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
@@ -1829,7 +1829,7 @@ public class DateKit extends GregorianCalendar {
 
     /**
      * 计算两个日期相差年数
-     * 在非重置情况下,如果起始日期的月小于结束日期的月,年数要少算1(不足1年)
+     * 在非重置情况下,如果起始日期的月大于结束日期的月,年数要少算1（不足1年）
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期

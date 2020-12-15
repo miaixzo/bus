@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,61 +23,30 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
-
-import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.logger.Logger;
-
-import java.io.IOException;
-import java.nio.channels.*;
+package org.aoju.bus.socket.security;
 
 /**
- * 接入完成回调，单例使用
+ * 配置引擎请求客户端验证 此选项只对服务器模式的引擎有用
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, QuickNioServer> {
+public enum ClientAuth {
 
     /**
-     * 注册通道的指定操作到指定Selector上
-     *
-     * @param selector Selector
-     * @param channel  通道
-     * @param ops      注册的通道监听（操作）类型
+     * 不需要客户端验证
      */
-    public static void registerChannel(Selector selector, SelectableChannel channel, int ops) {
-        try {
-            if (channel == null) {
-                return;
-            }
-            channel.configureBlocking(false);
-            // 注册通道
-            channel.register(selector, ops);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-    }
-
-    @Override
-    public void completed(ServerSocketChannel serverSocketChannel, QuickNioServer quickNioServer) {
-        SocketChannel socketChannel;
-        try {
-            // 获取连接到此服务器的客户端通道
-            socketChannel = serverSocketChannel.accept();
-            Logger.debug("Client [{}] accepted.", socketChannel.getRemoteAddress());
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
-
-        // SocketChannel通道的可读事件注册到Selector中
-        registerChannel(quickNioServer.getSelector(), socketChannel, SelectionKey.OP_READ);
-    }
-
-    @Override
-    public void failed(Throwable exc, QuickNioServer quickNioServer) {
-        Logger.error(exc);
-    }
+    NONE,
+    /**
+     * 请求的客户端验证
+     * 如果设置了此选项并且客户端选择不提供其自身的验证信息,则协商将会继续
+     */
+    OPTIONAL,
+    /**
+     * 必须的客户端验证
+     * 如果设置了此选项并且客户端选择不提供其自身的验证信息,则协商将会停止且引擎将开始它的关闭过程
+     */
+    REQUIRE
 
 }

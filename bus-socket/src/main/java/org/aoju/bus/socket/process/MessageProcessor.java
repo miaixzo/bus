@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,20 +23,41 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.pager;
+package org.aoju.bus.socket.process;
+
+import org.aoju.bus.socket.AioSession;
+import org.aoju.bus.socket.SocketStatus;
 
 /**
- * 分页查询接口
+ * 消息处理器。
  *
+ * <p>
+ * 通过实现该接口，对完成解码的消息进行业务处理。
+ * </p>
+ *
+ * @param <T> 消息对象实体类型
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public interface ISelect {
+public interface MessageProcessor<T> {
 
     /**
-     * 在接口中调用自己的查询方法,不要在该方法内写过多代码,只要一行查询方法最好
+     * 处理接收到的消息
+     *
+     * @param session 通信会话
+     * @param msg     待处理的业务消息
      */
-    void doSelect();
+    void process(AioSession session, T msg);
+
+    /**
+     * 状态机事件,当枚举事件发生时由框架触发该方法
+     *
+     * @param session      本次触发状态机的AioSession对象
+     * @param socketStatus 状态枚举
+     * @param throwable    异常对象，如果存在的话
+     * @see SocketStatus
+     */
+    void stateEvent(AioSession session, SocketStatus socketStatus, Throwable throwable);
 
 }

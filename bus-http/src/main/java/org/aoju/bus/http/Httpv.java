@@ -33,8 +33,8 @@ import org.aoju.bus.http.metric.*;
 import org.aoju.bus.http.metric.http.AsyncHttp;
 import org.aoju.bus.http.metric.http.CoverHttp;
 import org.aoju.bus.http.metric.http.SyncHttp;
+import org.aoju.bus.http.socket.CoverWebSocket;
 import org.aoju.bus.http.socket.WebSocket;
-import org.aoju.bus.http.socket.WebSocketCover;
 import org.aoju.bus.http.socket.WebSocketListener;
 
 import java.io.IOException;
@@ -107,8 +107,8 @@ public class Httpv {
         return new SyncHttp(this, urlPath(url, false));
     }
 
-    public WebSocketCover webSocket(String url) {
-        return new WebSocketCover(this, urlPath(url, true));
+    public CoverWebSocket.Client webSocket(String url) {
+        return new CoverWebSocket.Client(this, urlPath(url, true));
     }
 
     public int cancel(String tag) {

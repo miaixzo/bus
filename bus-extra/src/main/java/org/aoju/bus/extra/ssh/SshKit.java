@@ -437,7 +437,7 @@ public class SshKit {
      * @param cmd       命令
      * @param charset   发送和读取内容的编码
      * @param errStream 错误信息输出到的位置
-     * @return {@link ChannelExec}
+     * @return 执行结果内容
      */
     public static String exec(Session session, String cmd, java.nio.charset.Charset charset, OutputStream errStream) {
         if (null == charset) {
@@ -451,7 +451,7 @@ public class SshKit {
         try {
             channel.start();
             in = channel.getInputStream();
-            return IoKit.read(in, Charset.UTF_8);
+            return IoKit.read(in, charset);
         } catch (IOException e) {
             throw new InstrumentException(e);
         } catch (JSchException e) {
@@ -476,7 +476,6 @@ public class SshKit {
         shell.setPty(true);
         OutputStream out = null;
         InputStream in = null;
-        final StringBuilder result = StringKit.builder();
         try {
             out = shell.getOutputStream();
             in = shell.getInputStream();
@@ -484,9 +483,7 @@ public class SshKit {
             out.write(StringKit.bytes(cmd, charset));
             out.flush();
 
-            while (in.available() > 0) {
-                result.append(IoKit.read(in, charset));
-            }
+            return IoKit.read(in, charset);
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
@@ -494,7 +491,6 @@ public class SshKit {
             IoKit.close(in);
             close(shell);
         }
-        return result.toString();
     }
 
     /**

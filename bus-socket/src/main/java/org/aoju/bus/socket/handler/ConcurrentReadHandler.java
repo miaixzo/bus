@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,26 +23,64 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.handler;
 
-import java.nio.channels.SocketChannel;
+import org.aoju.bus.socket.TcpAioSession;
+
+import java.util.concurrent.*;
 
 /**
- * NIO数据处理接口，通过实现此接口，可以从{@link SocketChannel}中读写数据
+ * 读写事件回调处理类
  *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-@FunctionalInterface
-public interface ChannelSocketHandler {
+public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
 
     /**
-     * 处理NIO数据
-     *
-     * @param socketChannel {@link SocketChannel}
-     * @throws Exception 可能的处理异常
+     * 读回调资源信号量
      */
-    void handle(SocketChannel socketChannel) throws Exception;
+    private final Semaphore semaphore;
+
+    private final ThreadLocal<ConcurrentReadHandler<T>> threadLocal = new ThreadLocal<>();
+
+    private final LinkedBlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<>();
+    private final ExecutorService executorService = new ThreadPoolExecutor(1, 1,
+            60L, TimeUnit.SECONDS, taskQueue);
+
+    public ConcurrentReadHandler(final Semaphore semaphore) {
+        this.semaphore = semaphore;
+    }
+
+    @Override
+    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
+        if (threadLocal.get() != null) {
+            super.completed(result, aioSession);
+            return;
+        }
+        if (semaphore.tryAcquire()) {
+            threadLocal.set(this);
+            //处理当前读回调任务
+            super.completed(result, aioSession);
+            Runnable task;
+            while ((task = taskQueue.poll()) != null) {
+                task.run();
+            }
+            semaphore.release();
+            threadLocal.set(null);
+            return;
+        }
+        //线程资源不足,暂时积压任务
+        executorService.execute(() -> ConcurrentReadHandler.super.completed(result, aioSession));
+
+    }
+
+    /**
+     * 停止内部线程
+     */
+    public void shutdown() {
+        executorService.shutdown();
+    }
 
 }

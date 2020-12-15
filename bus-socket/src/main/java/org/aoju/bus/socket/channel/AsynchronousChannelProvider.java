@@ -23,45 +23,49 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.socket.channel;
 
-import java.nio.channels.CompletionHandler;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+
+import java.io.IOException;
+import java.nio.channels.SocketChannel;
+import java.util.concurrent.*;
 
 /**
- * 读写事件回调处理类
- *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class CompletionWriteHandler<T> implements CompletionHandler<Integer, TcpAioSession<T>> {
+public class AsynchronousChannelProvider extends java.nio.channels.spi.AsynchronousChannelProvider {
 
     @Override
-    public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        try {
-            NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (monitor != null) {
-                monitor.afterWrite(aioSession, result);
-            }
-            aioSession.writeCompleted();
-        } catch (Exception e) {
-            failed(e, aioSession);
-        }
+    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(int nThreads, ThreadFactory threadFactory) throws IOException {
+        return new AsynchronousChannelGroup(this, new ThreadPoolExecutor(nThreads, nThreads,
+                0L, TimeUnit.MILLISECONDS,
+                new ArrayBlockingQueue<>(nThreads),
+                threadFactory), nThreads);
     }
 
+    @Override
+    public java.nio.channels.AsynchronousChannelGroup openAsynchronousChannelGroup(ExecutorService executor, int initialSize) throws IOException {
+        return new AsynchronousChannelGroup(this, executor, initialSize);
+    }
 
     @Override
-    public void failed(Throwable exc, TcpAioSession<T> aioSession) {
-        try {
-            aioSession.getServerConfig().getProcessor().stateEvent(aioSession, SocketStatus.OUTPUT_EXCEPTION, exc);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public java.nio.channels.AsynchronousServerSocketChannel openAsynchronousServerSocketChannel(java.nio.channels.AsynchronousChannelGroup group) throws IOException {
+        return new AsynchronousServerSocketChannel(checkAndGet(group));
+    }
+
+    @Override
+    public java.nio.channels.AsynchronousSocketChannel openAsynchronousSocketChannel(java.nio.channels.AsynchronousChannelGroup group) throws IOException {
+        return new AsynchronousSocketChannel(checkAndGet(group), SocketChannel.open());
+    }
+
+    private AsynchronousChannelGroup checkAndGet(java.nio.channels.AsynchronousChannelGroup group) {
+        if (!(group instanceof AsynchronousChannelGroup)) {
+            throw new InstrumentException("invalid class");
         }
-        try {
-            aioSession.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        return (AsynchronousChannelGroup) group;
     }
 
 }

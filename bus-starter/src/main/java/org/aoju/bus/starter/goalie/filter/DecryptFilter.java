@@ -45,7 +45,8 @@ import java.util.Map;
  * 数据解密
  *
  * @author Justubborn
- * @since 2020/11/7
+ * @version 6.1.5
+ * @since JDK 1.8+
  */
 @Component
 @ConditionalOnBean(GoalieConfiguration.class)

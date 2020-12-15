@@ -160,7 +160,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
         }
         PreGiveCall call = new PreGiveCall();
         registeTagTask(call);
-        httpClient.preprocess(this, () -> {
+        httpv.preprocess(this, () -> {
             synchronized (call) {
                 if (call.canceled) {
                     removeTagTask();
@@ -180,7 +180,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
                 State state = toState(error);
                 Results result = new RealResult(AsyncHttp.this, state, error);
                 onCallback(httpCall, result, () -> {
-                    TaskExecutor executor = httpClient.executor();
+                    TaskExecutor executor = httpv.executor();
                     executor.executeOnComplete(AsyncHttp.this, onComplete, state, cOnIO);
                     if (!executor.executeOnException(AsyncHttp.this, onException, error, eOnIO)
                             && !nothrow) {
@@ -191,7 +191,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
             @Override
             public void onResponse(NewCall call, Response response) {
-                TaskExecutor executor = httpClient.executor();
+                TaskExecutor executor = httpv.executor();
                 Results result = new RealResult(AsyncHttp.this, response, executor);
                 onCallback(httpCall, result, () -> {
                     executor.executeOnComplete(AsyncHttp.this, onComplete, State.RESPONSED, cOnIO);

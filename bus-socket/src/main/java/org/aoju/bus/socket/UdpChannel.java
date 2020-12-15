@@ -52,7 +52,7 @@ import java.util.function.Function;
  */
 public class UdpChannel<Request> {
 
-    private final PageBuffer bufferPage;
+    private final PageBuffer pageBuffer;
     /**
      * 与当前UDP通道对接的会话
      */
@@ -70,11 +70,11 @@ public class UdpChannel<Request> {
     private SelectionKey selectionKey;
     private ResponseTask failWriteEvent;
 
-    UdpChannel(final DatagramChannel channel, SelectionKey selectionKey, ServerConfig<Request> config, PageBuffer bufferPage) {
+    UdpChannel(final DatagramChannel channel, SelectionKey selectionKey, ServerConfig<Request> config, PageBuffer pageBuffer) {
         this.channel = channel;
         responseTasks = new ConcurrentLinkedQueue<>();
         this.selectionKey = selectionKey;
-        this.bufferPage = bufferPage;
+        this.pageBuffer = pageBuffer;
         this.config = config;
     }
 
@@ -169,7 +169,7 @@ public class UdpChannel<Request> {
 
                 return null;
             };
-            WriteBuffer writeBuffer = new WriteBuffer(bufferPage, function, config.getWriteBufferSize(), 1);
+            WriteBuffer writeBuffer = new WriteBuffer(pageBuffer, function, config.getWriteBufferSize(), 1);
             return new UdpAioSession(UdpChannel.this, remote, writeBuffer);
         });
         return session;

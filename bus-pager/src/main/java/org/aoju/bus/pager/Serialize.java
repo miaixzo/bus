@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,38 +23,61 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.pager;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * 消息处理器。
+ * 分页信息
  *
- * <p>
- * 通过实现该接口，对完成解码的消息进行业务处理。
- * </p>
- *
- * @param <T> 消息对象实体类型
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public interface MessageProcessor<T> {
+public class Serialize<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 处理接收到的消息
-     *
-     * @param session 通信会话
-     * @param msg     待处理的业务消息
+     * 总记录数
      */
-    void process(AioSession session, T msg);
-
+    protected long total;
     /**
-     * 状态机事件,当枚举事件发生时由框架触发该方法
-     *
-     * @param session      本次触发状态机的AioSession对象
-     * @param socketStatus 状态枚举
-     * @param throwable    异常对象，如果存在的话
-     * @see SocketStatus
+     * 结果集
      */
-    void stateEvent(AioSession session, SocketStatus socketStatus, Throwable throwable);
+    protected List<T> list;
+
+    public Serialize() {
+    }
+
+    public Serialize(List<T> list) {
+        this.list = list;
+        if (list instanceof Page) {
+            this.total = ((Page) list).getTotal();
+        } else {
+            this.total = list.size();
+        }
+    }
+
+    public static <T> Serialize<T> of(List<T> list) {
+        return new Serialize<>(list);
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
+    public List<T> getList() {
+        return list;
+    }
+
+    public void setList(List<T> list) {
+        this.list = list;
+    }
 
 }

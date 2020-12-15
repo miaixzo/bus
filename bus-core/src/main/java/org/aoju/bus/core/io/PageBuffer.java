@@ -47,11 +47,11 @@ public class PageBuffer {
     /**
      * 共享内存页
      */
-    private final PageBuffer sharedBufferPage;
+    private final PageBuffer sharedPageBuffer;
     /**
      * 同组内存池中的各内存页
      */
-    private final PageBuffer[] poolPages;
+    private final PageBuffer[] pagePool;
     /**
      * 条件锁
      */
@@ -77,9 +77,9 @@ public class PageBuffer {
      * @param size   缓存页大小
      * @param direct 是否使用堆外内存
      */
-    PageBuffer(PageBuffer[] poolPages, PageBuffer sharedBufferPage, int size, boolean direct) {
-        this.poolPages = poolPages;
-        this.sharedBufferPage = sharedBufferPage;
+    PageBuffer(PageBuffer[] pagePool, PageBuffer sharedPageBuffer, int size, boolean direct) {
+        this.pagePool = pagePool;
+        this.sharedPageBuffer = sharedPageBuffer;
         availableBuffers = new LinkedList<>();
         this.buffer = allocate0(size, direct);
         availableBuffers.add(new VirtualBuffer(this, null, buffer.position(), buffer.limit()));
@@ -104,16 +104,16 @@ public class PageBuffer {
      */
     public VirtualBuffer allocate(final int size) {
         VirtualBuffer virtualBuffer;
-        if (poolPages != null && Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
-            virtualBuffer = poolPages[(int) (Thread.currentThread().getId() % poolPages.length)].allocate0(size);
+        if (pagePool != null && Thread.currentThread() instanceof ThreadKit.FastBufferThread) {
+            virtualBuffer = pagePool[(int) (Thread.currentThread().getId() % pagePool.length)].allocate0(size);
         } else {
             virtualBuffer = allocate0(size);
         }
         if (virtualBuffer != null) {
             return virtualBuffer;
         }
-        if (sharedBufferPage != null) {
-            virtualBuffer = sharedBufferPage.allocate0(size);
+        if (sharedPageBuffer != null) {
+            virtualBuffer = sharedPageBuffer.allocate0(size);
         }
         if (virtualBuffer == null) {
             virtualBuffer = new VirtualBuffer(null, allocate0(size, false), 0, 0);
@@ -312,7 +312,7 @@ public class PageBuffer {
 
     @Override
     public String toString() {
-        return "BufferPage{availableBuffers=" + availableBuffers + ", cleanBuffers=" + cleanBuffers + '}';
+        return "PageBuffer{availableBuffers=" + availableBuffers + ", cleanBuffers=" + cleanBuffers + '}';
     }
 
 }

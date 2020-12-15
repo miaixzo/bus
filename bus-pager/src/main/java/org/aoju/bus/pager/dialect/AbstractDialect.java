@@ -40,7 +40,7 @@ import org.apache.ibatis.session.RowBounds;
  */
 public abstract class AbstractDialect implements Dialect {
 
-    //处理SQL
+    // 处理SQL
     protected CountSqlParser countSqlParser = new CountSqlParser();
 
     @Override

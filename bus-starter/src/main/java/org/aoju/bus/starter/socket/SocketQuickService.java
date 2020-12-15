@@ -1,8 +1,8 @@
 package org.aoju.bus.starter.socket;
 
-import org.aoju.bus.socket.MessageProcessor;
 import org.aoju.bus.socket.Protocol;
 import org.aoju.bus.socket.QuickAioServer;
+import org.aoju.bus.socket.process.MessageProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;

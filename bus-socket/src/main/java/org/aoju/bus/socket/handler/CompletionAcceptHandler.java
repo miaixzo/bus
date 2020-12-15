@@ -23,95 +23,62 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.http.socket;
+package org.aoju.bus.socket.handler;
 
-import org.aoju.bus.core.io.ByteString;
-import org.aoju.bus.http.bodys.AbstractBody;
-import org.aoju.bus.http.metric.TaskExecutor;
+import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.logger.Logger;
+import org.aoju.bus.socket.QuickNioServer;
 
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.io.IOException;
+import java.nio.channels.*;
 
 /**
+ * 接入完成回调，单例使用
+ *
  * @author Kimi Liu
  * @version 6.1.5
  * @since JDK 1.8+
  */
-public class WebSocketMessage extends AbstractBody implements WebSocketCover.Sockets.Message {
+public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, QuickNioServer> {
 
-    private String text;
-    private ByteString bytes;
-
-    public WebSocketMessage(String text, TaskExecutor taskExecutor, Charset charset) {
-        super(taskExecutor, charset);
-        this.text = text;
-    }
-
-    public WebSocketMessage(ByteString bytes, TaskExecutor taskExecutor, Charset charset) {
-        super(taskExecutor, charset);
-        this.bytes = bytes;
-    }
-
-    @Override
-    public boolean isText() {
-        return text != null;
-    }
-
-    @Override
-    public byte[] toBytes() {
-        if (text != null) {
-            return text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8);
+    /**
+     * 注册通道的指定操作到指定Selector上
+     *
+     * @param selector Selector
+     * @param channel  通道
+     * @param ops      注册的通道监听（操作）类型
+     */
+    public static void registerChannel(Selector selector, SelectableChannel channel, int ops) {
+        try {
+            if (channel == null) {
+                return;
+            }
+            channel.configureBlocking(false);
+            // 注册通道
+            channel.register(selector, ops);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
         }
-        if (bytes != null) {
-            return bytes.toByteArray();
-        }
-        return null;
     }
 
     @Override
-    public String toString() {
-        if (text != null) {
-            return text;
+    public void completed(ServerSocketChannel serverSocketChannel, QuickNioServer quickNioServer) {
+        SocketChannel socketChannel;
+        try {
+            // 获取连接到此服务器的客户端通道
+            socketChannel = serverSocketChannel.accept();
+            Logger.debug("Client [{}] accepted.", socketChannel.getRemoteAddress());
+        } catch (IOException e) {
+            throw new InstrumentException(e);
         }
-        if (bytes != null) {
-            return bytes.utf8();
-        }
-        return null;
+
+        // SocketChannel通道的可读事件注册到Selector中
+        registerChannel(quickNioServer.getSelector(), socketChannel, SelectionKey.OP_READ);
     }
 
     @Override
-    public ByteString toByteString() {
-        if (text != null) {
-            return ByteString.encodeUtf8(text);
-        }
-        return bytes;
-    }
-
-    @Override
-    public Reader toCharStream() {
-        return new InputStreamReader(toByteStream());
-    }
-
-    @Override
-    public InputStream toByteStream() {
-        if (text != null) {
-            return new ByteArrayInputStream(text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8));
-        }
-        if (bytes != null) {
-            ByteBuffer buffer = bytes.asByteBuffer();
-            return new InputStream() {
-
-                @Override
-                public int read() throws IOException {
-                    if (buffer.hasRemaining()) {
-                        return buffer.get();
-                    }
-                    return -1;
-                }
-            };
-        }
-        return null;
+    public void failed(Throwable exc, QuickNioServer quickNioServer) {
+        Logger.error(exc);
     }
 
 }
