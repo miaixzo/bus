@@ -506,8 +506,26 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static ByteArrayOutputStream read(InputStream in) throws InstrumentException {
+        return read(in, true);
+    }
+
+    /**
+     * 从流中读取内容，读到输出流中，读取完毕后并不关闭流
+     *
+     * @param in      输入流
+     * @param isClose 读取完毕后是否关闭流
+     * @return 输出流
+     * @throws InstrumentException IO异常
+     */
+    public static ByteArrayOutputStream read(InputStream in, boolean isClose) throws InstrumentException {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        copy(in, out);
+        try {
+            copy(in, out);
+        } finally {
+            if (isClose) {
+                close(in);
+            }
+        }
         return out;
     }
 
@@ -622,9 +640,35 @@ public class IoKit {
      * @throws InstrumentException 异常
      */
     public static byte[] readBytes(InputStream in) throws InstrumentException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        copy(in, out);
-        return out.toByteArray();
+        return readBytes(in, true);
+    }
+
+    /**
+     * 从流中读取bytes
+     *
+     * @param in      {@link InputStream}
+     * @param isCLose 是否关闭输入流
+     * @return bytes
+     * @throws InstrumentException IO异常
+     */
+    public static byte[] readBytes(InputStream in, boolean isCLose) throws InstrumentException {
+        if (in instanceof FileInputStream) {
+            // 文件流的长度是可预见的，此时直接读取效率更高
+            final byte[] result;
+            try {
+                final int available = in.available();
+                result = new byte[available];
+                final int readLength = in.read(result);
+                if (readLength != available) {
+                    throw new IOException(StringKit.format("File length is [{}] but read [{}]!", available, readLength));
+                }
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
+            return result;
+        }
+        // 未知bytes总量的流
+        return read(in, isCLose).toByteArray();
     }
 
     /**

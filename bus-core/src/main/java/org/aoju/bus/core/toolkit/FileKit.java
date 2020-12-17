@@ -3909,6 +3909,19 @@ public class FileKit {
     }
 
     /**
+     * 判断给定的目录是否为给定文件或文件夹的子目录
+     *
+     * @param parent 父目录
+     * @param sub    子目录
+     * @return 子目录是否为父目录的子目录
+     */
+    public static boolean isSub(File parent, File sub) {
+        Assert.notNull(parent);
+        Assert.notNull(sub);
+        return sub.toPath().toAbsolutePath().normalize().startsWith(parent.toPath().toAbsolutePath().normalize());
+    }
+
+    /**
      * 根据压缩包中的路径构建目录结构，在Win下直接构建，在Linux下拆分路径单独构建
      *
      * @param outFile  最外部路径

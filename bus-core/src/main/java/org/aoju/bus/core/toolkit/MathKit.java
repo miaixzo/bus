@@ -55,7 +55,7 @@ public class MathKit {
     /**
      * 默认除法运算精度
      */
-    private static final int DEFAUT_DIV_SCALE = 10;
+    private static final int DEFAULT_DIV_SCALE = 10;
     /**
      * bytes 长度
      */
@@ -457,7 +457,7 @@ public class MathKit {
      * @return 两个参数的商
      */
     public static double div(float v1, float v2) {
-        return div(v1, v2, DEFAUT_DIV_SCALE);
+        return div(v1, v2, DEFAULT_DIV_SCALE);
     }
 
     /**
@@ -468,7 +468,7 @@ public class MathKit {
      * @return 两个参数的商
      */
     public static double div(float v1, double v2) {
-        return div(v1, v2, DEFAUT_DIV_SCALE);
+        return div(v1, v2, DEFAULT_DIV_SCALE);
     }
 
     /**
@@ -479,7 +479,7 @@ public class MathKit {
      * @return 两个参数的商
      */
     public static double div(double v1, float v2) {
-        return div(v1, v2, DEFAUT_DIV_SCALE);
+        return div(v1, v2, DEFAULT_DIV_SCALE);
     }
 
     /**
@@ -490,7 +490,7 @@ public class MathKit {
      * @return 两个参数的商
      */
     public static double div(double v1, double v2) {
-        return div(v1, v2, DEFAUT_DIV_SCALE);
+        return div(v1, v2, DEFAULT_DIV_SCALE);
     }
 
     /**
@@ -501,7 +501,7 @@ public class MathKit {
      * @return 两个参数的商
      */
     public static BigDecimal div(Number v1, Number v2) {
-        return div(v1, v2, DEFAUT_DIV_SCALE);
+        return div(v1, v2, DEFAULT_DIV_SCALE);
     }
 
     /**
@@ -512,7 +512,7 @@ public class MathKit {
      * @return 两个参数的商
      */
     public static BigDecimal div(String v1, String v2) {
-        return div(v1, v2, DEFAUT_DIV_SCALE);
+        return div(v1, v2, DEFAULT_DIV_SCALE);
     }
 
     /**

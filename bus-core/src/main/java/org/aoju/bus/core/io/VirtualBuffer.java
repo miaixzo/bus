@@ -67,6 +67,10 @@ public final class VirtualBuffer {
         this.parentLimit = parentLimit;
     }
 
+    public static VirtualBuffer wrap(ByteBuffer buffer) {
+        return new VirtualBuffer(null, buffer, 0, 0);
+    }
+
     int getParentPosition() {
         return parentPosition;
     }
