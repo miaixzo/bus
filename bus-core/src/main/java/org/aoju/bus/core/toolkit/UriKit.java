@@ -521,9 +521,11 @@ public class UriKit {
     /**
      * 标准化URL字符串，包括：
      *
-     * <pre>
-     * 1. 多个/替换为一个
-     * </pre>
+     * <ol>
+     *     <li>自动补齐“http://”头</li>
+     *     <li>去除开头的\或者/</li>
+     *     <li>替换\为/</li>
+     * </ol>
      *
      * @param url URL字符串
      * @return 标准化后的URL字符串
@@ -535,15 +537,35 @@ public class UriKit {
     /**
      * 标准化URL字符串，包括：
      *
-     * <pre>
-     * 1. 多个/替换为一个
-     * </pre>
+     * <ol>
+     *     <li>自动补齐“http://”头</li>
+     *     <li>去除开头的\或者/</li>
+     *     <li>替换\为/</li>
+     * </ol>
      *
      * @param url      URL字符串
-     * @param isEncode 是否对URL中path部分的中文和特殊字符做转义(不包括 http:, /和域名部分)
+     * @param isEncode 是否对URL中path部分的中文和特殊字符做转义（不包括 http:, /和域名部分）
      * @return 标准化后的URL字符串
      */
     public static String normalize(String url, boolean isEncode) {
+        return normalize(url, isEncode, false);
+    }
+
+    /**
+     * 标准化URL字符串，包括：
+     *
+     * <ol>
+     *     <li>自动补齐“http://”头</li>
+     *     <li>去除开头的\或者/</li>
+     *     <li>替换\为/</li>
+     * </ol>
+     *
+     * @param url       URL字符串
+     * @param isEncode  是否对URL中path部分的中文和特殊字符做转义（不包括 http:, /和域名部分）
+     * @param isReplace 是否替换url body中的 //
+     * @return 标准化后的URL字符串
+     */
+    public static String normalize(String url, boolean isEncode, boolean isReplace) {
         if (StringKit.isBlank(url)) {
             return url;
         }
@@ -554,7 +576,7 @@ public class UriKit {
             protocol = StringKit.subPre(url, sepIndex + 3);
             body = StringKit.subSuf(url, sepIndex + 3);
         } else {
-            protocol = "http://";
+            protocol = Http.HTTP_PREFIX;
             body = url;
         }
 
@@ -567,10 +589,13 @@ public class UriKit {
 
         if (StringKit.isNotEmpty(body)) {
             // 去除开头的\或者/
-            //noinspection ConstantConditions
             body = body.replaceAll("^[\\\\/]+", Normal.EMPTY);
             // 替换多个\或/为单个/
-            body = body.replace(Symbol.BACKSLASH, Symbol.SLASH).replaceAll("//+", Symbol.SLASH);
+            body = body.replace(Symbol.BACKSLASH, Symbol.SLASH);
+            // 双斜杠在URL中是允许存在的，默认不做替换
+            if (isReplace) {
+                body = body.replaceAll("//+", Symbol.SLASH);
+            }
         }
 
         final int pathSepIndex = StringKit.indexOf(body, Symbol.C_SLASH);
