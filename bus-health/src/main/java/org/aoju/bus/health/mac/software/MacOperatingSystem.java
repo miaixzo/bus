@@ -48,7 +48,7 @@ import java.util.*;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -64,7 +64,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             // Usually this works. If it doesn't, fall back to text parsing.
             // Boot time will be the first consecutive string of digits.
             BOOTTIME = Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
+                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
                     System.currentTimeMillis() / 1000);
         } else {
             // tv now points to a 64-bit timeval structure for boot time.
@@ -160,7 +160,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             }
         }
         Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
-        return "Big Sur";
+        return Normal.EMPTY;
     }
 
     @Override

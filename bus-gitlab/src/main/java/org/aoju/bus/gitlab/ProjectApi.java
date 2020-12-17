@@ -26,7 +26,6 @@
 package org.aoju.bus.gitlab;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
 
@@ -47,7 +46,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API project calls.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @see <a href="https://docs.gitlab.com/ce/api/projects.html">Projects API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/project_statistics.html">Project statistics API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>
@@ -1008,7 +1007,7 @@ public class ProjectApi extends AbstractApi implements Constants {
             formData.withParam("visibility", visibility);
 
             if (project.getTagList() != null && !project.getTagList().isEmpty()) {
-                formData.withParam("tag_list", String.join(Symbol.COMMA, project.getTagList()));
+                formData.withParam("tag_list", String.join(",", project.getTagList()));
             }
         }
 
@@ -1247,7 +1246,7 @@ public class ProjectApi extends AbstractApi implements Constants {
             formData.withParam("visibility", visibility);
 
             if (project.getTagList() != null && !project.getTagList().isEmpty()) {
-                formData.withParam("tag_list", String.join(Symbol.COMMA, project.getTagList()));
+                formData.withParam("tag_list", String.join(",", project.getTagList()));
             }
         }
 

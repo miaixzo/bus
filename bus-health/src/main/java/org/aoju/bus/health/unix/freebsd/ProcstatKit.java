@@ -26,7 +26,6 @@
 package org.aoju.bus.health.unix.freebsd;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -39,7 +38,7 @@ import java.util.Map;
  * Reads from procstat into a map
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -82,7 +81,7 @@ public final class ProcstatKit {
                 return split[9];
             }
         }
-        return Normal.EMPTY;
+        return "";
     }
 
     /**

@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.StateEvent;
 import org.aoju.bus.gitlab.GitLabApiForm;
 
@@ -36,7 +35,7 @@ import java.util.List;
  * This class provides the form parameters for creating and updating merge requests.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class MergeRequestParams {
@@ -250,7 +249,7 @@ public class MergeRequestParams {
                 .withParam("assignee_id", assigneeId)
                 .withParam("assignee_ids", assigneeIds)
                 .withParam("milestone_id", milestoneId)
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("description", description)
                 .withParam("remove_source_branch", removeSourceBranch)
                 .withParam("squash", squash)

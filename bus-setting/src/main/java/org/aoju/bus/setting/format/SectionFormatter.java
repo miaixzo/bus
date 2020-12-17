@@ -35,7 +35,7 @@ import org.aoju.bus.setting.magic.IniSectionImpl;
  * 将字符串值格式设置为{@link IniSection}
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class SectionFormatter extends AbstractFormatter<IniSection> {
@@ -106,7 +106,7 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
             if (commentElementFormatter.check(endOfValue)) {
                 comment = commentElementFormatter.format(endOfValue, line);
             } else {
-                throw new InstrumentException("can not format the value end of section value (" + line + Symbol.COLON + (indexOfEnd + 1) + ") :" + endOfValue);
+                throw new InstrumentException("can not format the value end of section value (" + line + ":" + (indexOfEnd + 1) + ") :" + endOfValue);
             }
         }
 

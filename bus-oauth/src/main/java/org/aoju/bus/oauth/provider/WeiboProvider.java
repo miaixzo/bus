@@ -28,7 +28,6 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
@@ -50,7 +49,7 @@ import java.util.Map;
  * 微博登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class WeiboProvider extends AbstractProvider {
@@ -143,7 +142,7 @@ public class WeiboProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Weibo.values())))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Weibo.values())))
                 .build();
     }
 

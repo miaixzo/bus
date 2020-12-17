@@ -41,10 +41,6 @@ import java.util.List;
 
 /**
  * Graphics Card info obtained from pciconf
- *
- * @author Kimi Liu
- * @version 6.1.6
- * @since JDK 1.8+
  */
 @Immutable
 final class FreeBsdGraphicsCard extends AbstractGraphicsCard {

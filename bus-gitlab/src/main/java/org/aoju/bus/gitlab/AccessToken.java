@@ -29,7 +29,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +52,7 @@ import java.util.regex.Pattern;
  * proper functionality.  It may not work on earlier or later versions.</p>
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public final class AccessToken {
@@ -720,7 +719,7 @@ public final class AccessToken {
         }
 
         formData.append(name);
-        formData.append(Symbol.EQUAL);
+        formData.append("=");
         try {
             formData.append(URLEncoder.encode(value, Charset.DEFAULT_UTF_8));
             return (formData);

@@ -47,7 +47,7 @@ import java.util.*;
  * the /proc/mount filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -141,7 +141,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
                 description = "Mount Point";
             }
 
-            fsList.add(new SolarisOSFileStore(name, volume, name, path, options, Normal.EMPTY, Normal.EMPTY, description, type, freeSpace,
+            fsList.add(new SolarisOSFileStore(name, volume, name, path, options, "", "", description, type, freeSpace,
                     usableSpace, totalSpace, inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
                     inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
         }

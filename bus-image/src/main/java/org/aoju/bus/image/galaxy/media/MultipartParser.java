@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class MultipartParser {
@@ -123,7 +123,7 @@ public class MultipartParser {
             String value = field.substring(field.indexOf(Symbol.C_COLON) + 1).trim();
 
             if (headers.containsKey(name)) {
-                headers.put(name, headers.get(name) + Symbol.COMMA + value);
+                headers.put(name, headers.get(name) + "," + value);
             } else {
                 headers.put(name, value);
             }
@@ -167,7 +167,7 @@ public class MultipartParser {
             if ((ch1 | ch2) < 0)
                 throw new EOFException();
 
-            if (ch1 == Symbol.C_HYPHEN && ch2 == Symbol.C_HYPHEN)
+            if (ch1 == '-' && ch2 == '-')
                 break;
 
             if (ch1 != Symbol.C_CR || ch2 != Symbol.C_LF)

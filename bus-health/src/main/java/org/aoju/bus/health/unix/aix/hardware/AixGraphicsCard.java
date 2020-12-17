@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * Graphics Card info obtained from lscfg
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @Immutable
@@ -87,7 +87,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 } else if (s.startsWith("Hardware Location Code")) {
                     cardList.add(new AixGraphicsCard(name, Normal.UNKNOWN,
                             StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
-                            versionInfo.isEmpty() ? Normal.UNKNOWN : String.join(Symbol.COMMA, versionInfo), 0L));
+                            versionInfo.isEmpty() ? Normal.UNKNOWN : String.join(",", versionInfo), 0L));
                     display = false;
                 }
             }

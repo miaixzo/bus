@@ -27,7 +27,6 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.core.lang.Symbol;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,7 +35,7 @@ import java.util.regex.Pattern;
  * This class represents a duration in time.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class Duration {
@@ -171,7 +170,7 @@ public class Duration {
             }
 
         } else {
-            buf.append(Symbol.C_SPACE).append(seconds).append('s');
+            buf.append(' ').append(seconds).append('s');
         }
 
         return (buf.toString());

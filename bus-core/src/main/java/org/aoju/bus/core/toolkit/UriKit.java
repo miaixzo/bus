@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
  * URL相关工具
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class UriKit {
@@ -1503,7 +1503,7 @@ public class UriKit {
      * @return authority部分
      */
     public String getAuthority() {
-        return (port < 0) ? host : host + Symbol.C_COLON + port;
+        return (port < 0) ? host : host + ":" + port;
     }
 
     /**

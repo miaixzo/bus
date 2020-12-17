@@ -47,7 +47,7 @@ import java.util.zip.InflaterInputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class ImageInputStream extends FilterInputStream
@@ -72,7 +72,7 @@ public class ImageInputStream extends FilterInputStream
     // Length of the buffer used for readFully(short[], int, int)
     private static final int BYTE_BUF_LENGTH = 8192;
     private final byte[] buffer = new byte[12];
-    private final List<ItemPointer> itemPointers = new ArrayList<>(4);
+    private final List<ItemPointer> itemPointers = new ArrayList<ItemPointer>(4);
     private byte[] byteBuf;
     private int allocateLimit = DEF_ALLOCATE_LIMIT;
     private String uri;
@@ -381,7 +381,7 @@ public class ImageInputStream extends FilterInputStream
         while (len > 0) {
             int nelts = Math.min(len, byteBuf.length / 2);
             readFully(byteBuf, 0, nelts * 2);
-            ByteKit.bytesToShort(byteBuf, s, off, nelts, bigEndian);
+            ByteKit.bytesToShorts(byteBuf, s, off, nelts, bigEndian);
             off += nelts;
             len -= nelts;
         }
@@ -551,9 +551,8 @@ public class ImageInputStream extends FilterInputStream
             if (blkOut == null) {
                 File blkfile = File.createTempFile(blkFilePrefix,
                         blkFileSuffix, blkDirectory);
-                if (blkFiles == null) {
-                    blkFiles = new ArrayList<>();
-                }
+                if (blkFiles == null)
+                    blkFiles = new ArrayList<File>();
                 blkFiles.add(blkfile);
                 blkURI = blkfile.toURI().toString();
                 blkOut = new FileOutputStream(blkfile);

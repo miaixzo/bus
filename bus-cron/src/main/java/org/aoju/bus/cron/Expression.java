@@ -26,7 +26,6 @@
 package org.aoju.bus.cron;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.DateKit;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -37,7 +36,7 @@ import java.util.*;
  * Crontab表达式提供了指定复杂时间组合的能力
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public final class Expression implements Serializable, Cloneable {
@@ -325,7 +324,7 @@ public final class Expression implements Serializable, Cloneable {
                 }
                 if (s.length() > i + 3) {
                     c = s.charAt(i + 3);
-                    if (c == Symbol.C_HYPHEN) {
+                    if (c == '-') {
                         i += 4;
                         sub = s.substring(i, i + 3);
                         eval = getMonthNumber(sub) + 1;
@@ -342,7 +341,7 @@ public final class Expression implements Serializable, Cloneable {
                 }
                 if (s.length() > i + 3) {
                     c = s.charAt(i + 3);
-                    if (c == Symbol.C_HYPHEN) {
+                    if (c == '-') {
                         i += 4;
                         sub = s.substring(i, i + 3);
                         eval = getDayOfWeekNumber(sub);
@@ -384,7 +383,7 @@ public final class Expression implements Serializable, Cloneable {
         if (c == Symbol.C_QUESTION_MARK) {
             i++;
             if ((i + 1) < s.length()
-                    && (s.charAt(i) != Symbol.C_SPACE && s.charAt(i + 1) != Symbol.C_HT)) {
+                    && (s.charAt(i) != ' ' && s.charAt(i + 1) != Symbol.C_HT)) {
                 throw new ParseException("Illegal character after '?': "
                         + s.charAt(i), i);
             }
@@ -411,7 +410,7 @@ public final class Expression implements Serializable, Cloneable {
                 addToSet(ALL_SPEC_INT, -1, incr, type);
                 return i + 1;
             } else if (c == Symbol.C_SLASH
-                    && ((i + 1) >= s.length() || s.charAt(i + 1) == Symbol.C_SPACE || s
+                    && ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s
                     .charAt(i + 1) == Symbol.C_HT)) {
                 throw new ParseException("'/' must be followed by an integer.", i);
             } else if (c == '*') {
@@ -447,7 +446,7 @@ public final class Expression implements Serializable, Cloneable {
             }
             if (type == DAY_OF_MONTH && s.length() > i) {
                 c = s.charAt(i);
-                if (c == Symbol.C_HYPHEN) {
+                if (c == '-') {
                     ValueSet vs = getValue(0, s, i + 1);
                     lastdayOffset = vs.value;
                     if (lastdayOffset > 30)
@@ -562,7 +561,7 @@ public final class Expression implements Serializable, Cloneable {
             return i;
         }
 
-        if (c == Symbol.C_HYPHEN) {
+        if (c == '-') {
             i++;
             c = s.charAt(i);
             int v = Integer.parseInt(String.valueOf(c));
@@ -605,7 +604,7 @@ public final class Expression implements Serializable, Cloneable {
         }
 
         if (c == Symbol.C_SLASH) {
-            if ((i + 1) >= s.length() || s.charAt(i + 1) == Symbol.C_SPACE || s.charAt(i + 1) == Symbol.C_HT) {
+            if ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s.charAt(i + 1) == Symbol.C_HT) {
                 throw new ParseException("'/' must be followed by an integer.", i);
             }
 
@@ -733,14 +732,14 @@ public final class Expression implements Serializable, Cloneable {
     }
 
     protected int skipWhiteSpace(int i, String s) {
-        for (; i < s.length() && (s.charAt(i) == Symbol.C_SPACE || s.charAt(i) == Symbol.C_HT); i++) {
+        for (; i < s.length() && (s.charAt(i) == ' ' || s.charAt(i) == Symbol.C_HT); i++) {
         }
 
         return i;
     }
 
     protected int findNextWhiteSpace(int i, String s) {
-        for (; i < s.length() && (s.charAt(i) != Symbol.C_SPACE || s.charAt(i) != Symbol.C_HT); i++) {
+        for (; i < s.length() && (s.charAt(i) != ' ' || s.charAt(i) != Symbol.C_HT); i++) {
         }
 
         return i;
@@ -1397,13 +1396,17 @@ public final class Expression implements Serializable, Cloneable {
         return null;
     }
 
+    protected boolean isLeapYear(int year) {
+        return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0));
+    }
+
     protected int getLastDayOfMonth(int monthNum, int year) {
 
         switch (monthNum) {
             case 1:
                 return 31;
             case 2:
-                return (DateKit.isLeapYear(year)) ? 29 : 28;
+                return (isLeapYear(year)) ? 29 : 28;
             case 3:
                 return 31;
             case 4:

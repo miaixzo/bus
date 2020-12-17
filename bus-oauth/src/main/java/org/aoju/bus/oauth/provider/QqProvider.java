@@ -49,7 +49,7 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class QqProvider extends AbstractProvider {
@@ -156,7 +156,7 @@ public class QqProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Qq.values())))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Qq.values())))
                 .build();
     }
 

@@ -35,7 +35,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class Normal {
@@ -216,20 +216,6 @@ public class Normal {
      * 字符串: 大小字母数字
      */
     public static final String UPPER_LOWER_NUMBER = UPPER + LOWER + NUMBER;
-
-    /**
-     * 七色
-     */
-    public static final String[] COLOR = {
-            "白", "黒", "碧", "绿", "黄", "白", "赤", "白", "紫"
-    };
-
-    /**
-     * 九数
-     */
-    public static final String[] DIGITS = {
-            "一", "二", "三", "四", "五", "六", "七", "八", "九"
-    };
 
     /**
      * 简体中文形式

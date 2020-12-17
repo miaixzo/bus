@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.date.format;
 
-import org.aoju.bus.core.lang.Symbol;
-
 import java.text.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,7 +40,7 @@ import java.util.TimeZone;
  * {@link #getDateTimeInstance(int, int, TimeZone, Locale)}
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class FormatBuilder extends Format implements DateParser, DatePrinter {
@@ -405,7 +403,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
 
     @Override
     public String toString() {
-        return "FastDateFormat[" + printer.getPattern() + Symbol.COMMA + printer.getLocale() + Symbol.COMMA + printer.getTimeZone().getID() + "]";
+        return "FastDateFormat[" + printer.getPattern() + "," + printer.getLocale() + "," + printer.getTimeZone().getID() + "]";
     }
 
 }

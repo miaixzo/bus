@@ -36,15 +36,15 @@ import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * WindowsNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -80,11 +80,8 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
      * the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            ifList.add(new WindowsNetworkIF(ni));
-        }
-        return Collections.unmodifiableList(ifList);
+        return Collections.unmodifiableList(getNetworkInterfaces(includeLocalInterfaces).stream()
+                .map(WindowsNetworkIF::new).collect(Collectors.toList()));
     }
 
     @Override

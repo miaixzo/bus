@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * represented by a drive letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -180,16 +180,16 @@ public class WindowsFileSystem extends AbstractFileSystem {
 
                     StringBuilder options = new StringBuilder((FILE_READ_ONLY_VOLUME & flags) == 0 ? "rw" : "ro");
                     String moreOptions = OPTIONS_MAP.entrySet().stream().filter(e -> (e.getKey() & flags) > 0)
-                            .map(Map.Entry::getValue).collect(Collectors.joining(Symbol.COMMA));
+                            .map(Map.Entry::getValue).collect(Collectors.joining(","));
                     if (!moreOptions.isEmpty()) {
-                        options.append(Symbol.C_COMMA).append(moreOptions);
+                        options.append(',').append(moreOptions);
                     }
                     Kernel32.INSTANCE.GetDiskFreeSpaceEx(volume, userFreeBytes, totalBytes, systemFreeBytes);
                     // Parse uuid from volume name
-                    String uuid = Builder.parseUuidOrDefault(volume, Normal.EMPTY);
+                    String uuid = Builder.parseUuidOrDefault(volume, "");
 
                     fs.add(new WindowsOSFileStore(String.format("%s (%s)", strName, strMount), volume, strName,
-                            strMount, options.toString(), uuid, Normal.EMPTY, getDriveType(strMount), strFsType,
+                            strMount, options.toString(), uuid, "", getDriveType(strMount), strFsType,
                             systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue(), 0, 0));
                 }
             } while (Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE));

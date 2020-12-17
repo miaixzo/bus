@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class SpecificCharacterSet {
@@ -319,7 +319,7 @@ public class SpecificCharacterSet {
 
         private static Codec forCode(String code, Codec defCodec) {
             switch (code != null ? code : "") {
-                case Normal.EMPTY:
+                case "":
                 case "ISO 2022 IR 6":
                     return SpecificCharacterSet.DEFAULT.codecs[0];
                 case "ISO_IR 100":

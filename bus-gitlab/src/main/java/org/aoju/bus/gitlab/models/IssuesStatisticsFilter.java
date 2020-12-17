@@ -26,7 +26,6 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants.IssueScope;
 import org.aoju.bus.gitlab.GitLabApiException;
 import org.aoju.bus.gitlab.GitLabApiForm;
@@ -39,7 +38,7 @@ import java.util.List;
  * This class is used to filter issues when getting issue statistics. of them.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class IssuesStatisticsFilter {
@@ -133,7 +132,7 @@ public class IssuesStatisticsFilter {
     public GitLabApiForm getQueryParams() throws GitLabApiException {
 
         return (new GitLabApiForm()
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
                 .withParam("iids", iids)
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)

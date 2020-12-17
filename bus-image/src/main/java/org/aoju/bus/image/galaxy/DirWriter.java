@@ -46,7 +46,7 @@ import java.util.IdentityHashMap;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class DirWriter extends DirReader {
@@ -67,8 +67,10 @@ public class DirWriter extends DirReader {
             0x04, 0x00, 0x20, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0};
     private final ImageOutputStream out;
     private final int firstRecordPos;
-    private final ArrayList<Attributes> dirtyRecords = new ArrayList<>();
-    private final IdentityHashMap<Attributes, Attributes> lastChildRecords = new IdentityHashMap<>();
+    private final ArrayList<Attributes> dirtyRecords =
+            new ArrayList<Attributes>();
+    private final IdentityHashMap<Attributes, Attributes> lastChildRecords =
+            new IdentityHashMap<Attributes, Attributes>();
     private int nextRecordPos;
     private int rollbackLen = -1;
 

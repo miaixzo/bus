@@ -39,7 +39,7 @@ import java.time.OffsetDateTime;
  * Helper class for WMI
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -154,7 +154,7 @@ public final class WmiKit {
     private static <T extends Enum<T>> String getStr(WbemcliUtil.WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
         if (o == null) {
-            return Normal.EMPTY;
+            return "";
         } else if (result.getVtType(property) == Variant.VT_BSTR) {
             return (String) o;
         }

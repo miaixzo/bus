@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.solaris.software;
 
 import com.sun.jna.platform.unix.solaris.LibKstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
@@ -50,7 +49,7 @@ import java.util.List;
  * after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -60,7 +59,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
         List<OSProcess> procs = new ArrayList<>();
-        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
+        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? "" : pid));
         if (procList.isEmpty() || procList.size() < 2) {
             return procs;
         }
@@ -169,7 +168,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         }
         List<OSProcess> procs = getProcessListFromPS(
                 "ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p "
-                        + String.join(Symbol.COMMA, childPids),
+                        + String.join(",", childPids),
                 -1);
         List<OSProcess> sorted = processSort(procs, limit, sort);
         return Collections.unmodifiableList(sorted);

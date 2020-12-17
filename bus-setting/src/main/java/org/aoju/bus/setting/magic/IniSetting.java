@@ -44,7 +44,7 @@ import java.util.StringJoiner;
  * 如果您想创建Ini，则可以{@link Builder}
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class IniSetting extends ArrayList<IniElement> {
@@ -141,7 +141,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * @see #toProperties(String)
      */
     public Properties toProperties() {
-        return toProperties(Symbol.DOT);
+        return toProperties(".");
     }
 
     /**

@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Status;
 import org.aoju.bus.image.Tag;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class StowrsMultiFiles extends AbstractStowrs {
@@ -100,7 +99,7 @@ public class StowrsMultiFiles extends AbstractStowrs {
                         cmd.setInt(Tag.NumberOfRemainingSuboperations, VR.US, 0);
                         p.setAttributes(cmd);
                         message = seq.stream().map(s -> s.getString(Tag.ReferencedSOPInstanceUID, "Unknown SopUID")
-                                + " -> " + s.getString(Tag.FailureReason)).collect(Collectors.joining(Symbol.COMMA));
+                                + " -> " + s.getString(Tag.FailureReason)).collect(Collectors.joining(","));
                         return Status.build(state, null,
                                 new RuntimeException("Failed instances: " + message));
                     }

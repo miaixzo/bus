@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.models.HealthCheckInfo;
 
 import javax.ws.rs.core.Response;
@@ -34,7 +33,7 @@ import java.net.URL;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class HealthCheckApi extends AbstractApi {
@@ -70,7 +69,7 @@ public class HealthCheckApi extends AbstractApi {
      */
     public HealthCheckInfo getLiveness(String token) throws GitLabApiException {
         try {
-            URL livenessUrl = getApiClient().getUrlWithBase(Symbol.HYPHEN, "liveness");
+            URL livenessUrl = getApiClient().getUrlWithBase("-", "liveness");
             GitLabApiForm formData = new GitLabApiForm().withParam("token", token, false);
             Response response = get(Response.Status.OK, formData.asMap(), livenessUrl);
             return (response.readEntity(HealthCheckInfo.class));
@@ -106,7 +105,7 @@ public class HealthCheckApi extends AbstractApi {
      */
     public HealthCheckInfo getReadiness(String token) throws GitLabApiException {
         try {
-            URL readinessUrl = getApiClient().getUrlWithBase(Symbol.HYPHEN, "readiness");
+            URL readinessUrl = getApiClient().getUrlWithBase("-", "readiness");
             GitLabApiForm formData = new GitLabApiForm().withParam("token", token, false);
             Response response = get(Response.Status.OK, formData.asMap(), readinessUrl);
             return (response.readEntity(HealthCheckInfo.class));

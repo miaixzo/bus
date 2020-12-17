@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * Linux hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -172,13 +172,13 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         store.partitionList.add(new HWPartition(name, device.getSysname(),
                                                 device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
                                                         : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
+                                                device.getPropertyValue(ID_FS_UUID) == null ? ""
                                                         : device.getPropertyValue(ID_FS_UUID),
                                                 Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                                         * SECTORSIZE,
                                                 Builder.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
                                                 Builder.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
-                                                mountsMap.getOrDefault(name, Normal.EMPTY)));
+                                                mountsMap.getOrDefault(name, "")));
                                     }
                                 }
                             }
@@ -215,7 +215,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static void computeDiskStats(LinuxHWDiskStore store, String devstat) {
-        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
+        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, ' ');
         store.timeStamp = System.currentTimeMillis();
 
         // Reads and writes are converted in bytes

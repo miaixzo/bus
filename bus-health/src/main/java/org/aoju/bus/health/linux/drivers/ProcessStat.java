@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * Utility to read process statistics from {@code /proc/[pid]/stat}
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -57,7 +57,7 @@ public final class ProcessStat {
         String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
         if (!stat.isEmpty() && stat.contains(")")) {
             // add 3 to account for pid, process name in prarenthesis, and state
-            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, Symbol.C_SPACE) + 3;
+            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, ' ') + 3;
         } else {
             // Default assuming recent kernel
             PROC_PID_STAT_LENGTH = 52;

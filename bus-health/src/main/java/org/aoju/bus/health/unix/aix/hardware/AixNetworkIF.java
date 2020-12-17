@@ -34,16 +34,16 @@ import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatNetInterface;
 
 import java.net.NetworkInterface;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * AIXNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -78,11 +78,8 @@ public final class AixNetworkIF extends AbstractNetworkIF {
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         Supplier<Perfstat.perfstat_netinterface_t[]> netstats = Memoize.memoize(PerfstatNetInterface::queryNetInterfaces,
                 Memoize.defaultExpiration());
-        List<NetworkIF> ifList = new ArrayList<>();
-        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            ifList.add(new AixNetworkIF(ni, netstats));
-        }
-        return Collections.unmodifiableList(ifList);
+        return Collections.unmodifiableList(getNetworkInterfaces(includeLocalInterfaces).stream()
+                .map(n -> new AixNetworkIF(n, netstats)).collect(Collectors.toList()));
     }
 
     @Override

@@ -50,7 +50,7 @@ import java.util.function.Supplier;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -137,7 +137,7 @@ public class MacOSProcess extends AbstractOSProcess {
             Logger.warn(
                     "Failed syctl call for process arguments (kern.procargs2), process {} may not exist. Error code: {}",
                     getProcessID(), Native.getLastError());
-            return Normal.EMPTY;
+            return "";
         }
         // Procargs contains an int representing total # of args, followed by a
         // null-terminated execpath string and then the arguments, each
@@ -147,7 +147,7 @@ public class MacOSProcess extends AbstractOSProcess {
         // Sanity check
         if (nargs < 0 || nargs > 1024) {
             Logger.error("Nonsensical number of process arguments for pid {}: {}", getProcessID(), nargs);
-            return Normal.EMPTY;
+            return "";
         }
         List<String> args = new ArrayList<>(nargs);
         // Skip first int (containing value of nargs)

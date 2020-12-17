@@ -26,7 +26,6 @@
 package org.aoju.bus.health.unix.aix.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -38,7 +37,7 @@ import java.util.Map;
  * Utility to query ls
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -61,7 +60,7 @@ public final class Ls {
             // Filter to block devices
             if (!s.isEmpty() && s.charAt(0) == 'b') {
                 // Device name is last space-delim string
-                int idx = s.lastIndexOf(Symbol.C_SPACE);
+                int idx = s.lastIndexOf(' ');
                 if (idx > 0 && idx < s.length()) {
                     String device = s.substring(idx + 1);
                     int major = Builder.getNthIntValue(s, 2);

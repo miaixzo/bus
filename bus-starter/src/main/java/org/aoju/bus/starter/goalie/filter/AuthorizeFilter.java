@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
  * 访问鉴权
  *
  * @author Justubborn
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @Component

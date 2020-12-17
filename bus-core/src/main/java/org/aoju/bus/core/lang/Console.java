@@ -40,7 +40,7 @@ import java.util.Scanner;
  * 此类主要针对{@link java.lang.System#out} 和 {@link java.lang.System#err} 做封装
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class Console {
@@ -437,7 +437,7 @@ public class Console {
 
     public static class Table {
 
-        private static final char ROW_LINE = Symbol.C_HYPHEN;
+        private static final char ROW_LINE = '-';
         private static final char COLUMN_LINE = '|';
         private static final char CORNER = '+';
         private static final char SPACE = '\u3000';
@@ -565,7 +565,7 @@ public class Console {
         private void fillBorder(StringBuilder sb) {
             sb.append(CORNER);
             for (Integer width : columnCharNumber) {
-                sb.append(Convert.toSBC(StringKit.fillAfter(Normal.EMPTY, ROW_LINE, width + 2)));
+                sb.append(Convert.toSBC(StringKit.fillAfter("", ROW_LINE, width + 2)));
                 sb.append(CORNER);
             }
             sb.append(LF);

@@ -39,7 +39,9 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.lang.System;
-import java.net.*;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
@@ -53,7 +55,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -1051,7 +1053,7 @@ public class FileKit {
         if (isRetainExt) {
             final String extName = extName(file);
             if (StringKit.isNotBlank(extName)) {
-                newName = newName.concat(Symbol.DOT).concat(extName);
+                newName = newName.concat(".").concat(extName);
             }
         }
         return rename(file.toPath(), newName, isOverride).toFile();
@@ -3532,31 +3534,11 @@ public class FileKit {
     /**
      * 根据文件扩展名获得MimeType
      *
-     * @param path 文件路径或文件名
+     * @param filePath 文件路径或文件名
      * @return MimeType
      */
-    public static String getMimeType(String path) {
-        try {
-            FileNameMap fileNameMap = URLConnection.getFileNameMap();
-            return fileNameMap.getContentTypeFor(URLEncoder.encode(path, Charset.DEFAULT_UTF_8));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 获得文件的MimeType
-     *
-     * @param file 文件
-     * @return MimeType
-     */
-    public static String getMimeType(Path file) {
-        try {
-            return Files.probeContentType(file);
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
+    public static String getMimeType(String filePath) {
+        return URLConnection.getFileNameMap().getContentTypeFor(filePath);
     }
 
     /**

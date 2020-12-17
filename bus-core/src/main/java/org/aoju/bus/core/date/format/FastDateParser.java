@@ -43,12 +43,12 @@ import java.util.regex.Pattern;
  * 用于解析日期字符串并转换为 {@link Date} 对象
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class FastDateParser extends AbstractFormater implements DateParser {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     private static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
     // 用来对正则表达式排序的比较器。('february' 在 'feb'之前)所有条目按区域设置必须是小写的

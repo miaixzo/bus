@@ -28,8 +28,6 @@ package org.aoju.bus.socket;
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.core.io.WriteBuffer;
-import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -49,7 +47,7 @@ import java.util.function.Function;
  * 封装UDP底层真实渠道对象,并提供通信及会话管理
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class UdpChannel<Request> {
@@ -183,7 +181,7 @@ public class UdpChannel<Request> {
 
         }
         InetSocketAddress address = (InetSocketAddress) remote;
-        return address.getHostName() + Symbol.C_COLON + address.getPort();
+        return address.getHostName() + ":" + address.getPort();
     }
 
     void removeSession(final SocketAddress remote) {
@@ -211,7 +209,7 @@ public class UdpChannel<Request> {
                 channel = null;
             }
         } catch (IOException e) {
-            Logger.error(Normal.EMPTY, e);
+            Logger.error("", e);
         }
         // 内存回收
         ResponseTask task;

@@ -43,7 +43,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * 酷家乐授权登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class KujialeProvider extends AbstractProvider {
@@ -78,7 +78,7 @@ public class KujialeProvider extends AbstractProvider {
      */
     public String authorize(String state, String scopeStr) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Kujiale.values())))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Kujiale.values())))
                 .build();
     }
 

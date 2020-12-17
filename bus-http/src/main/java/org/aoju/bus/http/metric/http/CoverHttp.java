@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
@@ -182,7 +182,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     public C tag(String tag) {
         if (tag != null) {
             if (this.tag != null) {
-                this.tag = this.tag + Symbol.DOT + tag;
+                this.tag = this.tag + "." + tag;
             } else {
                 this.tag = tag;
             }
@@ -277,7 +277,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return this 实例
      */
     public C setRange(long rangeStart) {
-        return addHeader("Range", "bytes=" + rangeStart + Symbol.HYPHEN);
+        return addHeader("Range", "bytes=" + rangeStart + "-");
     }
 
     /**
@@ -289,7 +289,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return this 实例
      */
     public C setRange(long rangeStart, long rangeEnd) {
-        return addHeader("Range", "bytes=" + rangeStart + Symbol.HYPHEN + rangeEnd);
+        return addHeader("Range", "bytes=" + rangeStart + "-" + rangeEnd);
     }
 
     /**
@@ -465,7 +465,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     public C addFilePara(String name, File file) {
         if (name != null && file != null && file.exists()) {
             String fileName = file.getName();
-            String type = fileName.substring(fileName.lastIndexOf(Symbol.DOT) + 1);
+            String type = fileName.substring(fileName.lastIndexOf(".") + 1);
             if (files == null) {
                 files = new HashMap<>();
             }

@@ -47,7 +47,7 @@ import java.util.List;
  * LinuxNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -120,7 +120,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
     public String getIpv6DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet6 -n");
         if (routes.size() <= 2) {
-            return Normal.EMPTY;
+            return "";
         }
 
         String gateway = Normal.EMPTY;

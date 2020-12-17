@@ -27,7 +27,6 @@ package org.aoju.bus.socket.plugins;
 
 import org.aoju.bus.core.io.ByteBuffer;
 import org.aoju.bus.core.io.PageBuffer;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.logger.Logger;
 import org.aoju.bus.socket.QuickAioServer;
 import org.aoju.bus.socket.QuickTimer;
@@ -40,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * 内存页监测插件
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class PageBufferPlugin<T> extends AbstractPlugin {
@@ -79,13 +78,13 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
                     Field field = ByteBuffer.class.getDeclaredField("pageBuffers");
                     field.setAccessible(true);
                     PageBuffer[] pages = (PageBuffer[]) field.get(pagePool);
-                    String logger = Normal.EMPTY;
+                    String logger = "";
                     for (PageBuffer page : pages) {
                         logger += "\r\n" + page.toString();
                     }
                     Logger.info(logger);
                 } catch (Exception e) {
-                    Logger.error(Normal.EMPTY, e);
+                    Logger.error("", e);
                 }
             }
         }, mills, mills);

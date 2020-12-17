@@ -29,7 +29,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
@@ -48,7 +47,7 @@ import java.util.Objects;
  * 人人登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class RenrenProvider extends AbstractProvider {
@@ -146,7 +145,7 @@ public class RenrenProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Renren.values())))
+                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Renren.values())))
                 .build();
     }
 

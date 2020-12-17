@@ -34,7 +34,6 @@ import com.sun.jna.platform.win32.WinNT.*;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
@@ -55,7 +54,7 @@ import java.util.*;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -344,7 +343,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
                 long maxFreq = this.getMaxFreq();
                 long[] freqs = new long[getLogicalProcessorCount()];
                 for (int p = 0; p < instances.size(); p++) {
-                    int cpu = instances.get(p).contains(Symbol.COMMA)
+                    int cpu = instances.get(p).contains(",")
                             ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
                             : Builder.parseIntOrDefault(instances.get(p), 0);
                     if (cpu >= getLogicalProcessorCount()) {
@@ -428,7 +427,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             return ticks;
         }
         for (int p = 0; p < instances.size(); p++) {
-            int cpu = instances.get(p).contains(Symbol.COMMA) ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
+            int cpu = instances.get(p).contains(",") ? numaNodeProcToLogicalProcMap.getOrDefault(instances.get(p), 0)
                     : Builder.parseIntOrDefault(instances.get(p), 0);
             if (cpu >= getLogicalProcessorCount()) {
                 continue;

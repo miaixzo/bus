@@ -29,7 +29,6 @@ import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
@@ -38,7 +37,6 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.unix.aix.AixLibc;
 import org.aoju.bus.health.unix.aix.Perfstat;
-import org.aoju.bus.health.unix.aix.drivers.Uptime;
 import org.aoju.bus.health.unix.aix.drivers.Who;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatConfig;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProcess;
@@ -54,22 +52,18 @@ import java.util.stream.Collectors;
  * platforms.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
-    private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
+    private static final long BOOTTIME = querySystemBootTime();
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
     Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());
 
-    private static long querySystemBootTimeMillis() {
-        long bootTime = Who.queryBootTime();
-        if (bootTime >= 1000L) {
-            return bootTime;
-        }
-        return System.currentTimeMillis() - Uptime.queryUpTime();
+    private static long querySystemBootTime() {
+        return Who.queryBootTime() / 1000L;
     }
 
     @Override
@@ -92,7 +86,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             releaseNumber = Executor.getFirstAnswer("oslevel -s");
         } else {
             // strip leading date
-            int idx = releaseNumber.lastIndexOf(Symbol.C_SPACE);
+            int idx = releaseNumber.lastIndexOf(' ');
             if (idx > 0 && idx < releaseNumber.length()) {
                 releaseNumber = releaseNumber.substring(idx + 1);
             }

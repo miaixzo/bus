@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class Attributes implements Serializable {
@@ -139,7 +139,7 @@ public class Attributes implements Serializable {
 
     private static String[] splitRange(String s) {
         String[] range = new String[2];
-        int delim = s.indexOf(Symbol.C_HYPHEN);
+        int delim = s.indexOf('-');
         if (delim == -1)
             range[0] = range[1] = s;
         else {
@@ -152,7 +152,7 @@ public class Attributes implements Serializable {
     }
 
     private static boolean isRange(String s) {
-        return s.indexOf(Symbol.C_HYPHEN) >= 0;
+        return s.indexOf('-') >= 0;
     }
 
     private static String toString(DateRange range, VR vr, TimeZone tz, DatePrecision precision) {
@@ -168,7 +168,7 @@ public class Attributes implements Serializable {
     }
 
     private static String toDateRangeString(String start, String end) {
-        return start.equals(end) ? start : (start + Symbol.C_HYPHEN + end);
+        return start.equals(end) ? start : (start + '-' + end);
     }
 
     private static Object toggleEndian(VR vr, Object value, boolean toggleEndian) {

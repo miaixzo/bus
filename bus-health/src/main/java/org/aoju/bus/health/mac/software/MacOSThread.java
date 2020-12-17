@@ -29,11 +29,6 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
 
-/**
- * @author Kimi Liu
- * @version 6.1.6
- * @since JDK 1.8+
- */
 @Immutable
 public class MacOSThread extends AbstractOSThread {
 

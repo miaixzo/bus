@@ -1,11 +1,7 @@
 # 介绍
 
-一个简单易用的接口开放平台，平台封装了常用的参数校验、结果返回等功能，开发者只需实现业务代码即可。
-
-功能类似于[淘宝开放平台](http://open.taobao.com/docs/api.htm?spm=a219a.7629065.0.0.6cQDnQ&apiId=4)，它的所有接口只提供一个url，通过参数来区分不同业务。这样做的好处是接口url管理方便了，平台管理者只需维护好接口参数即可。由于参数的数量是可知的，这样可以在很大程度上进行封装。封装完后平台开发者只需要写业务代码，其它功能可以通过配置来完成。
-
-得益于Java的注解功能以及Spring容器对bean的管理，我们的开放接口平台就这样产生了。
-
+基于spring webflux 开发的API网关,是一个分布式,全异步,高性能,可扩展 ,轻量级的API网关。
+立足于spring巨人的肩膀上,灵感来自阿里云的API网关;
 ## 功能特点
 
 - 开箱即用，写完业务代码直接启动服务即可使用，无需其它配置
@@ -26,9 +22,106 @@
 - 注解（文档生成）
 - token（jwt、accessToken）
 - SDK（Java、C#、JavaScript）
+- 格式化(xml,json)
 
 #### 功能①按参数路由：
 
+Api接口类说明:
+```java
+public class Assets {
+
+    private String id;   //接口id 唯一
+    private String name; //接口名称
+    private String host; //目标主机名
+    private int port;    //目标端口
+    private String url;  //目标url
+    private String method; //对应请求参数method
+    private HttpMethod httpMethod;
+    private boolean token; //是否需要token (0 不需要,1需要)
+    private boolean sign;  //返回内容是否加密(0 不需要,1需要) 需配置开启加密
+    private boolean firewall; // 防火墙,预留
+    private String version; //对应请求参数v
+    private String description; //接口描述
+}
+```
+
+请求参数说明:
+
+|   参数   |   说明   |  
+| ---- | ---- |
+|   method   |  api的方法名   (xxx.xxx.xxx) |  
+|  v    |    api的版本号,和method 一起使用 (1.1 ,1.2) |
+|   format   |  接口返回的格式,目前支持（json,xml） 两种   |
+|   sign   |   在配置文件中开启解密配置,若请求中包含sign字段,则对请求字段解密   |
+
+配置文件说明:
+```properties
+extend:
+ goalie:
+    server:
+        port: 8765 #网关端口
+        path: /router/rest #网关path
+        encrypt:
+            enabled: true  #是否开启加密
+            key: xxxxxx #加密key
+            type: AES #加密算法
+            offset: xxxxxx #偏移量
+        decrypt:
+            enabled: true #是否开启解密
+            key: xxxxxx #解密key
+            type: AES #解密算法
+            offset: xxxx #偏移量
+
+```
+
+集成方式说明:
+
+1.在springboot启动类加上注解`@EnableGoalie`
+```java
+@EnableGoalie
+@SpringBootApplication
+public class TunnelApplication {
+
+    public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(TunnelApplication.class);
+        app.run(args);
+    }
+
+}
+
+```
+
+2.实现至少包含一个`Registry`的 spring bean 保证缓中有接口
+```java
+
+@Component
+public class DbAssetRegistriesImpl implements Registry {
+    //TODO
+}
+
+```
+3.实现一个`Authorize` 的 sping bean 保证身份认证功能正常
+
+```java
+public class AuthProviderImpl implements Authorize {
+    //TODO
+}
+```
+
+4.sping配置文件`application.yml`相应配置
+
+
+扩展方式:
+
+可实现`webfilter` 对网关功能扩展,例如限流,日志,黑名单，熔断(目前暂未实现☺☺)等
+
+```java
+@Component
+@Order("123")
+public class CustomFilter implements WebFilter {
+    
+}
+```
 #### 功能②按版本路由：
 
 - **@ApiVersion**
@@ -55,16 +148,16 @@
 @ApiVersion("5")
 public class TController {
     //请求路径为/4/t/get
-    @RequestMapping(value="/get")
-    public String get1 (){
+    @RequestMapping(value = "/get")
+    public String get1() {
         return "旧接口";
     }
 
     //请求路径为/5.1/t/get
-    @RequestMapping(value= "/get",params = "data=tree")
+    @RequestMapping(value = "/get", params = "data=tree")
     @ApiVersion("5.1")
     //method的apiversion会优先于class上的,方便升级小版本
-    public String get2(){
+    public String get2() {
         return "新数据";
     }
 
@@ -72,30 +165,36 @@ public class TController {
     //通过header里的客户端类型（如果是从url参数取，修改TerminalVersionExpression即可）以及版本号路由到不同方法
     @GetMapping("/c")
     @ClientVersion(expression = {"1>6.0.0"})
-    public String cvcheck1(){return "6.0.0以上版本的1类型";}
+    public String cvcheck1() {
+        return "6.0.0以上版本的1类型";
+    }
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.GT,version = "6.0.0")})
-    public String cvcheck2(){return "6.0.0以上版本的2类型";}
+    @ClientVersion({@TerminalVersion(terminals = 2, op = VersionOperator.GT, version = "6.0.0")})
+    public String cvcheck2() {
+        return "6.0.0以上版本的2类型";
+    }
 
     @GetMapping("/c")
-    @ClientVersion({@TerminalVersion(terminals = 2,op= VersionOperator.LTE,version = "6.0.0")})
-    public String cvcheck3(){return "6.0.0以下版本的2类型";}
- 
+    @ClientVersion({@TerminalVersion(terminals = 2, op = VersionOperator.LTE, version = "6.0.0")})
+    public String cvcheck3() {
+        return "6.0.0以下版本的2类型";
+    }
+
 }
 
 ```
 
 ```java
+
 @RestController
-@VersionMapping(value="/t",apiVersion = "5")
+@VersionMapping(value = "/t", apiVersion = "5")
 public class TController {
 
-    @VersionMapping(value="a",terminalVersion = @TerminalVersion(terminals = 1,op = VersionOperator.EQ,version = "3.0"))
-    public String t(){
+    @VersionMapping(value = "a", terminalVersion = @TerminalVersion(terminals = 1, op = VersionOperator.EQ, version = "3.0"))
+    public String t() {
         return "5";
     }
 
 }
 ```
-        

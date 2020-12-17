@@ -26,9 +26,7 @@
 package org.aoju.bus.health.linux.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -57,7 +55,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -81,7 +79,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private String name;
-    private String path = Normal.EMPTY;
+    private String path = "";
     private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
     private String commandLine;
     private String user;
@@ -162,7 +160,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         } catch (IOException e) {
             Logger.trace("Couldn't find cwd for pid {}: {}", getProcessID(), e.getMessage());
         }
-        return Normal.EMPTY;
+        return "";
     }
 
     @Override
@@ -321,9 +319,9 @@ public class LinuxOSProcess extends AbstractOSProcess {
         }
         // Fetch all the values here
         // check for terminated process race condition after last one.
-        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_IO, getProcessID()), Symbol.COLON);
+        Map<String, String> io = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_IO, getProcessID()), ":");
         Map<String, String> status = Builder.getKeyValueMapFromFile(String.format(ProcPath.PID_STATUS, getProcessID()),
-                Symbol.COLON);
+                ":");
         String stat = Builder.getStringFromFile(String.format(ProcPath.PID_STAT, getProcessID()));
         if (stat.isEmpty()) {
             this.state = State.INVALID;
@@ -340,7 +338,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // call later, so just get the numeric bits here
         // See man proc for how to parse /proc/[pid]/stat
         long[] statArray = Builder.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS,
-                ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
+                ProcessStat.PROC_PID_STAT_LENGTH, ' ');
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to
@@ -365,16 +363,16 @@ public class LinuxOSProcess extends AbstractOSProcess {
         this.upTime = now - startTime;
 
         // See man proc for how to parse /proc/[pid]/io
-        this.bytesRead = Builder.parseLongOrDefault(io.getOrDefault("read_bytes", Normal.EMPTY), 0L);
-        this.bytesWritten = Builder.parseLongOrDefault(io.getOrDefault("write_bytes", Normal.EMPTY), 0L);
+        this.bytesRead = Builder.parseLongOrDefault(io.getOrDefault("read_bytes", ""), 0L);
+        this.bytesWritten = Builder.parseLongOrDefault(io.getOrDefault("write_bytes", ""), 0L);
 
         // Don't set open files or bitness or currentWorkingDirectory; fetch on demand.
 
-        this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", Normal.EMPTY))[0];
+        this.userID = RegEx.SPACES.split(status.getOrDefault("Uid", ""))[0];
         this.user = UserGroup.getUser(userID);
-        this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", Normal.EMPTY))[0];
+        this.groupID = RegEx.SPACES.split(status.getOrDefault("Gid", ""))[0];
         this.group = UserGroup.getGroupName(groupID);
-        this.name = status.getOrDefault("Name", Normal.EMPTY);
+        this.name = status.getOrDefault("Name", "");
         this.state = ProcessStat.getState(status.getOrDefault("State", "U").charAt(0));
         return true;
     }

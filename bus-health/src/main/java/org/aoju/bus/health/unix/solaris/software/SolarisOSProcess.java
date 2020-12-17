@@ -26,7 +26,6 @@
 package org.aoju.bus.health.unix.solaris.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
@@ -45,7 +44,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -54,7 +53,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
 
     private String name;
-    private String path = Normal.EMPTY;
+    private String path = "";
     private String commandLine;
     private String user;
     private String userID;
@@ -320,8 +319,9 @@ public class SolarisOSProcess extends AbstractOSProcess {
 
     @Override
     public List<OSThread> getThreadDetails() {
-        List<String> threadListInfo1 = Executor.runNative("ps -o lwp,s,etime,stime,time,addr,pri -p " + getProcessID());
-        List<String> threadListInfo2 = Executor.runNative("prstat -L -v -p " + getProcessID() + " 1 1");
+        List<String> threadListInfo1 = Executor
+                .runNative("ps -o lwp,s,etime,stime,time,addr,pri -p " + getProcessID());
+        List<String> threadListInfo2 = Executor.runNative("prstat -L -v -p " + getProcessID());
         Map<Integer, String[]> threadMap = parseAndMergeThreadInfo(threadListInfo1, threadListInfo2);
         if (threadMap.keySet().size() > 1) {
             return threadMap.entrySet().stream().map(entry -> new SolarisOSThread(getProcessID(), entry.getValue()))

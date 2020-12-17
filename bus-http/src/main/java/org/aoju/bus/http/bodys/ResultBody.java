@@ -47,7 +47,7 @@ import java.net.URLDecoder;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.5
  * @since JDK 1.8+
  */
 public class ResultBody extends AbstractBody implements Body {
@@ -300,7 +300,7 @@ public class ResultBody extends AbstractBody implements Body {
         }
         String range = response.header("Content-Range");
         if (range != null && range.startsWith("bytes")) {
-            int index = range.indexOf(Symbol.C_HYPHEN);
+            int index = range.indexOf('-');
             if (index > 5) {
                 String start = range.substring(5, index).trim();
                 try {
