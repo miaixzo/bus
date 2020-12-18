@@ -37,6 +37,345 @@ import java.nio.CharBuffer;
  */
 public class ByteKit {
 
+    public static byte[] getBytes(int data) {
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) (data & 0xff);
+        bytes[1] = (byte) ((data & 0xff00) >> 8);
+        bytes[2] = (byte) ((data & 0xff0000) >> 16);
+        bytes[3] = (byte) ((data & 0xff000000) >> 24);
+        return bytes;
+    }
+
+    public static byte[] getBytes(long data) {
+        byte[] bytes = new byte[8];
+        bytes[0] = (byte) (data & 0xff);
+        bytes[1] = (byte) ((data >> 8) & 0xff);
+        bytes[2] = (byte) ((data >> 16) & 0xff);
+        bytes[3] = (byte) ((data >> 24) & 0xff);
+        bytes[4] = (byte) ((data >> 32) & 0xff);
+        bytes[5] = (byte) ((data >> 40) & 0xff);
+        bytes[6] = (byte) ((data >> 48) & 0xff);
+        bytes[7] = (byte) ((data >> 56) & 0xff);
+        return bytes;
+    }
+
+    public static byte[] getBytes(float data) {
+        int intBits = Float.floatToIntBits(data);
+        return getBytes(intBits);
+    }
+
+    public static byte[] getBytes(double data) {
+        long intBits = Double.doubleToLongBits(data);
+        return getBytes(intBits);
+    }
+
+    public static byte[] getBytes(short data) {
+        byte[] bytes = new byte[2];
+        bytes[0] = (byte) (data & 0xff);
+        bytes[1] = (byte) ((data & 0xff00) >> 8);
+        return bytes;
+    }
+
+    public static byte[] getBytes(char data) {
+        byte[] bytes = new byte[2];
+        bytes[0] = (byte) (data);
+        bytes[1] = (byte) (data >> 8);
+        return bytes;
+    }
+
+    public static byte[] getBytes(String data) {
+        return getBytes(data, Charset.DEFAULT_GBK);
+    }
+
+    public static byte[] getBytes(String data, String charsetName) {
+        return data.getBytes(Charset.charset(charsetName));
+    }
+
+    public static byte[] getBytes(char[] data) {
+        CharBuffer cb = CharBuffer.allocate(data.length);
+        cb.put(data);
+        cb.flip();
+        ByteBuffer bb = Charset.UTF_8.encode(cb);
+        return bb.array();
+    }
+
+    public static int getInt(byte[] bytes) {
+        return (0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)) | (0xff0000 & (bytes[2] << 16)) | (0xff000000 & (bytes[3] << 24));
+    }
+
+    public static long getLong(byte[] bytes) {
+        return (0xffL & (long) bytes[0]) | (0xff00L & ((long) bytes[1] << 8)) | (0xff0000L & ((long) bytes[2] << 16)) | (0xff000000L & ((long) bytes[3] << 24))
+                | (0xff00000000L & ((long) bytes[4] << 32)) | (0xff0000000000L & ((long) bytes[5] << 40)) | (0xff000000000000L & ((long) bytes[6] << 48)) | (0xff00000000000000L & ((long) bytes[7] << 56));
+    }
+
+    public static float getFloat(byte[] bytes) {
+        return Float.intBitsToFloat(getInt(bytes));
+    }
+
+    public static double getDouble(byte[] bytes) {
+        return Double.longBitsToDouble(getLong(bytes));
+    }
+
+    public static short getShort(byte[] bytes) {
+        return (short) ((0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)));
+    }
+
+    public static char getChar(byte[] bytes) {
+        return (char) ((0xff & bytes[0]) | (0xff00 & (bytes[1] << 8)));
+    }
+
+    public static String getString(byte[] bytes) {
+        return getString(bytes, "GBK");
+    }
+
+    public static String getString(byte[] bytes, String charsetName) {
+        return new String(bytes, Charset.charset(charsetName));
+    }
+
+    /**
+     * 根据分隔符拆分字节数组
+     *
+     * @param arr       字节数组
+     * @param separator 分隔符
+     * @return the byte
+     */
+    public static byte[][] split(byte[] arr, byte separator) {
+        int count = countOf(arr, separator);
+        byte[][] result = new byte[count + 1][];
+        int index = indexOf(arr, separator, 0, arr.length);
+        if (index < 0) {
+            result[0] = arr;
+        } else {
+            result[0] = subArray(arr, 0, index);
+            for (int i = 1; i <= count; i++) {
+                int from = index + 1;
+                index = indexOf(arr, separator, from, arr.length);
+                if (index < from) {
+                    index = arr.length;
+                }
+                result[i] = subArray(arr, from, index);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 拆分byte数组为几个等份(最后一份可能小于len)
+     *
+     * @param array 数组
+     * @param len   每个小节的长度
+     * @return 拆分后的数组
+     */
+    public static byte[][] split(byte[] array, int len) {
+        int x = array.length / len;
+        int y = array.length % len;
+        int z = 0;
+        if (y != 0) {
+            z = 1;
+        }
+        byte[][] arrays = new byte[x + z][];
+        byte[] arr;
+        for (int i = 0; i < x + z; i++) {
+            arr = new byte[len];
+            if (i == x + z - 1 && y != 0) {
+                System.arraycopy(array, i * len, arr, 0, y);
+            } else {
+                System.arraycopy(array, i * len, arr, 0, len);
+            }
+            arrays[i] = arr;
+        }
+        return arrays;
+    }
+
+    /**
+     * 截取子数组
+     *
+     * @param arr  字节数组
+     * @param from 开始下标（包含）
+     * @return the byte
+     */
+    public static byte[] subArray(byte[] arr, int from) {
+        return subArray(arr, from, arr.length);
+    }
+
+
+    /**
+     * 截取子数组
+     *
+     * @param arr  字节数组
+     * @param from 开始下标（包含）
+     * @param to   结束下标（不包含）
+     * @return the byte
+     */
+    public static byte[] subArray(byte[] arr, int from, int to) {
+        byte[] result = new byte[to - from];
+        if (to > from) {
+            System.arraycopy(arr, from, result, 0, result.length);
+        }
+        return result;
+    }
+
+    /**
+     * 连接多个字节数组
+     *
+     * @param hyphen 连字符
+     * @param arrs   二维数组
+     * @return the byte
+     */
+    public static byte[] join(byte hyphen, byte[]... arrs) {
+        int length = 0;
+        for (byte[] arr : arrs) {
+            length += arr.length;
+        }
+        byte[] result = new byte[length + arrs.length - 1];
+        int index = 0;
+        for (int i = 0; i < arrs.length; i++) {
+            byte[] arr = arrs[i];
+            System.arraycopy(arr, 0, result, index, arr.length);
+            index += arr.length;
+            if (i < arrs.length - 1) {
+                result[index] = hyphen;
+                index++;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 连接多个字节数组
+     *
+     * @param arrs 二维数组
+     * @return the byte
+     */
+    public static byte[] join(byte[]... arrs) {
+        int length = 0;
+        for (byte[] arr : arrs) {
+            length += arr.length;
+        }
+        byte[] result = new byte[length];
+        int index = 0;
+        for (byte[] arr : arrs) {
+            System.arraycopy(arr, 0, result, index, arr.length);
+            index += arr.length;
+        }
+        return result;
+    }
+
+    /**
+     * 首尾去掉空字符
+     *
+     * @param src   字节数组
+     * @param empty 空数组
+     * @return the byte
+     */
+    public static byte[] trim(byte[] src, byte empty) {
+        return trim(src, empty, 0, src.length);
+    }
+
+    /**
+     * 从 from 到 to 截取子串 并 首尾去掉空字符
+     *
+     * @param src   字节数组
+     * @param empty 空字节
+     * @param from  开始下标（包含）
+     * @param to    结束下标（不包含）
+     * @return the byte
+     */
+    public static byte[] trim(byte[] src, byte empty, int from, int to) {
+        while (from < src.length - 1 && src[from] == empty) {
+            from++;
+        }
+        while (to > from && src[to - 1] == empty) {
+            to--;
+        }
+        return subArray(src, from, to);
+    }
+
+
+    /**
+     * 寻找目标字节在字节数组中的下标
+     *
+     * @param arr    字节数组
+     * @param target 目标字节
+     * @param from   检索开始下标（包含）
+     * @param to     检索结束下标（不包含）
+     * @return 找不到则返回-1
+     */
+    public static int indexOf(byte[] arr, byte target, int from, int to) {
+        for (int i = from; i < to; i++) {
+            if (arr[i] == target) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 统计目标字节在字节数组中出现的次数
+     *
+     * @param arr    字节数组
+     * @param target 目标字节
+     * @return the int
+     */
+    public static int countOf(byte[] arr, byte target) {
+        int count = 0;
+        for (byte b : arr) {
+            if (b == target) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    /**
+     * 解析 BCD 码
+     *
+     * @param src  字节数组
+     * @param from 开始下标（包含）
+     * @param to   结束下标（不包含）
+     * @return the string
+     */
+    public static String bcd(byte[] src, int from, int to) {
+        char[] chars = new char[2 * (to - from)];
+        for (int i = from; i < to; i++) {
+            int b = unsigned(src[i]);
+            chars[2 * (i - from)] = (char) ((b >> 4) + 0x30);
+            chars[2 * (i - from) + 1] = (char) ((b & 0xF) + 0x30);
+        }
+        return new String(chars);
+    }
+
+    /**
+     * 无符号整数
+     *
+     * @param value 字节
+     * @return the int
+     */
+    public static int unsigned(byte value) {
+        if (value >= 0) {
+            return value;
+        }
+        return 256 + value;
+    }
+
+    /**
+     * 异或值，返回
+     *
+     * @param bytes 数组
+     * @return 异或值
+     */
+    public static int xor(byte[] bytes) {
+        int temp = 0;
+        if (bytes != null) {
+            for (int i = 0; i < bytes.length; i++) {
+                temp ^= bytes[i];
+            }
+        }
+        return temp;
+    }
+
     public static int bytesToVR(byte[] bytes, int off) {
         return bytesToUShortBE(bytes, off);
     }
@@ -54,11 +393,6 @@ public class ByteKit {
         return ((bytes[off + 1] & 255) << 8) + (bytes[off] & 255);
     }
 
-    public static int bytesToShort(byte[] bytes, int off, boolean bigEndian) {
-        return bigEndian ? bytesToShortBE(bytes, off)
-                : bytesToShortLE(bytes, off);
-    }
-
     public static int bytesToShortBE(byte[] bytes, int off) {
         return (bytes[off] << 8) + (bytes[off + 1] & 255);
     }
@@ -67,14 +401,7 @@ public class ByteKit {
         return (bytes[off + 1] << 8) + (bytes[off] & 255);
     }
 
-    public static void bytesToShorts(byte[] b, short[] s, int off, int len, boolean bigEndian) {
-        if (bigEndian)
-            bytesToShortsBE(b, s, off, len);
-        else
-            bytesToShortsLE(b, s, off, len);
-    }
-
-    public static void bytesToShortsLE(byte[] b, short[] s, int off, int len) {
+    public static void bytesToShortLE(byte[] b, short[] s, int off, int len) {
         int boff = 0;
         for (int j = 0; j < len; j++) {
             int b0 = b[boff + 1];
@@ -92,6 +419,18 @@ public class ByteKit {
             s[off + j] = (short) ((b0 << 8) | b1);
             boff += 2;
         }
+    }
+
+    public static int bytesToShort(byte[] bytes, int off, boolean bigEndian) {
+        return bigEndian ? bytesToShortBE(bytes, off)
+                : bytesToShortLE(bytes, off);
+    }
+
+    public static void bytesToShort(byte[] b, short[] s, int off, int len, boolean bigEndian) {
+        if (bigEndian)
+            bytesToShortsBE(b, s, off, len);
+        else
+            bytesToShortLE(b, s, off, len);
     }
 
     public static int bytesToInt(byte[] bytes, int off, boolean bigEndian) {
@@ -356,48 +695,20 @@ public class ByteKit {
         return ret;
     }
 
-    public static byte[] getBytes(char[] chars) {
-        java.nio.charset.Charset cs = Charset.UTF_8;
-        CharBuffer cb = CharBuffer.allocate(chars.length);
-        cb.put(chars);
-        cb.flip();
-        ByteBuffer bb = cs.encode(cb);
-        return bb.array();
-    }
-
-    public static byte[] charToByte(char c) {
-        byte[] b = new byte[2];
-        b[0] = (byte) ((c & 0xFF00) >> 8);
-        b[1] = (byte) (c & 0xFF);
-        return b;
-    }
-
     /**
-     * 拆分byte数组为几个等份(最后一份可能小于len)
+     * 将两个字节数组连接到一个新的字节数组
      *
-     * @param array 数组
-     * @param len   每个小节的长度
-     * @return 拆分后的数组
+     * @param buf1 字节数组
+     * @param buf2 字节数组
+     * @return the byte
      */
-    public static byte[][] split(byte[] array, int len) {
-        int x = array.length / len;
-        int y = array.length % len;
-        int z = 0;
-        if (y != 0) {
-            z = 1;
-        }
-        byte[][] arrays = new byte[x + z][];
-        byte[] arr;
-        for (int i = 0; i < x + z; i++) {
-            arr = new byte[len];
-            if (i == x + z - 1 && y != 0) {
-                System.arraycopy(array, i * len, arr, 0, y);
-            } else {
-                System.arraycopy(array, i * len, arr, 0, len);
-            }
-            arrays[i] = arr;
-        }
-        return arrays;
+    public static byte[] concat(byte[] buf1, byte[] buf2) {
+        byte[] buffer = new byte[buf1.length + buf2.length];
+        int offset = 0;
+        System.arraycopy(buf1, 0, buffer, offset, buf1.length);
+        offset += buf1.length;
+        System.arraycopy(buf2, 0, buffer, offset, buf2.length);
+        return buffer;
     }
 
 }

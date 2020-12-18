@@ -117,46 +117,51 @@ public final class Builder {
     private static final String GHZ = "GHz";
     private static final String THZ = "THz";
     private static final String PHZ = "PHz";
-    private static final Map<String, Long> multipliers;
-    // PDH timestamps are 1601 epoch, local time
-    // Constants to convert to UTC millis
+    private static final Map<String, Long> MULTIPLIERS;
+    /**
+     * DH时间戳是1601时代，本地时间常量要转换为UTC
+     */
     private static final long EPOCH_DIFF = 11_644_473_600_000L;
+    /**
+     * 此时区在指定日期与UTC的偏移量
+     */
     private static final int TZ_OFFSET = TimeZone.getDefault().getOffset(System.currentTimeMillis());
-    // Fast decimal exponentiation: pow(10,y) --> POWERS_OF_10[y]
+    /**
+     * 快速十进制求幂:pow(10,y)——> POWERS_OF_10[y]
+     */
     private static final long[] POWERS_OF_TEN = {1L, 10L, 100L, 1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L,
             100_000_000L, 1_000_000_000L, 10_000_000_000L, 100_000_000_000L, 1_000_000_000_000L, 10_000_000_000_000L,
             100_000_000_000_000L, 1_000_000_000_000_000L, 10_000_000_000_000_000L, 100_000_000_000_000_000L,
             1_000_000_000_000_000_000L};
-    // Fast hex character lookup
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-    // Format returned by WMI for DateTime
+    /**
+     * WMI返回的日期时间格式
+     */
     private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern(Fields.PURE_DATETIME_ICE_PATTERN,
             Locale.US);
-
-    private static final String READING_LOG = "Reading file {}";
-    private static final String READ_LOG = "Read {}";
-
-    private static final Platform platform;
     /**
      * 硬件信息
      */
-    private static final HardwareAbstractionLayer hardware;
+    private static final HardwareAbstractionLayer HARDWARE;
     /**
      * 系统信息
      */
-    private static final OperatingSystem os;
+    private static final OperatingSystem OS;
+    /**
+     * 操作系统信息
+     */
+    private static final Platform PLATFORM;
 
     static {
-        multipliers = new HashMap<>();
-        multipliers.put(HZ, 1L);
-        multipliers.put(KHZ, 1_000L);
-        multipliers.put(MHZ, 1_000_000L);
-        multipliers.put(GHZ, 1_000_000_000L);
-        multipliers.put(THZ, 1_000_000_000_000L);
-        multipliers.put(PHZ, 1_000_000_000_000_000L);
-        platform = new Platform();
-        hardware = platform.getHardware();
-        os = platform.getOperatingSystem();
+        MULTIPLIERS = new HashMap<>();
+        MULTIPLIERS.put(HZ, 1L);
+        MULTIPLIERS.put(KHZ, 1_000L);
+        MULTIPLIERS.put(MHZ, 1_000_000L);
+        MULTIPLIERS.put(GHZ, 1_000_000_000L);
+        MULTIPLIERS.put(THZ, 1_000_000_000_000L);
+        MULTIPLIERS.put(PHZ, 1_000_000_000_000_000L);
+        PLATFORM = new Platform();
+        HARDWARE = PLATFORM.getHardware();
+        OS = PLATFORM.getOperatingSystem();
     }
 
     private Builder() {
@@ -168,7 +173,7 @@ public final class Builder {
      * @return 操作系统相关信息
      */
     public static OperatingSystem getOs() {
-        return os;
+        return OS;
     }
 
     /**
@@ -177,7 +182,7 @@ public final class Builder {
      * @return 硬件相关信息
      */
     public static HardwareAbstractionLayer getHardware() {
-        return hardware;
+        return HARDWARE;
     }
 
     /**
@@ -186,7 +191,7 @@ public final class Builder {
      * @return 获取BIOS中计算机相关信息
      */
     public static ComputerSystem getSystem() {
-        return hardware.getComputerSystem();
+        return HARDWARE.getComputerSystem();
     }
 
     /**
@@ -195,7 +200,7 @@ public final class Builder {
      * @return 内存相关信息
      */
     public static GlobalMemory getMemory() {
-        return hardware.getMemory();
+        return HARDWARE.getMemory();
     }
 
     /**
@@ -204,7 +209,7 @@ public final class Builder {
      * @return CPU(处理器)相关信息
      */
     public static CentralProcessor getProcessor() {
-        return hardware.getProcessor();
+        return HARDWARE.getProcessor();
     }
 
 
@@ -307,7 +312,7 @@ public final class Builder {
      * @return 网络相关信息
      */
     public static List<NetworkIF> getNetworkIFs() {
-        return hardware.getNetworkIFs();
+        return HARDWARE.getNetworkIFs();
     }
 
     /**
@@ -371,7 +376,7 @@ public final class Builder {
      * @return 传感器相关信息
      */
     public static Sensors getSensors() {
-        return hardware.getSensors();
+        return HARDWARE.getSensors();
     }
 
     /**
@@ -380,7 +385,7 @@ public final class Builder {
      * @return 磁盘相关信息
      */
     public static List<HWDiskStore> getDiskStores() {
-        return hardware.getDiskStores();
+        return HARDWARE.getDiskStores();
     }
 
     /**
@@ -455,12 +460,12 @@ public final class Builder {
      */
     public static long getLongFromFile(String filename) {
         if (Logger.get().isDebug()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug("Reading file {}", filename);
         }
         List<String> read = FileKit.readLines(filename);
         if (!read.isEmpty()) {
             if (Logger.get().isTrace()) {
-                Logger.trace(READ_LOG, read.get(0));
+                Logger.trace("Read {}", read.get(0));
             }
             return Builder.parseLongOrDefault(read.get(0), 0L);
         }
@@ -486,13 +491,13 @@ public final class Builder {
      */
     public static int getIntFromFile(String filename) {
         if (Logger.get().isDebug()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug("Reading file {}", filename);
         }
         try {
             List<String> read = FileKit.readLines(filename);
             if (!read.isEmpty()) {
                 if (Logger.get().isTrace()) {
-                    Logger.trace(READ_LOG, read.get(0));
+                    Logger.trace("Read {}", read.get(0));
                 }
                 return Integer.parseInt(read.get(0));
             }
@@ -511,12 +516,12 @@ public final class Builder {
      */
     public static String getStringFromFile(String filename) {
         if (Logger.get().isDebug()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug("Reading file {}", filename);
         }
         List<String> read = FileKit.readLines(filename);
         if (!read.isEmpty()) {
             if (Logger.get().isTrace()) {
-                Logger.trace(READ_LOG, read.get(0));
+                Logger.trace("Read {}", read.get(0));
             }
             return read.get(0);
         }
@@ -535,7 +540,7 @@ public final class Builder {
     public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
         Map<String, String> map = new HashMap<>();
         if (Logger.get().isDebug()) {
-            Logger.debug(READING_LOG, filename);
+            Logger.debug("Reading file {}", filename);
         }
         List<String> lines = FileKit.readLines(filename);
         for (String line : lines) {
@@ -793,7 +798,7 @@ public final class Builder {
         Matcher matcher = HERTZ_PATTERN.matcher(hertz.trim());
         if (matcher.find() && matcher.groupCount() == 3) {
             // Regexp enforces #(.#) format so no test for NFE required
-            double value = Double.valueOf(matcher.group(1)) * multipliers.getOrDefault(matcher.group(3), -1L);
+            double value = Double.valueOf(matcher.group(1)) * MULTIPLIERS.getOrDefault(matcher.group(3), -1L);
             if (value >= 0d) {
                 return (long) value;
             }
@@ -883,8 +888,8 @@ public final class Builder {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+            hexChars[j * 2] = Normal.DIGITS_16_UPPER[v >>> 4];
+            hexChars[j * 2 + 1] = Normal.DIGITS_16_UPPER[v & 0x0F];
         }
         return new String(hexChars);
     }

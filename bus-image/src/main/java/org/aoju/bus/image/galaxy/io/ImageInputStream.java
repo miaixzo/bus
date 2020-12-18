@@ -381,7 +381,7 @@ public class ImageInputStream extends FilterInputStream
         while (len > 0) {
             int nelts = Math.min(len, byteBuf.length / 2);
             readFully(byteBuf, 0, nelts * 2);
-            ByteKit.bytesToShorts(byteBuf, s, off, nelts, bigEndian);
+            ByteKit.bytesToShort(byteBuf, s, off, nelts, bigEndian);
             off += nelts;
             len -= nelts;
         }
