@@ -160,7 +160,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             }
         }
         Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
-        return Normal.EMPTY;
+        return "Big Sur";
     }
 
     @Override

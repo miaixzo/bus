@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
 import org.apache.poi.hssf.eventusermodel.*;
@@ -308,7 +309,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 break;
             case NumberRecord.sid: // 数字类型
                 final NumberRecord numrec = (NumberRecord) record;
-                if (ExcelSaxKit.isDateFormat(numrec, formatListener)) {
+                if (Builder.isDateFormat(formatListener.getFormatIndex(numrec), formatListener.getFormatString(numrec))) {
                     // 可能为日期格式
                     value = ExcelSaxKit.getDateValue(numrec.getValue());
                 } else {

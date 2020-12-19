@@ -30,6 +30,7 @@ import org.aoju.bus.core.beans.copier.ValueProvider;
 import org.aoju.bus.core.collection.ArrayIterator;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Http;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.map.CaseInsensitiveMap;
@@ -498,7 +499,7 @@ public class ServletKit {
      */
     public static void write(HttpServletResponse response, File file) {
         final String fileName = file.getName();
-        final String contentType = ObjectKit.defaultIfNull(FileKit.getMimeType(fileName), "application/octet-stream");
+        final String contentType = ObjectKit.defaultIfNull(FileKit.getMimeType(fileName), MediaType.APPLICATION_OCTET_STREAM);
         BufferedInputStream in = null;
         try {
             in = FileKit.getInputStream(file);

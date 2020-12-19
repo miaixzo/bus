@@ -25,23 +25,19 @@
  ********************************************************************************/
 package org.aoju.bus.http.magic;
 
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Header;
 import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.FileKit;
+import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.http.Headers;
 import org.aoju.bus.http.Request;
 import org.aoju.bus.http.bodys.FormBody;
 import org.aoju.bus.http.bodys.MultipartBody;
 import org.aoju.bus.http.bodys.RequestBody;
-import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.FileNameMap;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -65,20 +61,6 @@ public class PostRequest extends HttpRequest {
         super(url, tag, params, encodeParams, headers, fileInfos, postBody, multipartBody, id);
     }
 
-    public static String getMimeType(String path) {
-        FileNameMap fileNameMap = URLConnection.getFileNameMap();
-        String contentTypeFor = null;
-        try {
-            contentTypeFor = fileNameMap.getContentTypeFor(URLEncoder.encode(path, Charset.DEFAULT_UTF_8));
-        } catch (UnsupportedEncodingException e) {
-            Logger.error(e.getMessage(), e);
-        }
-        if (contentTypeFor == null) {
-            contentTypeFor = MediaType.APPLICATION_OCTET_STREAM;
-        }
-        return contentTypeFor;
-    }
-
     @Override
     protected RequestBody buildRequestBody() {
         if (multipartBody != null) {
@@ -93,7 +75,7 @@ public class PostRequest extends HttpRequest {
                 } else if (fileInfo.fileInputStream != null) {
                     fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(getMimeType(fileInfo.fileName)),
+                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMimeType(fileInfo.fileName), MediaType.APPLICATION_OCTET_STREAM)),
                             fileInfo.fileContent);
                 }
                 builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);

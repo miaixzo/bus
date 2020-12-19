@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.office.support.excel;
 
+import org.aoju.bus.core.lang.Align;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
-import org.aoju.bus.office.support.excel.style.Align;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;

@@ -37,6 +37,7 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.unix.aix.AixLibc;
 import org.aoju.bus.health.unix.aix.Perfstat;
+import org.aoju.bus.health.unix.aix.drivers.Uptime;
 import org.aoju.bus.health.unix.aix.drivers.Who;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatConfig;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProcess;
@@ -58,12 +59,16 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class AixOperatingSystem extends AbstractOperatingSystem {
 
-    private static final long BOOTTIME = querySystemBootTime();
+    private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
     Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());
 
-    private static long querySystemBootTime() {
-        return Who.queryBootTime() / 1000L;
+    private static long querySystemBootTimeMillis() {
+        long bootTime = Who.queryBootTime();
+        if (bootTime >= 1000L) {
+            return bootTime;
+        }
+        return System.currentTimeMillis() - Uptime.queryUpTime();
     }
 
     @Override

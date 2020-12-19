@@ -32,6 +32,7 @@ import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.MathKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -409,7 +410,7 @@ public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<E
                 this.numFmtString = ObjectKit.defaultIfNull(
                         xssfCellStyle.getDataFormatString(),
                         BuiltinFormats.getBuiltinFormat(numFmtIndex));
-                if (CellDataType.NUMBER == this.cellDataType && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
+                if (CellDataType.NUMBER == this.cellDataType && Builder.isDateFormat(numFmtIndex, numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }
             }
