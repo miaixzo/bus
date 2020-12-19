@@ -29,7 +29,7 @@ package org.aoju.bus.shade.screw.execute;
  * 执行文档生成
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public interface Execute {

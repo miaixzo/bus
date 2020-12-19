@@ -32,7 +32,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
  * 拦截器，原理同spring拦截器
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8++
  */
 public interface Handler {

@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 /**
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @WebServiceClient(name = "ImagingDocumentSource", wsdlLocation = "/wsdl/XDS-I.b_ImagingDocumentSource.wsdl", targetNamespace = "urn:ihe:rad:xdsi-b:2009")

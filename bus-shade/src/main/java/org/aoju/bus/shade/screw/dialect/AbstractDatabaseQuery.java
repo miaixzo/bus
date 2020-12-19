@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 抽象查询
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public abstract class AbstractDatabaseQuery implements DatabaseQuery {

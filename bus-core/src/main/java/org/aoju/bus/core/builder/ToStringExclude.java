@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 使用这个注释来排除字段被{@link ReflectionToStringBuilder}使用.
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

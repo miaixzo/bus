@@ -33,7 +33,7 @@ import org.aoju.bus.mapper.builder.MapperTemplate;
  * 如BaseSelectMapper,接口纯继承,不包含任何方法
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class EmptyProvider extends MapperTemplate {

@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  * Utility to query logged in users.
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -60,7 +60,7 @@ public final class Who {
      * @return Boot time in milliseconds since the epoch
      */
     public static long queryBootTime() {
-        String s = Executor.getFirstAnswer("who -b");
+        String s = Executor.getFirstAnswer("/usr/bin/who -b");
         Matcher m = BOOT_FORMAT_AIX.matcher(s);
         if (m.matches()) {
             try {

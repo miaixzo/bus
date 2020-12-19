@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.cell.CellEditor;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.aoju.bus.office.support.excel.cell.FormulaCellValue;
@@ -53,7 +54,7 @@ import java.util.Date;
  * Excel表格中单元格工具类
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class CellKit {
@@ -464,9 +465,8 @@ public class CellKit {
 
         final CellStyle style = cell.getCellStyle();
         if (null != style) {
-            final short formatIndex = style.getDataFormat();
             // 判断是否为日期
-            if (isDateType(cell, formatIndex)) {
+            if (Builder.isDateFormat(cell)) {
                 return DateKit.date(cell.getDateCellValue());
             }
 
@@ -481,36 +481,8 @@ public class CellKit {
             }
         }
 
-        // 某些Excel单元格值为double计算结果，可能导致精度问题，通过转换解决精度问题。
+        // 某些Excel单元格值为double计算结果，可能导致精度问题，通过转换解决精度问题
         return Double.parseDouble(NumberToTextConverter.toText(value));
-    }
-
-    /**
-     * 是否为日期格式
-     * 判断方式：
-     *
-     * <pre>
-     * 1、指定序号
-     * 2、org.apache.poi.ss.usermodel.DateUtil.isADateFormat方法判定
-     * </pre>
-     *
-     * @param cell        单元格
-     * @param formatIndex 格式序号
-     * @return 是否为日期格式
-     */
-    private static boolean isDateType(Cell cell, int formatIndex) {
-        // yyyy-MM-dd----- 14
-        // yyyy年m月d日---- 31
-        // yyyy年m月------- 57
-        // m月d日 --------- 58
-        // HH:mm---------- 20
-        // h时mm分 -------- 32
-        if (formatIndex == 14 || formatIndex == 31 ||
-                formatIndex == 57 || formatIndex == 58 ||
-                formatIndex == 20 || formatIndex == 32) {
-            return true;
-        }
-        return DateUtil.isCellDateFormatted(cell);
     }
 
 }

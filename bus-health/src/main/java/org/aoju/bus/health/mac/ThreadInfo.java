@@ -40,6 +40,10 @@ import java.util.stream.Collectors;
 
 /**
  * Utility to query threads for a process
+ *
+ * @author Kimi Liu
+ * @version 6.1.6
+ * @since JDK 1.8+
  */
 @ThreadSafe
 public final class ThreadInfo {

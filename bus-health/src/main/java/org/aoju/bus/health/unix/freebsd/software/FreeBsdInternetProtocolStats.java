@@ -37,6 +37,11 @@ import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.util.function.Supplier;
 
+/**
+ * @author Kimi Liu
+ * @version 6.1.6
+ * @since JDK 1.8+
+ */
 @ThreadSafe
 public class FreeBsdInternetProtocolStats implements InternetProtocolStats {
 

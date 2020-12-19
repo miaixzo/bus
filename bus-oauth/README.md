@@ -16,7 +16,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>6.1.5</version>
+    <version>6.1.6</version>
 </dependency>
 ```
 

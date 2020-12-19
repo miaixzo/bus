@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.sax.*;
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.record.CellValueRecordInterface;
@@ -51,7 +52,7 @@ import java.io.InputStream;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class ExcelSaxKit {
@@ -218,33 +219,6 @@ public class ExcelSaxKit {
     }
 
     /**
-     * 判断数字Record中是否为日期格式
-     *
-     * @param cell           单元格记录
-     * @param formatListener {@link FormatTrackingHSSFListener}
-     * @return 是否为日期格式
-     */
-    public static boolean isDateFormat(CellValueRecordInterface cell, FormatTrackingHSSFListener formatListener) {
-        final int formatIndex = formatListener.getFormatIndex(cell);
-        final String formatString = formatListener.getFormatString(cell);
-        return isDateFormat(formatIndex, formatString);
-    }
-
-    /**
-     * 判断日期格式
-     *
-     * @param formatIndex  格式索引，一般用于内建格式
-     * @param formatString 格式字符串
-     * @return 是否为日期格式
-     */
-    public static boolean isDateFormat(int formatIndex, String formatString) {
-        if (formatIndex == 28 || formatIndex == 31) {
-            return true;
-        }
-        return org.apache.poi.ss.usermodel.DateUtil.isADateFormat(formatIndex, formatString);
-    }
-
-    /**
      * 在Excel03 sax读取中获取日期或数字类型的结果值
      *
      * @param cell           记录单元格
@@ -253,7 +227,7 @@ public class ExcelSaxKit {
      * @return 值，可能为Date或Double或Long
      */
     public static Object getNumberOrDateValue(CellValueRecordInterface cell, double value, FormatTrackingHSSFListener formatListener) {
-        if (isDateFormat(cell, formatListener)) {
+        if (Builder.isDateFormat(formatListener.getFormatIndex(cell), formatListener.getFormatString(cell))) {
             // 可能为日期格式
             return getDateValue(value);
         }

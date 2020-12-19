@@ -40,7 +40,7 @@ import java.util.zip.Deflater;
  * 普通JAR包加解密工具类
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class Jar {

@@ -47,7 +47,7 @@ import java.util.zip.InflaterInputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class ImageInputStream extends FilterInputStream
@@ -381,7 +381,7 @@ public class ImageInputStream extends FilterInputStream
         while (len > 0) {
             int nelts = Math.min(len, byteBuf.length / 2);
             readFully(byteBuf, 0, nelts * 2);
-            ByteKit.bytesToShorts(byteBuf, s, off, nelts, bigEndian);
+            ByteKit.bytesToShort(byteBuf, s, off, nelts, bigEndian);
             off += nelts;
             len -= nelts;
         }

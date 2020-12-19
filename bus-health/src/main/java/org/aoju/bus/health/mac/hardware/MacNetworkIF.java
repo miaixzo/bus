@@ -31,16 +31,16 @@ import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import org.aoju.bus.health.mac.drivers.NetStat;
 
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * MacNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -73,8 +73,11 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         // One time fetch of stats
         final Map<Integer, NetStat.IFdata> data = NetStat.queryIFdata(-1);
-        return Collections.unmodifiableList(getNetworkInterfaces(includeLocalInterfaces).stream()
-                .map(ni -> new MacNetworkIF(ni, data)).collect(Collectors.toList()));
+        List<NetworkIF> ifList = new ArrayList<>();
+        for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
+            ifList.add(new MacNetworkIF(ni, data));
+        }
+        return Collections.unmodifiableList(ifList);
     }
 
     @Override

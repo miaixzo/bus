@@ -6,7 +6,7 @@ import java.awt.*;
  * 缩放常量信息
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class Scale {
@@ -37,7 +37,7 @@ public class Scale {
      * 图片缩略类型
      *
      * @author Kimi Liu
-     * @version 6.1.5
+     * @version 6.1.6
      * @since JDK 1.8+
      */
     public enum Type {

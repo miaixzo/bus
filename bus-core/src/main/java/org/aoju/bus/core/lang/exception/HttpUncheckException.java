@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * HTTP请求异常
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class HttpUncheckException extends UncheckedException {

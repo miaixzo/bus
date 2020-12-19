@@ -46,6 +46,10 @@ import java.util.List;
 
 /**
  * A CPU.
+ *
+ * @author Kimi Liu
+ * @version 6.1.6
+ * @since JDK 1.8+
  */
 @ThreadSafe
 final class MacCentralProcessor extends AbstractCentralProcessor {

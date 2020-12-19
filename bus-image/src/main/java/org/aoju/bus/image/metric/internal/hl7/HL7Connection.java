@@ -32,7 +32,7 @@ import java.io.IOException;
 
 /**
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class HL7Connection implements Closeable {

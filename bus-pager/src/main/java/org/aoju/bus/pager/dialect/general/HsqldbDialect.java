@@ -41,7 +41,7 @@ import java.util.Map;
  * 数据库方言 hsqldb
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class HsqldbDialect extends AbstractSqlDialect {
