@@ -33,6 +33,10 @@ import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 /**
  * Utility to query geom part list
+ *
+ * @author Kimi Liu
+ * @version 6.1.6
+ * @since JDK 1.8+
  */
 @ThreadSafe
 public final class SystemPages {

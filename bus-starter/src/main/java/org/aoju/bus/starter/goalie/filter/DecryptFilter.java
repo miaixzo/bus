@@ -51,7 +51,7 @@ import java.util.Map;
  * 数据解密
  *
  * @author Justubborn
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @Component

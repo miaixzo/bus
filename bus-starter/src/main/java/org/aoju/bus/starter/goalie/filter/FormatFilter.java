@@ -50,7 +50,7 @@ import java.nio.charset.Charset;
  * 格式化
  *
  * @author Justubborn
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @Component

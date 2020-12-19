@@ -59,7 +59,7 @@ import java.nio.charset.StandardCharsets;
  * 数据加密
  *
  * @author Justubborn
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @Component

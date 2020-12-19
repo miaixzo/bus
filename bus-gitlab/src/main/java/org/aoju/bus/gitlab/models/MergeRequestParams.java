@@ -35,7 +35,7 @@ import java.util.List;
  * This class provides the form parameters for creating and updating merge requests.
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class MergeRequestParams {

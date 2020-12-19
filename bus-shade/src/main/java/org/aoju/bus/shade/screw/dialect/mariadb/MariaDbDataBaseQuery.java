@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * mariadb 数据库查询
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {

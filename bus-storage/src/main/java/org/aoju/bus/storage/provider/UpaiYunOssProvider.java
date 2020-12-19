@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * 存储服务-又拍云
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class UpaiYunOssProvider extends AbstractProvider {

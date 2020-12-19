@@ -36,7 +36,7 @@ import java.io.IOException;
  * 无效,在以后的读取中抛出{@link IllegalStateException}
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 final class PeekSource implements Source {

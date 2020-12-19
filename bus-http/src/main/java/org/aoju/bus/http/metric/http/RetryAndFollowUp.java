@@ -55,7 +55,7 @@ import java.security.cert.CertificateException;
  * 如果调用被取消，它可能会抛出{@link IOException}
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public final class RetryAndFollowUp implements Interceptor {

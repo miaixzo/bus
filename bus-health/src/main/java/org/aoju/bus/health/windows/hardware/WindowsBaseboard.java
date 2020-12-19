@@ -39,6 +39,10 @@ import java.util.function.Supplier;
 
 /**
  * Baseboard data obtained from WMI
+ *
+ * @author Kimi Liu
+ * @version 6.1.6
+ * @since JDK 1.8+
  */
 @Immutable
 final class WindowsBaseboard extends AbstractBaseboard {
