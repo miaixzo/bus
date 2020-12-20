@@ -23,101 +23,62 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.filter;
+package org.aoju.bus.goalie.filter;
 
-import com.alibaba.fastjson.JSON;
 import org.aoju.bus.base.entity.Message;
-import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.toolkit.ObjectKit;
-import org.aoju.bus.crypto.Mode;
-import org.aoju.bus.crypto.Padding;
-import org.aoju.bus.crypto.symmetric.AES;
-import org.aoju.bus.crypto.symmetric.Symmetric;
+import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Context;
-import org.aoju.bus.starter.goalie.GoalieConfiguration;
-import org.aoju.bus.starter.goalie.GoalieProperties;
+import org.aoju.bus.logger.Logger;
 import org.reactivestreams.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 /**
- * 数据加密
+ * 格式化
  *
  * @author Justubborn
  * @version 6.1.6
  * @since JDK 1.8+
  */
-@Component
-@ConditionalOnBean(GoalieConfiguration.class)
-@Order(Ordered.LOWEST_PRECEDENCE - 1)
-public class EncryptFilter implements WebFilter {
-
-    @Autowired
-    GoalieProperties.Server.Encrypt encrypt;
-
-    private Symmetric symmetric;
-
-    @PostConstruct
-    public void init() {
-        if ("AES".equals(encrypt.getType())) {
-            symmetric = new AES(Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(), encrypt.getOffset().getBytes());
-        }
-    }
+@Order(Ordered.LOWEST_PRECEDENCE - 2)
+public class FormatFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-
-        if (encrypt.isEnabled() && !Context.Format.binary.equals(Context.get(exchange).getFormat())) {
+        Context context = Context.get(exchange);
+        if (!Context.Format.binary.equals(context.getFormat())) {
             exchange = exchange.mutate().response(process(exchange)).build();
         }
         return chain.filter(exchange);
     }
 
-    /**
-     * 加密
-     *
-     * @param message 消息
-     */
-    private void doEncrypt(Message message) {
-        if (ObjectKit.isNotNull(message.getData())) {
-            if ("AES".equals(encrypt.getType())) {
-                message.setData(symmetric.encryptBase64(JSON.toJSONString(message.getData()), Charset.UTF_8));
-            }
-
-        }
-    }
-
     private ServerHttpResponseDecorator process(ServerWebExchange exchange) {
+        Context context = Context.get(exchange);
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                boolean isSign = Context.get(exchange).getAssets().isSign();
-                if (isSign) {
-                    Flux<? extends DataBuffer> flux = Flux.from(body);
-                    return super.writeWith(DataBufferUtils.join(flux).map(dataBuffer -> {
-                        CharBuffer charBuffer = StandardCharsets.UTF_8.decode(dataBuffer.asByteBuffer());
-                        DataBufferUtils.release(dataBuffer);
-                        Message message = JSON.parseObject(charBuffer.toString(), Message.class);
-                        doEncrypt(message);
-                        return bufferFactory().wrap(JSON.toJSONString(message).getBytes());
-                    }));
-                }
-                return super.writeWith(body);
+                Flux<? extends DataBuffer> flux = Flux.from(body);
+                return super.writeWith(DataBufferUtils.join(flux).map(dataBuffer -> {
+                    exchange.getResponse().getHeaders().setContentType(context.getFormat().getMediaType());
+
+                    String bodyString = Charset.defaultCharset().decode(dataBuffer.asByteBuffer()).toString();
+                    Message message = JsonKit.toPojo(bodyString, Message.class);
+                    String formatBody = context.getFormat().getProvider().serialize(message);
+                    if (Logger.get().isTrace()) {
+                        Logger.trace("traceId:{},resp <= {}", exchange.getLogPrefix(), formatBody);
+                    }
+                    return bufferFactory().wrap(formatBody.getBytes());
+                }));
             }
         };
     }

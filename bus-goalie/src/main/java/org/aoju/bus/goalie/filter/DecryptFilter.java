@@ -23,69 +23,76 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.filter;
+package org.aoju.bus.goalie.filter;
 
-import org.aoju.bus.base.entity.Message;
-import org.aoju.bus.extra.json.JsonKit;
+import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.crypto.Mode;
+import org.aoju.bus.crypto.Padding;
+import org.aoju.bus.crypto.symmetric.AES;
+import org.aoju.bus.crypto.symmetric.Symmetric;
 import org.aoju.bus.goalie.Context;
-import org.aoju.bus.logger.Logger;
-import org.aoju.bus.starter.goalie.GoalieConfiguration;
-import org.reactivestreams.Publisher;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.aoju.bus.goalie.ServerConfig;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.Charset;
+import javax.annotation.PostConstruct;
+import java.util.Map;
 
 /**
- * 格式化
+ * 数据解密
  *
  * @author Justubborn
  * @version 6.1.6
  * @since JDK 1.8+
  */
-@Component
-@ConditionalOnBean(GoalieConfiguration.class)
-@Order(Ordered.LOWEST_PRECEDENCE - 2)
-public class FormatFilter implements WebFilter {
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
+public class DecryptFilter implements WebFilter {
+
+    private final ServerConfig.Decrypt decrypt;
+
+    public DecryptFilter(ServerConfig.Decrypt decrypt) {
+        this.decrypt = decrypt;
+    }
+
+    private Symmetric symmetric;
+
+    @PostConstruct
+    public void init() {
+        if ("AES".equals(decrypt.getType())) {
+            symmetric = new AES(Mode.CBC, Padding.PKCS7Padding, decrypt.getKey().getBytes(), decrypt.getOffset().getBytes());
+        }
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        Context context = Context.get(exchange);
-        if (!Context.Format.binary.equals(context.getFormat())) {
-            exchange = exchange.mutate().response(process(exchange)).build();
+        ServerWebExchange.Builder builder = exchange.mutate();
+        if (decrypt.isEnabled() && Context.get(exchange).isNeedDecrypt()) {
+            doDecrypt(Context.get(exchange).getRequestMap());
         }
-        return chain.filter(exchange);
+
+        return chain.filter(builder.build());
     }
 
-    private ServerHttpResponseDecorator process(ServerWebExchange exchange) {
-        Context context = Context.get(exchange);
-        return new ServerHttpResponseDecorator(exchange.getResponse()) {
-            @Override
-            public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                Flux<? extends DataBuffer> flux = Flux.from(body);
-                return super.writeWith(DataBufferUtils.join(flux).map(dataBuffer -> {
-                    exchange.getResponse().getHeaders().setContentType(context.getFormat().getMediaType());
-
-                    String bodyString = Charset.defaultCharset().decode(dataBuffer.asByteBuffer()).toString();
-                    Message message = JsonKit.toPojo(bodyString, Message.class);
-                    String formatBody = context.getFormat().getProvider().serialize(message);
-                    if(Logger.get().isTrace()) {
-                        Logger.trace("traceId:{},resp <= {}", exchange.getLogPrefix(), formatBody);
-                    }
-                    return bufferFactory().wrap(formatBody.getBytes());
-                }));
+    /**
+     * 解密
+     *
+     * @param map 参数
+     */
+    private void doDecrypt(Map<String, String> map) {
+        if (null == symmetric) {
+            return;
+        }
+        map.forEach((k, v) -> {
+            if (StringKit.isNotBlank(v)) {
+                map.put(k, symmetric.decryptStr(v, Charset.UTF_8));
             }
-        };
+
+        });
     }
 
 }

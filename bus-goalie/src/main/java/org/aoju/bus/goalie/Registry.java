@@ -37,18 +37,10 @@ import java.util.Set;
 public interface Registry {
 
     /**
-     * 注入服务
-     *
-     * @param athlete 运动员
-     */
-    void setAthlete(Athlete athlete);
-
-    /**
      * 初始化
      *
-     * @return 路由
      */
-    Set<Assets> init();
+    void init();
 
     /**
      * 添加
@@ -79,4 +71,9 @@ public interface Registry {
      */
     void refresh();
 
+    /**
+     * 获取路由
+     * @return 路由列表
+     */
+    Set<Assets> getAssets();
 }

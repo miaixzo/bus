@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.filter;
+package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.core.lang.exception.BusinessException;
@@ -32,8 +32,6 @@ import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.starter.goalie.GoalieConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +42,6 @@ import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
-import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -62,8 +59,6 @@ import java.util.Objects;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-@Component
-@ConditionalOnBean(GoalieConfiguration.class)
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class PrimaryFilter implements WebFilter {
 

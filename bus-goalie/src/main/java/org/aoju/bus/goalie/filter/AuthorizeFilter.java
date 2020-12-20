@@ -23,26 +23,22 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.filter;
+package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.OAuth2;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.BeanKit;
 import org.aoju.bus.goalie.Assets;
-import org.aoju.bus.goalie.Athlete;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
+import org.aoju.bus.goalie.Registry;
 import org.aoju.bus.goalie.metric.Authorize;
 import org.aoju.bus.goalie.metric.Delegate;
-import org.aoju.bus.starter.goalie.GoalieConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -60,15 +56,17 @@ import java.util.stream.Collectors;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-@Component
-@ConditionalOnBean(GoalieConfiguration.class)
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class AuthorizeFilter implements WebFilter {
 
-    @Autowired
-    Athlete athlete;
-    @Autowired
-    Authorize authorize;
+    private final Authorize authorize;
+
+    private final Registry registry;
+
+    public AuthorizeFilter(Authorize authorize, Registry registry) {
+        this.authorize = authorize;
+        this.registry = registry;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -79,7 +77,7 @@ public class AuthorizeFilter implements WebFilter {
 
         String method = params.get(Consts.METHOD);
         String version = params.get(Consts.VERSION);
-        List<Assets> assetsList = athlete.getAssets().parallelStream()
+        List<Assets> assetsList = registry.getAssets().parallelStream()
             .filter(asset -> Objects.equals(method, asset.getMethod())).collect(Collectors.toList());
 
         if (assetsList.size() < 1) {
