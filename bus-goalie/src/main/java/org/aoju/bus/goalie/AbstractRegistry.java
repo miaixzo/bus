@@ -9,7 +9,8 @@ import java.util.Set;
  * 抽象注册类
  *
  * @author Justubborn
- * @since 2020/12/20
+ * @version 6.1.6
+ * @since JDK 1.8+
  */
 public abstract class AbstractRegistry implements Registry, InitializingBean {
 
