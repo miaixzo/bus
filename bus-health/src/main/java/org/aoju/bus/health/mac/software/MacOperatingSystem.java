@@ -48,7 +48,7 @@ import java.util.*;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -160,7 +160,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             }
         }
         Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
-        return Normal.EMPTY;
+        return "Big Sur";
     }
 
     @Override

@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -319,9 +319,8 @@ public class SolarisOSProcess extends AbstractOSProcess {
 
     @Override
     public List<OSThread> getThreadDetails() {
-        List<String> threadListInfo1 = Executor
-                .runNative("ps -o lwp,s,etime,stime,time,addr,pri -p " + getProcessID());
-        List<String> threadListInfo2 = Executor.runNative("prstat -L -v -p " + getProcessID());
+        List<String> threadListInfo1 = Executor.runNative("ps -o lwp,s,etime,stime,time,addr,pri -p " + getProcessID());
+        List<String> threadListInfo2 = Executor.runNative("prstat -L -v -p " + getProcessID() + " 1 1");
         Map<Integer, String[]> threadMap = parseAndMergeThreadInfo(threadListInfo1, threadListInfo2);
         if (threadMap.keySet().size() > 1) {
             return threadMap.entrySet().stream().map(entry -> new SolarisOSThread(getProcessID(), entry.getValue()))

@@ -32,7 +32,7 @@ import lombok.Data;
  * 返回消息
  *
  * @author Justubborn
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK1.8+
  */
 @Data

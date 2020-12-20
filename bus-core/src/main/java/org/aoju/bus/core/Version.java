@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * Version is Licensed under the MIT License, Version 3.0.0 (the "License")
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class Version {
@@ -61,7 +61,7 @@ public class Version {
      * @return 项目的版本号
      */
     public static String get() {
-        return "6.1.5.RELEASE";
+        return "6.1.6.RELEASE";
     }
 
     /**

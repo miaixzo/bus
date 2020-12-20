@@ -28,6 +28,7 @@ package org.aoju.bus.starter.goalie.filter;
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Context;
+import org.aoju.bus.logger.Logger;
 import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.reactivestreams.Publisher;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -49,7 +50,7 @@ import java.nio.charset.Charset;
  * 格式化
  *
  * @author Justubborn
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @Component
@@ -78,6 +79,9 @@ public class FormatFilter implements WebFilter {
                     String bodyString = Charset.defaultCharset().decode(dataBuffer.asByteBuffer()).toString();
                     Message message = JsonKit.toPojo(bodyString, Message.class);
                     String formatBody = context.getFormat().getProvider().serialize(message);
+                    if(Logger.get().isTrace()) {
+                        Logger.trace("traceId:{},resp <= {}", exchange.getLogPrefix(), formatBody);
+                    }
                     return bufferFactory().wrap(formatBody.getBytes());
                 }));
             }

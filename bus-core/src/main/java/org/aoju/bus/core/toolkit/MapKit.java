@@ -40,7 +40,7 @@ import java.util.Map.Entry;
  * Map相关工具类
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class MapKit {
@@ -1028,6 +1028,34 @@ public class MapKit {
      */
     public static <T> T get(Map<?, ?> map, Object key, Class<T> type, T defaultValue) {
         return null == map ? null : Convert.convert(type, map.get(key), defaultValue);
+    }
+
+    /**
+     * 获取Map指定key的值，并转换为指定类型，此方法在转换失败后不抛异常，返回null。
+     *
+     * @param <T>          目标值类型
+     * @param map          Map
+     * @param key          键
+     * @param type         值类型
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static <T> T getQuietly(Map<?, ?> map, Object key, Class<T> type, T defaultValue) {
+        return null == map ? null : Convert.convertQuietly(type, map.get(key), defaultValue);
+    }
+
+    /**
+     * 获取Map指定key的值，并转换为指定类型，转换失败后返回null，不抛异常
+     *
+     * @param <T>          目标值类型
+     * @param map          Map
+     * @param key          键
+     * @param type         值类型
+     * @param defaultValue 默认值
+     * @return 值
+     */
+    public static <T> T getQuietly(Map<?, ?> map, Object key, Types<T> type, T defaultValue) {
+        return null == map ? null : Convert.convertQuietly(type, map.get(key), defaultValue);
     }
 
     /**

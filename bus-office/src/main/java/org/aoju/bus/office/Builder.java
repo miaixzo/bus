@@ -38,6 +38,9 @@ import org.aoju.bus.office.magic.Lo;
 import org.aoju.bus.office.magic.UnoUrl;
 import org.aoju.bus.office.magic.family.FamilyType;
 import org.aoju.bus.office.process.*;
+import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.ExcelNumberFormat;
 
 import java.io.File;
 import java.util.*;
@@ -47,7 +50,7 @@ import java.util.stream.Stream;
  * 为office提供辅助功能.
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -400,6 +403,48 @@ public final class Builder {
         if (!workingDir.canWrite()) {
             throw new IllegalStateException("workingDir '" + workingDir + "' cannot be written to");
         }
+    }
+
+    /**
+     * 某些特殊的自定义日期格式
+     */
+    private static final int[] customFormats = new int[]{28, 30, 31, 32, 33, 55, 56, 57, 58};
+
+    public static boolean isDateFormat(Cell cell) {
+        return isDateFormat(cell, null);
+    }
+
+    /**
+     * 判断是否日期格式
+     *
+     * @param cell        单元格
+     * @param cfEvaluator {@link ConditionalFormattingEvaluator}
+     * @return 是否日期格式
+     */
+    public static boolean isDateFormat(Cell cell, ConditionalFormattingEvaluator cfEvaluator) {
+        final ExcelNumberFormat nf = ExcelNumberFormat.from(cell, cfEvaluator);
+        return isDateFormat(nf.getIdx(), nf.getFormat());
+    }
+
+    /**
+     * 判断日期格式
+     *
+     * @param formatIndex  格式索引，一般用于内建格式
+     * @param formatString 格式字符串
+     * @return 是否为日期格式
+     */
+    public static boolean isDateFormat(int formatIndex, String formatString) {
+        if (ArrayKit.contains(customFormats, formatIndex)) {
+            return true;
+        }
+        // 自定义格式判断
+        if (StringKit.isNotEmpty(formatString) &&
+                StringKit.containsAny(formatString, "周", "星期", "aa")) {
+            // aa  -> 周一
+            // aaa -> 星期一
+            return true;
+        }
+        return org.apache.poi.ss.usermodel.DateUtil.isADateFormat(formatIndex, formatString);
     }
 
     private static File findOfficeHome(final String executablePath, final String... homePaths) {

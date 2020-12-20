@@ -38,6 +38,10 @@ import java.util.List;
 
 /**
  * Utility to query logged in users.
+ *
+ * @author Kimi Liu
+ * @version 6.1.6
+ * @since JDK 1.8+
  */
 @ThreadSafe
 public final class Who {

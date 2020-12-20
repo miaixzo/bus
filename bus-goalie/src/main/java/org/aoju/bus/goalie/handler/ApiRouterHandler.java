@@ -50,7 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * router handler
  *
  * @author Justubborn
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class ApiRouterHandler {
@@ -73,29 +73,29 @@ public class ApiRouterHandler {
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.setAll(params);
         if (HttpMethod.GET.equals(assets.getHttpMethod())) {
-
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-                .method(assets.getHttpMethod())
-                .uri(builder.build().encode().toUri())
-                .headers((headers) -> request.headers());
+            .method(assets.getHttpMethod())
+            .uri(builder.build().encode().toUri())
+            .headers((headers) -> request.headers());
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             if (request.headers().contentType().isPresent()) {
                 MediaType mediaType = request.headers().contentType().get();
-                String contentType = mediaType.toString().toLowerCase();
-                // 文件
-                if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+                //文件
+                if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>();
                     partMap.setAll(context.getFilePartMap());
-                    bodySpec.body(BodyInserters.fromMultipartData(partMap).with(new LinkedMultiValueMap(multiValueMap)));
+                    BodyInserters.MultipartInserter multipartInserter = BodyInserters.fromMultipartData(partMap);
+                    params.forEach(multipartInserter::with);
+                    bodySpec.body(multipartInserter);
                 } else {
                     bodySpec.bodyValue(multiValueMap);
                 }
             }
         }
         Flux<DataBuffer> flux = bodySpec
-                .retrieve().bodyToFlux(DataBuffer.class);
+            .retrieve().bodyToFlux(DataBuffer.class);
         return ServerResponse.ok().body(flux, DataBuffer.class);
     }
 

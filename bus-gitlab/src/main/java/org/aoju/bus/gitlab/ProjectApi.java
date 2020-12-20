@@ -46,7 +46,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API project calls.
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @see <a href="https://docs.gitlab.com/ce/api/projects.html">Projects API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/project_statistics.html">Project statistics API</a>
  * @see <a href="https://docs.gitlab.com/ce/api/members.html">Group and project members API at GitLab</a>

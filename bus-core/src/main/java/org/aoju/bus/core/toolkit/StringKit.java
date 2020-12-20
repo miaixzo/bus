@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -5397,7 +5397,7 @@ public class StringKit {
         if (null == str) {
             return null;
         }
-        if (str.length() <= maxLength) {
+        if (maxLength <= 0 || str.length() <= maxLength) {
             return str.toString();
         }
         int w = maxLength / 2;

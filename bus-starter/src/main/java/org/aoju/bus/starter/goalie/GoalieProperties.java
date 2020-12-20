@@ -34,7 +34,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * 路由配置
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @Data
@@ -60,6 +60,7 @@ public class GoalieProperties {
             private boolean enabled;
             private String key;
             private String type;
+            private String offset;
         }
 
         @Data
@@ -68,6 +69,7 @@ public class GoalieProperties {
             private boolean enabled;
             private String key;
             private String type;
+            private String offset;
         }
     }
 

@@ -51,7 +51,7 @@ import java.util.List;
  * 路由自动配置
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8++
  */
 @ConditionalOnWebApplication
@@ -80,8 +80,8 @@ public class GoalieConfiguration {
         ApiRouterHandler apiRouterHandler = new ApiRouterHandler();
 
         RouterFunction<ServerResponse> routerFunction = RouterFunctions
-                .route(RequestPredicates.path(goalieProperties.getServer().getPath())
-                        .and(RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
+            .route(RequestPredicates.path(goalieProperties.getServer().getPath())
+                .and(RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
 
         HandlerStrategies.Builder builder = HandlerStrategies.builder();
 
@@ -99,7 +99,7 @@ public class GoalieConfiguration {
         HttpHandler handler = RouterFunctions.toHttpHandler(routerFunction, handlerStrategies);
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
         HttpServer server = HttpServer.create()
-                .port(goalieProperties.getServer().getPort()).handle(adapter);
+            .port(goalieProperties.getServer().getPort()).handle(adapter);
 
         return new Athlete(server, assetRegistries);
     }

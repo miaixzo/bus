@@ -32,6 +32,7 @@ import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.core.toolkit.MathKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.office.Builder;
 import org.aoju.bus.office.support.excel.ExcelSaxKit;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -57,7 +58,7 @@ import java.util.List;
  * Excel2007格式说明见：http://www.cnblogs.com/wangmingshun/p/6654143.html
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<Excel07SaxReader> {
@@ -409,7 +410,7 @@ public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<E
                 this.numFmtString = ObjectKit.defaultIfNull(
                         xssfCellStyle.getDataFormatString(),
                         BuiltinFormats.getBuiltinFormat(numFmtIndex));
-                if (CellDataType.NUMBER == this.cellDataType && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
+                if (CellDataType.NUMBER == this.cellDataType && Builder.isDateFormat(numFmtIndex, numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }
             }

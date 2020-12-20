@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 限流参数
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @Target(ElementType.FIELD)

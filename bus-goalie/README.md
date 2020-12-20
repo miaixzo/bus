@@ -8,14 +8,13 @@
 
 ## 功能特点
 
-- 开箱即用，写完业务代码直接启动服务即可使用，无需其它配置。
-- 参数自动校验，支持国际化参数校验（JSR-303）。
-- 校验功能和结果返回功能实现各自独立，方便自定义实现或扩展。
-- 采用注解来定义接口，维护简单方便。
-- 支持i18n国际化消息返回。
-- 自动生成文档页面，类似swagger。
-- 采用数字签名进行参数验证，签名算法见：签名算法.txt
-- 采用appKey-secret形式接入平台，即需要给接入方提供一个appKey和secret。
+- 开箱即用，写完业务代码直接启动服务即可使用，无需其它配置
+- 参数自动校验，支持国际化参数校验（JSR-303）
+- 校验功能和结果返回功能实现各自独立，方便自定义实现或扩展
+- 采用注解来定义接口，维护简单方便
+- 支持i18n国际化消息返回
+- 采用数字签名进行参数验证
+- 采用appKey、secret形式接入平台，即需要给接入方提供一个appKey和secret
 
 ## 技术点
 
@@ -28,51 +27,13 @@
 - token（jwt、accessToken）
 - SDK（Java、C#、JavaScript）
 
-## 示例
+#### 功能①按参数路由：
 
-- 定义接口：
-
-```java
-@Api(name = "goods.get")
-public Goods getGoods(GoodsParam param) {
-    Goods goods = new Goods();
-    goods.setId(1L);
-    goods.setGoods_name("iPhoneX");
-    goods.setPrice(new BigDecimal(9000));
-    return goods;
-}
-```
-
-- 请求数据：
-
-```json
-{
-  "name": "goods.get",
-  "version": "",
-  "app_key": "test",
-  "data": "%7B%22goodsPrice%22%3A%22%22%2C%22goods_name%22%3A%22iphoneX%22%7D",
-  "timestamp": "2018-03-22 13:48:58",
-  "format": "json",
-  "sign": "C946ACA5AC95B1790511764A10E675B7"
-}
-```
-
-- 返回结果：
-
-```json
-{
-    "code":"0",
-    "data":{
-        "goods_name":"iPhoneX",
-        "id":1,
-        "price":9000
-    }
-}
-```
+#### 功能②按版本路由：
 
 - **@ApiVersion**
 
-> * 通过此注解，自动为requestmappinginfo合并一个以版本号开头的路径；建议：大版本在类上配置，小版本可以通过配置在方法上，此时将替换类上面的大版本配置
+> * 通过此注解，自动为requestMappinginfo合并一个以版本号开头的路径；建议：大版本在类上配置，小版本可以通过配置在方法上，此时将替换类上面的大版本配置
 
 - **@ClientVersion**
 
@@ -136,16 +97,5 @@ public class TController {
     }
 
 }
-```
-
-### reactor server config
-
-- .e.g
-
-```
-extend:
-    server:
-        port: #start port
-        path: # router patten
 ```
         

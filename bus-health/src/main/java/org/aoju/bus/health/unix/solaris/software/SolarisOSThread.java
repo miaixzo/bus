@@ -36,7 +36,7 @@ import java.util.Optional;
 
 /**
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class SolarisOSThread extends AbstractOSThread {
@@ -103,9 +103,8 @@ public class SolarisOSThread extends AbstractOSThread {
 
     @Override
     public boolean updateAttributes() {
-        List<String> threadListInfo1 = Executor
-                .runNative("ps -o lwp,s,etime,stime,time,addr,pri -p " + getOwningProcessId());
-        List<String> threadListInfo2 = Executor.runNative("prstat -L -v -p " + getOwningProcessId());
+        List<String> threadListInfo1 = Executor.runNative("ps -o lwp,s,etime,stime,time,addr,pri -p " + getOwningProcessId());
+        List<String> threadListInfo2 = Executor.runNative("prstat -L -v -p " + getOwningProcessId() + " 1 1");
         Map<Integer, String[]> threadMap = SolarisOSProcess.parseAndMergeThreadInfo(threadListInfo1, threadListInfo2);
         if (threadMap.keySet().size() > 1) {
             Optional<String[]> split = threadMap.entrySet().stream()

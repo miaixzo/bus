@@ -35,7 +35,7 @@ import java.util.Enumeration;
  * 包名表达式资源加载器
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class PkgLoader extends DelegateLoader implements Loader {

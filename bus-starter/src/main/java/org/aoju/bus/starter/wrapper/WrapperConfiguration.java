@@ -46,7 +46,7 @@ import java.io.IOException;
  * Xss/重复读取等配置
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @EnableConfigurationProperties({WrapperProperties.class})

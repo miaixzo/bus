@@ -45,7 +45,7 @@ import java.security.GeneralSecurityException;
 
 /**
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class MoveSCU extends Device implements AutoCloseable {

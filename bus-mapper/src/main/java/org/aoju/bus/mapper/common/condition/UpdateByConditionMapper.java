@@ -34,7 +34,7 @@ import org.apache.ibatis.annotations.UpdateProvider;
  * 通用Mapper接口,Condition查询
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public interface UpdateByConditionMapper<T> {

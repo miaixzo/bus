@@ -39,9 +39,7 @@ import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.io.*;
 import java.lang.System;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DecimalFormat;
@@ -55,7 +53,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -3534,11 +3532,31 @@ public class FileKit {
     /**
      * 根据文件扩展名获得MimeType
      *
-     * @param filePath 文件路径或文件名
+     * @param path 文件路径或文件名
      * @return MimeType
      */
-    public static String getMimeType(String filePath) {
-        return URLConnection.getFileNameMap().getContentTypeFor(filePath);
+    public static String getMimeType(String path) {
+        try {
+            FileNameMap fileNameMap = URLConnection.getFileNameMap();
+            return fileNameMap.getContentTypeFor(URLEncoder.encode(path, Charset.DEFAULT_UTF_8));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获得文件的MimeType
+     *
+     * @param file 文件
+     * @return MimeType
+     */
+    public static String getMimeType(Path file) {
+        try {
+            return Files.probeContentType(file);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
     }
 
     /**
@@ -3909,6 +3927,41 @@ public class FileKit {
     }
 
     /**
+     * 判断给定的目录是否为给定文件或文件夹的子目录
+     *
+     * @param parent 父目录
+     * @param sub    子目录
+     * @return 子目录是否为父目录的子目录
+     */
+    public static boolean isSub(File parent, File sub) {
+        Assert.notNull(parent);
+        Assert.notNull(sub);
+        return isSub(parent.toPath(), sub.toPath());
+    }
+
+    /**
+     * 判断给定的目录是否为给定文件或文件夹的子目录
+     *
+     * @param parent 父目录
+     * @param sub    子目录
+     * @return 子目录是否为父目录的子目录
+     */
+    public static boolean isSub(Path parent, Path sub) {
+        return toAbsNormal(sub).startsWith(toAbsNormal(parent));
+    }
+
+    /**
+     * 将Path路径转换为标准的绝对路径
+     *
+     * @param path 文件或目录Path
+     * @return 转换后的Path
+     */
+    public static Path toAbsNormal(Path path) {
+        Assert.notNull(path);
+        return path.toAbsolutePath().normalize();
+    }
+
+    /**
      * 根据压缩包中的路径构建目录结构，在Win下直接构建，在Linux下拆分路径单独构建
      *
      * @param outFile  最外部路径
@@ -3929,7 +3982,6 @@ public class FileKit {
                 //由于路径拆分，slip不检查，在最后一步检查
                 outFile = new File(outFile, pathParts.get(i));
             }
-            //noinspection ResultOfMethodCallIgnored
             outFile.mkdirs();
             // 最后一个部分如果非空，作为文件名
             fileName = pathParts.get(lastPartIndex);

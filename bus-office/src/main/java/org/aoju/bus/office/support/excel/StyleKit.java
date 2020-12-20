@@ -32,7 +32,7 @@ import org.apache.poi.ss.usermodel.*;
  * Excel样式工具类
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 public class StyleKit {
@@ -205,6 +205,18 @@ public class StyleKit {
             return null;
         }
         return workbook.createCellStyle();
+    }
+
+    /**
+     * 创建数据格式并获取格式
+     *
+     * @param workbook 工作簿
+     * @param format   数据格式
+     * @return 数据格式
+     */
+    public Short getFormat(Workbook workbook, String format) {
+        final DataFormat dataFormat = workbook.createDataFormat();
+        return dataFormat.getFormat(format);
     }
 
 }

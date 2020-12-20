@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 6.1.5
+ * @version 6.1.6
  * @since JDK 1.8+
  */
 @ThreadSafe
