@@ -818,6 +818,8 @@ public class Solar extends Holiday {
 
         /**
          * 通过日期初始化
+         *
+         * @param date 日期
          */
         public Semester(Date date) {
             Calendar c = Calendar.getInstance();
@@ -828,6 +830,8 @@ public class Solar extends Holiday {
 
         /**
          * 通过日历初始化
+         *
+         * @param calendar 日历
          */
         public Semester(Calendar calendar) {
             year = calendar.get(Calendar.YEAR);
@@ -1088,6 +1092,7 @@ public class Solar extends Holiday {
         /**
          * 通过日期初始化
          *
+         * @param date  日期
          * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
          */
         public Week(Date date, int start) {
@@ -1102,7 +1107,8 @@ public class Solar extends Holiday {
         /**
          * 通过日历初始化
          *
-         * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
+         * @param calendar 日历
+         * @param start    星期几作为一周的开始，1234560分别代表星期一至星期天
          */
         public Week(Calendar calendar, int start) {
             year = calendar.get(Calendar.YEAR);
@@ -1367,6 +1373,7 @@ public class Solar extends Holiday {
 
         /**
          * 通过日期初始化
+         * @param date 日期
          */
         public Year(Date date) {
             Calendar c = Calendar.getInstance();
@@ -1376,6 +1383,7 @@ public class Solar extends Holiday {
 
         /**
          * 通过日历初始化
+         *  @param calendar 日历
          */
         public Year(Calendar calendar) {
             year = calendar.get(Calendar.YEAR);
@@ -1494,6 +1502,8 @@ public class Solar extends Holiday {
 
         /**
          * 通过日期初始化
+         *
+         * @param date 日期
          */
         public Season(Date date) {
             Calendar c = Calendar.getInstance();
@@ -1504,6 +1514,8 @@ public class Solar extends Holiday {
 
         /**
          * 通过日历初始化
+         *
+         * @param calendar 日历
          */
         public Season(Calendar calendar) {
             year = calendar.get(Calendar.YEAR);
@@ -1643,6 +1655,8 @@ public class Solar extends Holiday {
 
         /**
          * 通过日期初始化
+         *
+         * @param date 日期
          */
         public Month(Date date) {
             Calendar c = Calendar.getInstance();
@@ -1653,6 +1667,8 @@ public class Solar extends Holiday {
 
         /**
          * 通过日历初始化
+         *
+         * @param calendar 日历
          */
         public Month(Calendar calendar) {
             year = calendar.get(Calendar.YEAR);
