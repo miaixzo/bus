@@ -26,6 +26,7 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.Constants.*;
 import org.aoju.bus.gitlab.GitLabApiForm;
@@ -357,7 +358,7 @@ public class MergeRequestFilter {
                 .withParam("sort", sort)
                 .withParam("milestone", milestone)
                 .withParam("view", (simpleView != null && simpleView ? "simple" : null))
-                .withParam("labels", (labels != null ? String.join(",", labels) : null))
+                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("created_after", createdAfter)
                 .withParam("created_before", createdBefore)
                 .withParam("updated_after", updatedAfter)

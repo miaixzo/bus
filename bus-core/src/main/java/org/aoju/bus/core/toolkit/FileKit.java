@@ -1051,7 +1051,7 @@ public class FileKit {
         if (isRetainExt) {
             final String extName = extName(file);
             if (StringKit.isNotBlank(extName)) {
-                newName = newName.concat(".").concat(extName);
+                newName = newName.concat(Symbol.DOT).concat(extName);
             }
         }
         return rename(file.toPath(), newName, isOverride).toFile();

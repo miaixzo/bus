@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
@@ -181,7 +182,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
                     productIdMap, serialMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
+        return new FreeBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
                 usbDevices);
     }

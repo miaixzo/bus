@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.plugin;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.image.Builder;
 import org.aoju.bus.image.Tag;
 import org.aoju.bus.image.UID;
@@ -150,7 +151,7 @@ public class MkKOS {
         if (codeMeaning == null)
             throw new IllegalArgumentException("undefined internal value: "
                     + codeValue);
-        int endDesignator = codeValue.indexOf('-');
+        int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH,
                 endDesignator >= 0

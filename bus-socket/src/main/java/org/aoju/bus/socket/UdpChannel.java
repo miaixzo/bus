@@ -28,6 +28,8 @@ package org.aoju.bus.socket;
 import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.core.io.WriteBuffer;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -181,7 +183,7 @@ public class UdpChannel<Request> {
 
         }
         InetSocketAddress address = (InetSocketAddress) remote;
-        return address.getHostName() + ":" + address.getPort();
+        return address.getHostName() + Symbol.C_COLON + address.getPort();
     }
 
     void removeSession(final SocketAddress remote) {
@@ -209,7 +211,7 @@ public class UdpChannel<Request> {
                 channel = null;
             }
         } catch (IOException e) {
-            Logger.error("", e);
+            Logger.error(Normal.EMPTY, e);
         }
         // 内存回收
         ResponseTask task;

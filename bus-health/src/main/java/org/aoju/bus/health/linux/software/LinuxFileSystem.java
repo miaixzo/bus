@@ -28,6 +28,7 @@ package org.aoju.bus.health.linux.software;
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
@@ -109,7 +110,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
-            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], "") : "";
+            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
 
             String description;
             if (volume.startsWith("/dev")) {
@@ -124,7 +125,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
             // Add in logical volume found at /dev/mapper, useful when linking
             // file system with drive.
-            String logicalVolume = "";
+            String logicalVolume = Normal.EMPTY;
             String volumeMapperDirectory = "/dev/mapper/";
             Path link = Paths.get(volume);
             if (link.toFile().exists() && Files.isSymbolicLink(link)) {

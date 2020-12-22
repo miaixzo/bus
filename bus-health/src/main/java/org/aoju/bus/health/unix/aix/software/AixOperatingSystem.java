@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
@@ -91,7 +92,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             releaseNumber = Executor.getFirstAnswer("oslevel -s");
         } else {
             // strip leading date
-            int idx = releaseNumber.lastIndexOf(' ');
+            int idx = releaseNumber.lastIndexOf(Symbol.C_SPACE);
             if (idx > 0 && idx < releaseNumber.length()) {
                 releaseNumber = releaseNumber.substring(idx + 1);
             }

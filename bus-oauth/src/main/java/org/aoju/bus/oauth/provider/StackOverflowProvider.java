@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.UriKit;
 import org.aoju.bus.http.Httpx;
@@ -109,7 +110,7 @@ public class StackOverflowProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.StackOverflow.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.StackOverflow.values())))
                 .build();
     }
 

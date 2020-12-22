@@ -1297,7 +1297,7 @@ public final class Builder {
                     parsed[parsedIndex] += (c - '0') * Builder.POWERS_OF_TEN[power++];
                 }
                 delimCurrent = false;
-            } else if (c == '-') {
+            } else if (c == Symbol.C_HYPHEN) {
                 parsed[parsedIndex] *= -1L;
                 delimCurrent = false;
                 dashSeen = true;
@@ -1373,7 +1373,7 @@ public final class Builder {
                 delimCurrent = false;
             } else if (c >= '0' && c <= '9' && !dashSeen) {
                 delimCurrent = false;
-            } else if (c == '-') {
+            } else if (c == Symbol.C_HYPHEN) {
                 delimCurrent = false;
                 dashSeen = true;
             } else {

@@ -605,7 +605,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             String vm = vr == VR.SQ ? items : vmStr;
             if (vm != null) {
                 try {
-                    String[] ss = Property.split(vm, '-');
+                    String[] ss = Property.split(vm, Symbol.C_HYPHEN);
                     if (ss[0].charAt(0) != 'n') {
                         minVM = Integer.parseInt(ss[0]);
                         if (ss.length > 1) {

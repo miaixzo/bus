@@ -154,7 +154,7 @@ public final class WmiKit {
     private static <T extends Enum<T>> String getStr(WbemcliUtil.WmiResult<T> result, T property, int index) {
         Object o = result.getValue(property, index);
         if (o == null) {
-            return "";
+            return Normal.EMPTY;
         } else if (result.getVtType(property) == Variant.VT_BSTR) {
             return (String) o;
         }

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.software;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
 import org.aoju.bus.health.builtin.software.OSProcess;
@@ -126,7 +127,7 @@ public class LinuxOSThread extends AbstractOSThread {
     @Override
     public boolean updateAttributes() {
         Map<String, String> status = Builder.getKeyValueMapFromFile(
-                String.format(ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), ":");
+                String.format(ProcPath.TASK_STATUS, this.getOwningProcessId(), this.threadId), Symbol.COLON);
         String stat = Builder
                 .getStringFromFile(String.format(ProcPath.TASK_STAT, this.getOwningProcessId(), this.threadId));
         if (stat.isEmpty()) {
@@ -135,7 +136,7 @@ public class LinuxOSThread extends AbstractOSThread {
         }
         long now = System.currentTimeMillis();
         long[] statArray = Builder.parseStringToLongArray(stat, PROC_TASK_STAT_ORDERS,
-                ProcessStat.PROC_PID_STAT_LENGTH, ' ');
+                ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to

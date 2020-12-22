@@ -32,6 +32,7 @@ import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.logger.Logger;
@@ -90,7 +91,7 @@ public final class KstatKit {
         Pointer p = KS.kstat_data_lookup(ksp, name);
         if (p == null) {
             Logger.error("Failed lo lookup kstat value for key {}", name);
-            return "";
+            return Normal.EMPTY;
         }
         KstatNamed data = new KstatNamed(p);
         switch (data.data_type) {
@@ -108,7 +109,7 @@ public final class KstatKit {
                 return data.value.str.addr.getString(0);
             default:
                 Logger.error("Unimplemented kstat data type {}", data.data_type);
-                return "";
+                return Normal.EMPTY;
         }
     }
 

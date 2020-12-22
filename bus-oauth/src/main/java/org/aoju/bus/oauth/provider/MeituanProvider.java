@@ -128,7 +128,7 @@ public class MeituanProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", "")
+                .queryParam("scope", Normal.EMPTY)
                 .build();
     }
 

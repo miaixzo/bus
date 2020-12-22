@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
  */
 public class FastDateParser extends AbstractFormater implements DateParser {
 
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 1L;
 
     private static final Locale JAPANESE_IMPERIAL = new Locale("ja", "JP", "JP");
     // 用来对正则表达式排序的比较器。('february' 在 'feb'之前)所有条目按区域设置必须是小写的

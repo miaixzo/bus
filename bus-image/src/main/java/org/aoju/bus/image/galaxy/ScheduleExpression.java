@@ -142,7 +142,7 @@ public class ScheduleExpression {
             return -1;
         int result = -1 << m;
         for (String s1 : Property.split(s, Symbol.C_COMMA)) {
-            String[] range = Property.split(s1, '-');
+            String[] range = Property.split(s1, Symbol.C_HYPHEN);
             if (range.length > 2)
                 throw new IllegalArgumentException(s);
             try {

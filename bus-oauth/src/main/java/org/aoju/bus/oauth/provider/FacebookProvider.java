@@ -28,6 +28,7 @@ package org.aoju.bus.oauth.provider;
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.oauth.Builder;
 import org.aoju.bus.oauth.Context;
@@ -118,7 +119,7 @@ public class FacebookProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Facebook.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Facebook.values())))
                 .build();
     }
 

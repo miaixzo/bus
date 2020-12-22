@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.solaris.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
@@ -53,7 +54,7 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
 
     private String name;
-    private String path = "";
+    private String path = Normal.EMPTY;
     private String commandLine;
     private String user;
     private String userID;

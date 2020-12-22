@@ -462,7 +462,7 @@ public class CitizenIdKit {
         int len = idcard.length();
         if (len == CHINA_ID_MIN_LENGTH || len == CHINA_ID_MAX_LENGTH) {
             String province = idcard.substring(0, 2);
-            return AREA_CODE.get(province) + "," + idcard.substring(0, 5);
+            return AREA_CODE.get(province) + Symbol.COMMA + idcard.substring(0, 5);
         }
         return null;
     }

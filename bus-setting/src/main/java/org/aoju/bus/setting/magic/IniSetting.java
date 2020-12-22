@@ -141,7 +141,7 @@ public class IniSetting extends ArrayList<IniElement> {
      * @see #toProperties(String)
      */
     public Properties toProperties() {
-        return toProperties(".");
+        return toProperties(Symbol.DOT);
     }
 
     /**

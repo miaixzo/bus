@@ -25,6 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.core.date.format;
 
+import org.aoju.bus.core.lang.Symbol;
+
 import java.text.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -403,7 +405,7 @@ public class FormatBuilder extends Format implements DateParser, DatePrinter {
 
     @Override
     public String toString() {
-        return "FastDateFormat[" + printer.getPattern() + "," + printer.getLocale() + "," + printer.getTimeZone().getID() + "]";
+        return "FastDateFormat[" + printer.getPattern() + Symbol.COMMA + printer.getLocale() + Symbol.COMMA + printer.getTimeZone().getID() + "]";
     }
 
 }

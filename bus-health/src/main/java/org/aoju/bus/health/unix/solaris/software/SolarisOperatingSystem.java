@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.solaris.software;
 
 import com.sun.jna.platform.unix.solaris.LibKstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
@@ -59,7 +60,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
         List<OSProcess> procs = new ArrayList<>();
-        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? "" : pid));
+        List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
         if (procList.isEmpty() || procList.size() < 2) {
             return procs;
         }
@@ -168,7 +169,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         }
         List<OSProcess> procs = getProcessListFromPS(
                 "ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p "
-                        + String.join(",", childPids),
+                        + String.join(Symbol.COMMA, childPids),
                 -1);
         List<OSProcess> sorted = processSort(procs, limit, sort);
         return Collections.unmodifiableList(sorted);

@@ -27,6 +27,7 @@ package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -170,7 +171,7 @@ public class Duration {
             }
 
         } else {
-            buf.append(' ').append(seconds).append('s');
+            buf.append(Symbol.C_SPACE).append(seconds).append('s');
         }
 
         return (buf.toString());

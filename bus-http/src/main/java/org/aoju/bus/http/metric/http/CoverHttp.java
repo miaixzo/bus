@@ -182,7 +182,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     public C tag(String tag) {
         if (tag != null) {
             if (this.tag != null) {
-                this.tag = this.tag + "." + tag;
+                this.tag = this.tag + Symbol.DOT + tag;
             } else {
                 this.tag = tag;
             }
@@ -277,7 +277,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return this 实例
      */
     public C setRange(long rangeStart) {
-        return addHeader("Range", "bytes=" + rangeStart + "-");
+        return addHeader("Range", "bytes=" + rangeStart + Symbol.HYPHEN);
     }
 
     /**
@@ -289,7 +289,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return this 实例
      */
     public C setRange(long rangeStart, long rangeEnd) {
-        return addHeader("Range", "bytes=" + rangeStart + "-" + rangeEnd);
+        return addHeader("Range", "bytes=" + rangeStart + Symbol.HYPHEN + rangeEnd);
     }
 
     /**
@@ -465,7 +465,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     public C addFilePara(String name, File file) {
         if (name != null && file != null && file.exists()) {
             String fileName = file.getName();
-            String type = fileName.substring(fileName.lastIndexOf(".") + 1);
+            String type = fileName.substring(fileName.lastIndexOf(Symbol.DOT) + 1);
             if (files == null) {
                 files = new HashMap<>();
             }

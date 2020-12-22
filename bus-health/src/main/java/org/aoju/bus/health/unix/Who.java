@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.OSSession;
 
@@ -98,7 +99,7 @@ public final class Who {
         if (m.matches()) {
             try {
                 whoList.add(new OSSession(m.group(1), m.group(2),
-                        LocalDateTime.parse(m.group(3) + " " + m.group(4), WHO_DATE_FORMAT_LINUX)
+                        LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4), WHO_DATE_FORMAT_LINUX)
                                 .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
                         m.group(5) == null ? Normal.UNKNOWN : m.group(5)));
                 return true;
@@ -121,14 +122,14 @@ public final class Who {
         if (m.matches()) {
             try {
                 // Missing year, parse date time with current year
-                LocalDateTime login = LocalDateTime.parse(m.group(3) + " " + m.group(4) + " " + m.group(5),
+                LocalDateTime login = LocalDateTime.parse(m.group(3) + Symbol.SPACE + m.group(4) + Symbol.SPACE + m.group(5),
                         WHO_DATE_FORMAT_UNIX);
                 // If this date is in the future, subtract a year
                 if (login.isAfter(LocalDateTime.now())) {
                     login = login.minus(1, ChronoUnit.YEARS);
                 }
                 long millis = login.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-                whoList.add(new OSSession(m.group(1), m.group(2), millis, m.group(6) == null ? "" : m.group(6)));
+                whoList.add(new OSSession(m.group(1), m.group(2), millis, m.group(6) == null ? Normal.EMPTY : m.group(6)));
                 return true;
             } catch (DateTimeParseException | NullPointerException e) {
                 // shouldn't happen if regex matches and OS is producing sensible dates

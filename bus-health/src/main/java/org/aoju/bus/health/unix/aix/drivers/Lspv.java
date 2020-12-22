@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.aix.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -131,7 +132,7 @@ public final class Lspv {
         }
         List<HWPartition> partitions = new ArrayList<>();
         for (Entry<String, String> entry : mountMap.entrySet()) {
-            String mount = "N/A".equals(entry.getValue()) ? "" : entry.getValue();
+            String mount = "N/A".equals(entry.getValue()) ? Normal.EMPTY : entry.getValue();
             // All maps should have same keys
             String name = entry.getKey();
             String type = typeMap.get(name);
@@ -139,7 +140,7 @@ public final class Lspv {
             Pair<Integer, Integer> majMin = majMinMap.get(name);
             int major = majMin == null ? Builder.getFirstIntValue(name) : majMin.getLeft();
             int minor = majMin == null ? Builder.getFirstIntValue(name) : majMin.getRight();
-            partitions.add(new HWPartition(name, name, type, "", size, major, minor, mount));
+            partitions.add(new HWPartition(name, name, type, Normal.EMPTY, size, major, minor, mount));
         }
         return partitions;
     }

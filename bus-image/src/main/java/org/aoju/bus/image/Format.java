@@ -157,7 +157,7 @@ public class Format extends java.text.Format {
     private static StringBuilder appendZZZZZ(int offset, StringBuilder sb) {
         if (offset < 0) {
             offset = -offset;
-            sb.append('-');
+            sb.append(Symbol.C_HYPHEN);
         } else
             sb.append(Symbol.C_PLUS);
         int min = offset / 60000;
