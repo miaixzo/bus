@@ -3517,7 +3517,7 @@ public class StringKit {
      * @return 替换后的字符串
      */
     public static String replaceBlank(String str) {
-        String val = "";
+        String val = Normal.EMPTY;
         if (str != null) {
             Pattern p = Pattern.compile("\\s*|\t|\r|\n");
             Matcher m = p.matcher(str);
@@ -6183,7 +6183,33 @@ public class StringKit {
     }
 
     /**
-     * 制定字符覆盖原字符串。
+     * 字符串按照指定长度换行
+     *
+     * @param content 字符内容
+     * @param length  换行长度
+     * @return 换行后的内容
+     */
+    public static String newLine(String content, int length) {
+        String stVal = Normal.EMPTY;
+        if (length > 0) {
+            if (content.length() > length) {
+                int rows = (content.length() + length - 1) / length;
+                for (int i = 0; i < rows; i++) {
+                    if (i == rows - 1) {
+                        stVal += content.substring(i * length);
+                    } else {
+                        stVal += content.substring(i * length, i * length + length) + "\r\n";
+                    }
+                }
+            } else {
+                stVal = content;
+            }
+        }
+        return stVal;
+    }
+
+    /**
+     * 制定字符覆盖原字符串
      * 注意参数:
      * StringKit.hide()是  开始位置,到结束位置
      * StringKit.cover()是 开始位置,指定长度
