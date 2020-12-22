@@ -1373,6 +1373,7 @@ public class Solar extends Holiday {
 
         /**
          * 通过日期初始化
+         *
          * @param date 日期
          */
         public Year(Date date) {
