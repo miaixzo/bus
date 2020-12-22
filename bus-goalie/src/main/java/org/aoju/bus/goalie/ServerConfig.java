@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class ServerConfig {
+
     private String path;
     private int port;
     private final Encrypt encrypt = new Encrypt();
@@ -30,4 +31,5 @@ public class ServerConfig {
         private String type;
         private String offset;
     }
+
 }
