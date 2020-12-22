@@ -26,6 +26,7 @@
 package org.aoju.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.Constants.IssueOrderBy;
 import org.aoju.bus.gitlab.Constants.IssueScope;
@@ -332,7 +333,7 @@ public class IssueFilter {
         return (new GitLabApiForm()
                 .withParam("iids", iids)
                 .withParam("state", state)
-                .withParam("labels", (labels != null ? String.join(",", labels) : null))
+                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)
                 .withParam("author_id", authorId)

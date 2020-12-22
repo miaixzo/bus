@@ -35,6 +35,7 @@ import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
@@ -94,7 +95,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         super(pid);
         // For executing process, set CWD
         if (pid == os.getProcessId()) {
-            String cwd = new File(".").getAbsolutePath();
+            String cwd = new File(Symbol.DOT).getAbsolutePath();
             // trim off trailing "."
             this.currentWorkingDirectory = cwd.isEmpty() ? Normal.EMPTY : cwd.substring(0, cwd.length() - 1);
         }

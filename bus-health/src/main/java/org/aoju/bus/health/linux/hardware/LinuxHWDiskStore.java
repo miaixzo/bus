@@ -172,13 +172,13 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         store.partitionList.add(new HWPartition(name, device.getSysname(),
                                                 device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
                                                         : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? ""
+                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
                                                         : device.getPropertyValue(ID_FS_UUID),
                                                 Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                                         * SECTORSIZE,
                                                 Builder.parseIntOrDefault(device.getPropertyValue(MAJOR), 0),
                                                 Builder.parseIntOrDefault(device.getPropertyValue(MINOR), 0),
-                                                mountsMap.getOrDefault(name, "")));
+                                                mountsMap.getOrDefault(name, Normal.EMPTY)));
                                     }
                                 }
                             }
@@ -215,7 +215,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static void computeDiskStats(LinuxHWDiskStore store, String devstat) {
-        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, ' ');
+        long[] devstatArray = Builder.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
         store.timeStamp = System.currentTimeMillis();
 
         // Reads and writes are converted in bytes

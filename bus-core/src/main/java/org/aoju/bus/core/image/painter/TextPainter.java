@@ -28,6 +28,7 @@ package org.aoju.bus.core.image.painter;
 import org.aoju.bus.core.image.element.AbstractElement;
 import org.aoju.bus.core.image.element.TextElement;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.awt.*;
@@ -120,7 +121,7 @@ public class TextPainter implements Painter {
             }
             // 当前字符
             char c = chars[i];
-            if (isChineseChar(c) || c == ' ' || i == (chars.length - 1)) {
+            if (isChineseChar(c) || c == Symbol.C_SPACE || i == (chars.length - 1)) {
                 // 如果是中文或空格或最后一个字符，一个中文算一个单词, 其他字符遇到空格认为单词结束
                 word += c;
                 hasWord = true;

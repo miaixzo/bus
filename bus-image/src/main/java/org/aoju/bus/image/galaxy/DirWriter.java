@@ -67,10 +67,8 @@ public class DirWriter extends DirReader {
             0x04, 0x00, 0x20, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0};
     private final ImageOutputStream out;
     private final int firstRecordPos;
-    private final ArrayList<Attributes> dirtyRecords =
-            new ArrayList<Attributes>();
-    private final IdentityHashMap<Attributes, Attributes> lastChildRecords =
-            new IdentityHashMap<Attributes, Attributes>();
+    private final ArrayList<Attributes> dirtyRecords = new ArrayList<>();
+    private final IdentityHashMap<Attributes, Attributes> lastChildRecords = new IdentityHashMap<>();
     private int nextRecordPos;
     private int rollbackLen = -1;
 

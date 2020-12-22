@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.models.Application;
 
 import javax.ws.rs.core.GenericType;
@@ -138,7 +139,7 @@ public class ApplicationsApi extends AbstractApi {
             throw new GitLabApiException("scopes cannot be null or empty");
         }
 
-        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(","));
+        String scopesString = scopes.stream().map(ApplicationScope::toString).collect(Collectors.joining(Symbol.COMMA));
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("name", name, true)
                 .withParam("redirect_uri", redirectUri, true)

@@ -117,7 +117,7 @@ public class Job implements Runnable {
             } else if (type == TYPE.FIXED_RATE) {
                 sb.append("|").append(fixedRate);
             }
-            sb.append(",").append(initialDelay);
+            sb.append(Symbol.C_COMMA).append(initialDelay);
         }
         return sb.toString();
     }

@@ -78,7 +78,7 @@ final class LinuxFirmware extends AbstractFirmware {
             String[] copyright = RegEx.SPACES.split(vcgencmd.get(1));
             vcManufacturer = copyright[copyright.length - 1];
             // Third line is version
-            vcVersion = vcgencmd.get(2).replace("version ", "");
+            vcVersion = vcgencmd.get(2).replace("version ", Normal.EMPTY);
             return new VcGenCmdStrings(vcReleaseDate, vcManufacturer, vcVersion, "RPi", "Bootloader");
         }
         return new VcGenCmdStrings(null, null, null, null, null);

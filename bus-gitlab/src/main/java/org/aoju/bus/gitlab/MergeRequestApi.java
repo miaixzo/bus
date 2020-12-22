@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.gitlab.GitLabApi.ApiVersion;
 import org.aoju.bus.gitlab.models.*;
 
@@ -659,7 +660,7 @@ public class MergeRequestApi extends AbstractApi {
 
         String[] labelsArray = null;
         if (labels != null) {
-            labelsArray = labels.split(",", -1);
+            labelsArray = labels.split(Symbol.COMMA, -1);
         }
 
         MergeRequestParams params = new MergeRequestParams()

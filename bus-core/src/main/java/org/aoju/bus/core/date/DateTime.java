@@ -313,12 +313,12 @@ public class DateTime extends Date {
      * 调整日期和时间
      * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
      *
-     * @param datePart 调整的部分 {@link Fields.DateField}
+     * @param datePart 调整的部分 {@link Fields.Type}
      * @param offset   偏移量，正数为向后偏移，负数为向前偏移
      * @return 如果此对象为可变对象，返回自身，否则返回新对象
      */
-    public DateTime offset(Fields.DateField datePart, int offset) {
-        if (Fields.DateField.ERA == datePart) {
+    public DateTime offset(Fields.Type datePart, int offset) {
+        if (Fields.Type.ERA == datePart) {
             throw new IllegalArgumentException("ERA is not support offset!");
         }
 
@@ -333,11 +333,11 @@ public class DateTime extends Date {
      * 调整日期和时间
      * 返回调整后的新{@link DateTime}，不影响原对象
      *
-     * @param datePart 调整的部分 {@link Fields.DateField}
+     * @param datePart 调整的部分 {@link Fields.Type}
      * @param offset   偏移量，正数为向后偏移，负数为向前偏移
      * @return 如果此对象为可变对象，返回自身，否则返回新对象
      */
-    public DateTime offsetNew(Fields.DateField datePart, int offset) {
+    public DateTime offsetNew(Fields.Type datePart, int offset) {
         final Calendar cal = toCalendar();
         cal.add(datePart.getValue(), offset);
 
@@ -349,10 +349,10 @@ public class DateTime extends Date {
      * 获得日期的某个部分
      * 例如获得年的部分,则使用 getField(Calendar.YEAR)
      *
-     * @param field 表示日期的哪个部分的枚举 {@link Fields.DateField}
+     * @param field 表示日期的哪个部分的枚举 {@link Fields.Type}
      * @return 某个部分的值
      */
-    public int getField(Fields.DateField field) {
+    public int getField(Fields.Type field) {
         return getField(field.getValue());
     }
 
@@ -371,11 +371,11 @@ public class DateTime extends Date {
      * 设置日期的某个部分
      * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
      *
-     * @param field 表示日期的哪个部分的枚举 {@link Fields.DateField}
+     * @param field 表示日期的哪个部分的枚举 {@link Fields.Type}
      * @param value 值
      * @return {@link DateTime}
      */
-    public DateTime setField(Fields.DateField field, int value) {
+    public DateTime setField(Fields.Type field, int value) {
         return setField(field.getValue(), value);
     }
 
@@ -413,7 +413,7 @@ public class DateTime extends Date {
      * @return 年的部分
      */
     public int year() {
-        return getField(Fields.DateField.YEAR);
+        return getField(Fields.Type.YEAR);
     }
 
     /**
@@ -440,7 +440,7 @@ public class DateTime extends Date {
      * @return 月份
      */
     public int month() {
-        return getField(Fields.DateField.MONTH);
+        return getField(Fields.Type.MONTH);
     }
 
     /**
@@ -471,7 +471,7 @@ public class DateTime extends Date {
      * @return 周
      */
     public int weekOfYear() {
-        return getField(Fields.DateField.WEEK_OF_YEAR);
+        return getField(Fields.Type.WEEK_OF_YEAR);
     }
 
     /**
@@ -483,7 +483,7 @@ public class DateTime extends Date {
      * @return 周
      */
     public int weekOfMonth() {
-        return getField(Fields.DateField.WEEK_OF_MONTH);
+        return getField(Fields.Type.WEEK_OF_MONTH);
     }
 
     /**
@@ -492,7 +492,7 @@ public class DateTime extends Date {
      * @return 天
      */
     public int dayOfMonth() {
-        return getField(Fields.DateField.DAY_OF_MONTH);
+        return getField(Fields.Type.DAY_OF_MONTH);
     }
 
     /**
@@ -501,7 +501,7 @@ public class DateTime extends Date {
      * @return 天
      */
     public int dayOfYear() {
-        return getField(Fields.DateField.DAY_OF_YEAR);
+        return getField(Fields.Type.DAY_OF_YEAR);
     }
 
     /**
@@ -510,7 +510,7 @@ public class DateTime extends Date {
      * @return 星期几
      */
     public int dayOfWeek() {
-        return getField(Fields.DateField.DAY_OF_WEEK);
+        return getField(Fields.Type.DAY_OF_WEEK);
     }
 
     /**
@@ -519,7 +519,7 @@ public class DateTime extends Date {
      * @return 天
      */
     public int dayOfWeekInMonth() {
-        return getField(Fields.DateField.DAY_OF_WEEK_IN_MONTH);
+        return getField(Fields.Type.DAY_OF_WEEK_IN_MONTH);
     }
 
     /**
@@ -538,7 +538,7 @@ public class DateTime extends Date {
      * @return 小时数
      */
     public int hour(boolean is24HourClock) {
-        return getField(is24HourClock ? Fields.DateField.HOUR_OF_DAY : Fields.DateField.HOUR);
+        return getField(is24HourClock ? Fields.Type.HOUR_OF_DAY : Fields.Type.HOUR);
     }
 
     /**
@@ -548,7 +548,7 @@ public class DateTime extends Date {
      * @return 分钟数
      */
     public int minute() {
-        return getField(Fields.DateField.MINUTE);
+        return getField(Fields.Type.MINUTE);
     }
 
     /**
@@ -557,7 +557,7 @@ public class DateTime extends Date {
      * @return 秒数
      */
     public int second() {
-        return getField(Fields.DateField.SECOND);
+        return getField(Fields.Type.SECOND);
     }
 
     /**
@@ -566,7 +566,7 @@ public class DateTime extends Date {
      * @return 毫秒数
      */
     public int millsecond() {
-        return getField(Fields.DateField.MILLISECOND);
+        return getField(Fields.Type.MILLISECOND);
     }
 
     /**
@@ -575,7 +575,7 @@ public class DateTime extends Date {
      * @return 是否为上午
      */
     public boolean isAM() {
-        return Calendar.AM == getField(Fields.DateField.AM_PM);
+        return Calendar.AM == getField(Fields.Type.AM_PM);
     }
 
     /**
@@ -584,7 +584,7 @@ public class DateTime extends Date {
      * @return 是否为下午
      */
     public boolean isPM() {
-        return Calendar.PM == getField(Fields.DateField.AM_PM);
+        return Calendar.PM == getField(Fields.Type.AM_PM);
     }
 
     /**
@@ -595,16 +595,6 @@ public class DateTime extends Date {
     public boolean isWeekend() {
         final int dayOfWeek = dayOfWeek();
         return Calendar.SATURDAY == dayOfWeek || Calendar.SUNDAY == dayOfWeek;
-    }
-
-    /**
-     * 是否闰年
-     *
-     * @return 是否闰年
-     * @see DateKit#isLeapYear(int)
-     */
-    public boolean isLeapYear() {
-        return new DateKit().isLeapYear(year());
     }
 
     /**
@@ -786,8 +776,8 @@ public class DateTime extends Date {
      * 对象是否可变
      * 如果为不可变对象，以下方法将返回新方法：
      * <ul>
-     * <li>{@link DateTime#offset(Fields.DateField, int)}</li>
-     * <li>{@link DateTime#setField(Fields.DateField, int)}</li>
+     * <li>{@link DateTime#offset(Fields.Type, int)}</li>
+     * <li>{@link DateTime#setField(Fields.Type, int)}</li>
      * <li>{@link DateTime#setField(int, int)}</li>
      * </ul>
      * 如果为不可变对象，{@link DateTime#setTime(long)}将抛出异常
@@ -801,8 +791,8 @@ public class DateTime extends Date {
     /**
      * 设置对象是否可变 如果为不可变对象，以下方法将返回新方法：
      * <ul>
-     * <li>{@link DateTime#offset(Fields.DateField, int)}</li>
-     * <li>{@link DateTime#setField(Fields.DateField, int)}</li>
+     * <li>{@link DateTime#offset(Fields.Type, int)}</li>
+     * <li>{@link DateTime#setField(Fields.Type, int)}</li>
      * <li>{@link DateTime#setField(int, int)}</li>
      * </ul>
      * 如果为不可变对象，{@link DateTime#setTime(long)}将抛出异常

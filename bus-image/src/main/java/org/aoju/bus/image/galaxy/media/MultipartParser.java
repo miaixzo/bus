@@ -123,7 +123,7 @@ public class MultipartParser {
             String value = field.substring(field.indexOf(Symbol.C_COLON) + 1).trim();
 
             if (headers.containsKey(name)) {
-                headers.put(name, headers.get(name) + "," + value);
+                headers.put(name, headers.get(name) + Symbol.COMMA + value);
             } else {
                 headers.put(name, value);
             }
@@ -167,7 +167,7 @@ public class MultipartParser {
             if ((ch1 | ch2) < 0)
                 throw new EOFException();
 
-            if (ch1 == '-' && ch2 == '-')
+            if (ch1 == Symbol.C_HYPHEN && ch2 == Symbol.C_HYPHEN)
                 break;
 
             if (ch1 != Symbol.C_CR || ch2 != Symbol.C_LF)

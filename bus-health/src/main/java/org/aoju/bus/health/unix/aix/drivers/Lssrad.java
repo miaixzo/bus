@@ -26,7 +26,9 @@
 package org.aoju.bus.health.unix.aix.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -82,10 +84,10 @@ public final class Lssrad {
                 if (Character.isDigit(s.charAt(0))) {
                     node = Builder.parseIntOrDefault(t, 0);
                 } else {
-                    if (t.contains(".")) {
+                    if (t.contains(Symbol.DOT)) {
                         String[] split = RegEx.SPACES.split(t, 3);
                         slot = Builder.parseIntOrDefault(split[0], 0);
-                        t = split.length > 2 ? split[2] : "";
+                        t = split.length > 2 ? split[2] : Normal.EMPTY;
                     }
                     for (Integer proc : Builder.parseHyphenatedIntList(t)) {
                         nodeMap.put(proc, Pair.of(node, slot));

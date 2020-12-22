@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.Symbol;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -719,7 +720,7 @@ public final class AccessToken {
         }
 
         formData.append(name);
-        formData.append("=");
+        formData.append(Symbol.EQUAL);
         try {
             formData.append(URLEncoder.encode(value, Charset.DEFAULT_UTF_8));
             return (formData);

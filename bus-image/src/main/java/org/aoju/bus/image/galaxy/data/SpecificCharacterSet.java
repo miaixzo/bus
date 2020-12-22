@@ -319,7 +319,7 @@ public class SpecificCharacterSet {
 
         private static Codec forCode(String code, Codec defCodec) {
             switch (code != null ? code : "") {
-                case "":
+                case Normal.EMPTY:
                 case "ISO 2022 IR 6":
                     return SpecificCharacterSet.DEFAULT.codecs[0];
                 case "ISO_IR 100":

@@ -26,10 +26,7 @@
 package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.NumberChinese;
-import org.aoju.bus.core.date.Between;
-import org.aoju.bus.core.date.Boundary;
-import org.aoju.bus.core.date.DateTime;
-import org.aoju.bus.core.date.TimeInterval;
+import org.aoju.bus.core.date.*;
 import org.aoju.bus.core.date.format.*;
 import org.aoju.bus.core.lang.*;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -58,87 +55,13 @@ import java.util.regex.Pattern;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class DateKit extends GregorianCalendar {
+public class DateKit extends Lunar {
 
     /**
-     * 支持的最小日期1850-02-12
+     * 通过公历构造
      */
-    public final static int MIN_YEAR = 1850;
-    public final static int MIN_MONTH = 1;
-    public final static int MIN_DATE = 12;
-    /**
-     * 支持的最大日期2150-12-31
-     */
-    public final static int MAX_YEAR = 2150;
-    public final static int MAX_MONTH = 11;
-    public final static int MAX_DATE = 31;
-
-    /**
-     * 农历年份
-     */
-    public int lunarYear;
-    /**
-     * 农历月份
-     */
-    public int lunarMonth;
-    /**
-     * 农历日期
-     */
-    public int lunarDay;
-    /**
-     * 是否为闰月日期
-     */
-    public boolean isLeapMonth = false;
-    /**
-     * 农历这年闰月，如果不闰月，默认为0
-     */
-    public int leapMonth = 0;
-
     public DateKit() {
-        super();
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    public DateKit(TimeZone zone) {
-        super(zone);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    public DateKit(Locale aLocale) {
-        super(aLocale);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    public DateKit(TimeZone zone, Locale aLocale) {
-        super(zone, aLocale);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    public DateKit(int year, int month, int dayOfMonth) {
-        super(year, month, dayOfMonth);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    public DateKit(int year, int month, int dayOfMonth, int hourOfDay, int minute) {
-        super(year, month, dayOfMonth, hourOfDay, minute);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    public DateKit(int year, int month, int dayOfMonth, int hourOfDay, int minute, int second) {
-        super(year, month, dayOfMonth, hourOfDay, minute, second);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    /**
-     * 通过农历年、月、日构造
-     *
-     * @param lunarYear   农历年
-     * @param lunarMonth  农历月份,范围1-12
-     * @param lunarDay    农历日
-     * @param isLeapMonth 是否闰月
-     */
-    public DateKit(int lunarYear, int lunarMonth, int lunarDay, boolean isLeapMonth) {
-        lunar(lunarYear, lunarMonth, lunarDay, isLeapMonth);
+        super(new Date());
     }
 
     /**
@@ -149,7 +72,44 @@ public class DateKit extends GregorianCalendar {
     public DateKit(Calendar calendar) {
         super(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
+    }
+
+    /**
+     * 通过年、月、日构造
+     *
+     * @param year  农历年
+     * @param month 农历月份,范围1-12
+     * @param day   农历日1-30
+     */
+    public DateKit(int year, int month, int day) {
+        super(year, month, day);
+    }
+
+    /**
+     * 通过年、月、日构造
+     *
+     * @param year   农历年
+     * @param month  农历月份,范围1-12
+     * @param day    农历日1-30
+     * @param hour   小时
+     * @param minute 分钟
+     */
+    public DateKit(int year, int month, int day, int hour, int minute) {
+        super(year, month, day, hour, minute, 0);
+    }
+
+    /**
+     * 通过年、月、日构造
+     *
+     * @param year   农历年
+     * @param month  农历月份,范围1-12
+     * @param day    农历日1-30
+     * @param hour   小时
+     * @param minute 分钟
+     * @param second 秒
+     */
+    public DateKit(int year, int month, int day, int hour, int minute, int second) {
+        super(year, month, day, hour, minute, second);
     }
 
     /**
@@ -408,7 +368,7 @@ public class DateKit extends GregorianCalendar {
      * @return 天
      */
     public static int lengthOfYear(int year) {
-        return Year.of(year).length();
+        return java.time.Year.of(year).length();
     }
 
     /**
@@ -1227,23 +1187,23 @@ public class DateKit extends GregorianCalendar {
     /**
      * 修改日期为某个时间字段起始时间
      *
-     * @param date      {@link Date}
-     * @param dateField 时间字段
+     * @param date {@link Date}
+     * @param type 时间字段
      * @return {@link DateTime}
      */
-    public static DateTime truncate(Date date, Fields.DateField dateField) {
-        return new DateTime(truncate(calendar(date), dateField));
+    public static DateTime truncate(Date date, Fields.Type type) {
+        return new DateTime(truncate(calendar(date), type));
     }
 
     /**
      * 修改日期为某个时间字段起始时间
      *
      * @param calendar  {@link Calendar}
-     * @param dateField 时间字段
+     * @param type 时间字段
      * @return 原{@link Calendar}
      */
-    public static Calendar truncate(Calendar calendar, Fields.DateField dateField) {
-        return modify(calendar, dateField.getValue(), Fields.ModifyType.TRUNCATE);
+    public static Calendar truncate(Calendar calendar, Fields.Type type) {
+        return modify(calendar, type.getValue(), Fields.Modify.TRUNCATE);
     }
 
 
@@ -1251,44 +1211,44 @@ public class DateKit extends GregorianCalendar {
      * 修改日期为某个时间字段四舍五入时间
      *
      * @param date      {@link Date}
-     * @param dateField 时间字段
+     * @param type 时间字段
      * @return {@link DateTime}
      */
-    public static DateTime round(Date date, Fields.DateField dateField) {
-        return new DateTime(round(calendar(date), dateField));
+    public static DateTime round(Date date, Fields.Type type) {
+        return new DateTime(round(calendar(date), type));
     }
 
     /**
      * 修改日期为某个时间字段四舍五入时间
      *
      * @param calendar  {@link Calendar}
-     * @param dateField 时间字段
+     * @param type 时间字段
      * @return 原{@link Calendar}
      */
-    public static Calendar round(Calendar calendar, Fields.DateField dateField) {
-        return modify(calendar, dateField.getValue(), Fields.ModifyType.ROUND);
+    public static Calendar round(Calendar calendar, Fields.Type type) {
+        return modify(calendar, type.getValue(), Fields.Modify.ROUND);
     }
 
     /**
      * 修改日期为某个时间字段结束时间
      *
      * @param date      {@link Date}
-     * @param dateField 时间字段
+     * @param type 时间字段
      * @return {@link DateTime}
      */
-    public static DateTime ceiling(Date date, Fields.DateField dateField) {
-        return new DateTime(ceiling(calendar(date), dateField));
+    public static DateTime ceiling(Date date, Fields.Type type) {
+        return new DateTime(ceiling(calendar(date), type));
     }
 
     /**
      * 修改日期为某个时间字段结束时间
      *
      * @param calendar  {@link Calendar}
-     * @param dateField 时间字段
+     * @param type 时间字段
      * @return 原{@link Calendar}
      */
-    public static Calendar ceiling(Calendar calendar, Fields.DateField dateField) {
-        return modify(calendar, dateField.getValue(), Fields.ModifyType.CEILING);
+    public static Calendar ceiling(Calendar calendar, Fields.Type type) {
+        return modify(calendar, type.getValue(), Fields.Modify.CEILING);
     }
 
     /**
@@ -1318,7 +1278,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar beginOfSecond(Calendar calendar) {
-        return truncate(calendar, Fields.DateField.SECOND);
+        return truncate(calendar, Fields.Type.SECOND);
     }
 
     /**
@@ -1328,7 +1288,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar endOfSecond(Calendar calendar) {
-        return ceiling(calendar, Fields.DateField.SECOND);
+        return ceiling(calendar, Fields.Type.SECOND);
     }
 
     /**
@@ -1358,7 +1318,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar beginOfDay(Calendar calendar) {
-        return truncate(calendar, Fields.DateField.DAY_OF_MONTH);
+        return truncate(calendar, Fields.Type.DAY_OF_MONTH);
     }
 
     /**
@@ -1368,7 +1328,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar endOfDay(Calendar calendar) {
-        return ceiling(calendar, Fields.DateField.DAY_OF_MONTH);
+        return ceiling(calendar, Fields.Type.DAY_OF_MONTH);
     }
 
     /**
@@ -1411,7 +1371,7 @@ public class DateKit extends GregorianCalendar {
     public static Calendar beginOfWeek(Calendar calendar, boolean isMondayAsFirstDay) {
         calendar.setFirstDayOfWeek(isMondayAsFirstDay ? Calendar.MONDAY : Calendar.SUNDAY);
         // WEEK_OF_MONTH为上限的字段(不包括)，实际调整的为DAY_OF_MONTH
-        return truncate(calendar, Fields.DateField.WEEK_OF_MONTH);
+        return truncate(calendar, Fields.Type.WEEK_OF_MONTH);
     }
 
     /**
@@ -1434,7 +1394,7 @@ public class DateKit extends GregorianCalendar {
     public static Calendar endOfWeek(Calendar calendar, boolean isSundayAsLastDay) {
         calendar.setFirstDayOfWeek(isSundayAsLastDay ? Calendar.MONDAY : Calendar.SUNDAY);
         // WEEK_OF_MONTH为上限的字段(不包括)，实际调整的为DAY_OF_MONTH
-        return ceiling(calendar, Fields.DateField.WEEK_OF_MONTH);
+        return ceiling(calendar, Fields.Type.WEEK_OF_MONTH);
     }
 
     /**
@@ -1464,7 +1424,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar beginOfMonth(Calendar calendar) {
-        return truncate(calendar, Fields.DateField.MONTH);
+        return truncate(calendar, Fields.Type.MONTH);
     }
 
     /**
@@ -1474,7 +1434,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar endOfMonth(Calendar calendar) {
-        return ceiling(calendar, Fields.DateField.MONTH);
+        return ceiling(calendar, Fields.Type.MONTH);
     }
 
     /**
@@ -1504,7 +1464,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar beginOfQuarter(Calendar calendar) {
-        calendar.set(Calendar.MONTH, calendar.get(Fields.DateField.MONTH.getValue()) / 3 * 3);
+        calendar.set(Calendar.MONTH, calendar.get(Fields.Type.MONTH.getValue()) / 3 * 3);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         return beginOfDay(calendar);
     }
@@ -1516,7 +1476,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar endOfQuarter(Calendar calendar) {
-        calendar.set(Calendar.MONTH, calendar.get(Fields.DateField.MONTH.getValue()) / 3 * 3 + 2);
+        calendar.set(Calendar.MONTH, calendar.get(Fields.Type.MONTH.getValue()) / 3 * 3 + 2);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         return endOfDay(calendar);
     }
@@ -1599,7 +1559,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar beginOfYear(Calendar calendar) {
-        return truncate(calendar, Fields.DateField.YEAR);
+        return truncate(calendar, Fields.Type.YEAR);
     }
 
     /**
@@ -1609,7 +1569,7 @@ public class DateKit extends GregorianCalendar {
      * @return {@link Calendar}
      */
     public static Calendar endOfYear(Calendar calendar) {
-        return ceiling(calendar, Fields.DateField.YEAR);
+        return ceiling(calendar, Fields.Type.YEAR);
     }
 
     /**
@@ -1674,7 +1634,7 @@ public class DateKit extends GregorianCalendar {
      * @return 偏移后的日期
      */
     public static DateTime offsetMillisecond(Date date, int offset) {
-        return offset(date, Fields.DateField.MILLISECOND, offset);
+        return offset(date, Fields.Type.MILLISECOND, offset);
     }
 
     /**
@@ -1685,7 +1645,7 @@ public class DateKit extends GregorianCalendar {
      * @return 偏移后的日期
      */
     public static DateTime offsetSecond(Date date, int offset) {
-        return offset(date, Fields.DateField.SECOND, offset);
+        return offset(date, Fields.Type.SECOND, offset);
     }
 
     /**
@@ -1696,7 +1656,7 @@ public class DateKit extends GregorianCalendar {
      * @return 偏移后的日期
      */
     public static DateTime offsetMinute(Date date, int offset) {
-        return offset(date, Fields.DateField.MINUTE, offset);
+        return offset(date, Fields.Type.MINUTE, offset);
     }
 
     /**
@@ -1707,7 +1667,7 @@ public class DateKit extends GregorianCalendar {
      * @return 偏移后的日期
      */
     public static DateTime offsetHour(Date date, int offset) {
-        return offset(date, Fields.DateField.HOUR_OF_DAY, offset);
+        return offset(date, Fields.Type.HOUR_OF_DAY, offset);
     }
 
     /**
@@ -1718,7 +1678,7 @@ public class DateKit extends GregorianCalendar {
      * @return 偏移后的日期
      */
     public static DateTime offsetDay(Date date, int offset) {
-        return offset(date, Fields.DateField.DAY_OF_YEAR, offset);
+        return offset(date, Fields.Type.DAY_OF_YEAR, offset);
     }
 
     /**
@@ -1729,7 +1689,7 @@ public class DateKit extends GregorianCalendar {
      * @return 偏移后的日期
      */
     public static DateTime offsetWeek(Date date, int offset) {
-        return offset(date, Fields.DateField.WEEK_OF_YEAR, offset);
+        return offset(date, Fields.Type.WEEK_OF_YEAR, offset);
     }
 
     /**
@@ -1740,19 +1700,19 @@ public class DateKit extends GregorianCalendar {
      * @return 偏移后的日期
      */
     public static DateTime offsetMonth(Date date, int offset) {
-        return offset(date, Fields.DateField.MONTH, offset);
+        return offset(date, Fields.Type.MONTH, offset);
     }
 
     /**
      * 获取指定日期偏移指定时间后的时间
      *
      * @param date      基准日期
-     * @param dateField 偏移的粒度大小(小时、天、月等)
+     * @param type 偏移的粒度大小(小时、天、月等)
      * @param offset    偏移量,正数为向后偏移,负数为向前偏移
      * @return 偏移后的日期
      */
-    public static DateTime offset(Date date, Fields.DateField dateField, int offset) {
-        return new DateTime(date).offset(dateField, offset);
+    public static DateTime offset(Date date, Fields.Type type, int offset) {
+        return new DateTime(date).offset(type, offset);
     }
 
     /**
@@ -2103,7 +2063,7 @@ public class DateKit extends GregorianCalendar {
             throw new IllegalArgumentException("dateToCompare must be greater than birthDay");
         }
 
-        return (years > 0 ? (years + "周岁") : "") + (months > 0 ? (months + "个月") : "") + ((days > 0) ? days : ("差" + Math.abs(days))) + "天";
+        return (years > 0 ? (years + "周岁") : Normal.EMPTY) + (months > 0 ? (months + "个月") : Normal.EMPTY) + ((days > 0) ? days : ("差" + Math.abs(days))) + "天";
     }
 
     /**
@@ -3239,7 +3199,7 @@ public class DateKit extends GregorianCalendar {
      * 获取指定日期字段的最小值，例如分钟的最小值是0
      *
      * @param calendar  {@link Calendar}
-     * @param dateField {@link Fields.DateField}
+     * @param dateField {@link Fields.Type}
      * @return 字段最小值
      * @see Calendar#getActualMinimum(int)
      */
@@ -3254,7 +3214,7 @@ public class DateKit extends GregorianCalendar {
      * 获取指定日期字段的最大值，例如分钟的最大值是59
      *
      * @param calendar  {@link Calendar}
-     * @param dateField {@link Fields.DateField}
+     * @param dateField {@link Fields.Type}
      * @return 字段最大值
      * @see Calendar#getActualMaximum(int)
      */
@@ -3334,14 +3294,14 @@ public class DateKit extends GregorianCalendar {
      *
      * @param calendar   {@link Calendar}
      * @param dateField  日期字段，即保留到哪个日期字段
-     * @param modifyType 修改类型，包括舍去、四舍五入、进一等
+     * @param modify 修改类型，包括舍去、四舍五入、进一等
      * @return 修改后的{@link Calendar}
      */
-    public static Calendar modify(Calendar calendar, int dateField, Fields.ModifyType modifyType) {
+    public static Calendar modify(Calendar calendar, int dateField, Fields.Modify modify) {
         // AM_PM上下午特殊处理
         if (Calendar.AM_PM == dateField) {
             boolean isAM = DateKit.isAM(calendar);
-            switch (modifyType) {
+            switch (modify) {
                 case TRUNCATE:
                     calendar.set(Calendar.HOUR_OF_DAY, isAM ? 0 : 12);
                     break;
@@ -3357,7 +3317,7 @@ public class DateKit extends GregorianCalendar {
                     break;
             }
             // 处理下一级别字段
-            return modify(calendar, dateField + 1, modifyType);
+            return modify(calendar, dateField + 1, modify);
         }
 
         int[] ignoreFields = new int[]{
@@ -3387,7 +3347,7 @@ public class DateKit extends GregorianCalendar {
                 }
             }
 
-            modifyField(calendar, i, modifyType);
+            modifyField(calendar, i, modify);
         }
         return calendar;
     }
@@ -3397,15 +3357,15 @@ public class DateKit extends GregorianCalendar {
      *
      * @param calendar   {@link Calendar}
      * @param field      字段，见{@link Calendar}
-     * @param modifyType {@link Fields.ModifyType}
+     * @param modify {@link Fields.Modify}
      */
-    private static void modifyField(Calendar calendar, int field, Fields.ModifyType modifyType) {
+    private static void modifyField(Calendar calendar, int field, Fields.Modify modify) {
         if (Calendar.HOUR == field) {
             // 修正小时。HOUR为12小时制，上午的结束时间为12:00，此处改为HOUR_OF_DAY: 23:59
             field = Calendar.HOUR_OF_DAY;
         }
 
-        switch (modifyType) {
+        switch (modify) {
             case TRUNCATE:
                 calendar.set(field, DateKit.getBeginValue(calendar, field));
                 break;
@@ -3606,7 +3566,7 @@ public class DateKit extends GregorianCalendar {
      * @param unit  步进单位
      * @return {@link Boundary}
      */
-    public static Boundary range(Date start, Date end, final Fields.DateField unit) {
+    public static Boundary range(Date start, Date end, final Fields.Type unit) {
         return new Boundary(start, end, unit);
     }
 
@@ -3618,7 +3578,7 @@ public class DateKit extends GregorianCalendar {
      * @param unit  步进单位
      * @return {@link Boundary}
      */
-    public static List<DateTime> rangeToList(Date start, Date end, final Fields.DateField unit) {
+    public static List<DateTime> rangeToList(Date start, Date end, final Fields.Type unit) {
         return CollKit.newArrayList((Iterable<DateTime>) range(start, end, unit));
     }
 
@@ -3629,7 +3589,7 @@ public class DateKit extends GregorianCalendar {
      * @return 农历日传统字符表示
      */
     public static String getDayName(int lunarDay) {
-        return Fields.CN_DAY[lunarDay - 1];
+        return Fields.CN_DAY[lunarDay];
     }
 
     /**
@@ -3684,341 +3644,13 @@ public class DateKit extends GregorianCalendar {
     }
 
     /**
-     * 农历转公历
+     * 是否闰年
      *
-     * @param lunarYear   　农历年
-     * @param lunarMonth  　农历月，从１开始
-     * @param LunarDate   　农历日
-     * @param isLeapMonth 　是否润月
-     * @return 公历日期
+     * @param year 年
+     * @return true/false 闰年/非闰年
      */
-    public static Calendar lunar2Solar(int lunarYear, int lunarMonth, int LunarDate, boolean isLeapMonth) {
-        DateKit ret = new DateKit();
-        ret.lunar(lunarYear, lunarMonth, LunarDate, isLeapMonth);
-        return ret;
-    }
-
-    /**
-     * 公历转农历
-     *
-     * @param solar 　公历日期
-     * @return 农历日期
-     */
-    public static DateKit solar2Lunar(Calendar solar) {
-        return new DateKit(solar);
-    }
-
-    /**
-     * 求两个公历日期之差，field可以为年月日，时分秒
-     * 一年按365天计算，一个月按30天计算
-     *
-     * @param solar1 　历日期
-     * @param solar2 　历日期
-     * @param field  差值单位
-     * @return 差值
-     */
-    public static long solarDiff(Calendar solar1, Calendar solar2, int field) {
-        long t1 = solar1.getTimeInMillis();
-        long t2 = solar2.getTimeInMillis();
-        switch (field) {
-            case Calendar.SECOND:
-                return (long) Math.rint((t1 - t2) / 1000);
-            case Calendar.MINUTE:
-                return (long) Math.rint((t1 - t2) / (60 * 1000));
-            case Calendar.HOUR:
-                return (long) Math.rint((t1 - t2) / (3600 * 1000));
-            case Calendar.DATE:
-                return (long) Math.rint((t1 - t2) / (24 * 3600 * 1000));
-            case Calendar.MONTH:
-                return (long) Math.rint((t1 - t2) / (30 * 24 * 3600 * 1000));
-            case Calendar.YEAR:
-                return (long) Math.rint((t1 - t2) / (365 * 24 * 3600 * 1000));
-            default:
-                return -1;
-        }
-    }
-
-    /**
-     * 判断两个整数所代表公历日期的差值
-     * 一年按365天计算，一个月按30天计算
-     *
-     * @param solarCode1 　农历日期代码
-     * @param solarCode2 　农历日期代码
-     * @param field      　差值单位
-     * @return 差值
-     */
-    public static long solarDiff(int solarCode1, int solarCode2, int field) {
-        GregorianCalendar c1 = new GregorianCalendar(solarCode1 / 10000, solarCode1 % 10000 / 100 - 1,
-                solarCode1 % 10000 % 100);
-        GregorianCalendar c2 = new GregorianCalendar(solarCode2 / 10000, solarCode2 % 10000 / 100 - 1,
-                solarCode2 % 10000 % 100);
-        return solarDiff(c1, c2, field);
-    }
-
-    /**
-     * 简单的二分查找，返回查找到的元素坐标，用于查找农历二维数组信息
-     *
-     * @param array 　数组
-     * @param n     　待查询数字
-     * @return 查到的坐标
-     */
-    private static int binFind(int[] array, int n) {
-        if (null == array || array.length == 0) {
-            return -1;
-        }
-        int min = 0, max = array.length - 1;
-        if (n <= array[min]) {
-            return min;
-        } else if (n >= array[max]) {
-            return max;
-        }
-        while (max - min > 1) {
-            int newIndex = (max + min) / 2; // 二分
-            if (array[newIndex] > n) { // 取小区间
-                max = newIndex;
-            } else if (array[newIndex] < n) {// 取大区间
-                min = newIndex;
-            } else { // 相等，直接返回下标
-                return newIndex;
-            }
-        }
-        if (array[max] == n) {
-            return max;
-        } else if (array[min] == n) {
-            return min;
-        } else {
-            return min; // 返回 较小的一个
-        }
-    }
-
-    /**
-     * 中国农历完整信息
-     *
-     * @return 完整农历信息
-     */
-    public String getFullLunar() {
-        return this.toString() + Symbol.SPACE + getChineseEraName(this.lunarYear) + Symbol.SPACE + getAnimal(this.lunarYear);
-    }
-
-    /**
-     * 返回农历日期，不包含年份
-     *
-     * @param showLeap 　是否显示闰月的闰字
-     * @return 农历日期
-     */
-    public String getLunar(boolean showLeap) {
-        if (this.lunarMonth < 1 || this.lunarMonth > 12 || this.lunarDay < 1
-                || this.lunarDay > 30) {
-            throw new IllegalArgumentException("Wrong lunar lunarDay: " + lunarMonth + " " + lunarDay);
-        }
-        if (showLeap) {
-            return (this.isLeapMonth ? "闰" : Normal.EMPTY) + getMonthName(this.lunarMonth) + "月"
-                    + getDayName(this.lunarDay);
-        } else {
-            return getMonthName(this.lunarMonth) + "月" + getDayName(this.lunarDay);
-        }
-    }
-
-    /**
-     * 通过给定公历日期，计算农历日期各个域值
-     * 这个方法可能会被调用多次，后续看能否再做优化
-     *
-     * @param solarYear  公历年
-     * @param solarMonth 公历月，0-11
-     * @param solarDate  公历日
-     */
-    private void lunar(final int solarYear, final int solarMonth, final int solarDate) {
-        if (solarYear < MIN_YEAR
-                || (solarYear == MIN_YEAR && solarMonth < MIN_MONTH)
-                || (solarYear == MIN_YEAR && solarMonth == MIN_MONTH && solarDate < MIN_DATE)
-                || solarYear > MAX_YEAR
-                || (solarYear == MAX_YEAR && solarMonth > MAX_MONTH)
-                || (solarYear == MAX_YEAR && solarMonth == MAX_MONTH && solarDate > MAX_DATE)
-        ) {
-            // 有些中间过程日期会超出可计算范围
-            return;
-        }
-        int solarCode = solarYear * 10000 + 100 * (1 + solarMonth) + solarDate; // 公历码
-        leapMonth = Fields.CN_LUNAR[solarYear - MIN_YEAR][0];
-        int[] solarCodes = builder(solarYear);
-        int newMonth = binFind(solarCodes, solarCode);
-        if (-1 == newMonth) {
-            throw new IllegalArgumentException("No lunar found by solarCode: " + solarCode);
-        }
-        int xDate = Long.valueOf(solarDiff(solarCode, solarCodes[newMonth], Calendar.DATE)).intValue();
-        if (0 == newMonth) {// 在上一年
-            int preYear = solarYear - 1;
-            short[] preSolarCodes = Fields.CN_LUNAR[preYear - MIN_YEAR];
-            // 取上年农历12月1号公历日期码
-            int nearSolarCode = preSolarCodes[preSolarCodes.length - 1]; // 上一年12月1号
-            // 下一年公历1月表示为了13月，这里做翻译，并计算出日期码
-            nearSolarCode = (nearSolarCode / 100 == 13 ? preYear + 1 : preYear) * 10000
-                    + (nearSolarCode / 100 == 13 ? nearSolarCode - 1200 : nearSolarCode);
-            if (nearSolarCode > solarCode) {// 此公历日期在上一年农历12月1号，之前，即在上年农历11月内
-                newMonth = 11;
-                // 取农历11月的公历码
-                nearSolarCode = preYear * 10000 + preSolarCodes[preSolarCodes.length - 2];
-            } else {// 此公历日期在上一年农历12月内
-                newMonth = 12;
-            }
-            xDate = Long.valueOf(solarDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
-            if (xDate < 0) {
-                throw new IllegalArgumentException("Wrong solarCode: " + solarCode);
-            }
-            this.lunarDay = 1 + xDate;
-            this.lunarYear = preYear;
-            this.lunarMonth = newMonth;
-            this.isLeapMonth = false; // 农历12月不可能为闰月
-        } else if (solarCodes.length == newMonth + 1 && xDate >= 30) {// 在下一年(公历12月只有30天)
-            newMonth = 1; // 农历肯定是1月
-            // 取下一年的公历日期码
-            short[] nextSolarCodes = Fields.CN_LUNAR[solarYear + 1 - MIN_YEAR];
-            // 取下一年农历1月1号公历日期码
-            int nearSolarCode = solarYear * 10000 + nextSolarCodes[1]; // 下一年农历1月1号公历日期码
-            xDate = Long.valueOf(solarDiff(solarCode, nearSolarCode, Calendar.DATE)).intValue();
-            if (xDate < 0) {
-                throw new IllegalArgumentException("Wrong solarCode: " + solarCode);
-            }
-            this.lunarDay = 1 + xDate;
-            this.lunarYear = solarYear + 1; // 农历年到了下一年
-            this.lunarMonth = newMonth;
-            this.isLeapMonth = false; // 农历1月不可能为闰月
-        } else {
-            if (xDate < 0) {
-                throw new IllegalArgumentException("Wrong solarCode: " + solarCode);
-            }
-            this.lunarDay = 1 + xDate;
-            this.lunarYear = solarYear;
-            this.isLeapMonth = 0 != leapMonth && (leapMonth + 1 == newMonth);
-            if (0 != leapMonth && leapMonth < newMonth) {
-                this.lunarMonth = newMonth - 1;
-            } else {
-                this.lunarMonth = newMonth;
-            }
-        }
-    }
-
-    /**
-     * 通过给定的农历日期，计算公历日期
-     *
-     * @param lunarYear   　农历年
-     * @param lunarMonth  　农历月，从１开始
-     * @param lunarDate   　农历日期
-     * @param isLeapMonth 　是否为闰月
-     */
-    private void lunar(final int lunarYear, final int lunarMonth, final int lunarDate,
-                       final boolean isLeapMonth) {
-        if (lunarYear < MIN_YEAR || lunarYear > MAX_YEAR) {
-            throw new IllegalArgumentException("LunarYear must in (" + MIN_YEAR + Symbol.COMMA + MAX_YEAR + ")");
-        }
-        this.lunarYear = lunarYear;
-        this.lunarMonth = lunarMonth;
-        this.lunarDay = lunarDate;
-        int solarMontDate = Fields.CN_LUNAR[lunarYear - MIN_YEAR][lunarMonth];
-        leapMonth = Fields.CN_LUNAR[lunarYear - MIN_YEAR][0];
-        if (leapMonth != 0 && (lunarMonth > leapMonth || (lunarMonth == leapMonth && isLeapMonth))) {
-            // 闰月，且当前农历月大于闰月月份，取下一个月的LunarInfo码
-            // 闰月，且当前农历月等于闰月月份，并且此农历月为闰月，取下一个月的LunarInfo码
-            solarMontDate = Fields.CN_LUNAR[lunarYear - MIN_YEAR][lunarMonth + 1];
-        }
-        this.set(Calendar.YEAR, lunarYear);
-        this.set(Calendar.MONTH, (solarMontDate / 100) - 1);
-        this.set(Calendar.DATE, solarMontDate % 100);
-        this.add(Calendar.DATE, lunarDate - 1);
-    }
-
-    /**
-     * 创建LunarInfo中某一年的一列公历日历编码
-     * 公历日历编码：年份+月份+天，用于查询某个公历日期在某个LunarInfo列的哪一个区间
-     *
-     * @param solarYear 年份
-     * @return 公历日历编码
-     */
-    private int[] builder(int solarYear) {
-        if (solarYear < MIN_YEAR || solarYear > MAX_YEAR) {
-            throw new IllegalArgumentException("Illegal solar year: " + solarYear);
-        }
-        int lunarIndex = solarYear - MIN_YEAR;
-        int[] solarCodes = new int[Fields.CN_LUNAR[lunarIndex].length];
-        for (int i = 0; i < solarCodes.length; i++) {
-            if (0 == i) { // 第一个数表示闰月，不用更改
-                solarCodes[i] = Fields.CN_LUNAR[lunarIndex][i];
-            } else if (1 == i) {
-                if (Fields.CN_LUNAR[lunarIndex][1] > 999) {
-                    // 这年农历一月一日对应的公历实际是上一年的
-                    solarCodes[i] = (solarYear - 1) * 10000 + Fields.CN_LUNAR[lunarIndex][i];
-                } else {
-                    solarCodes[i] = solarYear * 10000 + Fields.CN_LUNAR[lunarIndex][i];
-                }
-            } else {
-                solarCodes[i] = solarYear * 10000 + Fields.CN_LUNAR[lunarIndex][i];
-            }
-        }
-        return solarCodes;
-    }
-
-    @Override
-    public void add(int field, int amount) {
-        super.add(field, amount);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    @Override
-    public void set(int field, int value) {
-        super.set(field, value);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    @Override
-    public void roll(int field, int amount) {
-        super.roll(field, amount);
-        lunar(get(Calendar.YEAR), get(Calendar.MONTH), get(Calendar.DATE));
-    }
-
-    @Override
-    public String toString() {
-        if (this.lunarYear < MIN_YEAR || this.lunarYear > MAX_YEAR || this.lunarMonth < 1
-                || this.lunarMonth > 12 || this.lunarDay < 1
-                || this.lunarDay > 30) {
-            return "Wrong lunar date: " + lunarYear + Symbol.SPACE + lunarMonth + Symbol.SPACE + lunarDay;
-        }
-        return getYearName(this.lunarYear) + "年" + (this.isLeapMonth ? "闰" : Normal.EMPTY)
-                + getMonthName(this.lunarMonth) + "月" + getDayName(this.lunarDay);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DateKit)) return false;
-        if (!super.equals(o)) return false;
-        DateKit that = (DateKit) o;
-        return lunarYear == that.lunarYear &&
-                lunarMonth == that.lunarMonth &&
-                lunarDay == that.lunarDay &&
-                isLeapMonth == that.isLeapMonth &&
-                leapMonth == that.leapMonth;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + lunarYear;
-        result = 31 * result + lunarMonth;
-        result = 31 * result + lunarDay;
-        result = 31 * result + leapMonth;
-        result = 31 * result + (isLeapMonth ? 1 : 0);
-        return result;
-    }
-
-    @Override
-    public Object clone() {
-        DateKit other = (DateKit) super.clone();
-        other.lunarYear = lunarYear;
-        other.leapMonth = leapMonth;
-        other.lunarDay = lunarDay;
-        other.leapMonth = leapMonth;
-        other.isLeapMonth = isLeapMonth;
-        return other;
+    public static boolean isLeapYear(int year) {
+        return Solar.isLeapYear(year);
     }
 
 }

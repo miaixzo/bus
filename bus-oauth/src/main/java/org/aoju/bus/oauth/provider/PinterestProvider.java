@@ -106,7 +106,7 @@ public class PinterestProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Pinterest.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Pinterest.values())))
                 .build();
     }
 
