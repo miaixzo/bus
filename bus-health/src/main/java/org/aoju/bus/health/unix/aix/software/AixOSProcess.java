@@ -28,6 +28,7 @@ package org.aoju.bus.health.unix.aix.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -258,7 +259,7 @@ public class AixOSProcess extends AbstractOSProcess {
             for (String processAffinityInfo : processAffinityInfoList) { // affinity information is in thread row
                 String[] threadInfoSplit = RegEx.SPACES.split(processAffinityInfo.trim());
                 if (threadInfoSplit.length > 13 && threadInfoSplit[4].charAt(0) != 'Z') { // only non-zombie threads
-                    if (threadInfoSplit[11].charAt(0) == '-') { // affinity to all processors
+                    if (threadInfoSplit[11].charAt(0) == Symbol.C_HYPHEN) { // affinity to all processors
                         return this.affinityMask.get();
                     } else {
                         int affinity = Builder.parseIntOrDefault(threadInfoSplit[11], 0);

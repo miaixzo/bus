@@ -120,7 +120,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
     public String getIpv6DefaultGateway() {
         List<String> routes = Executor.runNative("route -A inet6 -n");
         if (routes.size() <= 2) {
-            return "";
+            return Normal.EMPTY;
         }
 
         String gateway = Normal.EMPTY;

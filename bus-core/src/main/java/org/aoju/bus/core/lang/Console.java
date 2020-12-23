@@ -437,7 +437,7 @@ public class Console {
 
     public static class Table {
 
-        private static final char ROW_LINE = '-';
+        private static final char ROW_LINE = Symbol.C_HYPHEN;
         private static final char COLUMN_LINE = '|';
         private static final char CORNER = '+';
         private static final char SPACE = '\u3000';
@@ -565,7 +565,7 @@ public class Console {
         private void fillBorder(StringBuilder sb) {
             sb.append(CORNER);
             for (Integer width : columnCharNumber) {
-                sb.append(Convert.toSBC(StringKit.fillAfter("", ROW_LINE, width + 2)));
+                sb.append(Convert.toSBC(StringKit.fillAfter(Normal.EMPTY, ROW_LINE, width + 2)));
                 sb.append(CORNER);
             }
             sb.append(LF);

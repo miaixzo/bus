@@ -31,6 +31,7 @@ import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
@@ -199,9 +200,9 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         // Sample output:
         // pid 8 mask: 0, 1
         // cpuset: getaffinity: No such process
-        String[] split = cpuset.split(":");
+        String[] split = cpuset.split(Symbol.COLON);
         if (split.length > 1) {
-            String[] bits = split[1].split(",");
+            String[] bits = split[1].split(Symbol.COMMA);
             for (String bit : bits) {
                 int bitToSet = Builder.parseIntOrDefault(bit.trim(), -1);
                 if (bitToSet >= 0) {

@@ -54,7 +54,6 @@ public class Assets {
     private String description;
 
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2804,7 +2804,7 @@ public class MathKit {
         }
         int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
         return new DecimalFormat("#,##0.##")
-                .format(size / Math.pow(1024, digitGroups)) + " " + Normal.CAPACITY_NAMES[digitGroups];
+                .format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE + Normal.CAPACITY_NAMES[digitGroups];
     }
 
     /**

@@ -180,16 +180,16 @@ public class WindowsFileSystem extends AbstractFileSystem {
 
                     StringBuilder options = new StringBuilder((FILE_READ_ONLY_VOLUME & flags) == 0 ? "rw" : "ro");
                     String moreOptions = OPTIONS_MAP.entrySet().stream().filter(e -> (e.getKey() & flags) > 0)
-                            .map(Map.Entry::getValue).collect(Collectors.joining(","));
+                            .map(Map.Entry::getValue).collect(Collectors.joining(Symbol.COMMA));
                     if (!moreOptions.isEmpty()) {
-                        options.append(',').append(moreOptions);
+                        options.append(Symbol.C_COMMA).append(moreOptions);
                     }
                     Kernel32.INSTANCE.GetDiskFreeSpaceEx(volume, userFreeBytes, totalBytes, systemFreeBytes);
                     // Parse uuid from volume name
-                    String uuid = Builder.parseUuidOrDefault(volume, "");
+                    String uuid = Builder.parseUuidOrDefault(volume, Normal.EMPTY);
 
                     fs.add(new WindowsOSFileStore(String.format("%s (%s)", strName, strMount), volume, strName,
-                            strMount, options.toString(), uuid, "", getDriveType(strMount), strFsType,
+                            strMount, options.toString(), uuid, Normal.EMPTY, getDriveType(strMount), strFsType,
                             systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue(), 0, 0));
                 }
             } while (Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE));

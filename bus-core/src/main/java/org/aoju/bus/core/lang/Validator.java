@@ -308,7 +308,7 @@ public class Validator {
         if (min < 0) {
             min = 0;
         }
-        String reg = "^\\w{" + min + "," + max + "}$";
+        String reg = "^\\w{" + min + Symbol.COMMA + max + "}$";
         if (max <= 0) {
             reg = "^\\w{" + min + ",}$";
         }
@@ -626,7 +626,7 @@ public class Validator {
         }
         if (month == 2) {
             // 在2月，非闰年最大28，闰年最大29
-            return day < 29 || (day == 29 && new DateKit().isLeapYear(year));
+            return day < 29 || (day == 29 && DateKit.isLeapYear(year));
         }
         return true;
     }

@@ -93,6 +93,7 @@ public class Context {
     public enum Format {
         xml(new XmlProvider(), MediaType.parseMediaType(MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8")),
         json(new JsonProvider(), MediaType.APPLICATION_JSON),
+        pdf,
         binary;
         private Provider provider;
 

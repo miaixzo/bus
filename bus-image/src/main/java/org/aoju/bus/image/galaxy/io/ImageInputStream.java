@@ -72,7 +72,7 @@ public class ImageInputStream extends FilterInputStream
     // Length of the buffer used for readFully(short[], int, int)
     private static final int BYTE_BUF_LENGTH = 8192;
     private final byte[] buffer = new byte[12];
-    private final List<ItemPointer> itemPointers = new ArrayList<ItemPointer>(4);
+    private final List<ItemPointer> itemPointers = new ArrayList<>(4);
     private byte[] byteBuf;
     private int allocateLimit = DEF_ALLOCATE_LIMIT;
     private String uri;
@@ -551,8 +551,9 @@ public class ImageInputStream extends FilterInputStream
             if (blkOut == null) {
                 File blkfile = File.createTempFile(blkFilePrefix,
                         blkFileSuffix, blkDirectory);
-                if (blkFiles == null)
-                    blkFiles = new ArrayList<File>();
+                if (blkFiles == null) {
+                    blkFiles = new ArrayList<>();
+                }
                 blkFiles.add(blkfile);
                 blkURI = blkfile.toURI().toString();
                 blkOut = new FileOutputStream(blkfile);

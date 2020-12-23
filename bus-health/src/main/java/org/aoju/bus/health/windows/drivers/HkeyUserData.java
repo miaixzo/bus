@@ -61,7 +61,7 @@ public final class HkeyUserData {
     public static List<OSSession> queryUserSessions() {
         List<OSSession> sessions = new ArrayList<>();
         for (String sidKey : Advapi32Util.registryGetKeys(WinReg.HKEY_USERS)) {
-            if (!sidKey.startsWith(".") && !sidKey.endsWith("_Classes")) {
+            if (!sidKey.startsWith(Symbol.DOT) && !sidKey.endsWith("_Classes")) {
                 try {
                     Account a = Advapi32Util.getAccountBySid(sidKey);
                     String name = a.name;

@@ -49,7 +49,7 @@ public class Boundary extends Range<DateTime> {
      * @param end   结束日期时间
      * @param unit  步进单位
      */
-    public Boundary(Date start, Date end, final Fields.DateField unit) {
+    public Boundary(Date start, Date end, final Fields.Type unit) {
         this(start, end, unit, 1);
     }
 
@@ -61,7 +61,7 @@ public class Boundary extends Range<DateTime> {
      * @param unit  步进单位
      * @param step  步进数
      */
-    public Boundary(Date start, Date end, final Fields.DateField unit, final int step) {
+    public Boundary(Date start, Date end, final Fields.Type unit, final int step) {
         this(start, end, unit, step, true, true);
     }
 
@@ -75,7 +75,7 @@ public class Boundary extends Range<DateTime> {
      * @param isIncludeStart 是否包含开始的时间
      * @param isIncludeEnd   是否包含结束的时间
      */
-    public Boundary(Date start, Date end, final Fields.DateField unit, final int step, boolean isIncludeStart, boolean isIncludeEnd) {
+    public Boundary(Date start, Date end, final Fields.Type unit, final int step, boolean isIncludeStart, boolean isIncludeEnd) {
         super(DateKit.date(start), DateKit.date(end), (current, end1, index) -> {
             DateTime dt = current.offset(unit, step);
             if (dt.isAfter(end1)) {

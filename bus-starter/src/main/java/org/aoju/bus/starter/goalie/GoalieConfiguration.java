@@ -27,11 +27,17 @@ package org.aoju.bus.starter.goalie;
 
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.goalie.Athlete;
-import org.aoju.bus.goalie.Registry;
+import org.aoju.bus.goalie.filter.*;
 import org.aoju.bus.goalie.handler.ApiRouterHandler;
 import org.aoju.bus.goalie.handler.ApiWebMvcRegistrations;
 import org.aoju.bus.goalie.handler.GlobalExceptionHandler;
+import org.aoju.bus.goalie.metric.Authorize;
+import org.aoju.bus.goalie.registry.AssetsRegistry;
+import org.aoju.bus.goalie.registry.DefaultAssetsRegistry;
+import org.aoju.bus.goalie.registry.DefaultLimiterRegistry;
+import org.aoju.bus.goalie.registry.LimiterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -62,13 +68,55 @@ public class GoalieConfiguration {
     GoalieProperties goalieProperties;
 
     @Autowired(required = false)
-    List<Registry> assetRegistries;
-
-    @Autowired(required = false)
     List<WebExceptionHandler> webExceptionHandlers;
 
     @Autowired(required = false)
     List<WebFilter> webFilters;
+
+    @ConditionalOnMissingBean
+    @Bean
+    AssetsRegistry assetsRegistry() {
+        return new DefaultAssetsRegistry();
+    }
+
+    @ConditionalOnMissingBean
+    @Bean
+    LimiterRegistry limiterRegistry() {
+        return new DefaultLimiterRegistry();
+    }
+
+    @Bean
+    WebFilter primaryFilter() {
+        return new PrimaryFilter();
+    }
+
+    @Bean
+    WebFilter decryptFilter() {
+        return this.goalieProperties.getServer().getDecrypt().isEnabled()
+                ? new DecryptFilter(this.goalieProperties.getServer().getDecrypt()) : null;
+    }
+
+    @Bean
+    WebFilter authorizeFilter(Authorize authorize, AssetsRegistry registry) {
+        return new AuthorizeFilter(authorize, registry);
+    }
+
+    @Bean
+    WebFilter encryptFilter() {
+        return this.goalieProperties.getServer().getEncrypt().isEnabled()
+                ? new EncryptFilter(this.goalieProperties.getServer().getEncrypt()) : null;
+    }
+
+    @Bean
+    WebFilter limitFilter(LimiterRegistry registry) {
+        return this.goalieProperties.getServer().getLimit().isEnabled()
+                ? new LimitFilter(registry) : null;
+    }
+
+    @Bean
+    WebFilter formatFilter() {
+        return new FormatFilter();
+    }
 
     @Bean
     WebExceptionHandler webExceptionHandler() {
@@ -80,8 +128,8 @@ public class GoalieConfiguration {
         ApiRouterHandler apiRouterHandler = new ApiRouterHandler();
 
         RouterFunction<ServerResponse> routerFunction = RouterFunctions
-            .route(RequestPredicates.path(goalieProperties.getServer().getPath())
-                .and(RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
+                .route(RequestPredicates.path(goalieProperties.getServer().getPath())
+                        .and(RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
 
         HandlerStrategies.Builder builder = HandlerStrategies.builder();
 
@@ -99,9 +147,9 @@ public class GoalieConfiguration {
         HttpHandler handler = RouterFunctions.toHttpHandler(routerFunction, handlerStrategies);
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
         HttpServer server = HttpServer.create()
-            .port(goalieProperties.getServer().getPort()).handle(adapter);
+                .port(goalieProperties.getServer().getPort()).handle(adapter);
 
-        return new Athlete(server, assetRegistries);
+        return new Athlete(server);
     }
 
     @Bean

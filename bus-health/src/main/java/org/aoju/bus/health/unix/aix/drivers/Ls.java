@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.aix.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -60,7 +61,7 @@ public final class Ls {
             // Filter to block devices
             if (!s.isEmpty() && s.charAt(0) == 'b') {
                 // Device name is last space-delim string
-                int idx = s.lastIndexOf(' ');
+                int idx = s.lastIndexOf(Symbol.C_SPACE);
                 if (idx > 0 && idx < s.length()) {
                     String device = s.substring(idx + 1);
                     int major = Builder.getNthIntValue(s, 2);

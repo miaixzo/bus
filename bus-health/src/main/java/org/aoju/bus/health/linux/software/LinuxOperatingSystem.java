@@ -101,7 +101,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             return 0;
         }
         // Grab PPID
-        long[] statArray = Builder.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, ' ');
+        long[] statArray = Builder.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
         return (int) statArray[0];
     }
 
@@ -242,13 +242,13 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 }
             } else if (line.startsWith("Distributor ID:") && family == null) {
                 Logger.debug(LSB_RELEASE_A_LOG, line);
-                family = line.replace("Distributor ID:", "").trim();
+                family = line.replace("Distributor ID:", Normal.EMPTY).trim();
             } else if (line.startsWith("Release:") && versionId.equals(Normal.UNKNOWN)) {
                 Logger.debug(LSB_RELEASE_A_LOG, line);
-                versionId = line.replace("Release:", "").trim();
+                versionId = line.replace("Release:", Normal.EMPTY).trim();
             } else if (line.startsWith("Codename:") && codeName.equals(Normal.UNKNOWN)) {
                 Logger.debug(LSB_RELEASE_A_LOG, line);
-                codeName = line.replace("Codename:", "").trim();
+                codeName = line.replace("Codename:", Normal.EMPTY).trim();
             }
         }
         return family == null ? null : Triple.of(family, versionId, codeName);
@@ -270,7 +270,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         for (String line : osRelease) {
             if (line.startsWith("DISTRIB_DESCRIPTION=")) {
                 Logger.debug(LSB_RELEASE_LOG, line);
-                line = line.replace("DISTRIB_DESCRIPTION=", "").replaceAll(DOUBLE_QUOTES, "").trim();
+                line = line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
                 if (line.contains(RELEASE_DELIM)) {
                     Triple<String, String, String> Triple = parseRelease(line, RELEASE_DELIM);
                     family = Triple.getLeft();
@@ -283,13 +283,13 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 }
             } else if (line.startsWith("DISTRIB_ID=") && family == null) {
                 Logger.debug(LSB_RELEASE_LOG, line);
-                family = line.replace("DISTRIB_ID=", "").replaceAll(DOUBLE_QUOTES, "").trim();
+                family = line.replace("DISTRIB_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("DISTRIB_RELEASE=") && versionId.equals(Normal.UNKNOWN)) {
                 Logger.debug(LSB_RELEASE_LOG, line);
-                versionId = line.replace("DISTRIB_RELEASE=", "").replaceAll(DOUBLE_QUOTES, "").trim();
+                versionId = line.replace("DISTRIB_RELEASE=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("DISTRIB_CODENAME=") && codeName.equals(Normal.UNKNOWN)) {
                 Logger.debug(LSB_RELEASE_LOG, line);
-                codeName = line.replace("DISTRIB_CODENAME=", "").replaceAll(DOUBLE_QUOTES, "").trim();
+                codeName = line.replace("DISTRIB_CODENAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             }
         }
         return family == null ? null : Triple.of(family, versionId, codeName);
@@ -381,7 +381,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static String filenameToFamily(String name) {
         switch (name.toLowerCase()) {
             // Handle known special cases
-            case "":
+            case Normal.EMPTY:
                 return "Solaris";
             case "blackcat":
                 return "Black Cat";

@@ -54,7 +54,7 @@ public enum BinaryPrefix {
 
     public static long parse(String s) {
         int unitEnd = s.length();
-        if (unitEnd > 0 && s.charAt(0) != '-')
+        if (unitEnd > 0 && s.charAt(0) != Symbol.C_HYPHEN)
             try {
                 if (s.charAt(unitEnd - 1) == 'B')
                     unitEnd--;

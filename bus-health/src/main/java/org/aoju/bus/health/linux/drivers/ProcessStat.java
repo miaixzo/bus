@@ -57,7 +57,7 @@ public final class ProcessStat {
         String stat = Builder.getStringFromFile(ProcPath.SELF_STAT);
         if (!stat.isEmpty() && stat.contains(")")) {
             // add 3 to account for pid, process name in prarenthesis, and state
-            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, ' ') + 3;
+            PROC_PID_STAT_LENGTH = Builder.countStringToLongArray(stat, Symbol.C_SPACE) + 3;
         } else {
             // Default assuming recent kernel
             PROC_PID_STAT_LENGTH = 52;

@@ -494,23 +494,23 @@ public class RandomKit {
      * @return 随机日期(随机天 ， 其它时间不变)
      */
     public static DateTime randomDay(int min, int max) {
-        return randomDate(DateKit.date(), Fields.DateField.DAY_OF_YEAR, min, max);
+        return randomDate(DateKit.date(), Fields.Type.DAY_OF_YEAR, min, max);
     }
 
     /**
      * 以给定日期为基准，随机产生一个日期
      *
-     * @param baseDate  基准日期
-     * @param dateField 偏移的时间字段，例如时、分、秒等
-     * @param min       偏移最小量，可以为负数表示过去的时间(包含)
-     * @param max       偏移最大量，可以为负数表示过去的时间(不包含)
+     * @param baseDate 基准日期
+     * @param type     偏移的时间字段，例如时、分、秒等
+     * @param min      偏移最小量，可以为负数表示过去的时间(包含)
+     * @param max      偏移最大量，可以为负数表示过去的时间(不包含)
      * @return 随机日期
      */
-    public static DateTime randomDate(Date baseDate, Fields.DateField dateField, int min, int max) {
+    public static DateTime randomDate(Date baseDate, Fields.Type type, int min, int max) {
         if (null == baseDate) {
             baseDate = DateKit.date();
         }
-        return DateKit.offset(baseDate, dateField, randomInt(min, max));
+        return DateKit.offset(baseDate, type, randomInt(min, max));
     }
 
     /**

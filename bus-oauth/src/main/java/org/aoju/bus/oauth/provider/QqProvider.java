@@ -156,7 +156,7 @@ public class QqProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Qq.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Qq.values())))
                 .build();
     }
 

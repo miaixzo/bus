@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http;
 
+import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.http.socket.CoverWebSocket;
 import org.aoju.bus.logger.Logger;
 
@@ -104,7 +105,7 @@ public class Stomp {
             List<Header> cHeaders = new ArrayList<>();
             cHeaders.add(new Header(Header.VERSION, SUPPORTED_VERSIONS));
             cHeaders.add(new Header(Header.HEART_BEAT,
-                    cover.pingSeconds() * 1000 + "," + cover.pongSeconds() * 1000));
+                    cover.pingSeconds() * 1000 + Symbol.COMMA + cover.pongSeconds() * 1000));
             if (headers != null) {
                 cHeaders.addAll(headers);
             }
@@ -307,7 +308,7 @@ public class Stomp {
         if (Builder.CONNECTED.equals(command)) {
             String hbHeader = msg.headerValue(Header.HEART_BEAT);
             if (hbHeader != null) {
-                String[] heartbeats = hbHeader.split(",");
+                String[] heartbeats = hbHeader.split(Symbol.COMMA);
                 int pingSeconds = Integer.parseInt(heartbeats[1]) / 1000;
                 int pongSeconds = Integer.parseInt(heartbeats[0]) / 1000;
                 cover.heatbeat(Math.max(pingSeconds, cover.pingSeconds()),
@@ -373,7 +374,7 @@ public class Stomp {
 
         @Override
         public String toString() {
-            return key + ':' + value;
+            return key + Symbol.C_COLON + value;
         }
 
     }
@@ -407,7 +408,7 @@ public class Stomp {
 
             List<Header> headerList = new ArrayList<>(headers.length);
             for (String header : headers) {
-                String[] hv = header.split(":");
+                String[] hv = header.split(Symbol.COLON);
                 if (hv.length == 2) {
                     headerList.add(new Header(hv[0], hv[1]));
                 }
@@ -456,7 +457,7 @@ public class Stomp {
             StringBuilder builder = new StringBuilder();
             builder.append(command).append('\n');
             for (Header header : headers) {
-                builder.append(header.getKey()).append(':').append(header.getValue()).append('\n');
+                builder.append(header.getKey()).append(Symbol.C_COLON).append(header.getValue()).append('\n');
             }
             builder.append('\n');
             if (payload != null) {

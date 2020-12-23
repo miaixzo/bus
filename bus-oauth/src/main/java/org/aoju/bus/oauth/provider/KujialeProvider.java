@@ -78,7 +78,7 @@ public class KujialeProvider extends AbstractProvider {
      */
     public String authorize(String state, String scopeStr) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(",", false, getScopes(true, OauthScope.Kujiale.values())))
+                .queryParam("scope", this.getScopes(Symbol.COMMA, false, getScopes(true, OauthScope.Kujiale.values())))
                 .build();
     }
 

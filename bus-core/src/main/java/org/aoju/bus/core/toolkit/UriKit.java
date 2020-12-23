@@ -1503,7 +1503,7 @@ public class UriKit {
      * @return authority部分
      */
     public String getAuthority() {
-        return (port < 0) ? host : host + ":" + port;
+        return (port < 0) ? host : host + Symbol.C_COLON + port;
     }
 
     /**

@@ -23,35 +23,31 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.filter;
+package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.OAuth2;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Assets;
-import org.aoju.bus.goalie.Athlete;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.goalie.metric.Authorize;
 import org.aoju.bus.goalie.metric.Delegate;
-import org.aoju.bus.starter.goalie.GoalieConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.aoju.bus.goalie.registry.AssetsRegistry;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 访问鉴权
@@ -60,15 +56,17 @@ import java.util.stream.Collectors;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-@Component
-@ConditionalOnBean(GoalieConfiguration.class)
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
 public class AuthorizeFilter implements WebFilter {
 
-    @Autowired
-    Athlete athlete;
-    @Autowired
-    Authorize authorize;
+    private final Authorize authorize;
+
+    private final AssetsRegistry registry;
+
+    public AuthorizeFilter(Authorize authorize, AssetsRegistry registry) {
+        this.authorize = authorize;
+        this.registry = registry;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -79,17 +77,11 @@ public class AuthorizeFilter implements WebFilter {
 
         String method = params.get(Consts.METHOD);
         String version = params.get(Consts.VERSION);
-        List<Assets> assetsList = athlete.getAssets().parallelStream()
-            .filter(asset -> Objects.equals(method, asset.getMethod())).collect(Collectors.toList());
+        Assets assets = registry.getAssets(method, version);
 
-        if (assetsList.size() < 1) {
-            return Mono.error(new BusinessException(ErrorCode.EM_100103));
+        if (null == assets) {
+            return Mono.error(new BusinessException(ErrorCode.EM_100500));
         }
-
-        Assets assets = assetsList.parallelStream()
-            .filter(c -> Objects.equals(version, c.getVersion())).findFirst()
-            .orElseThrow(() -> new BusinessException(ErrorCode.EM_100102));
-
         //校验方法
         checkMethod(exchange.getRequest(), assets);
         //校验参数
@@ -134,6 +126,9 @@ public class AuthorizeFilter implements WebFilter {
         // 访问授权校验
         if (assets.isToken()) {
             String token = request.getHeaders().getFirst(Consts.X_ACCESS_TOKEN);
+            if (StringKit.isBlank(token)) {
+                throw new BusinessException(ErrorCode.EM_100106);
+            }
             Delegate delegate = authorize.authorize(token);
             if (delegate.isOk()) {
                 OAuth2 auth2 = delegate.getOAuth2();
@@ -157,7 +152,15 @@ public class AuthorizeFilter implements WebFilter {
     }
 
     private void fillXParam(ServerWebExchange exchange, Map<String, String> requestParam) {
-        requestParam.put("x-remote-ip", exchange.getRequest().getHeaders().getFirst("x-real-ip"));
+        String ip = exchange.getRequest().getHeaders().getFirst("x-real-ip");
+        if (StringKit.isBlank(ip)) {
+            InetSocketAddress address = exchange.getRequest().getRemoteAddress();
+            if (null != address) {
+                ip = address.getAddress().getHostAddress();
+            }
+
+        }
+        requestParam.put("x-remote-ip", ip);
     }
 
 }

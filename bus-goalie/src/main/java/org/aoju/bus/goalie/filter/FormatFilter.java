@@ -23,21 +23,18 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.starter.goalie.filter;
+package org.aoju.bus.goalie.filter;
 
 import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.extra.json.JsonKit;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.starter.goalie.GoalieConfiguration;
 import org.reactivestreams.Publisher;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -53,15 +50,13 @@ import java.nio.charset.Charset;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-@Component
-@ConditionalOnBean(GoalieConfiguration.class)
 @Order(Ordered.LOWEST_PRECEDENCE - 2)
 public class FormatFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         Context context = Context.get(exchange);
-        if (!Context.Format.binary.equals(context.getFormat())) {
+        if (Context.Format.xml.equals(context.getFormat()) || Context.Format.json.equals(context.getFormat())) {
             exchange = exchange.mutate().response(process(exchange)).build();
         }
         return chain.filter(exchange);
@@ -79,7 +74,7 @@ public class FormatFilter implements WebFilter {
                     String bodyString = Charset.defaultCharset().decode(dataBuffer.asByteBuffer()).toString();
                     Message message = JsonKit.toPojo(bodyString, Message.class);
                     String formatBody = context.getFormat().getProvider().serialize(message);
-                    if(Logger.get().isTrace()) {
+                    if (Logger.get().isTrace()) {
                         Logger.trace("traceId:{},resp <= {}", exchange.getLogPrefix(), formatBody);
                     }
                     return bufferFactory().wrap(formatBody.getBytes());

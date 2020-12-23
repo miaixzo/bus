@@ -25,14 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.goalie;
 
-import org.aoju.bus.core.collection.ConcurrentHashSet;
-import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.logger.Logger;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * 服务端
@@ -44,49 +39,14 @@ import java.util.Set;
 public class Athlete {
 
     private final HttpServer httpServer;
-    private final Set<Assets> assets = new ConcurrentHashSet<>();
-    private final List<Registry> assetRegistries;
     private DisposableServer disposableServer;
 
-    public Athlete(HttpServer httpServer, List<Registry> assetRegistries) {
+    public Athlete(HttpServer httpServer) {
         this.httpServer = httpServer;
-        this.assetRegistries = assetRegistries;
-    }
-
-    public Set<Assets> getAssets() {
-        return assets;
-    }
-
-    public boolean addAssets(Assets assets) {
-        return this.assets.add(assets);
-    }
-
-    public boolean amendAssets(Assets assets) {
-        if (this.assets.contains(assets)) {
-            this.assets.remove(assets);
-            return this.assets.add(assets);
-        } else {
-            return false;
-        }
-    }
-
-    public boolean removeAssets(Assets assets) {
-        return this.assets.remove(assets);
-    }
-
-    public void refreshAssets() {
-        assets.clear();
-        if (CollKit.isNotEmpty(assetRegistries)) {
-            assetRegistries.forEach(registry -> {
-                assets.addAll(registry.init());
-                registry.setAthlete(this);
-            });
-        }
     }
 
     private void init() {
 
-        refreshAssets();
         disposableServer = httpServer.bindNow();
         Logger.info("reactor server start on port:{} success", disposableServer.port());
     }

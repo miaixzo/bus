@@ -279,7 +279,7 @@ public class MppsSCU {
         String codeMeaning = codes.getProperty(codeValue);
         if (codeMeaning == null)
             throw new IllegalArgumentException("undefined internal value: " + codeValue);
-        int endDesignator = codeValue.indexOf('-');
+        int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
         Attributes attrs = new Attributes(3);
         attrs.setString(Tag.CodeValue, VR.SH,
                 endDesignator >= 0
