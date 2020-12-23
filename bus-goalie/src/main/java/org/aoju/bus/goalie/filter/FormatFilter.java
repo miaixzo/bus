@@ -56,7 +56,7 @@ public class FormatFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         Context context = Context.get(exchange);
-        if (!Context.Format.binary.equals(context.getFormat())) {
+        if (Context.Format.xml.equals(context.getFormat()) || Context.Format.json.equals(context.getFormat())) {
             exchange = exchange.mutate().response(process(exchange)).build();
         }
         return chain.filter(exchange);

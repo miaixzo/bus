@@ -79,7 +79,9 @@ public class EncryptFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 
-        if (encrypt.isEnabled() && !Context.Format.binary.equals(Context.get(exchange).getFormat())) {
+        if (encrypt.isEnabled()
+                && (Context.Format.xml.equals(Context.get(exchange).getFormat())
+                || Context.Format.json.equals(Context.get(exchange).getFormat()))) {
             exchange = exchange.mutate().response(process(exchange)).build();
         }
         return chain.filter(exchange);
