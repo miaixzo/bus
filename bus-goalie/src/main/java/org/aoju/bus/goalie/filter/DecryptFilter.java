@@ -54,12 +54,11 @@ import java.util.Map;
 public class DecryptFilter implements WebFilter {
 
     private final ServerConfig.Decrypt decrypt;
+    private Symmetric symmetric;
 
     public DecryptFilter(ServerConfig.Decrypt decrypt) {
         this.decrypt = decrypt;
     }
-
-    private Symmetric symmetric;
 
     @PostConstruct
     public void init() {

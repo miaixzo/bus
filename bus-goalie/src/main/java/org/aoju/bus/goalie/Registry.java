@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.goalie;
 
-import java.util.Set;
-
 /**
  * api registry
  *
@@ -34,37 +32,38 @@ import java.util.Set;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public interface Registry {
+public interface Registry<T> {
 
     /**
      * 初始化
-     *
      */
     void init();
 
     /**
      * 添加
      *
-     * @param assets 路由
+     * @param key id;
+     * @param reg 路由
      * @return true or false
      */
-    boolean add(Assets assets);
+    boolean add(String key, T reg);
 
     /**
      * 删除
      *
-     * @param id 路由id
+     * @param key id
      * @return true or false
      */
-    boolean remove(String id);
+    boolean remove(String key);
 
     /**
      * 修改
      *
-     * @param assets 路由
+     * @param key id
+     * @param reg 路由
      * @return true or false
      */
-    boolean amendAssets(Assets assets);
+    boolean amend(String key, T reg);
 
     /**
      * 刷新路由
@@ -73,7 +72,8 @@ public interface Registry {
 
     /**
      * 获取路由
+     *
      * @return 路由列表
      */
-    Set<Assets> getAssets();
+    T get(String id);
 }

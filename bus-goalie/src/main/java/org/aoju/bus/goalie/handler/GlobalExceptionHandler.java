@@ -83,6 +83,6 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         String formatBody = context.getFormat().getProvider().serialize(message);
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes());
         return response.writeWith(Mono.just(db))
-            .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+                .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
     }
 }

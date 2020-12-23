@@ -93,6 +93,12 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>

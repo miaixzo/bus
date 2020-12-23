@@ -1,7 +1,7 @@
 # 介绍
 
-基于spring webflux 开发的API网关,是一个分布式,全异步,高性能,可扩展 ,轻量级的API网关。
-立足于spring巨人的肩膀上,灵感来自阿里云的API网关;
+基于spring webflux 开发的API网关,是一个分布式,全异步,高性能,可扩展 ,轻量级的API网关。 立足于spring巨人的肩膀上,灵感来自阿里云的API网关;
+
 ## 功能特点
 
 - 开箱即用，写完业务代码直接启动服务即可使用，无需其它配置
@@ -55,22 +55,24 @@ public class Assets {
 |   sign   |   在配置文件中开启解密配置,若请求中包含sign字段,则对请求字段解密   |
 
 配置文件说明:
-```properties
+```yaml
 extend:
- goalie:
+  goalie:
     server:
-        port: 8765 #网关端口
-        path: /router/rest #网关path
-        encrypt:
-            enabled: true  #是否开启加密
-            key: xxxxxx #加密key
-            type: AES #加密算法
-            offset: xxxxxx #偏移量
-        decrypt:
-            enabled: true #是否开启解密
-            key: xxxxxx #解密key
-            type: AES #解密算法
-            offset: xxxx #偏移量
+      port: 8765 #网关端口
+      path: /router/rest #网关path
+      encrypt:
+        enabled: true  #是否开启加密
+        key: xxxxxx #加密key
+        type: AES #加密算法
+        offset: xxxxxx #偏移量
+      decrypt:
+        enabled: true #是否开启解密
+        key: xxxxxx #解密key
+        type: AES #解密算法
+        offset: xxxx #偏移量
+      limit:
+        enabled: true #是否开启限流
 
 ```
 
@@ -109,7 +111,6 @@ public class AuthProviderImpl implements Authorize {
 ```
 
 4.sping配置文件`application.yml`相应配置
-
 
 扩展方式:
 
