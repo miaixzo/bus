@@ -372,6 +372,17 @@ public class DateKit extends Lunar {
     }
 
     /**
+     * 获得指定月份的总天数
+     *
+     * @param month      年份
+     * @param isLeapYear 是否闰年
+     * @return 天
+     */
+    public static int lengthOfMonth(int month, boolean isLeapYear) {
+        return java.time.Month.of(month).length(isLeapYear);
+    }
+
+    /**
      * 获得指定日期的小时数部分
      *
      * @param date          日期
@@ -3651,6 +3662,38 @@ public class DateKit extends Lunar {
      */
     public static boolean isLeapYear(int year) {
         return Solar.isLeapYear(year);
+    }
+
+    /**
+     * 创建{@link SimpleDateFormat}，注意此对象非线程安全
+     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错
+     *
+     * @param pattern 表达式
+     * @return {@link SimpleDateFormat}
+     */
+    public static SimpleDateFormat newSimpleFormat(String pattern) {
+        return newSimpleFormat(pattern, null, null);
+    }
+
+    /**
+     * 创建{@link SimpleDateFormat}，注意此对象非线程安全
+     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错
+     *
+     * @param pattern  表达式
+     * @param locale   {@link Locale}，{@code null}表示默认
+     * @param timeZone {@link TimeZone}，{@code null}表示默认
+     * @return {@link SimpleDateFormat}
+     */
+    public static SimpleDateFormat newSimpleFormat(String pattern, Locale locale, TimeZone timeZone) {
+        if (null == locale) {
+            locale = Locale.getDefault(Locale.Category.FORMAT);
+        }
+        final SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
+        if (null != timeZone) {
+            format.setTimeZone(timeZone);
+        }
+        format.setLenient(false);
+        return format;
     }
 
 }

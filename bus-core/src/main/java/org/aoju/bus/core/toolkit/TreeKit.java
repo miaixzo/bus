@@ -109,7 +109,7 @@ public class TreeKit {
 
         List<TreeMap<E>> finalTreeMapNodes = CollKit.newArrayList();
         for (TreeMap<E> node : treeMapNodes) {
-            if (parentId.equals(node.getParentId())) {
+            if (ObjectKit.equals(parentId, node.getParentId())) {
                 finalTreeMapNodes.add(node);
                 innerBuild(treeMapNodes, node, 0, treeEntity.getDeep());
             }

@@ -1843,7 +1843,12 @@ public class MathKit {
      * @return {@link BigDecimal}
      */
     public static BigDecimal toBigDecimal(String number) {
-        return (null == number) ? BigDecimal.ZERO : new BigDecimal(number);
+        try {
+            number = parseNumber(number).toString();
+        } catch (Exception ignore) {
+            // 忽略解析错误
+        }
+        return StringKit.isBlank(number) ? BigDecimal.ZERO : new BigDecimal(number);
     }
 
     /**
@@ -2029,7 +2034,7 @@ public class MathKit {
      *
      * <pre>
      * 1、0x开头的视为16进制数字
-     * 2、0开头的视为8进制数字
+     * 2、0开头的忽略开头的0
      * 3、其它情况按照10进制转换
      * 4、空串返回0
      * 5、.123形式返回0(按照小于0的小数对待)
@@ -2045,18 +2050,16 @@ public class MathKit {
             return 0;
         }
 
-        // 对于带小数转换为整数采取去掉小数的策略
-        number = StringKit.subBefore(number, Symbol.DOT, false);
-        if (StringKit.isEmpty(number)) {
-            return 0;
-        }
-
         if (StringKit.startWithIgnoreCase(number, "0x")) {
             // 0x04表示16进制数
             return Integer.parseInt(number.substring(2), 16);
         }
 
-        return Integer.parseInt(removeNumberFlag(number));
+        try {
+            return Integer.parseInt(number);
+        } catch (NumberFormatException e) {
+            return parseNumber(number).intValue();
+        }
     }
 
     /**
@@ -2064,7 +2067,7 @@ public class MathKit {
      *
      * <pre>
      * 1、0x开头的视为16进制数字
-     * 2、0开头的视为8进制数字
+     * 2、0开头的忽略开头的0
      * 3、空串返回0
      * 4、其它情况按照10进制转换
      * </pre>
@@ -2074,13 +2077,7 @@ public class MathKit {
      */
     public static long parseLong(String number) {
         if (StringKit.isBlank(number)) {
-            return 0;
-        }
-
-        // 对于带小数转换为整数采取去掉小数的策略
-        number = StringKit.subBefore(number, Symbol.DOT, false);
-        if (StringKit.isEmpty(number)) {
-            return 0;
+            return 0L;
         }
 
         if (number.startsWith("0x")) {
@@ -2088,7 +2085,61 @@ public class MathKit {
             return Long.parseLong(number.substring(2), 16);
         }
 
-        return Long.parseLong(removeNumberFlag(number));
+        try {
+            return Long.parseLong(number);
+        } catch (NumberFormatException e) {
+            return parseNumber(number).longValue();
+        }
+    }
+
+    /**
+     * 解析转换数字字符串为long型数字，规则如下：
+     *
+     * <pre>
+     * 1、0开头的忽略开头的0
+     * 2、空串返回0
+     * 3、其它情况按照10进制转换
+     * 4、.123形式返回0.123（按照小于0的小数对待）
+     * </pre>
+     *
+     * @param number 数字，支持0x开头、0开头和普通十进制
+     * @return long
+     */
+    public static float parseFloat(String number) {
+        if (StringKit.isBlank(number)) {
+            return 0f;
+        }
+
+        try {
+            return Float.parseFloat(number);
+        } catch (NumberFormatException e) {
+            return parseNumber(number).floatValue();
+        }
+    }
+
+    /**
+     * 解析转换数字字符串为long型数字，规则如下：
+     *
+     * <pre>
+     * 1、0开头的忽略开头的0
+     * 2、空串返回0
+     * 3、其它情况按照10进制转换
+     * 4、.123形式返回0.123（按照小于0的小数对待）
+     * </pre>
+     *
+     * @param number 数字，支持0x开头、0开头和普通十进制
+     * @return long
+     */
+    public static double parseDouble(String number) {
+        if (StringKit.isBlank(number)) {
+            return 0D;
+        }
+
+        try {
+            return Double.parseDouble(number);
+        } catch (NumberFormatException e) {
+            return parseNumber(number).doubleValue();
+        }
     }
 
     /**
@@ -2096,13 +2147,15 @@ public class MathKit {
      *
      * @param numberStr Number字符串
      * @return Number对象
+     * @throws NumberFormatException 包装了{@link ParseException}，当给定的数字字符串无法解析时抛出
      */
-    public static Number parseNumber(String numberStr) {
-        numberStr = removeNumberFlag(numberStr);
+    public static Number parseNumber(String numberStr) throws NumberFormatException {
         try {
             return NumberFormat.getInstance().parse(numberStr);
         } catch (ParseException e) {
-            throw new InstrumentException(e);
+            final NumberFormatException nfe = new NumberFormatException(e.getMessage());
+            nfe.initCause(e);
+            throw nfe;
         }
     }
 
@@ -2221,26 +2274,6 @@ public class MathKit {
         } else {
             return selectNum * mathNode(selectNum - 1);
         }
-    }
-
-    /**
-     * 去掉数字尾部的数字标识,例如12D,44.0F,22L中的最后一个字母
-     *
-     * @param number 数字字符串
-     * @return 去掉标识的字符串
-     */
-    private static String removeNumberFlag(String number) {
-        // 去掉千位分隔符
-        if (StringKit.contains(number, Symbol.C_COMMA)) {
-            number = StringKit.removeAll(number, Symbol.C_COMMA);
-        }
-        // 去掉类型标识的结尾
-        final int lastPos = number.length() - 1;
-        final char lastCharUpper = Character.toUpperCase(number.charAt(lastPos));
-        if ('D' == lastCharUpper || 'L' == lastCharUpper || 'F' == lastCharUpper) {
-            number = StringKit.subPre(number, lastPos);
-        }
-        return number;
     }
 
     /**

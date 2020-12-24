@@ -96,7 +96,11 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return BooleanKit.toByteObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply(value);
-            return StringKit.isBlank(valueStr) ? null : Byte.valueOf(valueStr);
+            try {
+                return StringKit.isBlank(valueStr) ? null : Byte.valueOf(valueStr);
+            } catch (NumberFormatException e) {
+                return MathKit.parseNumber(valueStr).byteValue();
+            }
         } else if (Short.class == targetType) {
             if (value instanceof Number) {
                 return ((Number) value).shortValue();
@@ -104,7 +108,11 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return BooleanKit.toShortObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply((value));
-            return StringKit.isBlank(valueStr) ? null : Short.valueOf(valueStr);
+            try {
+                return StringKit.isBlank(valueStr) ? null : Short.valueOf(valueStr);
+            } catch (NumberFormatException e) {
+                return MathKit.parseNumber(valueStr).shortValue();
+            }
         } else if (Integer.class == targetType) {
             if (value instanceof Number) {
                 return ((Number) value).intValue();
@@ -162,8 +170,7 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return BooleanKit.toFloatObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply((value));
-            return StringKit.isBlank(valueStr) ? null : Float.valueOf(valueStr);
-
+            return StringKit.isBlank(valueStr) ? null : MathKit.parseFloat(valueStr);
         } else if (Double.class == targetType) {
             if (value instanceof Number) {
                 return ((Number) value).doubleValue();
@@ -171,7 +178,7 @@ public class NumberConverter extends AbstractConverter<Number> {
                 return BooleanKit.toDoubleObj((Boolean) value);
             }
             final String valueStr = toStrFunc.apply((value));
-            return StringKit.isBlank(valueStr) ? null : Double.valueOf(valueStr);
+            return StringKit.isBlank(valueStr) ? null : MathKit.parseDouble(valueStr);
         } else if (DoubleAdder.class == targetType) {
             final Number number = convert(value, Long.class, toStrFunc);
             if (null != number) {

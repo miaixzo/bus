@@ -184,7 +184,7 @@ public class DateTime extends Date {
      * @param format  格式
      */
     public DateTime(CharSequence dateStr, String format) {
-        this(dateStr, new SimpleDateFormat(format));
+        this(dateStr, DateKit.newSimpleFormat(format));
     }
 
     /**
@@ -865,9 +865,7 @@ public class DateTime extends Date {
      */
     public String toDateStr() {
         if (null != this.timeZone) {
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Fields.NORM_DATE_PATTERN);
-            simpleDateFormat.setTimeZone(this.timeZone);
-            return toString(simpleDateFormat);
+            return toString(DateKit.newSimpleFormat(Fields.NORM_DATE_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_DATE_FORMAT);
     }
@@ -879,9 +877,7 @@ public class DateTime extends Date {
      */
     public String toTimeStr() {
         if (null != this.timeZone) {
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Fields.NORM_TIME_PATTERN);
-            simpleDateFormat.setTimeZone(this.timeZone);
-            return toString(simpleDateFormat);
+            return toString(DateKit.newSimpleFormat(Fields.NORM_TIME_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_TIME_FORMAT);
     }
@@ -913,9 +909,7 @@ public class DateTime extends Date {
      */
     public String toString(TimeZone timeZone) {
         if (null != timeZone) {
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Fields.NORM_DATETIME_PATTERN);
-            simpleDateFormat.setTimeZone(timeZone);
-            return toString(simpleDateFormat);
+            return toString(DateKit.newSimpleFormat(Fields.NORM_DATETIME_PATTERN, null, timeZone));
         }
         return toString(Fields.NORM_DATETIME_FORMAT);
     }
@@ -928,9 +922,7 @@ public class DateTime extends Date {
      */
     public String toString(String format) {
         if (null != this.timeZone) {
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
-            simpleDateFormat.setTimeZone(this.timeZone);
-            return toString(simpleDateFormat);
+            return toString(DateKit.newSimpleFormat(format, null, timeZone));
         }
         return toString(FormatBuilder.getInstance(format));
     }
