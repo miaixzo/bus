@@ -22,10 +22,10 @@ public class Application {
 
 ```java
 @Bean
-Lock jdkLock() {
-    JdkLock jdkLock = new JdkLock("mnyJdkLock");
-    return jdkLock;
-}
+Lock jdkLock(){
+        JdkLock jdkLock=new JdkLock("mnyJdkLock");
+        return jdkLock;
+        }
 ```
 
 **Step 1. 编写业务接口**
@@ -34,9 +34,9 @@ Lock jdkLock() {
 
 ```java
 @RequestMapping(method = RequestMethod.POST, value = "/exchangeVip")
-public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request) {
-    return demoService.exchangeVip(request, SpringAware.getCurrentUser());
-}
+public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request){
+        return demoService.exchangeVip(request,SpringAware.getCurrentUser());
+        }
 ```
 
 **Step 2.添加`HLock`注解**
@@ -58,9 +58,9 @@ public ResponseMessage exchangeVip(@RequestBody ExchangeVipRequest request){
 在同一class下添加降级方法 `fallbackToBusy`
 
 ```java
-ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
-   return ResponseMessage.error("服务繁忙，请稍后再试！");
- }
+ResponseMessage fallbackToBusy(ExchangeVipRequest request){
+        return ResponseMessage.error("服务繁忙，请稍后再试！");
+        }
 ```
 
 **Step 3. 使用分布式锁**
@@ -71,22 +71,22 @@ ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
 
 ```java
 @Bean
-    Lock redisLock() {
-        Config config = new Config();
-        config.useSingleServer().setAddress("redis://127.0.0.1:6379")
-                .setDatabase(1);
-        RedissonClient redissonClient = null;
-        try {
-            redissonClient = Redisson.create(config);
-        } catch (Exception e) {
+    Lock redisLock(){
+            Config config=new Config();
+            config.useSingleServer().setAddress("redis://127.0.0.1:6379")
+            .setDatabase(1);
+            RedissonClient redissonClient=null;
+            try{
+            redissonClient=Redisson.create(config);
+            }catch(Exception e){
             logger.info("redis连接失败");
-         
-        }
-        logger.info("redis连接成功");
-        RedisLock redisLock = new RedisLock(redissonClient, "myRedisLock");
 
-        return redisLock;
-}
+            }
+            logger.info("redis连接成功");
+            RedisLock redisLock=new RedisLock(redissonClient,"myRedisLock");
+
+            return redisLock;
+            }
 ```
 
 修改注解
@@ -105,9 +105,9 @@ ResponseMessage fallbackToBusy(ExchangeVipRequest request) {
 public interface Limiter<T extends Annotation> {
 
     String getLimiterName();
-    
+
     boolean limit(Object key, Map<String, Object> args);
-    
+
     void release(Object key, Map<String, Object> args);
 }
 ```
@@ -219,11 +219,11 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 
 ```java
   @Bean
-  Lock jdkLock() {
-      JdkLock jdkLock = new JdkLock("mnyJdkLock");
-      return jdkLock;
-      
-  }
+  Lock jdkLock(){
+          JdkLock jdkLock=new JdkLock("mnyJdkLock");
+          return jdkLock;
+
+          }
 ```
 
 ```java
@@ -279,9 +279,9 @@ public abstract class PeakLimiter implements Limiter<HPeak> {
 
 ```java
    @Bean
-   ArgumentInjector userInfoArgumentInjector() {
-          return new UserInfoArgumentInjector();
-   }
+   ArgumentInjector userInfoArgumentInjector(){
+           return new UserInfoArgumentInjector();
+           }
 ```
 
 ```java

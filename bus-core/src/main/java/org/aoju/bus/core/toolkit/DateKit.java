@@ -1209,8 +1209,8 @@ public class DateKit extends Lunar {
     /**
      * 修改日期为某个时间字段起始时间
      *
-     * @param calendar  {@link Calendar}
-     * @param type 时间字段
+     * @param calendar {@link Calendar}
+     * @param type     时间字段
      * @return 原{@link Calendar}
      */
     public static Calendar truncate(Calendar calendar, Fields.Type type) {
@@ -1221,7 +1221,7 @@ public class DateKit extends Lunar {
     /**
      * 修改日期为某个时间字段四舍五入时间
      *
-     * @param date      {@link Date}
+     * @param date {@link Date}
      * @param type 时间字段
      * @return {@link DateTime}
      */
@@ -1232,8 +1232,8 @@ public class DateKit extends Lunar {
     /**
      * 修改日期为某个时间字段四舍五入时间
      *
-     * @param calendar  {@link Calendar}
-     * @param type 时间字段
+     * @param calendar {@link Calendar}
+     * @param type     时间字段
      * @return 原{@link Calendar}
      */
     public static Calendar round(Calendar calendar, Fields.Type type) {
@@ -1243,7 +1243,7 @@ public class DateKit extends Lunar {
     /**
      * 修改日期为某个时间字段结束时间
      *
-     * @param date      {@link Date}
+     * @param date {@link Date}
      * @param type 时间字段
      * @return {@link DateTime}
      */
@@ -1254,8 +1254,8 @@ public class DateKit extends Lunar {
     /**
      * 修改日期为某个时间字段结束时间
      *
-     * @param calendar  {@link Calendar}
-     * @param type 时间字段
+     * @param calendar {@link Calendar}
+     * @param type     时间字段
      * @return 原{@link Calendar}
      */
     public static Calendar ceiling(Calendar calendar, Fields.Type type) {
@@ -1717,9 +1717,9 @@ public class DateKit extends Lunar {
     /**
      * 获取指定日期偏移指定时间后的时间
      *
-     * @param date      基准日期
-     * @param type 偏移的粒度大小(小时、天、月等)
-     * @param offset    偏移量,正数为向后偏移,负数为向前偏移
+     * @param date   基准日期
+     * @param type   偏移的粒度大小(小时、天、月等)
+     * @param offset 偏移量,正数为向后偏移,负数为向前偏移
      * @return 偏移后的日期
      */
     public static DateTime offset(Date date, Fields.Type type, int offset) {
@@ -3303,9 +3303,9 @@ public class DateKit extends Lunar {
     /**
      * 修改日期
      *
-     * @param calendar   {@link Calendar}
-     * @param dateField  日期字段，即保留到哪个日期字段
-     * @param modify 修改类型，包括舍去、四舍五入、进一等
+     * @param calendar  {@link Calendar}
+     * @param dateField 日期字段，即保留到哪个日期字段
+     * @param modify    修改类型，包括舍去、四舍五入、进一等
      * @return 修改后的{@link Calendar}
      */
     public static Calendar modify(Calendar calendar, int dateField, Fields.Modify modify) {
@@ -3366,9 +3366,9 @@ public class DateKit extends Lunar {
     /**
      * 修改日期字段值
      *
-     * @param calendar   {@link Calendar}
-     * @param field      字段，见{@link Calendar}
-     * @param modify {@link Fields.Modify}
+     * @param calendar {@link Calendar}
+     * @param field    字段，见{@link Calendar}
+     * @param modify   {@link Fields.Modify}
      */
     private static void modifyField(Calendar calendar, int field, Fields.Modify modify) {
         if (Calendar.HOUR == field) {

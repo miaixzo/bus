@@ -1384,7 +1384,8 @@ public class Solar extends Holiday {
 
         /**
          * 通过日历初始化
-         *  @param calendar 日历
+         *
+         * @param calendar 日历
          */
         public Year(Calendar calendar) {
             year = calendar.get(Calendar.YEAR);

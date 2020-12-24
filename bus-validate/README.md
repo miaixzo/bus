@@ -16,11 +16,11 @@
 3) `@Valid` inside 开启内部校验，即对象属性校验，同`@Inside`注解
 
 2. 现在可以使用框架中自带的校验器注解。
-   * 在任意方法上标记`@Valid`注解，表明校验该方法运行时的入参。
-   * 在任意类上标记`@Valid`注解，表明校验该类中所有方法运行时的入参。
-   * 在任意类上标记`@Valid`注解，表明校验该类中所有方法运行时的入参。
-   * `@Valid`注解，默认全部校验，当标记value时按照标记校验，标记inside时取消或者开启内部校验。
-   * `@Inside`注解，当标记在类中时,优先级高于@Valid` 中的inside
+    * 在任意方法上标记`@Valid`注解，表明校验该方法运行时的入参。
+    * 在任意类上标记`@Valid`注解，表明校验该类中所有方法运行时的入参。
+    * 在任意类上标记`@Valid`注解，表明校验该类中所有方法运行时的入参。
+    * `@Valid`注解，默认全部校验，当标记value时按照标记校验，标记inside时取消或者开启内部校验。
+    * `@Inside`注解，当标记在类中时,优先级高于@Valid` 中的inside
 
 ```java
         @Controller
@@ -115,25 +115,25 @@ public User create(@Valid(value = {"name"}) @NotNull User user){
 @Complex(value = Builder._BLANK, clazz = BlankStrategy.class)
 public @interface Blank {
 
-   /**
-    * 默认使用的异常码
-    */
-   int errcode() default Builder.DEFAULT_ERRCODE;
+    /**
+     * 默认使用的异常码
+     */
+    int errcode() default Builder.DEFAULT_ERRCODE;
 
-   /**
-    * 默认使用的异常信息
-    */
-   String errmsg() default "${field}字符串必须为空";
+    /**
+     * 默认使用的异常信息
+     */
+    String errmsg() default "${field}字符串必须为空";
 
-   /**
-    * 校验器组
-    */
-   String[] group() default {};
+    /**
+     * 校验器组
+     */
+    String[] group() default {};
 
-   /**
-    * 被校验字段名称
-    */
-   String field() default Builder.DEFAULT_FIELD;
+    /**
+     * 被校验字段名称
+     */
+    String field() default Builder.DEFAULT_FIELD;
 }
 ```
 
@@ -141,10 +141,10 @@ public @interface Blank {
 
 ```java
         public class BlankStrategy implements Complex<String, Blank> {
-   @Override
-   public boolean on(String object, Blank annotation, ValidateContext context) {
-      return validate(object, context);
-   }
+    @Override
+    public boolean on(String object, Blank annotation, ValidateContext context) {
+        return validate(object, context);
+    }
 }
 ```
 

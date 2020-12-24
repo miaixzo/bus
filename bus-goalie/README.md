@@ -27,6 +27,7 @@
 #### 功能①按参数路由：
 
 Api接口类说明:
+
 ```java
 public class Assets {
 
@@ -55,6 +56,7 @@ public class Assets {
 |   sign   |   在配置文件中开启解密配置,若请求中包含sign字段,则对请求字段解密   |
 
 配置文件说明:
+
 ```yaml
 extend:
   goalie:
@@ -79,6 +81,7 @@ extend:
 集成方式说明:
 
 1.在springboot启动类加上注解`@EnableGoalie`
+
 ```java
 @EnableGoalie
 @SpringBootApplication
@@ -94,6 +97,7 @@ public class TunnelApplication {
 ```
 
 2.实现至少包含一个`Registry`的 spring bean 保证缓中有接口
+
 ```java
 
 @Component
@@ -102,6 +106,7 @@ public class DbAssetRegistriesImpl implements Registry {
 }
 
 ```
+
 3.实现一个`Authorize` 的 sping bean 保证身份认证功能正常
 
 ```java
@@ -123,6 +128,7 @@ public class CustomFilter implements WebFilter {
     
 }
 ```
+
 #### 功能②按版本路由：
 
 - **@ApiVersion**

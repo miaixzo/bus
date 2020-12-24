@@ -41,8 +41,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(BusXExtend.GOALIE)
 public class GoalieProperties {
 
-    private boolean condition;
     private final ServerConfig server = new ServerConfig();
+    private boolean condition;
 
 
 }

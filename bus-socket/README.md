@@ -188,41 +188,41 @@ public class AioClient {
 ```java
 public class NioServer {
 
-  public static void main(String[] args) {
-    QuickNioServer server = new QuickNioServer(8080);
-    server.setChannelHandler((sc) -> {
-      ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-      try {
-        //从channel读数据到缓冲区
-        int readBytes = sc.read(readBuffer);
-        if (readBytes > 0) {
-          //Flips this buffer.  The limit is set to the current position and then
-          // the position is set to zero，就是表示要从起始位置开始读取数据
-          readBuffer.flip();
-          //eturns the number of elements between the current position and the  limit.
-          // 要读取的字节长度
-          byte[] bytes = new byte[readBuffer.remaining()];
-          //将缓冲区的数据读到bytes数组
-          readBuffer.get(bytes);
-          String body = StringKit.toString(bytes);
-          Logger.info("[{}]: {}", sc.getRemoteAddress(), body);
+    public static void main(String[] args) {
+        QuickNioServer server = new QuickNioServer(8080);
+        server.setChannelHandler((sc) -> {
+            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+            try {
+                //从channel读数据到缓冲区
+                int readBytes = sc.read(readBuffer);
+                if (readBytes > 0) {
+                    //Flips this buffer.  The limit is set to the current position and then
+                    // the position is set to zero，就是表示要从起始位置开始读取数据
+                    readBuffer.flip();
+                    //eturns the number of elements between the current position and the  limit.
+                    // 要读取的字节长度
+                    byte[] bytes = new byte[readBuffer.remaining()];
+                    //将缓冲区的数据读到bytes数组
+                    readBuffer.get(bytes);
+                    String body = StringKit.toString(bytes);
+                    Logger.info("[{}]: {}", sc.getRemoteAddress(), body);
 
-          doWrite(sc, body);
-        } else if (readBytes < 0) {
-          IoKit.close(sc);
-        }
-      } catch (IOException e) {
-        throw new InstrumentException(e);
-      }
-    });
-    server.listen();
-  }
+                    doWrite(sc, body);
+                } else if (readBytes < 0) {
+                    IoKit.close(sc);
+                }
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
+        });
+        server.listen();
+    }
 
-  public static void doWrite(SocketChannel channel, String response) throws IOException {
-    response = "收到消息：" + response;
-    //将缓冲数据写入渠道，返回给客户端
-    channel.write(BufferKit.create(response));
-  }
+    public static void doWrite(SocketChannel channel, String response) throws IOException {
+        response = "收到消息：" + response;
+        //将缓冲数据写入渠道，返回给客户端
+        channel.write(BufferKit.create(response));
+    }
 
 }
 
@@ -231,42 +231,42 @@ public class NioServer {
 ```java
  public class NioClient {
 
-  public static void main(String[] args) {
-    QuickNioClient client = new QuickNioClient("127.0.0.1", 8080);
-    client.setChannelHandler((sc) -> {
-      ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-      //从channel读数据到缓冲区
-      int readBytes = sc.read(readBuffer);
-      if (readBytes > 0) {
-        //Flips this buffer.  The limit is set to the current position and then
-        // the position is set to zero，就是表示要从起始位置开始读取数据
-        readBuffer.flip();
-        //returns the number of elements between the current position and the  limit.
-        // 要读取的字节长度
-        byte[] bytes = new byte[readBuffer.remaining()];
-        //将缓冲区的数据读到bytes数组
-        readBuffer.get(bytes);
-        String body = StringKit.toString(bytes);
-        Logger.info("[{}]: {}", sc.getRemoteAddress(), body);
-      } else if (readBytes < 0) {
-        sc.close();
-      }
-    });
+    public static void main(String[] args) {
+        QuickNioClient client = new QuickNioClient("127.0.0.1", 8080);
+        client.setChannelHandler((sc) -> {
+            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+            //从channel读数据到缓冲区
+            int readBytes = sc.read(readBuffer);
+            if (readBytes > 0) {
+                //Flips this buffer.  The limit is set to the current position and then
+                // the position is set to zero，就是表示要从起始位置开始读取数据
+                readBuffer.flip();
+                //returns the number of elements between the current position and the  limit.
+                // 要读取的字节长度
+                byte[] bytes = new byte[readBuffer.remaining()];
+                //将缓冲区的数据读到bytes数组
+                readBuffer.get(bytes);
+                String body = StringKit.toString(bytes);
+                Logger.info("[{}]: {}", sc.getRemoteAddress(), body);
+            } else if (readBytes < 0) {
+                sc.close();
+            }
+        });
 
-    client.listen();
-    client.write(BufferKit.create("你好。\n"));
-    client.write(BufferKit.create("你好2。"));
+        client.listen();
+        client.write(BufferKit.create("你好。\n"));
+        client.write(BufferKit.create("你好2。"));
 
-    // 在控制台向服务器端发送数据
-    Logger.info("请输入发送的消息：");
-    Scanner scanner = new Scanner(System.in);
-    while (scanner.hasNextLine()) {
-      String request = scanner.nextLine();
-      if (request != null && request.trim().length() > 0) {
-        client.write(BufferKit.create(request));
-      }
+        // 在控制台向服务器端发送数据
+        Logger.info("请输入发送的消息：");
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNextLine()) {
+            String request = scanner.nextLine();
+            if (request != null && request.trim().length() > 0) {
+                client.write(BufferKit.create(request));
+            }
+        }
     }
-  }
 
 }
 ```
@@ -274,11 +274,11 @@ public class NioServer {
 ## 性能测试
 
 - 环境准备
-  1. 测试项目：[abarth](https://github.com/aoju/abarth)
-  2. 通信协议：Http
-  3. 压测工具：[wrk](https://github.com/wg/wrk)
-  4. 测试机：MacBook Pro, 2.9Ghz i5, 4核8G内存
-  5. 测试命令：
+    1. 测试项目：[abarth](https://github.com/aoju/abarth)
+    2. 通信协议：Http
+    3. 压测工具：[wrk](https://github.com/wg/wrk)
+    4. 测试机：MacBook Pro, 2.9Ghz i5, 4核8G内存
+    5. 测试命令：
     ```
     wrk -H 'Host: 10.0.0.1' -H 'Accept: text/plain,text/html;q=0.9,application/xhtml+xml;q=0.9,application/xml;q=0.8,*/*;q=0.7' -H 'Connection: keep-alive' --latency -d 15 -c 1024 --timeout 8 -t 4 http://127.0.0.1:8080/plaintext -s pipeline.lua -- 16
     ```
