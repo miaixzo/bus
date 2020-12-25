@@ -31,6 +31,7 @@ import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
+import org.aoju.bus.goalie.Provider;
 import org.aoju.bus.logger.Logger;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -80,9 +81,15 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
         } else {
             message = Controller.write(ErrorCode.EM_100513);
         }
-        String formatBody = context.getFormat().getProvider().serialize(message);
+        Provider provider = context.getFormat().getProvider();
+        String formatBody;
+        if (null != provider) {
+            formatBody = provider.serialize(message);
+        } else {
+            formatBody = Context.Format.json.getProvider().serialize(message);
+        }
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes());
         return response.writeWith(Mono.just(db))
-                .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+            .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
     }
 }
