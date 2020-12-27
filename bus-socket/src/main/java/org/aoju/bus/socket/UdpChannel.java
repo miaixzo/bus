@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  * 封装UDP底层真实渠道对象,并提供通信及会话管理
@@ -158,20 +158,18 @@ public class UdpChannel<Request> {
     UdpAioSession createAndCacheSession(final SocketAddress remote) {
         String key = getSessionKey(remote);
         UdpAioSession session = udpAioSessionConcurrentHashMap.computeIfAbsent(key, s -> {
-            Function<WriteBuffer, Void> function = writeBuffer -> {
+            Consumer<WriteBuffer> consumer = writeBuffer -> {
                 VirtualBuffer virtualBuffer = writeBuffer.poll();
                 if (virtualBuffer == null) {
-                    return null;
+                    return;
                 }
                 try {
                     write(virtualBuffer, remote);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-                return null;
             };
-            WriteBuffer writeBuffer = new WriteBuffer(pageBuffer, function, config.getWriteBufferSize(), 1);
+            WriteBuffer writeBuffer = new WriteBuffer(pageBuffer, consumer, config.getWriteBufferSize(), 1);
             return new UdpAioSession(UdpChannel.this, remote, writeBuffer);
         });
         return session;

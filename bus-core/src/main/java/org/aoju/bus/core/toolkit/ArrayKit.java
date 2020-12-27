@@ -8890,11 +8890,6 @@ public class ArrayKit {
         Assert.isTrue(isArray(array1), "First is not a Array !");
         Assert.isTrue(isArray(array2), "Second is not a Array !");
 
-        // 数组类型一致性判断
-        if (array1.getClass() != array2.getClass()) {
-            return false;
-        }
-
         if (array1 instanceof long[]) {
             return Arrays.equals((long[]) array1, (long[]) array2);
         } else if (array1 instanceof int[]) {
