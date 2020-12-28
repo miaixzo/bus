@@ -538,10 +538,10 @@ public class Validator {
     }
 
     /**
-     * 验证是否为手机号码(中国)
+     * 验证是否为座机号码（中国）
      *
      * @param value 值
-     * @return 是否为手机号码(中国)
+     * @return 是否为座机号码（中国）
      */
     public static boolean isPhone(String value) {
         return isMatchRegex(RegEx.PHONE, value);
