@@ -25,12 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import org.aoju.bus.core.lang.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 身份证相关工具类
@@ -129,7 +130,7 @@ public class CitizenIdKit {
     }
 
     /**
-     * 是否有效身份证号
+     * 是否有效身份证号，忽略X的大小写
      *
      * @param idcard 身份证号,支持18位、15位和港澳台的10位
      * @return 是否有效
@@ -180,9 +181,45 @@ public class CitizenIdKit {
      * </ol>
      *
      * @param idcard 待验证的身份证
-     * @return 是否有效的18位身份证
+     * @return 是否有效的18位身份证，忽略x的大小写
      */
     public static boolean isValidCard18(String idcard) {
+        return isValidCard18(idcard, true);
+    }
+
+    /**
+     * <p>
+     * 判断18位身份证的合法性
+     * </p>
+     * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，由十七位数字本体码和一位数字校验码组成。<br>
+     * 排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。
+     * <p>
+     * 顺序码: 表示在同一地址码所标识的区域范围内，对同年、同月、同 日出生的人编定的顺序号，顺序码的奇数分配给男性，偶数分配 给女性。
+     * </p>
+     * <ol>
+     * <li>第1、2位数字表示：所在省份的代码</li>
+     * <li>第3、4位数字表示：所在城市的代码</li>
+     * <li>第5、6位数字表示：所在区县的代码</li>
+     * <li>第7~14位数字表示：出生年、月、日</li>
+     * <li>第15、16位数字表示：所在地的派出所的代码</li>
+     * <li>第17位数字表示性别：奇数表示男性，偶数表示女性</li>
+     * <li>第18位数字是校检码，用来检验身份证的正确性。校检码可以是0~9的数字，有时也用x表示</li>
+     * </ol>
+     * <p>
+     * 第十八位数字(校验码)的计算方法为：
+     * <ol>
+     * <li>将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
+     * <li>将这17位数字和系数相乘的结果相加</li>
+     * <li>用加出来和除以11，看余数是多少</li>
+     * <li>余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字。其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 2</li>
+     * <li>通过上面得知如果余数是2，就会在身份证的第18位数字上出现罗马数字的Ⅹ。如果余数是10，身份证的最后一位号码就是2</li>
+     * </ol>
+     *
+     * @param idcard     待验证的身份证
+     * @param ignoreCase 是否忽略大小写
+     * @return 是否有效的18位身份证
+     */
+    public static boolean isValidCard18(String idcard, boolean ignoreCase) {
         if (CHINA_ID_MAX_LENGTH != idcard.length()) {
             return false;
         }
@@ -199,13 +236,12 @@ public class CitizenIdKit {
         }
 
         // 前17位
-        String code17 = idcard.substring(0, 17);
-        // 第18位
-        char code18 = Character.toLowerCase(idcard.charAt(17));
+        final String code17 = idcard.substring(0, 17);
         if (PatternKit.isMatch(RegEx.NUMBERS, code17)) {
             // 获取校验位
             char val = getCheckCode18(code17);
-            return val == code18;
+            // 第18位
+            return CharKit.equals(val, idcard.charAt(17), ignoreCase);
         }
         return false;
     }
@@ -546,7 +582,7 @@ public class CitizenIdKit {
             case 3:
                 return Symbol.C_NINE;
             case 2:
-                return 'x';
+                return 'X';
             case 1:
                 return Symbol.C_ZERO;
             case 0:
@@ -572,21 +608,6 @@ public class CitizenIdKit {
         return iSum;
     }
 
-    public static Gender getGender(String code) {
-        if (code == null) {
-            return Gender.UNKNOWN;
-        }
-        String[] males = {"M", "男", Symbol.ONE, "MALE"};
-        if (Arrays.asList(males).contains(code.toUpperCase())) {
-            return Gender.MALE;
-        }
-        String[] females = {"F", "女", Symbol.ZERO, "FEMALE"};
-        if (Arrays.asList(females).contains(code.toUpperCase())) {
-            return Gender.FEMALE;
-        }
-        return Gender.UNKNOWN;
-    }
-
     /**
      * 获取公民身份相关信息
      *
@@ -606,26 +627,13 @@ public class CitizenIdKit {
             citizenInfo.setBirthYear(year);
             citizenInfo.setBirthMonth(month);
             citizenInfo.setBirthDay(day);
-            citizenInfo.setGender(getGender(Normal.EMPTY + getGenderByIdCard(idcard)).getDesc());
+            citizenInfo.setGender(Normal.Gender.of(Normal.EMPTY + getGenderByIdCard(idcard)).getDesc());
             citizenInfo.setZodiac(DateKit.getZodiac(month, day));
             citizenInfo.setAnimal(DateKit.getAnimal(year));
         } else {
             citizenInfo.setVerify(false);
         }
         return citizenInfo;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum Gender {
-
-        MALE(1, "男"),
-        FEMALE(0, "女"),
-        UNKNOWN(-1, "未知");
-
-        private int code;
-        private String desc;
-
     }
 
     @Data

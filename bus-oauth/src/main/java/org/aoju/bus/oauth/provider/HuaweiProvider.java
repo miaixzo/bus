@@ -27,6 +27,7 @@ package org.aoju.bus.oauth.provider;
 
 import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.http.Httpx;
@@ -105,7 +106,7 @@ public class HuaweiProvider extends AbstractProvider {
                 .uuid(object.getString("userID"))
                 .username(object.getString("userName"))
                 .nickname(object.getString("userName"))
-                .gender(getRealGender(object))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .avatar(object.getString("headPictureURL"))
                 .token(accToken)
                 .source(source.toString())

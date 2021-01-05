@@ -93,7 +93,7 @@ public class QqProvider extends AbstractProvider {
                 .avatar(avatar)
                 .location(location)
                 .uuid(openId)
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

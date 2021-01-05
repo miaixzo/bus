@@ -118,7 +118,7 @@ public class RenrenProvider extends AbstractProvider {
         if (Objects.isNull(object)) {
             return Normal.Gender.UNKNOWN;
         }
-        return Normal.Gender.getGender(object.getString("sex"));
+        return Normal.Gender.of(object.getString("sex"));
     }
 
     private String getCompany(JSONObject userObj) {

@@ -77,7 +77,7 @@ public class OschinaProvider extends AbstractProvider {
                 .avatar(object.getString("avatar"))
                 .blog(object.getString("url"))
                 .location(object.getString("location"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .email(object.getString("email"))
                 .token(accToken)
                 .source(source.toString())

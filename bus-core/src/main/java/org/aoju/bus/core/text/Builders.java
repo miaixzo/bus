@@ -263,7 +263,6 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         return this;
     }
 
-
     /**
      * 在指定的索引处设置字符
      *
@@ -2265,6 +2264,17 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     }
 
     /**
+     * 实现{@link Builder}接口
+     *
+     * @return 构建器一个 String
+     * @see #toString()
+     */
+    @Override
+    public String build() {
+        return toString();
+    }
+
+    /**
      * 检查此生成器的内容与另一个生成器的内容是否包含相同的字符内容.
      *
      * @param obj 要检查的对象null返回false
@@ -2323,17 +2333,6 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public StringBuilder toStringBuilder() {
         return new StringBuilder(size).append(buffer, 0, size);
-    }
-
-    /**
-     * 实现{@link Builder}接口
-     *
-     * @return 构建器一个 String
-     * @see #toString()
-     */
-    @Override
-    public String build() {
-        return toString();
     }
 
     /**

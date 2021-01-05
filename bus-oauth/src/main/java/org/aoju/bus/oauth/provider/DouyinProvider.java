@@ -72,7 +72,7 @@ public class DouyinProvider extends AbstractProvider {
                 .nickname(object.getString("nickname"))
                 .avatar(object.getString("avatar"))
                 .remark(object.getString("description"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .location(String.format("%s %s %s", object.getString("country"), object.getString("province"), object.getString("city")))
                 .token(accToken)
                 .source(source.toString())

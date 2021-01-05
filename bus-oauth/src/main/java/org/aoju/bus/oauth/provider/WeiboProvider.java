@@ -109,7 +109,7 @@ public class WeiboProvider extends AbstractProvider {
                 .nickname(object.getString("screen_name"))
                 .location(object.getString("location"))
                 .remark(object.getString("description"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

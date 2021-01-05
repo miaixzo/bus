@@ -89,7 +89,7 @@ public class WeChatMpProvider extends AbstractProvider {
                 .avatar(object.getString("headimgurl"))
                 .location(location)
                 .uuid(openId)
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

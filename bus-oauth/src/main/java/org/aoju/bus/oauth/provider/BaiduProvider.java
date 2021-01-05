@@ -75,7 +75,7 @@ public class BaiduProvider extends AbstractProvider {
                 .nickname(object.getString("username"))
                 .avatar(getAvatar(object))
                 .remark(object.getString("userdetail"))
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

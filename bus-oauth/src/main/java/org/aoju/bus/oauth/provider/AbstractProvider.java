@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.oauth.provider;
 
-import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Http;
@@ -102,6 +101,12 @@ public abstract class AbstractProvider implements Provider {
         }
         if (isSupported && Registry.CODING == complex) {
             isSupported = StringKit.isNotEmpty(context.getCodingGroupName());
+        }
+        if (isSupported && Registry.XMLY == complex) {
+            isSupported = StringKit.isNotEmpty(context.getDeviceId()) && null != context.getClientOsType();
+            if (isSupported) {
+                isSupported = context.getClientOsType() == 3 || StringKit.isNotEmpty(context.getPackId());
+            }
         }
         return isSupported;
     }
@@ -283,18 +288,6 @@ public abstract class AbstractProvider implements Provider {
      * @see AbstractProvider#getAccessToken(Callback)
      */
     protected abstract Object getUserInfo(AccToken token);
-
-    /**
-     * 获取用户的实际性别 华为系统中,用户的性别：1表示女,0表示男
-     *
-     * @param object obj
-     * @return AuthUserGender
-     */
-    protected Normal.Gender getRealGender(JSONObject object) {
-        int genderCodeInt = object.getIntValue("gender");
-        String genderCode = genderCodeInt == 1 ? Symbol.ZERO : (genderCodeInt == 0) ? Symbol.ONE : genderCodeInt + Normal.EMPTY;
-        return Normal.Gender.getGender(genderCode);
-    }
 
     /**
      * 返回获取accessToken的url

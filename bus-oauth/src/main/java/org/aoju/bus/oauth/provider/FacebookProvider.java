@@ -78,7 +78,7 @@ public class FacebookProvider extends AbstractProvider {
                 .avatar(getUserPicture(object))
                 .location(object.getString("locale"))
                 .email(object.getString("email"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

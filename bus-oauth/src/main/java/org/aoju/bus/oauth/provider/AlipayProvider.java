@@ -69,6 +69,12 @@ public class AlipayProvider extends AbstractProvider {
                 .getPublicKey(), "RSA2");
     }
 
+    public AlipayProvider(Context context, ExtendCache extendCache, String proxyHost, Integer proxyPort) {
+        super(context, Registry.ALIPAY, extendCache);
+        this.alipayClient = new DefaultAlipayClient(Registry.ALIPAY.accessToken(), context.getAppKey(), context.getAppSecret(),
+                "json", Charset.DEFAULT_UTF_8, context.getPublicKey(), "RSA2", proxyHost, proxyPort);
+    }
+
     @Override
     public AccToken getAccessToken(Callback callback) {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
@@ -146,7 +152,7 @@ public class AlipayProvider extends AbstractProvider {
                 .nickname(object.getNickName())
                 .avatar(object.getAvatar())
                 .location(location)
-                .gender(Normal.Gender.getGender(object.getGender()))
+                .gender(Normal.Gender.of(object.getGender()))
                 .token(accToken)
                 .source(source.toString())
                 .build();

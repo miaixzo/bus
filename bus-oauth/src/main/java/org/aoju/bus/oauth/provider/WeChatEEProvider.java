@@ -94,7 +94,7 @@ public class WeChatEEProvider extends AbstractProvider {
                 .location(object.getString("address"))
                 .email(object.getString("email"))
                 .uuid(userId)
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

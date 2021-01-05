@@ -79,7 +79,7 @@ public class TencentProvider extends AbstractProvider {
                 .nickname(object.getString("name"))
                 .company(object.getString("company"))
                 .location(object.getString("location"))
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .email(object.getString("email"))
                 .remark(object.getString("slogan"))
                 .token(accToken)

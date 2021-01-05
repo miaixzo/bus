@@ -200,17 +200,41 @@ public enum Registry implements Complex {
     FACEBOOK {
         @Override
         public String authorize() {
-            return "https://www.facebook.com/v3.3/dialog/oauth";
+            return "https://www.facebook.com/v9.0/dialog/oauth";
         }
 
         @Override
         public String accessToken() {
-            return "https://graph.facebook.com/v3.3/oauth/access_token";
+            return "https://graph.facebook.com/v9.0/oauth/access_token";
         }
 
         @Override
         public String userInfo() {
-            return "https://graph.facebook.com/v3.3/me";
+            return "https://graph.facebook.com/v9.0/me";
+        }
+    },
+    /**
+     * 飞书
+     */
+    FEISHU {
+        @Override
+        public String authorize() {
+            return "https://open.feishu.cn/open-apis/authen/v1/index";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://open.feishu.cn/open-apis/authen/v1/access_token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://open.feishu.cn/open-apis/authen/v1/user_info";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://open.feishu.cn/open-apis/authen/v1/refresh_access_token";
         }
     },
     /**
@@ -746,6 +770,30 @@ public enum Registry implements Complex {
         @Override
         public String userInfo() {
             return "https://api.weibo.com/2/users/show.json";
+        }
+    },
+    /**
+     * 喜马拉雅
+     */
+    XMLY {
+        @Override
+        public String authorize() {
+            return "https://api.ximalaya.com/oauth2/js/authorize";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://api.ximalaya.com/oauth2/v2/access_token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://api.ximalaya.com/profile/user_info";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://oauth.aliyun.com/v1/token";
         }
     };
 

@@ -87,7 +87,7 @@ public class WeChatOPProvider extends AbstractProvider {
                 .avatar(object.getString("headimgurl"))
                 .location(location)
                 .uuid(openId)
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .token(token)
                 .source(source.toString())
                 .build();

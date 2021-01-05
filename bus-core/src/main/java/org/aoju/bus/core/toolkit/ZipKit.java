@@ -541,15 +541,12 @@ public class ZipKit {
      */
     public static File unzip(ZipInputStream zipStream, File outFile) {
         get(zipStream, (zipEntry) -> {
-            // FileUtil.file会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+            // FileKit.file会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
             File outItemFile = FileKit.file(outFile, zipEntry.getName());
             if (zipEntry.isDirectory()) {
-                // 目录
-                //noinspection ResultOfMethodCallIgnored
                 outItemFile.mkdirs();
             } else {
-                // 文件
-                FileKit.writeFromStream(zipStream, outItemFile);
+                FileKit.writeFromStream(zipStream, outItemFile, false);
             }
         });
         return outFile;

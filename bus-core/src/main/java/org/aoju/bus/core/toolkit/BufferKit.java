@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -289,6 +290,16 @@ public class BufferKit {
             }
         }
         return true;
+    }
+
+    /**
+     * 创建{@link CharBuffer}
+     *
+     * @param capacity 容量
+     * @return {@link CharBuffer}
+     */
+    public static CharBuffer createCharBuffer(int capacity) {
+        return CharBuffer.allocate(capacity);
     }
 
 }

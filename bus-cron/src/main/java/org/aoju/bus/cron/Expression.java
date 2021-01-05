@@ -262,7 +262,7 @@ public final class Expression implements Serializable, Cloneable {
                 if (exprOn == DAY_OF_WEEK && expr.indexOf('L') != -1 && expr.length() > 1 && expr.contains(",")) {
                     throw new ParseException("Support for specifying 'L' with other days of the week is not implemented", -1);
                 }
-                if (exprOn == DAY_OF_WEEK && expr.indexOf('#') != -1 && expr.indexOf('#', expr.indexOf('#') + 1) != -1) {
+                if (exprOn == DAY_OF_WEEK && expr.indexOf(Symbol.C_SHAPE) != -1 && expr.indexOf(Symbol.C_SHAPE, expr.indexOf(Symbol.C_SHAPE) + 1) != -1) {
                     throw new ParseException("Support for specifying multiple \"nth\" days is not implemented.", -1);
                 }
 
@@ -351,7 +351,7 @@ public final class Expression implements Serializable, Cloneable {
                                     "Invalid Day-of-Week value: '" + sub
                                             + "'", i);
                         }
-                    } else if (c == '#') {
+                    } else if (c == Symbol.C_SHAPE) {
                         try {
                             i += 4;
                             nthdayOfWeek = Integer.parseInt(s.substring(i));
@@ -540,7 +540,7 @@ public final class Expression implements Serializable, Cloneable {
             return i;
         }
 
-        if (c == '#') {
+        if (c == Symbol.C_SHAPE) {
             if (type != DAY_OF_WEEK) {
                 throw new ParseException("'#' option is not valid here. (pos=" + i + ")", i);
             }
@@ -551,9 +551,7 @@ public final class Expression implements Serializable, Cloneable {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                throw new ParseException(
-                        "A numeric value between 1 and 5 must follow the '#' option",
-                        i);
+                throw new ParseException("A numeric value between 1 and 5 must follow the '#' option", i);
             }
 
             TreeSet<Integer> set = getSet(type);

@@ -87,7 +87,7 @@ public class ToutiaoProvider extends AbstractProvider {
                 .nickname(isAnonymousUser ? anonymousUserName : object.getString("screen_name"))
                 .avatar(object.getString("avatar_url"))
                 .remark(object.getString("description"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();
