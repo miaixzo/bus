@@ -160,7 +160,7 @@ public class MultipartParser {
     }
 
     public void parse(InputStream in, Handler handler) throws IOException {
-        new MultipartInputStream(in, "--" + boundary).skipAll();
+        new MultipartInputStream(in, Symbol.HYPHEN + Symbol.HYPHEN + boundary).skipAll();
         for (int i = 1; ; i++) {
             int ch1 = in.read();
             int ch2 = in.read();

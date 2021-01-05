@@ -27,9 +27,6 @@ package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
-import com.sun.jna.platform.win32.IPHlpAPI;
-import com.sun.jna.platform.win32.IPHlpAPI.FIXED_INFO;
-import com.sun.jna.platform.win32.IPHlpAPI.IP_ADDR_STRING;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Kernel32Util;
 import com.sun.jna.platform.win32.WinError;
@@ -40,6 +37,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
+import org.aoju.bus.health.windows.IPHlpAPI;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -105,10 +103,10 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
             Logger.error("Failed to get network parameters. Error code: {}", ret);
             return new String[0];
         }
-        FIXED_INFO fixedInfo = new FIXED_INFO(buffer);
+        IPHlpAPI.FIXED_INFO fixedInfo = new IPHlpAPI.FIXED_INFO(buffer);
 
         List<String> list = new ArrayList<>();
-        IP_ADDR_STRING dns = fixedInfo.DnsServerList;
+        IPHlpAPI.IP_ADDR_STRING dns = fixedInfo.DnsServerList;
         while (dns != null) {
             // a char array of size 16.
             // This array holds an IPv4 address in dotted decimal notation.

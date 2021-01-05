@@ -28,7 +28,7 @@ package org.aoju.bus.health.unix.aix.software;
 import com.sun.jna.Native;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
-import org.aoju.bus.health.builtin.software.InternetProtocolStats;
+import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProtocol;
 
@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public class AixInternetProtocolStats implements InternetProtocolStats {
+public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private Supplier<Perfstat.perfstat_protocol_t[]> ipstats = Memoize.memoize(PerfstatProtocol::queryProtocols, Memoize.defaultExpiration());
 

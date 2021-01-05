@@ -27,6 +27,7 @@ package org.aoju.bus.shade.screw.dialect.db2;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
+import org.aoju.bus.shade.Builder;
 import org.aoju.bus.shade.screw.dialect.AbstractDatabaseQuery;
 import org.aoju.bus.shade.screw.metadata.Column;
 import org.aoju.bus.shade.screw.metadata.Database;
@@ -35,8 +36,6 @@ import org.aoju.bus.shade.screw.metadata.Table;
 
 import javax.sql.DataSource;
 import java.util.List;
-
-import static org.aoju.bus.shade.Builder.NOT_SUPPORTED;
 
 /**
  * db2 数据库查询
@@ -62,7 +61,7 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      */
     @Override
     public Database getDataBase() throws InstrumentException {
-        throw new InstrumentException(NOT_SUPPORTED);
+        throw new InstrumentException(Builder.NOT_SUPPORTED);
     }
 
     /**
@@ -72,7 +71,7 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      */
     @Override
     public List<Table> getTables() {
-        throw new InstrumentException(NOT_SUPPORTED);
+        throw new InstrumentException(Builder.NOT_SUPPORTED);
     }
 
     /**
@@ -85,7 +84,7 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
     @Override
     public List<Column> getTableColumns(String table) throws InstrumentException {
         Assert.notEmpty(table, "Table name can not be empty!");
-        throw new InstrumentException(NOT_SUPPORTED);
+        throw new InstrumentException(Builder.NOT_SUPPORTED);
     }
 
     /**
@@ -96,7 +95,7 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      */
     @Override
     public List<? extends Column> getTableColumns() throws InstrumentException {
-        throw new InstrumentException(NOT_SUPPORTED);
+        throw new InstrumentException(Builder.NOT_SUPPORTED);
     }
 
     /**
@@ -108,7 +107,7 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
      */
     @Override
     public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InstrumentException {
-        throw new InstrumentException(NOT_SUPPORTED);
+        throw new InstrumentException(Builder.NOT_SUPPORTED);
     }
 
 }

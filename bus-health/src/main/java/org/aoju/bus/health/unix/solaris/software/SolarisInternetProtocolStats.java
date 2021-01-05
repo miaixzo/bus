@@ -29,7 +29,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
-import org.aoju.bus.health.builtin.software.InternetProtocolStats;
+import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ import java.util.List;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public class SolarisInternetProtocolStats implements InternetProtocolStats {
+public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private static TcpStats getTcpStats() {
         long connectionsEstablished = 0;

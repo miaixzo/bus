@@ -1402,7 +1402,7 @@ public class Fields {
          * @return this
          */
         public static Zodiac getZodiacByMonthDay(String monthDayStr) {
-            MonthDay monthDay = MonthDay.parse("--" + monthDayStr);
+            MonthDay monthDay = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
             for (Zodiac zodiac : Zodiac.values()) {
                 if (zodiac.startDate.equals(monthDayStr) || zodiac.endDate.equals(monthDayStr)) {
                     return zodiac;
@@ -1410,8 +1410,8 @@ public class Fields {
                 if (isCapricorn(monthDay)) {
                     return Zodiac.Capricorn;
                 }
-                MonthDay monthDayStart = MonthDay.parse("--" + zodiac.startDate);
-                MonthDay monthDayEnd = MonthDay.parse("--" + zodiac.endDate);
+                MonthDay monthDayStart = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + zodiac.startDate);
+                MonthDay monthDayEnd = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + zodiac.endDate);
                 if (monthDay.isAfter(monthDayStart) && monthDay.isBefore(monthDayEnd)) {
                     return zodiac;
                 }
@@ -1426,8 +1426,8 @@ public class Fields {
          * @return true/false
          */
         private static boolean isCapricorn(MonthDay monthDay) {
-            MonthDay capricorn_start = MonthDay.parse("--" + "12-22");
-            MonthDay capricorn_end = MonthDay.parse("--" + "01-19");
+            MonthDay capricorn_start = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + "12-22");
+            MonthDay capricorn_end = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + "01-19");
             if (capricorn_start.equals(monthDay) || capricorn_end.equals(monthDay)) {
                 return true;
             }

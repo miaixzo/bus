@@ -26,9 +26,15 @@
 package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.software.InternetProtocolStats;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,9 +45,9 @@ import java.util.List;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class NetStatTcp {
+public final class NetStat {
 
-    private NetStatTcp() {
+    private NetStat() {
     }
 
     /**
@@ -64,5 +70,62 @@ public final class NetStatTcp {
         }
         return Pair.of(tcp4, tcp6);
     }
+
+    /**
+     * Query netstat to all TCP and UDP connections
+     *
+     * @return A list of TCP and UDP connections
+     */
+    public static List<InternetProtocolStats.IPConnection> queryNetstat() {
+        List<InternetProtocolStats.IPConnection> connections = new ArrayList<>();
+        List<String> activeConns = Executor.runNative("netstat -n");
+        for (String s : activeConns) {
+            String[] split;
+            if (s.startsWith("tcp") || s.startsWith("udp")) {
+                split = RegEx.SPACES.split(s);
+                if (split.length >= 5) {
+                    String state = (split.length == 6) ? split[5] : null;
+                    String type = split[0];
+                    Pair<byte[], Integer> local = parseIP(split[3]);
+                    Pair<byte[], Integer> foreign = parseIP(split[4]);
+                    connections.add(new InternetProtocolStats.IPConnection(type, local.getLeft(), local.getRight(), foreign.getLeft(), foreign.getRight(),
+                            state == null ? InternetProtocolStats.TcpState.NONE : InternetProtocolStats.TcpState.valueOf(state),
+                            Builder.parseIntOrDefault(split[2], 0), Builder.parseIntOrDefault(split[1], 0), -1));
+                }
+            }
+        }
+        return connections;
+    }
+
+    private static Pair<byte[], Integer> parseIP(String s) {
+        // 73.169.134.6.9599 to 73.169.134.6 port 9599
+        // or
+        // 2001:558:600a:a5.123 to 2001:558:600a:a5 port 123
+        int portPos = s.lastIndexOf('.');
+        if (portPos > 0 && s.length() > portPos) {
+            int port = Builder.parseIntOrDefault(s.substring(portPos + 1), 0);
+            String ip = s.substring(0, portPos);
+            try {
+                // Try to parse existing IP
+                return Pair.of(InetAddress.getByName(ip).getAddress(), port);
+            } catch (UnknownHostException e) {
+                try {
+                    // Try again with trailing ::
+                    if (ip.endsWith(":") && ip.contains("::")) {
+                        ip = ip + "0";
+                    } else if (ip.endsWith(":") || ip.contains("::")) {
+                        ip = ip + ":0";
+                    } else {
+                        ip = ip + "::0";
+                    }
+                    return Pair.of(InetAddress.getByName(ip).getAddress(), port);
+                } catch (UnknownHostException e2) {
+                    return Pair.of(new byte[0], port);
+                }
+            }
+        }
+        return Pair.of(new byte[0], 0);
+    }
+
 
 }

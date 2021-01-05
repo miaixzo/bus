@@ -30,11 +30,16 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
 import org.aoju.bus.health.mac.SysctlKit;
+import org.aoju.bus.health.mac.SystemB;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.NetStatTcp;
+import org.aoju.bus.health.unix.NetStat;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -43,7 +48,7 @@ import java.util.function.Supplier;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public class MacInternetProtocolStats implements InternetProtocolStats {
+public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoize.memoize(MacInternetProtocolStats::queryTcpstat, Memoize.defaultExpiration());
     private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoize.memoize(MacInternetProtocolStats::queryUdpstat, Memoize.defaultExpiration());
@@ -52,7 +57,7 @@ public class MacInternetProtocolStats implements InternetProtocolStats {
     private final Supplier<CLibrary.BsdIpstat> ipstat = Memoize.memoize(MacInternetProtocolStats::queryIpstat, Memoize.defaultExpiration());
     private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoize.memoize(MacInternetProtocolStats::queryIp6stat, Memoize.defaultExpiration());
     private boolean isElevated;
-    private Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStatTcp::queryTcpnetstat, Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStat::queryTcpnetstat, Memoize.defaultExpiration());
 
 
     public MacInternetProtocolStats(boolean elevated) {
@@ -173,6 +178,117 @@ public class MacInternetProtocolStats implements InternetProtocolStats {
         CLibrary.BsdUdpstat stat = udpstat.get();
         return new UdpStats(Builder.unsignedIntToLong(stat.udps_snd6_swcsum),
                 Builder.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
+    }
+
+    private static List<Integer> queryFdList(int pid) {
+        List<Integer> fdList = new ArrayList<>();
+        int bufferSize = SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDLISTFDS, 0, null, 0);
+        if (bufferSize > 0) {
+            SystemB.ProcFdInfo fdInfo = new SystemB.ProcFdInfo();
+            int numStructs = bufferSize / fdInfo.size();
+            SystemB.ProcFdInfo[] fdArray = (SystemB.ProcFdInfo[]) fdInfo.toArray(numStructs);
+            bufferSize = SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDLISTFDS, 0, fdArray[0], bufferSize);
+            numStructs = bufferSize / fdInfo.size();
+            for (int i = 0; i < numStructs; i++) {
+                if (fdArray[i].proc_fdtype == SystemB.PROX_FDTYPE_SOCKET) {
+                    fdList.add(fdArray[i].proc_fd);
+                }
+            }
+        }
+        return fdList;
+    }
+
+    private static IPConnection queryIPConnection(int pid, int fd) {
+        SystemB.SocketFdInfo si = new SystemB.SocketFdInfo();
+        int ret = SystemB.INSTANCE.proc_pidfdinfo(pid, fd, SystemB.PROC_PIDFDSOCKETINFO, si, si.size());
+        if (si.size() == ret && si.psi.soi_family == SystemB.AF_INET || si.psi.soi_family == SystemB.AF_INET6) {
+            SystemB.InSockInfo ini;
+            String type;
+            TcpState state;
+            if (si.psi.soi_kind == SystemB.SOCKINFO_TCP) {
+                si.psi.soi_proto.setType("pri_tcp");
+                si.psi.soi_proto.read();
+                ini = si.psi.soi_proto.pri_tcp.tcpsi_ini;
+                state = stateLookup(si.psi.soi_proto.pri_tcp.tcpsi_state);
+                type = "tcp";
+            } else if (si.psi.soi_kind == SystemB.SOCKINFO_IN) {
+                si.psi.soi_proto.setType("pri_in");
+                si.psi.soi_proto.read();
+                ini = si.psi.soi_proto.pri_in;
+                state = InternetProtocolStats.TcpState.NONE;
+                type = "udp";
+            } else {
+                return null;
+            }
+
+            byte[] laddr;
+            byte[] faddr;
+            if (ini.insi_vflag == 1) {
+                laddr = Builder.parseIntToIP(ini.insi_laddr[3]);
+                faddr = Builder.parseIntToIP(ini.insi_faddr[3]);
+                type += "4";
+            } else if (ini.insi_vflag == 2) {
+                laddr = Builder.parseIntArrayToIP(ini.insi_laddr);
+                faddr = Builder.parseIntArrayToIP(ini.insi_faddr);
+                type += "6";
+            } else {
+                return null;
+            }
+            int lport = Builder.bigEndian16ToLittleEndian(ini.insi_lport);
+            int fport = Builder.bigEndian16ToLittleEndian(ini.insi_fport);
+            return new IPConnection(type, laddr, lport, faddr, fport, state, si.psi.soi_qlen, si.psi.soi_incqlen, pid);
+        }
+        return null;
+    }
+
+    private static TcpState stateLookup(int state) {
+        switch (state) {
+            case 0:
+                return InternetProtocolStats.TcpState.CLOSED;
+            case 1:
+                return InternetProtocolStats.TcpState.LISTEN;
+            case 2:
+                return InternetProtocolStats.TcpState.SYN_SENT;
+            case 3:
+                return InternetProtocolStats.TcpState.SYN_RECV;
+            case 4:
+                return InternetProtocolStats.TcpState.ESTABLISHED;
+            case 5:
+                return InternetProtocolStats.TcpState.CLOSE_WAIT;
+            case 6:
+                return InternetProtocolStats.TcpState.FIN_WAIT1;
+            case 7:
+                return InternetProtocolStats.TcpState.CLOSING;
+            case 8:
+                return InternetProtocolStats.TcpState.LAST_ACK;
+            case 9:
+                return InternetProtocolStats.TcpState.FIN_WAIT2;
+            case 10:
+                return InternetProtocolStats.TcpState.TIME_WAIT;
+            default:
+                return InternetProtocolStats.TcpState.UNKNOWN;
+        }
+    }
+
+    @Override
+    public List<IPConnection> getConnections() {
+        List<IPConnection> conns = new ArrayList<>();
+        int[] pids = new int[1024];
+        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE)
+                / SystemB.INT_SIZE;
+        for (int i = 0; i < numberOfProcesses; i++) {
+            // Handle off-by-one bug in proc_listpids where the size returned
+            // is: SystemB.INT_SIZE * (pids + 1)
+            if (pids[i] > 0) {
+                for (Integer fd : queryFdList(pids[i])) {
+                    IPConnection ipc = queryIPConnection(pids[i], fd);
+                    if (ipc != null) {
+                        conns.add(ipc);
+                    }
+                }
+            }
+        }
+        return Collections.unmodifiableList(conns);
     }
 
 }

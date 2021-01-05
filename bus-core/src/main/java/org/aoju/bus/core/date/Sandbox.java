@@ -3783,7 +3783,7 @@ public class Sandbox extends Converter {
      * @return boolean
      */
     public static boolean isSameMonthDay(LocalDate localDate1, String monthDayStr) {
-        return isSameMonthDay(localDate1, MonthDay.parse("--" + monthDayStr));
+        return isSameMonthDay(localDate1, MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr));
     }
 
     /**
@@ -3868,7 +3868,7 @@ public class Sandbox extends Converter {
      * @return long
      */
     public static long betweenNextSameMonthDay(LocalDate localDate, String monthDayStr) {
-        MonthDay monthDay2 = MonthDay.parse("--" + monthDayStr);
+        MonthDay monthDay2 = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
         return betweenNextSameMonthDay(localDate, monthDay2.getMonthValue(), monthDay2.getDayOfMonth());
     }
 
@@ -3880,7 +3880,7 @@ public class Sandbox extends Converter {
      * @return long
      */
     public static long betweenNextSameMonthDay(Date date, String monthDayStr) {
-        MonthDay monthDay2 = MonthDay.parse("--" + monthDayStr);
+        MonthDay monthDay2 = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
         return betweenNextSameMonthDay(Converter.toLocalDate(date), monthDay2.getMonthValue(),
                 monthDay2.getDayOfMonth());
     }
@@ -3892,7 +3892,7 @@ public class Sandbox extends Converter {
      * @return long
      */
     public static long betweenNextSameMonthDayOfNow(String monthDayStr) {
-        MonthDay monthDay2 = MonthDay.parse("--" + monthDayStr);
+        MonthDay monthDay2 = MonthDay.parse(Symbol.HYPHEN + Symbol.HYPHEN + monthDayStr);
         return betweenNextSameMonthDay(LocalDate.now(), monthDay2.getMonthValue(),
                 monthDay2.getDayOfMonth());
     }

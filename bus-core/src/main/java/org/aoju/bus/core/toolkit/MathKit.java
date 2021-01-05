@@ -2704,7 +2704,7 @@ public class MathKit {
         if (StringKit.isBlank(str)) {
             throw new NumberFormatException("A blank string is not a valid number");
         }
-        if (str.trim().startsWith("--")) {
+        if (str.trim().startsWith(Symbol.HYPHEN + Symbol.HYPHEN)) {
             throw new NumberFormatException(str + " is not a valid number.");
         }
         return new BigDecimal(str);
