@@ -27,13 +27,13 @@ package org.aoju.bus.core.date;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.toolkit.DateKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 秒表封装
@@ -289,7 +289,7 @@ public class StopWatch {
      * @see #getTotalTimeSeconds()
      */
     public long getTotalTimeMillis() {
-        return DateKit.nanosToMillis(this.totalTimeNanos);
+        return TimeUnit.NANOSECONDS.toMillis(this.totalTimeNanos);
     }
 
     /**
@@ -300,7 +300,7 @@ public class StopWatch {
      * @see #getTotalTimeMillis()
      */
     public double getTotalTimeSeconds() {
-        return DateKit.nanosToSeconds(this.totalTimeNanos);
+        return this.totalTimeNanos / 1_000_000_000.0;
     }
 
     /**
@@ -420,7 +420,7 @@ public class StopWatch {
          * @see #getTimeSeconds()
          */
         public long getTimeMillis() {
-            return DateKit.nanosToMillis(this.timeNanos);
+            return TimeUnit.NANOSECONDS.toMillis(this.timeNanos);
         }
 
         /**
@@ -431,7 +431,7 @@ public class StopWatch {
          * @see #getTimeNanos()
          */
         public double getTimeSeconds() {
-            return DateKit.nanosToSeconds(this.timeNanos);
+            return this.timeNanos / 1_000_000_000.0;
         }
     }
 

@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.key;
 
-import org.aoju.bus.core.date.SystemClock;
+import org.aoju.bus.core.date.NonClock;
 import org.aoju.bus.core.toolkit.StringKit;
 
 import java.io.Serializable;
@@ -116,7 +116,7 @@ public class Snowflake implements Serializable {
      *
      * @param workerId     终端ID
      * @param dataCenterId 数据中心ID
-     * @param isClock      是否使用{@link SystemClock} 获取当前时间戳
+     * @param isClock      是否使用{@link NonClock} 获取当前时间戳
      */
     public Snowflake(long workerId, long dataCenterId, boolean isClock) {
         this(null, workerId, dataCenterId, isClock);
@@ -126,7 +126,7 @@ public class Snowflake implements Serializable {
      * @param epochDate    初始化时间起点(null表示默认起始日期),后期修改会导致id重复,如果要修改连workerId dataCenterId，慎用
      * @param workerId     工作机器节点id
      * @param dataCenterId 数据中心id
-     * @param isClock      是否使用{@link SystemClock} 获取当前时间戳
+     * @param isClock      是否使用{@link NonClock} 获取当前时间戳
      */
     public Snowflake(Date epochDate, long workerId, long dataCenterId, boolean isClock) {
         if (null != epochDate) {
@@ -248,7 +248,7 @@ public class Snowflake implements Serializable {
      * @return 时间戳
      */
     private long genTime() {
-        return this.isClock ? SystemClock.now() : System.currentTimeMillis();
+        return this.isClock ? NonClock.now() : System.currentTimeMillis();
     }
 
 }  

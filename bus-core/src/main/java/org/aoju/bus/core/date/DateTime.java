@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.core.date;
 
-import org.aoju.bus.core.date.format.DateParser;
-import org.aoju.bus.core.date.format.DatePrinter;
-import org.aoju.bus.core.date.format.FormatBuilder;
+import org.aoju.bus.core.date.formatter.DateParser;
+import org.aoju.bus.core.date.formatter.DatePrinter;
+import org.aoju.bus.core.date.formatter.FormatBuilder;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -49,7 +49,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * 包装java.utils.Date
+ * 包装java.util.Date
  *
  * @author Kimi Liu
  * @version 6.1.6
@@ -66,7 +66,7 @@ public class DateTime extends Date {
     /**
      * 一周的第一天，默认是周一， 在设置或获得 WEEK_OF_MONTH 或 WEEK_OF_YEAR 字段时，Calendar 必须确定一个月或一年的第一个星期，以此作为参考点。
      */
-    private Fields.Week firstDayOfWeek = Fields.Week.MONDAY;
+    private Fields.Week firstDayOfWeek = Fields.Week.Sun;
     /**
      * 时区
      */
@@ -117,7 +117,7 @@ public class DateTime extends Date {
      */
     public DateTime(Calendar calendar) {
         this(calendar.getTime(), calendar.getTimeZone());
-        this.setFirstDayOfWeek(Fields.Week.of(calendar.getFirstDayOfWeek()));
+        this.setFirstDayOfWeek(Fields.Week.getByCode(calendar.getFirstDayOfWeek()));
     }
 
     /**
@@ -313,17 +313,17 @@ public class DateTime extends Date {
      * 调整日期和时间
      * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
      *
-     * @param datePart 调整的部分 {@link Fields.Type}
-     * @param offset   偏移量，正数为向后偏移，负数为向前偏移
+     * @param type   调整的部分 {@link Fields.Type}
+     * @param offset 偏移量，正数为向后偏移，负数为向前偏移
      * @return 如果此对象为可变对象，返回自身，否则返回新对象
      */
-    public DateTime offset(Fields.Type datePart, int offset) {
-        if (Fields.Type.ERA == datePart) {
+    public DateTime offset(Fields.Type type, int offset) {
+        if (Fields.Type.ERA == type) {
             throw new IllegalArgumentException("ERA is not support offset!");
         }
 
         final Calendar cal = toCalendar();
-        cal.add(datePart.getValue(), offset);
+        cal.add(type.getValue(), offset);
 
         DateTime dt = mutable ? this : ObjectKit.clone(this);
         return dt.setTimeInternal(cal.getTimeInMillis());
@@ -333,13 +333,13 @@ public class DateTime extends Date {
      * 调整日期和时间
      * 返回调整后的新{@link DateTime}，不影响原对象
      *
-     * @param datePart 调整的部分 {@link Fields.Type}
-     * @param offset   偏移量，正数为向后偏移，负数为向前偏移
+     * @param type   调整的部分 {@link Fields.Type}
+     * @param offset 偏移量，正数为向后偏移，负数为向前偏移
      * @return 如果此对象为可变对象，返回自身，否则返回新对象
      */
-    public DateTime offsetNew(Fields.Type datePart, int offset) {
+    public DateTime offsetNew(Fields.Type type, int offset) {
         final Calendar cal = toCalendar();
-        cal.add(datePart.getValue(), offset);
+        cal.add(type.getValue(), offset);
 
         DateTime dt = ObjectKit.clone(this);
         return dt.setTimeInternal(cal.getTimeInMillis());
@@ -459,7 +459,7 @@ public class DateTime extends Date {
      * @return {@link Fields.Month}
      */
     public Fields.Month monthEnum() {
-        return Fields.Month.of(month());
+        return Fields.Month.getByCode(month());
     }
 
     /**
@@ -528,7 +528,7 @@ public class DateTime extends Date {
      * @return {@link Fields.Week}
      */
     public Fields.Week dayOfWeekEnum() {
-        return Fields.Week.of(dayOfWeek());
+        return Fields.Week.getByCode(dayOfWeek());
     }
 
     /**
@@ -638,7 +638,7 @@ public class DateTime extends Date {
             locale = Locale.getDefault(Locale.Category.FORMAT);
         }
         final Calendar cal = (null != zone) ? Calendar.getInstance(zone, locale) : Calendar.getInstance(locale);
-        cal.setFirstDayOfWeek(firstDayOfWeek.getValue());
+        cal.setFirstDayOfWeek(firstDayOfWeek.getKey());
         cal.setTime(this);
         return cal;
     }
@@ -684,24 +684,12 @@ public class DateTime extends Date {
     /**
      * 计算相差时长
      *
-     * @param date 对比的日期
-     * @param unit 单位 {@link Fields.Time}
+     * @param date  对比的日期
+     * @param units 单位 {@link Fields.Units}
      * @return 相差时长
      */
-    public long between(Date date, Fields.Time unit) {
-        return new Between(this, date).between(unit);
-    }
-
-    /**
-     * 计算相差时长
-     *
-     * @param date        对比的日期
-     * @param unit        单位 {@link  Fields.Time}
-     * @param formatLevel 格式化级别
-     * @return 相差时长
-     */
-    public String between(Date date, Fields.Time unit, Fields.Level formatLevel) {
-        return new Between(this, date).toString(formatLevel);
+    public long between(Date date, Fields.Units units) {
+        return new Between(this, date).between(units);
     }
 
     /**
@@ -859,11 +847,11 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转为"yyyy-MM-dd " 格式字符串
+     * 转为"yyyy-MM-dd" 格式字符串
      *
-     * @return "yyyy-MM-dd " 格式字符串
+     * @return "yyyy-MM-dd" 格式字符串
      */
-    public String toDateStr() {
+    public String toDateString() {
         if (null != this.timeZone) {
             return toString(DateKit.newSimpleFormat(Fields.NORM_DATE_PATTERN, null, timeZone));
         }
@@ -875,7 +863,7 @@ public class DateTime extends Date {
      *
      * @return "HH:mm:ss" 格式字符串
      */
-    public String toTimeStr() {
+    public String toTimeString() {
         if (null != this.timeZone) {
             return toString(DateKit.newSimpleFormat(Fields.NORM_TIME_PATTERN, null, timeZone));
         }
@@ -885,7 +873,7 @@ public class DateTime extends Date {
     /**
      * @return 输出精确到毫秒的标准日期形式
      */
-    public String toMsStr() {
+    public String toMsString() {
         return toString(Fields.NORM_DATETIME_MS_FORMAT);
     }
 

@@ -23,88 +23,82 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.date;
+package org.aoju.bus.core.date.calendar;
 
-import java.sql.Timestamp;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import lombok.Data;
+import org.aoju.bus.core.toolkit.CollKit;
+import org.aoju.bus.core.toolkit.DateKit;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * 系统时钟
- * 高并发场景下System.currentTimeMillis()的性能问题的优化
- * System.currentTimeMillis()的调用比new一个普通对象要耗时的多(具体耗时高出多少我还没测试过,有人说是100倍左右)
- * System.currentTimeMillis()之所以慢是因为去跟系统打了一次交道
- * 后台定时更新时钟,JVM退出时,线程自动回收
+ * 月/Month
  *
  * @author Kimi Liu
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class SystemClock {
+@Data
+public class MonthWrapper implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 时钟更新间隔,单位毫秒
+     * 月
      */
-    private final long period;
-    /**
-     * 现在时刻的毫秒数
-     */
-    private volatile long now;
-
-    private SystemClock(long period) {
-        this.period = period;
-        this.now = System.currentTimeMillis();
-        scheduleClockUpdating();
-    }
+    private int month;
 
     /**
-     * 单例实例
-     *
-     * @return 单例实例
+     * 当月包含的所有天
      */
-    private static SystemClock instance() {
-        return InstanceHolder.INSTANCE;
-    }
+    private List<DayWrapper> days;
 
     /**
-     * @return 当前时间
+     * 当前月包含天数
      */
-    public static long now() {
-        return instance().currentTimeMillis();
-    }
+    private int length;
 
     /**
-     * @return 当前时间字符串表现形式
+     * 获取月份中文简称， 比如一
      */
-    public static String nowDate() {
-        return new Timestamp(instance().currentTimeMillis()).toString();
-    }
+    private String monthCnShort;
 
     /**
-     * 开启计时器线程
+     * 获取月份中文全称， 比如一月
      */
-    private void scheduleClockUpdating() {
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
-            Thread thread = new Thread(runnable, "System Clock");
-            thread.setDaemon(true);
-            return thread;
-        });
-        scheduler.scheduleAtFixedRate(() -> now = System.currentTimeMillis(), period, period, TimeUnit.MILLISECONDS);
-    }
+    private String monthCnLong;
 
     /**
-     * @return 当前时间毫秒数
+     * 获取月英文简称， 比如 Jan
      */
-    private long currentTimeMillis() {
-        return now;
-    }
+    private String monthEnShort;
 
     /**
-     * 单例
+     * 获取月英文简称大写， 比如 JAN
      */
-    private static class InstanceHolder {
-        public static final SystemClock INSTANCE = new SystemClock(1);
+    private String monthEnShortUpper;
+
+    /**
+     * 获取月英文全称， 比如 January
+     */
+    private String monthEnLong;
+
+    public MonthWrapper(int month, List<DayWrapper> days, int length) {
+        super();
+        this.month = month;
+        this.days = days;
+        this.length = length;
+        if (CollKit.isNotEmpty(days)) {
+            DayWrapper day = days.get(0);
+            if (day != null) {
+                this.monthCnShort = DateKit.getMonthCnShort(day.getLocalDateTime());
+                this.monthCnLong = DateKit.getMonthCnLong(day.getLocalDateTime());
+                this.monthEnShort = DateKit.getMonthEnShort(day.getLocalDateTime());
+                this.monthEnShortUpper = DateKit.getMonthEnShortUpper(day.getLocalDateTime());
+                this.monthEnLong = DateKit.getMonthEnLong(day.getLocalDateTime());
+            }
+        }
     }
 
 }

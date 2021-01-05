@@ -25,13 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import org.aoju.bus.core.lang.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 身份证相关工具类
@@ -496,7 +495,7 @@ public class CitizenIdKit {
             String birthday = idcard.substring(6, 12);
             Date birthDate = DateKit.parse(birthday, "yyMMdd");
             // 获取出生年(完全表现形式,如：2010)
-            int sYear = DateKit.year(birthDate);
+            int sYear = DateKit.getYear(birthDate);
             if (sYear > 2000) {
                 // 2000年之后不存在15位身份证号,此处用于修复此问题的判断
                 sYear -= 100;
@@ -573,6 +572,21 @@ public class CitizenIdKit {
         return iSum;
     }
 
+    public static Gender getGender(String code) {
+        if (code == null) {
+            return Gender.UNKNOWN;
+        }
+        String[] males = {"M", "男", Symbol.ONE, "MALE"};
+        if (Arrays.asList(males).contains(code.toUpperCase())) {
+            return Gender.MALE;
+        }
+        String[] females = {"F", "女", Symbol.ZERO, "FEMALE"};
+        if (Arrays.asList(females).contains(code.toUpperCase())) {
+            return Gender.FEMALE;
+        }
+        return Gender.UNKNOWN;
+    }
+
     /**
      * 获取公民身份相关信息
      *
@@ -592,7 +606,7 @@ public class CitizenIdKit {
             citizenInfo.setBirthYear(year);
             citizenInfo.setBirthMonth(month);
             citizenInfo.setBirthDay(day);
-            citizenInfo.setGender(Normal.Gender.getGender(Normal.EMPTY + getGenderByIdCard(idcard)).getDesc());
+            citizenInfo.setGender(getGender(Normal.EMPTY + getGenderByIdCard(idcard)).getDesc());
             citizenInfo.setZodiac(DateKit.getZodiac(month, day));
             citizenInfo.setAnimal(DateKit.getAnimal(year));
         } else {
@@ -601,8 +615,21 @@ public class CitizenIdKit {
         return citizenInfo;
     }
 
+    @Getter
+    @AllArgsConstructor
+    public enum Gender {
+
+        MALE(1, "男"),
+        FEMALE(0, "女"),
+        UNKNOWN(-1, "未知");
+
+        private int code;
+        private String desc;
+
+    }
+
     @Data
-    class CitizenInfo {
+    public class CitizenInfo {
 
         /**
          * 身份证真伪

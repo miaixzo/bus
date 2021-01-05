@@ -29,8 +29,8 @@ import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.core.math.Arrangement;
-import org.aoju.bus.core.math.Combination;
+import org.aoju.bus.core.math.Arrange;
+import org.aoju.bus.core.math.Combine;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -2718,7 +2718,7 @@ public class MathKit {
      * @return 排列数
      */
     public static long arrangementCount(int n, int m) {
-        return Arrangement.count(n, m);
+        return Arrange.count(n, m);
     }
 
     /**
@@ -2728,7 +2728,7 @@ public class MathKit {
      * @return 排列数
      */
     public static long arrangementCount(int n) {
-        return Arrangement.count(n);
+        return Arrange.count(n);
     }
 
     /**
@@ -2739,7 +2739,7 @@ public class MathKit {
      * @return 所有排列列表
      */
     public static List<String[]> arrangementSelect(String[] datas, int m) {
-        return new Arrangement(datas).select(m);
+        return new Arrange(datas).select(m);
     }
 
     /**
@@ -2749,7 +2749,7 @@ public class MathKit {
      * @return 所有排列列表
      */
     public static List<String[]> arrangementSelect(String[] datas) {
-        return new Arrangement(datas).select();
+        return new Arrange(datas).select();
     }
 
     /**
@@ -2760,7 +2760,7 @@ public class MathKit {
      * @return 组合数
      */
     public static long combinationCount(int n, int m) {
-        return Combination.count(n, m);
+        return Combine.count(n, m);
     }
 
     /**
@@ -2771,7 +2771,7 @@ public class MathKit {
      * @return 所有组合列表
      */
     public static List<String[]> combinationSelect(String[] datas, int m) {
-        return new Combination(datas).select(m);
+        return new Combine(datas).select(m);
     }
 
 
@@ -2904,7 +2904,7 @@ public class MathKit {
      */
     private static String determineDataUnit(String suffix, String defaultUnit) {
         String defaultUnitToUse = (defaultUnit != null ? defaultUnit : Normal.CAPACITY_NAMES[0]);
-        return (StringKit.isNotEmpty(suffix) ? Normal.getCapacity(suffix) : defaultUnitToUse);
+        return (StringKit.isNotEmpty(suffix) ? getCapacity(suffix) : defaultUnitToUse);
     }
 
     /**
@@ -2970,6 +2970,22 @@ public class MathKit {
      */
     public static boolean isBetween(double min, double max, double value) {
         return value >= min && value <= max;
+    }
+
+    /**
+     * 返回标准容量后缀
+     * 支持类似于3MB，3M，3m等写法
+     *
+     * @param suffix 单位后缀
+     * @return 匹配到的容量信息，无法匹配则返回原始信息
+     */
+    public static String getCapacity(String suffix) {
+        for (String candidate : Normal.CAPACITY_NAMES) {
+            if (StringKit.startWithIgnoreCase(candidate, suffix)) {
+                return candidate;
+            }
+        }
+        return suffix;
     }
 
     /**

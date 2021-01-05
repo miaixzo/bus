@@ -36,16 +36,16 @@ import org.aoju.bus.core.toolkit.DateKit;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class TimeInterval {
+public class NonTimer {
 
     private long time;
     private boolean isNano;
 
-    public TimeInterval() {
+    public NonTimer() {
         this(false);
     }
 
-    public TimeInterval(boolean isNano) {
+    public NonTimer(boolean isNano) {
         this.isNano = isNano;
         start();
     }
@@ -73,7 +73,7 @@ public class TimeInterval {
      *
      * @return this
      */
-    public TimeInterval restart() {
+    public NonTimer restart() {
         time = DateKit.timestamp(isNano);
         return this;
     }
@@ -103,7 +103,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔秒数, 取绝对值
      */
     public long intervalSecond() {
-        return intervalMs() / Fields.Time.SECOND.getMillis();
+        return intervalMs() / Fields.Units.SECOND.getUnit();
     }
 
     /**
@@ -112,7 +112,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔分钟数, 取绝对值
      */
     public long intervalMinute() {
-        return intervalMs() / Fields.Time.MINUTE.getMillis();
+        return intervalMs() / Fields.Units.MINUTE.getUnit();
     }
 
     /**
@@ -121,7 +121,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔小时数, 取绝对值
      */
     public long intervalHour() {
-        return intervalMs() / Fields.Time.HOUR.getMillis();
+        return intervalMs() / Fields.Units.HOUR.getUnit();
     }
 
     /**
@@ -130,7 +130,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔天数, 取绝对值
      */
     public long intervalDay() {
-        return intervalMs() / Fields.Time.DAY.getMillis();
+        return intervalMs() / Fields.Units.DAY.getUnit();
     }
 
     /**
@@ -139,7 +139,7 @@ public class TimeInterval {
      * @return 从开始到当前的间隔周数, 取绝对值
      */
     public long intervalWeek() {
-        return intervalMs() / Fields.Time.WEEK.getMillis();
+        return intervalMs() / Fields.Units.WEEK.getUnit();
     }
 
 }

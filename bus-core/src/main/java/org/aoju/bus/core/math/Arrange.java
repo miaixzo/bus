@@ -33,22 +33,22 @@ import java.util.List;
 
 /**
  * 排列A(n, m)
- * 排列组合相关类
+ * 排列相关类
  *
  * @author Kimi Liu
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class Arrangement {
+public class Arrange {
 
-    private String[] datas;
+    private final String[] datas;
 
     /**
      * 构造
      *
      * @param datas 用于排列的数据
      */
-    public Arrangement(String[] datas) {
+    public Arrange(String[] datas) {
         this.datas = datas;
     }
 

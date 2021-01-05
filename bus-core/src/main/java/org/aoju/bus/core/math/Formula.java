@@ -34,13 +34,13 @@ import java.util.Collections;
 import java.util.Stack;
 
 /**
- * 数学表达式计算
+ * 数学表达式
  *
  * @author Kimi Liu
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class Calculator {
+public class Formula {
 
     /**
      * 后缀式栈
@@ -62,7 +62,7 @@ public class Calculator {
      * @return 计算结果
      */
     public static double conversion(String expression) {
-        final Calculator cal = new Calculator();
+        final Formula cal = new Formula();
         expression = transform(expression);
         return cal.calculate(expression);
     }

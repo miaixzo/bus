@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.date.format;
+package org.aoju.bus.core.date.formatter;
 
 import org.aoju.bus.core.lang.Symbol;
 
@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class FastDateParser extends AbstractFormater implements DateParser {
+public class FastDateParser extends AbstractMotd implements DateParser {
 
     private static final long serialVersionUID = 1L;
 

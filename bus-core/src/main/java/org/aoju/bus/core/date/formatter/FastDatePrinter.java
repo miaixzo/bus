@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.date.format;
+package org.aoju.bus.core.date.formatter;
 
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentMap;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class FastDatePrinter extends AbstractFormater implements DatePrinter {
+public class FastDatePrinter extends AbstractMotd implements DatePrinter {
 
     private static final long serialVersionUID = 1L;
     private static final int MAX_DIGITS = 10; // log10(Integer.MAX_VALUE) ~= 9.3

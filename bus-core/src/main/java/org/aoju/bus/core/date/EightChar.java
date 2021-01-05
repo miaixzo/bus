@@ -57,7 +57,6 @@ public class EightChar {
      */
     private static final Map<String, Integer> CHANG_SHENG_OFFSET = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 1L;
-
         {
             //阳
             put("甲", 1);
@@ -79,7 +78,7 @@ public class EightChar {
      */
     protected int sect = 2;
     /**
-     * 阴历
+     * 农历信息
      */
     protected Lunar lunar;
 
@@ -661,8 +660,13 @@ public class EightChar {
         return lunar.getTimeXunKong();
     }
 
-    @Override
-    public String toString() {
+    /**
+     * 构建字符串内容
+     *
+     * @param args 可选参数-简化输出
+     * @return 字符串内容
+     */
+    public String build(boolean... args) {
         return getYear() + Symbol.SPACE + getMonth() + Symbol.SPACE + getDay() + Symbol.SPACE + getTime();
     }
 
@@ -866,7 +870,8 @@ public class EightChar {
          */
         public String getGanZhi() {
             // 干支与出生日期和起运日期都没关系
-            int offset = Lunar.getJiaZiIndex(lunar.getJieQiTable().get("立春").getLunar().getYearInGanZhiExact()) + this.index;
+            int offset = Lunar.getJiaZiIndex(lunar.getSolarTermTable().get("立春").getLunar().getYearInGanZhiExact())
+                    + this.index;
             if (daYun.getIndex() > 0) {
                 offset += daYun.getStartAge() - 1;
             }
@@ -939,7 +944,6 @@ public class EightChar {
 
         /**
          * 获取干支
-         * <p>
          * 《五虎遁》
          * 甲己之年丙作首，
          * 乙庚之年戊为头，
@@ -1088,6 +1092,9 @@ public class EightChar {
          * 是否顺推
          */
         private final boolean forward;
+        /**
+         * 农历信息
+         */
         private final Lunar lunar;
         /**
          * 起运年数
@@ -1127,15 +1134,19 @@ public class EightChar {
             Solar start = forward ? current : prev.getSolar();
             Solar end = forward ? next.getSolar() : current;
             // 时辰差
-            int hourDiff = Lunar.getTimeZhiIndex(end.toYmdHms().substring(11, 16)) - Lunar.getTimeZhiIndex(start.toYmdHms().substring(11, 16));
+            int hourDiff = Lunar.getTimeZhiIndex(end.build(false).substring(11, 16))
+                    - Lunar.getTimeZhiIndex(start.build(false).substring(11, 16));
             Calendar endCalendar = Calendar.getInstance();
-            endCalendar.set(end.getYear(), end.getMonth() - 1, end.getDay(), 0, 0, 0);
+            endCalendar.set(end.getYear(), end.getMonth() - 1, end.getDay(),
+                    0, 0, 0);
             endCalendar.set(Calendar.MILLISECOND, 0);
             Calendar startCalendar = Calendar.getInstance();
-            startCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(), 0, 0, 0);
+            startCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(),
+                    0, 0, 0);
             startCalendar.set(Calendar.MILLISECOND, 0);
             // 天数差
-            int dayDiff = (int) ((endCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / (1000 * 3600 * 24));
+            int dayDiff = (int) ((endCalendar.getTimeInMillis() - startCalendar.getTimeInMillis())
+                    / (1000 * 3600 * 24));
             if (hourDiff < 0) {
                 hourDiff += 12;
                 dayDiff--;
@@ -1153,7 +1164,7 @@ public class EightChar {
         /**
          * 获取性别
          *
-         * @return 性别(1男 ， 0女)
+         * @return 性别(1 : 男, 0 : 女)
          */
         public int getGender() {
             return gender;
@@ -1206,9 +1217,10 @@ public class EightChar {
          */
         public Solar getStartSolar() {
             Solar birth = lunar.getSolar();
-            Calendar c = Calendar.getInstance();
-            c.set(birth.getYear() + startYear, birth.getMonth() - 1 + startMonth, birth.getDay() + startDay, 0, 0, 0);
-            return Solar.fromCalendar(c);
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(birth.getYear() + startYear, birth.getMonth() - 1 + startMonth,
+                    birth.getDay() + startDay, 0, 0, 0);
+            return Solar.from(calendar);
         }
 
         /**

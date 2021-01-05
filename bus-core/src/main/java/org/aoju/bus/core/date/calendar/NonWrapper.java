@@ -23,74 +23,55 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.date.format;
+package org.aoju.bus.core.date.calendar;
+
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 默认日历
+ *
  * @author Kimi Liu
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public abstract class AbstractFormater implements Formatter, Serializable {
+@Data
+public class NonWrapper implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 匹配规则
+     * 日历中所有的年
      */
-    protected final String pattern;
-    /**
-     * 时区
-     */
-    protected final TimeZone timeZone;
-    /**
-     * 语言环境
-     */
-    protected final Locale locale;
+    private List<YearWrapper> years;
 
     /**
-     * 构造,内部使用
-     *
-     * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
-     * @param timeZone 非空时区{@link TimeZone}
-     * @param locale   非空{@link Locale} 日期地理位置
+     * 日历中所有的天map，方便快速访问，key 格式：yyyy-MM-dd
      */
-    protected AbstractFormater(final String pattern, final TimeZone timeZone, final Locale locale) {
-        this.pattern = pattern;
-        this.timeZone = timeZone;
-        this.locale = locale;
+    private Map<String, DayWrapper> dayMap = new ConcurrentHashMap<>();
+
+    /**
+     * 日历中所有的天list，方便顺序遍历访问
+     */
+    private List<DayWrapper> dayList = new ArrayList<>();
+
+    public NonWrapper() {
+
     }
 
-    @Override
-    public String getPattern() {
-        return pattern;
+    public NonWrapper(List<YearWrapper> years) {
+        this.years = years;
     }
 
-    @Override
-    public TimeZone getTimeZone() {
-        return timeZone;
-    }
-
-    @Override
-    public Locale getLocale() {
-        return locale;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof FastDatePrinter == false) {
-            return false;
-        }
-        final AbstractFormater other = (AbstractFormater) obj;
-        return pattern.equals(other.pattern) && timeZone.equals(other.timeZone) && locale.equals(other.locale);
-    }
-
-    @Override
-    public int hashCode() {
-        return pattern.hashCode() + 13 * (timeZone.hashCode() + 13 * locale.hashCode());
+    public NonWrapper(List<YearWrapper> years, Map<String, DayWrapper> dayMap, List<DayWrapper> dayList) {
+        this.years = years;
+        this.dayMap = dayMap;
+        this.dayList = dayList;
     }
 
 }

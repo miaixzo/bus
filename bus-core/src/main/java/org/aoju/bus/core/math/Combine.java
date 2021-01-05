@@ -34,15 +34,15 @@ import java.util.List;
 
 /**
  * 组合,即C(n, m)
- * 排列组合相关类
+ * 组合相关类
  *
  * @author Kimi Liu
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class Combination {
+public class Combine {
 
-    private String[] datas;
+    private final String[] datas;
 
     /**
      * 组合,即C(n, m)
@@ -50,7 +50,7 @@ public class Combination {
      *
      * @param datas 用于组合的数据
      */
-    public Combination(String[] datas) {
+    public Combine(String[] datas) {
         this.datas = datas;
     }
 

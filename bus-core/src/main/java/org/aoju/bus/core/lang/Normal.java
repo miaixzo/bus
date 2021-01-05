@@ -25,12 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.aoju.bus.core.toolkit.StringKit;
-
-import java.util.Arrays;
-
 /**
  * 默认常量
  *
@@ -208,14 +202,14 @@ public class Normal {
     public static final String LOWER_NUMBER = LOWER + NUMBER;
 
     /**
-     * 字符串: 小字母数字
+     * 字符串: 大小字母
      */
     public static final String UPPER_LOWER = UPPER + LOWER;
 
     /**
      * 字符串: 大小字母数字
      */
-    public static final String UPPER_LOWER_NUMBER = UPPER + LOWER + NUMBER;
+    public static final String UPPER_LOWER_NUMBER = UPPER_LOWER + NUMBER;
 
     /**
      * 七色
@@ -1109,55 +1103,8 @@ public class Normal {
      *     terabyte    1TB    1,099,511,627,776
      * </pre>
      */
-    public static final String[] CAPACITY_NAMES = new String[]{"B", "KB", "MB", "GB", "TB", "EB"};
-
-    /**
-     * 返回标准容量后缀
-     * 支持类似于3MB，3M，3m等写法
-     *
-     * @param suffix 单位后缀
-     * @return 匹配到的容量信息，无法匹配则返回原始信息
-     */
-    public static String getCapacity(String suffix) {
-        for (String candidate : Normal.CAPACITY_NAMES) {
-            if (StringKit.startWithIgnoreCase(candidate, suffix)) {
-                return candidate;
-            }
-        }
-        return suffix;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public enum Gender {
-
-        /**
-         * MALE/FAMALE为正常值,通过{@link Gender#getGender(String)}
-         * 方法获取真实的性别UNKNOWN为容错值,部分平台不会返回用户性别,
-         * 为了方便统一,使用UNKNOWN标记所有未知或不可测的用户性别信息
-         */
-        MALE(1, "男"),
-        FEMALE(0, "女"),
-        UNKNOWN(-1, "未知");
-
-        private int code;
-        private String desc;
-
-        public static Gender getGender(String code) {
-            if (code == null) {
-                return UNKNOWN;
-            }
-            String[] males = {"M", "男", Symbol.ONE, "MALE"};
-            if (Arrays.asList(males).contains(code.toUpperCase())) {
-                return MALE;
-            }
-            String[] females = {"F", "女", Symbol.ZERO, "FEMALE"};
-            if (Arrays.asList(females).contains(code.toUpperCase())) {
-                return FEMALE;
-            }
-            return UNKNOWN;
-        }
-
-    }
+    public static final String[] CAPACITY_NAMES = new String[]{
+            "B", "KB", "MB", "GB", "TB", "EB"
+    };
 
 }

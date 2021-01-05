@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.date.format;
+package org.aoju.bus.core.date.formatter;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -37,7 +37,7 @@ import java.util.Date;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public interface DateParser extends Formatter {
+public interface DateParser extends DateMotd {
 
     /**
      * 将日期字符串解析并转换为  {@link Date} 对象

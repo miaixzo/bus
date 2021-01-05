@@ -23,73 +23,56 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.date.format;
+package org.aoju.bus.core.date.calendar;
 
-import java.util.Calendar;
-import java.util.Date;
+import lombok.Data;
+import org.aoju.bus.core.toolkit.DateKit;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
- * 日期格式化输出接口
+ * 年/Year
  *
  * @author Kimi Liu
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public interface DatePrinter extends Formatter {
+@Data
+public class YearWrapper implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * 格式化日期表示的毫秒数
-     *
-     * @param millis 日期毫秒数
-     * @return 格式化的字符串
+     * 年
      */
-    String format(long millis);
+    private int year;
 
     /**
-     * 使用 {@code GregorianCalendar} 格式化 {@code Date}
-     *
-     * @param date 日期 {@link Date}
-     * @return 格式化后的字符串
+     * 当前年所有月
      */
-    String format(Date date);
+    private List<MonthWrapper> months;
 
     /**
-     * 格式化 {@link Calendar} 对象
-     *
-     * @param calendar {@link Calendar}
-     * @return 格式化后的字符串
+     * 是否闰月
      */
-    String format(Calendar calendar);
+    private boolean isLeapYear;
 
     /**
-     * 将毫秒{@code long}值格式化为提供的{@code Appendable}
-     *
-     * @param millis 要格式化的毫秒值
-     * @param buf    要格式化为的缓冲区
-     * @param <B>    附加类类型，通常是StringBuilder或StringBuffer
-     * @return 指定的字符串缓冲区
+     * 当前年包含的天数
      */
-    <B extends Appendable> B format(long millis, B buf);
+    private int length;
 
-    /**
-     * 使用{@code GregorianCalendar}将{@code Date}对象格式化为提供的{@code Appendable}
-     *
-     * @param date 格式的日期
-     * @param buf  要格式化为的缓冲区
-     * @param <B>  附加类类型，通常是StringBuilder或StringBuffer
-     * @return 指定的字符串缓冲区
-     */
-    <B extends Appendable> B format(Date date, B buf);
-
-    /**
-     * 将{@code Calendar}对象格式化为提供的{@code Appendable}
-     * 日历上设置的时区仅用于调整时间偏移。解析器构造期间指定的时区将确定格式化字符串中使用的时区
-     *
-     * @param calendar 要格式化的日历
-     * @param buf      要格式化为的缓冲区
-     * @param <B>      附加类类型，通常是StringBuilder或StringBuffer
-     * @return 指定的字符串缓冲区
-     */
-    <B extends Appendable> B format(Calendar calendar, B buf);
+    public YearWrapper(int year, List<MonthWrapper> months) {
+        super();
+        this.year = year;
+        this.months = months;
+        this.isLeapYear = DateKit.isLeapYear(year);
+        if (isLeapYear) {
+            this.length = 366;
+        } else {
+            this.length = 365;
+        }
+    }
 
 }

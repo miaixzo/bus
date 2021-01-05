@@ -25,11 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.core.lang;
 
-import org.aoju.bus.core.date.format.FormatBuilder;
+import org.aoju.bus.core.date.Converter;
+import org.aoju.bus.core.date.formatter.FormatBuilder;
 
-import java.util.Calendar;
+import java.time.LocalTime;
+import java.time.MonthDay;
 import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -166,6 +168,24 @@ public class Fields {
      * 标准时间格式:{@link FormatBuilder}HH:mm:ss
      */
     public static final FormatBuilder NORM_TIME_FORMAT = FormatBuilder.getInstance(NORM_TIME_PATTERN);
+
+    /**
+     * 格式化通配符: yyMMddHHmm
+     */
+    public static final String PURE_DATE_MINUTE_PATTERN = "yyMMddHHmm";
+    /**
+     * 格式化通配符: {@link FormatBuilder} yyMMddHHmm
+     */
+    public static final FormatBuilder PURE_DATE_MINUTE_FORMAT = FormatBuilder.getInstance(PURE_DATE_MINUTE_PATTERN);
+
+    /**
+     * 格式化通配符: yyMMddHHmm
+     */
+    public static final String PURE_DATE_DAY_PATTERN = "MMdd";
+    /**
+     * 格式化通配符: {@link FormatBuilder} yyMMddHHmm
+     */
+    public static final FormatBuilder PURE_DATE_DAY_FORMAT = FormatBuilder.getInstance(PURE_DATE_DAY_PATTERN);
 
     /**
      * 格式化通配符: HHmmss
@@ -609,7 +629,7 @@ public class Fields {
          * 将 {@link Calendar}相关值转换为DatePart枚举对象
          *
          * @param calendarPartIntValue Calendar中关于Week的int值
-         * @return {@link Type}
+         * @return this
          */
         public static Type of(int calendarPartIntValue) {
             switch (calendarPartIntValue) {
@@ -657,45 +677,279 @@ public class Fields {
     /**
      * 时间单位,每个单位都是以毫秒为基数
      */
-    public enum Time {
+    public enum Units {
 
         /**
          * 一毫秒
          */
-        MS(1),
+        MILLISECOND(1, "毫秒"),
         /**
          * 一秒的毫秒数
          */
-        SECOND(1000),
+        SECOND(1000, "秒"),
         /**
          * 一分钟的毫秒数
          */
-        MINUTE(SECOND.getMillis() * 60),
+        MINUTE(SECOND.getUnit() * 60, "分"),
         /**
          * 一小时的毫秒数
          */
-        HOUR(MINUTE.getMillis() * 60),
+        HOUR(MINUTE.getUnit() * 60, "小时"),
         /**
          * 一天的毫秒数
          */
-        DAY(HOUR.getMillis() * 24),
+        DAY(HOUR.getUnit() * 24, "天"),
         /**
          * 一周的毫秒数
          */
-        WEEK(DAY.getMillis() * 7);
+        WEEK(DAY.getUnit() * 7, "周");
 
-        private long millis;
+        /**
+         * 计算单位
+         */
+        private long unit;
+        /**
+         * 名称
+         */
+        private String name;
 
-        Time(long millis) {
-            this.millis = millis;
+        Units(long unit, String name) {
+            this.unit = unit;
+            this.name = name;
         }
 
         /**
          * @return 单位对应的毫秒数
          */
-        public long getMillis() {
-            return this.millis;
+        public long getUnit() {
+            return this.unit;
         }
+
+        /**
+         * @return 单位对应的名称
+         */
+        public String getName() {
+            return this.name;
+        }
+
+    }
+
+    /**
+     * 日期信息
+     */
+    public enum Date {
+
+        /**
+         * 今天
+         */
+        TODAY("today", "今天"),
+        /**
+         * 明天
+         */
+        TOMORROW("tomorrow", "明天"),
+        /**
+         * 下周
+         */
+        NEXTWEEK("nextWeek", "下周"),
+        /**
+         * 下月
+         */
+        NEXTMONTH("nextMonth", "下月"),
+        /**
+         * 明年
+         */
+        NEXTYEAR("nextYear", "明年"),
+        /**
+         * 昨天
+         */
+        YESTERDAY("yesterday", "昨天"),
+        /**
+         * 上周
+         */
+        LASTWEEK("lastWeek", "上周"),
+        /**
+         * 上月
+         */
+        LASTMONTH("lastMonth", "上月"),
+        /**
+         * 去年
+         */
+        LASTYEAR("lastYear", "去年");
+
+        /**
+         * 编码
+         */
+        private final String key;
+        /**
+         * 中文名称
+         */
+        private final String name;
+
+        Date(String key, String name) {
+            this.key = key;
+            this.name = name;
+        }
+
+        public static Map<String, String> convertToMap() {
+            Map<String, String> map = new HashMap<>();
+            for (Date date : Date.values()) {
+                map.put(date.key, date.key);
+                map.put(date.name, date.key);
+            }
+            return map;
+        }
+
+        public static Date getByCode(String code) {
+            for (Date date : Date.values()) {
+                if (date.key.equals(code)) {
+                    return date;
+                }
+            }
+            return null;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+    }
+
+    /**
+     * 十二时辰枚举，包含英文全称，中文全称，时间范围
+     */
+    public enum Chrono {
+
+        ZISHI(1, "子时", "23:00:00", "01:00:00"),
+        CHOUSHI(2, "丑时", "01:00:00", "03:00:00"),
+        YINSHI(3, "寅时", "03:00:00", "05:00:00"),
+        MAOSHI(4, "卯辰", "05:00:00", "07:00:00"),
+        CHENSHI(5, "辰时", "07:00:00", "09:00:00"),
+        SISHI(6, "巳时", "09:00:00", "11:00:00"),
+        WUSHI(7, "午时", "11:00:00", "13:00:00"),
+        WEISHI(8, "未时", "13:00:00", "15:00:00"),
+        SHENSHI(9, "申时", "15:00:00", "17:00:00"),
+        YOUSHI(10, "酉时", "17:00:00", "19:00:00"),
+        XUSHI(11, "戌时", "19:00:00", "21:00:00"),
+        HAISHI(12, "亥时", "21:00:00", "23:00:00");
+
+        /**
+         * 序号
+         */
+        private final int key;
+
+        /**
+         * 中文名称
+         */
+        private final String name;
+
+        /**
+         * 开始时间
+         */
+        private final String startTime;
+
+        /**
+         * 结束时间
+         */
+        private final String endTime;
+
+        Chrono(int key, String name, String startTime, String endTime) {
+            this.key = key;
+            this.name = name;
+            this.startTime = startTime;
+            this.endTime = endTime;
+        }
+
+        /**
+         * 根据时间查询时辰名称枚举
+         *
+         * @param localTime LocalTime
+         * @return this
+         */
+        public static Chrono getChrono(LocalTime localTime) {
+            for (Chrono chrono : Chrono.values()) {
+                // 子时，特殊计算
+                if (isZiShi(localTime)) {
+                    return Chrono.ZISHI;
+                }
+                if (isBetween(localTime, LocalTime.parse(chrono.startTime), LocalTime.parse(chrono.endTime))) {
+                    return chrono;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * 时间区间判断
+         *
+         * @param localTime LocalTime
+         * @param timeStart 开始时间
+         * @param timeEnd   结束时间
+         * @return 在区间 true，不在 false
+         */
+        private static boolean isBetween(LocalTime localTime, LocalTime timeStart, LocalTime timeEnd) {
+            return localTime.equals(timeStart) || (localTime.isAfter(timeStart) && localTime.isBefore(timeEnd));
+        }
+
+        /**
+         * 是否子时
+         *
+         * @param localTime LocalTime
+         * @return 是 true， 否 false
+         */
+        private static boolean isZiShi(LocalTime localTime) {
+            // 23点，0点
+            if (LocalTime.of(23, 0, 0).equals(localTime) || LocalTime.MIDNIGHT.equals(localTime)) {
+                return true;
+            }
+            // 23-0点
+            if (localTime.isAfter(LocalTime.of(23, 0, 0)) && localTime.isBefore(LocalTime.MIDNIGHT)) {
+                return true;
+            }
+            // 0-1点
+            return localTime.isAfter(LocalTime.MIDNIGHT) && localTime.isBefore(LocalTime.of(1, 0, 0));
+        }
+
+        /**
+         * 根据时间查询时辰名称
+         *
+         * @param localTime LocalTime
+         * @return String
+         */
+        public static String getName(LocalTime localTime) {
+            Chrono chrono = getChrono(localTime);
+            return chrono != null ? chrono.name : null;
+        }
+
+        /**
+         * 根据时间查询时辰名称
+         *
+         * @param date Date
+         * @return String
+         */
+        public static String getName(java.util.Date date) {
+            return getName(Converter.toLocalTime(date));
+        }
+
+        public int getKey() {
+            return key;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getStartTime() {
+            return startTime;
+        }
+
+        public String getEndTime() {
+            return endTime;
+        }
+
     }
 
     /**
@@ -721,117 +975,144 @@ public class Fields {
         /**
          * 一月
          */
-        JANUARY(Calendar.JANUARY),
+        Jan(Calendar.JANUARY, "January", "一月", "一"),
         /**
          * 二月
          */
-        FEBRUARY(Calendar.FEBRUARY),
+        Feb(Calendar.FEBRUARY, "February", "二月", "二"),
         /**
          * 三月
          */
-        MARCH(Calendar.MARCH),
+        Mar(Calendar.MARCH, "March", "三月", "三"),
         /**
          * 四月
          */
-        APRIL(Calendar.APRIL),
+        Apr(Calendar.APRIL, "April", "四月", "四"),
         /**
          * 五月
          */
-        MAY(Calendar.MAY),
+        May(Calendar.MAY, "May", "五月", "五"),
         /**
          * 六月
          */
-        JUNE(Calendar.JUNE),
+        Jun(Calendar.JUNE, "June", "六月", "六"),
         /**
          * 七月
          */
-        JULY(Calendar.JULY),
+        Jul(Calendar.JULY, "July", "七月", "七"),
         /**
          * 八月
          */
-        AUGUST(Calendar.AUGUST),
+        Aug(Calendar.AUGUST, "August", "八月", "八"),
         /**
          * 九月
          */
-        SEPTEMBER(Calendar.SEPTEMBER),
+        Sep(Calendar.SEPTEMBER, "September", "九月", "九"),
         /**
          * 十月
          */
-        OCTOBER(Calendar.OCTOBER),
+        Oct(Calendar.OCTOBER, "October", "十月", "十"),
         /**
          * 十一月
          */
-        NOVEMBER(Calendar.NOVEMBER),
+        Nov(Calendar.NOVEMBER, "November", "十一月", "十一"),
         /**
          * 十二月
          */
-        DECEMBER(Calendar.DECEMBER),
+        Dec(Calendar.DECEMBER, "December", "十二月", "十二"),
         /**
          * 十三月,仅用于农历
          */
-        UNDECIMBER(Calendar.UNDECIMBER);
+        Und(Calendar.UNDECIMBER, "Undecimber", "十三月", "十三");
 
         /**
          * 每月最后一天
          */
         private static final int[] MOHTH_OF_LASTDAY = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, -1};
 
-        private int value;
+        /**
+         * 序号
+         */
+        private final int key;
+        /**
+         * 英文全称
+         */
+        private final String enName;
+        /**
+         * 中文全称
+         */
+        private final String cnName;
+        /**
+         * 中文简称
+         */
+        private final String shortName;
 
-        Month(int value) {
-            this.value = value;
+        Month(int key, String enName, String cnName, String shortName) {
+            this.key = key;
+            this.enName = enName;
+            this.cnName = cnName;
+            this.shortName = shortName;
         }
 
         /**
-         * 将 {@link Calendar}月份相关值转换为Month枚举对象
+         * 根据code查询月份名称枚举
          *
-         * @param calendarMonthIntValue Calendar中关于Month的int值
-         * @return {@link Month}
-         * @see Calendar#JANUARY
-         * @see Calendar#FEBRUARY
-         * @see Calendar#MARCH
-         * @see Calendar#APRIL
-         * @see Calendar#MAY
-         * @see Calendar#JUNE
-         * @see Calendar#JULY
-         * @see Calendar#AUGUST
-         * @see Calendar#SEPTEMBER
-         * @see Calendar#OCTOBER
-         * @see Calendar#NOVEMBER
-         * @see Calendar#DECEMBER
-         * @see Calendar#UNDECIMBER
+         * @param code code
+         * @return this
          */
-        public static Month of(int calendarMonthIntValue) {
-            switch (calendarMonthIntValue) {
-                case Calendar.JANUARY:
-                    return JANUARY;
-                case Calendar.FEBRUARY:
-                    return FEBRUARY;
-                case Calendar.MARCH:
-                    return MARCH;
-                case Calendar.APRIL:
-                    return APRIL;
-                case Calendar.MAY:
-                    return MAY;
-                case Calendar.JUNE:
-                    return JUNE;
-                case Calendar.JULY:
-                    return JULY;
-                case Calendar.AUGUST:
-                    return AUGUST;
-                case Calendar.SEPTEMBER:
-                    return SEPTEMBER;
-                case Calendar.OCTOBER:
-                    return OCTOBER;
-                case Calendar.NOVEMBER:
-                    return NOVEMBER;
-                case Calendar.DECEMBER:
-                    return DECEMBER;
-                case Calendar.UNDECIMBER:
-                    return UNDECIMBER;
-                default:
-                    return null;
+        public static Month getByCode(int code) {
+            if (code >= 1 && code <= 12) {
+                for (Month month : Month.values()) {
+                    if (month.key == code) {
+                        return month;
+                    }
+                }
             }
+            return null;
+        }
+
+        /**
+         * 根据code查询月份英文简称
+         *
+         * @param code code
+         * @return String
+         */
+        public static String getShortNameEnByCode(int code) {
+            Month month = getByCode(code);
+            return month != null ? month.name() : null;
+        }
+
+        /**
+         * 根据code查询月份英文全称
+         *
+         * @param code code
+         * @return String
+         */
+        public static String getFullNameEnByCode(int code) {
+            Month month = getByCode(code);
+            return month != null ? month.enName : null;
+        }
+
+        /**
+         * 根据code查询月份中文全称
+         *
+         * @param code code
+         * @return String
+         */
+        public static String getFullNameCnByCode(int code) {
+            Month month = getByCode(code);
+            return month != null ? month.cnName : null;
+        }
+
+        /**
+         * 根据code查询月份中文
+         *
+         * @param code code
+         * @return String
+         */
+        public static String getShortNameCnByCode(int code) {
+            Month month = getByCode(code);
+            return month != null ? month.shortName : null;
         }
 
         /**
@@ -850,10 +1131,6 @@ public class Fields {
             return lastDay;
         }
 
-        public int getValue() {
-            return this.value;
-        }
-
         /**
          * 获取此月份最后一天的值，不支持的月份（例如UNDECIMBER）返回-1
          *
@@ -861,7 +1138,23 @@ public class Fields {
          * @return 此月份最后一天的值
          */
         public int getLastDay(boolean isLeapYear) {
-            return getLastDay(this.value, isLeapYear);
+            return getLastDay(this.key, isLeapYear);
+        }
+
+        public int getKey() {
+            return key;
+        }
+
+        public String getEnName() {
+            return enName;
+        }
+
+        public String getCnName() {
+            return cnName;
+        }
+
+        public String getShortName() {
+            return shortName;
         }
 
     }
@@ -874,24 +1167,26 @@ public class Fields {
         /**
          * 第一季度
          */
-        Q1(1),
+        Q1(1, "一季度"),
         /**
          * 第二季度
          */
-        Q2(2),
+        Q2(2, "二季度"),
         /**
          * 第三季度
          */
-        Q3(3),
+        Q3(3, "三季度"),
         /**
          * 第四季度
          */
-        Q4(4);
+        Q4(4, "四季度");
 
-        private int value;
+        private int key;
+        private String name;
 
-        Quarter(int value) {
-            this.value = value;
+        Quarter(int key, String name) {
+            this.key = key;
+            this.name = name;
         }
 
         /**
@@ -919,197 +1214,267 @@ public class Fields {
             }
         }
 
-        public int getValue() {
-            return this.value;
+        public int getKey() {
+            return key;
         }
+
+        public String getName() {
+            return name;
+        }
+
     }
 
     /**
      * 星期枚举
      * 与Calendar中的星期int值对应
      *
-     * @see #SUNDAY
-     * @see #MONDAY
-     * @see #TUESDAY
-     * @see #WEDNESDAY
-     * @see #THURSDAY
-     * @see #FRIDAY
-     * @see #SATURDAY
+     * @see Calendar#SUNDAY
+     * @see Calendar#MONDAY
+     * @see Calendar#TUESDAY
+     * @see Calendar#WEDNESDAY
+     * @see Calendar#THURSDAY
+     * @see Calendar#FRIDAY
+     * @see Calendar#SATURDAY
      */
     public enum Week {
 
         /**
          * 周日
          */
-        SUNDAY(Calendar.SUNDAY),
+        Sun(Calendar.SUNDAY, "Sunday", "星期日"),
         /**
          * 周一
          */
-        MONDAY(Calendar.MONDAY),
+        Mon(Calendar.MONDAY, "Monday", "星期一"),
         /**
          * 周二
          */
-        TUESDAY(Calendar.TUESDAY),
+        Tue(Calendar.TUESDAY, "Tuesday", "星期二"),
         /**
          * 周三
          */
-        WEDNESDAY(Calendar.WEDNESDAY),
+        Wed(Calendar.WEDNESDAY, "Wednesday", "星期三"),
         /**
          * 周四
          */
-        THURSDAY(Calendar.THURSDAY),
+        Thu(Calendar.THURSDAY, "Thursday", "星期四"),
         /**
          * 周五
          */
-        FRIDAY(Calendar.FRIDAY),
+        Fri(Calendar.FRIDAY, "Friday", "星期五"),
         /**
          * 周六
          */
-        SATURDAY(Calendar.SATURDAY);
+        Sat(Calendar.SATURDAY, "Saturday", "星期六");
 
         /**
-         * 星期对应{@link Calendar} 中的Week值
+         * 序号
          */
-        private int value;
+        private final int key;
 
         /**
-         * 构造
-         *
-         * @param value 星期对应{@link Calendar} 中的Week值
+         * 英文
          */
-        Week(int value) {
-            this.value = value;
+        private final String enName;
+
+        /**
+         * 中文
+         */
+        private final String cnName;
+
+
+        Week(int key, String enName, String cnName) {
+            this.key = key;
+            this.enName = enName;
+            this.cnName = cnName;
         }
 
         /**
-         * 将 {@link Calendar}星期相关值转换为Week枚举对象
+         * 根据code查询星期名称枚举
          *
-         * @param calendarWeekIntValue Calendar中关于Week的int值
-         * @return {@link Week}
-         * @see #SUNDAY
-         * @see #MONDAY
-         * @see #TUESDAY
-         * @see #WEDNESDAY
-         * @see #THURSDAY
-         * @see #FRIDAY
-         * @see #SATURDAY
+         * @param code code
+         * @return this
          */
-        public static Week of(int calendarWeekIntValue) {
-            switch (calendarWeekIntValue) {
-                case Calendar.SUNDAY:
-                    return SUNDAY;
-                case Calendar.MONDAY:
-                    return MONDAY;
-                case Calendar.TUESDAY:
-                    return TUESDAY;
-                case Calendar.WEDNESDAY:
-                    return WEDNESDAY;
-                case Calendar.THURSDAY:
-                    return THURSDAY;
-                case Calendar.FRIDAY:
-                    return FRIDAY;
-                case Calendar.SATURDAY:
-                    return SATURDAY;
-                default:
-                    return null;
+        public static Week getByCode(int code) {
+            if (code >= 1 && code <= 12) {
+                for (Week week : Week.values()) {
+                    if (week.key == code) {
+                        return week;
+                    }
+                }
             }
+            return null;
         }
 
         /**
-         * 获得星期对应{@link Calendar} 中的Week值
+         * 根据code查询星期英文简称
          *
-         * @return 星期对应{@link Calendar} 中的Week值
+         * @param code code
+         * @return String
          */
-        public int getValue() {
-            return this.value;
+        public static String getShortNameByCode(int code) {
+            Week week = getByCode(code);
+            return week != null ? week.name() : null;
         }
 
         /**
-         * 转换为中文名
+         * 根据code查询星期英文全称
          *
-         * @return 星期的中文名
+         * @param code code
+         * @return String
          */
-        public String toChinese() {
-            return toChinese("星期");
+        public static String getEnNameByCode(int code) {
+            Week week = getByCode(code);
+            return week != null ? week.enName : null;
         }
 
         /**
-         * 转换为中文名
+         * 根据code查询星期中文名称
          *
-         * @param weekNamePre 表示星期的前缀,例如前缀为“星期”,则返回结果为“星期一”；前缀为”周“,结果为“周一”
-         * @return 星期的中文名
+         * @param code code
+         * @return String
          */
-        public String toChinese(String weekNamePre) {
-            switch (this) {
-                case SUNDAY:
-                    return weekNamePre + "日";
-                case MONDAY:
-                    return weekNamePre + "一";
-                case TUESDAY:
-                    return weekNamePre + "二";
-                case WEDNESDAY:
-                    return weekNamePre + "三";
-                case THURSDAY:
-                    return weekNamePre + "四";
-                case FRIDAY:
-                    return weekNamePre + "五";
-                case SATURDAY:
-                    return weekNamePre + "六";
-                default:
-                    return null;
-            }
+        public static String getCnNameByCode(int code) {
+            Week week = getByCode(code);
+            return week != null ? week.cnName : null;
+        }
+
+        public int getKey() {
+            return key;
+        }
+
+        public String getEnName() {
+            return enName;
+        }
+
+        public String getCnName() {
+            return cnName;
         }
 
     }
 
     /**
-     * 格式化等级枚举
+     * 星座名称枚举，包含英文全称，中文全称，时间范围
      */
-    public enum Level {
+    public enum Zodiac {
+
+        Aries(1, "白羊座", "03-21", "04-19"),
+        Taurus(2, "金牛座", "04-20", "05-20"),
+        Gemini(3, "双子座", "05-21", "06-21"),
+        Cancer(4, "巨蟹座", "06-22", "07-22"),
+        Leo(5, "狮子座", "07-23", "08-22"),
+        Virgo(6, "处女座", "08-23", "09-22"),
+        Libra(7, "天秤座", "09-23", "10-23"),
+        Scorpio(8, "天蝎座", "10-24", "11-22"),
+        Sagittarius(9, "射手座", "11-23", "12-21"),
+        Capricorn(10, "摩羯座", "12-22", "01-19"),
+        Aquarius(11, "水瓶座", "01-20", "02-18"),
+        Pisces(12, "双鱼座", "02-19", "03-20");
 
         /**
-         * 天
+         * 序号
          */
-        DAY("天"),
+        private final int key;
         /**
-         * 小时
+         * 中文名称
          */
-        HOUR("小时"),
+        private final String name;
         /**
-         * 分钟
+         * 开始时间
          */
-        MINUTE("分"),
+        private final String startDate;
         /**
-         * 秒
+         * 结束时间
          */
-        SECOND("秒"),
-        /**
-         * 毫秒
-         */
-        MILLISECOND("毫秒");
+        private final String endDate;
 
-        /**
-         * 级别名称
-         */
-        public String name;
-
-        /**
-         * 构造
-         *
-         * @param name 级别名称
-         */
-        Level(String name) {
+        Zodiac(int key, String name, String startDate, String endDate) {
+            this.key = key;
             this.name = name;
+            this.startDate = startDate;
+            this.endDate = endDate;
         }
 
         /**
-         * 获取级别名称
+         * 根据日期查询星座名称枚举
          *
-         * @return 级别名称
+         * @param monthDayStr MM-dd格式
+         * @return this
          */
-        public String getName() {
-            return this.name;
+        public static Zodiac getZodiacByMonthDay(String monthDayStr) {
+            MonthDay monthDay = MonthDay.parse("--" + monthDayStr);
+            for (Zodiac zodiac : Zodiac.values()) {
+                if (zodiac.startDate.equals(monthDayStr) || zodiac.endDate.equals(monthDayStr)) {
+                    return zodiac;
+                }
+                if (isCapricorn(monthDay)) {
+                    return Zodiac.Capricorn;
+                }
+                MonthDay monthDayStart = MonthDay.parse("--" + zodiac.startDate);
+                MonthDay monthDayEnd = MonthDay.parse("--" + zodiac.endDate);
+                if (monthDay.isAfter(monthDayStart) && monthDay.isBefore(monthDayEnd)) {
+                    return zodiac;
+                }
+            }
+            return null;
         }
+
+        /**
+         * 是否是摩羯座
+         *
+         * @param monthDay 日期
+         * @return true/false
+         */
+        private static boolean isCapricorn(MonthDay monthDay) {
+            MonthDay capricorn_start = MonthDay.parse("--" + "12-22");
+            MonthDay capricorn_end = MonthDay.parse("--" + "01-19");
+            if (capricorn_start.equals(monthDay) || capricorn_end.equals(monthDay)) {
+                return true;
+            }
+            if (monthDay.isAfter(capricorn_start) && monthDay.isBefore(capricorn_end)) {
+                return true;
+            }
+            return monthDay.isAfter(capricorn_start) && monthDay.isBefore(capricorn_end);
+        }
+
+        /**
+         * 根据日期查询星座中文名称
+         *
+         * @param monthDayStr MM-dd格式
+         * @return String
+         */
+        public static String getCnNameByMonthDay(String monthDayStr) {
+            Zodiac zodiac = getZodiacByMonthDay(monthDayStr);
+            return zodiac != null ? zodiac.name : null;
+        }
+
+        /**
+         * 根据日期查询星座英文名称
+         *
+         * @param monthDayStr MM-dd格式
+         * @return String
+         */
+        public static String getEnNameByMonthDay(String monthDayStr) {
+            Zodiac zodiac = getZodiacByMonthDay(monthDayStr);
+            return zodiac != null ? zodiac.name() : null;
+        }
+
+        public int getKey() {
+            return key;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getStartDate() {
+            return startDate;
+        }
+
+        public String getEndDate() {
+            return endDate;
+        }
+
     }
 
     /**

@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.date.format;
+package org.aoju.bus.core.date.formatter;
 
 import org.aoju.bus.core.lang.Fields;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -42,35 +42,35 @@ public class DatePeriod {
      */
     private long betweenMs;
     /**
-     * 格式化级别
+     * 计算单位最大个数
      */
-    private Fields.Level level;
+    private final int unitMaxCount;
     /**
-     * 格式化级别的最大个数
+     * 计算单位
      */
-    private int levelMaxCount;
+    private Fields.Units unit;
 
     /**
      * 构造
      *
      * @param betweenMs 日期间隔
-     * @param level     级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
+     * @param units     级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
      */
-    public DatePeriod(long betweenMs, Fields.Level level) {
-        this(betweenMs, level, 0);
+    public DatePeriod(long betweenMs, Fields.Units units) {
+        this(betweenMs, units, 0);
     }
 
     /**
      * 构造
      *
-     * @param betweenMs     日期间隔
-     * @param level         级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
-     * @param levelMaxCount 格式化级别的最大个数,假如级别个数为1,但是级别到秒,那只显示一个级别
+     * @param betweenMs    日期间隔
+     * @param unit         级别,按照天、小时、分、秒、毫秒分为5个等级,根据传入等级,格式化到相应级别
+     * @param unitMaxCount 格式化级别的最大个数,假如级别个数为1,但是级别到秒,那只显示一个级别
      */
-    public DatePeriod(long betweenMs, Fields.Level level, int levelMaxCount) {
+    public DatePeriod(long betweenMs, Fields.Units unit, int unitMaxCount) {
         this.betweenMs = betweenMs;
-        this.level = level;
-        this.levelMaxCount = levelMaxCount;
+        this.unit = unit;
+        this.unitMaxCount = unitMaxCount;
     }
 
     /**
@@ -81,39 +81,39 @@ public class DatePeriod {
     public String format() {
         final StringBuilder sb = new StringBuilder();
         if (betweenMs > 0) {
-            long day = betweenMs / Fields.Time.DAY.getMillis();
-            long hour = betweenMs / Fields.Time.HOUR.getMillis() - day * 24;
-            long minute = betweenMs / Fields.Time.MINUTE.getMillis() - day * 24 * 60 - hour * 60;
-            long second = betweenMs / Fields.Time.SECOND.getMillis() - ((day * 24 + hour) * 60 + minute) * 60;
+            long day = betweenMs / Fields.Units.DAY.getUnit();
+            long hour = betweenMs / Fields.Units.HOUR.getUnit() - day * 24;
+            long minute = betweenMs / Fields.Units.MINUTE.getUnit() - day * 24 * 60 - hour * 60;
+            long second = betweenMs / Fields.Units.SECOND.getUnit() - ((day * 24 + hour) * 60 + minute) * 60;
             long millisecond = betweenMs - (((day * 24 + hour) * 60 + minute) * 60 + second) * 1000;
 
-            final int level = this.level.ordinal();
-            int levelCount = 0;
+            final int level = this.unit.ordinal();
+            int unitCount = 0;
 
-            if (isLevelCountValid(levelCount) && 0 != day && level >= Fields.Level.DAY.ordinal()) {
-                sb.append(day).append(Fields.Level.DAY.name);
-                levelCount++;
+            if (isUnitCountValid(unitCount) && 0 != day && level >= Fields.Units.DAY.ordinal()) {
+                sb.append(day).append(Fields.Units.DAY.getName());
+                unitCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != hour && level >= Fields.Level.HOUR.ordinal()) {
-                sb.append(hour).append(Fields.Level.HOUR.name);
-                levelCount++;
+            if (isUnitCountValid(unitCount) && 0 != hour && level >= Fields.Units.HOUR.ordinal()) {
+                sb.append(hour).append(Fields.Units.HOUR.getName());
+                unitCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != minute && level >= Fields.Level.MINUTE.ordinal()) {
-                sb.append(minute).append(Fields.Level.MINUTE.name);
-                levelCount++;
+            if (isUnitCountValid(unitCount) && 0 != minute && level >= Fields.Units.MINUTE.ordinal()) {
+                sb.append(minute).append(Fields.Units.MINUTE.getName());
+                unitCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != second && level >= Fields.Level.SECOND.ordinal()) {
-                sb.append(second).append(Fields.Level.SECOND.name);
-                levelCount++;
+            if (isUnitCountValid(unitCount) && 0 != second && level >= Fields.Units.SECOND.ordinal()) {
+                sb.append(second).append(Fields.Units.SECOND.getName());
+                unitCount++;
             }
-            if (isLevelCountValid(levelCount) && 0 != millisecond && level >= Fields.Level.MILLISECOND.ordinal()) {
-                sb.append(millisecond).append(Fields.Level.MILLISECOND.name);
-                levelCount++;
+            if (isUnitCountValid(unitCount) && 0 != millisecond && level >= Fields.Units.MILLISECOND.ordinal()) {
+                sb.append(millisecond).append(Fields.Units.MILLISECOND.getName());
+                unitCount++;
             }
         }
 
         if (StringKit.isEmpty(sb)) {
-            sb.append(0).append(this.level.name);
+            sb.append(0).append(this.unit.getName());
         }
 
         return sb.toString();
@@ -138,21 +138,21 @@ public class DatePeriod {
     }
 
     /**
-     * 获得 格式化级别
+     * 获得 格式化单位
      *
      * @return 格式化级别
      */
-    public Fields.Level getLevel() {
-        return level;
+    public Fields.Units getUnit() {
+        return this.unit;
     }
 
     /**
-     * 设置格式化级别
+     * 设置格式化单位
      *
-     * @param level 格式化级别
+     * @param unit 格式化单位
      */
-    public void setLevel(Fields.Level level) {
-        this.level = level;
+    public void setUnit(Fields.Units unit) {
+        this.unit = unit;
     }
 
     @Override
@@ -162,13 +162,13 @@ public class DatePeriod {
 
     /**
      * 等级数量是否有效
-     * 有效的定义是：levelMaxCount大于0(被设置),当前等级数量没有超过这个最大值
+     * 有效的定义是：unitMaxCount大于0(被设置),当前等级数量没有超过这个最大值
      *
-     * @param levelCount 登记数量
+     * @param unitCount 登记数量
      * @return 是否有效
      */
-    private boolean isLevelCountValid(int levelCount) {
-        return this.levelMaxCount <= 0 || levelCount < this.levelMaxCount;
+    private boolean isUnitCountValid(int unitCount) {
+        return this.unitMaxCount <= 0 || unitCount < this.unitMaxCount;
     }
 
 }

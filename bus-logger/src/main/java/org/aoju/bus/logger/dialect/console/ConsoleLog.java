@@ -137,7 +137,7 @@ public class ConsoleLog extends AbstractAware {
         }
 
         final Dict dict = Dict.create()
-                .set("date", DateKit.now())
+                .set("date", DateKit.today())
                 .set("level", level.toString())
                 .set("name", this.name)
                 .set("msg", StringKit.format(format, arguments));
