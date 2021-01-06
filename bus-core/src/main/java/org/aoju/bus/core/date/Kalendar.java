@@ -45,7 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 6.1.6
  * @since JDK 1.8+
  */
-public class Calendars {
+public class Kalendar {
 
     /**
      * 生成指定年月的日历， 包含农历和所有节假日信息

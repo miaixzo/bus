@@ -47,7 +47,6 @@ public class Solar {
      */
     public static final Map<String, String> FESTIVAL = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
-
         {
             put("1-1", "元旦节");
             put("2-14", "情人节");
