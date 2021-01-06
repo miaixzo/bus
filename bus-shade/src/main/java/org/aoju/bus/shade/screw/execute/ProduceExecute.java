@@ -27,7 +27,7 @@ package org.aoju.bus.shade.screw.execute;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.shade.Config;
+import org.aoju.bus.shade.screw.Config;
 import org.aoju.bus.shade.screw.engine.EngineFactory;
 import org.aoju.bus.shade.screw.engine.TemplateEngine;
 import org.aoju.bus.shade.screw.metadata.DataSchema;
@@ -37,7 +37,7 @@ import org.aoju.bus.shade.screw.process.DataModelProcess;
  * 文档生成
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class ProduceExecute extends AbstractExecute {

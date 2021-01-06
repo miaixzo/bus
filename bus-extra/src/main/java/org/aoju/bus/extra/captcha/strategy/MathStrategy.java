@@ -26,7 +26,7 @@
 package org.aoju.bus.extra.captcha.strategy;
 
 import org.aoju.bus.core.lang.Symbol;
-import org.aoju.bus.core.math.Calculator;
+import org.aoju.bus.core.math.Formula;
 import org.aoju.bus.core.toolkit.RandomKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -34,7 +34,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 数字计算验证码生成器
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class MathStrategy implements CodeStrategy {
@@ -84,7 +84,7 @@ public class MathStrategy implements CodeStrategy {
             return false;
         }
 
-        final int calculateResult = (int) Calculator.conversion(code);
+        final int calculateResult = (int) Formula.conversion(code);
         return result == calculateResult;
     }
 

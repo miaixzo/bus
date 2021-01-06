@@ -38,7 +38,7 @@ import org.aoju.bus.logger.Logger;
  * 提供对Mac OS上的sysctl调用的访问
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe

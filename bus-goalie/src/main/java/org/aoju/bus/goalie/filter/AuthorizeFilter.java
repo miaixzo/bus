@@ -53,7 +53,7 @@ import java.util.Objects;
  * 访问鉴权
  *
  * @author Justubborn
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 2)
@@ -126,7 +126,7 @@ public class AuthorizeFilter implements WebFilter {
         // 访问授权校验
         if (assets.isToken()) {
             String token = request.getHeaders().getFirst(Consts.X_ACCESS_TOKEN);
-            if (StringKit.isBlank(token)) {
+            if(StringKit.isBlank(token)) {
                 throw new BusinessException(ErrorCode.EM_100106);
             }
             Delegate delegate = authorize.authorize(token);

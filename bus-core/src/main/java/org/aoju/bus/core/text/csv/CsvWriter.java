@@ -37,7 +37,7 @@ import java.util.Collection;
  * CSV数据写出器
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public final class CsvWriter implements Closeable, Flushable {
@@ -212,17 +212,52 @@ public final class CsvWriter implements Closeable, Flushable {
     }
 
     /**
-     * 追加新行(换行)
+     * 写出一行
      *
+     * @param fields 字段列表 ({@code null} 值会被做为空值追加)
+     * @return this
      * @throws InstrumentException IO异常
      */
-    public void writeLine() throws InstrumentException {
+    public CsvWriter writeLine(String... fields) throws InstrumentException {
+        if (ArrayKit.isEmpty(fields)) {
+            return writeLine();
+        }
+        appendLine(fields);
+        return this;
+    }
+
+    /**
+     * 追加新行(换行)
+     *
+     * @return this
+     * @throws InstrumentException IO异常
+     */
+    public CsvWriter writeLine() throws InstrumentException {
         try {
             writer.write(config.lineDelimiter);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
         newline = true;
+        return this;
+    }
+
+    /**
+     * 写出一行注释，注释符号可自定义
+     *
+     * @param comment 注释内容
+     * @return this
+     */
+    public CsvWriter writeComment(String comment) {
+        try {
+            writer.write(this.config.commentCharacter);
+            writer.write(comment);
+            writer.write(config.lineDelimiter);
+            newline = true;
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        return this;
     }
 
     @Override

@@ -35,7 +35,7 @@ import java.util.function.Supplier;
  * 来自WMI或Open Hardware Monitor的传感器
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe

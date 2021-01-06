@@ -40,7 +40,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 /**
  * AIO传输层会话。
@@ -61,7 +61,7 @@ import java.util.function.Function;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class TcpAioSession<T> extends AioSession {
@@ -119,9 +119,9 @@ public class TcpAioSession<T> extends AioSession {
 
         this.readBuffer = pageBuffer.allocate(config.getReadBufferSize());
 
-        Function<WriteBuffer, Void> flushFunction = var -> {
+        Consumer<WriteBuffer> flushConsumer = var -> {
             if (!semaphore.tryAcquire()) {
-                return null;
+                return;
             }
             TcpAioSession.this.writeBuffer = var.poll();
             if (writeBuffer == null) {
@@ -129,9 +129,8 @@ public class TcpAioSession<T> extends AioSession {
             } else {
                 continueWrite(writeBuffer);
             }
-            return null;
         };
-        byteBuf = new WriteBuffer(pageBuffer, flushFunction, serverConfig.getWriteBufferSize(), serverConfig.getWriteBufferCapacity());
+        byteBuf = new WriteBuffer(pageBuffer, flushConsumer, serverConfig.getWriteBufferSize(), serverConfig.getWriteBufferCapacity());
         //触发状态机
         config.getProcessor().stateEvent(this, SocketStatus.NEW_SESSION, null);
     }

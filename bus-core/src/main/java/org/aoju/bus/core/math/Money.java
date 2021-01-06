@@ -61,7 +61,7 @@ import java.util.Currency;
  * </ul>
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Money implements Serializable, Comparable<Money> {
@@ -91,7 +91,7 @@ public class Money implements Serializable, Comparable<Money> {
     /**
      * 币种
      */
-    private Currency currency;
+    private final Currency currency;
 
     /**
      * 缺省构造器

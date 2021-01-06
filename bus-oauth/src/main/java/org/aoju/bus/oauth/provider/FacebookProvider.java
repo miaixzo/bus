@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * Facebook登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class FacebookProvider extends AbstractProvider {
@@ -78,7 +78,7 @@ public class FacebookProvider extends AbstractProvider {
                 .avatar(getUserPicture(object))
                 .location(object.getString("locale"))
                 .email(object.getString("email"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

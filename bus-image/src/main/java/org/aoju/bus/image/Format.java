@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image;
 
+import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -45,7 +46,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 日期格式化等工具
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Format extends java.text.Format {
@@ -636,7 +637,7 @@ public class Format extends java.text.Format {
 
         String getMD5String(String s) {
             try {
-                MessageDigest digest = MessageDigest.getInstance("MD5");
+                MessageDigest digest = MessageDigest.getInstance(Algorithm.MD5);
                 digest.update(s == null ? new byte[0] : s.getBytes(Charset.UTF_8));
                 return toString32(digest.digest());
             } catch (NoSuchAlgorithmException e) {

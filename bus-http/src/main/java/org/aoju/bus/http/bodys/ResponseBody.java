@@ -61,7 +61,7 @@ import java.io.*;
  * 或{@link #charStream()}来处理响应
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public abstract class ResponseBody implements Closeable {

@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 基础输出封装
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Controller {

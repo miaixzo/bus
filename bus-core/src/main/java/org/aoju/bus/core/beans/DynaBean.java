@@ -33,7 +33,6 @@ import org.aoju.bus.core.toolkit.ClassKit;
 import org.aoju.bus.core.toolkit.ReflectKit;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -41,7 +40,7 @@ import java.util.Map;
  * 支持Map和普通Bean
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class DynaBean extends Support<DynaBean> implements Serializable {
@@ -76,6 +75,15 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
     }
 
     /**
+     * 构造
+     *
+     * @param beanClass Bean类
+     */
+    public DynaBean(Class<?> beanClass) {
+        this(ReflectKit.newInstance(beanClass));
+    }
+
+    /**
      * 创建一个{@link DynaBean}
      *
      * @param bean 普通Bean
@@ -83,6 +91,16 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
      */
     public static DynaBean create(Object bean) {
         return new DynaBean(bean);
+    }
+
+    /**
+     * 创建一个{@link DynaBean}
+     *
+     * @param beanClass Bean类
+     * @return {@link DynaBean}
+     */
+    public static DynaBean create(Class<?> beanClass) {
+        return new DynaBean(beanClass);
     }
 
     /**
@@ -97,6 +115,17 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
     }
 
     /**
+     * 执行原始Bean中的方法
+     *
+     * @param methodName 方法名
+     * @param params     参数
+     * @return 执行结果, 可能为null
+     */
+    public Object invoke(String methodName, Object... params) {
+        return ReflectKit.invoke(this.bean, methodName, params);
+    }
+
+    /**
      * 获得字段对应值
      *
      * @param <T>       属性值类型
@@ -108,30 +137,11 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
         if (Map.class.isAssignableFrom(beanClass)) {
             return (T) ((Map<?, ?>) bean).get(fieldName);
         } else {
-            try {
-                final Method method = BeanKit.getBeanDesc(beanClass).getGetter(fieldName);
-                if (null == method) {
-                    throw new InstrumentException("No get method for {}", fieldName);
-                }
-                return (T) method.invoke(this.bean);
-            } catch (Exception e) {
-                throw new InstrumentException(e);
+            final BeanDesc.PropDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
+            if (null == prop) {
+                throw new InstrumentException("No public field or get method for {}", fieldName);
             }
-        }
-    }
-
-    /**
-     * 获得字段对应值,获取异常返回{@code null}
-     *
-     * @param <T>       属性值类型
-     * @param fieldName 字段名
-     * @return 字段值
-     */
-    public <T> T safeGet(String fieldName) {
-        try {
-            return get(fieldName);
-        } catch (Exception e) {
-            return null;
+            return (T) prop.getValue(bean);
         }
     }
 
@@ -145,29 +155,23 @@ public class DynaBean extends Support<DynaBean> implements Serializable {
     public void set(String fieldName, Object value) throws InstrumentException {
         if (Map.class.isAssignableFrom(beanClass)) {
             ((Map) bean).put(fieldName, value);
-            return;
         } else {
-            try {
-                final Method setter = BeanKit.getBeanDesc(beanClass).getSetter(fieldName);
-                if (null == setter) {
-                    throw new InstrumentException("No set method for {}", fieldName);
-                }
-                setter.invoke(this.bean, value);
-            } catch (Exception e) {
-                throw new InstrumentException(e);
+            final BeanDesc.PropDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
+            if (null == prop) {
+                throw new InstrumentException("No public field or set method for {}", fieldName);
             }
+            prop.setValue(bean, value);
         }
     }
 
     /**
-     * 执行原始Bean中的方法
+     * 检查是否有指定名称的bean属性
      *
-     * @param methodName 方法名
-     * @param params     参数
-     * @return 执行结果, 可能为null
+     * @param fieldName 字段名
+     * @return 是否有bean属性
      */
-    public Object invoke(String methodName, Object... params) {
-        return ReflectKit.invoke(this.bean, methodName, params);
+    public boolean contains(String fieldName) {
+        return null != BeanKit.getBeanDesc(beanClass).getProp(fieldName);
     }
 
     /**

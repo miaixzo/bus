@@ -40,7 +40,7 @@ import org.aoju.bus.oauth.magic.Property;
  * oschina登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class OschinaProvider extends AbstractProvider {
@@ -77,7 +77,7 @@ public class OschinaProvider extends AbstractProvider {
                 .avatar(object.getString("avatar"))
                 .blog(object.getString("url"))
                 .location(object.getString("location"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .email(object.getString("email"))
                 .token(accToken)
                 .source(source.toString())

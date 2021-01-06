@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -41,7 +42,7 @@ import java.nio.charset.CodingErrorAction;
  * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class BufferKit {
@@ -289,6 +290,16 @@ public class BufferKit {
             }
         }
         return true;
+    }
+
+    /**
+     * 创建{@link CharBuffer}
+     *
+     * @param capacity 容量
+     * @return {@link CharBuffer}
+     */
+    public static CharBuffer createCharBuffer(int capacity) {
+        return CharBuffer.allocate(capacity);
     }
 
 }

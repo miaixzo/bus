@@ -41,7 +41,7 @@ import java.util.*;
  * 阿里云邮件
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class AliyunDmProvider extends AliyunProvider<AliyunDmProperty, Context> {

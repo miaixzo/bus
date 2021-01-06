@@ -36,7 +36,7 @@ import java.util.Date;
  * 日期间隔
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Between {
@@ -113,12 +113,12 @@ public class Between {
      * 判断两个日期相差的时长
      * 返回 给定单位的时长差
      *
-     * @param unit 相差的单位
+     * @param units 相差的单位
      * @return 时长差
      */
-    public long between(Fields.Time unit) {
+    public long between(Fields.Units units) {
         long diff = end.getTime() - begin.getTime();
-        return diff / unit.getMillis();
+        return diff / units.getUnit();
     }
 
     /**
@@ -129,8 +129,8 @@ public class Between {
      * @return 相差月数
      */
     public long betweenMonth(boolean isReset) {
-        final Calendar beginCal = DateKit.calendar(begin);
-        final Calendar endCal = DateKit.calendar(end);
+        final Calendar beginCal = DateKit.toCalendar(begin);
+        final Calendar endCal = DateKit.toCalendar(end);
 
         final int betweenYear = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
         final int betweenMonthOfYear = endCal.get(Calendar.MONTH) - beginCal.get(Calendar.MONTH);
@@ -155,8 +155,8 @@ public class Between {
      * @return 相差年数
      */
     public long betweenYear(boolean isReset) {
-        final Calendar beginCal = DateKit.calendar(begin);
-        final Calendar endCal = DateKit.calendar(end);
+        final Calendar beginCal = DateKit.toCalendar(begin);
+        final Calendar endCal = DateKit.toCalendar(end);
 
         int result = endCal.get(Calendar.YEAR) - beginCal.get(Calendar.YEAR);
         if (false == isReset) {
@@ -182,16 +182,16 @@ public class Between {
     /**
      * 格式化输出时间差
      *
-     * @param level 级别
+     * @param unit 计算单位
      * @return 字符串
      */
-    public String toString(Fields.Level level) {
-        return DateKit.formatBetween(between(Fields.Time.MS), level);
+    public String toString(Fields.Units unit) {
+        return DateKit.formatBetween(between(Fields.Units.MILLISECOND), unit);
     }
 
     @Override
     public String toString() {
-        return toString(Fields.Level.MILLISECOND);
+        return toString(Fields.Units.MILLISECOND);
     }
 
 }

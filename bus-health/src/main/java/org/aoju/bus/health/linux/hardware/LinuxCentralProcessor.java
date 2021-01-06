@@ -49,7 +49,7 @@ import java.util.stream.LongStream;
  * A CPU as defined in Linux /proc.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe

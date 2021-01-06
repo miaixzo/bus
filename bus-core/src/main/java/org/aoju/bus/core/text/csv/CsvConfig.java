@@ -33,10 +33,12 @@ import java.io.Serializable;
  * CSV基础配置项
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class CsvConfig implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 字段分隔符,默认逗号
@@ -46,6 +48,10 @@ public class CsvConfig implements Serializable {
      * 文本分隔符,文本包装符,默认双引号
      */
     protected char textDelimiter = Symbol.C_DOUBLE_QUOTES;
+    /**
+     * 注释符号，用于区分注释行，默认'#'
+     */
+    protected char commentCharacter = Symbol.C_SHAPE;
 
     /**
      * 设置字段分隔符,默认逗号
@@ -63,6 +69,15 @@ public class CsvConfig implements Serializable {
      */
     public void setTextDelimiter(char textDelimiter) {
         this.textDelimiter = textDelimiter;
+    }
+
+    /**
+     * 设置 注释符号，用于区分注释行
+     *
+     * @param commentCharacter 注释符号，用于区分注释行
+     */
+    public void setCommentCharacter(char commentCharacter) {
+        this.commentCharacter = commentCharacter;
     }
 
 }

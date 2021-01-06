@@ -30,24 +30,24 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
-import org.aoju.bus.health.builtin.software.InternetProtocolStats;
+import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 import org.aoju.bus.health.unix.CLibrary;
-import org.aoju.bus.health.unix.NetStatTcp;
+import org.aoju.bus.health.unix.NetStat;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.util.function.Supplier;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe
-public class FreeBsdInternetProtocolStats implements InternetProtocolStats {
+public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoize.memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoize.defaultExpiration());
     private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoize.memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoize.defaultExpiration());
-    private Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStatTcp::queryTcpnetstat, Memoize.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStat::queryTcpnetstat, Memoize.defaultExpiration());
 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();

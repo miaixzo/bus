@@ -31,7 +31,7 @@ import java.io.IOException;
  * 数据压缩/解压缩
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public interface EffectProvider {

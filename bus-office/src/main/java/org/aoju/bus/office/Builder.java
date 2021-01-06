@@ -50,7 +50,7 @@ import java.util.stream.Stream;
  * 为office提供辅助功能.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -155,6 +155,10 @@ public final class Builder {
     private static final String EXECUTABLE_WINDOWS = "program/soffice.exe";
 
     private static final File INSTANCE;
+    /**
+     * 某些特殊的自定义日期格式
+     */
+    private static final int[] customFormats = new int[]{28, 30, 31, 32, 33, 55, 56, 57, 58};
 
     static {
         if (StringKit.isNotBlank(System.getProperty("office.home"))) {
@@ -404,11 +408,6 @@ public final class Builder {
             throw new IllegalStateException("workingDir '" + workingDir + "' cannot be written to");
         }
     }
-
-    /**
-     * 某些特殊的自定义日期格式
-     */
-    private static final int[] customFormats = new int[]{28, 30, 31, 32, 33, 55, 56, 57, 58};
 
     public static boolean isDateFormat(Cell cell) {
         return isDateFormat(cell, null);

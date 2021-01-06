@@ -40,7 +40,7 @@ import java.rmi.server.RMIClientSocketFactory;
  * 通过在RMI注册表中查找来提供对象
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class RmiProvider implements Provider {

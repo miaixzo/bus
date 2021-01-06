@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 抖音登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class DouyinProvider extends AbstractProvider {
@@ -72,7 +72,7 @@ public class DouyinProvider extends AbstractProvider {
                 .nickname(object.getString("nickname"))
                 .avatar(object.getString("avatar"))
                 .remark(object.getString("description"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .location(String.format("%s %s %s", object.getString("country"), object.getString("province"), object.getString("city")))
                 .token(accToken)
                 .source(source.toString())

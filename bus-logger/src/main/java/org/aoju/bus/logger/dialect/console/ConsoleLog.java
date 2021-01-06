@@ -38,7 +38,7 @@ import org.aoju.bus.logger.level.Level;
  * 利用System.out.println()打印日志
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class ConsoleLog extends AbstractAware {
@@ -137,7 +137,7 @@ public class ConsoleLog extends AbstractAware {
         }
 
         final Dict dict = Dict.create()
-                .set("date", DateKit.now())
+                .set("date", DateKit.today())
                 .set("level", level.toString())
                 .set("name", this.name)
                 .set("msg", StringKit.format(format, arguments));

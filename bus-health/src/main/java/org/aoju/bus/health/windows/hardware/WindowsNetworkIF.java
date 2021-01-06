@@ -25,14 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.IPHlpAPI;
-import com.sun.jna.platform.win32.IPHlpAPI.MIB_IFROW;
-import com.sun.jna.platform.win32.IPHlpAPI.MIB_IF_ROW2;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
+import org.aoju.bus.health.windows.IPHlpAPI;
 import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
@@ -44,7 +42,7 @@ import java.util.List;
  * WindowsNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -157,7 +155,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
         // MIB_IFROW2 requires Vista (6.0) or later.
         if (IS_VISTA_OR_GREATER) {
             // Create new MIB_IFROW2 and set index to this interface index
-            MIB_IF_ROW2 ifRow = new MIB_IF_ROW2();
+            IPHlpAPI.MIB_IF_ROW2 ifRow = new IPHlpAPI.MIB_IF_ROW2();
             ifRow.InterfaceIndex = queryNetworkInterface().getIndex();
             if (0 != IPHlpAPI.INSTANCE.GetIfEntry2(ifRow)) {
                 // Error, abort
@@ -179,7 +177,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             this.speed = ifRow.ReceiveLinkSpeed;
         } else {
             // Create new MIB_IFROW and set index to this interface index
-            MIB_IFROW ifRow = new MIB_IFROW();
+            IPHlpAPI.MIB_IFROW ifRow = new IPHlpAPI.MIB_IFROW();
             ifRow.dwIndex = queryNetworkInterface().getIndex();
             if (0 != IPHlpAPI.INSTANCE.GetIfEntry(ifRow)) {
                 // Error, abort

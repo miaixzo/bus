@@ -43,7 +43,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 微信登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class WeChatOPProvider extends AbstractProvider {
@@ -87,7 +87,7 @@ public class WeChatOPProvider extends AbstractProvider {
                 .avatar(object.getString("headimgurl"))
                 .location(location)
                 .uuid(openId)
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .token(token)
                 .source(source.toString())
                 .build();

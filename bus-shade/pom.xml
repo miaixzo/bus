@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-shade</artifactId>
-    <version>6.1.6</version>
+    <version>6.1.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,6 +42,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
+        <spring.boot.version>2.4.0</spring.boot.version>
+        <compress.version>1.19</compress.version>
         <freemarker.version>2.3.30</freemarker.version>
         <lombok.version>1.18.16</lombok.version>
         <druid.version>1.2.3</druid.version>
@@ -58,6 +60,18 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-loader</artifactId>
+            <version>${spring.boot.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${compress.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

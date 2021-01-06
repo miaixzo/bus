@@ -27,7 +27,8 @@ package org.aoju.bus.shade.screw.process;
 
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.shade.Config;
+import org.aoju.bus.shade.screw.Builder;
+import org.aoju.bus.shade.screw.Config;
 import org.aoju.bus.shade.screw.dialect.DatabaseQuery;
 import org.aoju.bus.shade.screw.dialect.DatabaseQueryFactory;
 import org.aoju.bus.shade.screw.metadata.*;
@@ -36,13 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.aoju.bus.shade.Builder.*;
-
 /**
  * 数据模型处理
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class DataModelProcess extends AbstractProcess {
@@ -163,11 +162,11 @@ public class DataModelProcess extends AbstractProcess {
         columnSchema.setColumnSize(column.getColumnSize());
         // 小数位
         columnSchema.setDecimalDigits(
-                ObjectKit.defaultIfEmpty(column.getDecimalDigits(), ZERO_DECIMAL_DIGITS));
+                ObjectKit.defaultIfEmpty(column.getDecimalDigits(), Builder.ZERO_DECIMAL_DIGITS));
         // 可为空
-        columnSchema.setNullable(ZERO.equals(column.getNullable()) ? N : Y);
+        columnSchema.setNullable(Builder.ZERO.equals(column.getNullable()) ? Builder.N : Builder.Y);
         // 是否主键
-        columnSchema.setPrimaryKey(keyList.contains(column.getColumnName()) ? Y : N);
+        columnSchema.setPrimaryKey(keyList.contains(column.getColumnName()) ? Builder.Y : Builder.N);
         // 默认值
         columnSchema.setColumnDef(column.getColumnDef());
         // 说明

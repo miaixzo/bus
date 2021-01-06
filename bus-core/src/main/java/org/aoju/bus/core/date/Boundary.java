@@ -35,7 +35,7 @@ import java.util.Date;
  * 日期范围
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Boundary extends Range<DateTime> {
@@ -47,10 +47,10 @@ public class Boundary extends Range<DateTime> {
      *
      * @param start 起始日期时间
      * @param end   结束日期时间
-     * @param unit  步进单位
+     * @param type  步进类型
      */
-    public Boundary(Date start, Date end, final Fields.Type unit) {
-        this(start, end, unit, 1);
+    public Boundary(Date start, Date end, final Fields.Type type) {
+        this(start, end, type, 1);
     }
 
     /**
@@ -58,11 +58,11 @@ public class Boundary extends Range<DateTime> {
      *
      * @param start 起始日期时间
      * @param end   结束日期时间
-     * @param unit  步进单位
+     * @param type  步进类型
      * @param step  步进数
      */
-    public Boundary(Date start, Date end, final Fields.Type unit, final int step) {
-        this(start, end, unit, step, true, true);
+    public Boundary(Date start, Date end, final Fields.Type type, final int step) {
+        this(start, end, type, step, true, true);
     }
 
     /**
@@ -70,18 +70,18 @@ public class Boundary extends Range<DateTime> {
      *
      * @param start          起始日期时间
      * @param end            结束日期时间
-     * @param unit           步进单位
+     * @param type           步进类型
      * @param step           步进数
      * @param isIncludeStart 是否包含开始的时间
      * @param isIncludeEnd   是否包含结束的时间
      */
-    public Boundary(Date start, Date end, final Fields.Type unit, final int step, boolean isIncludeStart, boolean isIncludeEnd) {
+    public Boundary(Date start, Date end, final Fields.Type type, final int step, boolean isIncludeStart, boolean isIncludeEnd) {
         super(DateKit.date(start), DateKit.date(end), (current, end1, index) -> {
-            DateTime dt = current.offset(unit, step);
+            DateTime dt = current.offset(type, step);
             if (dt.isAfter(end1)) {
                 return null;
             }
-            return current.offset(unit, step);
+            return current.offset(type, step);
         }, isIncludeStart, isIncludeEnd);
     }
 

@@ -34,7 +34,7 @@ import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.shade.Builder;
+import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.metadata.DataSchema;
 
 import java.io.*;
@@ -45,7 +45,7 @@ import java.util.Objects;
  * freemarker
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class FreemarkerEngine extends AbstractEngine {

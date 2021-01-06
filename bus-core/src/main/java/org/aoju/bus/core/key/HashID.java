@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
  * 数据库id,将它们用作忘记密码散列、邀请码、存储碎片号
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class HashID {
@@ -48,7 +48,6 @@ public class HashID {
      */
     public static final long MAX_NUMBER = 9007199254740992L;
 
-    private static final String DEFAULT_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     private static final String DEFAULT_SEPS = "cfhistuCFHISTU";
     private static final String DEFAULT_SALT = Normal.EMPTY;
 
@@ -74,7 +73,7 @@ public class HashID {
     }
 
     public HashID(String salt, int minHashLength) {
-        this(salt, minHashLength, DEFAULT_ALPHABET);
+        this(salt, minHashLength, Normal.UPPER_LOWER_NUMBER);
     }
 
     public HashID(String salt, int minHashLength, String alphabet) {

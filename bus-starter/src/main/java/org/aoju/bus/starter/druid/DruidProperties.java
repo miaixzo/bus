@@ -35,7 +35,7 @@ import java.util.List;
  * Druid 配置项
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Data

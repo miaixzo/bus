@@ -41,7 +41,7 @@ import java.util.Map;
  * 数据库方言 herddb
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class HerdDBDialect extends AbstractSqlDialect {

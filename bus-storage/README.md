@@ -149,6 +149,6 @@ provider.upload("test", null, new File("/Users/leaves/logo.gif"));
 ```java
 @Autowired
 StorageProviderService service;
-service.get(Registry.ALIYUN);
-provider.upload("test", null, new File("/Users/leaves/logo.gif"));
+        service.get(Registry.ALIYUN);
+        provider.upload("test",null,new File("/Users/leaves/logo.gif"));
 ```

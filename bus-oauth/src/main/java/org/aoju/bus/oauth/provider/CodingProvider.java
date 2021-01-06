@@ -42,7 +42,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * Cooding登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class CodingProvider extends AbstractProvider {
@@ -81,7 +81,7 @@ public class CodingProvider extends AbstractProvider {
                 .nickname(object.getString("name"))
                 .company(object.getString("company"))
                 .location(object.getString("location"))
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .email(object.getString("email"))
                 .remark(object.getString("slogan"))
                 .token(accToken)

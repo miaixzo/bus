@@ -43,7 +43,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class ToutiaoProvider extends AbstractProvider {
@@ -87,7 +87,7 @@ public class ToutiaoProvider extends AbstractProvider {
                 .nickname(isAnonymousUser ? anonymousUserName : object.getString("screen_name"))
                 .avatar(object.getString("avatar_url"))
                 .remark(object.getString("description"))
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

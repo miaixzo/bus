@@ -53,7 +53,7 @@ import java.util.zip.Checksum;
  * 文件工具类
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class FileKit {
@@ -3291,7 +3291,20 @@ public class FileKit {
      * @throws InstrumentException 异常
      */
     public static File writeFromStream(InputStream in, File dest) throws InstrumentException {
-        return FileWriter.create(dest).writeFromStream(in);
+        return writeFromStream(in, dest, true);
+    }
+
+    /**
+     * 将流的内容写入文件
+     *
+     * @param dest      目标文件
+     * @param in        输入流
+     * @param isCloseIn 关闭输入流
+     * @return 目标文件
+     * @throws InstrumentException 异常
+     */
+    public static File writeFromStream(InputStream in, File dest, boolean isCloseIn) throws InstrumentException {
+        return FileWriter.create(dest).writeFromStream(in, isCloseIn);
     }
 
     /**
@@ -3538,7 +3551,15 @@ public class FileKit {
     public static String getMimeType(String path) {
         try {
             FileNameMap fileNameMap = URLConnection.getFileNameMap();
-            return fileNameMap.getContentTypeFor(URLEncoder.encode(path, Charset.DEFAULT_UTF_8));
+            String contentType = fileNameMap.getContentTypeFor(URLEncoder.encode(path, Charset.DEFAULT_UTF_8));
+            if (ObjectKit.isNull(contentType)) {
+                if (path.endsWith(".css")) {
+                    contentType = "text/css";
+                } else if (path.endsWith(".js")) {
+                    contentType = "application/x-javascript";
+                }
+            }
+            return contentType;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

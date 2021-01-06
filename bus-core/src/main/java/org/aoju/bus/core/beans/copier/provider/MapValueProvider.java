@@ -37,7 +37,7 @@ import java.util.Map;
  * Map值提供者
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class MapValueProvider implements ValueProvider<String> {

@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -6148,6 +6148,32 @@ public class StringKit {
     }
 
     /**
+     * 字符串按照指定长度换行
+     *
+     * @param content 字符内容
+     * @param length  换行长度
+     * @return 换行后的内容
+     */
+    public static String newLine(String content, int length) {
+        String stVal = Normal.EMPTY;
+        if (length > 0) {
+            if (content.length() > length) {
+                int rows = (content.length() + length - 1) / length;
+                for (int i = 0; i < rows; i++) {
+                    if (i == rows - 1) {
+                        stVal += content.substring(i * length);
+                    } else {
+                        stVal += content.substring(i * length, i * length + length) + "\r\n";
+                    }
+                }
+            } else {
+                stVal = content;
+            }
+        }
+        return stVal;
+    }
+
+    /**
      * 返回第一个非{@code null}元素
      *
      * @param strs 多个元素
@@ -6180,32 +6206,6 @@ public class StringKit {
      */
     public <T extends CharSequence> T firstNonBlank(T... strs) {
         return ArrayKit.firstNonNull(StringKit::isNotBlank, strs);
-    }
-
-    /**
-     * 字符串按照指定长度换行
-     *
-     * @param content 字符内容
-     * @param length  换行长度
-     * @return 换行后的内容
-     */
-    public static String newLine(String content, int length) {
-        String stVal = Normal.EMPTY;
-        if (length > 0) {
-            if (content.length() > length) {
-                int rows = (content.length() + length - 1) / length;
-                for (int i = 0; i < rows; i++) {
-                    if (i == rows - 1) {
-                        stVal += content.substring(i * length);
-                    } else {
-                        stVal += content.substring(i * length, i * length + length) + "\r\n";
-                    }
-                }
-            } else {
-                stVal = content;
-            }
-        }
-        return stVal;
     }
 
     /**

@@ -45,7 +45,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * 微信公众平台登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class WeChatMpProvider extends AbstractProvider {
@@ -89,7 +89,7 @@ public class WeChatMpProvider extends AbstractProvider {
                 .avatar(object.getString("headimgurl"))
                 .location(location)
                 .uuid(openId)
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

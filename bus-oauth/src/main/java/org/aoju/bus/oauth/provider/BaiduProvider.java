@@ -45,7 +45,7 @@ import org.aoju.bus.oauth.metric.OauthScope;
  * 百度账号登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class BaiduProvider extends AbstractProvider {
@@ -75,7 +75,7 @@ public class BaiduProvider extends AbstractProvider {
                 .nickname(object.getString("username"))
                 .avatar(getAvatar(object))
                 .remark(object.getString("userdetail"))
-                .gender(Normal.Gender.getGender(object.getString("sex")))
+                .gender(Normal.Gender.of(object.getString("sex")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

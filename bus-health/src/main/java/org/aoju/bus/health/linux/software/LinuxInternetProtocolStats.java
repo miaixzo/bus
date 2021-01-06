@@ -26,20 +26,29 @@
 package org.aoju.bus.health.linux.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
+import org.aoju.bus.health.linux.ProcPath;
+import org.aoju.bus.health.linux.drivers.ProcessStat;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe
-public class LinuxInternetProtocolStats implements InternetProtocolStats {
+public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private static TcpStats getTcpStats(String netstatStr) {
         long connectionsEstablished = 0;
@@ -146,6 +155,95 @@ public class LinuxInternetProtocolStats implements InternetProtocolStats {
     @Override
     public UdpStats getUDPv6Stats() {
         return getUdpStats("netstat -su6");
+    }
+
+    private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
+        List<IPConnection> conns = new ArrayList<>();
+        for (String s : FileKit.readLines(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : ""))) {
+            if (s.indexOf(':') >= 0) {
+                String[] split = RegEx.SPACES.split(s.trim());
+                if (split.length > 9) {
+                    Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
+                    Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
+                    TcpState state = stateLookup(Builder.hexStringToInt(split[3], 0));
+                    Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
+                    int inode = Builder.parseIntOrDefault(split[9], 0);
+                    conns.add(new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
+                            state, txQrxQ.getLeft(), txQrxQ.getRight(), pidMap.getOrDefault(inode, -1)));
+                }
+            }
+        }
+        return conns;
+    }
+
+    private static Pair<byte[], Integer> parseIpAddr(String s) {
+        int colon = s.indexOf(':');
+        if (colon > 0 && colon < s.length()) {
+            byte[] first = Builder.hexStringToByteArray(s.substring(0, colon));
+            // Bytes are in __be32 endianness. we must invert each set of 4 bytes
+            for (int i = 0; i + 3 < first.length; i += 4) {
+                byte tmp = first[i];
+                first[i] = first[i + 3];
+                first[i + 3] = tmp;
+                tmp = first[i + 1];
+                first[i + 1] = first[i + 2];
+                first[i + 2] = tmp;
+            }
+            int second = Builder.hexStringToInt(s.substring(colon + 1), 0);
+            return Pair.of(first, second);
+        }
+        return Pair.of(new byte[0], 0);
+    }
+
+    private static Pair<Integer, Integer> parseHexColonHex(String s) {
+        int colon = s.indexOf(':');
+        if (colon > 0 && colon < s.length()) {
+            int first = Builder.hexStringToInt(s.substring(0, colon), 0);
+            int second = Builder.hexStringToInt(s.substring(colon + 1), 0);
+            return Pair.of(first, second);
+        }
+        return Pair.of(0, 0);
+    }
+
+    private static InternetProtocolStats.TcpState stateLookup(int state) {
+        switch (state) {
+            case 0x01:
+                return InternetProtocolStats.TcpState.ESTABLISHED;
+            case 0x02:
+                return InternetProtocolStats.TcpState.SYN_SENT;
+            case 0x03:
+                return InternetProtocolStats.TcpState.SYN_RECV;
+            case 0x04:
+                return InternetProtocolStats.TcpState.FIN_WAIT1;
+            case 0x05:
+                return InternetProtocolStats.TcpState.FIN_WAIT2;
+            case 0x06:
+                return InternetProtocolStats.TcpState.TIME_WAIT;
+            case 0x07:
+                return InternetProtocolStats.TcpState.CLOSED;
+            case 0x08:
+                return InternetProtocolStats.TcpState.CLOSE_WAIT;
+            case 0x09:
+                return InternetProtocolStats.TcpState.LAST_ACK;
+            case 0x0A:
+                return InternetProtocolStats.TcpState.LISTEN;
+            case 0x0B:
+                return InternetProtocolStats.TcpState.CLOSING;
+            case 0x00:
+            default:
+                return InternetProtocolStats.TcpState.UNKNOWN;
+        }
+    }
+
+    @Override
+    public List<IPConnection> getConnections() {
+        List<IPConnection> conns = new ArrayList<>();
+        Map<Integer, Integer> pidMap = ProcessStat.querySocketToPidMap();
+        conns.addAll(queryConnections("tcp", 4, pidMap));
+        conns.addAll(queryConnections("tcp", 6, pidMap));
+        conns.addAll(queryConnections("udp", 4, pidMap));
+        conns.addAll(queryConnections("udp", 6, pidMap));
+        return Collections.unmodifiableList(conns);
     }
 
 }

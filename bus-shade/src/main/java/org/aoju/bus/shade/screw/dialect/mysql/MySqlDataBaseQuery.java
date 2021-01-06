@@ -28,7 +28,7 @@ package org.aoju.bus.shade.screw.dialect.mysql;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
-import org.aoju.bus.shade.Builder;
+import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.dialect.AbstractDatabaseQuery;
 import org.aoju.bus.shade.screw.mapping.Mapping;
 import org.aoju.bus.shade.screw.metadata.Column;
@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
  * 元数据查询，查询的数据库表为INFORMATION_SCHEMA
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class MySqlDataBaseQuery extends AbstractDatabaseQuery {

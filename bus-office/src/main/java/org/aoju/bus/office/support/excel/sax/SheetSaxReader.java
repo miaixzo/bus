@@ -43,7 +43,7 @@ import java.util.Map;
  * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class SheetSaxReader extends DefaultHandler {
@@ -98,28 +98,22 @@ public class SheetSaxReader extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
         if (TAG_NAME.equalsIgnoreCase(localName)) {
-            final int length = attributes.getLength();
-            String sheetId = null;
-            String rid = null;
-            String name = null;
-            for (int i = 0; i < length; i++) {
-                switch (attributes.getLocalName(i)) {
-                    case SHEET_ID_ATTR:
-                        sheetId = attributes.getValue(i);
-                        break;
-                    case RID_ATTR:
-                        rid = attributes.getValue(i);
-                        break;
-                    case NAME_ATTR:
-                        name = attributes.getValue(i);
-                        break;
-                }
-                if (StringKit.isNotEmpty(sheetId)) {
-                    ID_RID_MAP.put(sheetId, rid);
-                }
-                if (StringKit.isNotEmpty(name)) {
-                    NAME_RID_MAP.put(name, rid);
-                }
+            final String ridStr = attributes.getValue(RID_ATTR);
+            if (StringKit.isEmpty(ridStr)) {
+                return;
+            }
+            final String rid = StringKit.removePrefixIgnoreCase(ridStr, Excel07SaxReader.RID_PREFIX);
+
+            // sheet名和rid映射
+            final String name = attributes.getValue(NAME_ATTR);
+            if (StringKit.isNotEmpty(name)) {
+                NAME_RID_MAP.put(name, rid);
+            }
+
+            // sheetId和rid映射
+            final String sheetIdStr = attributes.getValue(SHEET_ID_ATTR);
+            if (StringKit.isNotEmpty(sheetIdStr)) {
+                ID_RID_MAP.put(sheetIdStr, rid);
             }
         }
     }

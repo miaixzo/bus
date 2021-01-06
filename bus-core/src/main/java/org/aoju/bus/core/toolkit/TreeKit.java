@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  * 6、代码简洁轻量无额外依赖
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class TreeKit {
@@ -109,7 +109,7 @@ public class TreeKit {
 
         List<TreeMap<E>> finalTreeMapNodes = CollKit.newArrayList();
         for (TreeMap<E> node : treeMapNodes) {
-            if (parentId.equals(node.getParentId())) {
+            if (ObjectKit.equals(parentId, node.getParentId())) {
                 finalTreeMapNodes.add(node);
                 innerBuild(treeMapNodes, node, 0, treeEntity.getDeep());
             }

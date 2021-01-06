@@ -35,7 +35,7 @@ import java.net.URL;
  * 图片合并元素
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class ImageElement extends AbstractElement<ImageElement> {
@@ -64,6 +64,14 @@ public class ImageElement extends AbstractElement<ImageElement> {
      * 缩放模式
      */
     private Scale.Mode mode;
+    /**
+     * 旋转角度
+     */
+    private Integer rotate;
+    /**
+     * 高斯模糊
+     */
+    private Integer blur;
 
     /**
      * @param imgUrl 图片url
@@ -72,6 +80,8 @@ public class ImageElement extends AbstractElement<ImageElement> {
      */
     public ImageElement(String imgUrl, int x, int y) {
         this.imgUrl = imgUrl;
+        this.width = getImage().getWidth();     //事先获得宽高，后面计算要用
+        this.height = getImage().getHeight();
         this.mode = Scale.Mode.ORIGIN;
         super.setX(x);
         super.setY(y);
@@ -84,6 +94,8 @@ public class ImageElement extends AbstractElement<ImageElement> {
      */
     public ImageElement(BufferedImage image, int x, int y) {
         this.image = image;
+        this.width = getImage().getWidth();
+        this.height = getImage().getHeight();
         this.mode = Scale.Mode.ORIGIN;
         super.setX(x);
         super.setY(y);
@@ -124,12 +136,12 @@ public class ImageElement extends AbstractElement<ImageElement> {
     }
 
 
-    public BufferedImage getImage() throws Exception {
+    public BufferedImage getImage() {
         if (this.image == null) {
             try {
                 this.image = ImageIO.read(new URL(this.imgUrl));
             } catch (Exception e) {
-                throw e;
+                e.printStackTrace();
             }
         }
         return image;
@@ -183,6 +195,23 @@ public class ImageElement extends AbstractElement<ImageElement> {
     public ImageElement setZoomMode(Scale.Mode mode) {
         this.mode = mode;
         return this;
+    }
+
+    public Integer getRotate() {
+        return rotate;
+    }
+
+    public ImageElement setRotate(Integer rotate) {
+        this.rotate = rotate;
+        return this;
+    }
+
+    public Integer getBlur() {
+        return blur;
+    }
+
+    public void setBlur(Integer blur) {
+        this.blur = blur;
     }
 
 }

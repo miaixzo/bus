@@ -34,15 +34,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 路由配置
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Data
 @ConfigurationProperties(BusXExtend.GOALIE)
 public class GoalieProperties {
 
-    private boolean condition;
     private final ServerConfig server = new ServerConfig();
+    private boolean condition;
 
 
 }

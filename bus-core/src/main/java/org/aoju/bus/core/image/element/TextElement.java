@@ -33,7 +33,7 @@ import java.awt.*;
  * 文本元素合成
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Data
@@ -71,6 +71,10 @@ public class TextElement extends AbstractElement<TextElement> {
      * 行高，根据字体大小酌情设置
      */
     private int lineHeight = 50;
+    /**
+     * 旋转角度
+     */
+    private Integer rotate;
 
     /**
      * @param text 文本内容
@@ -197,6 +201,15 @@ public class TextElement extends AbstractElement<TextElement> {
 
     public TextElement setLineHeight(int lineHeight) {
         this.lineHeight = lineHeight;
+        return this;
+    }
+
+    public Integer getRotate() {
+        return rotate;
+    }
+
+    public TextElement setRotate(Integer rotate) {
+        this.rotate = rotate;
         return this;
     }
 

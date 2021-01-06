@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * 实用程序函数，使office信息更容易获取.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public final class Info {
@@ -86,7 +86,7 @@ public final class Info {
     }
 
     /**
-     * 获取给定上下文的office产品版本(长版本号)，例如e.g 6.1.6.3
+     * 获取给定上下文的office产品版本(长版本号)，例如e.g 6.1.8.3
      *
      * @param context 上下文.
      * @return office产品版本，如果无法检索，则为{@code null}.

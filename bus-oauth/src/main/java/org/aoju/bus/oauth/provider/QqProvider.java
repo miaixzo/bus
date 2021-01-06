@@ -49,7 +49,7 @@ import java.util.Map;
  * qq登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class QqProvider extends AbstractProvider {
@@ -93,7 +93,7 @@ public class QqProvider extends AbstractProvider {
                 .avatar(avatar)
                 .location(location)
                 .uuid(openId)
-                .gender(Normal.Gender.getGender(object.getString("gender")))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

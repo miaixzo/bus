@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * 正则表达式
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class RegEx {
@@ -144,7 +144,7 @@ public class RegEx {
     /**
      * 固定电话
      */
-    public static final String PHONE_PATTERN = "^0[1-9](\\\\d{1,2}\\\\-?)\\\\d{7,8}";
+    public static final String PHONE_PATTERN = "0\\d{2,3}-[1-9]\\d{6,7}";
     public static final Pattern PHONE = Pattern.compile(PHONE_PATTERN);
 
     /**

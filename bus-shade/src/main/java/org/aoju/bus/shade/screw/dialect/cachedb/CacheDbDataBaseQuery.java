@@ -28,7 +28,7 @@ package org.aoju.bus.shade.screw.dialect.cachedb;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
-import org.aoju.bus.shade.Builder;
+import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.dialect.AbstractDatabaseQuery;
 import org.aoju.bus.shade.screw.mapping.Mapping;
 import org.aoju.bus.shade.screw.metadata.Column;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * CacheDB 数据库查询
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class CacheDbDataBaseQuery extends AbstractDatabaseQuery {

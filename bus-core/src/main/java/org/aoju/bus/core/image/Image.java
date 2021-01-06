@@ -57,7 +57,7 @@ import java.util.List;
  * 图像编辑器
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Image implements Serializable {
@@ -814,8 +814,17 @@ public class Image implements Serializable {
     public BufferedImage merge() throws Exception {
         this.srcImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = this.srcImage.createGraphics();
+
+        //PNG要做透明度处理，否则背景图透明部分会变黑
+        if (this.fileType == FileType.TYPE_PNG) {
+            this.srcImage = g.getDeviceConfiguration().createCompatibleImage(canvasWidth, canvasHeight, Transparency.TRANSLUCENT);
+            g = this.srcImage.createGraphics();
+        }
+
+        //抗锯齿
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        //循环绘制
         for (AbstractElement element : this.list) {
             Painter painter = PainterFactory.newInstance(element);
             painter.draw(g, element, canvasWidth);
@@ -877,7 +886,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 计算多行文本高度
+     * 计算文本宽度
      *
      * @param textElement 文本元素
      * @return 高度数值
@@ -1002,6 +1011,16 @@ public class Image implements Serializable {
         TextElement textElement = new TextElement(text, fontName, fontSize, x, y);
         this.list.add(textElement);
         return textElement;
+    }
+
+    /**
+     * 设置背景高斯模糊
+     *
+     * @param blur 模糊值
+     */
+    public void setBackgroundBlur(int blur) {
+        ImageElement bgElement = (ImageElement) list.get(0);
+        bgElement.setBlur(blur);
     }
 
 }

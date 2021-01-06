@@ -36,7 +36,7 @@ import java.lang.annotation.*;
  * 开启 Mybatis/Mapper
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Inherited

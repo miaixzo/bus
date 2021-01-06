@@ -29,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.DateKit;
@@ -54,7 +55,7 @@ import java.util.TreeMap;
  * 京东账号登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class JdProvider extends AbstractProvider {
@@ -146,7 +147,7 @@ public class JdProvider extends AbstractProvider {
                 .username(object.getString("nickname"))
                 .nickname(object.getString("nickname"))
                 .avatar(object.getString("imageUrl"))
-                .gender(getRealGender(object))
+                .gender(Normal.Gender.of(object.getString("gender")))
                 .token(accToken)
                 .source(source.toString())
                 .build();

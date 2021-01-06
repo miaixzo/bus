@@ -29,7 +29,7 @@ import org.aoju.bus.image.Tag;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class StandardDictionary extends ElementDictionary {
