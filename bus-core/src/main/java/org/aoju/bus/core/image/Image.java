@@ -133,7 +133,7 @@ public class Image implements Serializable {
      * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
      * @param fileType 输出图片格式
      */
-    public Image(BufferedImage srcImage, String imageUrl, String fileType) {
+    public Image(BufferedImage srcImage, String imageUrl, String fileType) throws Exception {
         ImageElement imageElement;
         if (StringKit.isNotEmpty(imageUrl)) {
             imageElement = new ImageElement(imageUrl, 0, 0);
@@ -230,7 +230,7 @@ public class Image implements Serializable {
      * @param fileType 输出图片格式
      * @return {@link Image}
      */
-    public static Image from(BufferedImage srcImage, String imageUrl, String fileType) {
+    public static Image from(BufferedImage srcImage, String imageUrl, String fileType) throws Exception {
         return new Image(srcImage, imageUrl, fileType);
     }
 
@@ -814,8 +814,17 @@ public class Image implements Serializable {
     public BufferedImage merge() throws Exception {
         this.srcImage = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = this.srcImage.createGraphics();
+
+        //PNG要做透明度处理，否则背景图透明部分会变黑
+        if (this.fileType == FileType.TYPE_PNG) {
+            this.srcImage = g.getDeviceConfiguration().createCompatibleImage(canvasWidth, canvasHeight, Transparency.TRANSLUCENT);
+            g = this.srcImage.createGraphics();
+        }
+
+        //抗锯齿
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        //循环绘制
         for (AbstractElement element : this.list) {
             Painter painter = PainterFactory.newInstance(element);
             painter.draw(g, element, canvasWidth);
@@ -877,7 +886,7 @@ public class Image implements Serializable {
     }
 
     /**
-     * 计算多行文本高度
+     * 计算文本宽度
      *
      * @param textElement 文本元素
      * @return 高度数值
@@ -1002,6 +1011,14 @@ public class Image implements Serializable {
         TextElement textElement = new TextElement(text, fontName, fontSize, x, y);
         this.list.add(textElement);
         return textElement;
+    }
+
+    /**
+     * 设置背景高斯模糊
+     */
+    public void setBackgroundBlur(int blur) {
+        ImageElement bgElement = (ImageElement) list.get(0);
+        bgElement.setBlur(blur);
     }
 
 }
