@@ -34,7 +34,7 @@ import java.security.Key;
  * {@link MacEngine} 实现工厂类
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class MacEngineFactory {

@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
  * Ini file's comment.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class IniCommentImpl extends AbstractElement implements IniComment {

@@ -34,7 +34,7 @@ import org.aoju.bus.base.entity.OAuth2;
  * 认证及委托处理
  *
  * @author Justubborn
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Data

@@ -34,7 +34,7 @@ import java.lang.annotation.*;
  * 启用图像解析
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Inherited

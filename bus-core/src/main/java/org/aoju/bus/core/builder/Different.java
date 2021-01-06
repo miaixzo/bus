@@ -38,7 +38,7 @@ import java.lang.reflect.Type;
  *
  * @param <T> 这个{@code Diff}中包含的对象类型.
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public abstract class Different<T> extends Pair<T, T> {

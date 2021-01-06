@@ -34,7 +34,7 @@ import java.util.List;
  * 表信息领域对象
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Data

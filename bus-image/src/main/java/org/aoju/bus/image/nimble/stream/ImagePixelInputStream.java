@@ -37,7 +37,7 @@ import java.util.Arrays;
 
 /**
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class ImagePixelInputStream extends MemoryCacheImageInputStream

@@ -34,7 +34,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query WMI class {@code Win32_LogicalDisk}
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe

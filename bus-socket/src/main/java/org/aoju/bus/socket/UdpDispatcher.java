@@ -35,7 +35,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * UDP消息分发器
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class UdpDispatcher<T> implements Runnable {

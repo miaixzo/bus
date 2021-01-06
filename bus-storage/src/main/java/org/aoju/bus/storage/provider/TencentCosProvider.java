@@ -51,7 +51,7 @@ import java.nio.file.Path;
  * 存储服务-腾讯云
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class TencentCosProvider extends AbstractProvider {

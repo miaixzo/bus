@@ -50,7 +50,7 @@ import java.util.TreeMap;
  * 喜马拉雅登录
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class XmlyProvider extends AbstractProvider {
@@ -65,11 +65,10 @@ public class XmlyProvider extends AbstractProvider {
 
     /**
      * 喜马拉雅签名算法
-     * https://open.ximalaya.com/doc/detailApi?categoryId=6&articleId=69
      *
      * @param params       加密参数
      * @param clientSecret 平台应用的授权key
-     * @return Signature
+     * @return 签名
      */
     public static String sign(Map<String, String> params, String clientSecret) {
         TreeMap<String, Object> map = new TreeMap<>(params);

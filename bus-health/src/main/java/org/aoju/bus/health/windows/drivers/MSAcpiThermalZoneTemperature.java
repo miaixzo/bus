@@ -34,7 +34,7 @@ import org.aoju.bus.health.windows.WmiQueryHandler;
  * Utility to query WMI class {@code MSAcpi_ThermalZoneTemperature}
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -42,7 +42,7 @@ import java.util.*;
  * 针对 PageContext 的实现
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public abstract class AbstractSqlDialect extends AbstractDialect {

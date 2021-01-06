@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from smbios.
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Immutable

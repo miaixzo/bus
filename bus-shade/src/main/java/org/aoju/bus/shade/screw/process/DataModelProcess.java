@@ -27,8 +27,8 @@ package org.aoju.bus.shade.screw.process;
 
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.shade.Builder;
-import org.aoju.bus.shade.Config;
+import org.aoju.bus.shade.screw.Builder;
+import org.aoju.bus.shade.screw.Config;
 import org.aoju.bus.shade.screw.dialect.DatabaseQuery;
 import org.aoju.bus.shade.screw.dialect.DatabaseQueryFactory;
 import org.aoju.bus.shade.screw.metadata.*;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * 数据模型处理
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class DataModelProcess extends AbstractProcess {

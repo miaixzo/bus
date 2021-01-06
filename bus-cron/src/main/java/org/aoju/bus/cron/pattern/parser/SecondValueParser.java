@@ -29,7 +29,7 @@ package org.aoju.bus.cron.pattern.parser;
  * 秒值处理
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class SecondValueParser extends MinuteValueParser {

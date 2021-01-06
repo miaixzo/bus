@@ -29,7 +29,7 @@ import lombok.Getter;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.shade.Builder;
+import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.metadata.Column;
 import org.aoju.bus.shade.screw.metadata.PrimaryKey;
 
@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 抽象查询
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public abstract class AbstractDatabaseQuery implements DatabaseQuery {

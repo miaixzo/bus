@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 日历类
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Kalendar {

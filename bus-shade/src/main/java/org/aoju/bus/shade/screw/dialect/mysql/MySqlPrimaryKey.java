@@ -33,7 +33,7 @@ import org.aoju.bus.shade.screw.metadata.PrimaryKey;
  * 表主键
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Data

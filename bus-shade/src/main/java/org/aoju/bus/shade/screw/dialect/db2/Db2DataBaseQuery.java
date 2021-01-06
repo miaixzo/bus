@@ -27,7 +27,7 @@ package org.aoju.bus.shade.screw.dialect.db2;
 
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
-import org.aoju.bus.shade.Builder;
+import org.aoju.bus.shade.screw.Builder;
 import org.aoju.bus.shade.screw.dialect.AbstractDatabaseQuery;
 import org.aoju.bus.shade.screw.metadata.Column;
 import org.aoju.bus.shade.screw.metadata.Database;
@@ -41,7 +41,7 @@ import java.util.List;
  * db2 数据库查询
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 public class Db2DataBaseQuery extends AbstractDatabaseQuery {

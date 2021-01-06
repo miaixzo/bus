@@ -29,7 +29,7 @@ import lombok.Data;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.shade.Builder;
+import org.aoju.bus.shade.screw.Builder;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import java.io.IOException;
  * 模板引擎抽象类
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @Data

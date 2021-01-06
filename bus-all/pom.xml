@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.1.6</version>
+    <version>6.1.8</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -162,12 +162,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-setting</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>bus-shade</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
         </dependency>

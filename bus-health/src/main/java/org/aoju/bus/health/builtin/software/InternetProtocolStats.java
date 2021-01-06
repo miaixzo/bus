@@ -36,7 +36,7 @@ import java.util.List;
  * Includes key statistics of TCP and UDP protocols
  *
  * @author Kimi Liu
- * @version 6.1.6
+ * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe
