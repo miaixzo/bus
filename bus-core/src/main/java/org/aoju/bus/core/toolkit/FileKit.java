@@ -3297,9 +3297,10 @@ public class FileKit {
     /**
      * 将流的内容写入文件
      *
-     * @param dest 目标文件
-     * @param in   输入流
-     * @return dest
+     * @param dest      目标文件
+     * @param in        输入流
+     * @param isCloseIn 关闭输入流
+     * @return 目标文件
      * @throws InstrumentException 异常
      */
     public static File writeFromStream(InputStream in, File dest, boolean isCloseIn) throws InstrumentException {

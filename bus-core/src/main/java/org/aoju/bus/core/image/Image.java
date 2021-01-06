@@ -133,7 +133,7 @@ public class Image implements Serializable {
      * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
      * @param fileType 输出图片格式
      */
-    public Image(BufferedImage srcImage, String imageUrl, String fileType) throws Exception {
+    public Image(BufferedImage srcImage, String imageUrl, String fileType) {
         ImageElement imageElement;
         if (StringKit.isNotEmpty(imageUrl)) {
             imageElement = new ImageElement(imageUrl, 0, 0);
@@ -230,7 +230,7 @@ public class Image implements Serializable {
      * @param fileType 输出图片格式
      * @return {@link Image}
      */
-    public static Image from(BufferedImage srcImage, String imageUrl, String fileType) throws Exception {
+    public static Image from(BufferedImage srcImage, String imageUrl, String fileType) {
         return new Image(srcImage, imageUrl, fileType);
     }
 
@@ -1015,6 +1015,8 @@ public class Image implements Serializable {
 
     /**
      * 设置背景高斯模糊
+     *
+     * @param blur 模糊值
      */
     public void setBackgroundBlur(int blur) {
         ImageElement bgElement = (ImageElement) list.get(0);

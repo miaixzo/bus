@@ -41,12 +41,11 @@ public class ImagePainter implements Painter {
     /**
      * 高斯模糊（毛玻璃效果）
      *
-     * @param srcImage
-     * @param radius
-     * @return
+     * @param srcImage 图片流
+     * @param radius   半径
+     * @return 图片流
      */
     public static BufferedImage makeBlur(BufferedImage srcImage, int radius) {
-
         if (radius < 1) {
             return srcImage;
         }
@@ -244,8 +243,7 @@ public class ImagePainter implements Painter {
     }
 
     @Override
-    public void draw(Graphics2D g, AbstractElement element, int canvasWidth) throws Exception {
-
+    public void draw(Graphics2D g, AbstractElement element, int canvasWidth) {
         // 强制转成子类
         ImageElement imageElement = (ImageElement) element;
 
@@ -313,11 +311,11 @@ public class ImagePainter implements Painter {
     /**
      * 圆角
      *
-     * @param srcImage
-     * @param width
-     * @param height
-     * @param radius
-     * @return
+     * @param srcImage 图片流
+     * @param width    宽度
+     * @param height   高度
+     * @param radius   半径
+     * @return 图片流
      */
     private BufferedImage makeRoundCorner(BufferedImage srcImage, int width, int height, int radius) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
