@@ -4043,7 +4043,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getNextJie() {
+    public Term getNextJie() {
         return getNearJieQi(true, Fields.CN_JIE);
     }
 
@@ -4052,7 +4052,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getPrevJie() {
+    public Term getPrevJie() {
         return getNearJieQi(false, Fields.CN_JIE);
     }
 
@@ -4061,7 +4061,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getNextQi() {
+    public Term getNextQi() {
         return getNearJieQi(true, Fields.CN_QI);
     }
 
@@ -4070,7 +4070,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getPrevQi() {
+    public Term getPrevQi() {
         return getNearJieQi(false, Fields.CN_QI);
     }
 
@@ -4079,7 +4079,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getNextJieQi() {
+    public Term getNextJieQi() {
         return getNearJieQi(true, null);
     }
 
@@ -4088,7 +4088,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getPrevJieQi() {
+    public Term getPrevJieQi() {
         return getNearJieQi(false, null);
     }
 
@@ -4099,7 +4099,7 @@ public class Lunar {
      * @param conditions 过滤条件，如果设置过滤条件，仅返回匹配该名称的
      * @return 节气
      */
-    protected Solar.Term getNearJieQi(boolean forward, String[] conditions) {
+    protected Term getNearJieQi(boolean forward, String[] conditions) {
         String name = null;
         Solar near = null;
         Set<String> filters = new HashSet<>();
@@ -4150,7 +4150,7 @@ public class Lunar {
         if (null == near) {
             return null;
         }
-        return new Solar.Term(name, near);
+        return new Term(name, near);
     }
 
     /**
@@ -4186,9 +4186,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Solar.Term getCurrentSolarTerm() {
+    public Term getCurrentSolarTerm() {
         String name = getSolarTerm();
-        return name.length() > 0 ? new Solar.Term(name, solar) : null;
+        return name.length() > 0 ? new Term(name, solar) : null;
     }
 
     /**
@@ -4196,9 +4196,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Solar.Term getCurrentJie() {
+    public Term getCurrentJie() {
         String name = getJie();
-        return name.length() > 0 ? new Solar.Term(name, solar) : null;
+        return name.length() > 0 ? new Term(name, solar) : null;
     }
 
     /**
@@ -4206,9 +4206,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Solar.Term getCurrentQi() {
+    public Term getCurrentQi() {
         String name = getQi();
-        return name.length() > 0 ? new Solar.Term(name, solar) : null;
+        return name.length() > 0 ? new Term(name, solar) : null;
     }
 
     /**
@@ -4271,6 +4271,38 @@ public class Lunar {
 
     public int getTimeZhiIndex() {
         return timeZhiIndex;
+    }
+
+    public int getDayGanIndex() {
+        return dayGanIndex;
+    }
+
+    public int getDayZhiIndex() {
+        return dayZhiIndex;
+    }
+
+    public int getMonthGanIndex() {
+        return monthGanIndex;
+    }
+
+    public int getMonthZhiIndex() {
+        return monthZhiIndex;
+    }
+
+    public int getYearGanIndex() {
+        return yearGanIndex;
+    }
+
+    public int getYearZhiIndex() {
+        return yearZhiIndex;
+    }
+
+    public int getYearGanIndexByLiChun() {
+        return yearGanIndexByLiChun;
+    }
+
+    public int getYearZhiIndexByLiChun() {
+        return yearZhiIndexByLiChun;
     }
 
     public int getDayGanIndexExact() {
@@ -4528,6 +4560,108 @@ public class Lunar {
      */
     public String getTimeXunKong() {
         return getXunKong(getTimeInGanZhi());
+    }
+
+    /**
+     * 获取数九
+     *
+     * @return 数九，如果不是数九天，返回null
+     */
+    public ShuJiu getShuJiu() {
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.set(solar.getYear(), solar.getMonth() - 1, solar.getDay(), 0, 0, 0);
+        currentCalendar.set(Calendar.MILLISECOND, 0);
+        Solar start = this.solarTerm.get(JIE_QI_APPEND);
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(), 0, 0, 0);
+        startCalendar.set(Calendar.MILLISECOND, 0);
+
+        if (currentCalendar.compareTo(startCalendar) < 0) {
+            start = this.solarTerm.get(JIE_QI_FIRST);
+            startCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(), 0, 0, 0);
+        }
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(), 0, 0, 0);
+        endCalendar.add(Calendar.DATE, 81);
+        endCalendar.set(Calendar.MILLISECOND, 0);
+
+        if (currentCalendar.compareTo(startCalendar) < 0 || currentCalendar.compareTo(endCalendar) >= 0) {
+            return null;
+        }
+
+        int days = (int) ((currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / (1000 * 60 * 60 * 24));
+        return new ShuJiu(Fields.CN_YEAR[days / 9 + 1] + "九", days % 9 + 1);
+    }
+
+    /**
+     * 获取三伏
+     *
+     * @return 三伏，如果不是伏天，返回null
+     */
+    public Dogdays getDogdays() {
+        Calendar current = Calendar.getInstance();
+        current.set(solar.getYear(), solar.getMonth() - 1, solar.getDay(), 0, 0, 0);
+        current.set(Calendar.MILLISECOND, 0);
+        Solar xiaZhi = this.solarTerm.get("夏至");
+        Solar liQiu = this.solarTerm.get("立秋");
+        Calendar start = Calendar.getInstance();
+        start.set(xiaZhi.getYear(), xiaZhi.getMonth() - 1, xiaZhi.getDay(), 0, 0, 0);
+        start.set(Calendar.MILLISECOND, 0);
+
+        // 第1个庚日
+        int add = 6 - xiaZhi.getLunar().getDayGanIndex();
+        if (add < 0) {
+            add += 10;
+        }
+        // 第3个庚日，即初伏第1天
+        add += 20;
+        start.add(Calendar.DATE, add);
+
+        // 初伏以前
+        if (current.compareTo(start) < 0) {
+            return null;
+        }
+
+        int days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / (1000 * 60 * 60 * 24));
+        if (days < 10) {
+            return new Dogdays("初伏", days + 1);
+        }
+
+        // 第4个庚日，中伏第1天
+        start.add(Calendar.DATE, 10);
+
+        days = (int) ((start.getTimeInMillis() - start.getTimeInMillis()) / (1000 * 60 * 60 * 24));
+        if (days < 10) {
+            return new Dogdays("中伏", days + 1);
+        }
+
+        // 第5个庚日，中伏第11天或末伏第1天
+        start.add(Calendar.DATE, 10);
+
+        Calendar liQiuCalendar = Calendar.getInstance();
+        liQiuCalendar.set(liQiu.getYear(), liQiu.getMonth() - 1, liQiu.getDay(), 0, 0, 0);
+        liQiuCalendar.set(Calendar.MILLISECOND, 0);
+
+        days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / (1000 * 60 * 60 * 24));
+        // 末伏
+        if (liQiuCalendar.compareTo(start) <= 0) {
+            if (days < 10) {
+                return new Dogdays("末伏", days + 1);
+            }
+        } else {
+            // 中伏
+            if (days < 10) {
+                return new Dogdays("中伏", days + 11);
+            }
+            // 末伏第1天
+            start.add(Calendar.DATE, 10);
+            days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / (1000 * 60 * 60 * 24));
+            if (days < 10) {
+                return new Dogdays("末伏", days + 1);
+            }
+        }
+        return null;
     }
 
     /**
@@ -4842,6 +4976,221 @@ public class Lunar {
      */
     private void initWeek() {
         weekIndex = (dayOffset + BASE_WEEK_INDEX) % 7;
+    }
+
+    /**
+     * 节气
+     */
+    public static class Term {
+
+        /**
+         * 名称
+         */
+        private String name;
+
+        /**
+         * 阳历日期
+         */
+        private Solar solar;
+
+        /**
+         * 是否节令
+         */
+        private boolean jie;
+
+        /**
+         * 是否气令
+         */
+        private boolean qi;
+
+        public Term() {
+
+        }
+
+        /**
+         * 初始化
+         *
+         * @param name  名称
+         * @param solar 阳历日期
+         */
+        public Term(String name, Solar solar) {
+            setName(name);
+            this.solar = solar;
+        }
+
+        /**
+         * 获取名称
+         *
+         * @return 名称
+         */
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * 设置名称
+         *
+         * @param name 名称
+         */
+        public void setName(String name) {
+            this.name = name;
+            for (String key : Fields.CN_JIE) {
+                if (key.equals(name)) {
+                    this.jie = true;
+                    return;
+                }
+            }
+            for (String key : Fields.CN_QI) {
+                if (key.equals(name)) {
+                    this.qi = true;
+                    return;
+                }
+            }
+        }
+
+        /**
+         * 获取阳历日期
+         *
+         * @return 阳历日期
+         */
+        public Solar getSolar() {
+            return this.solar;
+        }
+
+        /**
+         * 设置阳历日期
+         *
+         * @param solar 阳历日期
+         */
+        public void setSolar(Solar solar) {
+            this.solar = solar;
+        }
+
+        /**
+         * 是否节令
+         *
+         * @return true/false
+         */
+        public boolean isJie() {
+            return this.jie;
+        }
+
+        /**
+         * 是否气令
+         *
+         * @return true/false
+         */
+        public boolean isQi() {
+            return this.qi;
+        }
+
+        /**
+         * 构建字符串内容
+         *
+         * @param args 可选参数-简化输出
+         * @return 字符串内容
+         */
+        public String build(boolean... args) {
+            return this.name;
+        }
+
+    }
+
+    /**
+     * 三伏
+     * 从夏至后第3个庚日算起，
+     * 初伏为10天，中伏为10天或20天，末伏为10天。
+     * 当夏至与立秋之间出现4个庚日时中伏为10天，出现5个庚日则为20天
+     */
+    public static class Dogdays {
+
+        /**
+         * 名称：初伏、中伏、末伏
+         */
+        private String name;
+
+        /**
+         * 当前入伏第几天，1-20
+         */
+        private int index;
+
+
+        public Dogdays() {
+        }
+
+        public Dogdays(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String toString() {
+            return name + " 第" + index + "天";
+        }
+
+    }
+
+    /**
+     * 数九
+     */
+    public static class ShuJiu {
+
+        /**
+         * 名称，如一九、二九
+         */
+        private String name;
+
+        /**
+         * 当前数九第几天，1-9
+         */
+        private int index;
+
+        public ShuJiu() {
+
+        }
+
+        public ShuJiu(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String toString() {
+            return name + " 第" + index + "天";
+        }
+
     }
 
 }

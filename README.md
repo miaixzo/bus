@@ -75,7 +75,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 |[ √ ]|bus-sensitive|敏感数据脱敏,对应用和使用者透明，业务逻辑无感知，通过配置集成，改动代码量小|
 |[ √ ]|bus-setting|设置工具类， 用于支持设置/配置|
 |[ √ ]|bus-shade|Entity,Service,Mapper等相关代码生成工具|
-|[ × ]|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
+|[ √ ]|bus-socket|基础NIO/AIO通讯,Socket封装，支持TCP/UDP服务端|
 |[ √ ]|bus-starter|SpringBoot starter，spring相关配置，启动及相关配置文件信息|
 |[ √ ]|bus-storage|文件存储组件,,支持阿里云、七牛，提供了工厂模式和注入两种集成方式|
 |[ × ]|bus-tracer|轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪|

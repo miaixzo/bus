@@ -587,25 +587,25 @@ public class Solar {
      * @return 星座
      */
     public String getZodiac() {
-        int index = 11, m = month, d = day;
-        int y = m * 100 + d;
+        int index = 11;
+        int y = month * 100 + day;
         if (y >= 321 && y <= 419) {
             index = 0;
         } else if (y >= 420 && y <= 520) {
             index = 1;
-        } else if (y >= 521 && y <= 620) {
+        } else if (y >= 521 && y <= 621) {
             index = 2;
-        } else if (y >= 621 && y <= 722) {
+        } else if (y >= 622 && y <= 722) {
             index = 3;
         } else if (y >= 723 && y <= 822) {
             index = 4;
         } else if (y >= 823 && y <= 922) {
             index = 5;
-        } else if (y >= 923 && y <= 1022) {
+        } else if (y >= 923 && y <= 1023) {
             index = 6;
-        } else if (y >= 1023 && y <= 1121) {
+        } else if (y >= 1024 && y <= 1122) {
             index = 7;
-        } else if (y >= 1122 && y <= 1221) {
+        } else if (y >= 1123 && y <= 1221) {
             index = 8;
         } else if (y >= 1222 || y <= 119) {
             index = 9;
@@ -1705,124 +1705,6 @@ public class Solar {
                 return year + "年" + month + "月第" + getIndex() + "周";
             }
             return year + Symbol.DOT + month + Symbol.DOT + getIndex();
-        }
-
-    }
-
-    /**
-     * 节气
-     */
-    public static class Term {
-
-        /**
-         * 名称
-         */
-        private String name;
-
-        /**
-         * 阳历日期
-         */
-        private Solar solar;
-
-        /**
-         * 是否节令
-         */
-        private boolean jie;
-
-        /**
-         * 是否气令
-         */
-        private boolean qi;
-
-        public Term() {
-
-        }
-
-        /**
-         * 初始化
-         *
-         * @param name  名称
-         * @param solar 阳历日期
-         */
-        public Term(String name, Solar solar) {
-            setName(name);
-            this.solar = solar;
-        }
-
-        /**
-         * 获取名称
-         *
-         * @return 名称
-         */
-        public String getName() {
-            return this.name;
-        }
-
-        /**
-         * 设置名称
-         *
-         * @param name 名称
-         */
-        public void setName(String name) {
-            this.name = name;
-            for (String key : Fields.CN_JIE) {
-                if (key.equals(name)) {
-                    this.jie = true;
-                    return;
-                }
-            }
-            for (String key : Fields.CN_QI) {
-                if (key.equals(name)) {
-                    this.qi = true;
-                    return;
-                }
-            }
-        }
-
-        /**
-         * 获取阳历日期
-         *
-         * @return 阳历日期
-         */
-        public Solar getSolar() {
-            return this.solar;
-        }
-
-        /**
-         * 设置阳历日期
-         *
-         * @param solar 阳历日期
-         */
-        public void setSolar(Solar solar) {
-            this.solar = solar;
-        }
-
-        /**
-         * 是否节令
-         *
-         * @return true/false
-         */
-        public boolean isJie() {
-            return this.jie;
-        }
-
-        /**
-         * 是否气令
-         *
-         * @return true/false
-         */
-        public boolean isQi() {
-            return this.qi;
-        }
-
-        /**
-         * 构建字符串内容
-         *
-         * @param args 可选参数-简化输出
-         * @return 字符串内容
-         */
-        public String build(boolean... args) {
-            return this.name;
         }
 
     }
