@@ -203,38 +203,6 @@ public class Solar {
     }
 
     /**
-     * 通过年月日初始化
-     *
-     * @param year  年
-     * @param month 月，1到12
-     * @param day   日，1到31
-     */
-    public Solar(int year, int month, int day) {
-        this(year, month, day, 0, 0, 0);
-    }
-
-    /**
-     * 通过年月日初始化
-     *
-     * @param year   年
-     * @param month  月，1到12
-     * @param day    日，1到31
-     * @param hour   小时，0到23
-     * @param minute 分钟，0到59
-     * @param second 秒钟，0到59
-     */
-    public Solar(int year, int month, int day, int hour, int minute, int second) {
-        this.calendar = Calendar.getInstance();
-        this.calendar.set(year, month - 1, day, hour, minute, second);
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
-    }
-
-    /**
      * 通过日期初始化
      *
      * @param date 日期
@@ -311,6 +279,38 @@ public class Solar {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
+    }
+
+    /**
+     * 通过年月日初始化
+     *
+     * @param year   年
+     * @param month  月，1到12
+     * @param day    日，1到31
+     * @param hour   小时，0到23
+     * @param minute 分钟，0到59
+     * @param second 秒钟，0到59
+     */
+    public Solar(int year, int month, int day, int hour, int minute, int second) {
+        this.calendar = Calendar.getInstance();
+        this.calendar.set(year, month - 1, day, hour, minute, second);
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+    }
+
+    /**
+     * 通过年月日初始化
+     *
+     * @param year  年
+     * @param month 月，1到12
+     * @param day   日，1到31
+     */
+    public Solar(int year, int month, int day) {
+        this(year, month, day, 0, 0, 0);
     }
 
     /**

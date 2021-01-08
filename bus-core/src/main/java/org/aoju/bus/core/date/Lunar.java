@@ -2341,52 +2341,6 @@ public class Lunar {
     }
 
     /**
-     * 通过农历年月日时初始化
-     *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到30
-     * @param hour       小时（阳历）
-     * @param minute     分钟（阳历）
-     * @param second     秒钟（阳历）
-     */
-    public Lunar(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
-        int m = Math.abs(lunarMonth);
-        if (m < 1 || m > 12) {
-            throw new IllegalArgumentException("Lunar month must between 1 and 12, or negative");
-        }
-        if (lunarMonth < 0) {
-            int leapMonth = getLeapMonth(lunarYear);
-            if (leapMonth == 0) {
-                throw new IllegalArgumentException(String.format("No leap month in lunar year %d", lunarYear));
-            } else if (leapMonth != m) {
-                throw new IllegalArgumentException(String.format("Leap month is %d in lunar year %d", leapMonth, lunarYear));
-            }
-        }
-        if (lunarDay < 1 || lunarDay > 30) {
-            throw new IllegalArgumentException("Lunar day must between 1 and 30");
-        }
-        int days = getDaysOfMonth(lunarYear, lunarMonth);
-        if (lunarDay > days) {
-            throw new IllegalArgumentException(String.format("Only %d days in lunar year %d month %d", days, lunarYear, lunarMonth));
-        }
-        this.year = lunarYear;
-        this.month = lunarMonth;
-        this.day = lunarDay;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
-        this.dayOffset = computeAddDays(this.year, this.month, this.day);
-
-        Calendar c = Calendar.getInstance();
-        c.set(Solar.BASE_YEAR, Solar.BASE_MONTH - 1, Solar.BASE_DAY, hour, minute, second);
-        c.add(Calendar.DATE, this.dayOffset);
-        this.solar = new Solar(c);
-
-        this.initialize();
-    }
-
-    /**
      * 通过阳历日期初始化
      *
      * @param date 阳历日期
@@ -2442,6 +2396,15 @@ public class Lunar {
     }
 
     /**
+     * 通过阳历日期初始化
+     *
+     * @param calendar 阳历日期
+     */
+    public Lunar(Calendar calendar) {
+        this(calendar.getTime());
+    }
+
+    /**
      * 通过农历年月日初始化
      *
      * @param lunarYear  年（农历）
@@ -2450,6 +2413,99 @@ public class Lunar {
      */
     public Lunar(int lunarYear, int lunarMonth, int lunarDay) {
         this(lunarYear, lunarMonth, lunarDay, 0, 0, 0);
+    }
+
+    /**
+     * 通过农历年月日时初始化
+     *
+     * @param lunarYear  年（农历）
+     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param lunarDay   日（农历），1到30
+     * @param hour       小时（阳历）
+     * @param minute     分钟（阳历）
+     * @param second     秒钟（阳历）
+     */
+    public Lunar(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
+        int m = Math.abs(lunarMonth);
+        if (m < 1 || m > 12) {
+            throw new IllegalArgumentException("Lunar month must between 1 and 12, or negative");
+        }
+        if (lunarMonth < 0) {
+            int leapMonth = getLeapMonth(lunarYear);
+            if (leapMonth == 0) {
+                throw new IllegalArgumentException(String.format("No leap month in lunar year %d", lunarYear));
+            } else if (leapMonth != m) {
+                throw new IllegalArgumentException(String.format("Leap month is %d in lunar year %d", leapMonth, lunarYear));
+            }
+        }
+        if (lunarDay < 1 || lunarDay > 30) {
+            throw new IllegalArgumentException("Lunar day must between 1 and 30");
+        }
+        int days = getDaysOfMonth(lunarYear, lunarMonth);
+        if (lunarDay > days) {
+            throw new IllegalArgumentException(String.format("Only %d days in lunar year %d month %d", days, lunarYear, lunarMonth));
+        }
+        this.year = lunarYear;
+        this.month = lunarMonth;
+        this.day = lunarDay;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+        this.dayOffset = computeAddDays(this.year, this.month, this.day);
+
+        Calendar c = Calendar.getInstance();
+        c.set(Solar.BASE_YEAR, Solar.BASE_MONTH - 1, Solar.BASE_DAY, hour, minute, second);
+        c.add(Calendar.DATE, this.dayOffset);
+
+        this.solar = new Solar(c);
+        this.initialize();
+    }
+
+    /**
+     * 通过指定阳历日期获取农历
+     *
+     * @param date 阳历日期
+     * @return 农历
+     */
+    public static Lunar from(Date date) {
+        return new Lunar(date);
+    }
+
+    /**
+     * 通过指定日历获取阳历
+     *
+     * @param calendar 日历
+     * @return 阳历
+     */
+    public static Lunar from(Calendar calendar) {
+        return new Lunar(calendar);
+    }
+
+    /**
+     * 通过指定农历年月日获取农历
+     *
+     * @param lunarYear  年（农历）
+     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param lunarDay   日（农历），1到31
+     * @return 农历
+     */
+    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay) {
+        return new Lunar(lunarYear, lunarMonth, lunarDay);
+    }
+
+    /**
+     * 通过指定农历年月日获取农历
+     *
+     * @param lunarYear  年（农历）
+     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param lunarDay   日（农历），1到31
+     * @param hour       小时（阳历）
+     * @param minute     分钟（阳历）
+     * @param second     秒钟（阳历）
+     * @return 农历
+     */
+    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
+        return new Lunar(lunarYear, lunarMonth, lunarDay, hour, minute, second);
     }
 
     /**
@@ -2865,43 +2921,6 @@ public class Lunar {
      */
     public static String getXunKong(String ganZhi) {
         return XUN_KONG[getXunIndex(ganZhi)];
-    }
-
-    /**
-     * 通过指定农历年月日获取农历
-     *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到31
-     * @param hour       小时（阳历）
-     * @param minute     分钟（阳历）
-     * @param second     秒钟（阳历）
-     * @return 农历
-     */
-    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
-        return new Lunar(lunarYear, lunarMonth, lunarDay, hour, minute, second);
-    }
-
-    /**
-     * 通过指定农历年月日获取农历
-     *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到31
-     * @return 农历
-     */
-    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay) {
-        return new Lunar(lunarYear, lunarMonth, lunarDay);
-    }
-
-    /**
-     * 通过指定阳历日期获取农历
-     *
-     * @param date 阳历日期
-     * @return 农历
-     */
-    public static Lunar from(Date date) {
-        return new Lunar(date);
     }
 
     /**
@@ -4779,30 +4798,30 @@ public class Lunar {
     private void initTerm() {
         double jd = Math.floor((solar.getYear() - 2000) * 365.2422 + 180);
         double w = Math.floor((jd - 355 + 183) / 365.2422) * 365.2422 + 355;
-        if (Almanac.QiShuo.calc(w, "气") > jd) {
+        if (Galaxy.QiShuo.calc(w, "气") > jd) {
             w -= 365.2422;
         }
         // 追加上一农历年末的大雪
-        double q = Almanac.QiShuo.calc(w - 15.2184, "气");
-        solarTerm.put(JIE_QI_PREPEND, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        double q = Galaxy.QiShuo.calc(w - 15.2184, "气");
+        solarTerm.put(JIE_QI_PREPEND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
         int size = Fields.CN_SOLARTERM.length;
         for (int i = 0; i < size; i++) {
-            q = Almanac.QiShuo.calc(w + 15.2184 * i, "气");
-            solarTerm.put(Fields.CN_SOLARTERM[i], Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+            q = Galaxy.QiShuo.calc(w + 15.2184 * i, "气");
+            solarTerm.put(Fields.CN_SOLARTERM[i], Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
         }
         // 追加下一农历年初的冬至
-        q = Almanac.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(JIE_QI_APPEND, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
+        solarTerm.put(JIE_QI_APPEND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
 
         // 追加下一阳历年初的小寒
         size++;
-        q = Almanac.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(JIE_APPEND_SOLAR_FIRST, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
+        solarTerm.put(JIE_APPEND_SOLAR_FIRST, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
 
         // 追加下一阳历年初的大寒
         size++;
-        q = Almanac.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(QI_APPEND_SOLAR_SECOND, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
+        solarTerm.put(QI_APPEND_SOLAR_SECOND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
     }
 
     /**

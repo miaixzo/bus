@@ -39,7 +39,7 @@ import java.util.List;
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class DateKit extends Sandbox {
+public class DateKit extends Almanac {
 
     /**
      * 计时,常用于记录某段代码的执行时间,单位：纳秒
