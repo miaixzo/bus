@@ -1125,9 +1125,9 @@ public class EightChar {
          */
         private void compute() {
             // 上节
-            Lunar.Term prev = lunar.getPrevJie();
+            Lunar.SolarTerm prev = lunar.getPrevJie();
             // 下节
-            Lunar.Term next = lunar.getNextJie();
+            Lunar.SolarTerm next = lunar.getNextJie();
             // 出生日期
             Solar current = lunar.getSolar();
             // 阳男阴女顺推，阴男阳女逆推

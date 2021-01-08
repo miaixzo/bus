@@ -4062,7 +4062,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Term getNextJie() {
+    public SolarTerm getNextJie() {
         return getNearJieQi(true, Fields.CN_JIE);
     }
 
@@ -4071,7 +4071,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Term getPrevJie() {
+    public SolarTerm getPrevJie() {
         return getNearJieQi(false, Fields.CN_JIE);
     }
 
@@ -4080,7 +4080,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Term getNextQi() {
+    public SolarTerm getNextQi() {
         return getNearJieQi(true, Fields.CN_QI);
     }
 
@@ -4089,7 +4089,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Term getPrevQi() {
+    public SolarTerm getPrevQi() {
         return getNearJieQi(false, Fields.CN_QI);
     }
 
@@ -4098,7 +4098,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Term getNextJieQi() {
+    public SolarTerm getNextJieQi() {
         return getNearJieQi(true, null);
     }
 
@@ -4107,7 +4107,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Term getPrevJieQi() {
+    public SolarTerm getPrevJieQi() {
         return getNearJieQi(false, null);
     }
 
@@ -4118,7 +4118,7 @@ public class Lunar {
      * @param conditions 过滤条件，如果设置过滤条件，仅返回匹配该名称的
      * @return 节气
      */
-    protected Term getNearJieQi(boolean forward, String[] conditions) {
+    protected SolarTerm getNearJieQi(boolean forward, String[] conditions) {
         String name = null;
         Solar near = null;
         Set<String> filters = new HashSet<>();
@@ -4169,7 +4169,7 @@ public class Lunar {
         if (null == near) {
             return null;
         }
-        return new Term(name, near);
+        return new SolarTerm(name, near);
     }
 
     /**
@@ -4205,9 +4205,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Term getCurrentSolarTerm() {
+    public SolarTerm getCurrentSolarTerm() {
         String name = getSolarTerm();
-        return name.length() > 0 ? new Term(name, solar) : null;
+        return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
     /**
@@ -4215,9 +4215,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Term getCurrentJie() {
+    public SolarTerm getCurrentJie() {
         String name = getJie();
-        return name.length() > 0 ? new Term(name, solar) : null;
+        return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
     /**
@@ -4225,9 +4225,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Term getCurrentQi() {
+    public SolarTerm getCurrentQi() {
         String name = getQi();
-        return name.length() > 0 ? new Term(name, solar) : null;
+        return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
     /**
@@ -5000,7 +5000,7 @@ public class Lunar {
     /**
      * 节气
      */
-    public static class Term {
+    public static class SolarTerm {
 
         /**
          * 名称
@@ -5022,7 +5022,7 @@ public class Lunar {
          */
         private boolean qi;
 
-        public Term() {
+        public SolarTerm() {
 
         }
 
@@ -5032,7 +5032,7 @@ public class Lunar {
          * @param name  名称
          * @param solar 阳历日期
          */
-        public Term(String name, Solar solar) {
+        public SolarTerm(String name, Solar solar) {
             setName(name);
             this.solar = solar;
         }
