@@ -83,6 +83,14 @@ public interface InternetProtocolStats {
      */
     List<IPConnection> getConnections();
 
+    /**
+     * The TCP connection state as described in RFC 793.
+     */
+    enum TcpState {
+        UNKNOWN, CLOSED, LISTEN, SYN_SENT, SYN_RECV, ESTABLISHED, FIN_WAIT1, FIN_WAIT2, CLOSE_WAIT, CLOSING, LAST_ACK,
+        TIME_WAIT, NONE
+    }
+
     final class TcpStats {
         private final long connectionsEstablished;
         private final long connectionsActive;
@@ -285,14 +293,6 @@ public interface InternetProtocolStats {
                     + ", datagramsNoPort=" + datagramsNoPort + ", datagramsReceivedErrors=" + datagramsReceivedErrors
                     + "]";
         }
-    }
-
-    /**
-     * The TCP connection state as described in RFC 793.
-     */
-    enum TcpState {
-        UNKNOWN, CLOSED, LISTEN, SYN_SENT, SYN_RECV, ESTABLISHED, FIN_WAIT1, FIN_WAIT2, CLOSE_WAIT, CLOSING, LAST_ACK,
-        TIME_WAIT, NONE
     }
 
     final class IPConnection {

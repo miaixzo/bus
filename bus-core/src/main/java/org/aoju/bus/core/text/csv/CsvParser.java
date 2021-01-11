@@ -54,6 +54,10 @@ public final class CsvParser implements Closeable {
 
     private final Buffer buf = new Buffer(IoKit.DEFAULT_LARGE_BUFFER_SIZE);
     /**
+     * 当前读取字段
+     */
+    private final Builders currentField = new Builders(512);
+    /**
      * 前一个特殊分界字符
      */
     private int preChar = -1;
@@ -61,11 +65,6 @@ public final class CsvParser implements Closeable {
      * 是否在引号包装内
      */
     private boolean inQuotes;
-    /**
-     * 当前读取字段
-     */
-    private final Builders currentField = new Builders(512);
-
     /**
      * 标题行
      */

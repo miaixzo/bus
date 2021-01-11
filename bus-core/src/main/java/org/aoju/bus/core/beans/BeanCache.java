@@ -45,7 +45,7 @@ public enum BeanCache {
      * 获得属性名和{@link BeanDescription}Map映射
      *
      * @param beanClass Bean的类
-     * @return 属性名和{@link BeanDesc}映射
+     * @return 属性名和 {@link BeanDescription} 映射
      */
     public BeanDescription getBeanDesc(Class<?> beanClass) {
         return bdCache.get(beanClass);

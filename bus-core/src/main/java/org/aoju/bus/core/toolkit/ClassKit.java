@@ -73,7 +73,7 @@ public class ClassKit {
             Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE,
             Long.TYPE, Float.TYPE, Double.TYPE
     };
-    private static SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
+    private static final SimpleCache<String, Class<?>> CLASS_CACHE = new SimpleCache<>();
 
     static {
         List<Class<?>> primitiveTypes = new ArrayList<>(32);
@@ -3278,10 +3278,7 @@ public class ClassKit {
         if (type.getGenericSuperclass() == Number.class) {
             return true;
         }
-        if (type.isPrimitive()) {
-            return true;
-        }
-        return false;
+        return type.isPrimitive();
     }
 
     /**

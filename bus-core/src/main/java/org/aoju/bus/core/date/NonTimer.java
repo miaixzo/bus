@@ -38,8 +38,8 @@ import org.aoju.bus.core.toolkit.DateKit;
  */
 public class NonTimer {
 
+    private final boolean isNano;
     private long time;
-    private boolean isNano;
 
     public NonTimer() {
         this(false);

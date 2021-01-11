@@ -233,6 +233,7 @@ public class Lunar {
      */
     public static final Map<String, Integer> ZHI_TIAN_SHEN_OFFSET = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("子", 4);
             put("丑", 2);
@@ -253,6 +254,7 @@ public class Lunar {
      */
     public static final Map<String, String> TIAN_SHEN_TYPE = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("青龙", "黄道");
             put("明堂", "黄道");
@@ -274,6 +276,7 @@ public class Lunar {
      */
     public static final Map<String, String> TIAN_SHEN_TYPE_LUCK = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("黄道", "吉");
             put("黑道", "凶");
@@ -284,6 +287,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHOU = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("东", "青龙");
             put("南", "朱雀");
@@ -297,6 +301,7 @@ public class Lunar {
      */
     public static final Map<String, String> CHONG_GAN_BAD = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("庚", "甲");
             put("辛", "乙");
@@ -310,6 +315,7 @@ public class Lunar {
      */
     public static final Map<String, String> CHONG_GAN_TIE_GOOD = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲", "己");
             put("丙", "辛");
@@ -323,6 +329,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHA = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("子", "南");
             put("丑", "东");
@@ -343,6 +350,7 @@ public class Lunar {
      */
     public static final Map<String, String> POSITION_DESC = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("坎", "正北");
             put("艮", "东北");
@@ -360,6 +368,7 @@ public class Lunar {
      */
     public static final Map<String, String> GONG = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "东");
             put("井", "南");
@@ -396,6 +405,7 @@ public class Lunar {
      */
     public static final Map<String, String> ZHENG = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "木");
             put("井", "木");
@@ -432,6 +442,7 @@ public class Lunar {
      */
     public static final Map<String, String> ANIMAL = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "蛟");
             put("斗", "獬");
@@ -468,6 +479,7 @@ public class Lunar {
      */
     public static final Map<String, String> WU_XING_GAN = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲", "木");
             put("乙", "木");
@@ -486,6 +498,7 @@ public class Lunar {
      */
     public static final Map<String, String> WU_XING_ZHI = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("寅", "木");
             put("卯", "木");
@@ -506,6 +519,7 @@ public class Lunar {
      */
     public static final Map<String, String> NAYIN = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲子", "海中金");
             put("甲午", "沙中金");
@@ -574,6 +588,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHI_SHEN_GAN = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲甲", "比肩");
             put("甲乙", "劫财");
@@ -682,6 +697,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHI_SHEN_ZHI = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲子癸", "正印");
             put("甲丑癸", "正印");
@@ -970,6 +986,7 @@ public class Lunar {
      */
     public static final Map<String, List<String>> ZHI_HIDE_GAN = new HashMap<String, List<String>>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("子", Collections.nCopies(1, "癸"));
             put("丑", Arrays.asList("己", "癸", "辛"));
@@ -990,6 +1007,7 @@ public class Lunar {
      */
     public static final Map<String, String> FESTIVAL = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("1-1", "春节");
             put("1-15", "元宵节");
@@ -1007,6 +1025,7 @@ public class Lunar {
      */
     public static final Map<String, List<String>> OTHER_FESTIVAL = new HashMap<String, List<String>>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("1-1", Collections.nCopies(1, "弥勒佛圣诞"));
             put("1-8", Collections.nCopies(1, "五殿阎罗天子诞"));
@@ -1098,6 +1117,7 @@ public class Lunar {
      */
     public static final Map<String, String> XIU = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("申1", "毕");
             put("申2", "翼");
@@ -1201,6 +1221,7 @@ public class Lunar {
      */
     public static final Map<String, String> XIU_LUCK = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "吉");
             put("亢", "凶");

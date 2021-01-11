@@ -619,7 +619,7 @@ public class Fields {
          */
         MILLISECOND(Calendar.MILLISECOND);
 
-        private int value;
+        private final int value;
 
         Type(int value) {
             this.value = value;
@@ -707,11 +707,11 @@ public class Fields {
         /**
          * 计算单位
          */
-        private long unit;
+        private final long unit;
         /**
          * 名称
          */
-        private String name;
+        private final String name;
 
         Units(long unit, String name) {
             this.unit = unit;
@@ -1181,8 +1181,8 @@ public class Fields {
          */
         Q4(4, "四季度");
 
-        private int key;
-        private String name;
+        private final int key;
+        private final String name;
 
         Quarter(int key, String name) {
             this.key = key;

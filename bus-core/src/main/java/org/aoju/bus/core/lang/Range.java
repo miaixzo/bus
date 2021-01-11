@@ -51,19 +51,26 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 起始对象
+     */
+    private final T start;
+    /**
+     * 结束对象
+     */
+    private final T end;
+    /**
+     * 步进
+     */
+    private final Steper<T> steper;
+    /**
+     * 是否包含第一个元素
+     */
+    private final boolean includeStart;
     /**
      * 锁保证线程安全
      */
     private Lock lock = new ReentrantLock();
-    /**
-     * 起始对象
-     */
-    private T start;
-    /**
-     * 结束对象
-     */
-    private T end;
     /**
      * 当前对象
      */
@@ -73,17 +80,9 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
      */
     private T next;
     /**
-     * 步进
-     */
-    private Steper<T> steper;
-    /**
      * 索引
      */
     private int index = 0;
-    /**
-     * 是否包含第一个元素
-     */
-    private boolean includeStart;
     /**
      * 是否包含最后一个元素
      */

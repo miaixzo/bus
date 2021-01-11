@@ -47,6 +47,7 @@ public class Solar {
      */
     public static final Map<String, String> FESTIVAL = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("1-1", "元旦节");
             put("2-14", "情人节");
@@ -70,6 +71,7 @@ public class Solar {
      */
     public static final Map<String, String> WEEK_FESTIVAL = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("5-2-0", "母亲节");
             put("6-3-0", "父亲节");
@@ -81,6 +83,7 @@ public class Solar {
      */
     public static final Map<String, List<String>> OTHER_FESTIVAL = new HashMap<String, List<String>>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("1-8", Collections.nCopies(1, "周恩来逝世纪念日"));
             put("1-10", Arrays.asList("中国人民警察节", "中国公安110宣传日"));

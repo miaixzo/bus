@@ -5577,7 +5577,7 @@ public class StringKit {
             return str;
         }
 
-        final int newCodePoints[] = new int[strLen];
+        final int[] newCodePoints = new int[strLen];
         int outOffset = 0;
         newCodePoints[outOffset++] = newCodePoint;
         for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
@@ -5614,7 +5614,7 @@ public class StringKit {
             return str;
         }
 
-        final int newCodePoints[] = new int[strLen];
+        final int[] newCodePoints = new int[strLen];
         int outOffset = 0;
         newCodePoints[outOffset++] = newCodePoint;
         for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {

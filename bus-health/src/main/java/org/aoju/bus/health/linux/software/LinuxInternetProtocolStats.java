@@ -136,27 +136,6 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         return new UdpStats(datagramsSent, datagramsReceived, datagramsNoPort, datagramsReceivedErrors);
     }
 
-    @Override
-    public TcpStats getTCPv4Stats() {
-        return getTcpStats("netstat -st4");
-    }
-
-    @Override
-    public TcpStats getTCPv6Stats() {
-        // "netstat -st6" returns the same as -st4
-        return new TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
-    }
-
-    @Override
-    public UdpStats getUDPv4Stats() {
-        return getUdpStats("netstat -su4");
-    }
-
-    @Override
-    public UdpStats getUDPv6Stats() {
-        return getUdpStats("netstat -su6");
-    }
-
     private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
         List<IPConnection> conns = new ArrayList<>();
         for (String s : FileKit.readLines(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : ""))) {
@@ -233,6 +212,27 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
             default:
                 return InternetProtocolStats.TcpState.UNKNOWN;
         }
+    }
+
+    @Override
+    public TcpStats getTCPv4Stats() {
+        return getTcpStats("netstat -st4");
+    }
+
+    @Override
+    public TcpStats getTCPv6Stats() {
+        // "netstat -st6" returns the same as -st4
+        return new TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
+    }
+
+    @Override
+    public UdpStats getUDPv4Stats() {
+        return getUdpStats("netstat -su4");
+    }
+
+    @Override
+    public UdpStats getUDPv6Stats() {
+        return getUdpStats("netstat -su6");
     }
 
     @Override

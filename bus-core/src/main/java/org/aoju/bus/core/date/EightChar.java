@@ -57,6 +57,7 @@ public class EightChar {
      */
     private static final Map<String, Integer> CHANG_SHENG_OFFSET = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 1L;
+
         {
             //阳
             put("甲", 1);

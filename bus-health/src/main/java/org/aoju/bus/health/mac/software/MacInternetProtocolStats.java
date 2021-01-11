@@ -56,8 +56,8 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     // Backup estimate get ipstat and subtract off udp
     private final Supplier<CLibrary.BsdIpstat> ipstat = Memoize.memoize(MacInternetProtocolStats::queryIpstat, Memoize.defaultExpiration());
     private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoize.memoize(MacInternetProtocolStats::queryIp6stat, Memoize.defaultExpiration());
-    private boolean isElevated;
     private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoize.memoize(NetStat::queryTcpnetstat, Memoize.defaultExpiration());
+    private boolean isElevated;
 
 
     public MacInternetProtocolStats(boolean elevated) {
@@ -130,55 +130,6 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
      * performance by selectively reading the ints from the appropriate offsets,
      * which are consistent across the structure.
      */
-
-    @Override
-    public TcpStats getTCPv4Stats() {
-        CLibrary.BsdTcpstat tcp = tcpstat.get();
-        if (this.isElevated) {
-            return new TcpStats(establishedv4v6.get().getLeft(), Builder.unsignedIntToLong(tcp.tcps_connattempt),
-                    Builder.unsignedIntToLong(tcp.tcps_accepts), Builder.unsignedIntToLong(tcp.tcps_conndrops),
-                    Builder.unsignedIntToLong(tcp.tcps_drops), Builder.unsignedIntToLong(tcp.tcps_sndpack),
-                    Builder.unsignedIntToLong(tcp.tcps_rcvpack), Builder.unsignedIntToLong(tcp.tcps_sndrexmitpack),
-                    Builder.unsignedIntToLong(
-                            tcp.tcps_rcvbadsum + tcp.tcps_rcvbadoff + tcp.tcps_rcvmemdrop + tcp.tcps_rcvshort),
-                    0L);
-        }
-        CLibrary.BsdIpstat ip = ipstat.get();
-        CLibrary.BsdUdpstat udp = udpstat.get();
-        return new TcpStats(establishedv4v6.get().getLeft(), Builder.unsignedIntToLong(tcp.tcps_connattempt),
-                Builder.unsignedIntToLong(tcp.tcps_accepts), Builder.unsignedIntToLong(tcp.tcps_conndrops),
-                Builder.unsignedIntToLong(tcp.tcps_drops),
-                Math.max(0L, Builder.unsignedIntToLong(ip.ips_delivered - udp.udps_opackets)),
-                Math.max(0L, Builder.unsignedIntToLong(ip.ips_total - udp.udps_ipackets)),
-                Builder.unsignedIntToLong(tcp.tcps_sndrexmitpack),
-                Math.max(0L, Builder.unsignedIntToLong(ip.ips_badsum + ip.ips_tooshort + ip.ips_toosmall
-                        + ip.ips_badhlen + ip.ips_badlen - udp.udps_hdrops + udp.udps_badsum + udp.udps_badlen)),
-                0L);
-    }
-
-    @Override
-    public TcpStats getTCPv6Stats() {
-        CLibrary.BsdIp6stat ip6 = ip6stat.get();
-        CLibrary.BsdUdpstat udp = udpstat.get();
-        return new TcpStats(establishedv4v6.get().getRight(), 0L, 0L, 0L, 0L,
-                ip6.ip6s_localout - Builder.unsignedIntToLong(udp.udps_snd6_swcsum),
-                ip6.ip6s_total - Builder.unsignedIntToLong(udp.udps_rcv6_swcsum), 0L, 0L, 0L);
-    }
-
-    @Override
-    public UdpStats getUDPv4Stats() {
-        CLibrary.BsdUdpstat stat = udpstat.get();
-        return new UdpStats(Builder.unsignedIntToLong(stat.udps_opackets),
-                Builder.unsignedIntToLong(stat.udps_ipackets), Builder.unsignedIntToLong(stat.udps_noportmcast),
-                Builder.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
-    }
-
-    @Override
-    public UdpStats getUDPv6Stats() {
-        CLibrary.BsdUdpstat stat = udpstat.get();
-        return new UdpStats(Builder.unsignedIntToLong(stat.udps_snd6_swcsum),
-                Builder.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
-    }
 
     private static List<Integer> queryFdList(int pid) {
         List<Integer> fdList = new ArrayList<>();
@@ -268,6 +219,55 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
             default:
                 return InternetProtocolStats.TcpState.UNKNOWN;
         }
+    }
+
+    @Override
+    public TcpStats getTCPv4Stats() {
+        CLibrary.BsdTcpstat tcp = tcpstat.get();
+        if (this.isElevated) {
+            return new TcpStats(establishedv4v6.get().getLeft(), Builder.unsignedIntToLong(tcp.tcps_connattempt),
+                    Builder.unsignedIntToLong(tcp.tcps_accepts), Builder.unsignedIntToLong(tcp.tcps_conndrops),
+                    Builder.unsignedIntToLong(tcp.tcps_drops), Builder.unsignedIntToLong(tcp.tcps_sndpack),
+                    Builder.unsignedIntToLong(tcp.tcps_rcvpack), Builder.unsignedIntToLong(tcp.tcps_sndrexmitpack),
+                    Builder.unsignedIntToLong(
+                            tcp.tcps_rcvbadsum + tcp.tcps_rcvbadoff + tcp.tcps_rcvmemdrop + tcp.tcps_rcvshort),
+                    0L);
+        }
+        CLibrary.BsdIpstat ip = ipstat.get();
+        CLibrary.BsdUdpstat udp = udpstat.get();
+        return new TcpStats(establishedv4v6.get().getLeft(), Builder.unsignedIntToLong(tcp.tcps_connattempt),
+                Builder.unsignedIntToLong(tcp.tcps_accepts), Builder.unsignedIntToLong(tcp.tcps_conndrops),
+                Builder.unsignedIntToLong(tcp.tcps_drops),
+                Math.max(0L, Builder.unsignedIntToLong(ip.ips_delivered - udp.udps_opackets)),
+                Math.max(0L, Builder.unsignedIntToLong(ip.ips_total - udp.udps_ipackets)),
+                Builder.unsignedIntToLong(tcp.tcps_sndrexmitpack),
+                Math.max(0L, Builder.unsignedIntToLong(ip.ips_badsum + ip.ips_tooshort + ip.ips_toosmall
+                        + ip.ips_badhlen + ip.ips_badlen - udp.udps_hdrops + udp.udps_badsum + udp.udps_badlen)),
+                0L);
+    }
+
+    @Override
+    public TcpStats getTCPv6Stats() {
+        CLibrary.BsdIp6stat ip6 = ip6stat.get();
+        CLibrary.BsdUdpstat udp = udpstat.get();
+        return new TcpStats(establishedv4v6.get().getRight(), 0L, 0L, 0L, 0L,
+                ip6.ip6s_localout - Builder.unsignedIntToLong(udp.udps_snd6_swcsum),
+                ip6.ip6s_total - Builder.unsignedIntToLong(udp.udps_rcv6_swcsum), 0L, 0L, 0L);
+    }
+
+    @Override
+    public UdpStats getUDPv4Stats() {
+        CLibrary.BsdUdpstat stat = udpstat.get();
+        return new UdpStats(Builder.unsignedIntToLong(stat.udps_opackets),
+                Builder.unsignedIntToLong(stat.udps_ipackets), Builder.unsignedIntToLong(stat.udps_noportmcast),
+                Builder.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
+    }
+
+    @Override
+    public UdpStats getUDPv6Stats() {
+        CLibrary.BsdUdpstat stat = udpstat.get();
+        return new UdpStats(Builder.unsignedIntToLong(stat.udps_snd6_swcsum),
+                Builder.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
     }
 
     @Override

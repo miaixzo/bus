@@ -54,7 +54,7 @@ public class Weighing<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private TreeMap<Double, T> weightMap;
+    private final TreeMap<Double, T> weightMap;
 
     /**
      * 构造
@@ -168,13 +168,13 @@ public class Weighing<T> implements Serializable {
      */
     public static class WeightObj<T> {
         /**
+         * 权重
+         */
+        private final double weight;
+        /**
          * 对象
          */
         private T obj;
-        /**
-         * 权重
-         */
-        private double weight;
 
         /**
          * 构造

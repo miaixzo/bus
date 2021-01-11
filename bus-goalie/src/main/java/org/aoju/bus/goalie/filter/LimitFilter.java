@@ -43,8 +43,8 @@ public class LimitFilter implements WebFilter {
 
     private Set<Limiter> getLimiter(String methodVersion, String ip) {
         String[] limitKeys = new String[]{
-            methodVersion,
-            ip + methodVersion
+                methodVersion,
+                ip + methodVersion
         };
         Set<Limiter> limitCfgList = new HashSet<>();
         for (String limitKey : limitKeys) {

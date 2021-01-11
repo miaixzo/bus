@@ -111,7 +111,7 @@ public class Images implements Serializable {
      * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
      * @param fileType 输出图片格式
      */
-    public Images(String imageUrl, String fileType) throws Exception {
+    public Images(String imageUrl, String fileType) {
         ImageElement bgImageElement = new ImageElement(imageUrl, 0, 0);
         this.list.add(bgImageElement);
         this.canvasWidth = bgImageElement.getImage().getWidth();

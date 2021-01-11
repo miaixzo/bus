@@ -47,8 +47,8 @@ import java.util.Map;
 public class BeanValueProvider implements ValueProvider<String> {
 
     final Map<String, PropertyDescription> sourcePdMap;
-    private Object source;
-    private boolean ignoreError;
+    private final Object source;
+    private final boolean ignoreError;
 
     /**
      * 构造

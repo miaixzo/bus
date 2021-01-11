@@ -599,7 +599,7 @@ public class Convert {
      * @throws InstrumentException 转换器不存在
      */
     public static <T> T convertByClassName(String className, Object value) throws InstrumentException {
-        return (T) convert(ClassKit.loadClass(className), value);
+        return convert(ClassKit.loadClass(className), value);
     }
 
     /**

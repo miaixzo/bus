@@ -67,7 +67,7 @@ public interface VoidFunc<P> {
      * 此接口用于将一个函数包装成为一个对象，从而传递对象
      */
     @FunctionalInterface
-    public interface VoidFunc0 {
+    interface VoidFunc0 {
 
         /**
          * 执行函数
