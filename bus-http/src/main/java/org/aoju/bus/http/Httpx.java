@@ -319,7 +319,7 @@ public class Httpx {
                 data.append(key).append(Symbol.EQUAL).append(queryMap.get(key)).append(Symbol.AND);
             }
         }
-        RequestBody requestBody = RequestBody.create(MediaType.TEXT_HTML_TYPE, data.toString());
+        RequestBody requestBody = RequestBody.create(MimeType.TEXT_HTML_TYPE, data.toString());
         Request request = new Request.Builder().url(url).post(requestBody).build();
         NewCall call = httpd.newCall(request);
         call.enqueue(callback);
@@ -350,7 +350,7 @@ public class Httpx {
                     .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
                     .collect(Collectors.joining(Symbol.AND));
         }
-        return post(url, data, MediaType.APPLICATION_FORM_URLENCODED);
+        return post(url, data, MimeType.APPLICATION_FORM_URLENCODED);
     }
 
     /**
@@ -404,7 +404,7 @@ public class Httpx {
      */
     public static String post(final String url, final Map<String, Object> queryMap,
                               final Map<String, String> headerMap) {
-        return post(url, queryMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
+        return post(url, queryMap, headerMap, MimeType.APPLICATION_FORM_URLENCODED);
     }
 
     /**
@@ -463,15 +463,15 @@ public class Httpx {
      */
     public static String post(final String url, final Map<String, Object> params,
                               final List<String> pathList) {
-        MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
-        RequestBody bodyParams = RequestBody.create(mediaType, params.toString());
-        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE)
+        MimeType mimeType = MimeType.valueOf(MimeType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
+        RequestBody bodyParams = RequestBody.create(mimeType, params.toString());
+        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MimeType.MULTIPART_FORM_DATA_TYPE)
                 .addFormDataPart("params", Normal.EMPTY, bodyParams);
 
         File file;
         for (String path : pathList) {
             file = new File(path);
-            requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.create(mediaType, new File(path)));
+            requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.create(mimeType, new File(path)));
         }
         RequestBody requestBody = requestBodyBuilder.build();
         Request request = new Request.Builder().url(url).post(requestBody).build();
@@ -505,7 +505,7 @@ public class Httpx {
             builder.method = Http.GET;
         }
         if (StringKit.isBlank(builder.mediaType)) {
-            builder.mediaType = MediaType.APPLICATION_FORM_URLENCODED;
+            builder.mediaType = MimeType.APPLICATION_FORM_URLENCODED;
         }
         if (builder.tracer) {
             Logger.info(">>>>>>>>Builder[{}]<<<<<<<<", builder.toString());
@@ -528,7 +528,7 @@ public class Httpx {
             request.get();
         } else if (ArrayKit.contains(new String[]{Http.POST, Http.PUT, Http.DELETE, Http.PATCH}, method)) {
             if (StringKit.isNotEmpty(builder.data)) {
-                RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
+                RequestBody requestBody = RequestBody.create(MimeType.valueOf(mediaType), builder.data);
                 request.method(method, requestBody);
             }
             if (MapKit.isNotEmpty(builder.queryMap)) {

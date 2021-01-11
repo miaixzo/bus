@@ -1,0 +1,361 @@
+/*********************************************************************************
+ *                                                                               *
+ * The MIT License (MIT)                                                         *
+ *                                                                               *
+ * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ *                                                                               *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy  *
+ * of this software and associated documentation files (the "Software"), to deal *
+ * in the Software without restriction, including without limitation the rights  *
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+ * copies of the Software, and to permit persons to whom the Software is         *
+ * furnished to do so, subject to the following conditions:                      *
+ *                                                                               *
+ * The above copyright notice and this permission notice shall be included in    *
+ * all copies or substantial portions of the Software.                           *
+ *                                                                               *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     *
+ * THE SOFTWARE.                                                                 *
+ *                                                                               *
+ ********************************************************************************/
+package org.aoju.bus.core.beans;
+
+import org.aoju.bus.core.lang.Assert;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.map.CaseInsensitiveMap;
+import org.aoju.bus.core.toolkit.BeanKit;
+import org.aoju.bus.core.toolkit.BooleanKit;
+import org.aoju.bus.core.toolkit.ReflectKit;
+import org.aoju.bus.core.toolkit.StringKit;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * Bean信息描述做为BeanInfo替代方案
+ * 此对象持有Bean中的setters和getters等相关信息描述
+ * 查找Getter和Setter方法时会：
+ * <pre>
+ * 1. 忽略字段和方法名的大小写
+ * 2. Getter查找getXXX、isXXX、getIsXXX
+ * 3. Setter查找setXXX、setIsXXX
+ * 4. Setter忽略参数值与字段值不匹配的情况,因此有多个参数类型的重载时,会调用首次匹配的
+ * </pre>
+ *
+ * @author Kimi Liu
+ * @version 6.1.8
+ * @since JDK 1.8+
+ */
+public class BeanDescription implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Bean类
+     */
+    private final Class<?> beanClass;
+    /**
+     * 属性Map
+     */
+    private final Map<String, PropertyDescription> propMap = new LinkedHashMap<>();
+
+    /**
+     * 构造
+     *
+     * @param beanClass Bean类
+     */
+    public BeanDescription(Class<?> beanClass) {
+        Assert.notNull(beanClass);
+        this.beanClass = beanClass;
+        init();
+    }
+
+    /**
+     * 获取Bean的全类名
+     *
+     * @return Bean的类名
+     */
+    public String getName() {
+        return this.beanClass.getName();
+    }
+
+    /**
+     * 获取Bean的简单类名
+     *
+     * @return Bean的类名
+     */
+    public String getSimpleName() {
+        return this.beanClass.getSimpleName();
+    }
+
+    /**
+     * 获取字段名-字段属性Map
+     *
+     * @param ignoreCase 是否忽略大小写,true为忽略,false不忽略
+     * @return 字段名-字段属性Map
+     */
+    public Map<String, PropertyDescription> getPropMap(boolean ignoreCase) {
+        return ignoreCase ? new CaseInsensitiveMap<>(1, this.propMap) : this.propMap;
+    }
+
+    /**
+     * 获取字段属性列表
+     *
+     * @return {@link PropertyDescription} 列表
+     */
+    public Collection<PropertyDescription> getProps() {
+        return this.propMap.values();
+    }
+
+    /**
+     * 获取属性,如果不存在返回null
+     *
+     * @param fieldName 字段名
+     * @return {@link PropertyDescription}
+     */
+    public PropertyDescription getProp(String fieldName) {
+        return this.propMap.get(fieldName);
+    }
+
+    /**
+     * 获得字段名对应的字段对象,如果不存在返回null
+     *
+     * @param fieldName 字段名
+     * @return 字段值
+     */
+    public Field getField(String fieldName) {
+        final PropertyDescription desc = this.propMap.get(fieldName);
+        return null == desc ? null : desc.getField();
+    }
+
+    /**
+     * 获取Getter方法,如果不存在返回null
+     *
+     * @param fieldName 字段名
+     * @return Getter方法
+     */
+    public Method getGetter(String fieldName) {
+        final PropertyDescription desc = this.propMap.get(fieldName);
+        return null == desc ? null : desc.getGetter();
+    }
+
+    /**
+     * 获取Setter方法,如果不存在返回null
+     *
+     * @param fieldName 字段名
+     * @return Setter方法
+     */
+    public Method getSetter(String fieldName) {
+        final PropertyDescription desc = this.propMap.get(fieldName);
+        return null == desc ? null : desc.getSetter();
+    }
+
+    /**
+     * 初始化
+     * 只有与属性关联的相关Getter和Setter方法才会被读取,无关的getXXX和setXXX都被忽略
+     *
+     * @return this
+     */
+    private BeanDescription init() {
+        final Method[] methods = ReflectKit.getMethods(this.beanClass);
+        PropertyDescription prop;
+        for (Field field : ReflectKit.getFields(this.beanClass)) {
+            if (false == BeanKit.isStatic(field)) {
+                //只针对非static属性
+                prop = createProp(field, methods);
+                this.propMap.putIfAbsent(prop.getFieldName(), prop);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 根据字段创建属性描述
+     * 查找Getter和Setter方法
+     *
+     * <pre>
+     * 1. 忽略字段和方法名的大小写
+     * 2. Getter查找getXXX、isXXX、getIsXXX
+     * 3. Setter查找setXXX、setIsXXX
+     * 4. Setter忽略参数值与字段值不匹配的情况,因此有多个参数类型的重载时,会调用首次匹配的
+     * </pre>
+     *
+     * @param field   字段
+     * @param methods 类中所有的方法
+     * @return {@link PropertyDescription}
+     */
+    private PropertyDescription createProp(Field field, Method[] methods) {
+        final PropertyDescription prop = findProp(field, methods, false);
+        // 忽略大小写重新匹配一次
+        if (null == prop.getter || null == prop.setter) {
+            final PropertyDescription propIgnoreCase = findProp(field, methods, true);
+            if (null == prop.getter) {
+                prop.getter = propIgnoreCase.getter;
+            }
+            if (null == prop.setter) {
+                prop.setter = propIgnoreCase.setter;
+            }
+        }
+
+        return prop;
+    }
+
+    /**
+     * 查找字段对应的Getter和Setter方法
+     *
+     * @param field      字段
+     * @param methods    类中所有的方法
+     * @param ignoreCase 是否忽略大小写匹配
+     * @return PropDesc
+     */
+    private PropertyDescription findProp(Field field, Method[] methods, boolean ignoreCase) {
+        final String fieldName = field.getName();
+        final Class<?> fieldType = field.getType();
+        final boolean isBooleanField = BooleanKit.isBoolean(fieldType);
+
+        Method getter = null;
+        Method setter = null;
+        String methodName;
+        Class<?>[] parameterTypes;
+        for (Method method : methods) {
+            parameterTypes = method.getParameterTypes();
+            if (parameterTypes.length > 1) {
+                // 多于1个参数说明非Getter或Setter
+                continue;
+            }
+
+            methodName = method.getName();
+            if (parameterTypes.length == 0) {
+                // 无参数，可能为Getter方法
+                if (isMatchGetter(methodName, fieldName, isBooleanField, ignoreCase)) {
+                    // 方法名与字段名匹配，则为Getter方法
+                    getter = method;
+                }
+            } else if (isMatchSetter(methodName, fieldName, isBooleanField, ignoreCase)) {
+                // 只有一个参数的情况下方法名与字段名对应匹配，则为Setter方法
+                setter = method;
+            }
+            if (null != getter && null != setter) {
+                // 如果Getter和Setter方法都找到了，不再继续寻找
+                break;
+            }
+        }
+
+        return new PropertyDescription(field, getter, setter);
+    }
+
+    /**
+     * 方法是否为Getter方法
+     * 匹配规则如下（忽略大小写
+     *
+     * <pre>
+     * 字段名     方法名
+     * isName  - isName
+     * isName  - isIsName
+     * isName  - getIsName
+     * name    - isName
+     * name    - getName
+     * </pre>
+     *
+     * @param methodName     方法名
+     * @param fieldName      字段名
+     * @param isBooleanField 是否为Boolean类型字段
+     * @param ignoreCase     匹配是否忽略大小写
+     * @return 是否匹配
+     */
+    private boolean isMatchGetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
+        // 全部转为小写，忽略大小写比较
+        if (ignoreCase) {
+            methodName = methodName.toLowerCase();
+            fieldName = fieldName.toLowerCase();
+        } else {
+            fieldName = StringKit.upperFirst(fieldName);
+        }
+
+        if (false == methodName.startsWith(Normal.GET) && false == methodName.startsWith(Normal.IS)) {
+            // 非标准Getter方法
+            return false;
+        }
+        if ("getclass".equals(methodName)) {
+            //跳过getClass方法
+            return false;
+        }
+
+        // 针对Boolean类型特殊检查
+        if (isBooleanField) {
+            if (fieldName.startsWith(Normal.IS)) {
+                // 字段已经是is开头
+                if (methodName.equals(fieldName) // isName - isName
+                        || methodName.equals(Normal.GET + fieldName)// isName - getIsName
+                        || methodName.equals(Normal.IS + fieldName)// isName - isIsName
+                ) {
+                    return true;
+                }
+            } else if (methodName.equals(Normal.IS + fieldName)) {
+                // 字段非is开头, name -> isName
+                return true;
+            }
+        }
+
+        // 包括boolean的任何类型只有一种匹配情况：name - getName
+        return methodName.equals(Normal.GET + fieldName);
+    }
+
+    /**
+     * 方法是否为Setter方法
+     * 匹配规则如下(忽略大小写)：
+     *
+     * <pre>
+     * 字段名   - 方法名
+     * isName  - setName
+     * isName  - setIsName
+     * name    - setName
+     * </pre>
+     *
+     * @param methodName     方法名
+     * @param fieldName      字段名
+     * @param isBooleanField 是否为Boolean类型字段
+     * @param ignoreCase     匹配是否忽略大小写
+     * @return 是否匹配
+     */
+    private boolean isMatchSetter(String methodName, String fieldName, boolean isBooleanField, boolean ignoreCase) {
+        // 全部转为小写，忽略大小写比较
+        methodName = methodName.toLowerCase();
+        fieldName = fieldName.toLowerCase();
+
+        if (ignoreCase) {
+            methodName = methodName.toLowerCase();
+            fieldName = fieldName.toLowerCase();
+        } else {
+            fieldName = StringKit.upperFirst(fieldName);
+        }
+
+        // 非标准Setter方法跳过
+        if (false == methodName.startsWith(Normal.SET)) {
+            return false;
+        }
+
+        // 针对Boolean类型特殊检查
+        if (isBooleanField && fieldName.startsWith(Normal.IS)) {
+            // 字段是is开头
+            if (methodName.equals(Normal.SET + StringKit.removePrefix(fieldName, Normal.IS))// isName - setName
+                    || methodName.equals(Normal.SET + fieldName)// isName - setIsName
+            ) {
+                return true;
+            }
+        }
+
+        // 包括boolean的任何类型只有一种匹配情况：name - setName
+        return methodName.equals(Normal.SET + fieldName);
+    }
+
+}

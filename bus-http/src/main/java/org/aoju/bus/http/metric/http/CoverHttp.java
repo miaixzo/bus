@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.http.metric.http;
 
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.http.Process;
@@ -604,7 +604,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private RequestBody buildRequestBody() {
         if (files != null) {
-            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MimeType.APPLICATION_FORM_URLENCODED_TYPE);
             if (bodyParams != null) {
                 for (String name : bodyParams.keySet()) {
                     byte[] value = bodyParams.get(name).getBytes(charset);
@@ -614,7 +614,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             }
             for (String name : files.keySet()) {
                 FilePara file = files.get(name);
-                MediaType type = httpv.mediaType(file.type);
+                MimeType type = httpv.mediaType(file.type);
                 RequestBody bodyPart;
                 if (file.file != null) {
                     bodyPart = RequestBody.create(type, file.file);
@@ -646,11 +646,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (object instanceof byte[] || object instanceof String) {
             String mediaType = httpv.executor().doMsgConvert(bodyType, null).mediaType;
             byte[] body = object instanceof byte[] ? (byte[]) object : ((String) object).getBytes(charset);
-            return RequestBody.create(MediaType.valueOf(mediaType + "; charset=" + charset.name()), body);
+            return RequestBody.create(MimeType.valueOf(mediaType + "; charset=" + charset.name()), body);
         }
         TaskExecutor.Data<byte[]> data = httpv.executor()
                 .doMsgConvert(bodyType, (Convertor c) -> c.serialize(object, dateFormat, charset));
-        return RequestBody.create(MediaType.valueOf(data.mediaType + "; charset=" + charset.name()), data.data);
+        return RequestBody.create(MimeType.valueOf(data.mediaType + "; charset=" + charset.name()), data.data);
     }
 
     private String buildUrlPath() {
@@ -742,7 +742,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     public Charset charset(Response response) {
         ResponseBody b = response.body();
-        MediaType type = b != null ? b.contentType() : null;
+        MimeType type = b != null ? b.contentType() : null;
         return type != null ? type.charset(charset) : charset;
     }
 

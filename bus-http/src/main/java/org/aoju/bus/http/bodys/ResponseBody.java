@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.ByteString;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
 import org.aoju.bus.http.Callback;
@@ -77,13 +77,13 @@ public abstract class ResponseBody implements Closeable {
      * @param content     内容
      * @return 新响应体
      */
-    public static ResponseBody create(MediaType contentType, String content) {
+    public static ResponseBody create(MimeType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
         if (contentType != null) {
             charset = contentType.charset();
             if (charset == null) {
                 charset = Charset.UTF_8;
-                contentType = MediaType.valueOf(contentType + "; charset=utf-8");
+                contentType = MimeType.valueOf(contentType + "; charset=utf-8");
             }
         }
         Buffer buffer = new Buffer().writeString(content, charset);
@@ -97,7 +97,7 @@ public abstract class ResponseBody implements Closeable {
      * @param content     内容
      * @return 新响应体
      */
-    public static ResponseBody create(final MediaType contentType, byte[] content) {
+    public static ResponseBody create(final MimeType contentType, byte[] content) {
         Buffer buffer = new Buffer().write(content);
         return create(contentType, content.length, buffer);
     }
@@ -109,7 +109,7 @@ public abstract class ResponseBody implements Closeable {
      * @param content     内容
      * @return 新响应体
      */
-    public static ResponseBody create(MediaType contentType, ByteString content) {
+    public static ResponseBody create(MimeType contentType, ByteString content) {
         Buffer buffer = new Buffer().write(content);
         return create(contentType, content.size(), buffer);
     }
@@ -122,13 +122,13 @@ public abstract class ResponseBody implements Closeable {
      * @param content       内容
      * @return 新响应体
      */
-    public static ResponseBody create(final MediaType contentType,
+    public static ResponseBody create(final MimeType contentType,
                                       final long contentLength,
                                       final BufferSource content) {
         if (content == null) throw new NullPointerException("source == null");
         return new ResponseBody() {
             @Override
-            public MediaType contentType() {
+            public MimeType contentType() {
                 return contentType;
             }
 
@@ -144,7 +144,7 @@ public abstract class ResponseBody implements Closeable {
         };
     }
 
-    public abstract MediaType contentType();
+    public abstract MimeType contentType();
 
     public abstract long contentLength();
 
@@ -189,7 +189,7 @@ public abstract class ResponseBody implements Closeable {
     }
 
     private java.nio.charset.Charset charset() {
-        MediaType contentType = contentType();
+        MimeType contentType = contentType();
         return contentType != null ? contentType.charset(Charset.UTF_8) : Charset.UTF_8;
     }
 
