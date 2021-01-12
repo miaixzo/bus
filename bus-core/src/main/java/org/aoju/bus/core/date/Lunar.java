@@ -4607,7 +4607,7 @@ public class Lunar {
      *
      * @return 数九，如果不是数九天，返回null
      */
-    public ShuJiu getShuJiu() {
+    public NinePeriod getShuJiu() {
         Calendar currentCalendar = Calendar.getInstance();
         currentCalendar.set(solar.getYear(), solar.getMonth() - 1, solar.getDay(), 0, 0, 0);
         currentCalendar.set(Calendar.MILLISECOND, 0);
@@ -4631,7 +4631,7 @@ public class Lunar {
         }
 
         int days = (int) ((currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / (1000 * 60 * 60 * 24));
-        return new ShuJiu(Fields.CN_YEAR[days / 9 + 1] + "九", days % 9 + 1);
+        return new NinePeriod(Fields.CN_YEAR[days / 9 + 1] + "九", days % 9 + 1);
     }
 
     /**
@@ -5189,7 +5189,7 @@ public class Lunar {
     /**
      * 数九
      */
-    public static class ShuJiu {
+    public static class NinePeriod {
 
         /**
          * 名称，如一九、二九
@@ -5201,11 +5201,11 @@ public class Lunar {
          */
         private int index;
 
-        public ShuJiu() {
+        public NinePeriod() {
 
         }
 
-        public ShuJiu(String name, int index) {
+        public NinePeriod(String name, int index) {
             this.name = name;
             this.index = index;
         }
