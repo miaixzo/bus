@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.health.builtin.software;
 
-import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 
 import java.net.InetAddress;
@@ -79,22 +78,11 @@ public interface InternetProtocolStats {
     /**
      * Gets a list of TCP and UDP connections.
      *
-     * @return A list of {@link IPConnection} objects for TCP and UDP connections.
+     * @return An {@code UnmodifiableList} of {@link IPConnection} objects for TCP
+     * and UDP connections.
      */
     List<IPConnection> getConnections();
 
-    /**
-     * The TCP connection state as described in RFC 793.
-     */
-    enum TcpState {
-        UNKNOWN, CLOSED, LISTEN, SYN_SENT, SYN_RECV, ESTABLISHED, FIN_WAIT_1, FIN_WAIT_2, CLOSE_WAIT, CLOSING, LAST_ACK,
-        TIME_WAIT, NONE
-    }
-
-    /**
-     * Encapsulates statistics associated with a TCP connection.
-     */
-    @Immutable
     final class TcpStats {
         private final long connectionsEstablished;
         private final long connectionsActive;
@@ -238,10 +226,6 @@ public interface InternetProtocolStats {
         }
     }
 
-    /**
-     * Encapsulates statistics associated with a UDP connection.
-     */
-    @Immutable
     final class UdpStats {
         private final long datagramsSent;
         private final long datagramsReceived;
@@ -304,9 +288,13 @@ public interface InternetProtocolStats {
     }
 
     /**
-     * Encapsulates information associated with an IP connection.
+     * The TCP connection state as described in RFC 793.
      */
-    @Immutable
+    enum TcpState {
+        UNKNOWN, CLOSED, LISTEN, SYN_SENT, SYN_RECV, ESTABLISHED, FIN_WAIT1, FIN_WAIT2, CLOSE_WAIT, CLOSING, LAST_ACK,
+        TIME_WAIT, NONE
+    }
+
     final class IPConnection {
         private final String type;
         private final byte[] localAddress;
@@ -349,7 +337,7 @@ public interface InternetProtocolStats {
          * suspect.
          *
          * @return The local address, or an empty array if the listener can accept a
-         *         connection on any interface.
+         * connection on any interface.
          */
         public byte[] getLocalAddress() {
             return Arrays.copyOf(localAddress, localAddress.length);
@@ -372,7 +360,7 @@ public interface InternetProtocolStats {
          * in zeroes should be considered suspect.
          *
          * @return The foreign/remote address, or an empty array if unknown. An empty
-         *         array will also result if
+         * array will also result if
          */
         public byte[] getForeignAddress() {
             return Arrays.copyOf(foreignAddress, foreignAddress.length);
@@ -418,7 +406,7 @@ public interface InternetProtocolStats {
          * Gets the id of the process which holds this connection.
          *
          * @return The process id of the process which holds this connection if known,
-         *         -1 otherwise.
+         * -1 otherwise.
          */
         public int getowningProcessId() {
             return owningProcessId;

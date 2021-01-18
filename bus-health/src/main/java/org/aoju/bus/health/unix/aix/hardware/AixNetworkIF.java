@@ -35,6 +35,7 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatNetInterface;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -71,7 +72,8 @@ public final class AixNetworkIF extends AbstractNetworkIF {
      * Gets all network interfaces on this machine
      *
      * @param includeLocalInterfaces include local interfaces in the result
-     * @return A list of {@link NetworkIF} objects representing the interfaces
+     * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
+     * the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         Supplier<Perfstat.perfstat_netinterface_t[]> netstats = Memoize.memoize(PerfstatNetInterface::queryNetInterfaces,
@@ -80,7 +82,7 @@ public final class AixNetworkIF extends AbstractNetworkIF {
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             ifList.add(new AixNetworkIF(ni, netstats));
         }
-        return ifList;
+        return Collections.unmodifiableList(ifList);
     }
 
     @Override

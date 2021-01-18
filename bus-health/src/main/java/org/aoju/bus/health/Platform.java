@@ -39,8 +39,6 @@ import org.aoju.bus.health.unix.aix.hardware.AixHardwareAbstractionLayer;
 import org.aoju.bus.health.unix.aix.software.AixOperatingSystem;
 import org.aoju.bus.health.unix.freebsd.hardware.FreeBsdHardwareAbstractionLayer;
 import org.aoju.bus.health.unix.freebsd.software.FreeBsdOperatingSystem;
-import org.aoju.bus.health.unix.openbsd.hardware.OpenBsdHardwareAbstractionLayer;
-import org.aoju.bus.health.unix.openbsd.software.OpenBsdOperatingSystem;
 import org.aoju.bus.health.unix.solaris.hardware.SolarisHardwareAbstractionLayer;
 import org.aoju.bus.health.unix.solaris.software.SolarisOperatingSystem;
 import org.aoju.bus.health.windows.hardware.WindowsHardwareAbstractionLayer;
@@ -68,15 +66,13 @@ public class Platform {
         } else if (com.sun.jna.Platform.isLinux()) {
             OS_CURRENT_PLATFORM = OS.LINUX;
         } else if (com.sun.jna.Platform.isMac()) {
-            OS_CURRENT_PLATFORM = OS.MACOS;
+            OS_CURRENT_PLATFORM = OS.MACOSX;
         } else if (com.sun.jna.Platform.isSolaris()) {
             OS_CURRENT_PLATFORM = OS.SOLARIS;
         } else if (com.sun.jna.Platform.isFreeBSD()) {
             OS_CURRENT_PLATFORM = OS.FREEBSD;
         } else if (com.sun.jna.Platform.isAIX()) {
             OS_CURRENT_PLATFORM = OS.AIX;
-        } else if (com.sun.jna.Platform.isOpenBSD()) {
-            OS_CURRENT_PLATFORM = OS.OPENBSD;
         } else {
             OS_CURRENT_PLATFORM = OS.UNKNOWN;
         }
@@ -86,27 +82,22 @@ public class Platform {
     private final Supplier<HardwareAbstractionLayer> hardware = Memoize.memoize(Platform::createHardware);
 
     /**
-     * Create a new instance of {@link Platform}.
-     * <p>
-     * Platform-specific Hardware and Software objects are retrieved via memoized
-     * suppliers. To conserve memory at the cost of additional processing time,
-     * create a new version of SystemInfo() for subsequent calls. To conserve
-     * processing time at the cost of additional memory usage, re-use the same
-     * {@link Platform} object for future queries.
-     */
-    public Platform() {
-        if (getCurrentPlatform().equals(OS.UNKNOWN)) {
-            throw new UnsupportedOperationException("Operating system not supported: JNA Platform type "
-                    + com.sun.jna.Platform.getOSType());
-        }
-    }
-
-    /**
      * Getter for the field <code>currentPlatformEnum</code>.
      *
      * @return Returns the currentPlatformEnum.
      */
-    public static OS getCurrentPlatform() {
+    public static Platform.OS getCurrentPlatform() {
+        return OS_CURRENT_PLATFORM;
+    }
+
+    /**
+     * <p>
+     * Getter for the field <code>currentPlatformEnum</code>.
+     * </p>
+     *
+     * @return Returns the currentPlatformEnum.
+     */
+    public static OS getCurrentOs() {
         return OS_CURRENT_PLATFORM;
     }
 
@@ -237,7 +228,7 @@ public class Platform {
                 osPrefix = "w32ce-" + arch;
                 break;
             case com.sun.jna.Platform.MAC:
-                osPrefix = "macos-" + arch;
+                osPrefix = "macosx-" + arch;
                 break;
             case com.sun.jna.Platform.LINUX:
                 osPrefix = "linux-" + arch;
@@ -472,11 +463,12 @@ public class Platform {
 
     private static OperatingSystem createOperatingSystem() {
         switch (OS_CURRENT_PLATFORM) {
+
             case WINDOWS:
                 return new WindowsOperatingSystem();
             case LINUX:
                 return new LinuxOperatingSystem();
-            case MACOS:
+            case MACOSX:
                 return new MacOperatingSystem();
             case SOLARIS:
                 return new SolarisOperatingSystem();
@@ -484,20 +476,19 @@ public class Platform {
                 return new FreeBsdOperatingSystem();
             case AIX:
                 return new AixOperatingSystem();
-            case OPENBSD:
-                return new OpenBsdOperatingSystem();
             default:
-                return null;
+                throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
         }
     }
 
     private static HardwareAbstractionLayer createHardware() {
         switch (OS_CURRENT_PLATFORM) {
+
             case WINDOWS:
                 return new WindowsHardwareAbstractionLayer();
             case LINUX:
                 return new LinuxHardwareAbstractionLayer();
-            case MACOS:
+            case MACOSX:
                 return new MacHardwareAbstractionLayer();
             case SOLARIS:
                 return new SolarisHardwareAbstractionLayer();
@@ -505,10 +496,8 @@ public class Platform {
                 return new FreeBsdHardwareAbstractionLayer();
             case AIX:
                 return new AixHardwareAbstractionLayer();
-            case OPENBSD:
-                return new OpenBsdHardwareAbstractionLayer();
             default:
-                return null;
+                throw new UnsupportedOperationException("Operating system not supported: " + com.sun.jna.Platform.getOSType());
         }
     }
 
@@ -547,7 +536,7 @@ public class Platform {
         /**
          * Mac OS
          */
-        MACOS,
+        MACOSX,
         /**
          * Solaris (SunOS)
          */
@@ -560,10 +549,6 @@ public class Platform {
          * FreeBSD
          */
         FREEBSD,
-        /**
-         * OpenBSD
-         */
-        OPENBSD,
         /**
          * OpenBSD, WindowsCE, or an unspecified system
          */

@@ -41,7 +41,6 @@ import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
-import org.aoju.bus.health.windows.EnumWindows;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.health.windows.drivers.ProcessPerformanceData.PerfCounterBlock;
@@ -358,18 +357,19 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         List<OSSession> whoList = HkeyUserData.queryUserSessions();
         whoList.addAll(SessionWtsData.queryUserSessions());
         whoList.addAll(NetSessionData.queryUserSessions());
-        return whoList;
+        return Collections.unmodifiableList(whoList);
     }
 
     @Override
     public List<OSProcess> getProcesses(int limit, ProcessSort sort) {
         List<OSProcess> procList = processMapToList(null);
-        return processSort(procList, limit, sort);
+        List<OSProcess> sorted = processSort(procList, limit, sort);
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override
     public List<OSProcess> getProcesses(Collection<Integer> pids) {
-        return processMapToList(pids);
+        return Collections.unmodifiableList(processMapToList(pids));
     }
 
     @Override
@@ -388,7 +388,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             Kernel32.INSTANCE.CloseHandle(snapshot);
         }
         List<OSProcess> procList = processMapToList(childPids);
-        return processSort(procList, limit, sort);
+        List<OSProcess> sorted = processSort(procList, limit, sort);
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override
@@ -486,11 +487,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             Logger.error("Win32Exception: {}", ex.getMessage());
             return new OSService[0];
         }
-    }
-
-    @Override
-    public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
-        return Collections.unmodifiableList(EnumWindows.queryDesktopWindows(visibleOnly));
     }
 
 }

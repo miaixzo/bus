@@ -1126,8 +1126,8 @@ public class Normal {
         FEMALE(0, "女"),
         UNKNOWN(-1, "未知");
 
-        private final int code;
-        private final String desc;
+        private int code;
+        private String desc;
 
         public static Gender of(String code) {
             if (code == null) {

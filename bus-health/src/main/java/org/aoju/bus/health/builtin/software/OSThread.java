@@ -52,7 +52,9 @@ public interface OSThread {
     String getName();
 
     /**
-     * Gets the execution state of the task/thread.
+     * <p>
+     * Getter for the field <code>state</code>.
+     * </p>
      *
      * @return Returns the execution state of the task/thread.
      */

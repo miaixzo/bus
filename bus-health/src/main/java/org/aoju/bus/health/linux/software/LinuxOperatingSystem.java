@@ -47,10 +47,7 @@ import org.aoju.bus.health.linux.drivers.Who;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Linux is a family of open source Unix-like operating systems based on the
@@ -502,7 +499,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public List<OSSession> getSessions() {
-        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
+        return Collections.unmodifiableList(USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent());
     }
 
     @Override
@@ -519,8 +516,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             }
         }
         // Sort
-        // Sort
-        return processSort(procs, limit, sort);
+        List<OSProcess> sorted = processSort(procs, limit, sort);
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override
@@ -546,7 +543,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         }
-        return processSort(procs, limit, sort);
+        List<OSProcess> sorted = processSort(procs, limit, sort);
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override

@@ -45,14 +45,15 @@ import java.util.concurrent.ExecutorService;
  */
 public class SyncFinisher {
 
-    private final Set<Worker> workers;
-    private final int threadSize;
-    private final ExecutorService executorService;
+    private Set<Worker> workers;
+    private int threadSize;
+    private ExecutorService executorService;
+
+    private boolean isBeginAtSameTime;
     /**
      * 启动同步器，用于保证所有worker线程同时开始
      */
-    private final CountDownLatch beginLatch;
-    private boolean isBeginAtSameTime;
+    private CountDownLatch beginLatch;
     /**
      * 结束同步器，用于等待所有worker线程同时结束
      */

@@ -478,13 +478,13 @@ public class Fields {
      */
     public static final int[] DAYS_OF_MONTH = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     /**
-     * 闰年表（存在闰月的年份偏移值）
+     * 闰年表
      */
     public static final int[] LEAP_YEAR = {
             6, 14, 19, 25, 33, 36, 38, 41, 44, 52, 55, 79, 117, 136, 147, 150, 155, 158, 185, 193
     };
     /**
-     * 月份表（2个字节表示1年，共16个二进制位，前4位表示闰月月份，后12位表示每月大小）
+     * 闰月表
      */
     public static final int[] LEAP_MONTH = {
             0x00, 0x04, 0xad, 0x08, 0x5a, 0x01, 0xd5, 0x54, 0xb4, 0x09, 0x64, 0x05, 0x59, 0x45, 0x95,
@@ -619,7 +619,7 @@ public class Fields {
          */
         MILLISECOND(Calendar.MILLISECOND);
 
-        private final int value;
+        private int value;
 
         Type(int value) {
             this.value = value;
@@ -707,11 +707,11 @@ public class Fields {
         /**
          * 计算单位
          */
-        private final long unit;
+        private long unit;
         /**
          * 名称
          */
-        private final String name;
+        private String name;
 
         Units(long unit, String name) {
             this.unit = unit;
@@ -1181,8 +1181,8 @@ public class Fields {
          */
         Q4(4, "四季度");
 
-        private final int key;
-        private final String name;
+        private int key;
+        private String name;
 
         Quarter(int key, String name) {
             this.key = key;

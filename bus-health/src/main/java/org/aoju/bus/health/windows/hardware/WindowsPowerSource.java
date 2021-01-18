@@ -48,6 +48,7 @@ import org.aoju.bus.health.windows.PowrProf.SystemBatteryState;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -90,10 +91,10 @@ public final class WindowsPowerSource extends AbstractPowerSource {
     /**
      * Gets Battery Information.
      *
-     * @return A list of PowerSource objects representing batteries, etc.
+     * @return An array of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
-        return Arrays.asList(getPowerSource("System Battery"));
+        return Collections.unmodifiableList(Arrays.asList(getPowerSource("System Battery")));
     }
 
     private static WindowsPowerSource getPowerSource(String name) {

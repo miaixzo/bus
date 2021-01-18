@@ -67,7 +67,7 @@ public class MathKit {
      * @param bytes 长度
      */
     private MathKit(long bytes) {
-        MathKit.bytes = bytes;
+        this.bytes = bytes;
     }
 
     /**
@@ -2994,7 +2994,7 @@ public class MathKit {
      * @return 负数返回true，否则false
      */
     public boolean isNegative() {
-        return bytes < 0;
+        return this.bytes < 0;
     }
 
     /**
@@ -3003,7 +3003,7 @@ public class MathKit {
      * @return bytes大小
      */
     public long toBytes() {
-        return bytes;
+        return this.bytes;
     }
 
     /**
@@ -3012,7 +3012,7 @@ public class MathKit {
      * @return KB大小
      */
     public long toKilobytes() {
-        return bytes / Normal.BYTES_PER_KB;
+        return this.bytes / Normal.BYTES_PER_KB;
     }
 
     /**
@@ -3021,7 +3021,7 @@ public class MathKit {
      * @return MB大小
      */
     public long toMegabytes() {
-        return bytes / Normal.BYTES_PER_MB;
+        return this.bytes / Normal.BYTES_PER_MB;
     }
 
     /**
@@ -3030,7 +3030,7 @@ public class MathKit {
      * @return GB大小
      */
     public long toGigabytes() {
-        return bytes / Normal.BYTES_PER_GB;
+        return this.bytes / Normal.BYTES_PER_GB;
     }
 
     /**
@@ -3039,7 +3039,7 @@ public class MathKit {
      * @return TB大小
      */
     public long toTerabytes() {
-        return bytes / Normal.BYTES_PER_TB;
+        return this.bytes / Normal.BYTES_PER_TB;
     }
 
 }

@@ -51,8 +51,6 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
 
     private final Supplier<String> serialNumber = Memoize.memoize(LinuxComputerSystem::querySerialNumber);
 
-    private final Supplier<String> uuid = Memoize.memoize(LinuxComputerSystem::queryUUID);
-
     private static String queryManufacturer() {
         String result;
         if ((result = Sysfs.querySystemVendor()) == null && (result = CpuInfo.queryCpuManufacturer()) == null) {
@@ -74,15 +72,6 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
         String result;
         if ((result = Sysfs.queryProductSerial()) == null && (result = Dmidecode.querySerialNumber()) == null
                 && (result = Lshal.querySerialNumber()) == null && (result = Lshw.querySerialNumber()) == null) {
-            return Normal.UNKNOWN;
-        }
-        return result;
-    }
-
-    private static String queryUUID() {
-        String result = null;
-        if ((result = Sysfs.queryUUID()) == null && (result = Dmidecode.queryUUID()) == null
-                && (result = Lshal.queryUUID()) == null && (result = Lshw.queryUUID()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -111,11 +100,6 @@ final class LinuxComputerSystem extends AbstractComputerSystem {
     @Override
     public Baseboard createBaseboard() {
         return new LinuxBaseboard();
-    }
-
-    @Override
-    public String getHardwareUUID() {
-        return uuid.get();
     }
 
 }

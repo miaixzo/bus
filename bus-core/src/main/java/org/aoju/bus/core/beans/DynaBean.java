@@ -43,7 +43,7 @@ import java.util.Map;
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class DynamicBean extends Support<DynamicBean> implements Serializable {
+public class DynaBean extends Support<DynaBean> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,7 +56,7 @@ public class DynamicBean extends Support<DynamicBean> implements Serializable {
      * @param beanClass Bean类
      * @param params    构造Bean所需要的参数
      */
-    public DynamicBean(Class<?> beanClass, Object... params) {
+    public DynaBean(Class<?> beanClass, Object... params) {
         this(ReflectKit.newInstance(beanClass, params));
     }
 
@@ -65,10 +65,10 @@ public class DynamicBean extends Support<DynamicBean> implements Serializable {
      *
      * @param bean 原始Bean
      */
-    public DynamicBean(Object bean) {
+    public DynaBean(Object bean) {
         Assert.notNull(bean);
-        if (bean instanceof DynamicBean) {
-            bean = ((DynamicBean) bean).getBean();
+        if (bean instanceof DynaBean) {
+            bean = ((DynaBean) bean).getBean();
         }
         this.bean = bean;
         this.beanClass = ClassKit.getClass(bean);
@@ -79,39 +79,39 @@ public class DynamicBean extends Support<DynamicBean> implements Serializable {
      *
      * @param beanClass Bean类
      */
-    public DynamicBean(Class<?> beanClass) {
+    public DynaBean(Class<?> beanClass) {
         this(ReflectKit.newInstance(beanClass));
     }
 
     /**
-     * 创建一个{@link DynamicBean}
+     * 创建一个{@link DynaBean}
      *
      * @param bean 普通Bean
-     * @return {@link DynamicBean}
+     * @return {@link DynaBean}
      */
-    public static DynamicBean create(Object bean) {
-        return new DynamicBean(bean);
+    public static DynaBean create(Object bean) {
+        return new DynaBean(bean);
     }
 
     /**
-     * 创建一个{@link DynamicBean}
+     * 创建一个{@link DynaBean}
      *
      * @param beanClass Bean类
-     * @return {@link DynamicBean}
+     * @return {@link DynaBean}
      */
-    public static DynamicBean create(Class<?> beanClass) {
-        return new DynamicBean(beanClass);
+    public static DynaBean create(Class<?> beanClass) {
+        return new DynaBean(beanClass);
     }
 
     /**
-     * 创建一个{@link DynamicBean}
+     * 创建一个{@link DynaBean}
      *
      * @param beanClass Bean类
      * @param params    构造Bean所需要的参数
-     * @return {@link DynamicBean}
+     * @return {@link DynaBean}
      */
-    public static DynamicBean create(Class<?> beanClass, Object... params) {
-        return new DynamicBean(beanClass, params);
+    public static DynaBean create(Class<?> beanClass, Object... params) {
+        return new DynaBean(beanClass, params);
     }
 
     /**
@@ -137,7 +137,7 @@ public class DynamicBean extends Support<DynamicBean> implements Serializable {
         if (Map.class.isAssignableFrom(beanClass)) {
             return (T) ((Map<?, ?>) bean).get(fieldName);
         } else {
-            final PropertyDescription prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
+            final BeanDesc.PropDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
             if (null == prop) {
                 throw new InstrumentException("No public field or get method for {}", fieldName);
             }
@@ -156,7 +156,7 @@ public class DynamicBean extends Support<DynamicBean> implements Serializable {
         if (Map.class.isAssignableFrom(beanClass)) {
             ((Map) bean).put(fieldName, value);
         } else {
-            final PropertyDescription prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
+            final BeanDesc.PropDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
             if (null == prop) {
                 throw new InstrumentException("No public field or set method for {}", fieldName);
             }
@@ -213,7 +213,7 @@ public class DynamicBean extends Support<DynamicBean> implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DynamicBean other = (DynamicBean) obj;
+        final DynaBean other = (DynaBean) obj;
         if (bean == null) {
             return other.bean == null;
         } else return bean.equals(other.bean);

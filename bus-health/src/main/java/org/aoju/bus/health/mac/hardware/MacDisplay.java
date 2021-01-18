@@ -38,6 +38,7 @@ import org.aoju.bus.health.builtin.hardware.Display;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,7 +96,7 @@ final class MacDisplay extends AbstractDisplay {
             serviceIterator.release();
             cfEdid.release();
         }
-        return displays;
+        return Collections.unmodifiableList(displays);
     }
 
 }

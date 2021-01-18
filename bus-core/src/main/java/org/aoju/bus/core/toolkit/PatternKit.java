@@ -779,9 +779,8 @@ public class PatternKit {
      * @author Kimi Liu
      */
     private static class RegexWithFlag {
-
-        private final String regex;
-        private final int flag;
+        private String regex;
+        private int flag;
 
         /**
          * 构造

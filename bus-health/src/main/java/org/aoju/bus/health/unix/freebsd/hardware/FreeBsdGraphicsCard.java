@@ -72,7 +72,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
      * @return List of {@link FreeBsdGraphicsCard}objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
-        List<GraphicsCard> cardList = new ArrayList<>();
+        List<FreeBsdGraphicsCard> cardList = new ArrayList<>();
         // Enumerate all devices and add if required
         List<String> devices = Executor.runNative("pciconf -lv");
         if (devices.isEmpty()) {
@@ -132,7 +132,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                     vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
                     versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
         }
-        return cardList;
+        return Collections.unmodifiableList(cardList);
     }
 
 }

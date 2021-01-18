@@ -28,7 +28,6 @@ package org.aoju.bus.health.unix.aix.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.*;
-import org.aoju.bus.health.unix.UnixDisplay;
 import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.Lscfg;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatDisk;
@@ -84,7 +83,7 @@ public final class AixHardwareAbstractionLayer extends AbstractHardwareAbstracti
 
     @Override
     public List<Display> getDisplays() {
-        return UnixDisplay.getDisplays();
+        return AixDisplay.getDisplays();
     }
 
     @Override

@@ -344,9 +344,10 @@ public class CharKit {
     }
 
     public static char[] getChars(byte[] bytes) {
+        java.nio.charset.Charset cs = java.nio.charset.Charset.forName(Charset.DEFAULT_UTF_8);
         ByteBuffer bb = ByteBuffer.allocate(bytes.length);
         bb.put(bytes).flip();
-        CharBuffer cb = Charset.UTF_8.decode(bb);
+        CharBuffer cb = cs.decode(bb);
         return cb.array();
     }
 

@@ -34,6 +34,7 @@ import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -78,10 +79,10 @@ public final class SolarisPowerSource extends AbstractPowerSource {
     /**
      * Gets Battery Information
      *
-     * @return A list of PowerSource objects representing batteries, etc.
+     * @return An array of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
-        return Arrays.asList(getPowerSource("BAT0"));
+        return Collections.unmodifiableList(Arrays.asList(getPowerSource("BAT0")));
     }
 
     private static SolarisPowerSource getPowerSource(String name) {

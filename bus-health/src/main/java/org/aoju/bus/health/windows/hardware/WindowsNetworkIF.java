@@ -35,6 +35,7 @@ import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -73,14 +74,15 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
      * Gets all network interfaces on this machine
      *
      * @param includeLocalInterfaces include local interfaces in the result
-     * @return A list of {@link NetworkIF} objects representing the interfaces
+     * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
+     * the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             ifList.add(new WindowsNetworkIF(ni));
         }
-        return ifList;
+        return Collections.unmodifiableList(ifList);
     }
 
     @Override

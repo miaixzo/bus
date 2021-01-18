@@ -289,10 +289,10 @@ public class BeanKit {
      * 创建动态Bean
      *
      * @param bean 普通Bean或Map
-     * @return {@link DynamicBean}
+     * @return {@link DynaBean}
      */
-    public static DynamicBean create(Object bean) {
-        return new DynamicBean(bean);
+    public static DynaBean create(Object bean) {
+        return new DynaBean(bean);
     }
 
     /**
@@ -306,18 +306,18 @@ public class BeanKit {
     }
 
     /**
-     * 获取{@link BeanDescription} Bean描述信息
+     * 获取{@link BeanDesc} Bean描述信息
      *
      * @param clazz Bean类
-     * @return {@link BeanDescription}
+     * @return {@link BeanDesc}
      */
-    public static BeanDescription getBeanDesc(Class<?> clazz) {
-        BeanDescription beanDescription = BeanCache.INSTANCE.getBeanDesc(clazz);
-        if (null == beanDescription) {
-            beanDescription = new BeanDescription(clazz);
-            BeanCache.INSTANCE.putBeanDesc(clazz, beanDescription);
+    public static BeanDesc getBeanDesc(Class<?> clazz) {
+        BeanDesc beanDesc = BeanDescCache.INSTANCE.getBeanDesc(clazz);
+        if (null == beanDesc) {
+            beanDesc = new BeanDesc(clazz);
+            BeanDescCache.INSTANCE.putBeanDesc(clazz, beanDesc);
         }
-        return beanDescription;
+        return beanDesc;
     }
 
     /**
@@ -341,14 +341,14 @@ public class BeanKit {
     }
 
     /**
-     * 获得字段名和字段描述Map,获得的结果会缓存在 {@link PropertyCache}中
+     * 获得字段名和字段描述Map,获得的结果会缓存在 {@link BeanInfoCache}中
      *
      * @param clazz      Bean类
      * @param ignoreCase 是否忽略大小写
      * @return 字段名和字段描述Map
      */
     public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) {
-        return PropertyCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
+        return BeanInfoCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
     }
 
     /**
@@ -444,10 +444,10 @@ public class BeanKit {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @return Bean属性值
-     * @see PathExpression#get(Object)
+     * @see BeanPath#get(Object)
      */
     public static Object getProperty(Object bean, String expression) {
-        return PathExpression.create(expression).get(bean);
+        return BeanPath.create(expression).get(bean);
     }
 
     /**
@@ -456,10 +456,10 @@ public class BeanKit {
      * @param bean       Bean对象,支持Map、List、Collection、Array
      * @param expression 表达式,例如：person.friend[5].name
      * @param value      值
-     * @see PathExpression#get(Object)
+     * @see BeanPath#get(Object)
      */
     public static void setProperty(Object bean, String expression, Object value) {
-        PathExpression.create(expression).set(bean, value);
+        BeanPath.create(expression).set(bean, value);
     }
 
     /**
@@ -720,12 +720,12 @@ public class BeanKit {
             return null;
         }
 
-        final Collection<PropertyDescription> props = BeanKit.getBeanDesc(bean.getClass()).getProps();
+        final Collection<BeanDesc.PropDesc> props = BeanKit.getBeanDesc(bean.getClass()).getProps();
 
         String key;
         Method getter;
         Object value;
-        for (PropertyDescription prop : props) {
+        for (BeanDesc.PropDesc prop : props) {
             key = prop.getFieldName();
             // 过滤class属性
             // 得到property对应的getter方法
@@ -1055,7 +1055,7 @@ public class BeanKit {
      * @param clazz  Bean类
      * @param action 每个元素的处理类
      */
-    public static void forEach(Class<?> clazz, Consumer<? super PropertyDescription> action) {
+    public static void forEach(Class<?> clazz, Consumer<? super BeanDesc.PropDesc> action) {
         getBeanDesc(clazz).getProps().forEach(action);
     }
 
@@ -1112,7 +1112,7 @@ public class BeanKit {
         /**
          * 修饰符枚举对应的int修饰符值
          */
-        private final int value;
+        private int value;
 
         /**
          * 构造

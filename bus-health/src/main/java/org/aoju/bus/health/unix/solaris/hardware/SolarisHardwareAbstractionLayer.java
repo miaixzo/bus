@@ -27,7 +27,6 @@ package org.aoju.bus.health.unix.solaris.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.*;
-import org.aoju.bus.health.unix.UnixDisplay;
 
 import java.util.List;
 
@@ -73,7 +72,7 @@ public final class SolarisHardwareAbstractionLayer extends AbstractHardwareAbstr
 
     @Override
     public List<Display> getDisplays() {
-        return UnixDisplay.getDisplays();
+        return SolarisDisplay.getDisplays();
     }
 
     @Override

@@ -37,7 +37,6 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.health.mac.drivers.Who;
-import org.aoju.bus.health.mac.drivers.WindowInfo;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
@@ -189,7 +188,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public List<OSSession> getSessions() {
-        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
+        return Collections.unmodifiableList(USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent());
     }
 
     @Override
@@ -208,9 +207,9 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         }
-        return processSort(procs, limit, sort);
+        List<OSProcess> sorted = processSort(procs, limit, sort);
+        return Collections.unmodifiableList(sorted);
     }
-
 
     @Override
     public OSProcess getProcess(int pid) {
@@ -237,7 +236,8 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         }
-        return processSort(procs, limit, sort);
+        List<OSProcess> sorted = processSort(procs, limit, sort);
+        return Collections.unmodifiableList(sorted);
     }
 
     @Override
@@ -318,11 +318,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return services.toArray(new OSService[0]);
-    }
-
-    @Override
-    public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
-        return WindowInfo.queryDesktopWindows(visibleOnly);
     }
 
 }

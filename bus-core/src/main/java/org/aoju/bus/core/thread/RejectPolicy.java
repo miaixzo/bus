@@ -59,7 +59,7 @@ public enum RejectPolicy {
      */
     CALLER_RUNS(new ThreadPoolExecutor.CallerRunsPolicy());
 
-    private final RejectedExecutionHandler value;
+    private RejectedExecutionHandler value;
 
     RejectPolicy(RejectedExecutionHandler handler) {
         this.value = handler;

@@ -29,7 +29,7 @@ import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.DelegateSource;
 import org.aoju.bus.core.io.Source;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Response;
 import org.aoju.bus.http.bodys.ResponseBody;
@@ -68,7 +68,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
         }
 
         @Override
-        public MimeType contentType() {
+        public MediaType contentType() {
             return body.contentType();
         }
 

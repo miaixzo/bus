@@ -28,10 +28,7 @@ package org.aoju.bus.image.metric.internal.pdu;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
-import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.DataWriter;
-import org.aoju.bus.image.metric.PDVOutputStream;
+import org.aoju.bus.image.metric.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.EOFException;
@@ -403,8 +400,12 @@ public class PDUEncoder extends PDVOutputStream {
                     pos += 6;
                 }
                 pdvcmd = Builder.DATA;
-
-                Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));
+                if (dataWriter instanceof DataWriterAdapter) {
+                    Logger.debug("{} << {} Dataset:\n{}", as, dimse.toString(cmd),
+                            ((DataWriterAdapter) dataWriter).getDataset());
+                } else {
+                    Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));
+                }
 
                 dataWriter.writeTo(this, tsuid);
 

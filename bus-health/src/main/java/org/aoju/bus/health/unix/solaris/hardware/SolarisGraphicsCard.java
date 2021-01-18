@@ -35,6 +35,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractHardwareAbstractionLayer;
 import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -133,7 +134,7 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
                     vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
                     versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), 0L));
         }
-        return cardList;
+        return Collections.unmodifiableList(cardList);
     }
 
 }

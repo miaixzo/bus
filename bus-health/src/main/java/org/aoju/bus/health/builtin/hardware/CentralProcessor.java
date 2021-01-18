@@ -548,19 +548,16 @@ public interface CentralProcessor {
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix
-            String ucVendor = this.cpuVendor.toUpperCase();
-            if (ucVendor.contains("AMD")) {
+            if (this.cpuVendor.toUpperCase().contains("AMD")) {
                 sb.append("amd.");
-            } else if (ucVendor.contains("ARM")) {
+            } else if (this.getVendor().toUpperCase().contains("ARM")) {
                 sb.append("arm.");
-            } else if (ucVendor.contains("IBM")) {
+            } else if (this.getVendor().toUpperCase().contains("IBM")) {
                 // Directly parse the name to POWER#
                 int powerIdx = this.cpuName.indexOf("_POWER");
                 if (powerIdx > 0) {
                     arch = this.cpuName.substring(powerIdx + 1);
                 }
-            } else if (ucVendor.contains("APPLE")) {
-                sb.append("apple.");
             }
             if (StringKit.isBlank(arch) && !sb.toString().equals("arm.")) {
                 // Append family

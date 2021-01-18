@@ -39,38 +39,49 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 public interface NetworkParams {
 
     /**
-     * Gets the HostName of the machine executing OSHI.
+     * <p>
+     * getHostName.
+     * </p>
      *
-     * @return the hostname
+     * @return Gets host name
      */
     String getHostName();
 
     /**
-     * Gets the Domain Name of the machine executing OSHI.
+     * <p>
+     * getDomainName.
+     * </p>
      *
-     * @return the domain name
+     * @return Gets domain name
      */
     String getDomainName();
 
     /**
-     * Gets the DNS Servers configured for this machine.
+     * <p>
+     * getDnsServers.
+     * </p>
      *
-     * @return the DNS servers
+     * @return Gets DNS servers
      */
     String[] getDnsServers();
 
     /**
-     * Gets the default gateway(routing destination for 0.0.0.0/0) for IPv4
-     * connections.
+     * <p>
+     * getIpv4DefaultGateway.
+     * </p>
      *
-     * @return default gateway for IPv4, or empty string if not defined.
+     * @return Gets default gateway(routing destination for 0.0.0.0/0) for IPv4,
+     * empty string if not defined.
      */
     String getIpv4DefaultGateway();
 
     /**
-     * Gets default gateway(routing destination for ::/0) for IPv6 connections.
+     * <p>
+     * getIpv6DefaultGateway.
+     * </p>
      *
-     * @return default gateway for IPv6, or empty string if not defined.
+     * @return Gets default gateway(routing destination for ::/0) for IPv6, empty
+     * string if not defined.
      */
     String getIpv6DefaultGateway();
 

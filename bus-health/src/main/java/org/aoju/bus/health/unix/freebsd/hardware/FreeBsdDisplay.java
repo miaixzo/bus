@@ -23,58 +23,46 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix.openbsd;
+package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.RegEx;
-import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.hardware.AbstractDisplay;
+import org.aoju.bus.health.builtin.hardware.Display;
+import org.aoju.bus.health.unix.Xrandr;
+import org.aoju.bus.logger.Logger;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Reads from fstat.
+ * A Display
  *
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class FstatKit {
+final class FreeBsdDisplay extends AbstractDisplay {
 
-    private FstatKit() {
+    /**
+     * Constructor for FreeBsdDisplay.
+     *
+     * @param edid a byte array representing a display EDID
+     */
+    FreeBsdDisplay(byte[] edid) {
+        super(edid);
+        Logger.debug("Initialized FreeBSDDisplay");
     }
 
     /**
-     * Gets current working directory info (using {@code ps} actually).
+     * Gets Display Information
      *
-     * @param pid a process ID
-     * @return the current working directory for that process.
+     * @return An array of Display objects representing monitors, etc.
      */
-    public static String getCwd(int pid) {
-        List<String> ps = Executor.runNative("ps -axwwo cwd -p " + pid);
-        if (!ps.isEmpty()) {
-            return ps.get(1);
-        }
-        return "";
-    }
-
-    /**
-     * Gets open number of files.
-     *
-     * @param pid The process ID
-     * @return the number of open files.
-     */
-    public static long getOpenFiles(int pid) {
-        long fd = 0L;
-        List<String> fstat = Executor.runNative("fstat -sp " + pid);
-        for (String line : fstat) {
-            String[] split = RegEx.SPACES.split(line.trim(), 11);
-            if (split.length == 11 && !"pipe".contains(split[4]) && !"unix".contains(split[4])) {
-                fd++;
-            }
-        }
-        // subtract 1 for header row
-        return fd - 1;
+    public static List<Display> getDisplays() {
+        return Collections.unmodifiableList(
+                Xrandr.getEdidArrays().stream().map(FreeBsdDisplay::new).collect(Collectors.toList()));
     }
 
 }

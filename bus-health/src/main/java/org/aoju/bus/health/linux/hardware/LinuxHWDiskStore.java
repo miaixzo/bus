@@ -114,9 +114,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
         return Collections.unmodifiableList(getDisks(null));
     }
 
-    private static List<HWDiskStore> getDisks(LinuxHWDiskStore storeToUpdate) {
+    private static List<LinuxHWDiskStore> getDisks(LinuxHWDiskStore storeToUpdate) {
         LinuxHWDiskStore store = null;
-        List<HWDiskStore> result = new ArrayList<>();
+        List<LinuxHWDiskStore> result = new ArrayList<>();
 
         Map<String, String> mountsMap = readMountsMap();
 
@@ -194,8 +194,8 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
             udev.unref();
         }
         // Iterate the list and make the partitions unmodifiable
-        for (HWDiskStore hwds : result) {
-            ((LinuxHWDiskStore) hwds).partitionList = Collections.unmodifiableList(hwds.getPartitions().stream()
+        for (LinuxHWDiskStore hwds : result) {
+            hwds.partitionList = Collections.unmodifiableList(hwds.partitionList.stream()
                     .sorted(Comparator.comparing(HWPartition::getName)).collect(Collectors.toList()));
         }
         return result;

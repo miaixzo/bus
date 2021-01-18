@@ -29,15 +29,15 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.tuple.Quartet;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 /**
@@ -50,52 +50,44 @@ import java.util.function.Supplier;
 @Immutable
 final class MacComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Quartet<String, String, String, String>> manufacturerModelSerialUUID = Memoize.memoize(
+    private final Supplier<Triple<String, String, String>> manufacturerModelSerial = Memoize.memoize(
             MacComputerSystem::platformExpert);
 
-    private static Quartet<String, String, String, String> platformExpert() {
+    private static Triple<String, String, String> platformExpert() {
         String manufacturer = null;
         String model = null;
         String serialNumber = null;
-        String uuid = null;
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
         if (platformExpert != null) {
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
             if (data != null) {
-                manufacturer = Native.toString(data, StandardCharsets.UTF_8);
+                manufacturer = Native.toString(data, Charset.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("model");
             if (data != null) {
-                model = Native.toString(data, StandardCharsets.UTF_8);
+                model = Native.toString(data, Charset.UTF_8);
             }
             serialNumber = platformExpert.getStringProperty("IOPlatformSerialNumber");
-            uuid = platformExpert.getStringProperty("IOPlatformUUID");
             platformExpert.release();
         }
-        return new Quartet<>(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
+        return Triple.of(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model,
-                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber,
-                StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid);
+                StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
     @Override
     public String getManufacturer() {
-        return manufacturerModelSerialUUID.get().getA();
+        return manufacturerModelSerial.get().getLeft();
     }
 
     @Override
     public String getModel() {
-        return manufacturerModelSerialUUID.get().getB();
+        return manufacturerModelSerial.get().getMiddle();
     }
 
     @Override
     public String getSerialNumber() {
-        return manufacturerModelSerialUUID.get().getC();
-    }
-
-    @Override
-    public String getHardwareUUID() {
-        return manufacturerModelSerialUUID.get().getD();
+        return manufacturerModelSerial.get().getRight();
     }
 
     @Override

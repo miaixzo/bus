@@ -44,6 +44,7 @@ import org.aoju.bus.health.mac.ThreadInfo;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -277,7 +278,7 @@ public class MacOSProcess extends AbstractOSProcess {
     @Override
     public List<OSThread> getThreadDetails() {
         long now = System.currentTimeMillis();
-        List<OSThread> details = new ArrayList<>();
+        List<MacOSThread> details = new ArrayList<>();
         List<ThreadInfo.ThreadStats> stats = ThreadInfo.queryTaskThreads(getProcessID());
         for (ThreadInfo.ThreadStats stat : stats) {
             // For long running threads the start time calculation can overestimate
@@ -288,7 +289,7 @@ public class MacOSProcess extends AbstractOSProcess {
             details.add(new MacOSThread(getProcessID(), stat.getThreadId(), stat.getState(), stat.getSystemTime(),
                     stat.getUserTime(), start, now - start, stat.getPriority()));
         }
-        return details;
+        return Collections.unmodifiableList(details);
     }
 
     @Override

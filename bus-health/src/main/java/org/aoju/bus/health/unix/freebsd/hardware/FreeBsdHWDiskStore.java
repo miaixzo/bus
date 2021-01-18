@@ -67,7 +67,8 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
     /**
      * Gets the disks on this machine
      *
-     * @return a list of {@link HWDiskStore} objects representing the disks
+     * @return an {@code UnmodifiableList} of {@link HWDiskStore} objects
+     * representing the disks
      */
     public static List<HWDiskStore> getDisks() {
         // Result
@@ -108,7 +109,7 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
                 diskList.add(store);
             }
         }
-        return diskList;
+        return Collections.unmodifiableList(diskList);
     }
 
     @Override

@@ -74,15 +74,6 @@ public interface ComputerSystem {
     String getSerialNumber();
 
     /**
-     * Get the computer system hardware UUID, if available.
-     * <p>
-     * Performs a best-effort attempt to retrieve the hardware UUID.
-     *
-     * @return the Hardware UUID, if available, otherwise returns "unknown"
-     */
-    String getHardwareUUID();
-
-    /**
      * Get the computer system firmware/BIOS.
      *
      * @return A {@link Firmware} object for this system

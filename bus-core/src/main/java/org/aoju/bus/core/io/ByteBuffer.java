@@ -411,7 +411,12 @@ public class ByteBuffer extends ByteString {
      */
     public PageBuffer allocatePageBuffer() {
         assertEnabled();
-        return pageBuffers[(cursor.getAndIncrement() & Integer.MAX_VALUE) % pageBuffers.length];
+        //轮训游标，均衡分配内存页
+        int index = cursor.getAndIncrement();
+        if (index < 0) {
+            cursor.set(0);
+        }
+        return pageBuffers[index % pageBuffers.length];
     }
 
     private void assertEnabled() {

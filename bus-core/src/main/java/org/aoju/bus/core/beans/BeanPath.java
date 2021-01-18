@@ -39,12 +39,22 @@ import java.util.*;
  * <li>.表达式,可以获取Bean对象中的属性(字段)值或者Map中key对应的值</li>
  * <li>[]表达式,可以获取集合等对象中对应index的值</li>
  * </ol>
+ * <p>
+ * 表达式：
+ *
+ * <pre>
+ * persion
+ * persion.name
+ * persons[3]
+ * person.friends[5].name
+ * ['person']['friends'][5]['name']
+ * </pre>
  *
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class PathExpression implements Serializable {
+public class BeanPath implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -60,7 +70,7 @@ public class PathExpression implements Serializable {
      *
      * @param expression 表达式
      */
-    public PathExpression(String expression) {
+    public BeanPath(String expression) {
         init(expression);
     }
 
@@ -84,10 +94,10 @@ public class PathExpression implements Serializable {
      * </pre>
      *
      * @param expression 表达式
-     * @return {@link PathExpression}
+     * @return {@link BeanPath}
      */
-    public static PathExpression create(String expression) {
-        return new PathExpression(expression);
+    public static BeanPath create(String expression) {
+        return new BeanPath(expression);
     }
 
     private static Object getFieldValue(Object bean, String expression) {

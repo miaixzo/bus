@@ -52,7 +52,7 @@ public class MapProxy implements Map<Object, Object>, OptNullObject<Object>, Inv
 
     private static final long serialVersionUID = 1L;
 
-    private final Map map;
+    private Map map;
 
     /**
      * 构造

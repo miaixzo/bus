@@ -28,7 +28,7 @@ package org.aoju.bus.http.bodys;
 import org.aoju.bus.core.io.Buffer;
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.DelegateSink;
-import org.aoju.bus.core.lang.MimeType;
+import org.aoju.bus.core.lang.MediaType;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.OnBack;
 import org.aoju.bus.http.Process;
@@ -67,7 +67,7 @@ public class ProcessRequestBody extends RequestBody {
     }
 
     @Override
-    public MimeType contentType() {
+    public MediaType contentType() {
         return requestBody.contentType();
     }
 

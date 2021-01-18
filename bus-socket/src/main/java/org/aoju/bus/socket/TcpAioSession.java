@@ -195,7 +195,7 @@ public class TcpAioSession<T> extends AioSession {
             }
             IoKit.close(channel);
             serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);
-        } else if ((writeBuffer == null || !writeBuffer.buffer().hasRemaining()) && !byteBuf.isEmpty()) {
+        } else if ((writeBuffer == null || !writeBuffer.buffer().hasRemaining()) && !byteBuf.hasData()) {
             close(true);
         } else {
             serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSING, null);

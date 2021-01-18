@@ -28,7 +28,6 @@ package org.aoju.bus.extra.qrcode;
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
-import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.FileType;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -253,8 +252,8 @@ public class QrCodeKit {
                 width = logoImage.getWidth(null) * height / logoImage.getHeight(null);
             }
 
-            Images.from(image).pressImage(//
-                    Images.from(logoImage).round(0.3).getImg(), // 圆角
+            org.aoju.bus.core.image.Image.from(image).pressImage(//
+                    org.aoju.bus.core.image.Image.from(logoImage).round(0.3).getImg(), // 圆角
                     new Rectangle(width, height), //
                     1//
             );

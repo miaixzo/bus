@@ -82,14 +82,16 @@ public class Money implements Serializable, Comparable<Money> {
      * 不同的币种有不同的元/分换算比例,如人民币是100,而日元为1
      */
     private static final int[] CENT_FACTORS = new int[]{1, 10, 100, 1000};
-    /**
-     * 币种
-     */
-    private final Currency currency;
+
     /**
      * 金额,以分为单位
      */
     private long cent;
+
+    /**
+     * 币种
+     */
+    private final Currency currency;
 
     /**
      * 缺省构造器

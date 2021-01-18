@@ -78,7 +78,8 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     /**
      * Gets the disks on this machine
      *
-     * @return a list of {@link HWDiskStore} objects representing the disks
+     * @return an {@code UnmodifiableList} of {@link HWDiskStore} objects
+     * representing the disks
      */
     public static List<HWDiskStore> getDisks() {
         Map<String, String> mountPointMap = Fsstat.queryPartitionToMountMap();
@@ -191,7 +192,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
         for (CFTypeRef value : cfKeyMap.values()) {
             value.release();
         }
-        return diskList;
+        return Collections.unmodifiableList(diskList);
     }
 
     /**

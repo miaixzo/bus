@@ -10,12 +10,11 @@ import lombok.Data;
  */
 @Data
 public class ServerConfig {
-
+    private String path;
+    private int port;
     private final Encrypt encrypt = new Encrypt();
     private final Decrypt decrypt = new Decrypt();
     private final Limit limit = new Limit();
-    private String path;
-    private int port;
 
     @Data
     public static class Encrypt {
@@ -37,5 +36,4 @@ public class ServerConfig {
     public static class Limit {
         private boolean enabled;
     }
-
 }

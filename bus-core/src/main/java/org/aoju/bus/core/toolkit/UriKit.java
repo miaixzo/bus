@@ -32,7 +32,6 @@ import org.aoju.bus.core.map.TableMap;
 
 import java.io.*;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.jar.JarFile;
 
@@ -879,7 +878,7 @@ public class UriKit {
             String key = entry.getKey();
             Object value = entry.getValue();
             String stringValue = (value != null ? value.toString() : Normal.EMPTY);
-            result.put(key, encode(stringValue, StandardCharsets.UTF_8));
+            result.put(key, encode(stringValue, java.nio.charset.Charset.forName(Charset.DEFAULT_UTF_8)));
         }
         return result;
     }
@@ -964,7 +963,7 @@ public class UriKit {
             }
         }
         try {
-            return (changed ? bos.toString(charset.name()) : source);
+            return (changed ? new String(bos.toByteArray(), charset.name()) : source);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
@@ -1003,7 +1002,7 @@ public class UriKit {
             }
         }
         try {
-            return (changed ? bos.toString(charset.name()) : source);
+            return (changed ? new String(bos.toByteArray(), charset.name()) : source);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }

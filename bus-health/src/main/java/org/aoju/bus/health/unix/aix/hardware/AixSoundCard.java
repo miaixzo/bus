@@ -32,6 +32,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
 import org.aoju.bus.health.builtin.hardware.SoundCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -73,7 +74,7 @@ final class AixSoundCard extends AbstractSoundCard {
                 }
             }
         }
-        return soundCards;
+        return Collections.unmodifiableList(soundCards);
     }
 
 }

@@ -26,7 +26,6 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.Config;
 import org.aoju.bus.health.windows.drivers.Win32ProcessCached;
 
 import java.util.List;
@@ -43,98 +42,112 @@ import java.util.List;
 public interface OSProcess {
 
     /**
-     * Gets the name of the process, often the executable program.
+     * <p>
+     * Getter for the field <code>name</code>.
+     * </p>
      *
-     * @return the name of the process.
+     * @return Returns the name of the process.
      */
     String getName();
 
     /**
-     * Gets the full filesystem path of the executing process.
+     * <p>
+     * Getter for the field <code>path</code>.
+     * </p>
      *
-     * @return the full path of the executing process.
+     * @return Returns the full path of the executing process.
      */
     String getPath();
 
     /**
-     * Gets the process command line used to start the process, including arguments
-     * if available to be determined.
      * <p>
-     * The format of this string is platform-dependent and may require the end user
-     * to parse the result.
+     * Getter for the field <code>commandLine</code>.
+     * </p>
+     *
+     * @return Returns the process command line. The format of this string is
+     * platform-dependent and may require the end user to parse the result.
      * <p>
-     * On Linux and macOS systems, the string is null-character-delimited, to permit
-     * the end user to parse the executable and arguments if desired. Further, the
-     * macOS variant may include environment variables which the end user may wish
-     * to exclude from display.
+     * On Linux and macOS systems, the string is null-character-delimited,
+     * to permit the end user to parse the executable and arguments if
+     * desired. Further, the macOS variant may include environment variables
+     * which the end user may wish to exclude from display.
      * <p>
      * On Solaris, the string is truncated to 80 characters.
      * <p>
-     * On Windows, by default, performs a single WMI query for this process, with
-     * some latency. If this method will be frequently called for multiple
-     * processes, see the configuration file to enable a batch query mode leveraging
-     * {@link Win32ProcessCached#getCommandLine} to improve performance, or setting
-     * that parameter via {@link Config#set(String, Object)} before
-     * instantiating any {@link OSProcess} object.
-     *
-     * @return the process command line.
+     * On Windows, by default, performs a single WMI query for this process,
+     * with some latency. If this method will be frequently called for
+     * multiple processes, see the configuration file to enable a batch
+     * query mode leveraging {@link Win32ProcessCached#getCommandLine} to
+     * improve performance.
      */
     String getCommandLine();
 
     /**
-     * Gets the current working directory for the process.
+     * <p>
+     * Getter for the field <code>currentWorkingDirectory</code>.
+     * </p>
      *
-     * @return the process current working directory.
+     * @return Returns the process current working directory.
      * <p>
      * On Windows, this value is only populated for the current process.
      */
     String getCurrentWorkingDirectory();
 
     /**
-     * Gets the user name of the process owner.
+     * <p>
+     * Getter for the field <code>user</code>.
+     * </p>
      *
-     * @return the user name. On Windows systems, also returns the domain prepended
-     * to the username.
+     * @return Returns the user name. On Windows systems, also returns the domain
+     * prepended to the username.
      */
     String getUser();
 
     /**
-     * Gets the user id of the process owner.
+     * <p>
+     * Getter for the field <code>userID</code>.
+     * </p>
      *
-     * @return the userID. On Windows systems, returns the Security ID (SID)
+     * @return Returns the userID. On Windows systems, returns the Security ID (SID)
      */
     String getUserID();
 
     /**
-     * Gets the group under which the process is executing.
      * <p>
-     * On Windows systems, populating this value for processes other than the
-     * current user requires administrative privileges (and still may fail for some
-     * system processes) and can incur significant latency. When successful, returns
-     * a the default primary group with access to this process, corresponding to the
-     * SID in {@link #getGroupID()}.
+     * Getter for the field <code>group</code>.
+     * </p>
      *
-     * @return the group.
+     * @return Returns the group.
+     * <p>
+     * On Windows systems, populating this value for processes other than
+     * the current user requires administrative privileges (and still may
+     * fail for some system processes) and can incur significant latency.
+     * When successful, returns a the default primary group with access to
+     * this process, corresponding to the SID in {@link #getGroupID()}.
      */
     String getGroup();
 
     /**
-     * Gets the group id under which the process is executing.
      * <p>
-     * On Windows systems, populating this value for processes other than the
-     * current user requires administrative privileges (and still may fail for some
-     * system processes) and can incur significant latency. When successful, returns
-     * the default primary group SID with access to this process, corresponding to
-     * the name in {@link #getGroup()}.
+     * Getter for the field <code>groupID</code>.
+     * </p>
      *
-     * @return the groupID.
+     * @return Returns the groupID.
+     * <p>
+     * On Windows systems, populating this value for processes other than
+     * the current user requires administrative privileges (and still may
+     * fail for some system processes) and can incur significant latency.
+     * When successful, returns the default primary group SID with access to
+     * this process, corresponding to the name in {@link #getGroup()}.
      */
     String getGroupID();
 
     /**
-     * Gets the process state.
+     * <p>
+     * Getter for the field <code>state</code>.
+     * </p>
      *
-     * @return the execution state of the process.
+     * @return Returns the execution state of the process.
      */
     State getState();
 
@@ -143,7 +156,7 @@ public interface OSProcess {
      * Getter for the field <code>processID</code>.
      * </p>
      *
-     * @return the processID.
+     * @return Returns the processID.
      */
     int getProcessID();
 
@@ -152,7 +165,7 @@ public interface OSProcess {
      * Getter for the field <code>parentProcessID</code>.
      * </p>
      *
-     * @return the parentProcessID, if any; 0 otherwise.
+     * @return Returns the parentProcessID, if any; 0 otherwise.
      */
     int getParentProcessID();
 
@@ -161,7 +174,7 @@ public interface OSProcess {
      * Getter for the field <code>threadCount</code>.
      * </p>
      *
-     * @return the number of threads in this process.
+     * @return Returns the number of threads in this process.
      */
     int getThreadCount();
 
@@ -170,7 +183,7 @@ public interface OSProcess {
      * Getter for the field <code>priority</code>.
      * </p>
      *
-     * @return the priority of this process.
+     * @return Returns the priority of this process.
      * <p>
      * For Linux and Unix, priority is a value in the range -20 to 19 (20 on
      * some systems). The default priority is 0; lower priorities cause more
@@ -179,7 +192,7 @@ public interface OSProcess {
      * For Windows, priority values can range from 0 (lowest priority) to 31
      * (highest priority).
      * <p>
-     * macOS has 128 priority levels, ranging from 0 (lowest priority) to
+     * Mac OS has 128 priority levels, ranging from 0 (lowest priority) to
      * 127 (highest priority). They are divided into several major bands: 0
      * through 51 are the normal levels; the default priority is 31. 52
      * through 79 are the highest priority regular threads; 80 through 95
@@ -194,9 +207,9 @@ public interface OSProcess {
      * Getter for the field <code>virtualSize</code>.
      * </p>
      *
-     * @return the Virtual Memory Size (VSZ). It includes all memory that the
-     * process can access, including memory that is swapped out and memory
-     * that is from shared libraries.
+     * @return Returns the Virtual Memory Size (VSZ). It includes all memory that
+     * the process can access, including memory that is swapped out and
+     * memory that is from shared libraries.
      */
     long getVirtualSize();
 
@@ -205,61 +218,74 @@ public interface OSProcess {
      * Getter for the field <code>residentSetSize</code>.
      * </p>
      *
-     * @return the Resident Set Size (RSS). On Windows, returns the Private Working
-     * Set size. It is used to show how much memory is allocated to that
-     * process and is in RAM. It does not include memory that is swapped
-     * out. It does include memory from shared libraries as long as the
-     * pages from those libraries are actually in memory. It does include
-     * all stack and heap memory.
+     * @return Returns the Resident Set Size (RSS). On Windows, returns the Private
+     * Working Set size. It is used to show how much memory is allocated to
+     * that process and is in RAM. It does not include memory that is
+     * swapped out. It does include memory from shared libraries as long as
+     * the pages from those libraries are actually in memory. It does
+     * include all stack and heap memory.
      */
     long getResidentSetSize();
 
     /**
-     * Kernel/system (privileged) time used by the process.
+     * <p>
+     * Getter for the field <code>kernelTime</code>.
+     * </p>
      *
-     * @return the number of milliseconds the process has executed in kernel/system
-     * mode.
+     * @return Returns the number of milliseconds the process has executed in
+     * kernel/system mode.
      */
     long getKernelTime();
 
     /**
-     * Gets user time used by the process.
+     * <p>
+     * Getter for the field <code>userTime</code>.
+     * </p>
      *
-     * @return the number of milliseconds the process has executed in user mode.
+     * @return Returns the number of milliseconds the process has executed in user
+     * mode.
      */
     long getUserTime();
 
     /**
-     * Gets up time / elapsed time since the process started.
+     * <p>
+     * Getter for the field <code>upTime</code>.
+     * </p>
      *
-     * @return the number of milliseconds since the process started.
+     * @return Returns the number of milliseconds since the process started.
      */
     long getUpTime();
 
     /**
-     * Gets the process start time.
+     * <p>
+     * Getter for the field <code>startTime</code>.
+     * </p>
      *
-     * @return the start time of the process in number of milliseconds since January
-     * 1, 1970 UTC.
+     * @return Returns the start time of the process in number of milliseconds since
+     * January 1, 1970.
      */
     long getStartTime();
 
     /**
-     * Gets the bytes read by the process.
+     * <p>
+     * Getter for the field <code>bytesRead</code>.
+     * </p>
      *
-     * @return the number of bytes the process has read from disk.
+     * @return Returns the number of bytes the process has read from disk.
      */
     long getBytesRead();
 
     /**
-     * Gets the bytes written by the process.
+     * <p>
+     * Getter for the field <code>bytesWritten</code>.
+     * </p>
      *
-     * @return the number of bytes the process has written to disk.
+     * @return Returns the number of bytes the process has written to disk.
      */
     long getBytesWritten();
 
     /**
-     * Gets the number of open file handles (or network connections) that belongs to
+     * Sets the number of open file handles (or network connections) that belongs to
      * the process
      * <p>
      * On FreeBSD and Solaris, this value is only populated if information for a
@@ -333,11 +359,11 @@ public interface OSProcess {
     long getAffinityMask();
 
     /**
-     * Attempts to update process attributes. Returns false if the update fails,
+     * Attempts to updates process attributes. Returns false if the update fails,
      * which will occur if the process no longer exists.
      *
      * @return {@code true} if the update was successful, false if the update
-     * failed. In addition, on a failed update the process state will be
+     * failed. In addition, on a failued update the process state will be
      * changed to {@link State#INVALID}.
      */
     boolean updateAttributes();

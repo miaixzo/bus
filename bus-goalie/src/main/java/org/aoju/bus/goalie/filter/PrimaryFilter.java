@@ -75,7 +75,7 @@ public class PrimaryFilter implements WebFilter {
             context.setRequestMap(params.toSingleValueMap());
             doParams(mutate);
             return chain.filter(mutate)
-                    .then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
+                .then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
         } else {
             //文件
             if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mutate.getRequest().getHeaders().getContentType())) {
@@ -96,7 +96,7 @@ public class PrimaryFilter implements WebFilter {
                     context.setFilePartMap(fileMap);
                     doParams(mutate);
                     return chain.filter(mutate)
-                            .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+                        .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
 
             } else {
@@ -104,7 +104,7 @@ public class PrimaryFilter implements WebFilter {
                     context.setRequestMap(params.toSingleValueMap());
                     doParams(mutate);
                     return chain.filter(mutate)
-                            .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+                        .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
             }
 
