@@ -37,6 +37,7 @@ import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 数组工具类
@@ -8873,6 +8874,19 @@ public class ArrayKit {
     }
 
     /**
+     * 按照指定规则，将一种类型的数组元素提取后转换为List
+     *
+     * @param array 被转换的数组
+     * @param func  转换规则函数
+     * @param <T>   原数组类型
+     * @param <R>   目标数组类型
+     * @return 转换后的数组
+     */
+    public static <T, R> List<R> map(T[] array, Function<? super T, ? extends R> func) {
+        return Arrays.stream(array).map(func).collect(Collectors.toList());
+    }
+
+    /**
      * 判断两个数组是否相等，判断依据包括数组长度和每个元素都相等
      *
      * @param array1 数组1
@@ -8981,12 +8995,12 @@ public class ArrayKit {
      * 如果参数为{@code null}，返回0
      *
      * <pre>
-     * ArrayUtil.length(null)            = 0
-     * ArrayUtil.length([])              = 0
-     * ArrayUtil.length([null])          = 1
-     * ArrayUtil.length([true, false])   = 2
-     * ArrayUtil.length([1, 2, 3])       = 3
-     * ArrayUtil.length(["a", "b", "c"]) = 3
+     * ArrayKit.length(null)            = 0
+     * ArrayKit.length([])              = 0
+     * ArrayKit.length([null])          = 1
+     * ArrayKit.length([true, false])   = 2
+     * ArrayKit.length([1, 2, 3])       = 3
+     * ArrayKit.length(["a", "b", "c"]) = 3
      * </pre>
      *
      * @param array 数组对象

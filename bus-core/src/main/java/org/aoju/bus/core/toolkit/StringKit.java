@@ -265,6 +265,29 @@ public class StringKit {
     }
 
     /**
+     * 检查是否没有字符序列为空("")、空字符或仅为空格
+     *
+     * <pre>
+     * StringKit.isNoneBlank(null)             = false
+     * StringKit.isNoneBlank(null, "foo")      = false
+     * StringKit.isNoneBlank(null, null)       = false
+     * StringKit.isNoneBlank("", "bar")        = false
+     * StringKit.isNoneBlank("bob", "")        = false
+     * StringKit.isNoneBlank("  bob  ", null)  = false
+     * StringKit.isNoneBlank(" ", "bar")       = false
+     * StringKit.isNoneBlank(new String[] {})  = true
+     * StringKit.isNoneBlank(new String[]{""}) = false
+     * StringKit.isNoneBlank("foo", "bar")     = true
+     * </pre>
+     *
+     * @param strs 要检查的字符串可以为null或空
+     * @return 所有字符序列都不为空或null或仅为空格
+     */
+    public static boolean isNoneBlank(final CharSequence... strs) {
+        return !isAnyBlank(strs);
+    }
+
+    /**
      * 给定所有字符串是否为空白
      *
      * @param strs 字符串
@@ -300,15 +323,15 @@ public class StringKit {
      * StringKit.isAnyBlank("foo", "bar")     = false
      * </pre>
      *
-     * @param css 要检查的字符序列可以为空或空
+     * @param strs 要检查的字符序列可以为空或空
      * @return 如果任何一个字符序列是空的，或者是空的，或者只有空白
      */
-    public static boolean isAnyBlank(final CharSequence... css) {
-        if (ArrayKit.isEmpty(css)) {
+    public static boolean isAnyBlank(final CharSequence... strs) {
+        if (ArrayKit.isEmpty(strs)) {
             return false;
         }
-        for (final CharSequence cs : css) {
-            if (isBlank(cs)) {
+        for (final CharSequence str : strs) {
+            if (isBlank(str)) {
                 return true;
             }
         }
@@ -333,13 +356,13 @@ public class StringKit {
      * @param str 字符串列表
      * @return 是否全部为空字符串
      */
-    public static boolean isAllEmpty(CharSequence... str) {
-        if (ArrayKit.isEmpty(str)) {
+    public static boolean isAllEmpty(CharSequence... strs) {
+        if (ArrayKit.isEmpty(strs)) {
             return true;
         }
 
-        for (CharSequence val : str) {
-            if (isNotEmpty(val)) {
+        for (CharSequence str : strs) {
+            if (isNotEmpty(str)) {
                 return false;
             }
         }
@@ -350,11 +373,11 @@ public class StringKit {
      * 是否存都不为{@code null}或空对象
      * 通过{@link StringKit#hasEmpty(CharSequence...)} 判断元素
      *
-     * @param args 被检查的对象,一个或者多个
+     * @param strs 被检查的对象,一个或者多个
      * @return 是否都不为空
      */
-    public static boolean isAllNotEmpty(CharSequence... args) {
-        return false == hasEmpty(args);
+    public static boolean isAllNotEmpty(CharSequence... strs) {
+        return false == hasEmpty(strs);
     }
 
     /**
