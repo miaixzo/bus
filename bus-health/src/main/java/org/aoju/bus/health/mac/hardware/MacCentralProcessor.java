@@ -26,23 +26,29 @@
 package org.aoju.bus.health.mac.hardware;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.mac.IOKit;
+import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.HostCpuLoadInfo;
 import com.sun.jna.platform.mac.SystemB.VMMeter;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
+import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * A CPU.
@@ -54,25 +60,24 @@ import java.util.List;
 @ThreadSafe
 final class MacCentralProcessor extends AbstractCentralProcessor {
 
-    @Override
-    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = SysctlKit.sysctl("machdep.cpu.vendor", Normal.EMPTY);
-        String cpuName = SysctlKit.sysctl("machdep.cpu.brand_string", Normal.EMPTY);
-        int i = SysctlKit.sysctl("machdep.cpu.stepping", -1);
-        String cpuStepping = i < 0 ? Normal.EMPTY : Integer.toString(i);
-        i = SysctlKit.sysctl("machdep.cpu.model", -1);
-        String cpuModel = i < 0 ? Normal.EMPTY : Integer.toString(i);
-        i = SysctlKit.sysctl("machdep.cpu.family", -1);
-        String cpuFamily = i < 0 ? Normal.EMPTY : Integer.toString(i);
-        long processorIdBits = 0L;
-        processorIdBits |= SysctlKit.sysctl("machdep.cpu.signature", 0);
-        processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
-        String processorID = String.format("%016X", processorIdBits);
-        boolean cpu64bit = SysctlKit.sysctl("hw.cpu64bit_capable", 0) != 0;
-        long cpuFreq = SysctlKit.sysctl("hw.cpufrequency", 0L);
+    private final Supplier<Pair<String, Long>> vendorFreq = Memoize.memoize(MacCentralProcessor::platformExpert);
 
-        return new ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuFreq);
+    private static Pair<String, Long> platformExpert() {
+        String manufacturer = null;
+        long freq = 0;
+        IOKit.IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
+        if (platformExpert != null) {
+            byte[] data = platformExpert.getByteArrayProperty("manufacturer");
+            if (data != null) {
+                manufacturer = Native.toString(data, StandardCharsets.UTF_8);
+            }
+            data = platformExpert.getByteArrayProperty("clock-frequency");
+            if (data != null && data.length <= 8) {
+                freq = Builder.byteArrayToLong(data, data.length) * 1000L;
+            }
+            platformExpert.release();
+        }
+        return Pair.of(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer, freq);
     }
 
     @Override
@@ -108,10 +113,52 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    public long[] queryCurrentFreq() {
-        long[] freqs = new long[getLogicalProcessorCount()];
-        Arrays.fill(freqs, SysctlKit.sysctl("hw.cpufrequency", -1L));
-        return freqs;
+    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
+        String cpuName = SysctlKit.sysctl("machdep.cpu.brand_string", "");
+        String cpuVendor;
+        String cpuStepping;
+        String cpuModel;
+        String cpuFamily;
+        String processorID;
+        long cpuFreq = 0L;
+        if (cpuName.startsWith("Apple")) {
+            // Processing an M1 chip
+            cpuVendor = vendorFreq.get().getLeft();
+            cpuStepping = "0"; // No correlation yet
+            cpuModel = "0"; // No correlation yet
+            // M1 should have hw.cputype 0x0100000C (ARM64) and hw.cpufamily for an ARM SoC.
+            // However, under Rosetta 2, low level cpuid calls in the translated environment
+            // report hw.cputype for x86 (0x00000007) and hw.cpufamily for an Intel Westmere
+            // chip (0x573b5eec), family 6, model 44, stepping 0.
+            // Encode this emulated architecture in the properties
+            int family = SysctlKit.sysctl("hw.cpufamily", 0);
+            int type = SysctlKit.sysctl("hw.cputype", 0);
+            cpuFamily = String.format("0x%08x", family); // M1 is 0x1b588bb3
+            // Processor ID is an intel concept but CPU type + family conveys same info
+            processorID = String.format("%08x%08x", type, family);
+            cpuFreq = vendorFreq.get().getRight();
+        } else {
+            // Processing an Intel chip
+            cpuVendor = SysctlKit.sysctl("machdep.cpu.vendor", "");
+            int i = SysctlKit.sysctl("machdep.cpu.stepping", -1);
+            cpuStepping = i < 0 ? "" : Integer.toString(i);
+            i = SysctlKit.sysctl("machdep.cpu.model", -1);
+            cpuModel = i < 0 ? "" : Integer.toString(i);
+            i = SysctlKit.sysctl("machdep.cpu.family", -1);
+            cpuFamily = i < 0 ? "" : Integer.toString(i);
+            long processorIdBits = 0L;
+            processorIdBits |= SysctlKit.sysctl("machdep.cpu.signature", 0);
+            processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
+            processorID = String.format("%016x", processorIdBits);
+        }
+        long cpuFrequency = SysctlKit.sysctl("hw.cpufrequency", 0L);
+        if (cpuFrequency > cpuFreq) {
+            cpuFreq = cpuFrequency;
+        }
+        boolean cpu64bit = SysctlKit.sysctl("hw.cpu64bit_capable", 0) != 0;
+
+        return new ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
+                cpuFreq);
     }
 
     @Override
@@ -181,6 +228,13 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             return -1;
         }
         return Builder.unsignedIntToLong(vmstats.v_intr);
+    }
+
+    @Override
+    public long[] queryCurrentFreq() {
+        long[] freq = new long[1];
+        freq[0] = SysctlKit.sysctl("hw.cpufrequency", -1L);
+        return freq;
     }
 
 }

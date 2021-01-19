@@ -37,6 +37,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 /**
@@ -60,6 +61,7 @@ final class MacFirmware extends AbstractFirmware {
         String releaseDate = null;
 
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
+        byte[] data;
         if (platformExpert != null) {
             IOIterator iter = platformExpert.getChildIterator("IODeviceTree");
             if (iter != null) {
@@ -67,7 +69,7 @@ final class MacFirmware extends AbstractFirmware {
                 while (entry != null) {
                     switch (entry.getName()) {
                         case "rom":
-                            byte[] data = entry.getByteArrayProperty("vendor");
+                            data = entry.getByteArrayProperty("vendor");
                             if (data != null) {
                                 manufacturer = Native.toString(data, Charset.UTF_8);
                             }
@@ -92,13 +94,35 @@ final class MacFirmware extends AbstractFirmware {
                                 description = Native.toString(data, Charset.UTF_8);
                             }
                             break;
+
                         default:
+                            if (StringKit.isBlank(name)) {
+                                name = entry.getStringProperty("IONameMatch");
+                            }
                             break;
                     }
                     entry.release();
                     entry = iter.next();
                 }
                 iter.release();
+            }
+            if (StringKit.isBlank(manufacturer)) {
+                data = platformExpert.getByteArrayProperty("manufacturer");
+                if (data != null) {
+                    manufacturer = Native.toString(data, StandardCharsets.UTF_8);
+                }
+            }
+            if (StringKit.isBlank(version)) {
+                data = platformExpert.getByteArrayProperty("target-type");
+                if (data != null) {
+                    version = Native.toString(data, StandardCharsets.UTF_8);
+                }
+            }
+            if (StringKit.isBlank(name)) {
+                data = platformExpert.getByteArrayProperty("device_type");
+                if (data != null) {
+                    name = Native.toString(data, StandardCharsets.UTF_8);
+                }
             }
             platformExpert.release();
         }

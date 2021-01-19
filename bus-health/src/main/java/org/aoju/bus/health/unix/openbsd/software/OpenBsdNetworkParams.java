@@ -23,46 +23,26 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix.solaris.hardware;
+package org.aoju.bus.health.unix.openbsd.software;
 
-import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.builtin.hardware.AbstractDisplay;
-import org.aoju.bus.health.builtin.hardware.Display;
-import org.aoju.bus.health.unix.Xrandr;
-import org.aoju.bus.logger.Logger;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
 
 /**
- * A Display
- *
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
-@ThreadSafe
-final class SolarisDisplay extends AbstractDisplay {
+public class OpenBsdNetworkParams extends AbstractNetworkParams {
 
-    /**
-     * Constructor for SolarisDisplay.
-     *
-     * @param edid a byte array representing a display EDID
-     */
-    SolarisDisplay(byte[] edid) {
-        super(edid);
-        Logger.debug("Initialized SolarisDisplay");
+    @Override
+    public String getIpv4DefaultGateway() {
+        return searchGateway(Executor.runNative("route -n get default"));
     }
 
-    /**
-     * Gets Display Information
-     *
-     * @return An array of Display objects representing monitors, etc.
-     */
-    public static List<Display> getDisplays() {
-        return Collections.unmodifiableList(
-                Xrandr.getEdidArrays().stream().map(SolarisDisplay::new).collect(Collectors.toList()));
+    @Override
+    public String getIpv6DefaultGateway() {
+        return searchGateway(Executor.runNative("route -n get default"));
     }
 
 }

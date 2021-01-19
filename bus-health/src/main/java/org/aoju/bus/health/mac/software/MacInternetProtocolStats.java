@@ -38,7 +38,6 @@ import org.aoju.bus.health.unix.CLibrary;
 import org.aoju.bus.health.unix.NetStat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -207,13 +206,13 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
             case 5:
                 return InternetProtocolStats.TcpState.CLOSE_WAIT;
             case 6:
-                return InternetProtocolStats.TcpState.FIN_WAIT1;
+                return InternetProtocolStats.TcpState.FIN_WAIT_1;
             case 7:
                 return InternetProtocolStats.TcpState.CLOSING;
             case 8:
                 return InternetProtocolStats.TcpState.LAST_ACK;
             case 9:
-                return InternetProtocolStats.TcpState.FIN_WAIT2;
+                return InternetProtocolStats.TcpState.FIN_WAIT_2;
             case 10:
                 return InternetProtocolStats.TcpState.TIME_WAIT;
             default:
@@ -288,7 +287,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                 }
             }
         }
-        return Collections.unmodifiableList(conns);
+        return conns;
     }
 
 }

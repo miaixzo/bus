@@ -33,7 +33,10 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
 import org.aoju.bus.health.builtin.hardware.SoundCard;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * FreeBSD soundcard.
@@ -92,7 +95,7 @@ final class FreeBsdSoundCard extends AbstractSoundCard {
             soundCards.add(new FreeBsdSoundCard(productMap.get(_key), vendorMap.get(_key) + Symbol.SPACE + productMap.get(_key),
                     productMap.get(_key)));
         }
-        return Collections.unmodifiableList(soundCards);
+        return soundCards;
     }
 
 }

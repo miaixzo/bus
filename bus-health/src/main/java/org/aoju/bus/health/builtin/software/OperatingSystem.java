@@ -28,7 +28,6 @@ package org.aoju.bus.health.builtin.software;
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.unix.Who;
 
@@ -46,6 +45,26 @@ import java.util.List;
  */
 @ThreadSafe
 public interface OperatingSystem {
+
+    /**
+     * Gets currently logged in users.
+     * <p>
+     * On macOS, Linux, and Unix systems, the default implementation uses native
+     * code (see {@code man getutxent}) that is not thread safe. OSHI's use of this
+     * code is synchronized and may be used in a multi-threaded environment without
+     * introducing any additional conflicts. Users should note, however, that other
+     * operating system code may access the same native code.
+     * <p>
+     * The {@link Who#queryWho()} method produces similar output
+     * parsing the output of the Posix-standard {@code who} command, and may
+     * internally employ reentrant code on some platforms. Users may opt to use this
+     * command-line variant by default using the {@code whoCommand}
+     * configuration property.
+     *
+     * @return A list of {@link OSSession} objects representing
+     * logged-in users
+     */
+    List<OSSession> getSessions();
 
     /**
      * Operating system family.
@@ -83,33 +102,13 @@ public interface OperatingSystem {
     InternetProtocolStats getInternetProtocolStats();
 
     /**
-     * Gets currently logged in users.
-     * <p>
-     * On macOS, Linux, and Unix systems, the default implementation uses native
-     * code (see {@code man getutxent}) that is not thread safe. OSHI's use of this
-     * code is synchronized and may be used in a multi-threaded environment without
-     * introducing any additional conflicts. Users should note, however, that other
-     * operating system code may access the same native code.
-     * <p>
-     * The {@link Who#queryWho()} method produces similar output
-     * parsing the output of the Posix-standard {@code who} command, and may
-     * internally employ reentrant code on some platforms. Users may opt to use this
-     * command-line variant by default using the {@code health.os.unix.whoCommand}
-     * configuration property.
-     *
-     * @return An {@code UnmodifiableList} of {@link OSSession}
-     * objects representing logged-in users
-     */
-    List<OSSession> getSessions();
-
-    /**
      * Gets currently running processes. No order is guaranteed.
      *
-     * @return An {@code UnmodifiableList} of {@link OSProcess}
-     * objects for the specified number (or all) of currently running
-     * processes, sorted as specified. The list may contain null elements or
-     * processes with a state of {@link OSProcess.State#INVALID} if a
-     * process terminates during iteration.
+     * @return A list of {@link OSProcess} objects for the
+     * specified number (or all) of currently running processes, sorted as
+     * specified. The list may contain null elements or processes with a
+     * state of {@link OSProcess.State#INVALID} if a process terminates
+     * during iteration.
      */
     List<OSProcess> getProcesses();
 
@@ -122,11 +121,11 @@ public interface OperatingSystem {
      *
      * @param limit Max number of results to return, or 0 to return all results
      * @param sort  If not null, determines sorting of results
-     * @return An {@code UnmodifiableList} of {@link OSProcess}
-     * objects for the specified number (or all) of currently running
-     * processes, sorted as specified. The list may contain null elements or
-     * processes with a state of {@link OSProcess.State#INVALID} if a
-     * process terminates during iteration.
+     * @return A list of {@link OSProcess} objects for the
+     * specified number (or all) of currently running processes, sorted as
+     * specified. The list may contain null elements or processes with a
+     * state of {@link OSProcess.State#INVALID} if a process terminates
+     * during iteration.
      */
     List<OSProcess> getProcesses(int limit, ProcessSort sort);
 
@@ -135,19 +134,10 @@ public interface OperatingSystem {
      * has potentially improved performance vs. iterating individual processes.
      *
      * @param pids A collection of process IDs
-     * @return An {@code UnmodifiableList} of {@link OSProcess}
-     * objects for the specified process ids if it is running
+     * @return A list of {@link OSProcess} objects for the
+     * specified process ids if it is running
      */
     List<OSProcess> getProcesses(Collection<Integer> pids);
-
-    /**
-     * Gets information on a currently running process
-     *
-     * @param pid A process ID
-     * @return An {@link OSProcess} object for the specified
-     * process id if it is running; null otherwise
-     */
-    OSProcess getProcess(int pid);
 
     /**
      * Gets currently running child processes of provided parent PID, optionally
@@ -160,14 +150,42 @@ public interface OperatingSystem {
      * @param parentPid A process ID
      * @param limit     Max number of results to return, or 0 to return all results
      * @param sort      If not null, determines sorting of results
-     * @return An {@code UnmodifiableList} of {@link OSProcess}
-     * objects representing the specified number (or all) of currently
-     * running child processes of the provided PID, sorted as specified. The
-     * list may contain null elements or processes with a state of
-     * {@link OSProcess.State#INVALID} if a process terminates during
-     * iteration.
+     * @return A list of {@link OSProcess} objects representing the
+     * specified number (or all) of currently running child processes of the
+     * provided PID, sorted as specified. The list may contain null elements
+     * or processes with a state of {@link OSProcess.State#INVALID} if a
+     * process terminates during iteration.
      */
     List<OSProcess> getChildProcesses(int parentPid, int limit, ProcessSort sort);
+
+    /**
+     * Gets information on a currently running process
+     *
+     * @param pid A process ID
+     * @return An {@link OSProcess} object for the specified
+     * process id if it is running; null otherwise
+     */
+    OSProcess getProcess(int pid);
+
+    /**
+     * Gets windows on the operating system's GUI desktop.
+     * <p>
+     * On Unix-like systems, reports X11 windows only, which may be limited to the
+     * current display and will not report windows used by other window managers.
+     * <p>
+     * While not a guarantee, a best effort is made to return windows in
+     * foreground-to-background order. This ordering may be used along with
+     * {@link OSDesktopWindow#getOrder()} to (probably) determine the frontmost
+     * window.
+     *
+     * @param visibleOnly Whether to restrict the list to only windows visible to the user.
+     *                    <p>
+     *                    This is a best effort attempt at a reasonable definition of
+     *                    visibility. Visible windows may be completely transparent.
+     * @return A list of {@link OSDesktopWindow} objects
+     * representing the desktop windows.
+     */
+    List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly);
 
     /**
      * Gets the current process ID
@@ -242,7 +260,7 @@ public interface OperatingSystem {
         CPU, MEMORY, OLDEST, NEWEST, PID, PARENTPID, NAME
     }
 
-    /*
+    /**
      * A class representing the Operating System version details.
      */
     @Immutable
@@ -259,7 +277,7 @@ public interface OperatingSystem {
 
             StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Normal.UNKNOWN);
             if (!StringKit.isBlank(getCodeName())) {
-                sb.append(" (").append(getCodeName()).append(Symbol.C_PARENTHESE_RIGHT);
+                sb.append(" (").append(getCodeName()).append(')');
             }
             if (!StringKit.isBlank(getBuildNumber())) {
                 sb.append(" build ").append(getBuildNumber());

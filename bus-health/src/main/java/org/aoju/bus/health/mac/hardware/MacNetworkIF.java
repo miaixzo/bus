@@ -32,7 +32,6 @@ import org.aoju.bus.health.mac.drivers.NetStat;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +66,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
      * Gets all network interfaces on this machine
      *
      * @param includeLocalInterfaces include local interfaces in the result
-     * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
-     * the interfaces
+     * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         // One time fetch of stats
@@ -77,7 +75,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             ifList.add(new MacNetworkIF(ni, data));
         }
-        return Collections.unmodifiableList(ifList);
+        return ifList;
     }
 
     @Override

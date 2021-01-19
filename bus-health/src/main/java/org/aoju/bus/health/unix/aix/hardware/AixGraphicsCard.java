@@ -34,7 +34,6 @@ import org.aoju.bus.health.builtin.hardware.AbstractGraphicsCard;
 import org.aoju.bus.health.builtin.hardware.GraphicsCard;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -92,7 +91,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 }
             }
         }
-        return Collections.unmodifiableList(cardList);
+        return cardList;
     }
 
 }

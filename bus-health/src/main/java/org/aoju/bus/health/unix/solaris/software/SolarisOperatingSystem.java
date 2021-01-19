@@ -139,15 +139,15 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public List<OSSession> getSessions() {
-        return Collections.unmodifiableList(USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent());
+        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
+
 
     @Override
     public List<OSProcess> getProcesses(int limit, OperatingSystem.ProcessSort sort) {
         List<OSProcess> procs = getProcessListFromPS(
                 "ps -eo s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args", -1);
-        List<OSProcess> sorted = processSort(procs, limit, sort);
-        return Collections.unmodifiableList(sorted);
+        return processSort(procs, limit, sort);
     }
 
     @Override
@@ -171,8 +171,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                 "ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p "
                         + String.join(Symbol.COMMA, childPids),
                 -1);
-        List<OSProcess> sorted = processSort(procs, limit, sort);
-        return Collections.unmodifiableList(sorted);
+        return processSort(procs, limit, sort);
     }
 
     @Override

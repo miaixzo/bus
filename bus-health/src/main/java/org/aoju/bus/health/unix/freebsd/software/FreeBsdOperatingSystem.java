@@ -38,7 +38,10 @@ import org.aoju.bus.health.unix.freebsd.drivers.Who;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * FreeBSD is a free and open-source Unix-like operating system descended from
@@ -134,14 +137,13 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public List<OSSession> getSessions() {
-        return Collections.unmodifiableList(USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent());
+        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
     @Override
     public List<OSProcess> getProcesses(int limit, OperatingSystem.ProcessSort sort) {
         List<OSProcess> procs = getProcessListFromPS(-1);
-        List<OSProcess> sorted = processSort(procs, limit, sort);
-        return Collections.unmodifiableList(sorted);
+        return processSort(procs, limit, sort);
     }
 
     @Override
@@ -151,18 +153,6 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             return null;
         }
         return procs.get(0);
-    }
-
-    @Override
-    public List<OSProcess> getChildProcesses(int parentPid, int limit, OperatingSystem.ProcessSort sort) {
-        List<OSProcess> procs = new ArrayList<>();
-        for (OSProcess p : getProcesses(0, null)) {
-            if (p.getParentProcessID() == parentPid) {
-                procs.add(p);
-            }
-        }
-        List<OSProcess> sorted = processSort(procs, limit, sort);
-        return Collections.unmodifiableList(sorted);
     }
 
     @Override

@@ -353,7 +353,7 @@ public class StringKit {
     /**
      * 是否全部为空字符串
      *
-     * @param str 字符串列表
+     * @param strs 字符串列表
      * @return 是否全部为空字符串
      */
     public static boolean isAllEmpty(CharSequence... strs) {

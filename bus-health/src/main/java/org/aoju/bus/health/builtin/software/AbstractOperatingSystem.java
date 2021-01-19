@@ -26,13 +26,14 @@
 package org.aoju.bus.health.builtin.software;
 
 import com.sun.jna.Platform;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.unix.Who;
+import org.aoju.bus.health.unix.Xwininfo;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu
@@ -43,25 +44,33 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     public static final String OSHI_OS_UNIX_WHOCOMMAND = "health.os.unix.whoCommand";
     protected static final boolean USE_WHO_COMMAND = Config.get(OSHI_OS_UNIX_WHOCOMMAND, false);
-    /*
-     * Comparators for use in processSort().
-     */
-    private static final Comparator<OSProcess> CPU_DESC_SORT = Comparator
-            .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
-    private static final Comparator<OSProcess> RSS_DESC_SORT = Comparator.comparingLong(OSProcess::getResidentSetSize)
-            .reversed();
-    private static final Comparator<OSProcess> UPTIME_ASC_SORT = Comparator.comparingLong(OSProcess::getUpTime);
-    private static final Comparator<OSProcess> UPTIME_DESC_SORT = UPTIME_ASC_SORT.reversed();
-    private static final Comparator<OSProcess> PID_ASC_SORT = Comparator.comparingInt(OSProcess::getProcessID);
-    private static final Comparator<OSProcess> PARENTPID_ASC_SORT = Comparator
-            .comparingInt(OSProcess::getParentProcessID);
-    private static final Comparator<OSProcess> NAME_ASC_SORT = Comparator.comparing(OSProcess::getName,
-            String.CASE_INSENSITIVE_ORDER);
+
     private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
     private final Supplier<FamilyVersionInfo> familyVersionInfo = Memoize.memoize(this::queryFamilyVersionInfo);
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryPlatformBitness);
     // Test if sudo or admin privileges: 1 = unknown, 0 = no, 1 = yes
     private final Supplier<Boolean> elevated = Memoize.memoize(this::queryElevated);
+
+    /*
+     * Comparators for use in processSort().
+     */
+    private static final Comparator<OSProcess> CPU_DESC_SORT = Comparator
+            .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
+
+    private static final Comparator<OSProcess> RSS_DESC_SORT = Comparator.comparingLong(OSProcess::getResidentSetSize)
+            .reversed();
+
+    private static final Comparator<OSProcess> UPTIME_ASC_SORT = Comparator.comparingLong(OSProcess::getUpTime);
+
+    private static final Comparator<OSProcess> UPTIME_DESC_SORT = UPTIME_ASC_SORT.reversed();
+
+    private static final Comparator<OSProcess> PID_ASC_SORT = Comparator.comparingInt(OSProcess::getProcessID);
+
+    private static final Comparator<OSProcess> PARENTPID_ASC_SORT = Comparator
+            .comparingInt(OSProcess::getParentProcessID);
+
+    private static final Comparator<OSProcess> NAME_ASC_SORT = Comparator.comparing(OSProcess::getName,
+            String.CASE_INSENSITIVE_ORDER);
 
     @Override
     public String getManufacturer() {
@@ -175,7 +184,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     @Override
     public List<OSSession> getSessions() {
-        return Collections.unmodifiableList(Who.queryWho());
+        return Who.queryWho();
     }
 
     @Override
@@ -185,21 +194,29 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     @Override
     public List<OSProcess> getProcesses(Collection<Integer> pids) {
-        List<OSProcess> returnValue = new ArrayList<>(pids.size());
-        for (Integer pid : pids) {
-            OSProcess process = getProcess(pid);
-            if (process != null) {
-                returnValue.add(process);
-            }
-        }
-        return Collections.unmodifiableList(returnValue);
+        return pids.stream().map(this::getProcess).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> getChildProcesses(int parentPid, int limit, ProcessSort sort) {
+        // filter processes whose parent process id matches
+        List<OSProcess> procList = getProcesses(0, null).stream().filter(proc -> parentPid == proc.getParentProcessID())
+                .collect(Collectors.toList());
+        return processSort(procList, limit, sort);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE).append(getVersionInfo());
+        sb.append(getManufacturer()).append(' ').append(getFamily()).append(' ').append(getVersionInfo());
         return sb.toString();
+    }
+
+    @Override
+    public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
+        // Default X11 implementation for Unix-like operating systems.
+        // Overridden on Windows and macOS
+        return Xwininfo.queryXWindows(visibleOnly);
     }
 
     protected static final class FamilyVersionInfo {

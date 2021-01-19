@@ -36,9 +36,9 @@ import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 import org.aoju.bus.health.builtin.software.InternetProtocolStats;
 import org.aoju.bus.health.linux.ProcPath;
 import org.aoju.bus.health.linux.drivers.ProcessStat;
+import org.aoju.bus.health.unix.NetStat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -193,9 +193,9 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
             case 0x03:
                 return InternetProtocolStats.TcpState.SYN_RECV;
             case 0x04:
-                return InternetProtocolStats.TcpState.FIN_WAIT1;
+                return InternetProtocolStats.TcpState.FIN_WAIT_1;
             case 0x05:
-                return InternetProtocolStats.TcpState.FIN_WAIT2;
+                return InternetProtocolStats.TcpState.FIN_WAIT_2;
             case 0x06:
                 return InternetProtocolStats.TcpState.TIME_WAIT;
             case 0x07:
@@ -216,23 +216,22 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
     @Override
     public TcpStats getTCPv4Stats() {
-        return getTcpStats("netstat -st4");
+        return NetStat.queryTcpStats("netstat -st4");
     }
 
     @Override
     public TcpStats getTCPv6Stats() {
-        // "netstat -st6" returns the same as -st4
         return new TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
     }
 
     @Override
     public UdpStats getUDPv4Stats() {
-        return getUdpStats("netstat -su4");
+        return NetStat.queryUdpStats("netstat -su4");
     }
 
     @Override
     public UdpStats getUDPv6Stats() {
-        return getUdpStats("netstat -su6");
+        return NetStat.queryUdpStats("netstat -su6");
     }
 
     @Override
@@ -243,7 +242,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
         conns.addAll(queryConnections("tcp", 6, pidMap));
         conns.addAll(queryConnections("udp", 4, pidMap));
         conns.addAll(queryConnections("udp", 6, pidMap));
-        return Collections.unmodifiableList(conns);
+        return conns;
     }
 
 }

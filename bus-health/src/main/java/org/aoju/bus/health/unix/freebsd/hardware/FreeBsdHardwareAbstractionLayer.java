@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.freebsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.*;
+import org.aoju.bus.health.unix.UnixDisplay;
 
 import java.util.List;
 
@@ -72,7 +73,7 @@ public final class FreeBsdHardwareAbstractionLayer extends AbstractHardwareAbstr
 
     @Override
     public List<Display> getDisplays() {
-        return FreeBsdDisplay.getDisplays();
+        return UnixDisplay.getDisplays();
     }
 
     @Override
