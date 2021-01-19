@@ -35,7 +35,10 @@ import org.aoju.bus.health.builtin.hardware.PowerSource;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A Power Source
@@ -62,10 +65,10 @@ public final class FreeBsdPowerSource extends AbstractPowerSource {
     /**
      * Gets Battery Information
      *
-     * @return An array of PowerSource objects representing batteries, etc.
+     * @return A list of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
-        return Collections.unmodifiableList(Arrays.asList(getPowerSource("BAT0")));
+        return Arrays.asList(getPowerSource("BAT0"));
     }
 
     private static FreeBsdPowerSource getPowerSource(String name) {

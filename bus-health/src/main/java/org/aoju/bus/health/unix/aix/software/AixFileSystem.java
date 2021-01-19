@@ -35,6 +35,7 @@ import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
 
 import java.io.File;
+import java.nio.file.PathMatcher;
 import java.util.*;
 
 /**
@@ -51,6 +52,19 @@ public class AixFileSystem extends AbstractFileSystem {
 
     // System path mounted as tmpfs
     private static final List<String> TMP_FS_PATHS = Arrays.asList("/proc");
+    public static final String OSHI_AIX_FS_PATH_EXCLUDES = "health.os.aix.filesystem.path.excludes";
+    public static final String OSHI_AIX_FS_PATH_INCLUDES = "health.os.aix.filesystem.path.includes";
+    public static final String OSHI_AIX_FS_VOLUME_EXCLUDES = "health.os.aix.filesystem.volume.excludes";
+    public static final String OSHI_AIX_FS_VOLUME_INCLUDES = "health.os.aix.filesystem.volume.includes";
+
+    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_AIX_FS_PATH_EXCLUDES);
+    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_AIX_FS_PATH_INCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_AIX_FS_VOLUME_EXCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_AIX_FS_VOLUME_INCLUDES);
 
     // Called by AixOSFileStore
     static List<OSFileStore> getFileStoreMatching(String nameToMatch) {
@@ -117,9 +131,9 @@ public class AixFileSystem extends AbstractFileSystem {
                 String options = split[4];
 
                 // Skip non-local drives if requested, and exclude pseudo file systems
-                if ((localOnly && NETWORK_FS_TYPES.contains(type)) || PSEUDO_FS_TYPES.contains(type)
-                        || path.equals("/dev") || !path.startsWith(Symbol.SLASH)
-                        || Builder.filePathStartsWith(TMP_FS_PATHS, path) && !path.equals(Symbol.SLASH)) {
+                if ((localOnly && NETWORK_FS_TYPES.contains(type))
+                        || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
+                        volume, FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                     continue;
                 }
 

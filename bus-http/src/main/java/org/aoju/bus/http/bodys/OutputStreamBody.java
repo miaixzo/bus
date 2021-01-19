@@ -27,7 +27,7 @@ package org.aoju.bus.http.bodys;
 
 import org.aoju.bus.core.io.BufferSink;
 import org.aoju.bus.core.io.Timeout;
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.http.Request;
 
 import java.io.IOException;
@@ -120,7 +120,7 @@ public abstract class OutputStreamBody extends RequestBody {
     }
 
     @Override
-    public final MediaType contentType() {
+    public final MimeType contentType() {
         return null;
     }
 

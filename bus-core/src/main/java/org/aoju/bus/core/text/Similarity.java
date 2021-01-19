@@ -58,8 +58,8 @@ public class Similarity {
     /**
      * 按照分段存储simhash,查找更快速
      */
-    private List<Map<String, List<Long>>> storage;
-    private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final List<Map<String, List<Long>>> storage;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
      * 构造

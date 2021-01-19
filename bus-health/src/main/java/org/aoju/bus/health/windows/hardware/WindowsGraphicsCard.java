@@ -39,7 +39,6 @@ import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.Win32VideoController;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,7 +75,7 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
      * objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
-        List<WindowsGraphicsCard> cardList = new ArrayList<>();
+        List<GraphicsCard> cardList = new ArrayList<>();
         if (IS_VISTA_OR_GREATER) {
             WmiResult<Win32VideoController.VideoControllerProperty> cards = Win32VideoController.queryVideoController();
             for (int index = 0; index < cards.getResultCount(); index++) {
@@ -103,7 +102,7 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                         StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram));
             }
         }
-        return Collections.unmodifiableList(cardList);
+        return cardList;
     }
 
 }

@@ -34,7 +34,6 @@ import org.aoju.bus.health.unix.solaris.KstatKit.KstatChain;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,15 +66,14 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
      * Gets all network interfaces on this machine
      *
      * @param includeLocalInterfaces include local interfaces in the result
-     * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
-     * the interfaces
+     * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             ifList.add(new SolarisNetworkIF(ni));
         }
-        return Collections.unmodifiableList(ifList);
+        return ifList;
     }
 
     @Override

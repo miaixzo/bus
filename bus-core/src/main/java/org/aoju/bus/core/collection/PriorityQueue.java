@@ -40,9 +40,11 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
 
     private static final long serialVersionUID = 1L;
 
-    //容量
-    private int capacity;
-    private Comparator<? super E> comparator;
+    /**
+     * 容量
+     */
+    private final int capacity;
+    private final Comparator<? super E> comparator;
 
     public PriorityQueue(int capacity) {
         this(capacity, null);

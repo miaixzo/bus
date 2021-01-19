@@ -44,7 +44,7 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
 
     private static final long serialVersionUID = 1L;
 
-    private TreeEntity TreeEntity;
+    private final TreeEntity TreeEntity;
     private TreeMap<T> parent;
 
     public TreeMap() {
@@ -59,7 +59,7 @@ public class TreeMap<T> extends LinkedHashMap<String, Object> implements Node<T>
     public TreeMap(TreeEntity TreeEntity) {
         super();
         this.TreeEntity = ObjectKit.defaultIfNull(
-                TreeEntity, TreeEntity.DEFAULT);
+                TreeEntity, org.aoju.bus.core.lang.tree.TreeEntity.DEFAULT);
     }
 
     /**

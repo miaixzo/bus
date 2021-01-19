@@ -123,6 +123,27 @@ public class Lunar {
             "戌亥", "申酉", "午未", "辰巳", "寅卯", "子丑"
     };
     /**
+     * 六曜
+     */
+    public static final String[] LIU_YAO = {
+            "先胜", "友引", "先负", "佛灭", "大安", "赤口"
+    };
+    /**
+     * 物候
+     */
+    public static final String[] WU_HOU = {
+            "蚯蚓结", "麋角解", "水泉动", "雁北乡", "鹊始巢", "雉始雊", "鸡始乳", "征鸟厉疾",
+            "水泽腹坚", "东风解冻", "蛰虫始振", "鱼陟负冰", "獭祭鱼", "候雁北", "草木萌动",
+            "桃始华", "仓庚鸣", "鹰化为鸠", "玄鸟至", "雷乃发声", "始电", "桐始华", "田鼠化为鴽",
+            "虹始见", "萍始生", "鸣鸠拂奇羽", "戴胜降于桑", "蝼蝈鸣", "蚯蚓出", "王瓜生",
+            "苦菜秀", "靡草死", "麦秋至", "螳螂生", "鵙始鸣", "反舌无声", "鹿角解", "蜩始鸣",
+            "半夏生", "温风至", "蟋蟀居壁", "鹰始挚", "腐草为萤", "土润溽暑", "大雨行时",
+            "凉风至", "白露降", "寒蝉鸣", "鹰乃祭鸟", "天地始肃", "禾乃登", "鸿雁来", "玄鸟归",
+            "群鸟养羞", "雷始收声", "蛰虫坯户", "水始涸", "鸿雁来宾", "雀入大水为蛤", "菊有黄花",
+            "豺乃祭兽", "草木黄落", "蛰虫咸俯", "水始冰", "地始冻", "雉入大水为蜃", "虹藏不见",
+            "天气上升地气下降", "闭塞而成冬", "鹖鴠不鸣", "虎始交", "荔挺出"
+    };
+    /**
      * 喜神方位，《喜神方位歌》：甲己在艮乙庚乾，丙辛坤位喜神安，丁壬只在离宫坐，戊癸原在在巽间。
      */
     public static final String[] POSITION_XI = {
@@ -233,6 +254,7 @@ public class Lunar {
      */
     public static final Map<String, Integer> ZHI_TIAN_SHEN_OFFSET = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("子", 4);
             put("丑", 2);
@@ -253,6 +275,7 @@ public class Lunar {
      */
     public static final Map<String, String> TIAN_SHEN_TYPE = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("青龙", "黄道");
             put("明堂", "黄道");
@@ -274,6 +297,7 @@ public class Lunar {
      */
     public static final Map<String, String> TIAN_SHEN_TYPE_LUCK = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("黄道", "吉");
             put("黑道", "凶");
@@ -284,6 +308,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHOU = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("东", "青龙");
             put("南", "朱雀");
@@ -297,6 +322,7 @@ public class Lunar {
      */
     public static final Map<String, String> CHONG_GAN_BAD = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("庚", "甲");
             put("辛", "乙");
@@ -310,6 +336,7 @@ public class Lunar {
      */
     public static final Map<String, String> CHONG_GAN_TIE_GOOD = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲", "己");
             put("丙", "辛");
@@ -323,6 +350,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHA = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("子", "南");
             put("丑", "东");
@@ -343,6 +371,7 @@ public class Lunar {
      */
     public static final Map<String, String> POSITION_DESC = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("坎", "正北");
             put("艮", "东北");
@@ -360,6 +389,7 @@ public class Lunar {
      */
     public static final Map<String, String> GONG = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "东");
             put("井", "南");
@@ -396,6 +426,7 @@ public class Lunar {
      */
     public static final Map<String, String> ZHENG = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "木");
             put("井", "木");
@@ -432,6 +463,7 @@ public class Lunar {
      */
     public static final Map<String, String> ANIMAL = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "蛟");
             put("斗", "獬");
@@ -468,6 +500,7 @@ public class Lunar {
      */
     public static final Map<String, String> WU_XING_GAN = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲", "木");
             put("乙", "木");
@@ -486,6 +519,7 @@ public class Lunar {
      */
     public static final Map<String, String> WU_XING_ZHI = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("寅", "木");
             put("卯", "木");
@@ -506,6 +540,7 @@ public class Lunar {
      */
     public static final Map<String, String> NAYIN = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲子", "海中金");
             put("甲午", "沙中金");
@@ -574,6 +609,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHI_SHEN_GAN = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲甲", "比肩");
             put("甲乙", "劫财");
@@ -682,6 +718,7 @@ public class Lunar {
      */
     public static final Map<String, String> SHI_SHEN_ZHI = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("甲子癸", "正印");
             put("甲丑癸", "正印");
@@ -970,6 +1007,7 @@ public class Lunar {
      */
     public static final Map<String, List<String>> ZHI_HIDE_GAN = new HashMap<String, List<String>>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("子", Collections.nCopies(1, "癸"));
             put("丑", Arrays.asList("己", "癸", "辛"));
@@ -990,6 +1028,7 @@ public class Lunar {
      */
     public static final Map<String, String> FESTIVAL = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("1-1", "春节");
             put("1-15", "元宵节");
@@ -1003,42 +1042,49 @@ public class Lunar {
         }
     };
     /**
-     * 农历日期对应的非正式节日
+     * 农历日期对应的非正式节日，参考《寿康宝鉴》
      */
     public static final Map<String, List<String>> OTHER_FESTIVAL = new HashMap<String, List<String>>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("1-1", Collections.nCopies(1, "弥勒佛圣诞"));
             put("1-8", Collections.nCopies(1, "五殿阎罗天子诞"));
             put("1-9", Collections.nCopies(1, "玉皇上帝诞"));
+            put("1-13", Collections.nCopies(1, "杨公忌"));
             put("2-1", Collections.nCopies(1, "一殿秦广王诞"));
             put("2-2", Collections.nCopies(1, "福德土地正神诞"));
             put("2-3", Collections.nCopies(1, "文昌帝君诞"));
             put("2-6", Collections.nCopies(1, "东华帝君诞"));
             put("2-8", Collections.nCopies(1, "释迦牟尼佛出家"));
-            put("2-15", Collections.nCopies(1, "释迦牟尼佛般涅槃"));
+            put("2-11", Collections.nCopies(1, "杨公忌"));
+            put("2-15", Arrays.asList("释迦牟尼佛涅槃", "太上老君诞"));
             put("2-17", Collections.nCopies(1, "东方杜将军诞"));
-            put("2-18", Collections.nCopies(1, "至圣先师孔子讳辰"));
+            put("2-18", Arrays.asList("四殿五官王诞", "至圣先师孔子讳辰"));
             put("2-19", Collections.nCopies(1, "观音大士诞"));
             put("2-21", Collections.nCopies(1, "普贤菩萨诞"));
             put("3-1", Collections.nCopies(1, "二殿楚江王诞"));
             put("3-3", Collections.nCopies(1, "玄天上帝诞"));
             put("3-8", Collections.nCopies(1, "六殿卞城王诞"));
-            put("3-15", Collections.nCopies(1, "昊天上帝诞"));
+            put("3-9", Collections.nCopies(1, "杨公忌"));
+            put("3-12", Collections.nCopies(1, "中央五道诞"));
+            put("3-15", Arrays.asList("玄坛诞", "昊天上帝诞"));
             put("3-16", Collections.nCopies(1, "准提菩萨诞"));
-            put("3-19", Collections.nCopies(1, "中岳大帝诞"));
+            put("3-18", Arrays.asList("中岳大帝诞", "后土娘娘诞"));
             put("3-20", Collections.nCopies(1, "子孙娘娘诞"));
             put("3-27", Collections.nCopies(1, "七殿泰山王诞"));
             put("3-28", Collections.nCopies(1, "苍颉至圣先师诞"));
             put("4-1", Collections.nCopies(1, "八殿都市王诞"));
             put("4-4", Collections.nCopies(1, "文殊菩萨诞"));
-            put("4-8", Collections.nCopies(1, "释迦牟尼佛诞"));
+            put("4-7", Collections.nCopies(1, "杨公忌"));
+            put("4-8", Arrays.asList("释迦牟尼佛诞", "九殿平等王诞"));
             put("4-14", Collections.nCopies(1, "纯阳祖师诞"));
             put("4-15", Collections.nCopies(1, "钟离祖师诞"));
             put("4-17", Collections.nCopies(1, "十殿转轮王诞"));
             put("4-18", Collections.nCopies(1, "紫徽大帝诞"));
             put("4-20", Collections.nCopies(1, "眼光圣母诞"));
             put("5-1", Collections.nCopies(1, "南极长生大帝诞"));
+            put("5-5", Collections.nCopies(1, "杨公忌"));
             put("5-8", Collections.nCopies(1, "南方五道诞"));
             put("5-11", Collections.nCopies(1, "天下都城隍诞"));
             put("5-12", Collections.nCopies(1, "炳灵公诞"));
@@ -1046,10 +1092,16 @@ public class Lunar {
             put("5-16", Collections.nCopies(1, "天地元气造化万物之辰"));
             put("5-18", Collections.nCopies(1, "张天师诞"));
             put("5-22", Collections.nCopies(1, "孝娥神诞"));
-            put("6-19", Collections.nCopies(1, "观世音菩萨成道日"));
-            put("6-24", Collections.nCopies(1, "关帝诞"));
+            put("6-3", Collections.nCopies(1, "杨公忌"));
+            put("6-10", Collections.nCopies(1, "金粟如来诞"));
+            put("6-13", Collections.nCopies(1, "井泉龙王诞"));
+            put("6-19", Collections.nCopies(1, "观音大士涅槃"));
+            put("6-23", Collections.nCopies(1, "南方火神诞"));
+            put("6-24", Arrays.asList("雷祖诞", "关帝诞"));
+            put("7-1", Collections.nCopies(1, "杨公忌"));
             put("7-7", Collections.nCopies(1, "魁星诞"));
-            put("7-13", Arrays.asList("长真谭真人诞", "大势至菩萨诞"));
+            put("7-12", Collections.nCopies(1, "长真谭真人诞"));
+            put("7-13", Collections.nCopies(1, "大势至菩萨诞"));
             put("7-15", Collections.nCopies(1, "中元节"));
             put("7-18", Collections.nCopies(1, "西王母诞"));
             put("7-19", Collections.nCopies(1, "太岁诞"));
@@ -1065,31 +1117,42 @@ public class Lunar {
             put("8-18", Collections.nCopies(1, "天人兴福之辰"));
             put("8-23", Collections.nCopies(1, "汉恒候张显王诞"));
             put("8-24", Collections.nCopies(1, "灶君夫人诞"));
-            put("8-29", Collections.nCopies(1, "至圣先师孔子诞"));
-            put("9-1", Collections.nCopies(1, "北斗九星降世"));
-            put("9-3", Collections.nCopies(1, "五瘟神诞"));
-            put("9-9", Collections.nCopies(1, "酆都大帝诞"));
+            put("8-27", Arrays.asList("至圣先师孔子诞", "杨公忌"));
+            put("9-1", Collections.nCopies(1, "北斗九星降"));
+            put("9-2", Collections.nCopies(1, "北斗九星降"));
+            put("9-3", Arrays.asList("北斗九星降", "五瘟神诞"));
+            put("9-4", Collections.nCopies(1, "北斗九星降"));
+            put("9-5", Collections.nCopies(1, "北斗九星降"));
+            put("9-6", Collections.nCopies(1, "北斗九星降"));
+            put("9-7", Collections.nCopies(1, "北斗九星降"));
+            put("9-8", Collections.nCopies(1, "北斗九星降"));
+            put("9-9", Arrays.asList("北斗九星降", "酆都大帝诞"));
             put("9-13", Collections.nCopies(1, "孟婆尊神诞"));
             put("9-17", Collections.nCopies(1, "金龙四大王诞"));
             put("9-19", Collections.nCopies(1, "观世音菩萨出家"));
+            put("9-25", Collections.nCopies(1, "杨公忌"));
             put("9-30", Collections.nCopies(1, "药师琉璃光佛诞"));
             put("10-1", Collections.nCopies(1, "寒衣节"));
             put("10-3", Collections.nCopies(1, "三茅诞"));
             put("10-5", Collections.nCopies(1, "达摩祖师诞"));
             put("10-8", Collections.nCopies(1, "佛涅槃日"));
             put("10-15", Collections.nCopies(1, "下元节"));
+            put("10-23", Collections.nCopies(1, "杨公忌"));
+            put("10-27", Collections.nCopies(1, "北极紫薇大帝降"));
             put("11-4", Collections.nCopies(1, "至圣先师孔子诞"));
             put("11-6", Collections.nCopies(1, "西岳大帝诞"));
             put("11-11", Collections.nCopies(1, "太乙救苦天尊诞"));
             put("11-17", Collections.nCopies(1, "阿弥陀佛诞"));
             put("11-19", Collections.nCopies(1, "太阳日宫诞"));
+            put("11-21", Collections.nCopies(1, "杨公忌"));
             put("11-23", Collections.nCopies(1, "张仙诞"));
+            put("11-25", Collections.nCopies(1, "掠刷大夫降"));
             put("11-26", Collections.nCopies(1, "北方五道诞"));
             put("12-8", Collections.nCopies(1, "释迦如来成佛之辰"));
             put("12-16", Collections.nCopies(1, "南岳大帝诞"));
+            put("12-19", Collections.nCopies(1, "杨公忌"));
             put("12-21", Collections.nCopies(1, "天猷上帝诞"));
-            put("12-23", Collections.nCopies(1, "小年"));
-            put("12-24", Collections.nCopies(1, "子时灶君上天朝玉帝"));
+            put("12-23", Arrays.asList("小年", "五岳神降"));
             put("12-29", Collections.nCopies(1, "华严菩萨诞"));
         }
     };
@@ -1098,6 +1161,7 @@ public class Lunar {
      */
     public static final Map<String, String> XIU = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("申1", "毕");
             put("申2", "翼");
@@ -1201,6 +1265,7 @@ public class Lunar {
      */
     public static final Map<String, String> XIU_LUCK = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
+
         {
             put("角", "吉");
             put("亢", "凶");
@@ -2341,52 +2406,6 @@ public class Lunar {
     }
 
     /**
-     * 通过农历年月日时初始化
-     *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到30
-     * @param hour       小时（阳历）
-     * @param minute     分钟（阳历）
-     * @param second     秒钟（阳历）
-     */
-    public Lunar(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
-        int m = Math.abs(lunarMonth);
-        if (m < 1 || m > 12) {
-            throw new IllegalArgumentException("Lunar month must between 1 and 12, or negative");
-        }
-        if (lunarMonth < 0) {
-            int leapMonth = getLeapMonth(lunarYear);
-            if (leapMonth == 0) {
-                throw new IllegalArgumentException(String.format("No leap month in lunar year %d", lunarYear));
-            } else if (leapMonth != m) {
-                throw new IllegalArgumentException(String.format("Leap month is %d in lunar year %d", leapMonth, lunarYear));
-            }
-        }
-        if (lunarDay < 1 || lunarDay > 30) {
-            throw new IllegalArgumentException("Lunar day must between 1 and 30");
-        }
-        int days = getDaysOfMonth(lunarYear, lunarMonth);
-        if (lunarDay > days) {
-            throw new IllegalArgumentException(String.format("Only %d days in lunar year %d month %d", days, lunarYear, lunarMonth));
-        }
-        this.year = lunarYear;
-        this.month = lunarMonth;
-        this.day = lunarDay;
-        this.hour = hour;
-        this.minute = minute;
-        this.second = second;
-        this.dayOffset = computeAddDays(this.year, this.month, this.day);
-
-        Calendar c = Calendar.getInstance();
-        c.set(Solar.BASE_YEAR, Solar.BASE_MONTH - 1, Solar.BASE_DAY, hour, minute, second);
-        c.add(Calendar.DATE, this.dayOffset);
-        this.solar = new Solar(c);
-
-        this.initialize();
-    }
-
-    /**
      * 通过阳历日期初始化
      *
      * @param date 阳历日期
@@ -2442,6 +2461,15 @@ public class Lunar {
     }
 
     /**
+     * 通过阳历日期初始化
+     *
+     * @param calendar 阳历日期
+     */
+    public Lunar(Calendar calendar) {
+        this(calendar.getTime());
+    }
+
+    /**
      * 通过农历年月日初始化
      *
      * @param lunarYear  年（农历）
@@ -2450,6 +2478,99 @@ public class Lunar {
      */
     public Lunar(int lunarYear, int lunarMonth, int lunarDay) {
         this(lunarYear, lunarMonth, lunarDay, 0, 0, 0);
+    }
+
+    /**
+     * 通过农历年月日时初始化
+     *
+     * @param lunarYear  年（农历）
+     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param lunarDay   日（农历），1到30
+     * @param hour       小时（阳历）
+     * @param minute     分钟（阳历）
+     * @param second     秒钟（阳历）
+     */
+    public Lunar(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
+        int m = Math.abs(lunarMonth);
+        if (m < 1 || m > 12) {
+            throw new IllegalArgumentException("Lunar month must between 1 and 12, or negative");
+        }
+        if (lunarMonth < 0) {
+            int leapMonth = getLeapMonth(lunarYear);
+            if (leapMonth == 0) {
+                throw new IllegalArgumentException(String.format("No leap month in lunar year %d", lunarYear));
+            } else if (leapMonth != m) {
+                throw new IllegalArgumentException(String.format("Leap month is %d in lunar year %d", leapMonth, lunarYear));
+            }
+        }
+        if (lunarDay < 1 || lunarDay > 30) {
+            throw new IllegalArgumentException("Lunar day must between 1 and 30");
+        }
+        int days = getDaysOfMonth(lunarYear, lunarMonth);
+        if (lunarDay > days) {
+            throw new IllegalArgumentException(String.format("Only %d days in lunar year %d month %d", days, lunarYear, lunarMonth));
+        }
+        this.year = lunarYear;
+        this.month = lunarMonth;
+        this.day = lunarDay;
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+        this.dayOffset = computeAddDays(this.year, this.month, this.day);
+
+        Calendar c = Calendar.getInstance();
+        c.set(Solar.BASE_YEAR, Solar.BASE_MONTH - 1, Solar.BASE_DAY, hour, minute, second);
+        c.add(Calendar.DATE, this.dayOffset);
+
+        this.solar = new Solar(c);
+        this.initialize();
+    }
+
+    /**
+     * 通过指定阳历日期获取农历
+     *
+     * @param date 阳历日期
+     * @return 农历
+     */
+    public static Lunar from(Date date) {
+        return new Lunar(date);
+    }
+
+    /**
+     * 通过指定日历获取阳历
+     *
+     * @param calendar 日历
+     * @return 阳历
+     */
+    public static Lunar from(Calendar calendar) {
+        return new Lunar(calendar);
+    }
+
+    /**
+     * 通过指定农历年月日获取农历
+     *
+     * @param lunarYear  年（农历）
+     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param lunarDay   日（农历），1到31
+     * @return 农历
+     */
+    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay) {
+        return new Lunar(lunarYear, lunarMonth, lunarDay);
+    }
+
+    /**
+     * 通过指定农历年月日获取农历
+     *
+     * @param lunarYear  年（农历）
+     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
+     * @param lunarDay   日（农历），1到31
+     * @param hour       小时（阳历）
+     * @param minute     分钟（阳历）
+     * @param second     秒钟（阳历）
+     * @return 农历
+     */
+    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
+        return new Lunar(lunarYear, lunarMonth, lunarDay, hour, minute, second);
     }
 
     /**
@@ -2865,43 +2986,6 @@ public class Lunar {
      */
     public static String getXunKong(String ganZhi) {
         return XUN_KONG[getXunIndex(ganZhi)];
-    }
-
-    /**
-     * 通过指定农历年月日获取农历
-     *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到31
-     * @param hour       小时（阳历）
-     * @param minute     分钟（阳历）
-     * @param second     秒钟（阳历）
-     * @return 农历
-     */
-    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay, int hour, int minute, int second) {
-        return new Lunar(lunarYear, lunarMonth, lunarDay, hour, minute, second);
-    }
-
-    /**
-     * 通过指定农历年月日获取农历
-     *
-     * @param lunarYear  年（农历）
-     * @param lunarMonth 月（农历），1到12，闰月为负，即闰2月=-2
-     * @param lunarDay   日（农历），1到31
-     * @return 农历
-     */
-    public static Lunar from(int lunarYear, int lunarMonth, int lunarDay) {
-        return new Lunar(lunarYear, lunarMonth, lunarDay);
-    }
-
-    /**
-     * 通过指定阳历日期获取农历
-     *
-     * @param date 阳历日期
-     * @return 农历
-     */
-    public static Lunar from(Date date) {
-        return new Lunar(date);
     }
 
     /**
@@ -4043,7 +4127,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getNextJie() {
+    public SolarTerm getNextJie() {
         return getNearJieQi(true, Fields.CN_JIE);
     }
 
@@ -4052,7 +4136,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getPrevJie() {
+    public SolarTerm getPrevJie() {
         return getNearJieQi(false, Fields.CN_JIE);
     }
 
@@ -4061,7 +4145,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getNextQi() {
+    public SolarTerm getNextQi() {
         return getNearJieQi(true, Fields.CN_QI);
     }
 
@@ -4070,7 +4154,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getPrevQi() {
+    public SolarTerm getPrevQi() {
         return getNearJieQi(false, Fields.CN_QI);
     }
 
@@ -4079,7 +4163,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getNextJieQi() {
+    public SolarTerm getNextJieQi() {
         return getNearJieQi(true, null);
     }
 
@@ -4088,7 +4172,7 @@ public class Lunar {
      *
      * @return 节气
      */
-    public Solar.Term getPrevJieQi() {
+    public SolarTerm getPrevJieQi() {
         return getNearJieQi(false, null);
     }
 
@@ -4099,7 +4183,7 @@ public class Lunar {
      * @param conditions 过滤条件，如果设置过滤条件，仅返回匹配该名称的
      * @return 节气
      */
-    protected Solar.Term getNearJieQi(boolean forward, String[] conditions) {
+    protected SolarTerm getNearJieQi(boolean forward, String[] conditions) {
         String name = null;
         Solar near = null;
         Set<String> filters = new HashSet<>();
@@ -4150,7 +4234,7 @@ public class Lunar {
         if (null == near) {
             return null;
         }
-        return new Solar.Term(name, near);
+        return new SolarTerm(name, near);
     }
 
     /**
@@ -4186,9 +4270,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Solar.Term getCurrentSolarTerm() {
+    public SolarTerm getCurrentSolarTerm() {
         String name = getSolarTerm();
-        return name.length() > 0 ? new Solar.Term(name, solar) : null;
+        return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
     /**
@@ -4196,9 +4280,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Solar.Term getCurrentJie() {
+    public SolarTerm getCurrentJie() {
         String name = getJie();
-        return name.length() > 0 ? new Solar.Term(name, solar) : null;
+        return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
     /**
@@ -4206,9 +4290,9 @@ public class Lunar {
      *
      * @return 节气对象
      */
-    public Solar.Term getCurrentQi() {
+    public SolarTerm getCurrentQi() {
         String name = getQi();
-        return name.length() > 0 ? new Solar.Term(name, solar) : null;
+        return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
     /**
@@ -4271,6 +4355,38 @@ public class Lunar {
 
     public int getTimeZhiIndex() {
         return timeZhiIndex;
+    }
+
+    public int getDayGanIndex() {
+        return dayGanIndex;
+    }
+
+    public int getDayZhiIndex() {
+        return dayZhiIndex;
+    }
+
+    public int getMonthGanIndex() {
+        return monthGanIndex;
+    }
+
+    public int getMonthZhiIndex() {
+        return monthZhiIndex;
+    }
+
+    public int getYearGanIndex() {
+        return yearGanIndex;
+    }
+
+    public int getYearZhiIndex() {
+        return yearZhiIndex;
+    }
+
+    public int getYearGanIndexByLiChun() {
+        return yearGanIndexByLiChun;
+    }
+
+    public int getYearZhiIndexByLiChun() {
+        return yearZhiIndexByLiChun;
     }
 
     public int getDayGanIndexExact() {
@@ -4531,6 +4647,145 @@ public class Lunar {
     }
 
     /**
+     * 获取数九
+     *
+     * @return 数九，如果不是数九天，返回null
+     */
+    public NinePeriod getShuJiu() {
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.set(solar.getYear(), solar.getMonth() - 1, solar.getDay(), 0, 0, 0);
+        currentCalendar.set(Calendar.MILLISECOND, 0);
+        Solar start = this.solarTerm.get(JIE_QI_APPEND);
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(), 0, 0, 0);
+        startCalendar.set(Calendar.MILLISECOND, 0);
+
+        if (currentCalendar.compareTo(startCalendar) < 0) {
+            start = this.solarTerm.get(JIE_QI_FIRST);
+            startCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(), 0, 0, 0);
+        }
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.set(start.getYear(), start.getMonth() - 1, start.getDay(), 0, 0, 0);
+        endCalendar.add(Calendar.DATE, 81);
+        endCalendar.set(Calendar.MILLISECOND, 0);
+
+        if (currentCalendar.compareTo(startCalendar) < 0 || currentCalendar.compareTo(endCalendar) >= 0) {
+            return null;
+        }
+
+        int days = (int) ((currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        return new NinePeriod(Fields.CN_YEAR[days / 9 + 1] + "九", days % 9 + 1);
+    }
+
+    /**
+     * 获取三伏
+     *
+     * @return 三伏，如果不是伏天，返回null
+     */
+    public Dogdays getDogdays() {
+        Calendar current = Calendar.getInstance();
+        current.set(solar.getYear(), solar.getMonth() - 1, solar.getDay(), 0, 0, 0);
+        current.set(Calendar.MILLISECOND, 0);
+        Solar xiaZhi = this.solarTerm.get("夏至");
+        Solar liQiu = this.solarTerm.get("立秋");
+        Calendar start = Calendar.getInstance();
+        start.set(xiaZhi.getYear(), xiaZhi.getMonth() - 1, xiaZhi.getDay(), 0, 0, 0);
+        start.set(Calendar.MILLISECOND, 0);
+
+        // 第1个庚日
+        int add = 6 - xiaZhi.getLunar().getDayGanIndex();
+        if (add < 0) {
+            add += 10;
+        }
+        // 第3个庚日，即初伏第1天
+        add += 20;
+        start.add(Calendar.DATE, add);
+
+        // 初伏以前
+        if (current.compareTo(start) < 0) {
+            return null;
+        }
+
+        int days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        if (days < 10) {
+            return new Dogdays("初伏", days + 1);
+        }
+
+        // 第4个庚日，中伏第1天
+        start.add(Calendar.DATE, 10);
+
+        days = (int) ((start.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        if (days < 10) {
+            return new Dogdays("中伏", days + 1);
+        }
+
+        // 第5个庚日，中伏第11天或末伏第1天
+        start.add(Calendar.DATE, 10);
+
+        Calendar liQiuCalendar = Calendar.getInstance();
+        liQiuCalendar.set(liQiu.getYear(), liQiu.getMonth() - 1, liQiu.getDay(), 0, 0, 0);
+        liQiuCalendar.set(Calendar.MILLISECOND, 0);
+
+        days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        // 末伏
+        if (liQiuCalendar.compareTo(start) <= 0) {
+            if (days < 10) {
+                return new Dogdays("末伏", days + 1);
+            }
+        } else {
+            // 中伏
+            if (days < 10) {
+                return new Dogdays("中伏", days + 11);
+            }
+            // 末伏第1天
+            start.add(Calendar.DATE, 10);
+            days = (int) ((current.getTimeInMillis() - start.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+            if (days < 10) {
+                return new Dogdays("末伏", days + 1);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取六曜
+     *
+     * @return 六曜
+     */
+    public String getLiuYao() {
+        return LIU_YAO[(Math.abs(month) - 1 + day - 1) % 6];
+    }
+
+    /**
+     * 获取物候
+     *
+     * @return 物候
+     */
+    public String getWuHou() {
+        SolarTerm jieQi = getPrevJieQi();
+        String name = jieQi.getName();
+        int offset = 0;
+        for (int i = 0, j = Fields.CN_SOLARTERM.length; i < j; i++) {
+            if (name.equals(Fields.CN_SOLARTERM[i])) {
+                offset = i;
+                break;
+            }
+        }
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.set(solar.getYear(), solar.getMonth() - 1, solar.getDay(), 0, 0, 0);
+        currentCalendar.set(Calendar.MILLISECOND, 0);
+
+        Solar startSolar = jieQi.getSolar();
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.set(startSolar.getYear(), startSolar.getMonth() - 1, startSolar.getDay(), 0, 0, 0);
+        startCalendar.set(Calendar.MILLISECOND, 0);
+
+        int days = (int) ((currentCalendar.getTimeInMillis() - startCalendar.getTimeInMillis()) / Fields.Units.DAY.getUnit());
+        return WU_HOU[offset * 3 + days / 5];
+    }
+
+    /**
      * 构建字符串内容
      *
      * @param args 可选参数-简化输出
@@ -4645,30 +4900,30 @@ public class Lunar {
     private void initTerm() {
         double jd = Math.floor((solar.getYear() - 2000) * 365.2422 + 180);
         double w = Math.floor((jd - 355 + 183) / 365.2422) * 365.2422 + 355;
-        if (Almanac.QiShuo.calc(w, "气") > jd) {
+        if (Galaxy.QiShuo.calc(w, "气") > jd) {
             w -= 365.2422;
         }
         // 追加上一农历年末的大雪
-        double q = Almanac.QiShuo.calc(w - 15.2184, "气");
-        solarTerm.put(JIE_QI_PREPEND, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        double q = Galaxy.QiShuo.calc(w - 15.2184, "气");
+        solarTerm.put(JIE_QI_PREPEND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
         int size = Fields.CN_SOLARTERM.length;
         for (int i = 0; i < size; i++) {
-            q = Almanac.QiShuo.calc(w + 15.2184 * i, "气");
-            solarTerm.put(Fields.CN_SOLARTERM[i], Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+            q = Galaxy.QiShuo.calc(w + 15.2184 * i, "气");
+            solarTerm.put(Fields.CN_SOLARTERM[i], Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
         }
         // 追加下一农历年初的冬至
-        q = Almanac.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(JIE_QI_APPEND, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
+        solarTerm.put(JIE_QI_APPEND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
 
         // 追加下一阳历年初的小寒
         size++;
-        q = Almanac.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(JIE_APPEND_SOLAR_FIRST, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
+        solarTerm.put(JIE_APPEND_SOLAR_FIRST, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
 
         // 追加下一阳历年初的大寒
         size++;
-        q = Almanac.QiShuo.calc(w + 15.2184 * size, "气");
-        solarTerm.put(QI_APPEND_SOLAR_SECOND, Solar.from(Almanac.QiShuo.qi_accurate(q) + Solar.J2000));
+        q = Galaxy.QiShuo.calc(w + 15.2184 * size, "气");
+        solarTerm.put(QI_APPEND_SOLAR_SECOND, Solar.from(Galaxy.QiShuo.qi_accurate(q) + Solar.J2000));
     }
 
     /**
@@ -4842,6 +5097,221 @@ public class Lunar {
      */
     private void initWeek() {
         weekIndex = (dayOffset + BASE_WEEK_INDEX) % 7;
+    }
+
+    /**
+     * 节气
+     */
+    public static class SolarTerm {
+
+        /**
+         * 名称
+         */
+        private String name;
+
+        /**
+         * 阳历日期
+         */
+        private Solar solar;
+
+        /**
+         * 是否节令
+         */
+        private boolean jie;
+
+        /**
+         * 是否气令
+         */
+        private boolean qi;
+
+        public SolarTerm() {
+
+        }
+
+        /**
+         * 初始化
+         *
+         * @param name  名称
+         * @param solar 阳历日期
+         */
+        public SolarTerm(String name, Solar solar) {
+            setName(name);
+            this.solar = solar;
+        }
+
+        /**
+         * 获取名称
+         *
+         * @return 名称
+         */
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * 设置名称
+         *
+         * @param name 名称
+         */
+        public void setName(String name) {
+            this.name = name;
+            for (String key : Fields.CN_JIE) {
+                if (key.equals(name)) {
+                    this.jie = true;
+                    return;
+                }
+            }
+            for (String key : Fields.CN_QI) {
+                if (key.equals(name)) {
+                    this.qi = true;
+                    return;
+                }
+            }
+        }
+
+        /**
+         * 获取阳历日期
+         *
+         * @return 阳历日期
+         */
+        public Solar getSolar() {
+            return this.solar;
+        }
+
+        /**
+         * 设置阳历日期
+         *
+         * @param solar 阳历日期
+         */
+        public void setSolar(Solar solar) {
+            this.solar = solar;
+        }
+
+        /**
+         * 是否节令
+         *
+         * @return true/false
+         */
+        public boolean isJie() {
+            return this.jie;
+        }
+
+        /**
+         * 是否气令
+         *
+         * @return true/false
+         */
+        public boolean isQi() {
+            return this.qi;
+        }
+
+        /**
+         * 构建字符串内容
+         *
+         * @param args 可选参数-简化输出
+         * @return 字符串内容
+         */
+        public String build(boolean... args) {
+            return this.name;
+        }
+
+    }
+
+    /**
+     * 三伏
+     * 从夏至后第3个庚日算起，
+     * 初伏为10天，中伏为10天或20天，末伏为10天。
+     * 当夏至与立秋之间出现4个庚日时中伏为10天，出现5个庚日则为20天
+     */
+    public static class Dogdays {
+
+        /**
+         * 名称：初伏、中伏、末伏
+         */
+        private String name;
+
+        /**
+         * 当前入伏第几天，1-20
+         */
+        private int index;
+
+
+        public Dogdays() {
+        }
+
+        public Dogdays(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String toString() {
+            return name + " 第" + index + "天";
+        }
+
+    }
+
+    /**
+     * 数九
+     */
+    public static class NinePeriod {
+
+        /**
+         * 名称，如一九、二九
+         */
+        private String name;
+
+        /**
+         * 当前数九第几天，1-9
+         */
+        private int index;
+
+        public NinePeriod() {
+
+        }
+
+        public NinePeriod(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public String toString() {
+            return name + " 第" + index + "天";
+        }
+
     }
 
 }

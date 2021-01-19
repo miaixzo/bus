@@ -390,7 +390,7 @@ public class ConverterRegistry {
         /**
          * 静态初始化器，由JVM来保证线程安全
          */
-        private static ConverterRegistry instance = new ConverterRegistry();
+        private static final ConverterRegistry instance = new ConverterRegistry();
     }
 
 }

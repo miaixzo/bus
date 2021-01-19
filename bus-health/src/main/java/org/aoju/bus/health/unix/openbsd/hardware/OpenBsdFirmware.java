@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,34 +23,62 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.beans;
+package org.aoju.bus.health.unix.openbsd.hardware;
+
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.tuple.Triple;
+import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Executor;
+import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.hardware.AbstractFirmware;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
- * 为了解决反射过程中,需要传递null参数,但是会丢失参数类型而设立的包装类
- *
- * @param <T> Null值对应的类型
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class WrapperBean<T> {
+public class OpenBsdFirmware extends AbstractFirmware {
 
-    private final Class<T> clazz;
+    private final Supplier<Triple<String, String, String>> manufVersRelease = Memoize.memoize(OpenBsdFirmware::readDmesg);
 
-    /**
-     * @param clazz null的类型
-     */
-    public WrapperBean(Class<T> clazz) {
-        this.clazz = clazz;
+    private static Triple<String, String, String> readDmesg() {
+        String version = null;
+        String vendor = null;
+        String releaseDate = "";
+
+        List<String> dmesg = Executor.runNative("dmesg");
+        for (String line : dmesg) {
+            // bios0 at mainbus0: SMBIOS rev. 2.7 @ 0xdcc0e000 (67 entries)
+            // bios0: vendor LENOVO version "GLET90WW (2.44 )" date 09/13/2017
+            // bios0: LENOVO 20AWA08J00
+            if (line.startsWith("bios0: vendor")) {
+                version = Builder.getStringBetween(line, '"');
+                releaseDate = Builder.parseMmDdYyyyToYyyyMmDD(Builder.parseLastString(line));
+                vendor = line.split("vendor")[1].trim();
+            }
+        }
+        return Triple.of(StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(releaseDate) ? Normal.UNKNOWN : releaseDate);
     }
 
-    /**
-     * 获取null值对应的类型
-     *
-     * @return 类型
-     */
-    public Class<T> getWrappedClass() {
-        return clazz;
+    @Override
+    public String getManufacturer() {
+        return manufVersRelease.get().getLeft();
+    }
+
+    @Override
+    public String getVersion() {
+        return manufVersRelease.get().getMiddle();
+    }
+
+    @Override
+    public String getReleaseDate() {
+        return manufVersRelease.get().getRight();
     }
 
 }

@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -292,13 +291,7 @@ public class Ftp extends AbstractFtp {
 
     @Override
     public List<String> ls(String path) {
-        final FTPFile[] ftpFiles = lsFiles(path);
-
-        final List<String> fileNames = new ArrayList<>();
-        for (FTPFile ftpFile : ftpFiles) {
-            fileNames.add(ftpFile.getName());
-        }
-        return fileNames;
+        return ArrayKit.map(lsFiles(path), FTPFile::getName);
     }
 
     /**

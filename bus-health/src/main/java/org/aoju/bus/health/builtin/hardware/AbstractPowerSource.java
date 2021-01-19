@@ -101,10 +101,10 @@ public abstract class AbstractPowerSource implements PowerSource {
     }
 
     private static List<PowerSource> getPowerSources() {
-        switch (Platform.getCurrentOs()) {
+        switch (Platform.getCurrentPlatform()) {
             case WINDOWS:
                 return WindowsPowerSource.getPowerSources();
-            case MACOSX:
+            case MACOS:
                 return MacPowerSource.getPowerSources();
             case LINUX:
                 return LinuxPowerSource.getPowerSources();
@@ -284,7 +284,12 @@ public abstract class AbstractPowerSource implements PowerSource {
         sb.append("Time Remaining: ").append(formatTimeRemaining(getTimeRemainingEstimated())).append(", ");
         sb.append("Time Remaining Instant: ").append(formatTimeRemaining(getTimeRemainingInstant())).append(Symbol.NEWLINE);
         sb.append("Power Usage Rate: ").append(getPowerUsageRate()).append("mW, ");
-        sb.append("Voltage: ").append(getVoltage()).append("V, ");
+        sb.append("Voltage: ");
+        if (getVoltage() > 0) {
+            sb.append(getVoltage()).append("V, ");
+        } else {
+            sb.append(Normal.UNKNOWN);
+        }
         sb.append("Amperage: ").append(getAmperage()).append("mA,\n ");
         sb.append("Power OnLine: ").append(isPowerOnLine()).append(", ");
         sb.append("Charging: ").append(isCharging()).append(", ");

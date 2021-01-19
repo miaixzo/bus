@@ -52,7 +52,7 @@ public final class InstanceFactory implements Instance {
     /**
      * 线程内的 map 对象
      */
-    private ThreadLocal<Map<String, Object>> mapThreadLocal = new ThreadLocal<>();
+    private final ThreadLocal<Map<String, Object>> mapThreadLocal = new ThreadLocal<>();
 
     private InstanceFactory() {
     }

@@ -38,13 +38,13 @@ import org.aoju.bus.core.toolkit.StringKit;
 public class DatePeriod {
 
     /**
-     * 时长毫秒数
-     */
-    private long betweenMs;
-    /**
      * 计算单位最大个数
      */
     private final int unitMaxCount;
+    /**
+     * 时长毫秒数
+     */
+    private long betweenMs;
     /**
      * 计算单位
      */

@@ -46,7 +46,6 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProcess;
 import java.io.File;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * AIX (Advanced Interactive eXecutive) is a series of proprietary Unix
@@ -128,8 +127,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     public List<OSProcess> getProcesses(int limit, ProcessSort sort) {
         List<OSProcess> procs = getProcessListFromPS(
                 "ps -A -o st,pid,ppid,user,uid,group,gid,thcount,pri,vsize,rssize,etime,time,comm,pagein,args", -1);
-        List<OSProcess> sorted = processSort(procs, limit, sort);
-        return Collections.unmodifiableList(sorted);
+        return processSort(procs, limit, sort);
     }
 
     @Override
@@ -140,16 +138,6 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             return null;
         }
         return procs.get(0);
-    }
-
-    @Override
-    public List<OSProcess> getChildProcesses(int parentPid, int limit, ProcessSort sort) {
-        // Get all processes
-        List<OSProcess> allProcs = getProcesses(limit, sort);
-        // filter processes whose parent process id matches
-        return allProcs.isEmpty() ? Collections.emptyList()
-                : Collections.unmodifiableList(allProcs.stream().filter(proc -> parentPid == proc.getParentProcessID())
-                .collect(Collectors.toList()));
     }
 
     private List<OSProcess> getProcessListFromPS(String psCommand, int pid) {

@@ -57,6 +57,7 @@ public class EightChar {
      */
     private static final Map<String, Integer> CHANG_SHENG_OFFSET = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 1L;
+
         {
             //阳
             put("甲", 1);
@@ -1125,9 +1126,9 @@ public class EightChar {
          */
         private void compute() {
             // 上节
-            Solar.Term prev = lunar.getPrevJie();
+            Lunar.SolarTerm prev = lunar.getPrevJie();
             // 下节
-            Solar.Term next = lunar.getNextJie();
+            Lunar.SolarTerm next = lunar.getNextJie();
             // 出生日期
             Solar current = lunar.getSolar();
             // 阳男阴女顺推，阴男阳女逆推

@@ -335,7 +335,7 @@ public class Murmur implements Serializable {
             case 2:
                 k1 ^= (long) (data[tailStart + 1] & 0xff) << 8;
             case 1:
-                k1 ^= (long) (data[tailStart] & 0xff);
+                k1 ^= data[tailStart] & 0xff;
                 k1 *= C1;
                 k1 = Long.rotateLeft(k1, R1);
                 k1 *= C2;

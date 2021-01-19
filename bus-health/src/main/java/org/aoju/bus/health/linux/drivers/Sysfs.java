@@ -93,6 +93,21 @@ public final class Sysfs {
     }
 
     /**
+     * Query the UUID from sysfs
+     *
+     * @return The UUID if available, null otherwise
+     */
+    public static String queryUUID() {
+        // These sysfs files accessible by root, or can be chmod'd at boot time
+        // to enable access without root
+        String uuid = Builder.getStringFromFile(Builder.SYSFS_SERIAL_PATH + "product_uuid");
+        if (!uuid.isEmpty() && !"None".equals(uuid)) {
+            return uuid;
+        }
+        return null;
+    }
+
+    /**
      * Query the board vendor from sysfs
      *
      * @return The board vendor if available, null otherwise

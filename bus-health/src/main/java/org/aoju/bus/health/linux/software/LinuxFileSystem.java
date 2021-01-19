@@ -29,9 +29,11 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
 import org.aoju.bus.health.linux.ProcPath;
@@ -41,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -57,6 +60,16 @@ import java.util.*;
 @ThreadSafe
 public class LinuxFileSystem extends AbstractFileSystem {
 
+    public static final String OSHI_LINUX_FS_PATH_EXCLUDES = "health.os.linux.filesystem.path.excludes";
+    public static final String OSHI_LINUX_FS_PATH_INCLUDES = "health.os.linux.filesystem.path.includes";
+    public static final String OSHI_LINUX_FS_VOLUME_EXCLUDES = "health.os.linux.filesystem.volume.excludes";
+    public static final String OSHI_LINUX_FS_VOLUME_INCLUDES = "health.os.linux.filesystem.volume.includes";
+
+    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_PATH_EXCLUDES);
+    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_PATH_INCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_VOLUME_EXCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder.loadAndParseFileSystemConfig(OSHI_LINUX_FS_VOLUME_INCLUDES);
+
     private static final String UNICODE_SPACE = "\\\\040";
 
     // System path mounted as tmpfs
@@ -70,11 +83,12 @@ public class LinuxFileSystem extends AbstractFileSystem {
     private static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap,
                                                           boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
+        Map<String, String> labelMap = queryLabelMap();
 
         // Parse /proc/mounts to get fs types
         List<String> mounts = FileKit.readLines(ProcPath.MOUNTS);
         for (String mount : mounts) {
-            String[] split = mount.split(Symbol.SPACE);
+            String[] split = mount.split(" ");
             // As reported in fstab(5) manpage, struct is:
             // 1st field is volume name
             // 2nd field is path with spaces escaped as \040
@@ -87,29 +101,28 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             // Exclude pseudo file systems
+            String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
+            String name = volume;
             String path = split[1].replace(UNICODE_SPACE, Symbol.SPACE);
+            if (path.equals("/")) {
+                volume = "/";
+            }
             String type = split[2];
-            if ((localOnly && NETWORK_FS_TYPES.contains(type)) // Skip non-local drives if requested
-                    || PSEUDO_FS_TYPES.contains(type) // exclude non-fs types
-                    || path.equals("/dev") // exclude plain dev directory
-                    || Builder.filePathStartsWith(TMP_FS_PATHS, path) // well known prefixes
-                    || path.endsWith("/shm") // exclude shared memory
-            ) {
+
+            // Skip non-local drives if requested, and exclude pseudo file systems
+            if ((localOnly && NETWORK_FS_TYPES.contains(type))
+                    || !path.equals(Symbol.SLASH) && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
+                    volume, FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                 continue;
             }
-            String options = split[3];
 
-            String name = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
-            if (path.equals(Symbol.SLASH)) {
-                name = Symbol.SLASH;
-            }
+            String options = split[3];
 
             // If only updating for one name, skip others
             if (nameToMatch != null && !nameToMatch.equals(name)) {
                 continue;
             }
 
-            String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
             String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
 
             String description;
@@ -151,6 +164,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 if (0 == LibC.INSTANCE.statvfs(path, vfsStat)) {
                     totalInodes = vfsStat.f_files.longValue();
                     freeInodes = vfsStat.f_ffree.longValue();
+                    // Per stavfs, these units are in fragments
                     totalSpace = vfsStat.f_blocks.longValue() * vfsStat.f_frsize.longValue();
                     usableSpace = vfsStat.f_bavail.longValue() * vfsStat.f_frsize.longValue();
                     freeSpace = vfsStat.f_bfree.longValue() * vfsStat.f_frsize.longValue();
@@ -166,10 +180,21 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 Logger.error("Failed to get file counts from statvfs. {}", e.getMessage());
             }
 
-            fsList.add(new LinuxOSFileStore(name, volume, name, path, options, uuid, logicalVolume, description, type,
-                    freeSpace, usableSpace, totalSpace, freeInodes, totalInodes));
+            fsList.add(new LinuxOSFileStore(name, volume, labelMap.getOrDefault(path, name), path, options, uuid,
+                    logicalVolume, description, type, freeSpace, usableSpace, totalSpace, freeInodes, totalInodes));
         }
         return fsList;
+    }
+
+    private static Map<String, String> queryLabelMap() {
+        Map<String, String> labelMap = new HashMap<>();
+        for (String line : Executor.runNative("lsblk -o mountpoint,label")) {
+            String[] split = RegEx.SPACES.split(line, 2);
+            if (split.length == 2) {
+                labelMap.put(split[0], split[1]);
+            }
+        }
+        return labelMap;
     }
 
     /**

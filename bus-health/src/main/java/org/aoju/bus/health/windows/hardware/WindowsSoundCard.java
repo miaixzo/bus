@@ -35,7 +35,6 @@ import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
 import org.aoju.bus.health.builtin.hardware.SoundCard;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -73,7 +72,7 @@ final class WindowsSoundCard extends AbstractSoundCard {
      * @return List of sound cards
      */
     public static List<SoundCard> getSoundCards() {
-        List<WindowsSoundCard> soundCards = new ArrayList<>();
+        List<SoundCard> soundCards = new ArrayList<>();
         String[] keys = Advapi32Util.registryGetKeys(WinReg.HKEY_LOCAL_MACHINE, REGISTRY_SOUNDCARDS);
         for (String key : keys) {
             String fullKey = REGISTRY_SOUNDCARDS + key;
@@ -96,7 +95,7 @@ final class WindowsSoundCard extends AbstractSoundCard {
                 }
             }
         }
-        return Collections.unmodifiableList(soundCards);
+        return soundCards;
     }
 
 }

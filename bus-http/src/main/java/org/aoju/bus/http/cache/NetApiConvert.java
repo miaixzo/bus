@@ -28,7 +28,7 @@ package org.aoju.bus.http.cache;
 import org.aoju.bus.core.io.BufferSource;
 import org.aoju.bus.core.io.Sink;
 import org.aoju.bus.core.lang.Header;
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.IoKit;
 import org.aoju.bus.http.Builder;
@@ -431,9 +431,9 @@ public final class NetApiConvert {
         final BufferSource body = IoKit.buffer(IoKit.source(cacheResponse.getBody()));
         return new ResponseBody() {
             @Override
-            public MediaType contentType() {
+            public MimeType contentType() {
                 String contentTypeHeader = headers.get(Header.CONTENT_TYPE);
-                return contentTypeHeader == null ? null : MediaType.valueOf(contentTypeHeader);
+                return contentTypeHeader == null ? null : MimeType.valueOf(contentTypeHeader);
             }
 
             @Override
@@ -456,9 +456,9 @@ public final class NetApiConvert {
         final BufferSource body = IoKit.buffer(IoKit.source(urlConnection.getInputStream()));
         return new ResponseBody() {
             @Override
-            public MediaType contentType() {
+            public MimeType contentType() {
                 String contentTypeHeader = urlConnection.getContentType();
-                return contentTypeHeader == null ? null : MediaType.valueOf(contentTypeHeader);
+                return contentTypeHeader == null ? null : MimeType.valueOf(contentTypeHeader);
             }
 
             @Override

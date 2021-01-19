@@ -44,7 +44,7 @@ public class ImageSelection implements Transferable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Image image;
+    private final Image image;
 
     /**
      * 构造

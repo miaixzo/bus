@@ -95,11 +95,11 @@ public class Snowflake implements Serializable {
      */
     private final long sequenceMask = -1L ^ (-1L << sequenceBits);
 
-    private long workerId;
-    private long dataCenterId;
+    private final long workerId;
+    private final long dataCenterId;
+    private final boolean isClock;
     private long sequence = 0L;
     private long lastTimestamp = -1L;
-    private boolean isClock;
 
     /**
      * 构造

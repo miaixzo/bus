@@ -31,10 +31,7 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.logger.Logger;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -239,7 +236,13 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
 
     @Override
     public long[] getCurrentFreq() {
-        return currentFreq.get();
+        long[] freq = currentFreq.get();
+        if (freq.length == getLogicalProcessorCount()) {
+            return freq;
+        }
+        long[] freqs = new long[getLogicalProcessorCount()];
+        Arrays.fill(freqs, freq[0]);
+        return freqs;
     }
 
     /**

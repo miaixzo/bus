@@ -51,33 +51,32 @@ public class Scaner {
     /**
      * 包名
      */
-    private String packageName;
+    private final String packageName;
     /**
      * 包名,最后跟一个点,表示包名,避免在检查前缀时的歧义
      */
-    private String packageNameWithDot;
+    private final String packageNameWithDot;
     /**
      * 包路径,用于文件中对路径操作
      */
-    private String packageDirName;
+    private final String packageDirName;
     /**
      * 包路径,用于jar中对路径操作,在Linux下与packageDirName一致
      */
-    private String packagePath;
+    private final String packagePath;
     /**
      * 过滤器
      */
-    private Filter<Class<?>> classFilter;
+    private final Filter<Class<?>> classFilter;
     /**
      * 编码
      */
-    private java.nio.charset.Charset charset;
+    private final java.nio.charset.Charset charset;
+    private final Set<Class<?>> classes = new HashSet<>();
     /**
      * 是否初始化类
      */
     private boolean initialize;
-
-    private Set<Class<?>> classes = new HashSet<>();
 
     /**
      * 构造,默认UTF-8编码

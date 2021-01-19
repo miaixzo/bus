@@ -76,9 +76,9 @@ public class ApiRouterHandler {
             builder.queryParams(multiValueMap);
         }
         WebClient.RequestBodySpec bodySpec = webClient
-            .method(assets.getHttpMethod())
-            .uri(builder.build().encode().toUri())
-            .headers((headers) -> headers.addAll(request.headers().asHttpHeaders()));
+                .method(assets.getHttpMethod())
+                .uri(builder.build().encode().toUri())
+                .headers((headers) -> headers.addAll(request.headers().asHttpHeaders()));
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             if (request.headers().contentType().isPresent()) {
                 MediaType mediaType = request.headers().contentType().get();
@@ -95,7 +95,7 @@ public class ApiRouterHandler {
             }
         }
         Flux<DataBuffer> flux = bodySpec
-            .retrieve().bodyToFlux(DataBuffer.class);
+                .retrieve().bodyToFlux(DataBuffer.class);
         return ServerResponse.ok().body(flux, DataBuffer.class);
     }
 

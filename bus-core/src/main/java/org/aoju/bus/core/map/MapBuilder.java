@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class MapBuilder<K, V> implements Serializable {
 
-    private Map<K, V> map;
+    private final Map<K, V> map;
 
     /**
      * 链式Map创建类
