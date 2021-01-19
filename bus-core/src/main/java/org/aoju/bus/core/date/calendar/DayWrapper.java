@@ -174,11 +174,11 @@ public class DayWrapper implements Serializable {
         this.day = localDateTime.getDayOfMonth();
         // 星期
         this.week = localDateTime.getDayOfWeek().getValue();
-        this.weekCnShort = Sandbox.getDayOfWeekCnShort(localDateTime);
-        this.weekCnLong = Sandbox.getDayOfWeekCn(localDateTime);
-        this.weekEnShort = Sandbox.getDayOfWeekEnShort(localDateTime);
-        this.weekEnShortUpper = Sandbox.getDayOfWeekEnShortUpper(localDateTime);
-        this.weekEnLong = Sandbox.getDayOfWeekEnLong(localDateTime);
+        this.weekCnShort = Almanac.getDayOfWeekCnShort(localDateTime);
+        this.weekCnLong = Almanac.getDayOfWeekCn(localDateTime);
+        this.weekEnShort = Almanac.getDayOfWeekEnShort(localDateTime);
+        this.weekEnShortUpper = Almanac.getDayOfWeekEnShortUpper(localDateTime);
+        this.weekEnLong = Almanac.getDayOfWeekEnLong(localDateTime);
         this.object = object;
 
         // 农历
@@ -205,7 +205,7 @@ public class DayWrapper implements Serializable {
         }
 
         // 工作日
-        this.dateType = Sandbox.isWorkDay(localDateTime) ? 1 : 0;
+        this.dateType = Almanac.isWorkDay(localDateTime) ? 1 : 0;
     }
 
 }

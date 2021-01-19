@@ -48,7 +48,7 @@ public class ObjectID implements Comparable<ObjectID>, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int _genmachine;
-    private static AtomicInteger _nextInc = new AtomicInteger(
+    private static final AtomicInteger _nextInc = new AtomicInteger(
             (new Random()).nextInt());
 
     static {

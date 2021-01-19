@@ -25,7 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.galaxy.media;
 
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.image.Tag;
@@ -185,10 +185,10 @@ public class AbstractStowrs implements AutoCloseable {
             httpPost.setConnectTimeout(10000);
             httpPost.setReadTimeout(60000);
             httpPost.setRequestProperty("Content-Type",
-                    MediaType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
+                    MimeType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
             httpPost.setRequestProperty("User-Agent", agentName == null ? "STOWRS" : agentName);
             httpPost.setRequestProperty("Accept",
-                    contentType == MediaType.APPLICATION_DICOM_JSON ? MediaType.APPLICATION_DICOM_JSON : MediaType.APPLICATION_DICOM_XML);
+                    contentType == MimeType.APPLICATION_DICOM_JSON ? MimeType.APPLICATION_DICOM_JSON : MimeType.APPLICATION_DICOM_XML);
 
             if (headers != null && !headers.isEmpty()) {
                 for (Entry<String, String> element : headers.entrySet()) {

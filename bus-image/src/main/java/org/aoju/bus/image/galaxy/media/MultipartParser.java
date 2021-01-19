@@ -26,7 +26,7 @@
 package org.aoju.bus.image.galaxy.media;
 
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -69,7 +69,7 @@ public class MultipartParser {
     public static void parseMultipartRelated(URLConnection urlConnection, InputStream inputStream, Handler handler)
             throws IOException {
         String contentType = urlConnection.getContentType();
-        byte[] boundary = getBoundary(contentType, MediaType.MULTIPART_RELATED);
+        byte[] boundary = getBoundary(contentType, MimeType.MULTIPART_RELATED);
         if (boundary == null) {
             throw new IllegalStateException("Cannot find boundary of multipart");
         }

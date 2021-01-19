@@ -33,7 +33,6 @@ import org.aoju.bus.health.builtin.hardware.NetworkIF;
 import java.io.File;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,15 +67,14 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
      * Gets network interfaces on this machine
      *
      * @param includeLocalInterfaces include local interfaces in the result
-     * @return An {@code UnmodifiableList} of {@link NetworkIF} objects representing
-     * the interfaces
+     * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             ifList.add(new LinuxNetworkIF(ni));
         }
-        return Collections.unmodifiableList(ifList);
+        return ifList;
     }
 
     @Override

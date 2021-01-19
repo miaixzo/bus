@@ -635,7 +635,7 @@ public class GeoKit {
         /**
          * 多边形坐标点列表
          */
-        private List<Point> points = new ArrayList<>();
+        private final List<Point> points = new ArrayList<>();
 
         public Polygon() {
         }

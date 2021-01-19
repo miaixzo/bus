@@ -38,7 +38,6 @@ import org.aoju.bus.health.builtin.hardware.PowerSource;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -188,7 +187,7 @@ public final class MacPowerSource extends AbstractPowerSource {
         CFStringRef currentCapacityKey = CFStringRef.createCFString("Current Capacity");
         CFStringRef maxCapacityKey = CFStringRef.createCFString("Max Capacity");
         // For each power source, output various info
-        List<MacPowerSource> psList = new ArrayList<>(powerSourcesCount);
+        List<PowerSource> psList = new ArrayList<>(powerSourcesCount);
         for (int ps = 0; ps < powerSourcesCount; ps++) {
             // Get the dictionary for that Power Source
             Pointer pwrSrcPtr = powerSourcesList.getValueAtIndex(ps);
@@ -240,7 +239,7 @@ public final class MacPowerSource extends AbstractPowerSource {
         powerSourcesList.release();
         powerSourcesInfo.release();
 
-        return Collections.unmodifiableList(psList);
+        return psList;
     }
 
 }

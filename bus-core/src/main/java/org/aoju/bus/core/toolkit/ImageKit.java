@@ -27,7 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.convert.Convert;
-import org.aoju.bus.core.image.Image;
+import org.aoju.bus.core.image.Images;
 import org.aoju.bus.core.io.resource.Resource;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.FileType;
@@ -107,7 +107,7 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static void scale(java.awt.Image srcImage, File destFile, float scale) throws InstrumentException {
-        Image.from(srcImage).setTargetImageType(FileKit.extName(destFile)).scale(scale).write(destFile);
+        Images.from(srcImage).setTargetImageType(FileKit.extName(destFile)).scale(scale).write(destFile);
     }
 
     /**
@@ -144,7 +144,7 @@ public class ImageKit {
      * @return {@link java.awt.Image}
      */
     public static java.awt.Image scale(java.awt.Image srcImage, float scale) {
-        return Image.from(srcImage).scale(scale).getImg();
+        return Images.from(srcImage).scale(scale).getImg();
     }
 
     /**
@@ -157,7 +157,7 @@ public class ImageKit {
      * @return {@link java.awt.Image}
      */
     public static java.awt.Image scale(java.awt.Image srcImage, int width, int height) {
-        return Image.from(srcImage).scale(width, height).getImg();
+        return Images.from(srcImage).scale(width, height).getImg();
     }
 
     /**
@@ -231,7 +231,7 @@ public class ImageKit {
      * @return {@link java.awt.Image}
      */
     public static java.awt.Image scale(java.awt.Image srcImage, int width, int height, Color fixedColor) {
-        return org.aoju.bus.core.image.Image.from(srcImage).scale(width, height, fixedColor).getImg();
+        return Images.from(srcImage).scale(width, height, fixedColor).getImg();
     }
 
     /**
@@ -311,7 +311,7 @@ public class ImageKit {
      * @return {@link BufferedImage}
      */
     public static java.awt.Image cut(java.awt.Image srcImage, Rectangle rectangle) {
-        return Image.from(srcImage).setPositionBaseCentre(false).cut(rectangle).getImg();
+        return Images.from(srcImage).setPositionBaseCentre(false).cut(rectangle).getImg();
     }
 
     /**
@@ -336,7 +336,7 @@ public class ImageKit {
      * @return {@link java.awt.Image}
      */
     public static java.awt.Image cut(java.awt.Image srcImage, int x, int y, int radius) {
-        return Image.from(srcImage).cut(x, y, radius).getImg();
+        return Images.from(srcImage).cut(x, y, radius).getImg();
     }
 
     /**
@@ -591,7 +591,7 @@ public class ImageKit {
      * @return {@link java.awt.Image}灰度后的图片
      */
     public static java.awt.Image gray(java.awt.Image srcImage) {
-        return Image.from(srcImage).gray().getImg();
+        return Images.from(srcImage).gray().getImg();
     }
 
     /**
@@ -670,7 +670,7 @@ public class ImageKit {
      * @return {@link java.awt.Image}二值化后的图片
      */
     public static java.awt.Image binary(java.awt.Image srcImage) {
-        return Image.from(srcImage).binary().getImg();
+        return Images.from(srcImage).binary().getImg();
     }
 
     /**
@@ -791,7 +791,7 @@ public class ImageKit {
      * @return 处理后的图像
      */
     public static java.awt.Image pressText(java.awt.Image srcImage, String pressText, Color color, Font font, int x, int y, float alpha) {
-        return Image.from(srcImage).pressText(pressText, color, font, x, y, alpha).getImg();
+        return Images.from(srcImage).pressText(pressText, color, font, x, y, alpha).getImg();
     }
 
     /**
@@ -899,7 +899,7 @@ public class ImageKit {
      * @return 结果图片
      */
     public static java.awt.Image pressImage(java.awt.Image srcImage, java.awt.Image pressImage, int x, int y, float alpha) {
-        return org.aoju.bus.core.image.Image.from(srcImage).pressImage(pressImage, x, y, alpha).getImg();
+        return Images.from(srcImage).pressImage(pressImage, x, y, alpha).getImg();
     }
 
     /**
@@ -913,7 +913,7 @@ public class ImageKit {
      * @return 结果图片
      */
     public static java.awt.Image pressImage(java.awt.Image srcImage, java.awt.Image pressImage, Rectangle rectangle, float alpha) {
-        return org.aoju.bus.core.image.Image.from(srcImage).pressImage(pressImage, rectangle, alpha).getImg();
+        return Images.from(srcImage).pressImage(pressImage, rectangle, alpha).getImg();
     }
 
     /**
@@ -977,7 +977,7 @@ public class ImageKit {
      * @return 旋转后的图片
      */
     public static java.awt.Image rotate(java.awt.Image image, int degree) {
-        return Image.from(image).rotate(degree).getImg();
+        return Images.from(image).rotate(degree).getImg();
     }
 
     /**
@@ -1031,7 +1031,7 @@ public class ImageKit {
      * @return 翻转后的图片
      */
     public static java.awt.Image flip(java.awt.Image image) {
-        return Image.from(image).flip().getImg();
+        return Images.from(image).flip().getImg();
     }
 
     /**
@@ -1043,7 +1043,7 @@ public class ImageKit {
      * @throws InstrumentException IO异常
      */
     public static void compress(File imageFile, File outFile, float quality) throws InstrumentException {
-        org.aoju.bus.core.image.Image.from(imageFile).setQuality(quality).write(outFile);
+        Images.from(imageFile).setQuality(quality).write(outFile);
     }
 
     /**
@@ -1859,10 +1859,10 @@ public class ImageKit {
      *
      * @param srcImage 背景图片对象（画布以背景图宽高为基准）
      * @param fileType 输出图片格式
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image merge(BufferedImage srcImage, String fileType) {
-        return Image.from(srcImage, null, fileType);
+    public static Images merge(BufferedImage srcImage, String fileType) {
+        return Images.from(srcImage, null, fileType);
     }
 
     /**
@@ -1870,10 +1870,10 @@ public class ImageKit {
      *
      * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
      * @param fileType 输出图片格式
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image merge(String imageUrl, String fileType) {
-        return Image.from(null, imageUrl, fileType);
+    public static Images merge(String imageUrl, String fileType) {
+        return Images.from(null, imageUrl, fileType);
     }
 
 }

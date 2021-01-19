@@ -37,10 +37,10 @@ import java.util.List;
  */
 public class NameKit {
 
-    private static List<String> EN_FIRST_LIST = new ArrayList<>();
-    private static List<String> EN_LAST_LIST = new ArrayList<>();
-    private static List<String> CN_LAST_NAME = new ArrayList<>();
-    private static List<String> CN_FIRST_NAME = new ArrayList<>();
+    private static final List<String> EN_FIRST_LIST = new ArrayList<>();
+    private static final List<String> EN_LAST_LIST = new ArrayList<>();
+    private static final List<String> CN_LAST_NAME = new ArrayList<>();
+    private static final List<String> CN_FIRST_NAME = new ArrayList<>();
 
     static {
         initEN_FIRST_LIST();

@@ -53,7 +53,8 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
 
     private final Supplier<Pair<String, String>> manufacturerModel = Memoize.memoize(
             WindowsComputerSystem::queryManufacturerModel);
-    private final Supplier<String> serialNumber = Memoize.memoize(WindowsComputerSystem::querySystemSerialNumber);
+    private final Supplier<Pair<String, String>> serialNumberUUID = Memoize.memoize(
+            WindowsComputerSystem::querySystemSerialNumberUUID);
 
     private static Pair<String, String> queryManufacturerModel() {
         String manufacturer = null;
@@ -65,6 +66,28 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
         }
         return Pair.of(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
                 StringKit.isBlank(model) ? Normal.UNKNOWN : model);
+    }
+
+    private static Pair<String, String> querySystemSerialNumberUUID() {
+        String serialNumber = null;
+        String uuid = null;
+        WmiResult<Win32ComputerSystemProduct.ComputerSystemProductProperty> win32ComputerSystemProduct = Win32ComputerSystemProduct
+                .queryIdentifyingNumberUUID();
+        if (win32ComputerSystemProduct.getResultCount() > 0) {
+            serialNumber = WmiKit.getString(win32ComputerSystemProduct,
+                    Win32ComputerSystemProduct.ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
+            uuid = WmiKit.getString(win32ComputerSystemProduct, Win32ComputerSystemProduct.ComputerSystemProductProperty.UUID, 0);
+        }
+        if (StringKit.isBlank(serialNumber)) {
+            serialNumber = querySerialFromBios();
+        }
+        if (StringKit.isBlank(serialNumber)) {
+            serialNumber = Normal.UNKNOWN;
+        }
+        if (StringKit.isBlank(uuid)) {
+            uuid = Normal.UNKNOWN;
+        }
+        return Pair.of(serialNumber, uuid);
     }
 
     private static String querySystemSerialNumber() {
@@ -105,7 +128,12 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
 
     @Override
     public String getSerialNumber() {
-        return serialNumber.get();
+        return serialNumberUUID.get().getLeft();
+    }
+
+    @Override
+    public String getHardwareUUID() {
+        return serialNumberUUID.get().getRight();
     }
 
     @Override

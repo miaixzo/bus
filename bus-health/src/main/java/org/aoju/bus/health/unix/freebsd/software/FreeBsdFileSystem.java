@@ -37,6 +37,7 @@ import org.aoju.bus.health.linux.software.LinuxOSFileStore;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.io.File;
+import java.nio.file.PathMatcher;
 import java.util.*;
 
 /**
@@ -54,6 +55,19 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
 
     // System path mounted as tmpfs
     private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
+    public static final String OSHI_FREEBSD_FS_PATH_EXCLUDES = "health.os.freebsd.filesystem.path.excludes";
+    public static final String OSHI_FREEBSD_FS_PATH_INCLUDES = "health.os.freebsd.filesystem.path.includes";
+    public static final String OSHI_FREEBSD_FS_VOLUME_EXCLUDES = "health.os.freebsd.filesystem.volume.excludes";
+    public static final String OSHI_FREEBSD_FS_VOLUME_INCLUDES = "health.os.freebsd.filesystem.volume.includes";
+
+    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_PATH_EXCLUDES);
+    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_PATH_INCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_VOLUME_EXCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_VOLUME_INCLUDES);
 
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {

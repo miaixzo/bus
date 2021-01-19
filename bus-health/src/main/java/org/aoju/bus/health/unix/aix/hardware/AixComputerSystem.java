@@ -64,7 +64,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
         String manufacturer = fwVendor;
         String model = null;
         String serialNumber = null;
-
+        String uuid = null;
         /*-
         fwversion       IBM,RG080425_d79e22_r                Firmware version and revision levels                False
         modelname       IBM,9114-275                         Machine name                                        False
@@ -76,7 +76,9 @@ final class AixComputerSystem extends AbstractComputerSystem {
         final String fwVersionMarker = "fwversion";
         final String modelMarker = "modelname";
         final String systemIdMarker = "systemid";
+        final String uuidMarker = "os_uuid";
         final String fwPlatformVersionMarker = "Platform Firmware level is";
+
 
         for (final String checkLine : Executor.runNative("lsattr -El sys0")) {
             if (checkLine.startsWith(fwVersionMarker)) {
@@ -96,8 +98,8 @@ final class AixComputerSystem extends AbstractComputerSystem {
                 }
                 model = RegEx.SPACES.split(model)[0];
             } else if (checkLine.startsWith(systemIdMarker)) {
-                serialNumber = checkLine.split(systemIdMarker)[1].trim();
-                serialNumber = RegEx.SPACES.split(serialNumber)[0];
+                uuid = checkLine.split(uuidMarker)[1].trim();
+                uuid = RegEx.SPACES.split(uuid)[0];
             }
         }
         for (final String checkLine : Executor.runNative("lsmcode -c")) {
@@ -110,7 +112,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
                 break;
             }
         }
-        return new LsattrStrings(fwVendor, fwPlatformVersion, fwVersion, manufacturer, model, serialNumber);
+        return new LsattrStrings(fwVendor, fwPlatformVersion, fwVersion, manufacturer, model, serialNumber, uuid);
     }
 
     @Override
@@ -126,6 +128,11 @@ final class AixComputerSystem extends AbstractComputerSystem {
     @Override
     public String getSerialNumber() {
         return lsattrStrings.get().serialNumber;
+    }
+
+    @Override
+    public String getHardwareUUID() {
+        return lsattrStrings.get().uuid;
     }
 
     @Override
@@ -148,9 +155,10 @@ final class AixComputerSystem extends AbstractComputerSystem {
         private final String manufacturer;
         private final String model;
         private final String serialNumber;
+        private final String uuid;
 
         private LsattrStrings(String biosVendor, String biosPlatformVersion, String biosVersion, String manufacturer,
-                              String model, String serialNumber) {
+                              String model, String serialNumber, String uuid) {
             this.biosVendor = StringKit.isBlank(biosVendor) ? Normal.UNKNOWN : biosVendor;
             this.biosPlatformVersion = StringKit.isBlank(biosPlatformVersion) ? Normal.UNKNOWN : biosPlatformVersion;
             this.biosVersion = StringKit.isBlank(biosVersion) ? Normal.UNKNOWN : biosVersion;
@@ -158,8 +166,8 @@ final class AixComputerSystem extends AbstractComputerSystem {
             this.manufacturer = StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer;
             this.model = StringKit.isBlank(model) ? Normal.UNKNOWN : model;
             this.serialNumber = StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber;
+            this.uuid = StringKit.isBlank(uuid) ? Normal.UNKNOWN : uuid;
         }
-
     }
 
 }

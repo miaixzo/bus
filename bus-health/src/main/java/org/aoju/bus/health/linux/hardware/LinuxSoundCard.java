@@ -37,7 +37,6 @@ import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -167,17 +166,17 @@ final class LinuxSoundCard extends AbstractSoundCard {
 
     /**
      * public method used by
-     * {@link AbstractHardwareAbstractionLayer} to access the
+     * {@link  AbstractHardwareAbstractionLayer} to access the
      * sound cards.
      *
-     * @return List of {@link LinuxSoundCard} objects.
+     * @return List of {@link  LinuxSoundCard} objects.
      */
     public static List<SoundCard> getSoundCards() {
-        List<LinuxSoundCard> soundCards = new ArrayList<>();
+        List<SoundCard> soundCards = new ArrayList<>();
         for (File cardFile : getCardFolders()) {
             soundCards.add(new LinuxSoundCard(getSoundCardVersion(), getCardName(cardFile), getCardCodec(cardFile)));
         }
-        return Collections.unmodifiableList(soundCards);
+        return soundCards;
     }
 
 }

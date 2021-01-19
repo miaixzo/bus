@@ -71,7 +71,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
-        List<LinuxGraphicsCard> cardList = getGraphicsCardsFromLspci();
+        List<GraphicsCard> cardList = getGraphicsCardsFromLspci();
         if (cardList.isEmpty()) {
             cardList = getGraphicsCardsFromLshw();
         }
@@ -80,8 +80,8 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     }
 
     // Faster, use as primary
-    private static List<LinuxGraphicsCard> getGraphicsCardsFromLspci() {
-        List<LinuxGraphicsCard> cardList = new ArrayList<>();
+    private static List<GraphicsCard> getGraphicsCardsFromLspci() {
+        List<GraphicsCard> cardList = new ArrayList<>();
         // Machine readable version
         List<String> lspci = Executor.runNative("lspci -vnnm");
         String name = Normal.UNKNOWN;
@@ -150,8 +150,8 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
     }
 
     // Slower, use as backup
-    private static List<LinuxGraphicsCard> getGraphicsCardsFromLshw() {
-        List<LinuxGraphicsCard> cardList = new ArrayList<>();
+    private static List<GraphicsCard> getGraphicsCardsFromLshw() {
+        List<GraphicsCard> cardList = new ArrayList<>();
         List<String> lshw = Executor.runNative("lshw -C display");
         String name = Normal.UNKNOWN;
         String deviceId = Normal.UNKNOWN;

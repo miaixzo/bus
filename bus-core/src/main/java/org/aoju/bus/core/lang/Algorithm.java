@@ -35,32 +35,58 @@ package org.aoju.bus.core.lang;
 public class Algorithm {
 
     /****************************** 非对称-算法类型 *****************************/
-    // RSA算法
+
+    /**
+     * RSA算法
+     */
     public static final String RSA = "RSA";
-    // RSA算法，此算法用了默认补位方式为RSA/ECB/PKCS1Padding
+    /**
+     * RSA算法，此算法用了默认补位方式为RSA/ECB/PKCS1Padding
+     */
     public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding";
-    // RSA算法，此算法用了RSA/None/NoPadding
+    /**
+     * RSA算法，此算法用了默认补位方式为RSA/ECB/NoPadding
+     */
+    public static final String RSA_ECB = "RSA/ECB/NoPadding";
+    /**
+     * RSA算法，此算法用了RSA/None/NoPadding
+     */
     public static final String RSA_None = "RSA/None/NoPadding";
-    // EC(Elliptic Curve)算法
+    /**
+     * EC(Elliptic Curve)算法
+     */
     public static final String EC = "EC";
     public static final String ECDSA = "ECDSA";
 
     /***************************** 非对称-签名算法 *****************************/
-    // The RSA signature algorithm
+
+    /**
+     * RSA签名算法
+     */
     public static final String NONEwithRSA = "NONEwithRSA";
-    // The MD2/MD5 with RSA Encryption signature algorithm
+    /**
+     * MD2/MD5带有RSA加密签名算法
+     */
     public static final String MD2withRSA = "MD2withRSA";
     public static final String MD5withRSA = "MD5withRSA";
-    // The signature algorithm with SHA-* and the RSA
+    /**
+     * 使用SHA-*和RSA的签名算法
+     */
     public static final String SHA1withRSA = "SHA1withRSA";
     public static final String SHA256withRSA = "SHA256withRSA";
     public static final String SHA384withRSA = "SHA384withRSA";
     public static final String SHA512withRSA = "SHA512withRSA";
-    // The Digital Signature Algorithm
+    /**
+     * 数字签名算法
+     */
     public static final String NONEwithDSA = "NONEwithDSA";
-    // The DSA with SHA-1 signature algorithm
+    /**
+     * 采用SHA-1签名算法的DSA
+     */
     public static final String SHA1withDSA = "SHA1withDSA";
-    // The ECDSA signature algorithms
+    /**
+     * ECDSA签名算法
+     */
     public static final String NONEwithECDSA = "NONEwithECDSA";
     public static final String SHA1withECDSA = "SHA1withECDSA";
     public static final String SHA256withECDSA = "SHA256withECDSA";
@@ -82,17 +108,26 @@ public class Algorithm {
     public static final String HmacSHA256 = "HmacSHA256";
     public static final String HmacSHA384 = "HmacSHA384";
     public static final String HmacSHA512 = "HmacSHA512";
-    // HmacSM3算法实现，需要BouncyCastle库支持
+    /**
+     * HmacSM3算法实现，需要BouncyCastle库支持
+     */
     public static final String HmacSM3 = "HmacSM3";
 
     /***************************** 对称-算法类型 *****************************/
-    // 默认的AES加密方式：AES/CBC/PKCS5Padding
+
+    /**
+     * 默认的AES加密方式：AES/CBC/PKCS5Padding
+     */
     public static final String AES = "AES";
     public static final String ARCFOUR = "ARCFOUR";
     public static final String Blowfish = "Blowfish";
-    // 默认的DES加密方式：DES/ECB/PKCS5Padding
+    /**
+     * 默认的DES加密方式：DES/ECB/PKCS5Padding
+     */
     public static final String DES = "DES";
-    // 3DES算法，默认实现为：DESede/CBC/PKCS5Padding
+    /**
+     * 3DES算法，默认实现为：DESede/CBC/PKCS5Padding
+     */
     public static final String DESede = "DESede";
     public static final String RC2 = "RC2";
     public static final String RC4 = "RC4";
@@ -101,6 +136,7 @@ public class Algorithm {
     public static final String PBEWithSHA1AndRC2_40 = "PBEWithSHA1AndRC2_40";
 
     /******************************* 国密算法 *******************************/
+
     public static final String SM1 = "SM1";
     public static final String SM2 = "SM2";
     public static final String SM3 = "SM3";

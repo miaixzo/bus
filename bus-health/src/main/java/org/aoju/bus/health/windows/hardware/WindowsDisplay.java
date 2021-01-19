@@ -36,7 +36,6 @@ import org.aoju.bus.health.builtin.hardware.Display;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -101,7 +100,7 @@ final class WindowsDisplay extends AbstractDisplay {
             }
             SU.SetupDiDestroyDeviceInfoList(hDevInfo);
         }
-        return Collections.unmodifiableList(displays);
+        return displays;
     }
 
 }

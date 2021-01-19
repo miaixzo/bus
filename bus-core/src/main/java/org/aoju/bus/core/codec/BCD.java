@@ -55,8 +55,8 @@ public class BCD {
         if (len >= 2) {
             len >>= 1;
         }
-        byte bbt[] = new byte[len];
-        byte abt[] = asc.getBytes();
+        byte[] bbt = new byte[len];
+        byte[] abt = asc.getBytes();
         int j;
         int k;
         for (int p = 0; p < asc.length() / 2; p++) {
@@ -117,7 +117,8 @@ public class BCD {
      */
     public static String bcdToStr(byte[] bytes) {
         Assert.notNull(bytes, "Bcd bytes must be not null!");
-        char temp[] = new char[bytes.length * 2], val;
+        char[] temp = new char[bytes.length * 2];
+        char val;
 
         for (int i = 0; i < bytes.length; i++) {
             val = (char) (((bytes[i] & 0xf0) >> 4) & 0x0f);

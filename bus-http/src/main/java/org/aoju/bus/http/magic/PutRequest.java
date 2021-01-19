@@ -26,7 +26,7 @@
 package org.aoju.bus.http.magic;
 
 import org.aoju.bus.core.lang.Header;
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.http.Headers;
@@ -62,32 +62,32 @@ public class PutRequest extends HttpRequest {
         if (multipartBody != null) {
             return multipartBody;
         } else if (fileInfos != null && fileInfos.size() > 0) {
-            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE);
+            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MimeType.MULTIPART_FORM_DATA_TYPE);
             addParams(builder);
             fileInfos.forEach(fileInfo -> {
                 RequestBody fileBody;
                 if (fileInfo.file != null) {
-                    fileBody = RequestBody.create(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.file);
+                    fileBody = RequestBody.create(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.file);
                 } else if (fileInfo.fileInputStream != null) {
-                    fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
+                    fileBody = createRequestBody(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(FileKit.getMimeType(fileInfo.fileName)),
+                    fileBody = RequestBody.create(MimeType.valueOf(FileKit.getMimeType(fileInfo.fileName)),
                             fileInfo.fileContent);
                 }
                 builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);
             });
             if (body != null && body.length() > 0) {
-                builder.addPart(RequestBody.create(MediaType.MULTIPART_FORM_DATA_TYPE, body));
+                builder.addPart(RequestBody.create(MimeType.MULTIPART_FORM_DATA_TYPE, body));
             }
             return builder.build();
         } else if (body != null && body.length() > 0) {
-            MediaType mediaType;
+            MimeType mimeType;
             if (headers.containsKey(Header.CONTENT_TYPE)) {
-                mediaType = MediaType.valueOf(headers.get(Header.CONTENT_TYPE));
+                mimeType = MimeType.valueOf(headers.get(Header.CONTENT_TYPE));
             } else {
-                mediaType = MediaType.TEXT_PLAIN_TYPE;
+                mimeType = MimeType.TEXT_PLAIN_TYPE;
             }
-            return RequestBody.create(mediaType, body);
+            return RequestBody.create(mimeType, body);
         } else {
             FormBody.Builder builder = new FormBody.Builder();
             addParams(builder);

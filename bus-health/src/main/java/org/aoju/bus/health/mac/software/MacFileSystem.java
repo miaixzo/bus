@@ -40,15 +40,17 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.software.AbstractFileSystem;
 import org.aoju.bus.health.builtin.software.OSFileStore;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +73,20 @@ public class MacFileSystem extends AbstractFileSystem {
 
     // Regexp matcher for /dev/disk1 etc.
     private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
+
+    public static final String OSHI_MAC_FS_PATH_EXCLUDES = "health.os.mac.filesystem.path.excludes";
+    public static final String OSHI_MAC_FS_PATH_INCLUDES = "health.os.mac.filesystem.path.includes";
+    public static final String OSHI_MAC_FS_VOLUME_EXCLUDES = "health.os.mac.filesystem.volume.excludes";
+    public static final String OSHI_MAC_FS_VOLUME_INCLUDES = "health.os.mac.filesystem.volume.includes";
+
+    private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_MAC_FS_PATH_EXCLUDES);
+    private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_MAC_FS_PATH_INCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_EXCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_MAC_FS_VOLUME_EXCLUDES);
+    private static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
+            .loadAndParseFileSystemConfig(OSHI_MAC_FS_VOLUME_INCLUDES);
 
     // User specifiable flags.
     private static final int MNT_RDONLY = 0x00000001;
@@ -152,15 +168,20 @@ public class MacFileSystem extends AbstractFileSystem {
                     // Byte arrays are null-terminated strings
 
                     // Get volume name
-                    String volume = Native.toString(fs[f].f_mntfromname, Charset.UTF_8);
+                    // Get volume and path name, and type
+                    String volume = Native.toString(fs[f].f_mntfromname, StandardCharsets.UTF_8);
+                    String path = Native.toString(fs[f].f_mntonname, StandardCharsets.UTF_8);
+                    String type = Native.toString(fs[f].f_fstypename, StandardCharsets.UTF_8);
                     // Skip non-local drives if requested, skip system types
                     final int flags = fs[f].f_flags;
-                    if ((localOnly && (flags & MNT_LOCAL) == 0) || volume.equals("devfs")
-                            || volume.startsWith("map ")) {
+
+                    // Skip non-local drives if requested, and exclude pseudo file systems
+                    if ((localOnly && (flags & MNT_LOCAL) == 0) || !path.equals(Symbol.SLASH)
+                            && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
+                            FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                         continue;
                     }
 
-                    String type = Native.toString(fs[f].f_fstypename, Charset.UTF_8);
                     String description = "Volume";
                     if (LOCAL_DISK.matcher(volume).matches()) {
                         description = "Local Disk";
@@ -168,7 +189,7 @@ public class MacFileSystem extends AbstractFileSystem {
                             || NETWORK_FS_TYPES.contains(type)) {
                         description = "Network Drive";
                     }
-                    String path = Native.toString(fs[f].f_mntonname, Charset.UTF_8);
+
                     String name = Normal.EMPTY;
                     File file = new File(path);
                     if (name.isEmpty()) {

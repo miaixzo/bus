@@ -71,9 +71,9 @@ public class StringOutputStream extends OutputStream {
             baos.flush();
             if (baos.size() > 0) {
                 if (charset == null)
-                    sb.append(new String(baos.toByteArray()));
+                    sb.append(baos.toString());
                 else
-                    sb.append(new String(baos.toByteArray(), charset));
+                    sb.append(baos.toString(charset));
                 baos.reset();
             }
         }

@@ -43,11 +43,11 @@ public class Semaphore implements Runnable {
     /**
      * 实际执行的逻辑
      */
-    private Runnable runnable;
+    private final Runnable runnable;
     /**
      * 信号量
      */
-    private java.util.concurrent.Semaphore semaphore;
+    private final java.util.concurrent.Semaphore semaphore;
 
     /**
      * 构造

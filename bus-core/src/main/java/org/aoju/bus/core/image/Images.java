@@ -60,28 +60,25 @@ import java.util.List;
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class Image implements Serializable {
+public class Images implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     /**
      * 待绘制的元素集合
      */
     private final List<AbstractElement> list = new ArrayList<>();
-    private java.awt.Image targetImage;
     /**
-     * 目标图片文件格式,用于写出
+     * 图片来源
      */
-    private String targetImageType = FileType.TYPE_JPG;
+    private BufferedImage srcImage;
     /**
-     * 计算x,y坐标的时候是否从中心做为原始坐标开始计算
+     * 合成图片
      */
-    private boolean positionBaseCentre = true;
+    private Image targetImage;
     /**
-     * 图片输出质量,用于压缩
+     * 输出质量
      */
     private float quality = -1;
-    private BufferedImage srcImage;
     /**
      * 画布宽度
      */
@@ -91,39 +88,61 @@ public class Image implements Serializable {
      */
     private int canvasHeight;
     /**
-     * 输出图片格式
+     * 输出格式
      */
-    private String fileType;
+    private String fileType = FileType.TYPE_JPG;
+    /**
+     * 计算x,y坐标的时候是否从中心做为原始坐标开始计算
+     */
+    private boolean positionBaseCentre = true;
 
     /**
      * 构造
      *
      * @param srcImage 来源图片
      */
-    public Image(BufferedImage srcImage) {
+    public Images(BufferedImage srcImage) {
         this.srcImage = srcImage;
     }
 
     /**
      * 构造
      *
-     * @param srcImage  来源图片
-     * @param imageType 目标图片类型，null则读取来源图片类型
+     * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
+     * @param fileType 输出图片格式
      */
-    public Image(BufferedImage srcImage, String imageType) {
+    public Images(String imageUrl, String fileType) {
+        ImageElement bgImageElement = new ImageElement(imageUrl, 0, 0);
+        this.list.add(bgImageElement);
+        this.canvasWidth = bgImageElement.getImage().getWidth();
+        this.canvasHeight = bgImageElement.getImage().getHeight();
+        this.fileType = fileType;
+    }
+
+    /**
+     * 构造
+     *
+     * @param srcImage 来源图片
+     * @param fileType 目标图片类型，null则读取来源图片类型
+     */
+    public Images(BufferedImage srcImage, String fileType) {
+        ImageElement bgImageElement = new ImageElement(srcImage, 0, 0);
+        this.list.add(bgImageElement);
+        this.canvasWidth = srcImage.getWidth();
+        this.canvasHeight = srcImage.getHeight();
+        this.fileType = fileType;
         this.srcImage = srcImage;
-        if (null == targetImageType) {
+        if (null == this.fileType) {
             if (srcImage.getType() == BufferedImage.TYPE_INT_ARGB
                     || srcImage.getType() == BufferedImage.TYPE_INT_ARGB_PRE
                     || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR
                     || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR_PRE
             ) {
-                targetImageType = FileType.TYPE_PNG;
+                this.fileType = FileType.TYPE_PNG;
             } else {
-                targetImageType = FileType.TYPE_JPG;
+                this.fileType = FileType.TYPE_JPG;
             }
         }
-        this.targetImageType = imageType;
     }
 
     /**
@@ -133,7 +152,7 @@ public class Image implements Serializable {
      * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
      * @param fileType 输出图片格式
      */
-    public Image(BufferedImage srcImage, String imageUrl, String fileType) {
+    public Images(BufferedImage srcImage, String imageUrl, String fileType) {
         ImageElement imageElement;
         if (StringKit.isNotEmpty(imageUrl)) {
             imageElement = new ImageElement(imageUrl, 0, 0);
@@ -156,9 +175,9 @@ public class Image implements Serializable {
      * 从Path读取图片并开始处理
      *
      * @param imagePath 图片文件路径
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(Path imagePath) {
+    public static Images from(Path imagePath) {
         return from(imagePath.toFile());
     }
 
@@ -166,19 +185,19 @@ public class Image implements Serializable {
      * 从文件读取图片并开始处理
      *
      * @param imageFile 图片文件
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(File imageFile) {
-        return new Image(ImageKit.read(imageFile));
+    public static Images from(File imageFile) {
+        return new Images(ImageKit.read(imageFile));
     }
 
     /**
      * 从资源对象中读取图片并开始处理
      *
      * @param resource 图片资源对象
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(Resource resource) {
+    public static Images from(Resource resource) {
         return from(resource.getStream());
     }
 
@@ -186,40 +205,40 @@ public class Image implements Serializable {
      * 从流读取图片并开始处理
      *
      * @param in 图片流
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(InputStream in) {
-        return new Image(ImageKit.read(in));
+    public static Images from(InputStream in) {
+        return new Images(ImageKit.read(in));
     }
 
     /**
      * 从ImageInputStream取图片并开始处理
      *
      * @param imageStream 图片流
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(ImageInputStream imageStream) {
-        return new Image(ImageKit.read(imageStream));
+    public static Images from(ImageInputStream imageStream) {
+        return new Images(ImageKit.read(imageStream));
     }
 
     /**
      * 从URL取图片并开始处理
      *
      * @param imageUrl 图片URL
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(URL imageUrl) {
-        return new Image(ImageKit.read(imageUrl));
+    public static Images from(URL imageUrl) {
+        return new Images(ImageKit.read(imageUrl));
     }
 
     /**
      * 从Image取图片并开始处理
      *
      * @param image 图片
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(java.awt.Image image) {
-        return new Image(ImageKit.toBufferedImage(image));
+    public static Images from(java.awt.Image image) {
+        return new Images(ImageKit.toBufferedImage(image));
     }
 
     /**
@@ -228,10 +247,10 @@ public class Image implements Serializable {
      * @param srcImage 背景图片对象（画布以背景图宽高为基准）
      * @param imageUrl 背景图片地址（画布以背景图宽高为基准）
      * @param fileType 输出图片格式
-     * @return {@link Image}
+     * @return {@link Images}
      */
-    public static Image from(BufferedImage srcImage, String imageUrl, String fileType) {
-        return new Image(srcImage, imageUrl, fileType);
+    public static Images from(BufferedImage srcImage, String imageUrl, String fileType) {
+        return new Images(srcImage, imageUrl, fileType);
     }
 
     /**
@@ -288,8 +307,8 @@ public class Image implements Serializable {
      * @see FileType#TYPE_JPG
      * @see FileType#TYPE_PNG
      */
-    public Image setTargetImageType(String imgType) {
-        this.targetImageType = imgType;
+    public Images setTargetImageType(String imgType) {
+        this.fileType = imgType;
         return this;
     }
 
@@ -299,7 +318,7 @@ public class Image implements Serializable {
      * @param positionBaseCentre 是否从中心做为原始坐标开始计算
      * @return the image
      */
-    public Image setPositionBaseCentre(boolean positionBaseCentre) {
+    public Images setPositionBaseCentre(boolean positionBaseCentre) {
         this.positionBaseCentre = positionBaseCentre;
         return this;
     }
@@ -310,7 +329,7 @@ public class Image implements Serializable {
      * @param quality 质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      * @return the image
      */
-    public Image setQuality(double quality) {
+    public Images setQuality(double quality) {
         return setQuality((float) quality);
     }
 
@@ -320,7 +339,7 @@ public class Image implements Serializable {
      * @param quality 质量,数字为0~1(不包括0和1)表示质量压缩比,除此数字外设置表示不压缩
      * @return image
      */
-    public Image setQuality(float quality) {
+    public Images setQuality(float quality) {
         if (quality > 0 && quality < 1) {
             this.quality = quality;
         } else {
@@ -335,7 +354,7 @@ public class Image implements Serializable {
      * @param scale 缩放比例 比例大于1时为放大,小于1大于0为缩小
      * @return this
      */
-    public Image scale(float scale) {
+    public Images scale(float scale) {
         if (scale < 0) {
             // 自动修正负数
             scale = -scale;
@@ -344,7 +363,7 @@ public class Image implements Serializable {
         final java.awt.Image srcImage = getValidSrcImg();
 
         // PNG图片特殊处理
-        if (FileType.TYPE_PNG.equals(this.targetImageType)) {
+        if (FileType.TYPE_PNG.equals(this.fileType)) {
             final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(scale, scale), null);
             this.targetImage = op.filter(ImageKit.toBufferedImage(srcImage), null);
         } else {
@@ -366,7 +385,7 @@ public class Image implements Serializable {
      * @param height 目标高度
      * @return this
      */
-    public Image scale(int width, int height) {
+    public Images scale(int width, int height) {
         final java.awt.Image srcImage = getValidSrcImg();
 
         int srcHeight = srcImage.getHeight(null);
@@ -386,7 +405,7 @@ public class Image implements Serializable {
         double sx = MathKit.div(width, srcWidth);
         double sy = MathKit.div(height, srcHeight);
 
-        if (FileType.TYPE_PNG.equals(this.targetImageType)) {
+        if (FileType.TYPE_PNG.equals(this.fileType)) {
             final AffineTransformOp op = new AffineTransformOp(AffineTransform.getScaleInstance(sx, sy), null);
             this.targetImage = op.filter(ImageKit.toBufferedImage(srcImage), null);
         } else {
@@ -405,7 +424,7 @@ public class Image implements Serializable {
      * @param fixedColor 比例不对时补充的颜色,不补充为<code>null</code>
      * @return this
      */
-    public Image scale(int width, int height, Color fixedColor) {
+    public Images scale(int width, int height, Color fixedColor) {
         java.awt.Image srcImage = getValidSrcImg();
         int srcHeight = srcImage.getHeight(null);
         int srcWidth = srcImage.getWidth(null);
@@ -452,7 +471,7 @@ public class Image implements Serializable {
      * @param rectangle 矩形对象,表示矩形区域的x,y,width,height
      * @return this
      */
-    public Image cut(Rectangle rectangle) {
+    public Images cut(Rectangle rectangle) {
         final java.awt.Image srcImage = getValidSrcImg();
         rectangle = fixRectangle(rectangle, srcImage.getWidth(null), srcImage.getHeight(null));
 
@@ -469,7 +488,7 @@ public class Image implements Serializable {
      * @param y 原图的y坐标起始位置
      * @return this
      */
-    public Image cut(int x, int y) {
+    public Images cut(int x, int y) {
         return cut(x, y, -1);
     }
 
@@ -481,7 +500,7 @@ public class Image implements Serializable {
      * @param radius 半径,小于0表示填充满整个图片(直径取长宽最小值)
      * @return this
      */
-    public Image cut(int x, int y, int radius) {
+    public Images cut(int x, int y, int radius) {
         final java.awt.Image srcImage = getValidSrcImg();
         final int width = srcImage.getWidth(null);
         final int height = srcImage.getHeight(null);
@@ -508,7 +527,7 @@ public class Image implements Serializable {
      * @param arc 圆角弧度,0~1,为长宽占比
      * @return this
      */
-    public Image round(double arc) {
+    public Images round(double arc) {
         final java.awt.Image srcImage = getValidSrcImg();
         final int width = srcImage.getWidth(null);
         final int height = srcImage.getHeight(null);
@@ -534,7 +553,7 @@ public class Image implements Serializable {
      *
      * @return this
      */
-    public Image gray() {
+    public Images gray() {
         final ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
         this.targetImage = op.filter(ImageKit.toBufferedImage(getValidSrcImg()), null);
         return this;
@@ -545,7 +564,7 @@ public class Image implements Serializable {
      *
      * @return this
      */
-    public Image binary() {
+    public Images binary() {
         this.targetImage = ImageKit.copyImage(getValidSrcImg(), BufferedImage.TYPE_BYTE_BINARY);
         return this;
     }
@@ -562,7 +581,7 @@ public class Image implements Serializable {
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return 处理后的图像
      */
-    public Image pressText(String pressText, Color color, Font font, int x, int y, float alpha) {
+    public Images pressText(String pressText, Color color, Font font, int x, int y, float alpha) {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg());
         final Graphics2D g = targetImage.createGraphics();
 
@@ -597,7 +616,7 @@ public class Image implements Serializable {
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return this
      */
-    public Image pressImage(java.awt.Image pressImage, int x, int y, float alpha) {
+    public Images pressImage(java.awt.Image pressImage, int x, int y, float alpha) {
         final int pressImgWidth = pressImage.getWidth(null);
         final int pressImgHeight = pressImage.getHeight(null);
 
@@ -612,10 +631,10 @@ public class Image implements Serializable {
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内(包含边界值)的一个浮点数字
      * @return this
      */
-    public Image pressImage(java.awt.Image pressImage, Rectangle rectangle, float alpha) {
+    public Images pressImage(java.awt.Image pressImage, Rectangle rectangle, float alpha) {
         final java.awt.Image targetImage = getValidSrcImg();
 
-        this.targetImage = draw(ImageKit.toBufferedImage(targetImage, this.targetImageType), pressImage, rectangle, alpha);
+        this.targetImage = draw(ImageKit.toBufferedImage(targetImage, this.fileType), pressImage, rectangle, alpha);
         return this;
     }
 
@@ -626,7 +645,7 @@ public class Image implements Serializable {
      * @param degree 旋转角度
      * @return 旋转后的图片
      */
-    public Image rotate(int degree) {
+    public Images rotate(int degree) {
         final java.awt.Image image = getValidSrcImg();
         int width = image.getWidth(null);
         int height = image.getHeight(null);
@@ -649,7 +668,7 @@ public class Image implements Serializable {
      *
      * @return this
      */
-    public Image flip() {
+    public Images flip() {
         final java.awt.Image image = getValidSrcImg();
         int width = image.getWidth(null);
         int height = image.getHeight(null);
@@ -689,13 +708,13 @@ public class Image implements Serializable {
      * @throws InstrumentException IO异常
      */
     public boolean write(ImageOutputStream targetImageStream) throws InstrumentException {
-        Assert.notBlank(this.targetImageType, "Target image type is blank !");
+        Assert.notBlank(this.fileType, "Target image type is blank !");
         Assert.notNull(targetImageStream, "Target output stream is null !");
 
         final java.awt.Image targetImage = (null == this.targetImage) ? this.srcImage : this.targetImage;
         Assert.notNull(targetImage, "Target image is null !");
 
-        return ImageKit.write(targetImage, this.targetImageType, targetImageStream, this.quality);
+        return ImageKit.write(targetImage, this.fileType, targetImageStream, this.quality);
     }
 
     /**
@@ -708,7 +727,7 @@ public class Image implements Serializable {
     public boolean write(File targetFile) throws InstrumentException {
         final String formatName = FileKit.extName(targetFile);
         if (StringKit.isNotBlank(formatName)) {
-            this.targetImageType = formatName;
+            this.fileType = formatName;
         }
 
         if (targetFile.exists()) {
@@ -732,7 +751,7 @@ public class Image implements Serializable {
      * @see BufferedImage#TYPE_INT_RGB
      */
     private int getTypeInt() {
-        switch (this.targetImageType) {
+        switch (this.fileType) {
             case FileType.TYPE_PNG:
                 return BufferedImage.TYPE_INT_ARGB;
             default:
@@ -775,7 +794,7 @@ public class Image implements Serializable {
      * @param width 边框粗细
      * @return this
      */
-    public Image stroke(Color color, float width) {
+    public Images stroke(Color color, float width) {
         return stroke(color, new BasicStroke(width));
     }
 
@@ -786,7 +805,7 @@ public class Image implements Serializable {
      * @param stroke 描边属性，包括粗细、线条类型等，见{@link BasicStroke}
      * @return this
      */
-    public Image stroke(Color color, Stroke stroke) {
+    public Images stroke(Color color, Stroke stroke) {
         final BufferedImage image = ImageKit.toBufferedImage(getValidSrcImg());
         int width = image.getWidth(null);
         int height = image.getHeight(null);

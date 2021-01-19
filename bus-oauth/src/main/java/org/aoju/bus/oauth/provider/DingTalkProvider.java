@@ -31,7 +31,7 @@ import org.aoju.bus.cache.metric.ExtendCache;
 import org.aoju.bus.core.codec.Base64;
 import org.aoju.bus.core.lang.Algorithm;
 import org.aoju.bus.core.lang.Charset;
-import org.aoju.bus.core.lang.MediaType;
+import org.aoju.bus.core.lang.MimeType;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.exception.AuthorizedException;
 import org.aoju.bus.core.toolkit.UriKit;
@@ -71,7 +71,7 @@ public class DingTalkProvider extends AbstractProvider {
         String code = accToken.getAccessCode();
         JSONObject param = new JSONObject();
         param.put("tmp_auth_code", code);
-        String response = Httpx.post(userInfoUrl(accToken), param.toJSONString(), MediaType.APPLICATION_JSON);
+        String response = Httpx.post(userInfoUrl(accToken), param.toJSONString(), MimeType.APPLICATION_JSON);
         JSONObject object = JSON.parseObject(response);
         if (object.getIntValue("errcode") != 0) {
             throw new AuthorizedException(object.getString("errmsg"));

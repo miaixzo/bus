@@ -23,44 +23,77 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix.aix.hardware;
+package org.aoju.bus.health.unix.openbsd.hardware;
 
-import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.builtin.hardware.AbstractDisplay;
-import org.aoju.bus.health.builtin.hardware.Display;
-import org.aoju.bus.health.unix.Xrandr;
+import org.aoju.bus.core.lang.Normal;
+import org.aoju.bus.health.Memoize;
+import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
+import org.aoju.bus.health.builtin.hardware.Baseboard;
+import org.aoju.bus.health.builtin.hardware.Firmware;
+import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
 /**
- * A Display
- *
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
-@ThreadSafe
-final class AixDisplay extends AbstractDisplay {
+public class OpenBsdComputerSystem extends AbstractComputerSystem {
 
-    /**
-     * Constructor for SolarisDisplay.
-     *
-     * @param edid a byte array representing a display EDID
-     */
-    AixDisplay(byte[] edid) {
-        super(edid);
+    private final Supplier<String> manufacturer = Memoize.memoize(OpenBsdComputerSystem::queryManufacturer);
+
+    private final Supplier<String> model = Memoize.memoize(OpenBsdComputerSystem::queryModel);
+
+    private final Supplier<String> serialNumber = Memoize.memoize(OpenBsdComputerSystem::querySerialNumber);
+
+    private final Supplier<String> uuid = Memoize.memoize(OpenBsdComputerSystem::queryUUID);
+
+    private static String queryManufacturer() {
+        return OpenBsdSysctlKit.sysctl("hw.vendor", Normal.UNKNOWN);
     }
 
-    /**
-     * Gets Display Information
-     *
-     * @return An array of Display objects representing monitors, etc.
-     */
-    public static List<Display> getDisplays() {
-        return Collections
-                .unmodifiableList(Xrandr.getEdidArrays().stream().map(AixDisplay::new).collect(Collectors.toList()));
+    private static String queryModel() {
+        return OpenBsdSysctlKit.sysctl("hw.version", Normal.UNKNOWN);
+    }
+
+    private static String querySerialNumber() {
+        return OpenBsdSysctlKit.sysctl("hw.serialno", Normal.UNKNOWN);
+    }
+
+    private static String queryUUID() {
+        return OpenBsdSysctlKit.sysctl("hw.uuid", Normal.UNKNOWN);
+    }
+
+    @Override
+    public String getManufacturer() {
+        return manufacturer.get();
+    }
+
+    @Override
+    public String getModel() {
+        return model.get();
+    }
+
+    @Override
+    public String getSerialNumber() {
+        return serialNumber.get();
+    }
+
+    @Override
+    public String getHardwareUUID() {
+        return uuid.get();
+    }
+
+    @Override
+    protected Firmware createFirmware() {
+        return new OpenBsdFirmware();
+    }
+
+    @Override
+    protected Baseboard createBaseboard() {
+        return new OpenBsdBaseboard(manufacturer.get(), model.get(), serialNumber.get(),
+                OpenBsdSysctlKit.sysctl("hw.product", Normal.UNKNOWN));
     }
 
 }

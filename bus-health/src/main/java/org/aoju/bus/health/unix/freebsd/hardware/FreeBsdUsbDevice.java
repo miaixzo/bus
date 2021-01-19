@@ -51,15 +51,23 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * {@inheritDoc}
+     * Instantiates a list of {@link  UsbDevice} objects, representing
+     * devices connected via a usb port (including internal devices).
+     * <p>
+     * If the value of {@code tree} is true, the top level devices returned from
+     * this method are the USB Controllers; connected hubs and devices in its device
+     * tree share that controller's bandwidth. If the value of {@code tree} is
+     * false, USB devices (not controllers) are listed in a single flat list.
      *
-     * @param tree a boolean.
-     * @return an array of {@link UsbDevice} objects.
+     * @param tree If true, returns a list of controllers, which requires recursive
+     *             iteration of connected devices. If false, returns a flat list of
+     *             devices excluding controllers.
+     * @return a list of {@link  UsbDevice} objects.
      */
     public static List<UsbDevice> getUsbDevices(boolean tree) {
         List<UsbDevice> devices = getUsbDevices();
         if (tree) {
-            return Collections.unmodifiableList(devices);
+            return devices;
         }
         List<UsbDevice> deviceList = new ArrayList<>();
         // Top level is controllers; they won't be added to the list, but all
@@ -70,7 +78,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
                     Collections.emptyList()));
             addDevicesToList(deviceList, device.getConnectedDevices());
         }
-        return Collections.unmodifiableList(deviceList);
+        return deviceList;
     }
 
     private static List<UsbDevice> getUsbDevices() {
@@ -156,7 +164,7 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
     }
 
     /**
-     * Recursively creates SolarisUsbDevices by fetching information from maps to
+     * Recursively creates FreeBsdUsbDevices by fetching information from maps to
      * populate fields
      *
      * @param devPath      The device node path.

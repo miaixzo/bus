@@ -415,7 +415,7 @@ public class ObjectKit {
             return ((Collection<?>) obj).contains(element);
         }
         if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).values().contains(element);
+            return ((Map<?, ?>) obj).containsValue(element);
         }
 
         if (obj instanceof Iterator) {
@@ -695,7 +695,7 @@ public class ObjectKit {
     public static Field[] getAllFields(Object object) {
         List<Field> fieldList = new ArrayList<>();
         Class tempClass = object.getClass();
-        while (tempClass != null && !tempClass.getName().toLowerCase().equals("java.lang.object")) {
+        while (tempClass != null && !tempClass.getName().equalsIgnoreCase("java.lang.object")) {
             // 当父类为null的时候说明到达了最上层的父类(Object类).
             fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
             // 得到父类,然后赋给自己
