@@ -266,7 +266,7 @@ public class Console {
      * @return 用户输入的内容
      */
     public static String input() {
-        return scanner().next();
+        return scanner().nextLine();
     }
 
     /**
