@@ -117,11 +117,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    protected boolean queryElevated() {
-        return 0 == Builder.parseIntOrDefault(Executor.getFirstAnswer("id -u"), -1);
-    }
-
-    @Override
     public FileSystem getFileSystem() {
         return new OpenBsdFileSystem();
     }

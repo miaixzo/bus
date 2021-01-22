@@ -57,12 +57,6 @@ public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     @Override
-    public TcpStats getTCPv6Stats() {
-        // Stats are no different for inet6
-        return new TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
-    }
-
-    @Override
     public UdpStats getUDPv4Stats() {
         for (Perfstat.perfstat_protocol_t stat : ipstats.get()) {
             if ("udp".equals(Native.toString(stat.name))) {

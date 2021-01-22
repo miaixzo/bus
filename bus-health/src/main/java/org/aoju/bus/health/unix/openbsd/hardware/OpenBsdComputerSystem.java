@@ -30,6 +30,7 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
+import org.aoju.bus.health.unix.UnixBaseboard;
 import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
 
 import java.util.function.Supplier;
@@ -92,7 +93,7 @@ public class OpenBsdComputerSystem extends AbstractComputerSystem {
 
     @Override
     protected Baseboard createBaseboard() {
-        return new OpenBsdBaseboard(manufacturer.get(), model.get(), serialNumber.get(),
+        return new UnixBaseboard(manufacturer.get(), model.get(), serialNumber.get(),
                 OpenBsdSysctlKit.sysctl("hw.product", Normal.UNKNOWN));
     }
 

@@ -220,11 +220,6 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     }
 
     @Override
-    public TcpStats getTCPv6Stats() {
-        return new TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
-    }
-
-    @Override
     public UdpStats getUDPv4Stats() {
         return NetStat.queryUdpStats("netstat -su4");
     }

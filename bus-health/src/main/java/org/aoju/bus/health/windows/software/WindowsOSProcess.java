@@ -30,8 +30,6 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.BaseTSD.ULONG_PTRByReference;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
@@ -220,7 +218,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     @Override
     public long getAffinityMask() {
-        final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
+        final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
             try {
                 ULONG_PTRByReference processAffinity = new ULONG_PTRByReference();
@@ -290,7 +288,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
         // Get a handle to the process for various extended info. Only gets
         // current user unless running as administrator
-        final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
+        final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
             try {
                 // Test for 32-bit process on 64-bit windows
@@ -301,7 +299,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                     }
                 }
                 // Full path
-                final HANDLEByReference phToken = new HANDLEByReference();
+                final WinNT.HANDLEByReference phToken = new WinNT.HANDLEByReference();
                 try { // EXECUTABLEPATH
                     if (IS_WINDOWS7_OR_GREATER) {
                         this.path = Kernel32Util.QueryFullProcessImageName(pHandle, 0);
@@ -309,7 +307,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                 } catch (Win32Exception e) {
                     this.state = State.INVALID;
                 } finally {
-                    final HANDLE token = phToken.getValue();
+                    final WinNT.HANDLE token = phToken.getValue();
                     if (token != null) {
                         Kernel32.INSTANCE.CloseHandle(token);
                     }
@@ -338,9 +336,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     private Pair<String, String> queryUserInfo() {
         Pair<String, String> pair = null;
-        final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
+        final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
-            final HANDLEByReference phToken = new HANDLEByReference();
+            final WinNT.HANDLEByReference phToken = new WinNT.HANDLEByReference();
             if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
                 Account account = Advapi32Util.getTokenAccount(phToken.getValue());
                 pair = Pair.of(account.name, account.sidString);
@@ -352,7 +350,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                             Kernel32.INSTANCE.GetLastError());
                 }
             }
-            final HANDLE token = phToken.getValue();
+            final WinNT.HANDLE token = phToken.getValue();
             if (token != null) {
                 Kernel32.INSTANCE.CloseHandle(token);
             }
@@ -366,9 +364,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
 
     private Pair<String, String> queryGroupInfo() {
         Pair<String, String> pair = null;
-        final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
+        final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
-            final HANDLEByReference phToken = new HANDLEByReference();
+            final WinNT.HANDLEByReference phToken = new WinNT.HANDLEByReference();
             if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
                 Account account = Advapi32Util.getTokenPrimaryGroup(phToken.getValue());
                 pair = Pair.of(account.name, account.sidString);
@@ -380,7 +378,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                             Kernel32.INSTANCE.GetLastError());
                 }
             }
-            final HANDLE token = phToken.getValue();
+            final WinNT.HANDLE token = phToken.getValue();
             if (token != null) {
                 Kernel32.INSTANCE.CloseHandle(token);
             }

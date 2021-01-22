@@ -34,6 +34,7 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
+import org.aoju.bus.health.unix.UnixBaseboard;
 
 import java.util.function.Supplier;
 
@@ -221,7 +222,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
 
     @Override
     public Baseboard createBaseboard() {
-        return new SolarisBaseboard(smbiosStrings.get().boardManufacturer, smbiosStrings.get().boardModel,
+        return new UnixBaseboard(smbiosStrings.get().boardManufacturer, smbiosStrings.get().boardModel,
                 smbiosStrings.get().boardSerialNumber, smbiosStrings.get().boardVersion);
     }
 

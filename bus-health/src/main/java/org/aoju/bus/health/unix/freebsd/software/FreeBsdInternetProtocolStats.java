@@ -85,11 +85,6 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     }
 
     @Override
-    public TcpStats getTCPv6Stats() {
-        return new TcpStats(establishedv4v6.get().getRight(), 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
-    }
-
-    @Override
     public TcpStats getTCPv4Stats() {
         CLibrary.BsdTcpstat tcp = tcpstat.get();
         return new TcpStats(establishedv4v6.get().getLeft(), Builder.unsignedIntToLong(tcp.tcps_connattempt),

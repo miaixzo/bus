@@ -28,6 +28,7 @@ package org.aoju.bus.health.unix.openbsd.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.unix.UnixDisplay;
+import org.aoju.bus.health.unix.UnixNetworkIF;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public final class OpenBsdHardwareAbstractionLayer extends AbstractHardwareAbstr
 
     @Override
     public List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces) {
-        return OpenBsdNetworkIF.getNetworks(includeLocalInterfaces);
+        return UnixNetworkIF.getNetworks(includeLocalInterfaces);
     }
 
     @Override

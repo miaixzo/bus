@@ -27,13 +27,10 @@ package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
-import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.COM.WbemcliUtil;
 import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
 import com.sun.jna.platform.win32.WinDef.DWORD;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
+import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
@@ -42,6 +39,7 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.builtin.software.OSService.State;
 import org.aoju.bus.health.windows.EnumWindows;
+import org.aoju.bus.health.windows.WinNT;
 import org.aoju.bus.health.windows.WmiKit;
 import org.aoju.bus.health.windows.drivers.*;
 import org.aoju.bus.health.windows.drivers.ProcessPerformanceData.PerfCounterBlock;
@@ -50,7 +48,6 @@ import org.aoju.bus.health.windows.drivers.Win32OperatingSystem.OSVersionPropert
 import org.aoju.bus.health.windows.drivers.Win32Processor.BitnessProperty;
 import org.aoju.bus.logger.Logger;
 
-import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -67,7 +64,11 @@ import java.util.function.Supplier;
 @ThreadSafe
 public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
+    private static final String WIN_VERSION_PROPERTIES = "oshi.windows.versions.properties";
+
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
+
+    private static final int TOKENELEVATION = 0x14;
 
     /**
      * Windows event log name
@@ -81,7 +82,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         enableDebugPrivilege();
     }
 
-    /*
+    /**
      * Cache full process stats queries. Second query will only populate if first
      * one returns null.
      */
@@ -90,69 +91,23 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     private Supplier<Map<Integer, PerfCounterBlock>> processMapFromPerfCounters = Memoize.memoize(
             WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoize.defaultExpiration());
 
-    private static String parseVersion(WmiResult<OSVersionProperty> versionInfo, int suiteMask, String buildNumber) {
-        // Initialize a default, sane value
-        String version = System.getProperty("os.version");
+    private static Map<Integer, PerfCounterBlock> queryProcessMapFromRegistry() {
+        return ProcessPerformanceData.buildProcessMapFromRegistry(null);
+    }
 
-        // Version is major.minor.build. Parse the version string for
-        // major/minor and get the build number separately
-        String[] verSplit = WmiKit.getString(versionInfo, OSVersionProperty.VERSION, 0).split("\\D");
-        int major = verSplit.length > 0 ? Builder.parseIntOrDefault(verSplit[0], 0) : 0;
-        int minor = verSplit.length > 1 ? Builder.parseIntOrDefault(verSplit[1], 0) : 0;
+    private static Map<Integer, PerfCounterBlock> queryProcessMapFromPerfCounters() {
+        return ProcessPerformanceData.buildProcessMapFromPerfCounters(null);
+    }
 
-        // see
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/ms724833%28v=vs.85%29.aspx
-        boolean ntWorkstation = WmiKit.getUint32(versionInfo, OSVersionProperty.PRODUCTTYPE,
-                0) == WinNT.VER_NT_WORKSTATION;
-        switch (major) {
-            case 10:
-                if (minor == 0) {
-                    if (ntWorkstation) {
-                        version = "10";
-                    } else {
-                        // Build numbers greater than 17762 is Server 2019 for OS
-                        // Version 10.0
-                        version = (Builder.parseLongOrDefault(buildNumber, 0L) > 17762) ? "Server 2019" : "Server 2016";
-                    }
-                }
-                break;
-            case 6:
-                if (minor == 3) {
-                    version = ntWorkstation ? "8.1" : "Server 2012 R2";
-                } else if (minor == 2) {
-                    version = ntWorkstation ? "8" : "Server 2012";
-                } else if (minor == 1) {
-                    version = ntWorkstation ? "7" : "Server 2008 R2";
-                } else if (minor == 0) {
-                    version = ntWorkstation ? "Vista" : "Server 2008";
-                }
-                break;
-            case 5:
-                if (minor == 2) {
-                    if ((suiteMask & 0x00008000) != 0) { // VER_SUITE_WH_SERVER
-                        version = "Home Server";
-                    } else if (ntWorkstation) {
-                        version = "XP"; // 64 bits
-                    } else {
-                        version = User32.INSTANCE.GetSystemMetrics(WinUser.SM_SERVERR2) != 0 ? "Server 2003"
-                                : "Server 2003 R2";
-                    }
-                } else if (minor == 1) {
-                    version = "XP"; // 32 bits
-                } else if (minor == 0) {
-                    version = "2000";
-                }
-                break;
-            default:
-                break;
+    private static long querySystemUptime() {
+        // Uptime is in seconds so divide milliseconds
+        // GetTickCount64 requires Vista (6.0) or later
+        if (IS_VISTA_OR_GREATER) {
+            return Kernel32.INSTANCE.GetTickCount64() / 1000L;
+        } else {
+            // 32 bit rolls over at ~ 49 days
+            return Kernel32.INSTANCE.GetTickCount() / 1000L;
         }
-
-        String sp = WmiKit.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
-        if (!sp.isEmpty() && !"unknown".equals(sp)) {
-            version = version + Symbol.SPACE + sp.replace("Service Pack ", "SP");
-        }
-
-        return version;
     }
 
     /**
@@ -191,36 +146,17 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return String.join(Symbol.COMMA, suites);
     }
 
-    private static Map<Integer, PerfCounterBlock> queryProcessMapFromRegistry() {
-        return ProcessPerformanceData.buildProcessMapFromRegistry(null);
-    }
-
-    private static Map<Integer, PerfCounterBlock> queryProcessMapFromPerfCounters() {
-        return ProcessPerformanceData.buildProcessMapFromPerfCounters(null);
-    }
-
-    private static long querySystemUptime() {
-        // Uptime is in seconds so divide milliseconds
-        // GetTickCount64 requires Vista (6.0) or later
-        if (IS_VISTA_OR_GREATER) {
-            return Kernel32.INSTANCE.GetTickCount64() / 1000L;
-        } else {
-            // 32 bit rolls over at ~ 49 days
-            return Kernel32.INSTANCE.GetTickCount() / 1000L;
-        }
-    }
-
     private static long querySystemBootTime() {
         String eventLog = systemLog.get();
         if (eventLog != null) {
             try {
-                EventLogIterator iter = new EventLogIterator(null, eventLog, WinNT.EVENTLOG_BACKWARDS_READ);
+                Advapi32Util.EventLogIterator iter = new Advapi32Util.EventLogIterator(null, eventLog, WinNT.EVENTLOG_BACKWARDS_READ);
                 // Get the most recent boot event (ID 12) from the Event log. If Windows "Fast
                 // Startup" is enabled we may not see event 12, so also check for most recent ID
                 // 6005 (Event log startup) as a reasonably close backup.
                 long event6005Time = 0L;
                 while (iter.hasNext()) {
-                    EventLogRecord record = iter.next();
+                    Advapi32Util.EventLogRecord record = iter.next();
                     if (record.getStatusCode() == 12) {
                         // Event 12 is system boot. We want this value unless we find two 6005 events
                         // first (may occur with Fast Boot)
@@ -249,13 +185,14 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     /**
-     * Enables debug privileges for this process, required for OpenProcess() to get
-     * processes other than the current user
+     * Attempts to enable debug privileges for this process, required for
+     * OpenProcess() to get processes other than the current user. Requires elevated
+     * permissions.
      *
      * @return {@code true} if debug privileges were successfully enabled.
      */
     private static boolean enableDebugPrivilege() {
-        HANDLEByReference hToken = new HANDLEByReference();
+        WinNT.HANDLEByReference hToken = new WinNT.HANDLEByReference();
         boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(),
                 WinNT.TOKEN_QUERY | WinNT.TOKEN_ADJUST_PRIVILEGES, hToken);
         if (!success) {
@@ -284,63 +221,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             Kernel32.INSTANCE.CloseHandle(hToken.getValue());
         }
         return true;
-    }
-
-    private static String querySystemLog() {
-        String systemLog = Config.get("health.os.windows.eventlog", "System");
-        if (systemLog.isEmpty()) {
-            // Use faster boot time approximation
-            return null;
-        }
-        // Check whether it works
-        HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
-        if (h == null) {
-            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
-                    systemLog);
-            return null;
-        }
-        return systemLog;
-    }
-
-    @Override
-    public String queryManufacturer() {
-        return "Microsoft";
-    }
-
-    @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
-        WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
-        if (versionInfo.getResultCount() < 1) {
-            return new FamilyVersionInfo("Windows", new OSVersionInfo(System.getProperty("os.version"), null, null));
-        }
-        // Guaranteed that versionInfo is not null and lists non-empty
-        // before calling the parse*() methods
-        int suiteMask = WmiKit.getUint32(versionInfo, OSVersionProperty.SUITEMASK, 0);
-        String buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
-        String version = parseVersion(versionInfo, suiteMask, buildNumber);
-        String codeName = parseCodeName(suiteMask);
-        return new FamilyVersionInfo("Windows", new OSVersionInfo(version, codeName, buildNumber));
-    }
-
-    @Override
-    protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < 64 && System.getenv("ProgramFiles(x86)") != null && IS_VISTA_OR_GREATER) {
-            WmiResult<BitnessProperty> bitnessMap = Win32Processor.queryBitness();
-            if (bitnessMap.getResultCount() > 0) {
-                return WmiKit.getUint16(bitnessMap, BitnessProperty.ADDRESSWIDTH, 0);
-            }
-        }
-        return jvmBitness;
-    }
-
-    @Override
-    public boolean queryElevated() {
-        try {
-            File dir = new File(System.getenv("windir") + "\\system32\\config\\systemprofile");
-            return dir.isDirectory();
-        } catch (SecurityException e) {
-            return false;
-        }
     }
 
     @Override
@@ -418,6 +298,27 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return processList;
     }
 
+    private static String querySystemLog() {
+        String systemLog = Config.get("oshi.os.windows.eventlog", "System");
+        if (systemLog.isEmpty()) {
+            // Use faster boot time approximation
+            return null;
+        }
+        // Check whether it works
+        WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
+        if (h == null) {
+            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
+                    systemLog);
+            return null;
+        }
+        return systemLog;
+    }
+
+    @Override
+    public String queryManufacturer() {
+        return "Microsoft";
+    }
+
     @Override
     public int getProcessId() {
         return Kernel32.INSTANCE.GetCurrentProcessId();
@@ -449,13 +350,82 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public FamilyVersionInfo queryFamilyVersionInfo() {
+        WbemcliUtil.WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
+        if (versionInfo.getResultCount() < 1) {
+            return new FamilyVersionInfo("Windows", new OSVersionInfo(System.getProperty("os.version"), null, null));
+        }
+        // Guaranteed that versionInfo is not null and lists non-empty
+        // before calling the parse*() methods
+        int suiteMask = WmiKit.getUint32(versionInfo, OSVersionProperty.SUITEMASK, 0);
+        String buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
+        String version = parseVersion(versionInfo, suiteMask, buildNumber);
+        String codeName = parseCodeName(suiteMask);
+        return new FamilyVersionInfo("Windows", new OSVersionInfo(version, codeName, buildNumber));
+    }
+
+    @Override
     public long getSystemBootTime() {
         return BOOTTIME;
+    }
+
+    private String parseVersion(WbemcliUtil.WmiResult<OSVersionProperty> versionInfo, int suiteMask, String buildNumber) {
+        // Initialize a default, sane value
+        String version = System.getProperty("os.version");
+
+        // Version is major.minor.build. Parse the version string for
+        // major/minor and get the build number separately
+        String[] verSplit = WmiKit.getString(versionInfo, OSVersionProperty.VERSION, 0).split("\\D");
+        int major = verSplit.length > 0 ? Builder.parseIntOrDefault(verSplit[0], 0) : 0;
+        int minor = verSplit.length > 1 ? Builder.parseIntOrDefault(verSplit[1], 0) : 0;
+
+        // see
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/ms724833%28v=vs.85%29.aspx
+        boolean ntWorkstation = WmiKit.getUint32(versionInfo, OSVersionProperty.PRODUCTTYPE,
+                0) == WinNT.VER_NT_WORKSTATION;
+
+        StringBuilder verLookup = new StringBuilder(major).append('.').append(minor);
+
+        if (IS_VISTA_OR_GREATER && ntWorkstation) {
+            verLookup.append(".nt");
+        } else if (major == 10 && Builder.parseLongOrDefault(buildNumber, 0L) > 17_762) {
+            verLookup.append(".17763+");
+        } else if (major == 5 && minor == 2) {
+            if (ntWorkstation && getBitness() == 64) {
+                verLookup.append(".nt.x64");
+            } else if ((suiteMask & 0x00008000) != 0) { // VER_SUITE_WH_SERVER
+                verLookup.append(".HS");
+            } else if (User32.INSTANCE.GetSystemMetrics(WinUser.SM_SERVERR2) != 0) {
+                verLookup.append(".R2");
+            }
+        }
+
+        Properties verProps = Builder.readProperties(WIN_VERSION_PROPERTIES);
+        version = verProps.getProperty(verLookup.toString()) != null ? verProps.getProperty(verLookup.toString())
+                : version;
+
+        String sp = WmiKit.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
+        if (!sp.isEmpty() && !"unknown".equals(sp)) {
+            version = version + Symbol.SPACE + sp.replace("Service Pack ", "SP");
+        }
+
+        return version;
     }
 
     @Override
     public NetworkParams getNetworkParams() {
         return new WindowsNetworkParams();
+    }
+
+    @Override
+    protected int queryBitness(int jvmBitness) {
+        if (jvmBitness < 64 && System.getenv("ProgramFiles(x86)") != null && IS_VISTA_OR_GREATER) {
+            WbemcliUtil.WmiResult<BitnessProperty> bitnessMap = Win32Processor.queryBitness();
+            if (bitnessMap.getResultCount() > 0) {
+                return WmiKit.getUint16(bitnessMap, BitnessProperty.ADDRESSWIDTH, 0);
+            }
+        }
+        return jvmBitness;
     }
 
     @Override
@@ -489,8 +459,29 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
+    public boolean isElevated() {
+        WinNT.HANDLEByReference hToken = new WinNT.HANDLEByReference();
+        boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(), WinNT.TOKEN_QUERY,
+                hToken);
+        if (!success) {
+            Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
+            return false;
+        }
+        try {
+            WinNT.TOKEN_ELEVATION elevation = new WinNT.TOKEN_ELEVATION();
+            if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation, elevation.size(),
+                    new IntByReference())) {
+                return elevation.TokenIsElevated > 0;
+            }
+        } finally {
+            Kernel32.INSTANCE.CloseHandle(hToken.getValue());
+        }
+        return false;
+    }
+
+    @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
-        return Collections.unmodifiableList(EnumWindows.queryDesktopWindows(visibleOnly));
+        return EnumWindows.queryDesktopWindows(visibleOnly);
     }
 
 }

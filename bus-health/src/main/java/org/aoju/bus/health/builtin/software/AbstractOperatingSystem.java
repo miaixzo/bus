@@ -26,7 +26,9 @@
 package org.aoju.bus.health.builtin.software;
 
 import com.sun.jna.Platform;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
+import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.unix.Who;
 import org.aoju.bus.health.unix.Xwininfo;
@@ -48,10 +50,8 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
     private final Supplier<FamilyVersionInfo> familyVersionInfo = Memoize.memoize(this::queryFamilyVersionInfo);
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryPlatformBitness);
-    // Test if sudo or admin privileges: 1 = unknown, 0 = no, 1 = yes
-    private final Supplier<Boolean> elevated = Memoize.memoize(this::queryElevated);
 
-    /*
+    /**
      * Comparators for use in processSort().
      */
     private static final Comparator<OSProcess> CPU_DESC_SORT = Comparator
@@ -116,15 +116,13 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     @Override
     public boolean isElevated() {
-        return elevated.get();
+        return 0 == Builder.parseIntOrDefault(Executor.getFirstAnswer("id -u"), -1);
     }
 
     @Override
     public OSService[] getServices() {
         return new OSService[0];
     }
-
-    protected abstract boolean queryElevated();
 
     /**
      * Sorts an array of processes using the specified sorting, returning an array

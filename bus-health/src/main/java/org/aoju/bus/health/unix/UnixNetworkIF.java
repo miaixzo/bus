@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix.openbsd.hardware;
+package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
@@ -45,7 +45,7 @@ import java.util.List;
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class OpenBsdNetworkIF extends AbstractNetworkIF {
+public final class UnixNetworkIF extends AbstractNetworkIF {
 
     private long bytesRecv;
     private long bytesSent;
@@ -57,7 +57,7 @@ public final class OpenBsdNetworkIF extends AbstractNetworkIF {
     private long collisions;
     private long timeStamp;
 
-    public OpenBsdNetworkIF(NetworkInterface netint) throws InstantiationException {
+    public UnixNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
         updateAttributes();
     }
@@ -72,7 +72,7 @@ public final class OpenBsdNetworkIF extends AbstractNetworkIF {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             try {
-                ifList.add(new OpenBsdNetworkIF(ni));
+                ifList.add(new UnixNetworkIF(ni));
             } catch (InstantiationException e) {
                 Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
             }

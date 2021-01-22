@@ -29,12 +29,12 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.Advapi32Util.InfoKey;
 import com.sun.jna.platform.win32.Win32Exception;
-import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.software.OSSession;
+import org.aoju.bus.health.windows.WinNT;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;

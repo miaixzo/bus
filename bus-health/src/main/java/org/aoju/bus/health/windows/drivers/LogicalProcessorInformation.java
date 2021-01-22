@@ -26,9 +26,9 @@
 package org.aoju.bus.health.windows.drivers;
 
 import com.sun.jna.platform.win32.Kernel32Util;
-import com.sun.jna.platform.win32.WinNT;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
+import org.aoju.bus.health.windows.WinNT;
 
 import java.util.ArrayList;
 import java.util.Comparator;

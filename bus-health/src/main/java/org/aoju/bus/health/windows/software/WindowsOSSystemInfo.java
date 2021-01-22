@@ -27,8 +27,8 @@ package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
+import org.aoju.bus.health.windows.WinNT;
 import org.aoju.bus.logger.Logger;
 
 
@@ -70,7 +70,7 @@ public class WindowsOSSystemInfo {
             // interpreted as the current process handle. The pseudo handle need
             // not be closed when it is no longer needed. Calling the
             // CloseHandle function with a pseudo handle has no effect.
-            HANDLE hProcess = Kernel32.INSTANCE.GetCurrentProcess();
+            WinNT.HANDLE hProcess = Kernel32.INSTANCE.GetCurrentProcess();
             if (Kernel32.INSTANCE.IsWow64Process(hProcess, isWow64) && isWow64.getValue() > 0) {
                 // Populates the class variable with information
                 Kernel32.INSTANCE.GetNativeSystemInfo(si);

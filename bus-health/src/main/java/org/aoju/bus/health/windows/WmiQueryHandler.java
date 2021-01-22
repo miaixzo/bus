@@ -31,7 +31,6 @@ import com.sun.jna.platform.win32.COM.Wbemcli;
 import com.sun.jna.platform.win32.COM.WbemcliUtil;
 import com.sun.jna.platform.win32.Ole32;
 import com.sun.jna.platform.win32.WinError;
-import com.sun.jna.platform.win32.WinNT;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.logger.Logger;

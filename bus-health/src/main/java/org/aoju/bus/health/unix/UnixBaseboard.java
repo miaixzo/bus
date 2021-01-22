@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix.solaris.hardware;
+package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
@@ -36,14 +36,14 @@ import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
  * @since JDK 1.8+
  */
 @Immutable
-final class SolarisBaseboard extends AbstractBaseboard {
+public final class UnixBaseboard extends AbstractBaseboard {
 
     private final String manufacturer;
     private final String model;
     private final String serialNumber;
     private final String version;
 
-    SolarisBaseboard(String manufacturer, String model, String serialNumber, String version) {
+    public UnixBaseboard(String manufacturer, String model, String serialNumber, String version) {
         this.manufacturer = manufacturer;
         this.model = model;
         this.serialNumber = serialNumber;

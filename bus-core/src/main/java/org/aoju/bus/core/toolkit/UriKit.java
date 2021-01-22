@@ -366,6 +366,9 @@ public class UriKit {
      */
     public static String encodeAll(String url, java.nio.charset.Charset charset) {
         try {
+            if (null == charset || StringKit.isEmpty(url)) {
+                return url;
+            }
             return java.net.URLEncoder.encode(url, charset.toString());
         } catch (UnsupportedEncodingException e) {
             throw new InstrumentException(e);
