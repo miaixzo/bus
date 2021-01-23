@@ -50,13 +50,12 @@ import java.util.*;
 @ThreadSafe
 public class AixFileSystem extends AbstractFileSystem {
 
-    // System path mounted as tmpfs
-    private static final List<String> TMP_FS_PATHS = Arrays.asList("/proc");
     public static final String OSHI_AIX_FS_PATH_EXCLUDES = "health.os.aix.filesystem.path.excludes";
     public static final String OSHI_AIX_FS_PATH_INCLUDES = "health.os.aix.filesystem.path.includes";
     public static final String OSHI_AIX_FS_VOLUME_EXCLUDES = "health.os.aix.filesystem.volume.excludes";
     public static final String OSHI_AIX_FS_VOLUME_INCLUDES = "health.os.aix.filesystem.volume.includes";
-
+    // System path mounted as tmpfs
+    private static final List<String> TMP_FS_PATHS = Arrays.asList("/proc");
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(OSHI_AIX_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder

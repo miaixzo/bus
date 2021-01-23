@@ -71,14 +71,12 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class MacFileSystem extends AbstractFileSystem {
 
-    // Regexp matcher for /dev/disk1 etc.
-    private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
-
     public static final String OSHI_MAC_FS_PATH_EXCLUDES = "health.os.mac.filesystem.path.excludes";
     public static final String OSHI_MAC_FS_PATH_INCLUDES = "health.os.mac.filesystem.path.includes";
     public static final String OSHI_MAC_FS_VOLUME_EXCLUDES = "health.os.mac.filesystem.volume.excludes";
     public static final String OSHI_MAC_FS_VOLUME_INCLUDES = "health.os.mac.filesystem.volume.includes";
-
+    // Regexp matcher for /dev/disk1 etc.
+    private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(OSHI_MAC_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder

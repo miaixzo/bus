@@ -70,10 +70,20 @@ public class BOMInputStream extends InputStream {
         this.defaultCharset = defaultCharset;
     }
 
+    /**
+     * 获取默认编码
+     *
+     * @return 默认编码
+     */
     public String getDefaultCharset() {
         return defaultCharset;
     }
 
+    /**
+     * 获取BOM头中的编码
+     *
+     * @return 编码
+     */
     public String getCharset() {
         if (!isInited) {
             try {

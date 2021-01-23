@@ -832,15 +832,15 @@ public class FileKit {
         int exceptionsCount = 0;
         while (true) {
             try {
-                File file = File.createTempFile(prefix, suffix, dir).getCanonicalFile();
+                File file = File.createTempFile(prefix, suffix, mkdir(dir)).getCanonicalFile();
                 if (isReCreat) {
                     file.delete();
                     file.createNewFile();
                 }
                 return file;
-            } catch (IOException ioex) { // fixes java.io.WinNTFileSystem.createFileExclusively access denied
+            } catch (IOException ex) {
                 if (++exceptionsCount >= 50) {
-                    throw new InstrumentException(ioex);
+                    throw new InstrumentException(ex);
                 }
             }
         }
@@ -2099,6 +2099,16 @@ public class FileKit {
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 读取带BOM头的文件为Reader
+     *
+     * @param file 文件
+     * @return BufferedReader对象
+     */
+    public static BufferedReader getBOMReader(File file) {
+        return IoKit.getReader(getBOMInputStream(file));
     }
 
     /**

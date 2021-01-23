@@ -46,31 +46,23 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     public static final String OSHI_OS_UNIX_WHOCOMMAND = "health.os.unix.whoCommand";
     protected static final boolean USE_WHO_COMMAND = Config.get(OSHI_OS_UNIX_WHOCOMMAND, false);
-
-    private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
-    private final Supplier<FamilyVersionInfo> familyVersionInfo = Memoize.memoize(this::queryFamilyVersionInfo);
-    private final Supplier<Integer> bitness = Memoize.memoize(this::queryPlatformBitness);
-
     /**
      * Comparators for use in processSort().
      */
     private static final Comparator<OSProcess> CPU_DESC_SORT = Comparator
             .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
-
     private static final Comparator<OSProcess> RSS_DESC_SORT = Comparator.comparingLong(OSProcess::getResidentSetSize)
             .reversed();
-
     private static final Comparator<OSProcess> UPTIME_ASC_SORT = Comparator.comparingLong(OSProcess::getUpTime);
-
     private static final Comparator<OSProcess> UPTIME_DESC_SORT = UPTIME_ASC_SORT.reversed();
-
     private static final Comparator<OSProcess> PID_ASC_SORT = Comparator.comparingInt(OSProcess::getProcessID);
-
     private static final Comparator<OSProcess> PARENTPID_ASC_SORT = Comparator
             .comparingInt(OSProcess::getParentProcessID);
-
     private static final Comparator<OSProcess> NAME_ASC_SORT = Comparator.comparing(OSProcess::getName,
             String.CASE_INSENSITIVE_ORDER);
+    private final Supplier<String> manufacturer = Memoize.memoize(this::queryManufacturer);
+    private final Supplier<FamilyVersionInfo> familyVersionInfo = Memoize.memoize(this::queryFamilyVersionInfo);
+    private final Supplier<Integer> bitness = Memoize.memoize(this::queryPlatformBitness);
 
     @Override
     public String getManufacturer() {

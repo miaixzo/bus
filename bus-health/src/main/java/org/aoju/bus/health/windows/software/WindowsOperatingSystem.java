@@ -223,6 +223,20 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return true;
     }
 
+    private static String querySystemLog() {
+        String systemLog = Config.get("oshi.os.windows.eventlog", "System");
+        if (systemLog.isEmpty()) {
+            return null;
+        }
+        WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
+        if (h == null) {
+            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
+                    systemLog);
+            return null;
+        }
+        return systemLog;
+    }
+
     @Override
     public FileSystem getFileSystem() {
         return new WindowsFileSystem();
@@ -296,22 +310,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap));
         }
         return processList;
-    }
-
-    private static String querySystemLog() {
-        String systemLog = Config.get("oshi.os.windows.eventlog", "System");
-        if (systemLog.isEmpty()) {
-            // Use faster boot time approximation
-            return null;
-        }
-        // Check whether it works
-        WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
-        if (h == null) {
-            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
-                    systemLog);
-            return null;
-        }
-        return systemLog;
     }
 
     @Override

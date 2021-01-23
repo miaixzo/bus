@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.streams.BOMInputStream;
 import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.io.streams.NullOutputStream;
 import org.aoju.bus.core.lang.Assert;
@@ -413,6 +414,16 @@ public class IoKit {
         }
 
         return new BufferedReader(reader);
+    }
+
+    /**
+     * 从{@link BOMInputStream}中获取Reader
+     *
+     * @param in {@link BOMInputStream}
+     * @return {@link BufferedReader}
+     */
+    public static BufferedReader getReader(BOMInputStream in) {
+        return getReader(in, in.getCharset());
     }
 
     /**

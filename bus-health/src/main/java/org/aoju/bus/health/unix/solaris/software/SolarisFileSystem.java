@@ -54,13 +54,12 @@ import java.util.*;
 @ThreadSafe
 public class SolarisFileSystem extends AbstractFileSystem {
 
-    // System path mounted as tmpfs
-    private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
     public static final String OSHI_SOLARIS_FS_PATH_EXCLUDES = "health.os.solaris.filesystem.path.excludes";
     public static final String OSHI_SOLARIS_FS_PATH_INCLUDES = "health.os.solaris.filesystem.path.includes";
     public static final String OSHI_SOLARIS_FS_VOLUME_EXCLUDES = "health.os.solaris.filesystem.volume.excludes";
     public static final String OSHI_SOLARIS_FS_VOLUME_INCLUDES = "health.os.solaris.filesystem.volume.includes";
-
+    // System path mounted as tmpfs
+    private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(OSHI_SOLARIS_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder

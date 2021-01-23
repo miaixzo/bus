@@ -53,13 +53,12 @@ import java.util.*;
 @ThreadSafe
 public final class FreeBsdFileSystem extends AbstractFileSystem {
 
-    // System path mounted as tmpfs
-    private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
     public static final String OSHI_FREEBSD_FS_PATH_EXCLUDES = "health.os.freebsd.filesystem.path.excludes";
     public static final String OSHI_FREEBSD_FS_PATH_INCLUDES = "health.os.freebsd.filesystem.path.includes";
     public static final String OSHI_FREEBSD_FS_VOLUME_EXCLUDES = "health.os.freebsd.filesystem.volume.excludes";
     public static final String OSHI_FREEBSD_FS_VOLUME_INCLUDES = "health.os.freebsd.filesystem.volume.includes";
-
+    // System path mounted as tmpfs
+    private static final List<String> TMP_FS_PATHS = Arrays.asList("/system", "/tmp", "/dev/fd");
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(OSHI_FREEBSD_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder
