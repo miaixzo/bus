@@ -91,8 +91,7 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
                 // Identifies start of a new device. Save previous if it's a graphics card
                 if (classCodeFound) {
                     cardList.add(new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                            productId.isEmpty() ? Normal.UNKNOWN : productId,
-                            vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                            productId.isEmpty() ? "0x0000" : productId, vendorId.isEmpty() ? "0x0000" : vendorId,
                             versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
                 }
                 // Device name is the captured pattern
@@ -111,11 +110,11 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
                 if (!classCodeFound) {
                     idx = line.indexOf("Vendor ID: ");
                     if (idx >= 0 && line.length() >= idx + 15) {
-                        vendorId = line.substring(idx + 11, idx + 15);
+                        vendorId = "0x" + line.substring(idx + 11, idx + 15);
                     }
                     idx = line.indexOf("Product ID: ");
                     if (idx >= 0 && line.length() >= idx + 16) {
-                        productId = line.substring(idx + 12, idx + 16);
+                        productId = "0x" + line.substring(idx + 12, idx + 16);
                     }
                     if (line.contains(PCI_CLASS_DISPLAY)) {
                         classCodeFound = true;
@@ -131,8 +130,7 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
         // In case we reached end before saving
         if (classCodeFound) {
             cardList.add(new OpenBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                    productId.isEmpty() ? Normal.UNKNOWN : productId,
-                    vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                    productId.isEmpty() ? "0x0000" : productId, vendorId.isEmpty() ? "0x0000" : vendorId,
                     versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
         }
         return cardList;
