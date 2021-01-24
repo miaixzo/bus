@@ -509,7 +509,7 @@ public class Solar {
      *
      * @param year  年
      * @param month 月
-     * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
+     * @param start 星期几作为一周的开始，默认星期日
      * @return 周数
      */
     public static int getWeeksOfMonth(int year, int month, int start) {
@@ -517,7 +517,7 @@ public class Solar {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month - 1, 1);
         int week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
-        return (int) Math.ceil((days + week - start) * 1D / Fields.CN_WEEK.length);
+        return (int) Math.ceil((days + week - start) * 1D / 7);
     }
 
     /**
@@ -530,21 +530,21 @@ public class Solar {
     }
 
     /**
-     * 获取星期，0代表周日，1代表周一
+     * 获取星期，1代表周日
      *
-     * @return 0123456
+     * @return 123456
      */
     public int getWeek() {
-        return calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        return calendar.get(Calendar.DAY_OF_WEEK);
     }
 
     /**
      * 获取星期的中文
      *
-     * @return 日一二三四五六
+     * @return 星期x
      */
     public String getWeekInChinese() {
-        return Fields.CN_WEEK[getWeek()];
+        return Fields.Week.getCnNameByCode(getWeek());
     }
 
     /**
@@ -793,7 +793,6 @@ public class Solar {
                     s.append("闰年");
                 }
                 s.append(Symbol.SPACE);
-                s.append("星期");
                 s.append(getWeekInChinese());
                 for (String f : getFestivals()) {
                     s.append(" (");

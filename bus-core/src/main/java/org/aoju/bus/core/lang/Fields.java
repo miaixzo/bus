@@ -280,9 +280,9 @@ public class Fields {
     /**
      * 标准日期格式：yyyy年MM月dd日 HH时mm分ss秒
      */
-    public static final String NORM_CN_DATE_TIME_PATTERN = "yyyy年MM月dd日HH时mm分ss秒";
+    public static final String NORM_CN_DATE_TIME_PATTERN = "yyyy年MM月dd日 HH时mm分ss秒";
     /**
-     * 标准日期格式 {@link FormatBuilder}：yyyy年MM月dd日HH时mm分ss秒
+     * 标准日期格式 {@link FormatBuilder}：yyyy年MM月dd日 HH时mm分ss秒
      */
     public static final FormatBuilder NORM_CN_DATE_TIME_FORMAT = FormatBuilder.getInstance(NORM_CN_DATE_TIME_PATTERN);
 
@@ -365,9 +365,18 @@ public class Fields {
      * java.util.Date EEE MMM zzz 缩写数组
      */
     public final static String[] WTB = {
-            "sun", "mon", "tue", "wed", "thu", "fri", "sat",                                     // 星期
-            "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",  // 月份
-            "gmt", "ut", "utc", "est", "edt", "cst", "cdt", "mst", "mdt", "pst", "pdt"           // 时区
+            /**
+             * 星期
+            */
+            "sun", "mon", "tue", "wed", "thu", "fri", "sat",
+            /**
+             * 月份
+            */
+            "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec",
+            /**
+             * 时区
+            */
+            "gmt", "ut", "utc", "est", "edt", "cst", "cdt", "mst", "mdt", "pst", "pdt"
     };
 
     /**
@@ -402,13 +411,6 @@ public class Fields {
      */
     public static final String[] CN_ZHI = {
             "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"
-    };
-
-    /**
-     * 星期
-     */
-    public static final String[] CN_WEEK = {
-            "日", "一", "二", "三", "四", "五", "六"
     };
 
     /**

@@ -3381,21 +3381,21 @@ public class Lunar {
     }
 
     /**
-     * 获取星期，0代表周日，1代表周一
+     * 获取星期，1代表周日
      *
-     * @return 0123456
+     * @return 1234567
      */
     public int getWeek() {
-        return weekIndex;
+        return weekIndex + 1;
     }
 
     /**
      * 获取星期的中文
      *
-     * @return 日一二三四五六
+     * @return 星期x
      */
     public String getWeekInChinese() {
-        return Fields.CN_WEEK[getWeek()];
+        return Fields.Week.getCnNameByCode(getWeek());
     }
 
     /**
@@ -4820,7 +4820,7 @@ public class Lunar {
             s.append(getDayNaYin());
             s.append(Symbol.SPACE);
             s.append(getTimeNaYin());
-            s.append("] 星期");
+            s.append("]" + Symbol.SPACE);
             s.append(getWeekInChinese());
             for (String f : getFestivals()) {
                 s.append(" (");
