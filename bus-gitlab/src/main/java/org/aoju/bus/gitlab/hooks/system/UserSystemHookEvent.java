@@ -23,10 +23,9 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.models.Visibility;
 
 import java.util.Date;
 
@@ -35,25 +34,30 @@ import java.util.Date;
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
+public class UserSystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String PROJECT_CREATE_EVENT = "project_create";
-    public static final String PROJECT_DESTROY_EVENT = "project_destroy";
-    public static final String PROJECT_RENAME_EVENT = "project_rename";
-    public static final String PROJECT_TRANSFER_EVENT = "project_transfer";
-    public static final String PROJECT_UPDATE_EVENT = "project_update";
+    public static final String USER_CREATE_EVENT = "user_create";
+    public static final String USER_DESTROY_EVENT = "user_destroy";
+    public static final String USER_RENAME_EVENT = "user_rename";
+    public static final String USER_FAILED_LOGIN_EVENT = "user_failed_login";
 
+    private String eventName;
     private Date createdAt;
     private Date updatedAt;
-    private String eventName;
+    private String email;
     private String name;
-    private String ownerEmail;
-    private String ownerName;
-    private String path;
-    private Integer projectId;
-    private String pathWithNamespace;
-    private Visibility projectVisibility;
-    private String oldPathWithNamespace;
+    private String username;
+    private Integer userId;
+    private String oldUsername;
+    private String state;
+
+    public String getEventName() {
+        return this.eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -71,76 +75,52 @@ public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
         this.updatedAt = updatedAt;
     }
 
-    public String getEventName() {
-        return this.eventName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getOwnerEmail() {
-        return this.ownerEmail;
+    public String getUsername() {
+        return username;
     }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getOwnerName() {
-        return this.ownerName;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public String getPath() {
-        return this.path;
+    public String getOldUsername() {
+        return oldUsername;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setOldUsername(String oldUsername) {
+        this.oldUsername = oldUsername;
     }
 
-    public Integer getProjectId() {
-        return this.projectId;
+    public String getState() {
+        return state;
     }
 
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getPathWithNamespace() {
-        return pathWithNamespace;
-    }
-
-    public void setPathWithNamespace(String pathWithNamespace) {
-        this.pathWithNamespace = pathWithNamespace;
-    }
-
-    public Visibility getProjectVisibility() {
-        return projectVisibility;
-    }
-
-    public void setProjectVisibility(Visibility projectVisibility) {
-        this.projectVisibility = projectVisibility;
-    }
-
-    public String getOldPathWithNamespace() {
-        return oldPathWithNamespace;
-    }
-
-    public void setOldPathWithNamespace(String oldPathWithNamespace) {
-        this.oldPathWithNamespace = oldPathWithNamespace;
+    public void setState(String state) {
+        this.state = state;
     }
 
     @Override

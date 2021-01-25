@@ -23,104 +23,75 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.hooks.web.EventProject;
 
-import java.util.List;
+import java.util.Date;
 
 /**
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
+public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String REPOSITORY_UPDATE_EVENT = "repository_update";
+    public static final String KEY_CREATE_EVENT = "key_create";
+    public static final String KEY_DESTROY_EVENT = "key_destroy";
 
+    private Date createdAt;
+    private Date updatedAt;
     private String eventName;
-    private Integer userId;
-    private String userName;
-    private String userEmail;
-    private String userAvatar;
+    private String username;
+    private String key;
+    private Integer id;
 
-    private Integer projectId;
-    private EventProject project;
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-    private List<RepositoryChange> changes;
-    private List<String> refs;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     public String getEventName() {
-        return (eventName);
+        return this.eventName;
     }
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
 
-    public Integer getUserId() {
-        return this.userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getUserName() {
-        return this.userName;
+    public String getKey() {
+        return key;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserAvatar() {
-        return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
-    }
-
-    public Integer getProjectId() {
-        return this.projectId;
-    }
-
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
-    public EventProject getProject() {
-        return project;
-    }
-
-    public void setProject(EventProject project) {
-        this.project = project;
-    }
-
-    public List<RepositoryChange> getChanges() {
-        return changes;
-    }
-
-    public void setChanges(List<RepositoryChange> changes) {
-        this.changes = changes;
-    }
-
-    public List<String> getRefs() {
-        return refs;
-    }
-
-    public void setRefs(List<String> refs) {
-        this.refs = refs;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override

@@ -23,99 +23,56 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.models.Visibility;
+import org.aoju.bus.gitlab.hooks.web.EventProject;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
+public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String NEW_TEAM_MEMBER_EVENT = "user_add_to_team";
-    public static final String TEAM_MEMBER_REMOVED_EVENT = "user_remove_from_team";
+    public static final String REPOSITORY_UPDATE_EVENT = "repository_update";
 
-    private Date createdAt;
-    private Date updatedAt;
     private String eventName;
-    private String projectAccess;
-    private String projectName;
-    private String projectPath;
-    private Integer projectId;
-    private String projectPathWithNamespace;
-    private String userEmail;
-    private String userName;
-    private String userUsername;
     private Integer userId;
-    private Visibility projectVisibility;
+    private String userName;
+    private String userEmail;
+    private String userAvatar;
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+    private Integer projectId;
+    private EventProject project;
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
+    private List<RepositoryChange> changes;
+    private List<String> refs;
 
     public String getEventName() {
-        return this.eventName;
+        return (eventName);
     }
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
 
-    public String getProjectAccess() {
-        return projectAccess;
+    public Integer getUserId() {
+        return this.userId;
     }
 
-    public void setProjectAccess(String projectAccess) {
-        this.projectAccess = projectAccess;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getUserName() {
+        return this.userName;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public String getProjectPath() {
-        return projectPath;
-    }
-
-    public void setProjectPath(String projectPath) {
-        this.projectPath = projectPath;
-    }
-
-    public Integer getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getProjectPathWithNamespace() {
-        return projectPathWithNamespace;
-    }
-
-    public void setProjectPathWithNamespace(String projectPathWithNamespace) {
-        this.projectPathWithNamespace = projectPathWithNamespace;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getUserEmail() {
@@ -126,36 +83,44 @@ public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
         this.userEmail = userEmail;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUserAvatar() {
+        return userAvatar;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
-    public String getUserUsername() {
-        return userUsername;
+    public Integer getProjectId() {
+        return this.projectId;
     }
 
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
+    public void setProjectId(Integer projectId) {
+        this.projectId = projectId;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public EventProject getProject() {
+        return project;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setProject(EventProject project) {
+        this.project = project;
     }
 
-    public Visibility getProjectVisibility() {
-        return projectVisibility;
+    public List<RepositoryChange> getChanges() {
+        return changes;
     }
 
-    public void setProjectVisibility(Visibility projectVisibility) {
-        this.projectVisibility = projectVisibility;
+    public void setChanges(List<RepositoryChange> changes) {
+        this.changes = changes;
+    }
+
+    public List<String> getRefs() {
+        return refs;
+    }
+
+    public void setRefs(List<String> refs) {
+        this.refs = refs;
     }
 
     @Override

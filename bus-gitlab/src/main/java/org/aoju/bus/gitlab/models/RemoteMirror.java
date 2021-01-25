@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.models;
 
 import org.aoju.bus.gitlab.JacksonJson;
 
@@ -34,114 +34,101 @@ import java.util.Date;
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class GroupSystemHookEvent extends AbstractSystemHookEvent {
+public class RemoteMirror {
 
-    public static final String GROUP_CREATE_EVENT = "group_create";
-    public static final String GROUP_DESTROY_EVENT = "group_destroy";
-    public static final String GROUP_RENAME_EVENT = "group_rename";
+    private Integer id;
+    private Boolean enabled;
+    private String lastError;
+    private Date lastSuccessfulUpdateAt;
+    private Date lastUpdateAt;
+    private Date lastUpdateStartedAt;
+    private Boolean onlyProtectedBranches;
+    private Boolean keepDivergentRefs;
+    private String updateStatus;
+    private String url;
 
-    private Date createdAt;
-    private Date updatedAt;
-    private String eventName;
-    private String name;
-    private String path;
-    private String fullPath;
-    private Integer groupId;
-    private String ownerEmail;
-    private String ownerName;
-    private String oldPath;
-    private String oldFullPath;
-
-    public Date getCreatedAt() {
-        return createdAt;
+    public Integer getId() {
+        return id;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
-    public String getEventName() {
-        return this.eventName;
+    public String getLastError() {
+        return lastError;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setLastError(String lastError) {
+        this.lastError = lastError;
     }
 
-    public String getName() {
-        return name;
+    public Date getLastSuccessfulUpdateAt() {
+        return lastSuccessfulUpdateAt;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLastSuccessfulUpdateAt(Date lastSuccessfulUpdateAt) {
+        this.lastSuccessfulUpdateAt = lastSuccessfulUpdateAt;
     }
 
-    public String getPath() {
-        return path;
+    public Date getLastUpdateAt() {
+        return lastUpdateAt;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setLastUpdateAt(Date lastUpdateAt) {
+        this.lastUpdateAt = lastUpdateAt;
     }
 
-    public String getFullPath() {
-        return fullPath;
+    public Date getLastUpdateStartedAt() {
+        return lastUpdateStartedAt;
     }
 
-    public void setFullPath(String fullPath) {
-        this.fullPath = fullPath;
+    public void setLastUpdateStartedAt(Date lastUpdateStartedAt) {
+        this.lastUpdateStartedAt = lastUpdateStartedAt;
     }
 
-    public Integer getGroupId() {
-        return groupId;
+    public Boolean getOnlyProtectedBranches() {
+        return onlyProtectedBranches;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public void setOnlyProtectedBranches(Boolean onlyProtectedBranches) {
+        this.onlyProtectedBranches = onlyProtectedBranches;
     }
 
-    public String getOwnerEmail() {
-        return ownerEmail;
+    public Boolean getKeepDivergentRefs() {
+        return keepDivergentRefs;
     }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public void setKeepDivergentRefs(Boolean keepDivergentRefs) {
+        this.keepDivergentRefs = keepDivergentRefs;
     }
 
-    public String getOwnerName() {
-        return ownerName;
+    public String getUpdateStatus() {
+        return updateStatus;
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public void setUpdateStatus(String updateStatus) {
+        this.updateStatus = updateStatus;
     }
 
-    public String getOldPath() {
-        return oldPath;
+    public String getUrl() {
+        return url;
     }
 
-    public void setOldPath(String oldPath) {
-        this.oldPath = oldPath;
-    }
-
-    public String getOldFullPath() {
-        return oldFullPath;
-    }
-
-    public void setOldFullPath(String oldFullPath) {
-        this.oldFullPath = oldFullPath;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
     public String toString() {
-        return (JacksonJson.toJsonString(this));
+        return JacksonJson.toJsonString(this);
     }
 }

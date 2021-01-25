@@ -27,7 +27,6 @@ package org.aoju.bus.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.aoju.bus.core.lang.Symbol;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,46 +48,32 @@ public interface Constants {
      */
     public static final String TOTAL_PAGES_HEADER = "X-Total-Pages";
 
-    /**
-     * The number of items per page HTTP header key.
-     */
+    /** The number of items per page HTTP header key. */
     public static final String PER_PAGE = "X-Per-Page";
 
-    /**
-     * The index of the current page (starting at 1) HTTP header key.
-     */
+    /** The index of the current page (starting at 1) HTTP header key. */
     public static final String PAGE_HEADER = "X-Page";
 
-    /**
-     * The index of the next page HTTP header key.
-     */
+    /** The index of the next page HTTP header key. */
     public static final String NEXT_PAGE_HEADER = "X-Next-Page";
 
-    /**
-     * The index of the previous page HTTP header key.
-     */
+    /** The index of the previous page HTTP header key. */
     public static final String PREV_PAGE_HEADER = "X-Prev-Page";
 
-    /**
-     * Items per page param HTTP header key.
-     */
+    /** Items per page param HTTP header key. */
     public static final String PER_PAGE_PARAM = "per_page";
 
-    /**
-     * Page param HTTP header key.
-     */
+    /** Page param HTTP header key. */
     public static final String PAGE_PARAM = "page";
 
     /**
      * Used to specify the type of authentication token.
      */
     public enum TokenType {
-        ACCESS, OAUTH2_ACCESS, PRIVATE;
+        ACCESS, OAUTH2_ACCESS, PRIVATE
     }
 
-    /**
-     * Enum to specify encoding of file contents.
-     */
+    /** Enum to specify encoding of file contents. */
     public enum Encoding {
         TEXT, BASE64;
 
@@ -110,9 +95,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for ordering the results of various API calls.
-     */
+    /** Enum to use for ordering the results of various API calls. */
     public enum SortOrder {
 
         ASC, DESC;
@@ -136,9 +119,7 @@ public interface Constants {
     }
 
 
-    /**
-     * Enum to use for ordering the results of getEpics().
-     */
+    /** Enum to use for ordering the results of getEpics(). */
     public enum EpicOrderBy {
 
         CREATED_AT, UPDATED_AT;
@@ -161,9 +142,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for ordering the results of getIssues().
-     */
+    /** Enum to use for ordering the results of getIssues(). */
     public enum IssueOrderBy {
 
         CREATED_AT, UPDATED_AT;
@@ -186,9 +165,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for ordering the results of getProjects().
-     */
+    /** Enum to use for ordering the results of getProjects(). */
     public enum ProjectOrderBy {
 
         ID, NAME, PATH, CREATED_AT, UPDATED_AT, LAST_ACTIVITY_AT;
@@ -210,9 +187,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for ordering the results of getPipelines().
-     */
+    /** Enum to use for ordering the results of getPipelines(). */
     public enum PipelineOrderBy {
 
         ID, STATUS, REF, UPDATED_AT, USER_ID;
@@ -235,9 +210,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for ordering the results of getMergeRequests().
-     */
+    /** Enum to use for ordering the results of getMergeRequests(). */
     public enum MergeRequestOrderBy {
 
         CREATED_AT, UPDATED_AT;
@@ -260,9 +233,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for ordering the results of getGroups() and getSubGroups().
-     */
+    /** Enum to use for ordering the results of getGroups() and getSubGroups(). */
     public enum GroupOrderBy {
 
         NAME, PATH, ID;
@@ -284,9 +255,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for ordering the results of getTags().
-     */
+    /** Enum to use for ordering the results of getTags(). */
     public enum TagOrderBy {
 
         NAME, UPDATED;
@@ -308,9 +277,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the scope when calling getPipelines().
-     */
+    /** Enum to use for specifying the scope when calling getPipelines(). */
     public enum PipelineScope {
 
         RUNNING, PENDING, FINISHED, BRANCHES, TAGS;
@@ -333,9 +300,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the scope when calling getJobs().
-     */
+    /** Enum to use for specifying the scope when calling getJobs(). */
     public enum JobScope {
 
         CREATED, PENDING, RUNNING, FAILED, SUCCESS, CANCELED, SKIPPED, MANUAL;
@@ -344,8 +309,7 @@ public interface Constants {
 
         @JsonCreator
         public static JobScope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
+            return enumHelper.forValue(value); }
 
         @JsonValue
         public String toValue() {
@@ -358,9 +322,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the scope when calling the various get issue methods.
-     */
+    /** Enum to use for specifying the scope when calling the various get issue methods. */
     public enum IssueScope {
 
         CREATED_BY_ME, ASSIGNED_TO_ME, ALL;
@@ -369,8 +331,7 @@ public interface Constants {
 
         @JsonCreator
         public static IssueScope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
+            return enumHelper.forValue(value); }
 
         @JsonValue
         public String toValue() {
@@ -383,9 +344,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the scope for getMergeRequests methods.
-     */
+    /** Enum to use for specifying the scope for getMergeRequests methods. */
     public enum MergeRequestScope {
 
         CREATED_BY_ME, ASSIGNED_TO_ME, ALL;
@@ -394,8 +353,7 @@ public interface Constants {
 
         @JsonCreator
         public static MergeRequestScope forValue(String value) {
-            return enumHelper.forValue(value);
-        }
+            return enumHelper.forValue(value); }
 
         @JsonValue
         public String toValue() {
@@ -408,9 +366,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for querying the state of a MergeRequest
-     */
+    /** Enum to use for querying the state of a MergeRequest */
     public enum MergeRequestState {
 
         OPENED, CLOSED, LOCKED, MERGED, ALL;
@@ -419,8 +375,7 @@ public interface Constants {
 
         @JsonCreator
         public static MergeRequestState forValue(String value) {
-            return enumHelper.forValue(value);
-        }
+            return enumHelper.forValue(value); }
 
         @JsonValue
         public String toValue() {
@@ -433,9 +388,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the scope of the search attribute when calling getMergeRequests().
-     */
+    /** Enum to use for specifying the scope of the search attribute when calling getMergeRequests(). */
     public enum MergeRequestSearchIn {
 
         TITLE, DESCRIPTION;
@@ -444,8 +397,7 @@ public interface Constants {
 
         @JsonCreator
         public static MergeRequestSearchIn forValue(String value) {
-            return enumHelper.forValue(value);
-        }
+            return enumHelper.forValue(value); }
 
         @JsonValue
         public String toValue() {
@@ -458,9 +410,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the state of a merge request or issue update.
-     */
+    /** Enum to use for specifying the state of a merge request or issue update. */
     public enum StateEvent {
 
         CLOSE, REOPEN;
@@ -469,8 +419,7 @@ public interface Constants {
 
         @JsonCreator
         public static StateEvent forValue(String value) {
-            return enumHelper.forValue(value);
-        }
+            return enumHelper.forValue(value); }
 
 
         @JsonValue
@@ -484,9 +433,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to used to store the state of an issue.
-     */
+    /** Enum to used to store the state of an issue. */
     public enum IssueState {
 
         OPENED, CLOSED, REOPENED;
@@ -531,9 +478,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the event action_type.
-     */
+    /** Enum to use for specifying the event action_type. */
     public enum ActionType {
 
         CREATED, UPDATED, CLOSED, REOPENED, PUSHED, COMMENTED, MERGED, JOINED, LEFT, DESTROYED, EXPIRED, REMOVED;
@@ -556,14 +501,12 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the event target_type.
-     */
+    /** Enum to use for specifying the event target_type. */
     public enum TargetType {
 
         ISSUE, MILESTONE, MERGE_REQUEST, NOTE, PROJECT, SNIPPET, USER;
 
-        private static JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class, true, true);
+        private static final JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class, true, false, true);
 
         @JsonCreator
         public static TargetType forValue(String value) {
@@ -581,9 +524,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the line type for a commit comment.
-     */
+    /** Enum to use for specifying the line type for a commit comment. */
     public enum LineType {
 
         OLD, NEW;
@@ -606,9 +547,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to specify the state of an ImpersonationToken.
-     */
+    /** Enum to specify the state of an ImpersonationToken. */
     public enum ImpersonationState {
 
         ALL, ACTIVE, INACTIVE;
@@ -638,17 +577,16 @@ public interface Constants {
 
         BZ2, TAR, TAR_BZ2, TAR_GZ, TB2, TBZ, TBZ2, ZIP;
 
-        private static Map<String, ArchiveFormat> valuesMap = new HashMap<>(8);
+        private static final Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
+        private final String value;
+
+        ArchiveFormat() {
+            this.value = name().toLowerCase().replace('_', '.');
+        }
 
         static {
             for (ArchiveFormat archiveFormat : ArchiveFormat.values())
                 valuesMap.put(archiveFormat.value, archiveFormat);
-        }
-
-        private final String value;
-
-        ArchiveFormat() {
-            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
         public static ArchiveFormat forValue(String value) throws GitLabApiException {
@@ -701,39 +639,25 @@ public interface Constants {
      */
     public enum ApplicationScope {
 
-        /**
-         * Access the authenticated user's API
-         */
+        /**  Access the authenticated user's API */
         API,
 
-        /**
-         * Read the authenticated user's personal information
-         */
+        /** Read the authenticated user's personal information */
         READ_USER,
 
-        /**
-         * Perform API actions as any user in the system
-         */
+        /**  Perform API actions as any user in the system */
         SUDO,
 
-        /**
-         * Allows read-access to the repository
-         */
+        /** Allows read-access to the repository */
         READ_REPOSITORY,
 
-        /**
-         * Authenticate using OpenID Connect
-         */
+        /** Authenticate using OpenID Connect */
         OPENID,
 
-        /**
-         * Allows read-only access to the user's personal information using OpenID Connect
-         */
+        /** Allows read-only access to the user's personal information using OpenID Connect */
         PROFILE,
 
-        /**
-         * Allows read-only access to the user's primary email address using OpenID Connect
-         */
+        /** Allows read-only access to the user's primary email address using OpenID Connect */
         EMAIL;
 
         private static JacksonJsonEnumHelper<ApplicationScope> enumHelper = new JacksonJsonEnumHelper<>(ApplicationScope.class);
@@ -830,9 +754,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the action when doing a getTodos() with the TodosApi.
-     */
+    /** Enum to use for specifying the action when doing a getTodos() with the TodosApi. */
     public enum TodoAction {
 
         ASSIGNED, MENTIONED, BUILD_FAILED, MARKED, APPROVAL_REQUIRED, UNMERGEABLE, DIRECTLY_ADDRESSED;
@@ -855,9 +777,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the state when doing a getTodos() with the TodosApi.
-     */
+    /** Enum to use for specifying the state when doing a getTodos() with the TodosApi. */
     public enum TodoState {
 
         PENDING, DONE;
@@ -880,9 +800,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the type when doing a getTodos() with the TodosApi.
-     */
+    /** Enum to use for specifying the type when doing a getTodos() with the TodosApi. */
     public enum TodoType {
 
         ISSUE, MERGE_REQUEST;
@@ -905,9 +823,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the status of a deployment.
-     */
+    /** Enum to use for specifying the status of a deployment. */
     public enum DeploymentStatus {
 
         CREATED, RUNNING, SUCCESS, FAILED, CANCELED;
@@ -930,9 +846,7 @@ public interface Constants {
         }
     }
 
-    /**
-     * Enum to use for specifying the deploy token scope.
-     */
+    /** Enum to use for specifying the deploy token scope. */
     public enum DeployTokenScope {
         READ_REPOSITORY, READ_REGISTRY;
 
@@ -940,6 +854,31 @@ public interface Constants {
 
         @JsonCreator
         public static DeployTokenScope forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    /**
+     * Enum for the build_git_strategy of the project instance.
+     */
+    enum BuildGitStrategy {
+
+        FETCH, CLONE;
+
+        private static final JacksonJsonEnumHelper<BuildGitStrategy> enumHelper = new JacksonJsonEnumHelper<>(BuildGitStrategy.class);
+
+        @JsonCreator
+        public static BuildGitStrategy forValue(String value) {
             return enumHelper.forValue(value);
         }
 

@@ -25,8 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.gitlab.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.aoju.bus.gitlab.JacksonJson;
 
 import java.util.List;
@@ -48,8 +46,6 @@ public class ApprovalRule {
     private List<Group> groups;
     private Boolean containsHiddenGroups;
 
-    @JsonSerialize(using = JacksonJson.UserListSerializer.class)
-    @JsonDeserialize(using = JacksonJson.UserListDeserializer.class)
     private List<User> approvedBy;
     private Boolean approved;
 

@@ -23,47 +23,52 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
-import org.aoju.bus.gitlab.JacksonJson;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Kimi Liu
  * @version 6.1.8
  * @since JDK 1.8+
  */
-public class RepositoryChange {
+public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
-    private String after;
-    private String before;
-    private String ref;
+    private String requestUrl;
+    private String requestQueryString;
+    private String requestSecretToken;
 
-    public String getAfter() {
-        return this.after;
-    }
-
-    public void setAfter(String after) {
-        this.after = after;
-    }
-
-    public String getBefore() {
-        return this.before;
-    }
-
-    public void setBefore(String before) {
-        this.before = before;
-    }
-
-    public String getRef() {
-        return this.ref;
-    }
-
-    public void setRef(String ref) {
-        this.ref = ref;
+    @Override
+    @JsonIgnore
+    public String getRequestUrl() {
+        return (requestUrl);
     }
 
     @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
     }
+
+    @Override
+    @JsonIgnore
+    public String getRequestQueryString() {
+        return (requestQueryString);
+    }
+
+    @Override
+    public void setRequestQueryString(String requestQueryString) {
+        this.requestQueryString = requestQueryString;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getRequestSecretToken() {
+        return (requestSecretToken);
+    }
+
+    @Override
+    public void setRequestSecretToken(String requestSecretToken) {
+        this.requestSecretToken = requestSecretToken;
+    }
+
 }

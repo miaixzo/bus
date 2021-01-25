@@ -28,6 +28,7 @@ package org.aoju.bus.gitlab.models;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.aoju.bus.gitlab.Constants;
 import org.aoju.bus.gitlab.JacksonJson;
 import org.aoju.bus.gitlab.JacksonJsonEnumHelper;
 import org.aoju.bus.gitlab.ProjectLicense;
@@ -97,6 +98,8 @@ public class Project {
     private List<CustomAttribute> customAttributes;
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
+    private String buildCoverageRegex;
+    private Constants.BuildGitStrategy buildGitStrategy;
 
     public static final boolean isValid(Project project) {
         return (project != null && project.getId() != null);
@@ -706,6 +709,32 @@ public class Project {
         this.customAttributes = customAttributes;
     }
 
+    public String getBuildCoverageRegex() {
+        return buildCoverageRegex;
+    }
+
+    public void setBuildCoverageRegex(String buildCoverageRegex) {
+        this.buildCoverageRegex = buildCoverageRegex;
+    }
+
+    public Project withBuildCoverageRegex(String buildCoverageRegex) {
+        this.buildCoverageRegex = buildCoverageRegex;
+        return this;
+    }
+
+    public Constants.BuildGitStrategy getBuildGitStrategy() {
+        return buildGitStrategy;
+    }
+
+    public void setBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
+        this.buildGitStrategy = buildGitStrategy;
+    }
+
+    public Project withBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
+        this.buildGitStrategy = buildGitStrategy;
+        return this;
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
@@ -733,4 +762,5 @@ public class Project {
             return (enumHelper.toString(this));
         }
     }
+
 }

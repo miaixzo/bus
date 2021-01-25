@@ -1391,6 +1391,71 @@ public class GroupApi extends AbstractApi {
     }
 
     /**
+     * Get a List of the group audit events viewable by Maintainer or an Owner of the group.
+     *
+     * <pre><code>GET /groups/:id/audit_events</code></pre>
+     *
+     * @param groupIdOrPath  the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param created_after  Group audit events created on or after the given time.
+     * @param created_before Group audit events created on or before the given time.
+     * @return a List of group Audit events
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<AuditEvent> getAuditEvents(Object groupIdOrPath, Date created_after, Date created_before) throws GitLabApiException {
+        return (getAuditEvents(groupIdOrPath, created_after, created_before, getDefaultPerPage()).all());
+    }
+
+    /**
+     * Get a Pager of the group audit events viewable by Maintainer or an Owner of the group.
+     *
+     * <pre><code>GET /groups/:id/audit_events</code></pre>
+     *
+     * @param groupIdOrPath  the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param created_after  Group audit events created on or after the given time.
+     * @param created_before Group audit events created on or before the given time.
+     * @param itemsPerPage   the number of Audit Event instances that will be fetched per page
+     * @return a Pager of group Audit events
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<AuditEvent> getAuditEvents(Object groupIdOrPath, Date created_after, Date created_before, int itemsPerPage) throws GitLabApiException {
+        Form form = new GitLabApiForm()
+                .withParam("created_before", ISO8601.toString(created_after, false))
+                .withParam("created_after", ISO8601.toString(created_before, false));
+        return (new Pager<AuditEvent>(this, AuditEvent.class, itemsPerPage, form.asMap(),
+                "groups", getGroupIdOrPath(groupIdOrPath), "audit_events"));
+    }
+
+    /**
+     * Get a Stream of the group audit events viewable by Maintainer or an Owner of the group.
+     *
+     * <pre><code>GET /groups/:id/audit_events</code></pre>
+     *
+     * @param groupIdOrPath  the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param created_after  Group audit events created on or after the given time.
+     * @param created_before Group audit events created on or before the given time.
+     * @return a Stream of group Audit events
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Stream<AuditEvent> getAuditEventsStream(Object groupIdOrPath, Date created_after, Date created_before) throws GitLabApiException {
+        return (getAuditEvents(groupIdOrPath, created_after, created_before, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Get a specific audit event of a group.
+     *
+     * <pre><code>GitLab Endpoint: GET /groups/:id/audit_events/:id_audit_event</code></pre>
+     *
+     * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param auditEventId  the auditEventId, required
+     * @return the group Audit event
+     * @throws GitLabApiException if any exception occurs
+     */
+    public AuditEvent getAuditEvent(Object groupIdOrPath, Integer auditEventId) throws GitLabApiException {
+        Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "audit_events", auditEventId);
+        return (response.readEntity(AuditEvent.class));
+    }
+
+    /**
      * Get a List of the group access requests viewable by the authenticated user.
      *
      * <pre><code>GET /group/:id/access_requests</code></pre>
@@ -1609,6 +1674,42 @@ public class GroupApi extends AbstractApi {
         Response response = putUpload(Response.Status.OK,
                 "avatar", avatarFile, "groups", getGroupIdOrPath(groupIdOrPath));
         return (response.readEntity(Group.class));
+    }
+
+
+    /**
+     * Share group with another group. Returns 200 and the group details on success.
+     *
+     * <pre><code>GitLab Endpoint: POST /groups/:id/share</code></pre>
+     *
+     * @param groupIdOrPath    the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param shareWithGroupId the ID of the group to share with, required
+     * @param groupAccess      the access level to grant the group, required
+     * @param expiresAt        expiration date of the share, optional
+     * @return a Group instance holding the details of the shared group
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Group shareGroup(Object groupIdOrPath, Integer shareWithGroupId, AccessLevel groupAccess, Date expiresAt) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm()
+                .withParam("group_id", shareWithGroupId, true)
+                .withParam("group_access", groupAccess, true)
+                .withParam("expires_at", expiresAt);
+        Response response = post(Response.Status.OK, formData, "groups", getGroupIdOrPath(groupIdOrPath), "share");
+        return (response.readEntity(Group.class));
+    }
+
+    /**
+     * Unshare the group from another group.
+     *
+     * <pre><code>GitLab Endpoint: DELETE /groups/:id/share/:group_id</code></pre>
+     *
+     * @param groupIdOrPath     the group ID, path of the group, or a Group instance holding the group ID or path
+     * @param sharedWithGroupId the ID of the group to unshare with, required
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void unshareGroup(Object groupIdOrPath, Integer sharedWithGroupId) throws GitLabApiException {
+        delete(Response.Status.NO_CONTENT, null,
+                "groups", getGroupIdOrPath(groupIdOrPath), "share", sharedWithGroupId);
     }
 
 }

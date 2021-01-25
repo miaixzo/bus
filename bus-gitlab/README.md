@@ -296,10 +296,10 @@ API classes typically have a one-to-one relationship with the API documentation
 at [GitLab API](https://docs.gitlab.com/ce/api/). Following is a sample of the GitLab sub API class mapping to the
 GitLab API documentation:
 
-```org.gitlab4j.api.GroupApi``` -> https://docs.gitlab.com/ce/api/groups.html<br/>
-```org.gitlab4j.api.MergeRequestApi``` -> https://docs.gitlab.com/ce/api/merge_requests.html<br/>
-```org.gitlab4j.api.ProjectApi``` -> https://docs.gitlab.com/ce/api/projects.html<br/>
-```org.gitlab4j.api.UserApi``` -> https://docs.gitlab.com/ce/api/users.html<br/>
+```GroupApi``` -> https://docs.gitlab.com/ce/api/groups.html<br/>
+```MergeRequestApi``` -> https://docs.gitlab.com/ce/api/merge_requests.html<br/>
+```ProjectApi``` -> https://docs.gitlab.com/ce/api/projects.html<br/>
+```UserApi``` -> https://docs.gitlab.com/ce/api/users.html<br/>
 
 ### **Available Sub APIs**
 
@@ -389,7 +389,7 @@ List<Board> boards = gitLabApi.getBoardsApi().getBoards(projectId);
 
 ```
 // Get a list of commits associated with the specified branch that fall within the specified time window
-// This uses the ISO8601 date utilities the in org.gitlab4j.api.utils.ISO8601 class
+// This uses the ISO8601 date utilities the in ISO8601 class
 Date since = ISO8601.toDate("2017-01-01T00:00:00Z");
 Date until = new Date(); // now
 List<Commit> commits = gitLabApi.getCommitsApi().getCommits(1234, "new-feature", since, until);

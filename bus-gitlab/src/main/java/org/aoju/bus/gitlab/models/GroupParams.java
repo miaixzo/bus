@@ -57,6 +57,7 @@ public class GroupParams {
     private Integer extraSharedRunnersMinutesLimit;
     private Boolean membershipLock;
     private Integer fileTemplateProjectId;
+    private DefaultBranchProtectionLevel defaultBranchProtection;
 
     /**
      * The parent group ID for creating nested group. For create only.
@@ -166,6 +167,11 @@ public class GroupParams {
         return (this);
     }
 
+    public GroupParams withDefaultBranchProtection(DefaultBranchProtectionLevel defaultBranchProtection) {
+        this.defaultBranchProtection = defaultBranchProtection;
+        return (this);
+    }
+
     /**
      * Get the form params for a group create oir update call.
      *
@@ -190,7 +196,9 @@ public class GroupParams {
                 .withParam("lfs_enabled", lfsEnabled)
                 .withParam("request_access_enabled", requestAccessEnabled)
                 .withParam("shared_runners_minutes_limit", sharedRunnersMinutesLimit)
-                .withParam("extra_shared_runners_minutes_limit", extraSharedRunnersMinutesLimit);
+                .withParam("extra_shared_runners_minutes_limit", extraSharedRunnersMinutesLimit)
+                .withParam("default_branch_protection", defaultBranchProtection);
+
 
         if (isCreate) {
             form.withParam("parent_id", parentId);
@@ -223,4 +231,21 @@ public class GroupParams {
             return (name().toLowerCase());
         }
     }
+
+    public enum DefaultBranchProtectionLevel {
+        NOT_PROTECTED(0),
+        PARTIALLY_PROTECTED(1),
+        FULLY_PROTECTED(2);
+
+        private final int value;
+
+        DefaultBranchProtectionLevel(int value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return Integer.toString(value);
+        }
+    }
+
 }

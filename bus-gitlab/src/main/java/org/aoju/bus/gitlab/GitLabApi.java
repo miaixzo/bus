@@ -61,6 +61,7 @@ public class GitLabApi implements AutoCloseable {
     private int defaultPerPage = DEFAULT_PER_PAGE;
     private ApplicationsApi applicationsApi;
     private ApplicationSettingsApi applicationSettingsApi;
+    private AuditEventApi auditEventApi;
     private AwardEmojiApi awardEmojiApi;
     private BoardsApi boardsApi;
     private CommitsApi commitsApi;
@@ -898,6 +899,25 @@ public class GitLabApi implements AutoCloseable {
         }
 
         return (applicationSettingsApi);
+    }
+
+    /**
+     * Gets the AuditEventApi instance owned by this GitLabApi instance. The AuditEventApi is used
+     * to perform all instance audit event API calls.
+     *
+     * @return the AuditEventApi instance owned by this GitLabApi instance
+     */
+    public AuditEventApi getAuditEventApi() {
+
+        if (auditEventApi == null) {
+            synchronized (this) {
+                if (auditEventApi == null) {
+                    auditEventApi = new AuditEventApi(this);
+                }
+            }
+        }
+
+        return (auditEventApi);
     }
 
     /**
