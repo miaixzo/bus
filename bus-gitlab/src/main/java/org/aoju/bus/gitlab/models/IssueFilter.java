@@ -42,7 +42,7 @@ import java.util.List;
  * This class is used to filter issues when getting lists of them.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class IssueFilter {

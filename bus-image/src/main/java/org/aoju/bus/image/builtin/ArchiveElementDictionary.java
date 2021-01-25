@@ -30,7 +30,7 @@ import org.aoju.bus.image.galaxy.data.VR;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class ArchiveElementDictionary extends ElementDictionary {

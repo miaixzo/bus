@@ -33,7 +33,7 @@ import org.aoju.bus.health.Executor;
  * Utility to read info from {@code lshw}
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe

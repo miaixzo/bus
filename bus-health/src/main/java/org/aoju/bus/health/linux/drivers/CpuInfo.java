@@ -39,7 +39,7 @@ import java.util.List;
  * Utility to read CPU info from {@code /proc/cpuinfo}
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe

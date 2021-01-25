@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  * FieldMethod
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class FieldMethod {

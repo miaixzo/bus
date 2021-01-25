@@ -43,7 +43,7 @@ import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class ImageWriterFactory implements Serializable {

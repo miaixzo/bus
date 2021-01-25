@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>long</code> 类型
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @see Long
  * @since JDK 1.8+
  */

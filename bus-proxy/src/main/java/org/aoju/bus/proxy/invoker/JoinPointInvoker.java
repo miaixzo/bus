@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class JoinPointInvoker implements ProxyChain {

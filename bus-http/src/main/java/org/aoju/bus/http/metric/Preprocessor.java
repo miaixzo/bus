@@ -33,7 +33,7 @@ import org.aoju.bus.http.metric.http.CoverHttp;
  * 在HTTP请求任务正式开始之前执行
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public interface Preprocessor {

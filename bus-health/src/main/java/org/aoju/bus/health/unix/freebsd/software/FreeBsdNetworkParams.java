@@ -40,7 +40,7 @@ import org.aoju.bus.logger.Logger;
  * FreeBsdNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe

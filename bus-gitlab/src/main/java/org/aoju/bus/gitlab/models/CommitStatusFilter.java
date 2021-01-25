@@ -33,7 +33,7 @@ import org.aoju.bus.gitlab.GitLabApiForm;
  * This class is used to filter commit status when getting lists of them.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class CommitStatusFilter {

@@ -34,7 +34,7 @@ import org.aoju.bus.notify.magic.Property;
  * 钉钉通知模版
  *
  * @author Justubborn
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK1.8+
  */
 @Getter

@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public final class RealSource implements BufferSource {

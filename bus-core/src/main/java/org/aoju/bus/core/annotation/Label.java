@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * 用于在输出到CLI表或Excel/CSV等时为字段/getter提供标签.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @Retention(RetentionPolicy.RUNTIME)

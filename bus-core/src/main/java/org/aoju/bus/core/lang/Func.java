@@ -32,7 +32,7 @@ package org.aoju.bus.core.lang;
  * 此接口用于将一个函数包装成为一个对象,从而传递对象
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @FunctionalInterface

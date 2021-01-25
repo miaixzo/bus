@@ -38,7 +38,7 @@ import org.aoju.bus.oauth.magic.Message;
  * {@link Provider#refresh(AccToken)}
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public interface Provider {

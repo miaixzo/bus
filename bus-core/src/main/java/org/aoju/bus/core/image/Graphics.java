@@ -34,7 +34,7 @@ import java.awt.image.BufferedImage;
  * {@link java.awt.Graphics}相关工具类
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class Graphics {

@@ -51,7 +51,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class Ftp extends AbstractFtp {
@@ -549,6 +549,7 @@ public class Ftp extends AbstractFtp {
      * @param path     文件路径
      * @param fileName 文件名
      * @param out      输出位置
+     * @param charset  字符编码
      */
     public void download(String path, String fileName, OutputStream out, java.nio.charset.Charset charset) {
         String pwd = null;

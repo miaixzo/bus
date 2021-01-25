@@ -27,7 +27,7 @@ package org.aoju.bus.image.galaxy;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class StorageThreshold {

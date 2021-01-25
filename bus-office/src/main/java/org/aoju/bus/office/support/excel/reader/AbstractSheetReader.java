@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @param <T> 读取类型
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public abstract class AbstractSheetReader<T> implements SheetReader<T> {

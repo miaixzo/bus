@@ -32,7 +32,7 @@ import org.aoju.bus.health.builtin.software.OSFileStore;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe

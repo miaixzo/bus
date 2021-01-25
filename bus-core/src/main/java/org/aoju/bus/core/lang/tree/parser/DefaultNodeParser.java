@@ -33,7 +33,7 @@ import org.aoju.bus.core.lang.tree.TreeNode;
  *
  * @param <T> ID类型
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {

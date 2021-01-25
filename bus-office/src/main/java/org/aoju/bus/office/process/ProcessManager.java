@@ -31,7 +31,7 @@ import java.io.IOException;
  * 提供管理正在运行的流程所需的服务.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public interface ProcessManager {

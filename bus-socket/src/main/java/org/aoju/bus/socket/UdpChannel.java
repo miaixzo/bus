@@ -49,7 +49,7 @@ import java.util.function.Consumer;
  * 封装UDP底层真实渠道对象,并提供通信及会话管理
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class UdpChannel<Request> {

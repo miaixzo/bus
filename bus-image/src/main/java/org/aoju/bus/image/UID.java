@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * UID信息
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class UID {
@@ -1765,19 +1765,19 @@ public class UID {
     /**
      * Private ERAD Practice Builder Report Text Storage
      */
-    public static final String PrivateERADPracticeBuilderReportTextStorage = "1.2.826.1.8.3680043.293.1.0.1";
+    public static final String PrivateERADPracticeBuilderReportTextStorage = "1.2.826.1.9.3680043.293.1.0.1";
     /**
      * Private ERAD Practice Builder Report Dictation Storage
      */
-    public static final String PrivateERADPracticeBuilderReportDictationStorage = "1.2.826.1.8.3680043.293.1.0.2";
+    public static final String PrivateERADPracticeBuilderReportDictationStorage = "1.2.826.1.9.3680043.293.1.0.2";
     /**
      * Private Philips HP Live 3D 01 Storage
      */
-    public static final String PrivatePhilipsHPLive3D01Storage = "1.2.840.113543.6.6.1.8.10001";
+    public static final String PrivatePhilipsHPLive3D01Storage = "1.2.840.113543.6.6.1.9.10001";
     /**
      * Private Philips HP Live 3D 02 Storage
      */
-    public static final String PrivatePhilipsHPLive3D02Storage = "1.2.840.113543.6.6.1.8.10002";
+    public static final String PrivatePhilipsHPLive3D02Storage = "1.2.840.113543.6.6.1.9.10002";
     /**
      * Private GE 3D Model Storage
      */
@@ -1825,7 +1825,7 @@ public class UID {
     /**
      * Private Siemens CSA Non Image Storage
      */
-    public static final String PrivateSiemensCSANonImageStorage = "1.3.12.2.1107.6.1.8";
+    public static final String PrivateSiemensCSANonImageStorage = "1.3.12.2.1107.6.1.9";
     /**
      * Private Siemens CT MR Volume Storage
      */
@@ -1889,11 +1889,11 @@ public class UID {
     /**
      * Private Philips MR Cardio Storage (Retired)
      */
-    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.6.1.8";
+    public static final String PrivatePhilipsMRCardioStorageRetired = "1.3.46.670589.6.1.9";
     /**
      * Private Philips MR Cardio Storage
      */
-    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.6.1.8.1";
+    public static final String PrivatePhilipsMRCardioStorage = "1.3.46.670589.6.1.9.1";
     /**
      * Private Philips CT Synthetic Image Storage
      */

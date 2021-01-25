@@ -39,7 +39,7 @@ import java.util.function.Supplier;
  * AIX Sound Card.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @Immutable

@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Symbol;
  * an abstract class for {@link IniElement}.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public abstract class AbstractElement implements IniElement {

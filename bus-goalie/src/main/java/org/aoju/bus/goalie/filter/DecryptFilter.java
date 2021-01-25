@@ -47,7 +47,7 @@ import java.util.Map;
  * 数据解密
  *
  * @author Justubborn
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)

@@ -37,7 +37,7 @@ import java.io.*;
  * contained in a SecretString that is cleared when an instance of this class is finalized.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseable {

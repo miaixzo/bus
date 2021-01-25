@@ -48,7 +48,7 @@ import java.util.Map;
  * 飞书登录
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class FeishuProvider extends AbstractProvider {

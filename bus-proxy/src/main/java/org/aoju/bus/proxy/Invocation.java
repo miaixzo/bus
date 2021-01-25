@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  * 调用者方法
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public interface Invocation {

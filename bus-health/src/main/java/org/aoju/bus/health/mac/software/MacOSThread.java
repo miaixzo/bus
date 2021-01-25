@@ -31,7 +31,7 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @Immutable

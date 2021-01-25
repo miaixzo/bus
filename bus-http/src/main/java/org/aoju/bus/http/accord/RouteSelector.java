@@ -41,7 +41,7 @@ import java.util.NoSuchElementException;
  * 服务器、IP地址和TLS模式。连接也可以循环使用
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public final class RouteSelector {

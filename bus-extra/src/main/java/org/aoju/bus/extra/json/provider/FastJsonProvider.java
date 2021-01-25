@@ -38,7 +38,7 @@ import java.util.Map;
  * FastJson 解析器
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class FastJsonProvider extends AbstractJsonProvider {

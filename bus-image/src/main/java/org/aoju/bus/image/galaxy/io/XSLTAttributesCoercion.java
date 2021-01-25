@@ -32,7 +32,7 @@ import javax.xml.transform.Templates;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class XSLTAttributesCoercion implements AttributesCoercion {

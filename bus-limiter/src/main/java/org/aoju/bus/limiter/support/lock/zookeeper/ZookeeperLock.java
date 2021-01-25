@@ -35,7 +35,7 @@ import org.apache.zookeeper.KeeperException;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class ZookeeperLock extends Lock {
