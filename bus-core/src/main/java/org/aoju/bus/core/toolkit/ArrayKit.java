@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -8856,6 +8856,19 @@ public class ArrayKit {
     }
 
     /**
+     * 按照指定规则，将一种类型的数组元素提取后转换为List
+     *
+     * @param array 被转换的数组
+     * @param func  转换规则函数
+     * @param <T>   原数组类型
+     * @param <R>   目标数组类型
+     * @return 转换后的数组
+     */
+    public static <T, R> List<R> map(T[] array, Function<? super T, ? extends R> func) {
+        return Arrays.stream(array).map(func).collect(Collectors.toList());
+    }
+
+    /**
      * 按照指定规则，将一种类型的数组转换为另一种类型
      *
      * @param array         被转换的数组
@@ -8874,16 +8887,22 @@ public class ArrayKit {
     }
 
     /**
-     * 按照指定规则，将一种类型的数组元素提取后转换为List
+     * 按照指定规则，将一种类型的数组转换为另一种类型
      *
-     * @param array 被转换的数组
-     * @param func  转换规则函数
-     * @param <T>   原数组类型
-     * @param <R>   目标数组类型
+     * @param array               被转换的数组
+     * @param targetComponentType 目标的元素类型
+     * @param func                转换规则函数
+     * @param <T>                 原数组类型
+     * @param <R>                 目标数组类型
      * @return 转换后的数组
      */
-    public static <T, R> List<R> map(T[] array, Function<? super T, ? extends R> func) {
-        return Arrays.stream(array).map(func).collect(Collectors.toList());
+    public static <T, R> R[] map(Object array, Class<R> targetComponentType, Function<? super T, ? extends R> func) {
+        final int length = length(array);
+        final R[] result = newArray(targetComponentType, length);
+        for (int i = 0; i < length; i++) {
+            result[i] = func.apply(get(array, i));
+        }
+        return result;
     }
 
     /**

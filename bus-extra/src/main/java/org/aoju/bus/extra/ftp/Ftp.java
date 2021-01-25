@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -265,7 +266,7 @@ public class Ftp extends AbstractFtp {
     @Override
     public boolean cd(String directory) {
         if (StringKit.isBlank(directory)) {
-            return false;
+            return true;
         }
 
         try {
@@ -304,7 +305,9 @@ public class Ftp extends AbstractFtp {
         String pwd = null;
         if (StringKit.isNotBlank(path)) {
             pwd = pwd();
-            cd(path);
+            if (false == cd(path)) {
+                throw new InstrumentException("Change dir to [{}] error, maybe path not exist!");
+            }
         }
 
         FTPFile[] ftpFiles;
@@ -363,7 +366,10 @@ public class Ftp extends AbstractFtp {
         final String pwd = pwd();
         final String fileName = FileKit.getName(path);
         final String dir = StringKit.removeSuffix(path, fileName);
-        cd(dir);
+        if (false == cd(dir)) {
+            throw new InstrumentException("Change dir to [{}] error, maybe dir not exist!");
+        }
+
         boolean isSuccess;
         try {
             isSuccess = client.deleteFile(fileName);
@@ -476,9 +482,8 @@ public class Ftp extends AbstractFtp {
 
         if (StringKit.isNotBlank(path)) {
             mkDirs(path);
-            boolean isOk = cd(path);
-            if (false == isOk) {
-                return false;
+            if (false == cd(path)) {
+                throw new InstrumentException("Change dir to [{}] error, maybe dir not exist!");
             }
         }
 
@@ -535,12 +540,29 @@ public class Ftp extends AbstractFtp {
      * @param out      输出位置
      */
     public void download(String path, String fileName, OutputStream out) {
+        download(path, fileName, out, null);
+    }
+
+    /**
+     * 下载文件到输出流
+     *
+     * @param path     文件路径
+     * @param fileName 文件名
+     * @param out      输出位置
+     */
+    public void download(String path, String fileName, OutputStream out, java.nio.charset.Charset charset) {
         String pwd = null;
         if (this.backToPwd) {
             pwd = pwd();
         }
 
-        cd(path);
+        if (false == cd(path)) {
+            throw new InstrumentException("Change dir to [{}] error, maybe dir not exist!");
+        }
+
+        if (null != charset) {
+            fileName = new String(fileName.getBytes(charset), StandardCharsets.ISO_8859_1);
+        }
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
             client.retrieveFile(fileName, out);

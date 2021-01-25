@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -397,6 +397,12 @@ public class BeanKit {
      * 获得字段值,通过反射直接获得字段值,并不调用getXXX方法
      * 对象同样支持Map类型,fieldNameOrIndex即为key
      *
+     * <ul>
+     *     <li>Map: fieldNameOrIndex需为key，获取对应value</li>
+     *     <li>Collection: fieldNameOrIndex当为数字，返回index对应值，非数字遍历集合返回子bean对应name值</li>
+     *     <li>Array: fieldNameOrIndex当为数字，返回index对应值，非数字遍历数组返回子bean对应name值</li>
+     * </ul>
+     *
      * @param bean             Bean对象
      * @param fieldNameOrIndex 字段名或序号,序号支持负数
      * @return 字段值
@@ -409,10 +415,18 @@ public class BeanKit {
         if (bean instanceof Map) {
             return ((Map<?, ?>) bean).get(fieldNameOrIndex);
         } else if (bean instanceof Collection) {
-            return CollKit.get((Collection<?>) bean, Integer.parseInt(fieldNameOrIndex));
+            try {
+                return CollKit.get((Collection<?>) bean, Integer.parseInt(fieldNameOrIndex));
+            } catch (NumberFormatException e) {
+                return CollKit.map((Collection<?>) bean, (beanEle) -> getFieldValue(beanEle, fieldNameOrIndex), false);
+            }
         } else if (ArrayKit.isArray(bean)) {
-            return ArrayKit.get(bean, Integer.parseInt(fieldNameOrIndex));
-        } else {// 普通Bean对象
+            try {
+                return ArrayKit.get(bean, Integer.parseInt(fieldNameOrIndex));
+            } catch (NumberFormatException e) {
+                return ArrayKit.map(bean, Object.class, (beanEle) -> getFieldValue(beanEle, fieldNameOrIndex));
+            }
+        } else {
             return ReflectKit.getFieldValue(bean, fieldNameOrIndex);
         }
     }
