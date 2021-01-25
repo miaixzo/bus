@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -35,6 +35,7 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractComputerSystem;
 import org.aoju.bus.health.builtin.hardware.Baseboard;
 import org.aoju.bus.health.builtin.hardware.Firmware;
+import org.aoju.bus.health.unix.UnixBaseboard;
 import org.aoju.bus.health.unix.freebsd.BsdSysctlKit;
 
 import java.util.function.Supplier;
@@ -43,7 +44,7 @@ import java.util.function.Supplier;
  * Hardware data obtained from dmidecode.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @Immutable
@@ -150,7 +151,7 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
 
     @Override
     public Baseboard createBaseboard() {
-        return new FreeBsdBaseboard(manufModelSerialUuidVers.get().getA(), manufModelSerialUuidVers.get().getB(),
+        return new UnixBaseboard(manufModelSerialUuidVers.get().getA(), manufModelSerialUuidVers.get().getB(),
                 manufModelSerialUuidVers.get().getC(), manufModelSerialUuidVers.get().getE());
     }
 

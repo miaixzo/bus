@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class Group {
@@ -56,6 +56,7 @@ public class Group {
     private List<Project> sharedProjects;
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
+    private Date createdAt;
 
     public Integer getId() {
         return this.id;
@@ -193,6 +194,14 @@ public class Group {
         this.markedForDeletionOn = markedForDeletionOn;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Group withId(Integer id) {
         this.id = id;
         return this;
@@ -279,41 +288,43 @@ public class Group {
     }
 
     public class Statistics {
-        private Integer storageSize;
-        private Integer repositorySize;
-        private Integer lfsObjectsSize;
-        private Integer jobArtifactsSize;
 
-        public Integer getStorageSize() {
+        private Long storageSize;
+        private Long repositorySize;
+        private Long lfsObjectsSize;
+        private Long jobArtifactsSize;
+
+        public Long getStorageSize() {
             return storageSize;
         }
 
-        public void setStorageSize(Integer storageSize) {
+        public void setStorageSize(Long storageSize) {
             this.storageSize = storageSize;
         }
 
-        public Integer getRepositorySize() {
+        public Long getRepositorySize() {
             return repositorySize;
         }
 
-        public void setRepositorySize(Integer repositorySize) {
+        public void setRepositorySize(Long repositorySize) {
             this.repositorySize = repositorySize;
         }
 
-        public Integer getLfsObjectsSize() {
+        public Long getLfsObjectsSize() {
             return lfsObjectsSize;
         }
 
-        public void setLfsObjectsSize(Integer lfsObjectsSize) {
+        public void setLfsObjectsSize(Long lfsObjectsSize) {
             this.lfsObjectsSize = lfsObjectsSize;
         }
 
-        public Integer getJobArtifactsSize() {
+        public Long getJobArtifactsSize() {
             return jobArtifactsSize;
         }
 
-        public void setJobArtifactsSize(Integer jobArtifactsSize) {
+        public void setJobArtifactsSize(Long jobArtifactsSize) {
             this.jobArtifactsSize = jobArtifactsSize;
         }
     }
+
 }

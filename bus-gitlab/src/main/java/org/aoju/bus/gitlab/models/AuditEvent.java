@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,52 +23,76 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.aoju.bus.gitlab.JacksonJson;
+
+import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public abstract class AbstractSystemHookEvent implements SystemHookEvent {
+public class AuditEvent {
 
-    private String requestUrl;
-    private String requestQueryString;
-    private String requestSecretToken;
+    private Integer id;
+    private Integer authorId;
+    private Integer entityId;
+    private String entityType;
+    private AuditEventDetail details;
+    private Date createdAt;
 
-    @Override
-    @JsonIgnore
-    public String getRequestUrl() {
-        return (requestUrl);
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
+    }
+
+    public Integer getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(Integer entityId) {
+        this.entityId = entityId;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+
+    public AuditEventDetail getDetails() {
+        return details;
+    }
+
+    public void setDetails(AuditEventDetail details) {
+        this.details = details;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
-    public void setRequestUrl(String requestUrl) {
-        this.requestUrl = requestUrl;
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
-
-    @Override
-    @JsonIgnore
-    public String getRequestQueryString() {
-        return (requestQueryString);
-    }
-
-    @Override
-    public void setRequestQueryString(String requestQueryString) {
-        this.requestQueryString = requestQueryString;
-    }
-
-    @Override
-    @JsonIgnore
-    public String getRequestSecretToken() {
-        return (requestSecretToken);
-    }
-
-    @Override
-    public void setRequestSecretToken(String requestSecretToken) {
-        this.requestSecretToken = requestSecretToken;
-    }
-
 }

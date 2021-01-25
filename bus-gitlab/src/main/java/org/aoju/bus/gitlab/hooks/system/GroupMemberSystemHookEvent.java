@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
 
@@ -31,26 +31,25 @@ import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class GroupSystemHookEvent extends AbstractSystemHookEvent {
+public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String GROUP_CREATE_EVENT = "group_create";
-    public static final String GROUP_DESTROY_EVENT = "group_destroy";
-    public static final String GROUP_RENAME_EVENT = "group_rename";
+    public static final String NEW_GROUP_MEMBER_EVENT = "user_add_to_group";
+    public static final String GROUP_MEMBER_REMOVED_EVENT = "user_remove_from_group";
 
     private Date createdAt;
     private Date updatedAt;
     private String eventName;
-    private String name;
-    private String path;
-    private String fullPath;
+    private String groupAccess;
+    private String groupName;
+    private String groupPath;
     private Integer groupId;
-    private String ownerEmail;
-    private String ownerName;
-    private String oldPath;
-    private String oldFullPath;
+    private String userEmail;
+    private String userName;
+    private String userUsername;
+    private Integer userId;
 
     public Date getCreatedAt() {
         return createdAt;
@@ -76,28 +75,28 @@ public class GroupSystemHookEvent extends AbstractSystemHookEvent {
         this.eventName = eventName;
     }
 
-    public String getName() {
-        return name;
+    public String getGroupAccess() {
+        return groupAccess;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGroupAccess(String groupAccess) {
+        this.groupAccess = groupAccess;
     }
 
-    public String getPath() {
-        return path;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
-    public String getFullPath() {
-        return fullPath;
+    public String getGroupPath() {
+        return groupPath;
     }
 
-    public void setFullPath(String fullPath) {
-        this.fullPath = fullPath;
+    public void setGroupPath(String groupPath) {
+        this.groupPath = groupPath;
     }
 
     public Integer getGroupId() {
@@ -108,36 +107,36 @@ public class GroupSystemHookEvent extends AbstractSystemHookEvent {
         this.groupId = groupId;
     }
 
-    public String getOwnerEmail() {
-        return ownerEmail;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public String getOwnerName() {
-        return ownerName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getOldPath() {
-        return oldPath;
+    public String getUserUsername() {
+        return userUsername;
     }
 
-    public void setOldPath(String oldPath) {
-        this.oldPath = oldPath;
+    public void setUserUsername(String userUsername) {
+        this.userUsername = userUsername;
     }
 
-    public String getOldFullPath() {
-        return oldFullPath;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setOldFullPath(String oldFullPath) {
-        this.oldFullPath = oldFullPath;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     @Override

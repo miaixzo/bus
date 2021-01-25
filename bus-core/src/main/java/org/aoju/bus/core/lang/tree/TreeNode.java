@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,7 +31,7 @@ package org.aoju.bus.core.lang.tree;
  * 类树节点实体: 包含key，父Key.不限于这些属性的可以构造成一颗树的实体对象
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class TreeNode<T> implements Node<T> {

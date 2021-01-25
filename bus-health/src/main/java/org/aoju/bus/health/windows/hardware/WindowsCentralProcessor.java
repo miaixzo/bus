@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,7 +30,6 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
 import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
-import com.sun.jna.platform.win32.WinNT.*;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -55,7 +54,7 @@ import java.util.*;
  * individual Physical and Logical processors.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -64,7 +63,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     // populated by initProcessorCounts called by the parent constructor
     private Map<String, Integer> numaNodeProcToLogicalProcMap;
 
-    private static int getMatchingPackage(List<GROUP_AFFINITY[]> packages, int g, int lp) {
+    private static int getMatchingPackage(List<WinNT.GROUP_AFFINITY[]> packages, int g, int lp) {
         for (int i = 0; i < packages.size(); i++) {
             for (int j = 0; j < packages.get(i).length; j++) {
                 if ((packages.get(i)[j].mask.longValue() & (1L << lp)) > 0 && packages.get(i)[j].group == g) {
@@ -75,7 +74,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         return 0;
     }
 
-    private static int getMatchingNumaNode(List<NUMA_NODE_RELATIONSHIP> numaNodes, int g, int lp) {
+    private static int getMatchingNumaNode(List<WinNT.NUMA_NODE_RELATIONSHIP> numaNodes, int g, int lp) {
         for (int j = 0; j < numaNodes.size(); j++) {
             if ((numaNodes.get(j).groupMask.mask.longValue() & (1L << lp)) > 0
                     && numaNodes.get(j).groupMask.group == g) {
@@ -85,7 +84,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         return 0;
     }
 
-    private static int getMatchingCore(List<GROUP_AFFINITY> cores, int g, int lp) {
+    private static int getMatchingCore(List<WinNT.GROUP_AFFINITY> cores, int g, int lp) {
         for (int j = 0; j < cores.size(); j++) {
             if ((cores.get(j).mask.longValue() & (1L << lp)) > 0 && cores.get(j).group == g) {
                 return j;
@@ -217,22 +216,22 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     private List<CentralProcessor.LogicalProcessor> getLogicalProcessorInformationEx() {
         // Collect a list of logical processors on each physical core and
         // package. These will be 64-bit bitmasks.
-        SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[] procInfo = Kernel32Util
+        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[] procInfo = Kernel32Util
                 .getLogicalProcessorInformationEx(WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationAll);
-        List<GROUP_AFFINITY[]> packages = new ArrayList<>();
-        List<NUMA_NODE_RELATIONSHIP> numaNodes = new ArrayList<>();
-        List<GROUP_AFFINITY> cores = new ArrayList<>();
+        List<WinNT.GROUP_AFFINITY[]> packages = new ArrayList<>();
+        List<WinNT.NUMA_NODE_RELATIONSHIP> numaNodes = new ArrayList<>();
+        List<WinNT.GROUP_AFFINITY> cores = new ArrayList<>();
 
         for (int i = 0; i < procInfo.length; i++) {
             switch (procInfo[i].relationship) {
-                case LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage:
-                    packages.add(((PROCESSOR_RELATIONSHIP) procInfo[i]).groupMask);
+                case WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage:
+                    packages.add(((WinNT.PROCESSOR_RELATIONSHIP) procInfo[i]).groupMask);
                     break;
-                case LOGICAL_PROCESSOR_RELATIONSHIP.RelationNumaNode:
-                    numaNodes.add((NUMA_NODE_RELATIONSHIP) procInfo[i]);
+                case WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationNumaNode:
+                    numaNodes.add((WinNT.NUMA_NODE_RELATIONSHIP) procInfo[i]);
                     break;
-                case LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore:
-                    cores.add(((PROCESSOR_RELATIONSHIP) procInfo[i]).groupMask[0]);
+                case WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore:
+                    cores.add(((WinNT.PROCESSOR_RELATIONSHIP) procInfo[i]).groupMask[0]);
                     break;
                 default:
                     // Ignore Group and Cache info
@@ -248,7 +247,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         // Iterate Logical Processors and use bitmasks to match packages, cores,
         // and NUMA nodes
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
-        for (GROUP_AFFINITY coreMask : cores) {
+        for (WinNT.GROUP_AFFINITY coreMask : cores) {
             int group = coreMask.group;
             long mask = coreMask.mask.longValue();
             // Iterate mask for logical processor numbers
@@ -282,7 +281,7 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         List<Long> packageMaskList = new ArrayList<>();
         List<Long> coreMaskList = new ArrayList<>();
         WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[] processors = Kernel32Util.getLogicalProcessorInformation();
-        for (SYSTEM_LOGICAL_PROCESSOR_INFORMATION proc : processors) {
+        for (WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION proc : processors) {
             if (proc.relationship == WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage) {
                 packageMaskList.add(proc.processorMask.longValue());
             } else if (proc.relationship == WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore) {

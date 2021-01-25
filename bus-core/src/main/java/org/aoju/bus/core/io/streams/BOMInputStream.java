@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -50,7 +50,7 @@ import java.io.PushbackInputStream;
  * </code>
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class BOMInputStream extends InputStream {
@@ -70,10 +70,20 @@ public class BOMInputStream extends InputStream {
         this.defaultCharset = defaultCharset;
     }
 
+    /**
+     * 获取默认编码
+     *
+     * @return 默认编码
+     */
     public String getDefaultCharset() {
         return defaultCharset;
     }
 
+    /**
+     * 获取BOM头中的编码
+     *
+     * @return 编码
+     */
     public String getCharset() {
         if (!isInited) {
             try {

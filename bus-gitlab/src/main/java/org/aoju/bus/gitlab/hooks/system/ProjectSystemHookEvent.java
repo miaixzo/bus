@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
 import org.aoju.bus.gitlab.models.Visibility;
@@ -32,27 +32,28 @@ import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
+public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String NEW_TEAM_MEMBER_EVENT = "user_add_to_team";
-    public static final String TEAM_MEMBER_REMOVED_EVENT = "user_remove_from_team";
+    public static final String PROJECT_CREATE_EVENT = "project_create";
+    public static final String PROJECT_DESTROY_EVENT = "project_destroy";
+    public static final String PROJECT_RENAME_EVENT = "project_rename";
+    public static final String PROJECT_TRANSFER_EVENT = "project_transfer";
+    public static final String PROJECT_UPDATE_EVENT = "project_update";
 
     private Date createdAt;
     private Date updatedAt;
     private String eventName;
-    private String projectAccess;
-    private String projectName;
-    private String projectPath;
+    private String name;
+    private String ownerEmail;
+    private String ownerName;
+    private String path;
     private Integer projectId;
-    private String projectPathWithNamespace;
-    private String userEmail;
-    private String userName;
-    private String userUsername;
-    private Integer userId;
+    private String pathWithNamespace;
     private Visibility projectVisibility;
+    private String oldPathWithNamespace;
 
     public Date getCreatedAt() {
         return createdAt;
@@ -78,76 +79,52 @@ public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
         this.eventName = eventName;
     }
 
-    public String getProjectAccess() {
-        return projectAccess;
+    public String getName() {
+        return this.name;
     }
 
-    public void setProjectAccess(String projectAccess) {
-        this.projectAccess = projectAccess;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getOwnerEmail() {
+        return this.ownerEmail;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
     }
 
-    public String getProjectPath() {
-        return projectPath;
+    public String getOwnerName() {
+        return this.ownerName;
     }
 
-    public void setProjectPath(String projectPath) {
-        this.projectPath = projectPath;
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getPath() {
+        return this.path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Integer getProjectId() {
-        return projectId;
+        return this.projectId;
     }
 
     public void setProjectId(Integer projectId) {
         this.projectId = projectId;
     }
 
-    public String getProjectPathWithNamespace() {
-        return projectPathWithNamespace;
+    public String getPathWithNamespace() {
+        return pathWithNamespace;
     }
 
-    public void setProjectPathWithNamespace(String projectPathWithNamespace) {
-        this.projectPathWithNamespace = projectPathWithNamespace;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserUsername() {
-        return userUsername;
-    }
-
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setPathWithNamespace(String pathWithNamespace) {
+        this.pathWithNamespace = pathWithNamespace;
     }
 
     public Visibility getProjectVisibility() {
@@ -156,6 +133,14 @@ public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
 
     public void setProjectVisibility(Visibility projectVisibility) {
         this.projectVisibility = projectVisibility;
+    }
+
+    public String getOldPathWithNamespace() {
+        return oldPathWithNamespace;
+    }
+
+    public void setOldPathWithNamespace(String oldPathWithNamespace) {
+        this.oldPathWithNamespace = oldPathWithNamespace;
     }
 
     @Override

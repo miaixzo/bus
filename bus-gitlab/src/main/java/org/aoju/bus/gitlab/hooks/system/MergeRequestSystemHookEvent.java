@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,51 +23,37 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix.solaris.hardware;
+package org.aoju.bus.gitlab.hooks.system;
 
-import org.aoju.bus.core.annotation.Immutable;
-import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
+import org.aoju.bus.gitlab.hooks.web.MergeRequestEvent;
 
 /**
- * Baseboard data obtained by smbios
- *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-@Immutable
-final class SolarisBaseboard extends AbstractBaseboard {
+public class MergeRequestSystemHookEvent extends MergeRequestEvent implements SystemHookEvent {
 
-    private final String manufacturer;
-    private final String model;
-    private final String serialNumber;
-    private final String version;
+    public static final String X_GITLAB_EVENT = "System Hook";
+    public static final String MERGE_REQUEST_EVENT = "merge_request";
 
-    SolarisBaseboard(String manufacturer, String model, String serialNumber, String version) {
-        this.manufacturer = manufacturer;
-        this.model = model;
-        this.serialNumber = serialNumber;
-        this.version = version;
+    private String eventType;
+
+    @Override
+    public String getObjectKind() {
+        return (MERGE_REQUEST_EVENT);
     }
 
     @Override
-    public String getManufacturer() {
-        return this.manufacturer;
+    public String getEventName() {
+        return (MERGE_REQUEST_EVENT);
     }
 
-    @Override
-    public String getModel() {
-        return this.model;
+    public String getEventType() {
+        return eventType;
     }
 
-    @Override
-    public String getSerialNumber() {
-        return this.serialNumber;
+    public void setEvent_type(String eventType) {
+        this.eventType = eventType;
     }
-
-    @Override
-    public String getVersion() {
-        return this.version;
-    }
-
 }

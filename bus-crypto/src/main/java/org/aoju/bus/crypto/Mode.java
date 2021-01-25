@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -31,7 +31,7 @@ package org.aoju.bus.crypto;
  * 在加密时对明文分组的模式,它代表了不同的分组方式
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public enum Mode {

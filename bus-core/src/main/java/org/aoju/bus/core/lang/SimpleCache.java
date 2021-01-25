@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,6 +29,9 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -37,7 +40,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {
@@ -52,6 +55,11 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * 乐观读写锁
      */
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    /**
+     * 写的时候每个key一把锁，降低锁的粒度
+     */
+    protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
 
     /**
      * 构造，默认使用{@link WeakHashMap}实现缓存自动清理
@@ -95,22 +103,24 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      */
     public V get(K key, Func.Func0<V> supplier) {
         V v = get(key);
-
         if (null == v && null != supplier) {
-            lock.writeLock().lock();
+            // 每个key单独获取一把锁，降低锁的粒度提高并发能力
+            final Lock keyLock = keyLockMap.computeIfAbsent(key, k -> new ReentrantLock());
+            keyLock.lock();
             try {
-                v = cache.get(key);
                 // 双重检查，防止在竞争锁的过程中已经有其它线程写入
+                v = cache.get(key);
                 if (null == v) {
                     try {
                         v = supplier.call();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                    cache.put(key, v);
+                    put(key, v);
                 }
             } finally {
-                lock.writeLock().unlock();
+                keyLock.unlock();
+                keyLockMap.remove(key);
             }
         }
 

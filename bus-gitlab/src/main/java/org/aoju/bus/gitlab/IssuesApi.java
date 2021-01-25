@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,7 +40,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API Issue calls.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @see <a href="https://docs.gitlab.com/ce/api/issues.html">Issues API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issue_links.html">Issue Links API at GitLab</a>
  * @see <a href="https://docs.gitlab.com/ce/api/issues_statistics.html">Issues Statistics API at GitLab</a>

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -28,10 +28,7 @@ package org.aoju.bus.image.metric.internal.pdu;
 import org.aoju.bus.image.*;
 import org.aoju.bus.image.galaxy.data.Attributes;
 import org.aoju.bus.image.galaxy.io.ImageOutputStream;
-import org.aoju.bus.image.metric.Association;
-import org.aoju.bus.image.metric.Connection;
-import org.aoju.bus.image.metric.DataWriter;
-import org.aoju.bus.image.metric.PDVOutputStream;
+import org.aoju.bus.image.metric.*;
 import org.aoju.bus.logger.Logger;
 
 import java.io.EOFException;
@@ -41,7 +38,7 @@ import java.io.OutputStream;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class PDUEncoder extends PDVOutputStream {
@@ -403,8 +400,12 @@ public class PDUEncoder extends PDVOutputStream {
                     pos += 6;
                 }
                 pdvcmd = Builder.DATA;
-
-                Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));
+                if (dataWriter instanceof DataWriterAdapter) {
+                    Logger.debug("{} << {} Dataset:\n{}", as, dimse.toString(cmd),
+                            ((DataWriterAdapter) dataWriter).getDataset());
+                } else {
+                    Logger.debug("{} << {} Dataset sending...", as, dimse.toString(cmd));
+                }
 
                 dataWriter.writeTo(this, tsuid);
 

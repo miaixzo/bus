@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,104 +23,43 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.hooks.web.EventProject;
-
-import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
+public class RepositoryChange {
 
-    public static final String REPOSITORY_UPDATE_EVENT = "repository_update";
+    private String after;
+    private String before;
+    private String ref;
 
-    private String eventName;
-    private Integer userId;
-    private String userName;
-    private String userEmail;
-    private String userAvatar;
-
-    private Integer projectId;
-    private EventProject project;
-
-    private List<RepositoryChange> changes;
-    private List<String> refs;
-
-    public String getEventName() {
-        return (eventName);
+    public String getAfter() {
+        return this.after;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setAfter(String after) {
+        this.after = after;
     }
 
-    public Integer getUserId() {
-        return this.userId;
+    public String getBefore() {
+        return this.before;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setBefore(String before) {
+        this.before = before;
     }
 
-    public String getUserName() {
-        return this.userName;
+    public String getRef() {
+        return this.ref;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserAvatar() {
-        return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
-    }
-
-    public Integer getProjectId() {
-        return this.projectId;
-    }
-
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
-    public EventProject getProject() {
-        return project;
-    }
-
-    public void setProject(EventProject project) {
-        this.project = project;
-    }
-
-    public List<RepositoryChange> getChanges() {
-        return changes;
-    }
-
-    public void setChanges(List<RepositoryChange> changes) {
-        this.changes = changes;
-    }
-
-    public List<String> getRefs() {
-        return refs;
-    }
-
-    public void setRefs(List<String> refs) {
-        this.refs = refs;
+    public void setRef(String ref) {
+        this.ref = ref;
     }
 
     @Override

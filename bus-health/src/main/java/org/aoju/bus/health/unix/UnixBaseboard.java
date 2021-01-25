@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,22 +23,51 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.health.unix;
 
-import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.hooks.web.AbstractPushEvent;
+import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.health.builtin.hardware.AbstractBaseboard;
 
 /**
+ * Baseboard data obtained by smbios
+ *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class PushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
+@Immutable
+public final class UnixBaseboard extends AbstractBaseboard {
 
-    public static final String PUSH_EVENT = "push";
+    private final String manufacturer;
+    private final String model;
+    private final String serialNumber;
+    private final String version;
+
+    public UnixBaseboard(String manufacturer, String model, String serialNumber, String version) {
+        this.manufacturer = manufacturer;
+        this.model = model;
+        this.serialNumber = serialNumber;
+        this.version = version;
+    }
 
     @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
+    public String getManufacturer() {
+        return this.manufacturer;
     }
+
+    @Override
+    public String getModel() {
+        return this.model;
+    }
+
+    @Override
+    public String getSerialNumber() {
+        return this.serialNumber;
+    }
+
+    @Override
+    public String getVersion() {
+        return this.version;
+    }
+
 }

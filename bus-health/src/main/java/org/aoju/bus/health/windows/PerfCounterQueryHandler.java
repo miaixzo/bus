@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -25,7 +25,6 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows;
 
-import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import org.aoju.bus.core.annotation.NotThreadSafe;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.windows.PerfDataKit.PerfCounter;
@@ -38,16 +37,16 @@ import java.util.Map;
  * 处理性能计数器查询
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @NotThreadSafe
 public final class PerfCounterQueryHandler implements AutoCloseable {
 
     // Map of counter handles
-    private Map<PerfCounter, HANDLEByReference> counterHandleMap = new HashMap<>();
+    private final Map<PerfCounter, WinNT.HANDLEByReference> counterHandleMap = new HashMap<>();
     // The query handle
-    private HANDLEByReference queryHandle = null;
+    private WinNT.HANDLEByReference queryHandle = null;
 
     /**
      * 开始监视一个性能数据计数器，该计数器附加到一个键为指定字符串的查询
@@ -58,7 +57,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
     public boolean addCounterToQuery(PerfCounter counter) {
         // 打开一个新查询或获取一个现有查询的句柄
         if (this.queryHandle == null) {
-            this.queryHandle = new HANDLEByReference();
+            this.queryHandle = new WinNT.HANDLEByReference();
             if (!PerfDataKit.openQuery(this.queryHandle)) {
                 Logger.warn("Failed to open a query for PDH object: {}", counter.getObject());
                 this.queryHandle = null;
@@ -66,7 +65,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
             }
         }
         // 获取新的计数器拦截
-        HANDLEByReference p = new HANDLEByReference();
+        WinNT.HANDLEByReference p = new WinNT.HANDLEByReference();
         if (!PerfDataKit.addCounter(this.queryHandle, counter.getCounterPath(), p)) {
             Logger.warn("Failed to add counter for PDH object: {}", counter.getObject());
             return false;
@@ -83,7 +82,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public boolean removeCounterFromQuery(PerfCounter counter) {
         boolean success = false;
-        HANDLEByReference href = counterHandleMap.remove(counter);
+        WinNT.HANDLEByReference href = counterHandleMap.remove(counter);
         // 如果句柄不存在，则为空
         if (href != null) {
             success = PerfDataKit.removeCounter(href);
@@ -100,7 +99,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public void removeAllCounters() {
         // 删除所有计数器手柄
-        for (HANDLEByReference href : counterHandleMap.values()) {
+        for (WinNT.HANDLEByReference href : counterHandleMap.values()) {
             PerfDataKit.removeCounter(href);
         }
         counterHandleMap.clear();

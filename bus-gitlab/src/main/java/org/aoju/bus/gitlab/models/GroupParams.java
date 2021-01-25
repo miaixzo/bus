@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -34,7 +34,7 @@ import org.aoju.bus.gitlab.GroupApi;
  * the parameters for the call to the GitLab API.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class GroupParams {
@@ -57,6 +57,7 @@ public class GroupParams {
     private Integer extraSharedRunnersMinutesLimit;
     private Boolean membershipLock;
     private Integer fileTemplateProjectId;
+    private DefaultBranchProtectionLevel defaultBranchProtection;
 
     /**
      * The parent group ID for creating nested group. For create only.
@@ -166,6 +167,11 @@ public class GroupParams {
         return (this);
     }
 
+    public GroupParams withDefaultBranchProtection(DefaultBranchProtectionLevel defaultBranchProtection) {
+        this.defaultBranchProtection = defaultBranchProtection;
+        return (this);
+    }
+
     /**
      * Get the form params for a group create oir update call.
      *
@@ -190,7 +196,9 @@ public class GroupParams {
                 .withParam("lfs_enabled", lfsEnabled)
                 .withParam("request_access_enabled", requestAccessEnabled)
                 .withParam("shared_runners_minutes_limit", sharedRunnersMinutesLimit)
-                .withParam("extra_shared_runners_minutes_limit", extraSharedRunnersMinutesLimit);
+                .withParam("extra_shared_runners_minutes_limit", extraSharedRunnersMinutesLimit)
+                .withParam("default_branch_protection", defaultBranchProtection);
+
 
         if (isCreate) {
             form.withParam("parent_id", parentId);
@@ -223,4 +231,21 @@ public class GroupParams {
             return (name().toLowerCase());
         }
     }
+
+    public enum DefaultBranchProtectionLevel {
+        NOT_PROTECTED(0),
+        PARTIALLY_PROTECTED(1),
+        FULLY_PROTECTED(2);
+
+        private final int value;
+
+        DefaultBranchProtectionLevel(int value) {
+            this.value = value;
+        }
+
+        public String toString() {
+            return Integer.toString(value);
+        }
+    }
+
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,37 +23,34 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
-import org.aoju.bus.gitlab.models.Visibility;
 
 import java.util.Date;
 
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
+public class GroupSystemHookEvent extends AbstractSystemHookEvent {
 
-    public static final String PROJECT_CREATE_EVENT = "project_create";
-    public static final String PROJECT_DESTROY_EVENT = "project_destroy";
-    public static final String PROJECT_RENAME_EVENT = "project_rename";
-    public static final String PROJECT_TRANSFER_EVENT = "project_transfer";
-    public static final String PROJECT_UPDATE_EVENT = "project_update";
+    public static final String GROUP_CREATE_EVENT = "group_create";
+    public static final String GROUP_DESTROY_EVENT = "group_destroy";
+    public static final String GROUP_RENAME_EVENT = "group_rename";
 
     private Date createdAt;
     private Date updatedAt;
     private String eventName;
     private String name;
+    private String path;
+    private String fullPath;
+    private Integer groupId;
     private String ownerEmail;
     private String ownerName;
-    private String path;
-    private Integer projectId;
-    private String pathWithNamespace;
-    private Visibility projectVisibility;
-    private String oldPathWithNamespace;
+    private String oldPath;
+    private String oldFullPath;
 
     public Date getCreatedAt() {
         return createdAt;
@@ -80,15 +77,39 @@ public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getFullPath() {
+        return fullPath;
+    }
+
+    public void setFullPath(String fullPath) {
+        this.fullPath = fullPath;
+    }
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
     public String getOwnerEmail() {
-        return this.ownerEmail;
+        return ownerEmail;
     }
 
     public void setOwnerEmail(String ownerEmail) {
@@ -96,51 +117,27 @@ public class ProjectSystemHookEvent extends AbstractSystemHookEvent {
     }
 
     public String getOwnerName() {
-        return this.ownerName;
+        return ownerName;
     }
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
     }
 
-    public String getPath() {
-        return this.path;
+    public String getOldPath() {
+        return oldPath;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setOldPath(String oldPath) {
+        this.oldPath = oldPath;
     }
 
-    public Integer getProjectId() {
-        return this.projectId;
+    public String getOldFullPath() {
+        return oldFullPath;
     }
 
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getPathWithNamespace() {
-        return pathWithNamespace;
-    }
-
-    public void setPathWithNamespace(String pathWithNamespace) {
-        this.pathWithNamespace = pathWithNamespace;
-    }
-
-    public Visibility getProjectVisibility() {
-        return projectVisibility;
-    }
-
-    public void setProjectVisibility(Visibility projectVisibility) {
-        this.projectVisibility = projectVisibility;
-    }
-
-    public String getOldPathWithNamespace() {
-        return oldPathWithNamespace;
-    }
-
-    public void setOldPathWithNamespace(String oldPathWithNamespace) {
-        this.oldPathWithNamespace = oldPathWithNamespace;
+    public void setOldFullPath(String oldFullPath) {
+        this.oldFullPath = oldFullPath;
     }
 
     @Override

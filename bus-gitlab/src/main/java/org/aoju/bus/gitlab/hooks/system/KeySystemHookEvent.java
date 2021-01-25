@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,43 +23,75 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.hooks.system;
 
 import org.aoju.bus.gitlab.JacksonJson;
 
+import java.util.Date;
+
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class RepositoryChange {
+public class KeySystemHookEvent extends AbstractSystemHookEvent {
 
-    private String after;
-    private String before;
-    private String ref;
+    public static final String KEY_CREATE_EVENT = "key_create";
+    public static final String KEY_DESTROY_EVENT = "key_destroy";
 
-    public String getAfter() {
-        return this.after;
+    private Date createdAt;
+    private Date updatedAt;
+    private String eventName;
+    private String username;
+    private String key;
+    private Integer id;
+
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setAfter(String after) {
-        this.after = after;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getBefore() {
-        return this.before;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setBefore(String before) {
-        this.before = before;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public String getRef() {
-        return this.ref;
+    public String getEventName() {
+        return this.eventName;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override

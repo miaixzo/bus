@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -26,12 +26,14 @@
 package org.aoju.bus.health.windows;
 
 import com.sun.jna.platform.win32.BaseTSD.DWORD_PTR;
-import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Pdh;
 import com.sun.jna.platform.win32.Pdh.PDH_RAW_COUNTER;
+import com.sun.jna.platform.win32.PdhMsg;
+import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinDef.DWORDByReference;
 import com.sun.jna.platform.win32.WinDef.LONGLONGByReference;
-import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
+import com.sun.jna.platform.win32.WinError;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Builder;
@@ -43,7 +45,7 @@ import org.aoju.bus.logger.Logger;
  * 帮助类来集中PDH计数器设置的样板部分，并允许应用程序轻松地添加、查询和删除计数器
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -105,7 +107,7 @@ public final class PerfDataKit {
      * @param q 指向查询的指针
      * @return 如果成功, 则为true
      */
-    public static boolean openQuery(HANDLEByReference q) {
+    public static boolean openQuery(WinNT.HANDLEByReference q) {
         int ret = PDH.PdhOpenQuery(null, PZERO, q);
         if (ret != WinError.ERROR_SUCCESS) {
             if (Logger.get().isError()) {
@@ -122,7 +124,7 @@ public final class PerfDataKit {
      * @param q 指向查询的指针
      * @return 如果成功, 则为true
      */
-    public static boolean closeQuery(HANDLEByReference q) {
+    public static boolean closeQuery(WinNT.HANDLEByReference q) {
         return WinError.ERROR_SUCCESS == PDH.PdhCloseQuery(q.getValue());
     }
 
@@ -171,7 +173,7 @@ public final class PerfDataKit {
      * @param p 指向计数器的指针
      * @return 如果成功, 则为true
      */
-    public static boolean removeCounter(HANDLEByReference p) {
+    public static boolean removeCounter(WinNT.HANDLEByReference p) {
         return WinError.ERROR_SUCCESS == PDH.PdhRemoveCounter(p.getValue());
     }
 

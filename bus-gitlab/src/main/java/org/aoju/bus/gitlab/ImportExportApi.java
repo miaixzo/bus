@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -45,7 +45,7 @@ import java.util.Map;
  * This class provides an entry point to all the GitLab API project import/export calls.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @see <a href="https://docs.gitlab.com/ee/api/project_import_export.html">Project import/export API at GitLab</a>
  * @since JDK 1.8+
  */
@@ -264,7 +264,9 @@ public class ImportExportApi extends AbstractApi {
                     .withParam("printing_merge_request_link_enabled", overrideParams.getPrintingMergeRequestLinkEnabled())
                     .withParam("resolve_outdated_diff_discussions", overrideParams.getResolveOutdatedDiffDiscussions())
                     .withParam("initialize_with_readme", overrideParams.getInitializeWithReadme())
-                    .withParam("packages_enabled", overrideParams.getPackagesEnabled());
+                    .withParam("packages_enabled", overrideParams.getPackagesEnabled())
+                    .withParam("build_git_strategy", overrideParams.getBuildGitStrategy())
+                    .withParam("build_coverage_regex", overrideParams.getBuildCoverageRegex());
         }
 
         Response response = upload(Response.Status.CREATED, "file", exportFile, null, formData, url);

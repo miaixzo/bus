@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the GitLab API Environments API calls.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @see <a href="https://docs.gitlab.com/ce/api/environments.html">Environments API</a>
  * @since JDK 1.8+
  */
@@ -154,6 +154,22 @@ public class EnvironmentsApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("name", name).withParam("external_url", externalUrl);
         Response response = putWithFormData(Response.Status.OK, formData, formData,
                 "projects", getProjectIdOrPath(projectIdOrPath), "environments", environmentId);
+        return (response.readEntity(Environment.class));
+    }
+
+    /**
+     * Stop an environment.
+     *
+     * <pre><code>GitLab Endpoint: POST /projects/:id/environments/:environment_id/stop</code></pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param environmentId   the ID of the environment to stop
+     * @return the stopped Environment instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Environment stopEnvironment(Object projectIdOrPath, Integer environmentId) throws GitLabApiException {
+        Response response = post(Response.Status.OK, (GitLabApiForm) null,
+                "projects", getProjectIdOrPath(projectIdOrPath), "environments", environmentId, "stop");
         return (response.readEntity(Environment.class));
     }
 

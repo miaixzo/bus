@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,25 +23,34 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.map.multi;
+package org.aoju.bus.core.map;
 
-import java.util.*;
+import org.aoju.bus.core.toolkit.CollKit;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 值作为集合Set(LinkedHashSet)的Map实现,通过调用putValue可以在相同key时加入多个值,多个值用集合表示
+ * 值作为集合的Map实现,通过调用putValue可以在相同key时加入多个值,多个值用集合表示
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
+public abstract class CollectionValueMap<K, V> extends MapWrapper<K, Collection<V>> {
+
+    /**
+     * 默认集合初始大小
+     */
+    protected static final int DEFAULT_COLLCTION_INITIAL_CAPACITY = 3;
 
     /**
      * 构造
      */
-    public SetValueMap() {
+    public CollectionValueMap() {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
@@ -50,17 +59,17 @@ public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
      *
      * @param initialCapacity 初始大小
      */
-    public SetValueMap(int initialCapacity) {
+    public CollectionValueMap(int initialCapacity) {
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
     /**
      * 构造
      *
-     * @param m Map
+     * @param map Map
      */
-    public SetValueMap(Map<? extends K, ? extends Collection<V>> m) {
-        this(DEFAULT_LOAD_FACTOR, m);
+    public CollectionValueMap(Map<? extends K, ? extends Collection<V>> map) {
+        this(DEFAULT_LOAD_FACTOR, map);
     }
 
     /**
@@ -69,7 +78,7 @@ public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
      * @param loadFactor 加载因子
      * @param m          Map
      */
-    public SetValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m) {
+    public CollectionValueMap(float loadFactor, Map<? extends K, ? extends Collection<V>> m) {
         this(m.size(), loadFactor);
         this.putAll(m);
     }
@@ -80,18 +89,44 @@ public class SetValueMap<K, V> extends CollectionValueMap<K, V> {
      * @param initialCapacity 初始大小
      * @param loadFactor      加载因子
      */
-    public SetValueMap(int initialCapacity, float loadFactor) {
+    public CollectionValueMap(int initialCapacity, float loadFactor) {
         super(new HashMap<>(initialCapacity, loadFactor));
     }
 
-    @Override
-    public Set<V> get(Object key) {
-        return (Set<V>) super.get(key);
+    /**
+     * 放入Value
+     * 如果键对应值列表有值,加入,否则创建一个新列表后加入
+     *
+     * @param key   键
+     * @param value 值
+     */
+    public void putValue(K key, V value) {
+        Collection<V> collection = this.get(key);
+        if (null == collection) {
+            collection = createCollction();
+            this.put(key, collection);
+        }
+        collection.add(value);
     }
 
-    @Override
-    protected Collection<V> createCollction() {
-        return new LinkedHashSet<>(DEFAULT_COLLCTION_INITIAL_CAPACITY);
+    /**
+     * 获取值
+     *
+     * @param key   键
+     * @param index 第几个值的索引,越界返回null
+     * @return 值或null
+     */
+    public V get(K key, int index) {
+        final Collection<V> collection = get(key);
+        return CollKit.get(collection, index);
     }
+
+    /**
+     * 创建集合
+     * 此方法用于创建在putValue后追加值所在的集合,子类实现此方法创建不同类型的集合
+     *
+     * @return {@link Collection}
+     */
+    protected abstract Collection<V> createCollction();
 
 }

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -40,7 +40,7 @@ import java.util.List;
  * 在调用append方法后会缓存于内存,只有超过容量后才会一次性写入文件,因此内存中随时有剩余未写入文件的内容,在最后必须调用flush方法将剩余内容刷入文件
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class FileAppender implements Serializable {

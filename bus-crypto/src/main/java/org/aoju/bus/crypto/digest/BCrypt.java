@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,7 +37,7 @@ import java.security.SecureRandom;
  * 它的口令必须是8至56个字符,并将在内部被转化为448位的密钥
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class BCrypt {
@@ -564,7 +564,15 @@ public class BCrypt {
     public boolean checkpw(String plaintext, String hashed) {
         byte hashed_bytes[];
         byte try_bytes[];
-        String try_pw = hashpw(plaintext, hashed);
+
+        String try_pw;
+        try {
+            try_pw = hashpw(plaintext, hashed);
+        } catch (Exception ignore) {
+            // 生成密文时错误直接返回false issue#1377@Github
+            return false;
+        }
+
         hashed_bytes = hashed.getBytes(Charset.UTF_8);
         try_bytes = try_pw.getBytes(Charset.UTF_8);
         if (hashed_bytes.length != try_bytes.length) {

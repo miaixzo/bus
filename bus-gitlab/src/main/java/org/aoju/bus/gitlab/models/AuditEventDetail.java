@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org Greg Messner and other contributors.         *
+ * Copyright (c) 2015-2021 aoju.org Greg Messner and other contributors.         *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,124 +23,120 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.gitlab.hooks;
+package org.aoju.bus.gitlab.models;
 
 import org.aoju.bus.gitlab.JacksonJson;
 
-import java.util.Date;
-
 /**
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
-public class GroupMemberSystemHookEvent extends AbstractSystemHookEvent {
+public class AuditEventDetail {
 
-    public static final String NEW_GROUP_MEMBER_EVENT = "user_add_to_group";
-    public static final String GROUP_MEMBER_REMOVED_EVENT = "user_remove_from_group";
+    private String change;
+    private String from;
+    private String to;
+    private String add;
+    private String customMessage;
+    private String authorName;
+    private Object targetId;
+    private String targetType;
+    private String targetDetails;
+    private String ipAddress;
+    private String entityPath;
 
-    private Date createdAt;
-    private Date updatedAt;
-    private String eventName;
-    private String groupAccess;
-    private String groupName;
-    private String groupPath;
-    private Integer groupId;
-    private String userEmail;
-    private String userName;
-    private String userUsername;
-    private Integer userId;
-
-    public Date getCreatedAt() {
-        return createdAt;
+    public String getCustomMessage() {
+        return customMessage;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCustomMessage(String customMessage) {
+        this.customMessage = customMessage;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
-    public String getEventName() {
-        return this.eventName;
+    public Object getTargetId() {
+        return targetId;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setTargetId(Object targetId) {
+        this.targetId = targetId;
     }
 
-    public String getGroupAccess() {
-        return groupAccess;
+    public String getTargetType() {
+        return targetType;
     }
 
-    public void setGroupAccess(String groupAccess) {
-        this.groupAccess = groupAccess;
+    public void setTargetType(String targetType) {
+        this.targetType = targetType;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getTargetDetails() {
+        return targetDetails;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setTargetDetails(String targetDetails) {
+        this.targetDetails = targetDetails;
     }
 
-    public String getGroupPath() {
-        return groupPath;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public void setGroupPath(String groupPath) {
-        this.groupPath = groupPath;
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
-    public Integer getGroupId() {
-        return groupId;
+    public String getEntityPath() {
+        return entityPath;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public void setEntityPath(String entityPath) {
+        this.entityPath = entityPath;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getChange() {
+        return change;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setChange(String change) {
+        this.change = change;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getFrom() {
+        return from;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setFrom(String from) {
+        this.from = from;
     }
 
-    public String getUserUsername() {
-        return userUsername;
+    public String getTo() {
+        return to;
     }
 
-    public void setUserUsername(String userUsername) {
-        this.userUsername = userUsername;
+    public void setTo(String to) {
+        this.to = to;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public String getAdd() {
+        return add;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setAdd(String add) {
+        this.add = add;
     }
 
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

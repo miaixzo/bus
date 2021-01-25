@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -65,20 +65,18 @@ import java.util.stream.Collectors;
  * in the /Volumes directory.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class MacFileSystem extends AbstractFileSystem {
 
-    // Regexp matcher for /dev/disk1 etc.
-    private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
-
     public static final String OSHI_MAC_FS_PATH_EXCLUDES = "health.os.mac.filesystem.path.excludes";
     public static final String OSHI_MAC_FS_PATH_INCLUDES = "health.os.mac.filesystem.path.includes";
     public static final String OSHI_MAC_FS_VOLUME_EXCLUDES = "health.os.mac.filesystem.volume.excludes";
     public static final String OSHI_MAC_FS_VOLUME_INCLUDES = "health.os.mac.filesystem.volume.includes";
-
+    // Regexp matcher for /dev/disk1 etc.
+    private static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d");
     private static final List<PathMatcher> FS_PATH_EXCLUDES = Builder
             .loadAndParseFileSystemConfig(OSHI_MAC_FS_PATH_EXCLUDES);
     private static final List<PathMatcher> FS_PATH_INCLUDES = Builder

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.health.unix.openbsd.hardware;
+package org.aoju.bus.health.unix;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
@@ -41,11 +41,11 @@ import java.util.List;
  * OpenBsdNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe
-public final class OpenBsdNetworkIF extends AbstractNetworkIF {
+public final class UnixNetworkIF extends AbstractNetworkIF {
 
     private long bytesRecv;
     private long bytesSent;
@@ -57,7 +57,7 @@ public final class OpenBsdNetworkIF extends AbstractNetworkIF {
     private long collisions;
     private long timeStamp;
 
-    public OpenBsdNetworkIF(NetworkInterface netint) throws InstantiationException {
+    public UnixNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
         updateAttributes();
     }
@@ -72,7 +72,7 @@ public final class OpenBsdNetworkIF extends AbstractNetworkIF {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
             try {
-                ifList.add(new OpenBsdNetworkIF(ni));
+                ifList.add(new UnixNetworkIF(ni));
             } catch (InstantiationException e) {
                 Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
             }

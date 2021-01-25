@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -32,7 +32,6 @@ import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
 import com.sun.jna.platform.win32.SetupApi.SP_DEVICE_INTERFACE_DATA;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.W32APITypeMapper;
 import org.aoju.bus.core.annotation.ThreadSafe;
@@ -54,7 +53,7 @@ import java.util.List;
  * A Power Source
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -150,7 +149,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         // Ported from:
         // https://docs.microsoft.com/en-us/windows/win32/power/enumerating-battery-devices
 
-        HANDLE hdev = SetupApi.INSTANCE.SetupDiGetClassDevs(GUID_DEVCLASS_BATTERY, null, null,
+        WinNT.HANDLE hdev = SetupApi.INSTANCE.SetupDiGetClassDevs(GUID_DEVCLASS_BATTERY, null, null,
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (WinBase.INVALID_HANDLE_VALUE != hdev) {
             boolean batteryFound = false;
@@ -175,7 +174,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                             // Enumerated a battery. Ask it for information.
                             String devicePath = CHAR_WIDTH > 1 ? pdidd.getWideString(Integer.BYTES)
                                     : pdidd.getString(Integer.BYTES);
-                            HANDLE hBattery = Kernel32.INSTANCE.CreateFile(devicePath, // pdidd->DevicePath
+                            WinNT.HANDLE hBattery = Kernel32.INSTANCE.CreateFile(devicePath, // pdidd->DevicePath
                                     WinNT.GENERIC_READ | WinNT.GENERIC_WRITE,
                                     WinNT.FILE_SHARE_READ | WinNT.FILE_SHARE_WRITE, null, WinNT.OPEN_EXISTING,
                                     WinNT.FILE_ATTRIBUTE_NORMAL, null);
@@ -316,7 +315,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                 psChemistry, psManufactureDate, psManufacturer, psSerialNumber, psTemperature);
     }
 
-    private static String batteryQueryString(HANDLE hBattery, int tag, int infoLevel) {
+    private static String batteryQueryString(WinNT.HANDLE hBattery, int tag, int infoLevel) {
         BATTERY_QUERY_INFORMATION bqi = new PowrProf.BATTERY_QUERY_INFORMATION();
         bqi.BatteryTag = tag;
         bqi.InformationLevel = infoLevel;

@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -29,12 +29,12 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.Advapi32Util.InfoKey;
 import com.sun.jna.platform.win32.Win32Exception;
-import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinReg;
 import com.sun.jna.platform.win32.WinReg.HKEY;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.builtin.software.OSSession;
+import org.aoju.bus.health.windows.WinNT;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import java.util.List;
  * Utility to read session data from HKEY_USERS
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe

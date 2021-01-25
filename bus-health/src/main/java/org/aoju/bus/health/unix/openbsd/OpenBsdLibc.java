@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -37,7 +37,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * if/when its code is incorporated into the JNA project.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public interface OpenBsdLibc extends CLibrary {
@@ -124,27 +124,6 @@ public interface OpenBsdLibc extends CLibrary {
     class Timeval extends Structure {
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
-    }
-
-    @FieldOrder({"cpu_ticks"})
-    class CpTime extends Structure {
-        public long[] cpu_ticks = new long[CPUSTATES];
-
-        public CpTime(Pointer p) {
-            super(p);
-            read();
-        }
-    }
-
-    @FieldOrder({"cpu_ticks"})
-    class CpTimeNew extends Structure {
-        public long[] cpu_ticks = new long[CPUSTATES + 1];
-
-        public CpTimeNew(Pointer p) {
-            super(p);
-            read();
-        }
-
     }
 
 }

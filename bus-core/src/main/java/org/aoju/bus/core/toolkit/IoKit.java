@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -27,6 +27,7 @@ package org.aoju.bus.core.toolkit;
 
 import org.aoju.bus.core.convert.Convert;
 import org.aoju.bus.core.io.*;
+import org.aoju.bus.core.io.streams.BOMInputStream;
 import org.aoju.bus.core.io.streams.ByteArrayOutputStream;
 import org.aoju.bus.core.io.streams.NullOutputStream;
 import org.aoju.bus.core.lang.Assert;
@@ -56,7 +57,7 @@ import java.util.zip.Checksum;
  * 原因是流可能被多次读写,读写关闭后容易造成问题
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 public class IoKit {
@@ -413,6 +414,16 @@ public class IoKit {
         }
 
         return new BufferedReader(reader);
+    }
+
+    /**
+     * 从{@link BOMInputStream}中获取Reader
+     *
+     * @param in {@link BOMInputStream}
+     * @return {@link BufferedReader}
+     */
+    public static BufferedReader getReader(BOMInputStream in) {
+        return getReader(in, in.getCharset());
     }
 
     /**

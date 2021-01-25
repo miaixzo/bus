@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2020 aoju.org OSHI and other contributors.                 *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -50,7 +50,7 @@ import java.util.List;
  * after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @version 6.1.8
+ * @version 6.1.9
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -120,11 +120,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             return 64;
         }
         return Builder.parseIntOrDefault(Executor.getFirstAnswer("isainfo -b"), 32);
-    }
-
-    @Override
-    protected boolean queryElevated() {
-        return System.getenv("SUDO_COMMAND") != null;
     }
 
     @Override
