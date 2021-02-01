@@ -59,6 +59,9 @@ public interface SolarisLibc extends CLibrary {
      */
     SolarisUtmpx getutxent();
 
+    /**
+     * Connection info
+     */
     @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_session", "ut_syslen", "ut_host"})
     class SolarisUtmpx extends Structure {
         public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name

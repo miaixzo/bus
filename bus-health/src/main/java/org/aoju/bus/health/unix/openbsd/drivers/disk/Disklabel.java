@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Utility class parsing partition information from disklabel command
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+
@@ -46,8 +48,12 @@ public final class Disklabel {
     private Disklabel() {
     }
 
-    /*-
-     * └─ $ ▶ doas disklabel sd1
+    /**
+     * Gets disk and partition information
+     *
+     * @param diskName The disk to fetch partition information from
+     * @return A quartet containing the disk's name/label, DUID, size, and a list of
+     * partitions
      */
     public static Quartet<String, String, Long, List<HWPartition>> getDiskParams(String diskName) {
         // disklabel (requires root) supports 15 configurable partitions, `a' through

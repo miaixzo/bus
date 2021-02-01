@@ -57,7 +57,7 @@ public final class PagingFile {
                 WIN32_PERF_RAW_DATA_PERF_OS_PAGING_FILE);
     }
 
-    /*
+    /**
      * For swap file usage
      */
     public enum PagingPercentProperty implements PdhCounterProperty {

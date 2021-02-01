@@ -42,6 +42,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * OpenBSD Central Processor implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

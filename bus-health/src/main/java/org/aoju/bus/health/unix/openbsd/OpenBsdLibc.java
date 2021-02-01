@@ -88,6 +88,9 @@ public interface OpenBsdLibc extends CLibrary {
 
     int sysctl(int[] name, int namelen, Pointer oldp, IntByReference oldlenp, Pointer newp, int newlen);
 
+    /**
+     * OpenBSD Cache stats for memory
+     */
     @FieldOrder({"numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
             "numwrites", "numreads", "cachehits", "busymapped", "dmapages", "highpages", "delwribufs", "kvaslots",
             "kvaslots_avail", "highflips", "highflops", "dmaflips"})

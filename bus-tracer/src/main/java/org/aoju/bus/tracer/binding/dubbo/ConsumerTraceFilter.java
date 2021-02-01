@@ -25,6 +25,34 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.binding.dubbo;
 
-public class ConsumerTraceFilter {
+import org.apache.dubbo.common.constants.CommonConstants;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.Result;
+
+/**
+ * @author Kimi Liu
+ * @version 6.1.9
+ * @since JDK 1.8+
+ */
+@Activate(group = CommonConstants.CONSUMER)
+public class ConsumerTraceFilter extends BaseDubboFilter {
+
+    @Override
+    public Result invoke(Invoker<?> invoker, Invocation invocation) {
+        return invoker.invoke(invocation);
+    }
+
+
+    @Override
+    public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
+
+    }
+
+    @Override
+    public void onError(Throwable t, Invoker<?> invoker, Invocation invocation) {
+
+    }
 
 }

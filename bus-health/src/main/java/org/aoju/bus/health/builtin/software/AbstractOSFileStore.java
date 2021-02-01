@@ -28,6 +28,8 @@ package org.aoju.bus.health.builtin.software;
 import org.aoju.bus.core.annotation.ThreadSafe;
 
 /**
+ * Common implementations for OSFileStore
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

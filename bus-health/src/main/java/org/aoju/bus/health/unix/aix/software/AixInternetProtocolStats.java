@@ -35,6 +35,8 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProtocol;
 import java.util.function.Supplier;
 
 /**
+ * Internet Protocol Stats implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

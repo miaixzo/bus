@@ -27,41 +27,48 @@ package org.aoju.bus.socket;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.IoKit;
-import org.aoju.bus.logger.Logger;
+import org.aoju.bus.core.toolkit.ThreadKit;
 import org.aoju.bus.socket.handler.ChannelSocketHandler;
-import org.aoju.bus.socket.handler.CompletionAcceptHandler;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 /**
- * 基于NIO的Socket服务端实现
+ * NIO客户端
  *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+
  */
-public class QuickNioServer implements Closeable {
-
-    private static final CompletionAcceptHandler ACCEPT_HANDLER = new CompletionAcceptHandler();
+public class NioQuickClient implements Closeable {
 
     private Selector selector;
-    private ServerSocketChannel serverSocketChannel;
+    private SocketChannel channel;
     private ChannelSocketHandler handler;
 
     /**
      * 构造
      *
+     * @param host 服务器地址
      * @param port 端口
      */
-    public QuickNioServer(int port) {
-        init(new InetSocketAddress(port));
+    public NioQuickClient(String host, int port) {
+        init(new InetSocketAddress(host, port));
+    }
+
+    /**
+     * 构造
+     *
+     * @param address 服务器地址
+     */
+    public NioQuickClient(InetSocketAddress address) {
+        init(address);
     }
 
     /**
@@ -70,66 +77,48 @@ public class QuickNioServer implements Closeable {
      * @param address 地址和端口
      * @return this
      */
-    public QuickNioServer init(InetSocketAddress address) {
+    public NioQuickClient init(InetSocketAddress address) {
         try {
-            // 打开服务器套接字通道
-            this.serverSocketChannel = ServerSocketChannel.open();
-            // 设置为非阻塞状态
-            this.serverSocketChannel.configureBlocking(false);
-            // 绑定端口号
-            this.serverSocketChannel.bind(address);
+            //创建一个SocketChannel对象，配置成非阻塞模式
+            this.channel = SocketChannel.open();
+            channel.configureBlocking(false);
+            channel.connect(address);
 
-            // 打开一个选择器
+            //创建一个选择器，并把SocketChannel交给selector对象
             this.selector = Selector.open();
-            // 服务器套接字注册到Selector中 并指定Selector监控连接事件
-            this.serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+            channel.register(this.selector, SelectionKey.OP_READ);
+
+            // 等待建立连接
+            while (false == channel.finishConnect()) {
+            }
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
-
-        Logger.debug("Server listen on: [{}]...", address);
-
         return this;
     }
 
     /**
      * 设置NIO数据处理器
      *
-     * @param handler {@link  ChannelSocketHandler}
+     * @param handler {@link ChannelSocketHandler}
      * @return this
      */
-    public QuickNioServer setChannelHandler(ChannelSocketHandler handler) {
+    public NioQuickClient setChannelHandler(ChannelSocketHandler handler) {
         this.handler = handler;
         return this;
-    }
-
-    /**
-     * 获取{@link Selector}
-     *
-     * @return {@link Selector}
-     */
-    public Selector getSelector() {
-        return this.selector;
-    }
-
-    /**
-     * 启动NIO服务端，即开始监听
-     *
-     * @see #listen()
-     */
-    public void start() {
-        listen();
     }
 
     /**
      * 开始监听
      */
     public void listen() {
-        try {
-            doListen();
-        } catch (IOException e) {
-            throw new InstrumentException(e);
-        }
+        ThreadKit.execute(() -> {
+            try {
+                doListen();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -154,27 +143,46 @@ public class QuickNioServer implements Closeable {
      * @param key SelectionKey
      */
     private void handle(SelectionKey key) {
-        // 有客户端接入此服务端
-        if (key.isAcceptable()) {
-            ACCEPT_HANDLER.completed((ServerSocketChannel) key.channel(), this);
-        }
-
         // 读事件就绪
         if (key.isReadable()) {
             final SocketChannel socketChannel = (SocketChannel) key.channel();
             try {
                 handler.handle(socketChannel);
             } catch (Exception e) {
-                IoKit.close(socketChannel);
-                Logger.error(e);
+                throw new InstrumentException(e);
             }
         }
+    }
+
+    /**
+     * 实现写逻辑<br>
+     * 当收到写出准备就绪的信号后，回调此方法，用户可向客户端发送消息
+     *
+     * @param datas 发送的数据
+     * @return this
+     */
+    public NioQuickClient write(ByteBuffer... datas) {
+        try {
+            this.channel.write(datas);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+        return this;
+    }
+
+    /**
+     * 获取SocketChannel
+     *
+     * @return SocketChannel
+     */
+    public SocketChannel getChannel() {
+        return this.channel;
     }
 
     @Override
     public void close() {
         IoKit.close(this.selector);
-        IoKit.close(this.serverSocketChannel);
+        IoKit.close(this.channel);
     }
 
 }

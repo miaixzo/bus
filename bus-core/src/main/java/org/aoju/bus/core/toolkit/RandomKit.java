@@ -88,6 +88,10 @@ public class RandomKit {
      * @return {@link SecureRandom}
      */
     public static SecureRandom getSecureRandom(byte[] seed) {
+        if (null == seed) {
+            return new SecureRandom();
+        }
+
         SecureRandom random;
         try {
             random = SecureRandom.getInstance(Algorithm.SHAPRNG);

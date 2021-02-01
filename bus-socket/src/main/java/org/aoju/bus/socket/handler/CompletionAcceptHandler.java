@@ -27,7 +27,7 @@ package org.aoju.bus.socket.handler;
 
 import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.logger.Logger;
-import org.aoju.bus.socket.QuickNioServer;
+import org.aoju.bus.socket.NioQuickServer;
 
 import java.io.IOException;
 import java.nio.channels.*;
@@ -39,7 +39,7 @@ import java.nio.channels.*;
  * @version 6.1.9
  * @since JDK 1.8+
  */
-public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, QuickNioServer> {
+public class CompletionAcceptHandler implements CompletionHandler<ServerSocketChannel, NioQuickServer> {
 
     /**
      * 注册通道的指定操作到指定Selector上
@@ -62,7 +62,7 @@ public class CompletionAcceptHandler implements CompletionHandler<ServerSocketCh
     }
 
     @Override
-    public void completed(ServerSocketChannel serverSocketChannel, QuickNioServer quickNioServer) {
+    public void completed(ServerSocketChannel serverSocketChannel, NioQuickServer nioQuickServer) {
         SocketChannel socketChannel;
         try {
             // 获取连接到此服务器的客户端通道
@@ -73,11 +73,11 @@ public class CompletionAcceptHandler implements CompletionHandler<ServerSocketCh
         }
 
         // SocketChannel通道的可读事件注册到Selector中
-        registerChannel(quickNioServer.getSelector(), socketChannel, SelectionKey.OP_READ);
+        registerChannel(nioQuickServer.getSelector(), socketChannel, SelectionKey.OP_READ);
     }
 
     @Override
-    public void failed(Throwable exc, QuickNioServer quickNioServer) {
+    public void failed(Throwable exc, NioQuickServer nioQuickServer) {
         Logger.error(exc);
     }
 

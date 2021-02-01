@@ -44,6 +44,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
+ * OSProcess implemenation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

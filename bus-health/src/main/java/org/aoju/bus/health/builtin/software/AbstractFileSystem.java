@@ -34,6 +34,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Common methods for filesystem implementations
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

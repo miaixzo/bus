@@ -56,7 +56,7 @@ public final class SystemInformation {
         return PerfCounterQuery.queryValues(ContextSwitchProperty.class, SYSTEM, WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
     }
 
-    /*
+    /**
      * Context switch property
      */
     public enum ContextSwitchProperty implements PdhCounterProperty {

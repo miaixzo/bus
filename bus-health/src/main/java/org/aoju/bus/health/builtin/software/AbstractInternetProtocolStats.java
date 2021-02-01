@@ -30,6 +30,8 @@ import org.aoju.bus.health.unix.NetStat;
 import java.util.List;
 
 /**
+ * Common implementations for IP Stats
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

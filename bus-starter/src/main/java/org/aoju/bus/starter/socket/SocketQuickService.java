@@ -1,7 +1,7 @@
 package org.aoju.bus.starter.socket;
 
+import org.aoju.bus.socket.AioQuickServer;
 import org.aoju.bus.socket.Protocol;
-import org.aoju.bus.socket.QuickAioServer;
 import org.aoju.bus.socket.process.MessageProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,23 +19,23 @@ public class SocketQuickService {
     private MessageProcessor messageProcessor;
     @Autowired
     private Protocol protocol;
-    private QuickAioServer quickAioServer;
+    private AioQuickServer aioQuickServer;
 
     public SocketQuickService(SocketProperties properties) {
         this.properties = properties;
     }
 
     public void start() {
-        this.quickAioServer = new QuickAioServer(this.properties.getPort(), protocol, messageProcessor);
+        this.aioQuickServer = new AioQuickServer(this.properties.getPort(), protocol, messageProcessor);
         try {
-            quickAioServer.start();
+            aioQuickServer.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void stop() {
-        quickAioServer.shutdown();
+        aioQuickServer.shutdown();
     }
 
 }

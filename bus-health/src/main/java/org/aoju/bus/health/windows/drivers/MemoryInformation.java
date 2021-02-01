@@ -56,11 +56,11 @@ public final class MemoryInformation {
         return PerfCounterQuery.queryValues(PageSwapProperty.class, MEMORY, WIN32_PERF_RAW_DATA_PERF_OS_MEMORY);
     }
 
-    /*
+    /**
      * For pages in/out
      */
     public enum PageSwapProperty implements PdhCounterProperty {
-        PAGESINPUTPERSEC(null, "Pages Input/sec"), //
+        PAGESINPUTPERSEC(null, "Pages Input/sec"),
         PAGESOUTPUTPERSEC(null, "Pages Output/sec");
 
         private final String instance;

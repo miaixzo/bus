@@ -2586,6 +2586,26 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 获取某小时的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfHour(Calendar calendar) {
+        return truncate(calendar, Fields.Type.HOUR_OF_DAY);
+    }
+
+    /**
+     * 获取某小时的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfHour(Calendar calendar) {
+        return ceiling(calendar, Fields.Type.HOUR_OF_DAY);
+    }
+
+    /**
      * 获取某天的开始时间
      *
      * @param date 日期
@@ -2603,6 +2623,26 @@ public class Almanac extends Converter {
      */
     public static DateTime endOfDay(Date date) {
         return new DateTime(endOfDay(toCalendar(date)));
+    }
+
+    /**
+     * 获取某小时的开始时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime beginOfHour(Date date) {
+        return new DateTime(beginOfHour(toCalendar(date)));
+    }
+
+    /**
+     * 获取某小时的结束时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime endOfHour(Date date) {
+        return new DateTime(endOfHour(toCalendar(date)));
     }
 
     /**

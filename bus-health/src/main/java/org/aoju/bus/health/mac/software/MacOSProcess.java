@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * OSProcess implemenation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

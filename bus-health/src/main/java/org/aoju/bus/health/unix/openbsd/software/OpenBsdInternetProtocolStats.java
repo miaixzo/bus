@@ -30,6 +30,8 @@ import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
 import org.aoju.bus.health.unix.NetStat;
 
 /**
+ * Internet Protocol Stats implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

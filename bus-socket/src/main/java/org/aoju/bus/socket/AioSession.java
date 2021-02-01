@@ -87,6 +87,13 @@ public abstract class AioSession {
      */
     public abstract void close(boolean immediate);
 
+    public abstract void awaitRead();
+
+    /**
+     * 继续触发读行为，该方法仅可在异步处理模式下可使用，否则会触发不可预知的异常
+     */
+    public abstract void signalRead();
+
     /**
      * 获取当前Session的唯一标识
      *

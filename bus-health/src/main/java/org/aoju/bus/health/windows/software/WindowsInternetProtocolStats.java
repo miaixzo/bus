@@ -39,6 +39,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Internet Protocol Stats implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

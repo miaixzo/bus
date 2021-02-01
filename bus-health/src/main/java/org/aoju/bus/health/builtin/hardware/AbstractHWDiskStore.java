@@ -30,6 +30,8 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.health.Formats;
 
 /**
+ * Common methods for platform HWDiskStore classes
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

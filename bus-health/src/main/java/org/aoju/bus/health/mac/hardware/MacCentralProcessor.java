@@ -34,20 +34,16 @@ import com.sun.jna.platform.mac.SystemB.VMMeter;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.core.lang.tuple.Pair;
+import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
-import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
-import org.aoju.bus.health.builtin.hardware.CentralProcessor;
 import org.aoju.bus.health.mac.SysctlKit;
 import org.aoju.bus.logger.Logger;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -60,60 +56,76 @@ import java.util.function.Supplier;
 @ThreadSafe
 final class MacCentralProcessor extends AbstractCentralProcessor {
 
-    private final Supplier<Pair<String, Long>> vendorFreq = Memoize.memoize(MacCentralProcessor::platformExpert);
+    private static final int ROSETTA_CPUTYPE = 0x00000007;
+    private static final int ROSETTA_CPUFAMILY = 0x573b5eec;
+    private static final int M1_CPUTYPE = 0x0100000C;
+    private static final int M1_CPUFAMILY = 0x1b588bb3;
+    private final Supplier<String> vendor = Memoize.memoize(MacCentralProcessor::platformExpert);
+    private final Supplier<Triple<Integer, Integer, Long>> typeFamilyFreq = Memoize.memoize(MacCentralProcessor::queryArmCpu);
 
-    private static Pair<String, Long> platformExpert() {
+    private static String platformExpert() {
         String manufacturer = null;
-        long freq = 0;
         IOKit.IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
         if (platformExpert != null) {
+            // Get manufacturer from IOPlatformExpertDevice
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
             if (data != null) {
                 manufacturer = Native.toString(data, StandardCharsets.UTF_8);
             }
-            data = platformExpert.getByteArrayProperty("clock-frequency");
-            if (data != null && data.length <= 8) {
-                freq = Builder.byteArrayToLong(data, data.length) * 1000L;
-            }
             platformExpert.release();
         }
-        return Pair.of(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer, freq);
+        return StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer;
     }
 
-    @Override
-    protected List<CentralProcessor.LogicalProcessor> initProcessorCounts() {
-        int logicalProcessorCount = SysctlKit.sysctl("hw.logicalcpu", 1);
-        int physicalProcessorCount = SysctlKit.sysctl("hw.physicalcpu", 1);
-        int physicalPackageCount = SysctlKit.sysctl("hw.packages", 1);
-        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>(logicalProcessorCount);
-        for (int i = 0; i < logicalProcessorCount; i++) {
-            logProcs.add(new CentralProcessor.LogicalProcessor(i, i * physicalProcessorCount / logicalProcessorCount,
-                    i * physicalPackageCount / logicalProcessorCount));
+    private static Triple<Integer, Integer, Long> queryArmCpu() {
+        int type = ROSETTA_CPUTYPE;
+        int family = ROSETTA_CPUFAMILY;
+        long freq = 0L;
+        // All CPUs are an IOPlatformDevice
+        // Iterate each CPU and save frequency and "compatible" strings
+        IOKit.IOIterator iter = IOKitUtil.getMatchingServices("IOPlatformDevice");
+        if (iter != null) {
+            Set<String> compatibleStrSet = new HashSet<>();
+            IOKit.IORegistryEntry cpu = iter.next();
+            while (cpu != null) {
+                if (cpu.getName().startsWith("cpu")) {
+                    // Accurate CPU vendor frequency in kHz as little-endian byte array
+                    byte[] data = cpu.getByteArrayProperty("clock-frequency");
+                    if (data != null) {
+                        long cpuFreq = Builder.byteArrayToLong(data, data.length, false) * 1000L;
+                        if (cpuFreq > freq) {
+                            freq = cpuFreq;
+                        }
+                    }
+                    // Compatible key is null-delimited C string array in byte array
+                    data = cpu.getByteArrayProperty("compatible");
+                    if (data != null) {
+                        for (String s : new String(data, StandardCharsets.UTF_8).split("\0")) {
+                            if (!s.isEmpty()) {
+                                compatibleStrSet.add(s);
+                            }
+                        }
+                    }
+                }
+                cpu.release();
+                cpu = iter.next();
+            }
+            iter.release();
+            // Match strings in "compatible" field with expectation for M1 chip
+            // Hard coded for M1 for now. Need to update and make more configurable for M1X,
+            // M2, etc.
+            List<String> m1compatible = Arrays.asList("ARM,v8", "apple,firestorm", "apple,icestorm");
+            compatibleStrSet.retainAll(m1compatible);
+            if (compatibleStrSet.size() == m1compatible.size()) {
+                type = M1_CPUTYPE;
+                family = M1_CPUFAMILY;
+            }
         }
-        return logProcs;
+        return Triple.of(type, family, freq);
     }
 
     @Override
-    public long[] querySystemCpuLoadTicks() {
-        long[] ticks = new long[CentralProcessor.TickType.values().length];
-        int machPort = SystemB.INSTANCE.mach_host_self();
-        HostCpuLoadInfo cpuLoadInfo = new HostCpuLoadInfo();
-        if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo,
-                new IntByReference(cpuLoadInfo.size()))) {
-            Logger.error("Failed to get System CPU ticks. Error code: {} ", Native.getLastError());
-            return ticks;
-        }
-
-        ticks[CentralProcessor.TickType.USER.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER];
-        ticks[CentralProcessor.TickType.NICE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE];
-        ticks[CentralProcessor.TickType.SYSTEM.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM];
-        ticks[CentralProcessor.TickType.IDLE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE];
-        // Leave IOWait and IRQ values as 0
-        return ticks;
-    }
-
-    @Override
-    protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
+    protected ProcessorIdentifier queryProcessorId() {
         String cpuName = SysctlKit.sysctl("machdep.cpu.brand_string", "");
         String cpuVendor;
         String cpuStepping;
@@ -123,20 +135,25 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         long cpuFreq = 0L;
         if (cpuName.startsWith("Apple")) {
             // Processing an M1 chip
-            cpuVendor = vendorFreq.get().getLeft();
+            cpuVendor = vendor.get();
             cpuStepping = "0"; // No correlation yet
             cpuModel = "0"; // No correlation yet
-            // M1 should have hw.cputype 0x0100000C (ARM64) and hw.cpufamily for an ARM SoC.
-            // However, under Rosetta 2, low level cpuid calls in the translated environment
-            // report hw.cputype for x86 (0x00000007) and hw.cpufamily for an Intel Westmere
-            // chip (0x573b5eec), family 6, model 44, stepping 0.
-            // Encode this emulated architecture in the properties
-            int family = SysctlKit.sysctl("hw.cpufamily", 0);
             int type = SysctlKit.sysctl("hw.cputype", 0);
-            cpuFamily = String.format("0x%08x", family); // M1 is 0x1b588bb3
+            int family = SysctlKit.sysctl("hw.cpufamily", 0);
+            // M1 should have hw.cputype 0x0100000C (ARM64) and hw.cpufamily 0x1b588bb3 for
+            // an ARM SoC. However, under Rosetta 2, low level cpuid calls in the translated
+            // environment report hw.cputype for x86 (0x00000007) and hw.cpufamily for an
+            // Intel Westmere chip (0x573b5eec), family 6, model 44, stepping 0.
+            // Test if under Rosetta and generate correct chip
+            if (family == ROSETTA_CPUFAMILY) {
+                type = typeFamilyFreq.get().getLeft();
+                family = typeFamilyFreq.get().getMiddle();
+            }
+            cpuFreq = typeFamilyFreq.get().getRight();
+            // Translate to output
+            cpuFamily = String.format("0x%08x", family);
             // Processor ID is an intel concept but CPU type + family conveys same info
             processorID = String.format("%08x%08x", type, family);
-            cpuFreq = vendorFreq.get().getRight();
         } else {
             // Processing an Intel chip
             cpuVendor = SysctlKit.sysctl("machdep.cpu.vendor", "");
@@ -151,9 +168,8 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             processorIdBits |= (SysctlKit.sysctl("machdep.cpu.feature_bits", 0L) & 0xffffffff) << 32;
             processorID = String.format("%016x", processorIdBits);
         }
-        long cpuFrequency = SysctlKit.sysctl("hw.cpufrequency", 0L);
-        if (cpuFrequency > cpuFreq) {
-            cpuFreq = cpuFrequency;
+        if (cpuFreq == 0) {
+            cpuFreq = SysctlKit.sysctl("hw.cpufrequency", 0L);
         }
         boolean cpu64bit = SysctlKit.sysctl("hw.cpu64bit_capable", 0) != 0;
 
@@ -162,8 +178,35 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    public long queryMaxFreq() {
-        return SysctlKit.sysctl("hw.cpufrequency_max", -1L);
+    protected List<LogicalProcessor> initProcessorCounts() {
+        int logicalProcessorCount = SysctlKit.sysctl("hw.logicalcpu", 1);
+        int physicalProcessorCount = SysctlKit.sysctl("hw.physicalcpu", 1);
+        int physicalPackageCount = SysctlKit.sysctl("hw.packages", 1);
+        List<LogicalProcessor> logProcs = new ArrayList<>(logicalProcessorCount);
+        for (int i = 0; i < logicalProcessorCount; i++) {
+            logProcs.add(new LogicalProcessor(i, i * physicalProcessorCount / logicalProcessorCount,
+                    i * physicalPackageCount / logicalProcessorCount));
+        }
+        return logProcs;
+    }
+
+    @Override
+    public long[] querySystemCpuLoadTicks() {
+        long[] ticks = new long[TickType.values().length];
+        int machPort = SystemB.INSTANCE.mach_host_self();
+        HostCpuLoadInfo cpuLoadInfo = new HostCpuLoadInfo();
+        if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo,
+                new IntByReference(cpuLoadInfo.size()))) {
+            Logger.error("Failed to get System CPU ticks. Error code: {} ", Native.getLastError());
+            return ticks;
+        }
+
+        ticks[TickType.USER.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_USER];
+        ticks[TickType.NICE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_NICE];
+        ticks[TickType.SYSTEM.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_SYSTEM];
+        ticks[TickType.IDLE.getIndex()] = cpuLoadInfo.cpu_ticks[SystemB.CPU_STATE_IDLE];
+        // Leave IOWait and IRQ values as 0
+        return ticks;
     }
 
     @Override
@@ -180,30 +223,10 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    public long[][] queryProcessorCpuLoadTicks() {
-        long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
-
-        int machPort = SystemB.INSTANCE.mach_host_self();
-
-        IntByReference procCount = new IntByReference();
-        PointerByReference procCpuLoadInfo = new PointerByReference();
-        IntByReference procInfoCount = new IntByReference();
-        if (0 != SystemB.INSTANCE.host_processor_info(machPort, SystemB.PROCESSOR_CPU_LOAD_INFO, procCount,
-                procCpuLoadInfo, procInfoCount)) {
-            Logger.error("Failed to update CPU Load. Error code: {}", Native.getLastError());
-            return ticks;
-        }
-
-        int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
-        for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
-            int offset = cpu * SystemB.CPU_STATE_MAX;
-            ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
-            ticks[cpu][CentralProcessor.TickType.NICE.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
-            ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = Formats
-                    .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_SYSTEM]);
-            ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = Formats.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
-        }
-        return ticks;
+    public long[] queryCurrentFreq() {
+        long[] freq = new long[1];
+        freq[0] = SysctlKit.sysctl("hw.cpufrequency", getProcessorIdentifier().getVendorFreq());
+        return freq;
     }
 
     @Override
@@ -231,10 +254,35 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     @Override
-    public long[] queryCurrentFreq() {
-        long[] freq = new long[1];
-        freq[0] = SysctlKit.sysctl("hw.cpufrequency", -1L);
-        return freq;
+    public long queryMaxFreq() {
+        return SysctlKit.sysctl("hw.cpufrequency_max", getProcessorIdentifier().getVendorFreq());
+    }
+
+    @Override
+    public long[][] queryProcessorCpuLoadTicks() {
+        long[][] ticks = new long[getLogicalProcessorCount()][TickType.values().length];
+
+        int machPort = SystemB.INSTANCE.mach_host_self();
+
+        IntByReference procCount = new IntByReference();
+        PointerByReference procCpuLoadInfo = new PointerByReference();
+        IntByReference procInfoCount = new IntByReference();
+        if (0 != SystemB.INSTANCE.host_processor_info(machPort, SystemB.PROCESSOR_CPU_LOAD_INFO, procCount,
+                procCpuLoadInfo, procInfoCount)) {
+            Logger.error("Failed to update CPU Load. Error code: {}", Native.getLastError());
+            return ticks;
+        }
+
+        int[] cpuTicks = procCpuLoadInfo.getValue().getIntArray(0, procInfoCount.getValue());
+        for (int cpu = 0; cpu < procCount.getValue(); cpu++) {
+            int offset = cpu * SystemB.CPU_STATE_MAX;
+            ticks[cpu][TickType.USER.getIndex()] = Builder.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_USER]);
+            ticks[cpu][TickType.NICE.getIndex()] = Builder.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_NICE]);
+            ticks[cpu][TickType.SYSTEM.getIndex()] = Builder
+                    .getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_SYSTEM]);
+            ticks[cpu][TickType.IDLE.getIndex()] = Builder.getUnsignedInt(cpuTicks[offset + SystemB.CPU_STATE_IDLE]);
+        }
+        return ticks;
     }
 
 }

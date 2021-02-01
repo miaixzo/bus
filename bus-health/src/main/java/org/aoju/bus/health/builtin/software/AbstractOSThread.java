@@ -31,6 +31,8 @@ import org.aoju.bus.health.Memoize;
 import java.util.function.Supplier;
 
 /**
+ * Common methods for OSThread implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

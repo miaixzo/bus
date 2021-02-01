@@ -55,7 +55,9 @@ public class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpA
                 monitor.afterRead(aioSession, result);
             }
             // 触发读回调
-            aioSession.readCompleted(result == -1);
+            //触发读回调
+            aioSession.flipRead(result == -1);
+            aioSession.signalRead();
         } catch (Exception e) {
             failed(e, aioSession);
         }

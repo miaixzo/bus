@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * OSThread implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

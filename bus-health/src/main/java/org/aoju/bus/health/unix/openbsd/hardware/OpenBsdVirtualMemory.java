@@ -35,7 +35,7 @@ import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
 import java.util.function.Supplier;
 
 /**
- * Memory obtained by swapinfo
+ * Memory info on OpenBSD
  *
  * @author Kimi Liu
  * @version 6.1.9

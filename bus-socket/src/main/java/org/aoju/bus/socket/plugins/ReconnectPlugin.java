@@ -25,8 +25,8 @@
  ********************************************************************************/
 package org.aoju.bus.socket.plugins;
 
+import org.aoju.bus.socket.AioQuickClient;
 import org.aoju.bus.socket.AioSession;
-import org.aoju.bus.socket.QuickAioClient;
 import org.aoju.bus.socket.SocketStatus;
 
 import java.nio.channels.AsynchronousChannelGroup;
@@ -41,14 +41,14 @@ import java.nio.channels.AsynchronousChannelGroup;
 public class ReconnectPlugin<T> extends AbstractPlugin<T> {
 
     private final AsynchronousChannelGroup asynchronousChannelGroup;
-    private final QuickAioClient<T> client;
+    private final AioQuickClient<T> client;
     private boolean shutdown = false;
 
-    public ReconnectPlugin(QuickAioClient<T> client) {
+    public ReconnectPlugin(AioQuickClient<T> client) {
         this(client, null);
     }
 
-    public ReconnectPlugin(QuickAioClient<T> client, AsynchronousChannelGroup asynchronousChannelGroup) {
+    public ReconnectPlugin(AioQuickClient<T> client, AsynchronousChannelGroup asynchronousChannelGroup) {
         this.client = client;
         this.asynchronousChannelGroup = asynchronousChannelGroup;
     }

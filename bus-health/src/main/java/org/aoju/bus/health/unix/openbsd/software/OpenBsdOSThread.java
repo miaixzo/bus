@@ -34,6 +34,8 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 import java.util.List;
 
 /**
+ * OSThread implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+

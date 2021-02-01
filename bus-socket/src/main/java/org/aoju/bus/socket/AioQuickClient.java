@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  * @author Kimi Liu
  * @version V1.0.0
  */
-public class QuickAioClient<T> {
+public class AioQuickClient<T> {
 
     /**
      * 客户端服务配置。
@@ -83,6 +83,8 @@ public class QuickAioClient<T> {
      */
     private int connectTimeout;
 
+    private final BufferFactory.VirtualBufferFactory readBufferFactory = bufferPage -> bufferPage.allocate(config.getReadBufferSize());
+
     /**
      * 当前构造方法设置了启动Aio客户端的必要参数，基本实现开箱即用。
      *
@@ -91,7 +93,7 @@ public class QuickAioClient<T> {
      * @param protocol         协议编解码
      * @param messageProcessor 消息处理器
      */
-    public QuickAioClient(String host, int port, Protocol<T> protocol, MessageProcessor<T> messageProcessor) {
+    public AioQuickClient(String host, int port, Protocol<T> protocol, MessageProcessor<T> messageProcessor) {
         config.setHost(host);
         config.setPort(port);
         config.setProtocol(protocol);
@@ -142,7 +144,7 @@ public class QuickAioClient<T> {
             }
             // 连接成功则构造AIOSession对象
             session = new TcpAioSession<>(connectedChannel, config, new CompletionReadHandler<>(), new CompletionWriteHandler<>(), bufferPool.allocatePageBuffer());
-            session.initSession();
+            session.initSession(readBufferFactory.newBuffer(bufferPool.allocatePageBuffer()));
             return session;
         } catch (Exception e) {
             if (socketChannel != null) {
@@ -156,11 +158,11 @@ public class QuickAioClient<T> {
     /**
      * 启动客户端
      * 本方法会构建线程数为2的{@code asynchronousChannelGroup}，
-     * 并通过调用{@link QuickAioClient#start(AsynchronousChannelGroup)}启动服务
+     * 并通过调用{@link AioQuickClient#start(AsynchronousChannelGroup)}启动服务
      *
      * @return 建立连接后的会话对象
      * @throws IOException IOException
-     * @see QuickAioClient#start(AsynchronousChannelGroup)
+     * @see AioQuickClient#start(AsynchronousChannelGroup)
      */
     public final AioSession start() throws IOException {
         this.asynchronousChannelGroup = AsynchronousChannelGroup.withFixedThreadPool(2, Thread::new);
@@ -170,7 +172,7 @@ public class QuickAioClient<T> {
     /**
      * 停止客户端服务.
      * <p>
-     * 调用该方法会触发AioSession的close方法，并且如果当前客户端若是通过执行{@link QuickAioClient#start()}方法构建的，同时会触发asynchronousChannelGroup的shutdown动作。
+     * 调用该方法会触发AioSession的close方法，并且如果当前客户端若是通过执行{@link AioQuickClient#start()}方法构建的，同时会触发asynchronousChannelGroup的shutdown动作。
      * </p>
      */
     public final void shutdown() {
@@ -209,7 +211,7 @@ public class QuickAioClient<T> {
      * @param size 单位：byte
      * @return 当前AIOQuickClient对象
      */
-    public final QuickAioClient<T> setReadBufferSize(int size) {
+    public final AioQuickClient<T> setReadBufferSize(int size) {
         this.config.setReadBufferSize(size);
         return this;
     }
@@ -228,7 +230,7 @@ public class QuickAioClient<T> {
      * @param <V>          泛型
      * @return 当前客户端实例
      */
-    public final <V> QuickAioClient<T> setOption(SocketOption<V> socketOption, V value) {
+    public final <V> AioQuickClient<T> setOption(SocketOption<V> socketOption, V value) {
         config.setOption(socketOption, value);
         return this;
     }
@@ -240,7 +242,7 @@ public class QuickAioClient<T> {
      * @param port  若传0则由系统指定
      * @return 当前客户端实例
      */
-    public final QuickAioClient<T> bindLocal(String local, int port) {
+    public final AioQuickClient<T> bindLocal(String local, int port) {
         localAddress = local == null ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
         return this;
     }
@@ -254,7 +256,7 @@ public class QuickAioClient<T> {
      * @param bufferPool 内存池对象
      * @return 当前客户端实例
      */
-    public final QuickAioClient<T> setPageBufferPool(ByteBuffer bufferPool) {
+    public final AioQuickClient<T> setPageBufferPool(ByteBuffer bufferPool) {
         this.bufferPool = bufferPool;
         this.config.setBufferFactory(BufferFactory.DISABLED_BUFFER_FACTORY);
         return this;
@@ -269,7 +271,7 @@ public class QuickAioClient<T> {
      * @param bufferFactory 内存池工厂
      * @return 当前客户端实例
      */
-    public final QuickAioClient<T> setBufferFactory(BufferFactory bufferFactory) {
+    public final AioQuickClient<T> setBufferFactory(BufferFactory bufferFactory) {
         this.config.setBufferFactory(bufferFactory);
         this.bufferPool = null;
         return this;
@@ -282,7 +284,7 @@ public class QuickAioClient<T> {
      * @param bufferCapacity 内存块数量上限
      * @return 当前客户端实例
      */
-    public final QuickAioClient<T> setWriteBuffer(int bufferSize, int bufferCapacity) {
+    public final AioQuickClient<T> setWriteBuffer(int bufferSize, int bufferCapacity) {
         config.setWriteBufferSize(bufferSize);
         config.setWriteBufferCapacity(bufferCapacity);
         return this;
@@ -294,7 +296,7 @@ public class QuickAioClient<T> {
      * @param timeout 超时时间
      * @return 当前客户端实例
      */
-    public final QuickAioClient<T> connectTimeout(int timeout) {
+    public final AioQuickClient<T> connectTimeout(int timeout) {
         this.connectTimeout = timeout;
         return this;
     }

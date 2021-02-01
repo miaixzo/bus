@@ -64,21 +64,31 @@ public interface CoreGraphics extends Library {
 
     boolean CGRectMakeWithDictionaryRepresentation(CFDictionaryRef dict, CGRect rect);
 
+    /**
+     * A point with X and Y coordinates
+     */
     @FieldOrder({"x", "y"})
     class CGPoint extends Structure {
         public double x;
         public double y;
     }
 
+    /**
+     * A size with width and height
+     */
     @FieldOrder({"width", "height"})
     class CGSize extends Structure {
         public double width;
         public double height;
     }
 
+    /**
+     * A rectangle with origin and size
+     */
     @FieldOrder({"origin", "size"})
     class CGRect extends Structure {
         public CGPoint origin;
         public CGSize size;
     }
+
 }

@@ -57,6 +57,16 @@ public class UdpAioSession extends AioSession {
     }
 
     @Override
+    public void awaitRead() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void signalRead() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void close(boolean immediate) {
         writeBuffer.close();
         udpChannel.config.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.solaris.software;
 
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractOSThread;
@@ -35,10 +36,13 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * OSThread implementation
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+
  */
+@ThreadSafe
 public class SolarisOSThread extends AbstractOSThread {
 
     private int threadId;

@@ -722,6 +722,25 @@ public class MapKit {
     }
 
     /**
+     * 按照值排序，可选是否倒序
+     *
+     * @param map    需要对值排序的map
+     * @param <K>    键类型
+     * @param <V>    值类型
+     * @param isDesc 是否倒序
+     * @return 排序后新的Map
+     */
+    public static <K, V extends Comparable<? super V>> Map<K, V> sort(Map<K, V> map, boolean isDesc) {
+        Map<K, V> result = new LinkedHashMap<>();
+        Comparator<Entry<K, V>> entryComparator = Entry.comparingByValue();
+        if (isDesc) {
+            entryComparator = entryComparator.reversed();
+        }
+        map.entrySet().stream().sorted(entryComparator).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
+
+    /**
      * 创建Map包装类MapWrapper
      * {@link MapWrapper}对Map做一次包装
      *

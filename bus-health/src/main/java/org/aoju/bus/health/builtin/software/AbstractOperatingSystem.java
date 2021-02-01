@@ -38,6 +38,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
+ * Common methods for OperatingSystem implementations
+ *
  * @author Kimi Liu
  * @version 6.1.9
  * @since JDK 1.8+
@@ -209,6 +211,9 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
         return Xwininfo.queryXWindows(visibleOnly);
     }
 
+    /**
+     * Encapsulates OS Family and version information
+     */
     protected static final class FamilyVersionInfo {
         private final String family;
         private final OSVersionInfo versionInfo;
