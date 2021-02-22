@@ -61,7 +61,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * findscu只支持使用C-FIND消息的查询功能
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class FindSCU extends Device implements AutoCloseable {

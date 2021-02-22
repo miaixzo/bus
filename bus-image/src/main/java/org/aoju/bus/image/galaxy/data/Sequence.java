@@ -35,7 +35,7 @@ import java.util.Collection;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Sequence extends ArrayList<Attributes> implements Value {

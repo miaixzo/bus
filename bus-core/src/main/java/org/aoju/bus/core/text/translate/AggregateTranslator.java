@@ -35,7 +35,7 @@ import java.util.List;
  * 第一个转换器使用输入中的代码点.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class AggregateTranslator extends CharSequenceTranslator {

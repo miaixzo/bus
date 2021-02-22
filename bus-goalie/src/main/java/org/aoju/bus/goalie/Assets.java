@@ -34,7 +34,7 @@ import java.util.Objects;
  * api definition
  *
  * @author Justubborn
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @Data

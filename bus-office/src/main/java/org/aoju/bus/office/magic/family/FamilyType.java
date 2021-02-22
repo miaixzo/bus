@@ -29,7 +29,7 @@ package org.aoju.bus.office.magic.family;
  * 表示office支持的文档类型.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public enum FamilyType {

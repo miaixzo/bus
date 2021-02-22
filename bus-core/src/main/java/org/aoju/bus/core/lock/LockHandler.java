@@ -30,7 +30,7 @@ package org.aoju.bus.core.lock;
  *
  * @param <T> 所涉及对象的类型
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface LockHandler<T> {

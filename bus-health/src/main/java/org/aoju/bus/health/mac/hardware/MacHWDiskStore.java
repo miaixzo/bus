@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * Mac hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -8,7 +8,8 @@ import org.aoju.bus.goalie.metric.Limiter;
  * 限流注册器
  *
  * @author Justubborn
- * @since 2020/12/21
+ * @version 6.2.0
+ * @since JDK 1.8+
  */
 public interface LimiterRegistry extends Registry<Limiter> {
 

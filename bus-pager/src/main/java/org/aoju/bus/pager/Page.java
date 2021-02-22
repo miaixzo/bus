@@ -33,7 +33,7 @@ import java.util.List;
  * Mybatis - 分页对象
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Page<E> extends ArrayList<E> implements Closeable {

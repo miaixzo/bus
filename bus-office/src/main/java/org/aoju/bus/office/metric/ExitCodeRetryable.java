@@ -32,7 +32,7 @@ import org.aoju.bus.office.Expense;
  * 获取office进程的退出码值.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class ExitCodeRetryable extends AbstractRetryable {

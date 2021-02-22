@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * SQL 解析处理器
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public abstract class AbstractSqlHandler {

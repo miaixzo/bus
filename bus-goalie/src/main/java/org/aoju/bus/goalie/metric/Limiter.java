@@ -7,7 +7,8 @@ import lombok.Data;
  * 限流器
  *
  * @author Justubborn
- * @since 2020/12/21
+ * @version 6.2.0
+ * @since JDK 1.8+
  */
 @Data
 public class Limiter {

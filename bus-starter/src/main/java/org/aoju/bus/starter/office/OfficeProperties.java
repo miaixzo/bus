@@ -38,7 +38,7 @@ import java.util.Map;
  * 文档预览配置类
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @Data

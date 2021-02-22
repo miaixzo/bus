@@ -14,7 +14,7 @@
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-core</artifactId>
-    <version>6.1.9</version>
+    <version>6.2.0</version>
 </dependency>
 ```
 

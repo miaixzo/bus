@@ -32,7 +32,7 @@ import java.net.URISyntaxException;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Instance implements Serializable {

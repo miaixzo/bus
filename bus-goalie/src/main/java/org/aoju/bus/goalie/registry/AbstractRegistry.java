@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 抽象注册类
  *
  * @author Justubborn
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBean {

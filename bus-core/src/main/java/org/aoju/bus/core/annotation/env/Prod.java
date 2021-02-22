@@ -32,7 +32,7 @@ import java.lang.annotation.*;
  * 表示当前方法性能安全性各方面达标,可以用于生产环境
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @Inherited

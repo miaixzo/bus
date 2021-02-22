@@ -29,7 +29,7 @@ package org.aoju.bus.cron;
  * 任务执行规则
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public enum Strategy {

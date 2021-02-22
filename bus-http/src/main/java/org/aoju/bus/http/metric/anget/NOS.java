@@ -34,7 +34,7 @@ import java.util.List;
  * 网络操作系统
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class NOS extends UserAgent {
