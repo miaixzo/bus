@@ -37,7 +37,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface FreeBsdLibc extends CLibrary {
@@ -138,6 +138,9 @@ public interface FreeBsdLibc extends CLibrary {
      */
     FreeBsdUtmpx getutxent();
 
+    /**
+     * Connection info
+     */
     @FieldOrder({"ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare"})
     class FreeBsdUtmpx extends Structure {
         public short ut_type; // type of entry
@@ -159,6 +162,9 @@ public interface FreeBsdLibc extends CLibrary {
         public long tv_usec; // microseconds
     }
 
+    /**
+     * CPU Ticks
+     */
     @FieldOrder({"cpu_ticks"})
     class CpTime extends Structure {
         public long[] cpu_ticks = new long[CPUSTATES];

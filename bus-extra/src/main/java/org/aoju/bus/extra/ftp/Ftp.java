@@ -51,7 +51,7 @@ import java.util.List;
  * 此客户端基于Apache-Commons-Net
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Ftp extends AbstractFtp {
@@ -264,7 +264,7 @@ public class Ftp extends AbstractFtp {
      * @return 是否成功
      */
     @Override
-    public boolean cd(String directory) {
+    public synchronized boolean cd(String directory) {
         if (StringKit.isBlank(directory)) {
             return true;
         }

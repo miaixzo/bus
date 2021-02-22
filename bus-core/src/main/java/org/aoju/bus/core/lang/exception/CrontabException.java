@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 定时任务执行异常
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class CrontabException extends UncheckedException {

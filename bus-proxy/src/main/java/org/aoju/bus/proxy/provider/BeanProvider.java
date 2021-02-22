@@ -32,7 +32,7 @@ import org.aoju.bus.proxy.Provider;
  * 使用Class.newInstance()来实例化一个对象
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class BeanProvider implements Provider {

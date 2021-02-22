@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {

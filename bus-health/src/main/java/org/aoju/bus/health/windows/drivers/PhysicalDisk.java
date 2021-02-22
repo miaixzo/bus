@@ -38,7 +38,7 @@ import java.util.Map;
  * Utility to query PhysicalDisk performance counter
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -67,12 +67,12 @@ public final class PhysicalDisk {
         // First element defines WMI instance name field and PDH instance filter
         NAME(PerfCounterQuery.NOT_TOTAL_INSTANCE),
         // Remaining elements define counters
-        DISKREADSPERSEC("Disk Reads/sec"), //
-        DISKREADBYTESPERSEC("Disk Read Bytes/sec"), //
-        DISKWRITESPERSEC("Disk Writes/sec"), //
-        DISKWRITEBYTESPERSEC("Disk Write Bytes/sec"), //
-        CURRENTDISKQUEUELENGTH("Current Disk Queue Length"), //
-        PERCENTIDLETIME("% Idle Time");
+        DISKREADSPERSEC("Disk Reads/sec"),
+        DISKREADBYTESPERSEC("Disk Read Bytes/sec"),
+        DISKWRITESPERSEC("Disk Writes/sec"),
+        DISKWRITEBYTESPERSEC("Disk Write Bytes/sec"),
+        CURRENTDISKQUEUELENGTH("Current Disk Queue Length"),
+        PERCENTDISKTIME("% Disk Time");
 
         private final String counter;
 

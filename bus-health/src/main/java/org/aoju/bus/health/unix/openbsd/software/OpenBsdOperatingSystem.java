@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.openbsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.RegEx;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * OpenBsd is a free and open-source Unix-like operating system descended from
@@ -48,7 +50,7 @@ import java.util.Set;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -94,7 +96,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         int[] mib = new int[2];
         mib[0] = OpenBsdLibc.CTL_KERN;
         mib[1] = OpenBsdLibc.KERN_OSTYPE;
@@ -105,7 +107,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         String versionInfo = OpenBsdSysctlKit.sysctl(mib, "");
         String buildNumber = versionInfo.split(":")[0].replace(family, "").replace(version, "").trim();
 
-        return new FamilyVersionInfo(family, new OSVersionInfo(version, null, buildNumber));
+        return Pair.of(family, new OSVersionInfo(version, null, buildNumber));
     }
 
     @Override
@@ -127,9 +129,14 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getProcesses(int limit, ProcessSort sort) {
-        List<OSProcess> procs = getProcessListFromPS(-1);
-        return processSort(procs, limit, sort);
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromPS(-1);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        return queryAllProcesses().stream().filter(p -> p.getParentProcessID() == parentPid)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -189,7 +196,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, 0, ProcessSort.PID)) {
+        for (OSProcess p : getChildProcesses(1, ProcessFiltering.ALL_PROCESSES, ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

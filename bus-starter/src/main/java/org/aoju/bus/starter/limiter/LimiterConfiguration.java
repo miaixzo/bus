@@ -31,23 +31,29 @@ import org.aoju.bus.starter.annotation.EnableLimiter;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.AdviceModeImportSelector;
 import org.springframework.context.annotation.AutoProxyRegistrar;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class LimiterConfiguration extends AdviceModeImportSelector<EnableLimiter> {
 
     @Override
-    protected String[] selectImports(AdviceMode adviceMode) {
+    public String[] selectImports(AdviceMode adviceMode) {
         Logger.info("limiter start success...");
         switch (adviceMode) {
             case PROXY:
-                return getProxyImports();
+                List<String> list = new ArrayList<>();
+                list.add(AutoProxyRegistrar.class.getName());
+                list.add(LimiterAwareHandler.class.getName());
+                return StringKit.toStringArray(list);
             case ASPECTJ:
                 throw new RuntimeException("NotImplemented");
             default:
@@ -55,11 +61,14 @@ public class LimiterConfiguration extends AdviceModeImportSelector<EnableLimiter
         }
     }
 
-    private String[] getProxyImports() {
-        List<String> list = new ArrayList<>();
-        list.add(AutoProxyRegistrar.class.getName());
-        list.add(LimiterAwareHandler.class.getName());
-        return StringKit.toStringArray(list);
+    @Bean
+    public WebMvcConfigurer traceSpringMvcWebMvcConfigurerAdapter() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                // registry.addInterceptor(preventRepeatInterceptor()).addPathPatterns("/**");
+            }
+        };
     }
 
 }

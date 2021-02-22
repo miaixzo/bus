@@ -36,8 +36,10 @@ import org.aoju.bus.health.unix.openbsd.OpenBsdSysctlKit;
 import java.util.function.Supplier;
 
 /**
+ * OpenBSD ComputerSystem implementation
+ *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class OpenBsdComputerSystem extends AbstractComputerSystem {

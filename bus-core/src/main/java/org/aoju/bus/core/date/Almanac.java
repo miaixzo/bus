@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * 日期计算类
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Almanac extends Converter {
@@ -2586,6 +2586,66 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 获取某分钟的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfMinute(Calendar calendar) {
+        return truncate(calendar, Fields.Type.MINUTE);
+    }
+
+    /**
+     * 获取某分钟的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfMinute(Calendar calendar) {
+        return ceiling(calendar, Fields.Type.MINUTE);
+    }
+
+    /**
+     * 获取某分钟的开始时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime beginOfMinute(Date date) {
+        return new DateTime(beginOfMinute(toCalendar(date)));
+    }
+
+    /**
+     * 获取某分钟的结束时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime endOfMinute(Date date) {
+        return new DateTime(endOfMinute(toCalendar(date)));
+    }
+
+    /**
+     * 获取某小时的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfHour(Calendar calendar) {
+        return truncate(calendar, Fields.Type.HOUR_OF_DAY);
+    }
+
+    /**
+     * 获取某小时的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfHour(Calendar calendar) {
+        return ceiling(calendar, Fields.Type.HOUR_OF_DAY);
+    }
+
+    /**
      * 获取某天的开始时间
      *
      * @param date 日期
@@ -2603,6 +2663,26 @@ public class Almanac extends Converter {
      */
     public static DateTime endOfDay(Date date) {
         return new DateTime(endOfDay(toCalendar(date)));
+    }
+
+    /**
+     * 获取某小时的开始时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime beginOfHour(Date date) {
+        return new DateTime(beginOfHour(toCalendar(date)));
+    }
+
+    /**
+     * 获取某小时的结束时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime endOfHour(Date date) {
+        return new DateTime(endOfHour(toCalendar(date)));
     }
 
     /**

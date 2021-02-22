@@ -34,7 +34,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public abstract class AioSession {
@@ -86,6 +86,13 @@ public abstract class AioSession {
      * @param immediate true:立即关闭,false:响应消息发送完后关闭
      */
     public abstract void close(boolean immediate);
+
+    public abstract void awaitRead();
+
+    /**
+     * 继续触发读行为，该方法仅可在异步处理模式下可使用，否则会触发不可预知的异常
+     */
+    public abstract void signalRead();
 
     /**
      * 获取当前Session的唯一标识

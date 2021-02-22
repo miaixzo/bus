@@ -26,11 +26,11 @@
 package org.aoju.bus.health.unix.aix.hardware;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatNetInterface;
 
 import java.net.NetworkInterface;
@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * AIXNetworks class.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

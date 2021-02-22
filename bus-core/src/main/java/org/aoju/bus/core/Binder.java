@@ -43,7 +43,7 @@ import java.util.*;
  * 属性绑定器
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @RequiredArgsConstructor
@@ -91,8 +91,10 @@ public class Binder {
         this(placeholderPrefix, placeholderSuffix, null, true);
     }
 
-    public Binder(String placeholderPrefix, String placeholderSuffix,
-                  String valueSeparator, boolean ignoreUnresolvablePlaceholders) {
+    public Binder(String placeholderPrefix,
+                  String placeholderSuffix,
+                  String valueSeparator,
+                  boolean ignoreUnresolvablePlaceholders) {
 
         Assert.notNull(placeholderPrefix, "'placeholderPrefix' must not be null");
         Assert.notNull(placeholderSuffix, "'placeholderSuffix' must not be null");

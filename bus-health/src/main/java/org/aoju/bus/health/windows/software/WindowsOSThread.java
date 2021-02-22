@@ -35,8 +35,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * OSThread implementation
+ *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class WindowsOSThread extends AbstractOSThread {

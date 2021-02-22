@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  * 设备信息
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Device implements Serializable {

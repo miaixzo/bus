@@ -88,7 +88,7 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -1952,14 +1952,27 @@ public final class Builder {
     }
 
     /**
-     * 编码压缩EC公钥(基于BouncyCastle)
+     * 编码压缩EC公钥（基于BouncyCastle），即Q值
      * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
      *
      * @param publicKey {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey
      * @return 压缩得到的X
      */
     public static byte[] encodeECPublicKey(PublicKey publicKey) {
-        return ((BCECPublicKey) publicKey).getQ().getEncoded(true);
+        return encodeECPublicKey(publicKey, true);
+    }
+
+    /**
+     * 编码压缩EC公钥（基于BouncyCastle），即Q值
+     * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
+     *
+     * @param publicKey    {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey
+     * @param isCompressed 是否压缩
+     * @return 得到的Q
+     * @since 5.5.9
+     */
+    public static byte[] encodeECPublicKey(PublicKey publicKey, boolean isCompressed) {
+        return ((BCECPublicKey) publicKey).getQ().getEncoded(isCompressed);
     }
 
     /**
@@ -2225,14 +2238,24 @@ public final class Builder {
         final PemObject object = readPemObject(keyStream);
         final String type = object.getType();
         if (StringKit.isNotBlank(type)) {
+            // PRIVATE
+            if (type.endsWith("EC PRIVATE KEY")) {
+                return generatePrivateKey("EC", object.getContent());
+            }
             if (type.endsWith("PRIVATE KEY")) {
                 return generateRSAPrivateKey(object.getContent());
+            }
+
+            // PUBLIC
+            if (type.endsWith("EC PUBLIC KEY")) {
+                return generatePublicKey("EC", object.getContent());
             } else if (type.endsWith("PUBLIC KEY")) {
                 return generateRSAPublicKey(object.getContent());
             } else if (type.endsWith("CERTIFICATE")) {
                 return readPublicKeyFromCert(IoKit.toStream(object.getContent()));
             }
         }
+
         return null;
     }
 
@@ -2573,7 +2596,7 @@ public final class Builder {
      * @param x                公钥X
      * @param y                公钥Y
      * @param domainParameters ECDomainParameters
-     * @return ECPublicKeyParameters
+     * @return ECPublicKeyParameters，x或y为{@code null}则返回{@code null}
      */
     public static ECPublicKeyParameters toPublicParams(String x, String y, ECDomainParameters domainParameters) {
         return toPublicParams(decode(x), decode(y), domainParameters);
@@ -2588,6 +2611,9 @@ public final class Builder {
      * @return ECPublicKeyParameters
      */
     public static ECPublicKeyParameters toPublicParams(byte[] xBytes, byte[] yBytes, ECDomainParameters domainParameters) {
+        if (null == xBytes || null == yBytes) {
+            return null;
+        }
         return toPublicParams(BigIntegers.fromUnsignedByteArray(xBytes), BigIntegers.fromUnsignedByteArray(yBytes), domainParameters);
     }
 

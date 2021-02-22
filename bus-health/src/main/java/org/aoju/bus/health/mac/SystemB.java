@@ -36,7 +36,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
@@ -71,6 +71,9 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
 
     int proc_pidfdinfo(int pid, int fd, int flavor, Structure buffer, int buffersize);
 
+    /**
+     * Mac connection info
+     */
     @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad"})
     class MacUtmpx extends Structure {
         public byte[] ut_user = new byte[UTX_USERSIZE]; // login name
@@ -83,12 +86,18 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public byte[] ut_pad = new byte[16]; // reserved for future use
     }
 
+    /**
+     * Mac file descriptor info
+     */
     @FieldOrder({"proc_fd", "proc_fdtype"})
     class ProcFdInfo extends Structure {
         public int proc_fd;
         public int proc_fdtype;
     }
 
+    /**
+     * Mac internet socket info
+     */
     @FieldOrder({"insi_fport", "insi_lport", "insi_gencnt", "insi_flags", "insi_flow", "insi_vflag", "insi_ip_ttl",
             "rfu_1", "insi_faddr", "insi_laddr", "insi_v4", "insi_v6"})
     class InSockInfo extends Structure {
@@ -108,6 +117,9 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public byte[] insi_v6 = new byte[9];
     }
 
+    /**
+     * Mac TCP socket info
+     */
     @FieldOrder({"tcpsi_ini", "tcpsi_state", "tcpsi_timer", "tcpsi_mss", "tcpsi_flags", "rfu_1", "tcpsi_tp"})
     class TcpSockInfo extends Structure {
         public InSockInfo tcpsi_ini;
@@ -119,6 +131,9 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public long tcpsi_tp; /* opaque handle of TCP protocol control block */
     }
 
+    /**
+     * Mack IP Socket Info
+     */
     @FieldOrder({"soi_stat", "soi_so", "soi_pcb", "soi_type", "soi_protocol", "soi_family", "soi_options",
             "soi_linger", "soi_state", "soi_qlen", "soi_incqlen", "soi_qlimit", "soi_timeo", "soi_error", "soi_oobmark",
             "soi_rcv", "soi_snd", "soi_kind", "rfu_1", "soi_proto"})
@@ -145,6 +160,9 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public Pri soi_proto;
     }
 
+    /**
+     * Mac file info
+     */
     @FieldOrder({"fi_openflags", "fi_status", "fi_offset", "fi_type", "fi_guardflags"})
     class ProcFileInfo extends Structure {
         public int fi_openflags;
@@ -154,12 +172,18 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
         public int fi_guardflags;
     }
 
+    /**
+     * Mac socket info
+     */
     @FieldOrder({"pfi", "psi"})
     class SocketFdInfo extends Structure {
         public ProcFileInfo pfi;
         public SocketInfo psi;
     }
 
+    /**
+     * Union for TCP or internet socket info
+     */
     class Pri extends Union {
         public InSockInfo pri_in;
         public TcpSockInfo pri_tcp;

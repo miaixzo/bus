@@ -32,7 +32,7 @@ import org.apache.ibatis.annotations.SelectProvider;
  * 通用Mapper接口,其他接口继承该接口即可
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface SelectByPrimaryKeyMapper<T> {

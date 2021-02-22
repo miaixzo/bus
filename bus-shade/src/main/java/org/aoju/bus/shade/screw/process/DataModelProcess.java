@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * 数据模型处理
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class DataModelProcess extends AbstractProcess {

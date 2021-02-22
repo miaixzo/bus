@@ -30,6 +30,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
@@ -50,7 +51,7 @@ import java.util.List;
  * after the Sun acquisition by Oracle, it was renamed Oracle Solaris.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -104,14 +105,14 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         String[] split = RegEx.SPACES.split(Executor.getFirstAnswer("uname -rv"));
         String version = split[0];
         String buildNumber = null;
         if (split.length > 1) {
             buildNumber = split[1];
         }
-        return new FamilyVersionInfo("SunOS", new OperatingSystem.OSVersionInfo(version, "Solaris", buildNumber));
+        return Pair.of("SunOS", new OperatingSystem.OSVersionInfo(version, "Solaris", buildNumber));
     }
 
     @Override
@@ -137,14 +138,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
-
-    @Override
-    public List<OSProcess> getProcesses(int limit, OperatingSystem.ProcessSort sort) {
-        List<OSProcess> procs = getProcessListFromPS(
-                "ps -eo s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args", -1);
-        return processSort(procs, limit, sort);
-    }
-
     @Override
     public OSProcess getProcess(int pid) {
         List<OSProcess> procs = getProcessListFromPS(
@@ -156,17 +149,19 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getChildProcesses(int parentPid, int limit, OperatingSystem.ProcessSort sort) {
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromPS("ps -eo s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args", -1);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
         // Get list of children
         List<String> childPids = Executor.runNative("pgrep -P " + parentPid);
         if (childPids.isEmpty()) {
             return Collections.emptyList();
         }
-        List<OSProcess> procs = getProcessListFromPS(
-                "ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p "
-                        + String.join(Symbol.COMMA, childPids),
-                -1);
-        return processSort(procs, limit, sort);
+        return getProcessListFromPS("ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p "
+                + String.join(",", childPids), -1);
     }
 
     @Override

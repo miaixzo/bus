@@ -41,13 +41,12 @@ import java.nio.file.PathMatcher;
 import java.util.*;
 
 /**
- * The Solaris File System contains {@link OSFileStore}s which
+ * The FreeBSD File System contains {@link  OSFileStore}s which
  * are a storage pool, device, partition, volume, concrete file system or other
- * implementation specific means of file storage. In Linux, these are found in
- * the /proc/mount filesystem, excluding temporary and kernel mounts.
+ * implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

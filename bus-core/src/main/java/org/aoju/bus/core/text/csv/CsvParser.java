@@ -42,7 +42,7 @@ import java.util.*;
  * CSV行解析器,参考：FastCSV
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public final class CsvParser implements Closeable {
@@ -193,7 +193,6 @@ public final class CsvParser implements Closeable {
         final Buffer buf = this.buf;
         int preChar = this.preChar;//前一个特殊分界字符
         int copyLen = 0; //拷贝长度
-        boolean lineStart = true;
         boolean inComment = false;
 
         while (true) {
@@ -221,15 +220,16 @@ public final class CsvParser implements Closeable {
             final char c = buf.get();
 
             // 注释行标记
-            if (lineStart) {
+            if (preChar < 0 || preChar == Symbol.C_CR || preChar == Symbol.C_LF) {
+                // 判断行首字符为指定注释字符的注释开始，直到遇到换行符
+                // 行首分两种，1是preChar < 0表示文本开始，2是换行符后紧跟就是下一行的开始
                 if (c == this.config.commentCharacter) {
                     inComment = true;
                 }
-                lineStart = false;
             }
             // 注释行处理
             if (inComment) {
-                if ((c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR) {
+                if (c == Symbol.C_CR || c == Symbol.C_LF) {
                     // 注释行以换行符为结尾
                     inComment = false;
                 }

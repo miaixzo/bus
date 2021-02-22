@@ -36,7 +36,7 @@ import org.aoju.bus.health.unix.CLibrary;
  * 它的代码被合并到JNA项目中时，它可能会被删除
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface SolarisLibc extends CLibrary {
@@ -59,6 +59,9 @@ public interface SolarisLibc extends CLibrary {
      */
     SolarisUtmpx getutxent();
 
+    /**
+     * Connection info
+     */
     @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_session", "ut_syslen", "ut_host"})
     class SolarisUtmpx extends Structure {
         public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name

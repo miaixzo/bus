@@ -33,7 +33,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * 可以通过传入的基础集合和长度随机生成验证码字符
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class RandomStrategy extends AbstractStrategy {

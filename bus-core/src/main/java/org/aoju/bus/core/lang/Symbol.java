@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang;
  * 标点符号常量
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Symbol {

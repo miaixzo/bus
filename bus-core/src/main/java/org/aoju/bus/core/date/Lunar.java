@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org and other contributors.                      *
+ * Copyright (c) 2015-2021 aoju.org 6tail and other contributors.                *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -30,6 +30,7 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.BooleanKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
+import org.aoju.bus.core.toolkit.StringKit;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ import java.util.*;
  * 农历日期
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Lunar {
@@ -4238,18 +4239,21 @@ public class Lunar {
     }
 
     /**
-     * 获取节气名称，如果无节气，返回空字符串
+     * 获取节气信息，如果无节气，返回空字符串
      *
+     * @param isIncludeTime 是否包含时间
      * @return 节气名称
      */
-    public String getSolarTerm() {
+    public String getSolarTerm(boolean isIncludeTime) {
         String name = Normal.EMPTY;
+        String time = Normal.EMPTY;
         for (Map.Entry<String, Solar> st : this.solarTerm.entrySet()) {
             Solar d = st.getValue();
             if (d.getYear() == solar.getYear()
                     && d.getMonth() == solar.getMonth()
                     && d.getDay() == solar.getDay()) {
                 name = st.getKey();
+                time = " " + d.getHour() + ":" + d.getMinute() + ":" + d.getSecond();
                 break;
             }
         }
@@ -4262,6 +4266,9 @@ public class Lunar {
         } else if (QI_APPEND_SOLAR_SECOND.equals(name)) {
             name = QI_SOLAR_SECOND;
         }
+        if (StringKit.isNotEmpty(time) && isIncludeTime) {
+            name = name + time;
+        }
         return name;
     }
 
@@ -4271,7 +4278,7 @@ public class Lunar {
      * @return 节气对象
      */
     public SolarTerm getCurrentSolarTerm() {
-        String name = getSolarTerm();
+        String name = getSolarTerm(false);
         return name.length() > 0 ? new SolarTerm(name, solar) : null;
     }
 
@@ -4832,7 +4839,7 @@ public class Lunar {
                 s.append(f);
                 s.append(")");
             }
-            String jq = getSolarTerm();
+            String jq = getSolarTerm(true);
             if (jq.length() > 0) {
                 s.append(" [");
                 s.append(jq);

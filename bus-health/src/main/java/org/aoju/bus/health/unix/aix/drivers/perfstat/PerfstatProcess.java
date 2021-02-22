@@ -26,8 +26,8 @@
 package org.aoju.bus.health.unix.aix.drivers.perfstat;
 
 
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
-import org.aoju.bus.health.unix.aix.Perfstat;
 
 import java.util.Arrays;
 
@@ -35,7 +35,7 @@ import java.util.Arrays;
  * Utility to query performance stats for processes
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

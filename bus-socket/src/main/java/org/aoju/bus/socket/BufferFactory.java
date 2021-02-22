@@ -26,12 +26,14 @@
 package org.aoju.bus.socket;
 
 import org.aoju.bus.core.io.ByteBuffer;
+import org.aoju.bus.core.io.PageBuffer;
+import org.aoju.bus.core.io.VirtualBuffer;
 
 /**
  * 内存池工厂
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface BufferFactory {
@@ -47,5 +49,11 @@ public interface BufferFactory {
      * @return 生成的内存池对象
      */
     ByteBuffer create();
+
+    interface VirtualBufferFactory {
+
+        VirtualBuffer newBuffer(PageBuffer bufferPage);
+
+    }
 
 }

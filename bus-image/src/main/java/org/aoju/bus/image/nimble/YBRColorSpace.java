@@ -29,7 +29,7 @@ import java.awt.color.ColorSpace;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public final class YBRColorSpace extends ColorSpace {

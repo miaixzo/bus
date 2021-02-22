@@ -36,7 +36,7 @@ import javax.xml.ws.Action;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @WebService(targetNamespace = "urn:ihe:rad:xdsi-b:2009", name = "ImagingDocumentSource_PortType")

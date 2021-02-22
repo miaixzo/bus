@@ -10,8 +10,8 @@ bus-socket是一款开源的Java AIO框架，支持 TCP、UDP、SSL/TLS，追求
 * 通常情况下仅需实现{@link org.aoju.bus.socket.Protocol}、{@link org.aoju.bus.socket.process.MessageProcessor}即可
 * 如需仅需通讯层面的监控，bus-socket提供了接口{@link org.aoju.bus.socket.NetMonitor}以供使用
 *
-* 完成本package的接口开发后，便可使用{@link org.aoju.bus.socket.QuickAioClient} / {@link
-  org.aoju.bus.socket.QuickAioServer}提供AIO的客户端/服务端通信服务
+* 完成本package的接口开发后，便可使用{@link org.aoju.bus.socket.AioQuickClient} / {@link
+  org.aoju.bus.socket.AioQuickServer}提供AIO的客户端/服务端通信服务
 *
 
 服务端开发主要分两步：

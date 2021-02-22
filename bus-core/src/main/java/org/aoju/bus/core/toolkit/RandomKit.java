@@ -44,7 +44,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 随机工具类
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class RandomKit {
@@ -88,6 +88,10 @@ public class RandomKit {
      * @return {@link SecureRandom}
      */
     public static SecureRandom getSecureRandom(byte[] seed) {
+        if (null == seed) {
+            return new SecureRandom();
+        }
+
         SecureRandom random;
         try {
             random = SecureRandom.getInstance(Algorithm.SHAPRNG);

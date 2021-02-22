@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -2986,11 +2986,11 @@ public class CollKit {
     }
 
     /**
-     * 取最大值
+     * 取最小值
      *
      * @param <T>  元素类型
      * @param coll 集合
-     * @return 最大值
+     * @return 最小值
      * @see Collections#min(Collection)
      */
     public static <T extends Comparable<? super T>> T min(Collection<T> coll) {

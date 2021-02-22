@@ -6,7 +6,8 @@ import lombok.Data;
  * 服务端配置
  *
  * @author Justubborn
- * @since 2020/12/17
+ * @version 6.2.0
+ * @since JDK 1.8+
  */
 @Data
 public class ServerConfig {

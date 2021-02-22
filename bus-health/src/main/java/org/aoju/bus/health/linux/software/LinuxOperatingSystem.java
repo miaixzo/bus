@@ -32,6 +32,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.health.Builder;
@@ -58,7 +59,7 @@ import java.util.Set;
  * 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -459,7 +460,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         Triple<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
         String buildNumber = null;
         List<String> procVersion = FileKit.readLines(ProcPath.VERSION);
@@ -474,7 +475,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         OSVersionInfo versionInfo = new OSVersionInfo(familyVersionCodename.getMiddle(), familyVersionCodename.getRight(),
                 buildNumber);
-        return new FamilyVersionInfo(familyVersionCodename.getLeft(), versionInfo);
+        return Pair.of(familyVersionCodename.getLeft(), versionInfo);
     }
 
     @Override
@@ -494,28 +495,9 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     public InternetProtocolStats getInternetProtocolStats() {
         return new LinuxInternetProtocolStats();
     }
-
     @Override
     public List<OSSession> getSessions() {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
-    }
-
-    @Override
-    public List<OSProcess> getProcesses(int limit, ProcessSort sort) {
-        List<OSProcess> procs = new ArrayList<>();
-        File[] pids = ProcessStat.getPidFiles();
-
-        // now for each file (with digit name) get process info
-        for (File pidFile : pids) {
-            int pid = Builder.parseIntOrDefault(pidFile.getName(), 0);
-            OSProcess proc = new LinuxOSProcess(pid);
-            if (!proc.getState().equals(State.INVALID)) {
-                procs.add(proc);
-            }
-        }
-        // Sort
-        // Sort
-        return processSort(procs, limit, sort);
     }
 
     @Override
@@ -528,20 +510,24 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getChildProcesses(int parentPid, int limit, ProcessSort sort) {
+    public List<OSProcess> queryAllProcesses() {
+        return queryChildProcesses(-1);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> procs = new ArrayList<>();
-        File[] procFiles = ProcessStat.getPidFiles();
         // now for each file (with digit name) get process info
-        for (File procFile : procFiles) {
+        for (File procFile : ProcessStat.getPidFiles()) {
             int pid = Builder.parseIntOrDefault(procFile.getName(), 0);
-            if (parentPid == getParentPidFromProcFile(pid)) {
+            if (parentPid == -1 || parentPid == getParentPidFromProcFile(pid)) {
                 OSProcess proc = new LinuxOSProcess(pid);
                 if (!proc.getState().equals(State.INVALID)) {
                     procs.add(proc);
                 }
             }
         }
-        return processSort(procs, limit, sort);
+        return procs;
     }
 
     @Override
@@ -589,7 +575,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, 0, ProcessSort.PID)) {
+        for (OSProcess p : getChildProcesses(1, ProcessFiltering.ALL_PROCESSES, ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.hardware;
 
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.unix.UnixDisplay;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.Lscfg;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatDisk;
 
@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  * AIXHardwareAbstractionLayer class.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

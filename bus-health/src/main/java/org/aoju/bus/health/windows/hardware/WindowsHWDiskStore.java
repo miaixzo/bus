@@ -26,6 +26,7 @@
 package org.aoju.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.Kernel32;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -46,7 +47,7 @@ import java.util.stream.Collectors;
  * Windows hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -55,6 +56,10 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
     private static final String PHYSICALDRIVE_PREFIX = "\\\\.\\PHYSICALDRIVE";
 
     private static final Pattern DEVICE_ID = Pattern.compile(".*\\.DeviceID=\"(.*)\"");
+
+    // A reasonable size for the buffer to accommodate the largest possible volume
+    // GUID path is 50 characters.
+    private static final int GUID_BUFSIZE = 100;
 
     private long reads = 0L;
     private long readBytes = 0L;
@@ -95,7 +100,13 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             ds.writes = stats.writeMap.getOrDefault(index, 0L);
             ds.writeBytes = stats.writeByteMap.getOrDefault(index, 0L);
             ds.currentQueueLength = stats.queueLengthMap.getOrDefault(index, 0L);
-            ds.transferTime = stats.timeStamp - stats.idleTimeMap.getOrDefault(index, stats.timeStamp);
+            // DiskTime (sum of readTime+writeTime) slightly overestimates actual transfer
+            // time because it includes waiting time in the queue and can exceed 100%.
+            // However, alternative calculations require use of a timestamp with 1/64-second
+            // resolution producing unacceptable variation in what should be a monotonically
+            // increasing counter. See extended discussion and experiments here:
+            // https://github.com/oshi/oshi/issues/1504
+            ds.transferTime = stats.diskTimeMap.getOrDefault(index, 0L);
             ds.timeStamp = stats.timeStamp;
             // Get partitions
             List<HWPartition> partitions = new ArrayList<>();
@@ -134,10 +145,10 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         List<Long> writeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.DISKWRITESPERSEC);
         List<Long> writeByteList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.DISKWRITEBYTESPERSEC);
         List<Long> queueLengthList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.CURRENTDISKQUEUELENGTH);
-        List<Long> idleTimeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.PERCENTIDLETIME);
+        List<Long> diskTimeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.PERCENTDISKTIME);
 
         if (instances.isEmpty() || readList == null || readByteList == null || writeList == null
-                || writeByteList == null || queueLengthList == null || idleTimeList == null) {
+                || writeByteList == null || queueLengthList == null || diskTimeList == null) {
             return stats;
         }
         for (int i = 0; i < instances.size(); i++) {
@@ -151,7 +162,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             stats.writeMap.put(name, writeList.get(i));
             stats.writeByteMap.put(name, writeByteList.get(i));
             stats.queueLengthMap.put(name, queueLengthList.get(i));
-            stats.idleTimeMap.put(name, idleTimeList.get(i) / 10_000L);
+            stats.diskTimeMap.put(name, diskTimeList.get(i) / 10_000L);
         }
         return stats;
     }
@@ -204,10 +215,13 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             for (int j = 0; j < logicalDrives.size(); j++) {
                 Pair<String, Long> logicalDrive = logicalDrives.get(j);
                 if (logicalDrive != null && !logicalDrive.getLeft().isEmpty()) {
+                    char[] volumeChr = new char[GUID_BUFSIZE];
+                    Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(logicalDrive.getLeft(), volumeChr, GUID_BUFSIZE);
+                    String uuid = Builder.parseUuidOrDefault(new String(volumeChr).trim(), "");
                     HWPartition pt = new HWPartition(
                             WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.NAME, i),
                             WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.TYPE, i),
-                            WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DESCRIPTION, i), "",
+                            WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DESCRIPTION, i), uuid,
                             logicalDrive.getRight(),
                             WmiKit.getUint32(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DISKINDEX, i),
                             WmiKit.getUint32(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.INDEX, i),
@@ -308,7 +322,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             this.writes = stats.writeMap.getOrDefault(index, 0L);
             this.writeBytes = stats.writeByteMap.getOrDefault(index, 0L);
             this.currentQueueLength = stats.queueLengthMap.getOrDefault(index, 0L);
-            this.transferTime = stats.timeStamp - stats.idleTimeMap.getOrDefault(index, stats.timeStamp);
+            this.transferTime = stats.diskTimeMap.getOrDefault(index, 0L);
             this.timeStamp = stats.timeStamp;
             return true;
         } else {
@@ -325,7 +339,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         private final Map<String, Long> writeMap = new HashMap<>();
         private final Map<String, Long> writeByteMap = new HashMap<>();
         private final Map<String, Long> queueLengthMap = new HashMap<>();
-        private final Map<String, Long> idleTimeMap = new HashMap<>();
+        private final Map<String, Long> diskTimeMap = new HashMap<>();
         private long timeStamp;
     }
 

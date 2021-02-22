@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.aix.hardware;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -34,7 +35,6 @@ import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.AbstractCentralProcessor;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.Lssrad;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatConfig;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatCpu;
@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  * A CPU
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

@@ -37,8 +37,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * OpenBSD Firmware implementation
+ *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class OpenBsdFirmware extends AbstractFirmware {

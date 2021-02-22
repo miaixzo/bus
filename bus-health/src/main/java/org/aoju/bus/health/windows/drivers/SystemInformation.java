@@ -35,7 +35,7 @@ import java.util.Map;
  * Utility to query System performance counter
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -56,7 +56,7 @@ public final class SystemInformation {
         return PerfCounterQuery.queryValues(ContextSwitchProperty.class, SYSTEM, WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
     }
 
-    /*
+    /**
      * Context switch property
      */
     public enum ContextSwitchProperty implements PdhCounterProperty {

@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
  * 计量标准
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class MathKit {
@@ -1767,8 +1767,8 @@ public class MathKit {
      * @param defaultValue 如果number参数为{@code null},返回此默认值
      * @return A String.
      */
-    public static String toStr(Number number, String defaultValue) {
-        return (null == number) ? defaultValue : toStr(number);
+    public static String toString(Number number, String defaultValue) {
+        return (null == number) ? defaultValue : toString(number);
     }
 
     /**
@@ -1778,23 +1778,37 @@ public class MathKit {
      * @param number A Number
      * @return A String.
      */
-    public static String toStr(Number number) {
+    public static String toString(Number number) {
+        return toString(number, true);
+    }
+
+    /**
+     * 数字转字符串
+     * 调用{@link Number#toString()}或 {@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     *
+     * @param number               A Number
+     * @param isStripTrailingZeros 是否去除末尾多余0，例如5.0返回5
+     * @return A String
+     */
+    public static String toString(Number number, boolean isStripTrailingZeros) {
         Assert.notNull(number, "Number is null !");
 
         // BigDecimal单独处理，使用非科学计数法
         if (number instanceof BigDecimal) {
-            return toStr((BigDecimal) number);
+            return toString((BigDecimal) number, isStripTrailingZeros);
         }
 
         Assert.isTrue(isValidNumber(number), "Number is non-finite!");
         // 去掉小数点儿后多余的0
         String string = number.toString();
-        if (string.indexOf(Symbol.C_DOT) > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
-            while (string.endsWith(Symbol.ZERO)) {
-                string = string.substring(0, string.length() - 1);
-            }
-            if (string.endsWith(Symbol.DOT)) {
-                string = string.substring(0, string.length() - 1);
+        if (isStripTrailingZeros) {
+            if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
+                while (string.endsWith("0")) {
+                    string = string.substring(0, string.length() - 1);
+                }
+                if (string.endsWith(".")) {
+                    string = string.substring(0, string.length() - 1);
+                }
             }
         }
         return string;
@@ -1807,9 +1821,24 @@ public class MathKit {
      * @param bigDecimal A {@link BigDecimal}
      * @return A String.
      */
-    public static String toStr(BigDecimal bigDecimal) {
+    public static String toString(BigDecimal bigDecimal) {
+        return toString(bigDecimal, true);
+    }
+
+    /**
+     * {@link BigDecimal} 数字转字符串
+     * 调用{@link BigDecimal#toPlainString()}，可选去除尾小数点儿后多余的0
+     *
+     * @param bigDecimal           A {@link BigDecimal}
+     * @param isStripTrailingZeros 是否去除末尾多余0，例如5.0返回5
+     * @return A String
+     */
+    public static String toString(BigDecimal bigDecimal, boolean isStripTrailingZeros) {
         Assert.notNull(bigDecimal, "BigDecimal is null !");
-        return bigDecimal.stripTrailingZeros().toPlainString();
+        if (isStripTrailingZeros) {
+            bigDecimal = bigDecimal.stripTrailingZeros();
+        }
+        return bigDecimal.toPlainString();
     }
 
     /**

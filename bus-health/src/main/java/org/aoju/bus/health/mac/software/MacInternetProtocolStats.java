@@ -42,8 +42,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
+ * Internet Protocol Stats implementation
+ *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

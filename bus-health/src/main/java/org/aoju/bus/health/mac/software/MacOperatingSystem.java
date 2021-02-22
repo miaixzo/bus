@@ -32,6 +32,7 @@ import com.sun.jna.platform.mac.SystemB.Timeval;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
@@ -49,7 +50,7 @@ import java.util.*;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -114,12 +115,12 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         String family = this.major > 10 || (this.major == 10 && this.minor >= 12) ? "macOS"
                 : System.getProperty("os.name");
         String codeName = parseCodeName();
         String buildNumber = SysctlKit.sysctl("kern.osversion", Normal.EMPTY);
-        return new FamilyVersionInfo(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
+        return Pair.of(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
     private String parseCodeName() {
@@ -188,24 +189,9 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getProcesses(int limit, OperatingSystem.ProcessSort sort) {
-        List<OSProcess> procs = new ArrayList<>();
-        int[] pids = new int[this.maxProc];
-        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids,
-                pids.length * SystemB.INT_SIZE) / SystemB.INT_SIZE;
-        for (int i = 0; i < numberOfProcesses; i++) {
-            // Handle off-by-one bug in proc_listpids where the size returned
-            // is: SystemB.INT_SIZE * (pids + 1)
-            if (pids[i] > 0) {
-                OSProcess proc = getProcess(pids[i]);
-                if (proc != null) {
-                    procs.add(proc);
-                }
-            }
-        }
-        return processSort(procs, limit, sort);
+    public List<OSProcess> queryAllProcesses() {
+        return queryChildProcesses(-1);
     }
-
 
     @Override
     public OSProcess getProcess(int pid) {
@@ -214,7 +200,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getChildProcesses(int parentPid, int limit, OperatingSystem.ProcessSort sort) {
+    public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> procs = new ArrayList<>();
         int[] pids = new int[this.maxProc];
         int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids,
@@ -225,14 +211,14 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             if (pids[i] == 0) {
                 continue;
             }
-            if (parentPid == getParentProcessPid(pids[i])) {
+            if (parentPid == -1 || parentPid == getParentProcessPid(pids[i])) {
                 OSProcess proc = getProcess(pids[i]);
                 if (proc != null) {
                     procs.add(proc);
                 }
             }
         }
-        return processSort(procs, limit, sort);
+        return procs;
     }
 
     @Override
@@ -283,7 +269,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, 0, OperatingSystem.ProcessSort.PID)) {
+        for (OSProcess p : getChildProcesses(1, ProcessFiltering.ALL_PROCESSES, ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

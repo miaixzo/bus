@@ -33,7 +33,7 @@ import java.net.SocketAddress;
 
 /**
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class UdpAioSession extends AioSession {
@@ -54,6 +54,16 @@ public class UdpAioSession extends AioSession {
     @Override
     public WriteBuffer writeBuffer() {
         return writeBuffer;
+    }
+
+    @Override
+    public void awaitRead() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void signalRead() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

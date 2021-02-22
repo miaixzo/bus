@@ -32,6 +32,7 @@ import org.aoju.bus.core.toolkit.*;
 import org.aoju.bus.office.support.excel.cell.CellLocation;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 
 import java.io.File;
@@ -52,7 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class ExcelWriter extends ExcelBase<ExcelWriter> {
@@ -257,6 +258,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return this
      */
     public ExcelWriter autoSizeColumn(int columnIndex) {
+        SXSSFSheet sheet = (SXSSFSheet) this.sheet;
+        sheet.trackAllColumnsForAutoSizing();
         this.sheet.autoSizeColumn(columnIndex);
         return this;
     }

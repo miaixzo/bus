@@ -26,17 +26,19 @@
 package org.aoju.bus.health.unix.aix.software;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProtocol;
 
 import java.util.function.Supplier;
 
 /**
+ * Internet Protocol Stats implementation
+ *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

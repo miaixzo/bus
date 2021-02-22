@@ -26,13 +26,13 @@
 package org.aoju.bus.health.unix.aix.hardware;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.builtin.hardware.AbstractHWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWDiskStore;
 import org.aoju.bus.health.builtin.hardware.HWPartition;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.Ls;
 import org.aoju.bus.health.unix.aix.drivers.Lscfg;
 import org.aoju.bus.health.unix.aix.drivers.Lspv;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * AIX hard disk implementation.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

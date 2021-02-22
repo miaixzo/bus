@@ -29,7 +29,7 @@ package org.aoju.bus.shade.screw.metadata;
  * 数据库接口
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface Database {

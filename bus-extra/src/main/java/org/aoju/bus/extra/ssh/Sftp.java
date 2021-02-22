@@ -56,7 +56,7 @@ import java.util.Vector;
  * </p>
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Sftp extends AbstractFtp {
@@ -306,7 +306,7 @@ public class Sftp extends AbstractFtp {
      * @return 是否打开目录
      */
     @Override
-    public boolean cd(String directory) {
+    public synchronized boolean cd(String directory) {
         if (StringKit.isBlank(directory)) {
             // 当前目录
             return true;

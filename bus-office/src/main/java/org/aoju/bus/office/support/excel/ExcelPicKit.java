@@ -43,7 +43,7 @@ import java.util.Map;
  * Excel图片工具类
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class ExcelPicKit {
@@ -113,9 +113,11 @@ public class ExcelPicKit {
                 XSSFPicture pic;
                 CTMarker ctMarker;
                 for (XSSFShape shape : shapes) {
-                    pic = (XSSFPicture) shape;
-                    ctMarker = pic.getPreferredSize().getFrom();
-                    sheetIndexPicMap.put(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()), pic.getPictureData());
+                    if (shape instanceof XSSFPicture) {
+                        pic = (XSSFPicture) shape;
+                        ctMarker = pic.getPreferredSize().getFrom();
+                        sheetIndexPicMap.put(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()), pic.getPictureData());
+                    }
                 }
             }
         }

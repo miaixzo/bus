@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  * 用于MD5,加解密和字符串编码转换
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class StringKit {
@@ -4404,6 +4404,27 @@ public class StringKit {
 
         for (CharSequence suffix : suffixes) {
             if (endWith(str, suffix, false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 给定字符串是否以任何一个字符串结尾（忽略大小写）
+     * 给定字符串和数组为空都返回false
+     *
+     * @param str      给定字符串
+     * @param suffixes 需要检测的结尾字符串
+     * @return 给定字符串是否以任何一个字符串结尾
+     */
+    public static boolean endWithAnyIgnoreCase(CharSequence str, CharSequence... suffixes) {
+        if (isEmpty(str) || ArrayKit.isEmpty(suffixes)) {
+            return false;
+        }
+
+        for (CharSequence suffix : suffixes) {
+            if (endWith(str, suffix, true)) {
                 return true;
             }
         }

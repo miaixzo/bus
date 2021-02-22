@@ -43,7 +43,7 @@ import org.aoju.bus.oauth.magic.Property;
  * 今日头条登录
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class ToutiaoProvider extends AbstractProvider {

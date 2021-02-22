@@ -44,7 +44,7 @@ import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
  * hardware, low-level user input events, and the windowing system.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public interface CoreGraphics extends Library {
@@ -64,21 +64,31 @@ public interface CoreGraphics extends Library {
 
     boolean CGRectMakeWithDictionaryRepresentation(CFDictionaryRef dict, CGRect rect);
 
+    /**
+     * A point with X and Y coordinates
+     */
     @FieldOrder({"x", "y"})
     class CGPoint extends Structure {
         public double x;
         public double y;
     }
 
+    /**
+     * A size with width and height
+     */
     @FieldOrder({"width", "height"})
     class CGSize extends Structure {
         public double width;
         public double height;
     }
 
+    /**
+     * A rectangle with origin and size
+     */
     @FieldOrder({"origin", "size"})
     class CGRect extends Structure {
         public CGPoint origin;
         public CGSize size;
     }
+
 }

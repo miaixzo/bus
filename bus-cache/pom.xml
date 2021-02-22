@@ -6,7 +6,7 @@
 
     <groupId>org.aoju</groupId>
     <artifactId>bus-cache</artifactId>
-    <version>6.1.9</version>
+    <version>6.2.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -42,8 +42,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <spring.boot.version>2.4.0</spring.boot.version>
-        <lombok.version>1.18.16</lombok.version>
+        <spring.boot.version>2.4.3</spring.boot.version>
+        <lombok.version>1.18.18</lombok.version>
         <guice.version>4.2.3</guice.version>
         <jedis.version>2.9.0</jedis.version>
         <xmemcached.version>2.4.6</xmemcached.version>

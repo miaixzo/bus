@@ -37,10 +37,10 @@ import org.tinylog.provider.LoggingProvider;
 import org.tinylog.provider.ProviderRegistry;
 
 /**
- * tinylog2
+ * tinylog2 log.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class TinyLog extends AbstractAware {

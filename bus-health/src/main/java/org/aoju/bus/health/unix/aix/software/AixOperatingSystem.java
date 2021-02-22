@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.aix.software;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -37,7 +38,6 @@ import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.*;
 import org.aoju.bus.health.unix.aix.AixLibc;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.Uptime;
 import org.aoju.bus.health.unix.aix.drivers.Who;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatConfig;
@@ -46,6 +46,7 @@ import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProcess;
 import java.io.File;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * AIX (Advanced Interactive eXecutive) is a series of proprietary Unix
@@ -53,7 +54,7 @@ import java.util.function.Supplier;
  * platforms.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -77,7 +78,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         Perfstat.perfstat_partition_config_t cfg = config.get();
 
         String systemName = System.getProperty("os.name");
@@ -96,7 +97,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
                 releaseNumber = releaseNumber.substring(idx + 1);
             }
         }
-        return new FamilyVersionInfo(systemName, new OSVersionInfo(versionNumber, archName, releaseNumber));
+        return Pair.of(systemName, new OSVersionInfo(versionNumber, archName, releaseNumber));
     }
 
     @Override
@@ -119,10 +120,15 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getProcesses(int limit, ProcessSort sort) {
-        List<OSProcess> procs = getProcessListFromPS(
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromPS(
                 "ps -A -o st,pid,ppid,user,uid,group,gid,thcount,pri,vsize,rssize,etime,time,comm,pagein,args", -1);
-        return processSort(procs, limit, sort);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        return queryAllProcesses().stream().filter(p -> p.getParentProcessID() == parentPid)
+                .collect(Collectors.toList());
     }
 
     @Override

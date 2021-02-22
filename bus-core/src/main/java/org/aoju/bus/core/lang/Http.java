@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * HTTP 相关常量
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Http {
@@ -132,6 +132,10 @@ public class Http {
      * HTTP Method ALL
      */
     public static final String ALL = "ALL";
+    /**
+     * HTTP Method NONE
+     */
+    public static final String NONE = "NONE";
     /**
      * Supports some version of SSL; may support other versions
      */

@@ -27,6 +27,7 @@ package org.aoju.bus.health.windows.software;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.Kernel32Util;
 import com.sun.jna.platform.win32.WinError;
@@ -37,7 +38,6 @@ import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.AbstractNetworkParams;
-import org.aoju.bus.health.windows.IPHlpAPI;
 import org.aoju.bus.logger.Logger;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ import java.util.List;
  * WindowsNetworkParams class.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

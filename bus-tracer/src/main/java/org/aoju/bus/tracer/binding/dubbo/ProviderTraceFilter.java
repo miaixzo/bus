@@ -25,6 +25,33 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.binding.dubbo;
 
-public class ProviderTraceFilter {
+import org.apache.dubbo.common.constants.CommonConstants;
+import org.apache.dubbo.common.extension.Activate;
+import org.apache.dubbo.rpc.Invocation;
+import org.apache.dubbo.rpc.Invoker;
+import org.apache.dubbo.rpc.Result;
+
+/**
+ * @author Kimi Liu
+ * @version 6.2.0
+ * @since JDK 1.8+
+ */
+@Activate(group = CommonConstants.PROVIDER)
+public class ProviderTraceFilter extends BaseDubboFilter {
+
+    @Override
+    public Result invoke(Invoker<?> invoker, Invocation invocation) {
+        return invoker.invoke(invocation);
+    }
+
+    @Override
+    public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
+
+    }
+
+    @Override
+    public void onError(Throwable throwable, Invoker<?> invoker, Invocation invocation) {
+
+    }
 
 }

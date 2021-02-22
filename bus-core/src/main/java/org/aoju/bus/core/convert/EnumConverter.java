@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  * 无泛型检查的枚举转换器
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class EnumConverter extends AbstractConverter<Object> {

@@ -43,10 +43,10 @@ import java.util.Iterator;
  * NIO客户端
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
-public class QuickNioClient implements Closeable {
+public class NioQuickClient implements Closeable {
 
     private Selector selector;
     private SocketChannel channel;
@@ -58,7 +58,7 @@ public class QuickNioClient implements Closeable {
      * @param host 服务器地址
      * @param port 端口
      */
-    public QuickNioClient(String host, int port) {
+    public NioQuickClient(String host, int port) {
         init(new InetSocketAddress(host, port));
     }
 
@@ -67,7 +67,7 @@ public class QuickNioClient implements Closeable {
      *
      * @param address 服务器地址
      */
-    public QuickNioClient(InetSocketAddress address) {
+    public NioQuickClient(InetSocketAddress address) {
         init(address);
     }
 
@@ -77,7 +77,7 @@ public class QuickNioClient implements Closeable {
      * @param address 地址和端口
      * @return this
      */
-    public QuickNioClient init(InetSocketAddress address) {
+    public NioQuickClient init(InetSocketAddress address) {
         try {
             //创建一个SocketChannel对象，配置成非阻塞模式
             this.channel = SocketChannel.open();
@@ -103,7 +103,7 @@ public class QuickNioClient implements Closeable {
      * @param handler {@link ChannelSocketHandler}
      * @return this
      */
-    public QuickNioClient setChannelHandler(ChannelSocketHandler handler) {
+    public NioQuickClient setChannelHandler(ChannelSocketHandler handler) {
         this.handler = handler;
         return this;
     }
@@ -161,7 +161,7 @@ public class QuickNioClient implements Closeable {
      * @param datas 发送的数据
      * @return this
      */
-    public QuickNioClient write(ByteBuffer... datas) {
+    public NioQuickClient write(ByteBuffer... datas) {
         try {
             this.channel.write(datas);
         } catch (IOException e) {

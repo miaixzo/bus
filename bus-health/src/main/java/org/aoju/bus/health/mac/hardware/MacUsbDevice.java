@@ -45,7 +45,7 @@ import java.util.*;
  * Mac Usb Device
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @Immutable
@@ -155,8 +155,8 @@ public class MacUsbDevice extends AbstractUsbDevice {
             locationIDKey.release();
             ioPropertyMatchKey.release();
             iter.release();
-            root.release();
         }
+        root.release();
 
         // Build tree and return
         List<UsbDevice> controllerDevices = new ArrayList<>();

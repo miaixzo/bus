@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.freebsd.software;
 
+import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
@@ -35,10 +36,13 @@ import org.aoju.bus.health.builtin.software.OSProcess;
 import java.util.List;
 
 /**
+ * OSThread implementation
+ *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
+@ThreadSafe
 public class FreeBsdOSThread extends AbstractOSThread {
 
     private int threadId;

@@ -34,7 +34,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class Normal {
@@ -290,10 +290,19 @@ public class Normal {
     };
 
     /**
+     * 简洁计数单位
+     */
+    public static final String[] NUMBER_SUFFIX = new String[]{
+            "k", "w", "", "m", "", "", "b", "", "", "t", "", "", "p",
+            "", "", "e"
+    };
+
+    /**
      * 表示为真的字符串
      */
     public static final String[] TRUE_ARRAY = {
-            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确", "對", "√"
+            "true", "t", "yes", "y", "ok", "是", "对", "真", "正确", "對",
+            "√"
     };
 
     /**

@@ -40,8 +40,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * The FreeBSD File System contains {@link OSFileStore}s which
+ * are a storage pool, device, partition, volume, concrete file system or other
+ * implementation specific means of file storage.
+ *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class OpenBsdFileSystem extends AbstractFileSystem {

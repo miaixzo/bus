@@ -35,7 +35,7 @@ import java.util.Map;
  * Utility to query Memory performance counter
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -56,11 +56,11 @@ public final class MemoryInformation {
         return PerfCounterQuery.queryValues(PageSwapProperty.class, MEMORY, WIN32_PERF_RAW_DATA_PERF_OS_MEMORY);
     }
 
-    /*
+    /**
      * For pages in/out
      */
     public enum PageSwapProperty implements PdhCounterProperty {
-        PAGESINPUTPERSEC(null, "Pages Input/sec"), //
+        PAGESINPUTPERSEC(null, "Pages Input/sec"),
         PAGESOUTPUTPERSEC(null, "Pages Output/sec");
 
         private final String instance;

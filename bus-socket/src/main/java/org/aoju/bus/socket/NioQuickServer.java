@@ -44,10 +44,10 @@ import java.util.Iterator;
  * 基于NIO的Socket服务端实现
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
-public class QuickNioServer implements Closeable {
+public class NioQuickServer implements Closeable {
 
     private static final CompletionAcceptHandler ACCEPT_HANDLER = new CompletionAcceptHandler();
 
@@ -60,7 +60,7 @@ public class QuickNioServer implements Closeable {
      *
      * @param port 端口
      */
-    public QuickNioServer(int port) {
+    public NioQuickServer(int port) {
         init(new InetSocketAddress(port));
     }
 
@@ -70,7 +70,7 @@ public class QuickNioServer implements Closeable {
      * @param address 地址和端口
      * @return this
      */
-    public QuickNioServer init(InetSocketAddress address) {
+    public NioQuickServer init(InetSocketAddress address) {
         try {
             // 打开服务器套接字通道
             this.serverSocketChannel = ServerSocketChannel.open();
@@ -98,7 +98,7 @@ public class QuickNioServer implements Closeable {
      * @param handler {@link  ChannelSocketHandler}
      * @return this
      */
-    public QuickNioServer setChannelHandler(ChannelSocketHandler handler) {
+    public NioQuickServer setChannelHandler(ChannelSocketHandler handler) {
         this.handler = handler;
         return this;
     }

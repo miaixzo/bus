@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.core.toolkit;
 
+import org.aoju.bus.core.lang.Console;
 import org.aoju.bus.core.thread.ExecutorBuilder;
 import org.aoju.bus.core.thread.GlobalThread;
 import org.aoju.bus.core.thread.NamedThreadFactory;
@@ -37,7 +38,7 @@ import java.util.concurrent.*;
  * 线程池工具
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class ThreadKit {
@@ -537,7 +538,7 @@ public class ThreadKit {
             try {
                 obj.wait();
             } catch (InterruptedException e) {
-                // ignore
+                Console.error(e.getMessage());
             }
         }
     }
@@ -546,6 +547,48 @@ public class ThreadKit {
         public FastBufferThread(Runnable target, String name) {
             super(target, name);
         }
+    }
+
+    /**
+     * 创建{@link ScheduledThreadPoolExecutor}
+     *
+     * @param corePoolSize 初始线程池大小
+     * @return {@link ScheduledThreadPoolExecutor}
+     */
+    public static ScheduledThreadPoolExecutor createScheduledExecutor(int corePoolSize) {
+        return new ScheduledThreadPoolExecutor(corePoolSize);
+    }
+
+    /**
+     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式。
+     *
+     * <ul>
+     *     <li>fixedRate 模式：下一次任务等待上一次任务执行完毕后再启动</li>
+     *     <li>fixedDelay模式：下一次任务不等待上一次任务，到周期自动执行</li>
+     * </ul>
+     *
+     * @param executor              定时任务线程池，{@code null}新建一个默认线程池
+     * @param command               需要定时执行的逻辑
+     * @param initialDelay          初始延迟
+     * @param period                执行周期，单位毫秒
+     * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
+     * @return {@link ScheduledThreadPoolExecutor}
+     */
+    public static ScheduledThreadPoolExecutor schedule(ScheduledThreadPoolExecutor executor,
+                                                       Runnable command,
+                                                       long initialDelay,
+                                                       long period,
+                                                       boolean fixedRateOrFixedDelay) {
+        if (null == executor) {
+            executor = createScheduledExecutor(2);
+        }
+        if (fixedRateOrFixedDelay) {
+            executor.scheduleAtFixedRate(command, initialDelay, period, TimeUnit.NANOSECONDS);
+        } else {
+            executor.scheduleWithFixedDelay(command, initialDelay, period, TimeUnit.NANOSECONDS);
+        }
+
+        return executor;
     }
 
 }

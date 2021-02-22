@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
  * String parsing utility.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -538,12 +538,15 @@ public final class Builder {
 
     /**
      * Read a file and return a map of string keys to string values contained
-     * therein. Intended primarily for Linux /proc/[pid]/io
+     * therein. Intended primarily for Linux {@code /proc/[pid]} files to provide
+     * more detailed or accurate information not available in the API.
      *
      * @param filename  The file to read
-     * @param separator Characters in each line of the file that separate the key and the
-     *                  value
-     * @return The map contained in the file, if any; otherwise empty map
+     * @param separator Character(s) in each line of the file that separate the key and
+     *                  the value.
+     * @return The map contained in the file, delimited by the separator, with the
+     * value whitespace trimmed. If keys and values are not parsed, an empty
+     * map is returned.
      */
     public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
         Map<String, String> map = new HashMap<>();
@@ -974,13 +977,27 @@ public final class Builder {
     }
 
     /**
-     * Convert a byte array to its integer representation.
+     * Convert a byte array to its (long) integer representation assuming big endian
+     * ordering.
      *
      * @param bytes An array of bytes no smaller than the size to be converted
      * @param size  Number of bytes to convert to the long. May not exceed 8.
-     * @return An integer representing the byte array as a 64-bit number
+     * @return A long integer representing the byte array
      */
     public static long byteArrayToLong(byte[] bytes, int size) {
+        return byteArrayToLong(bytes, size, true);
+    }
+
+    /**
+     * Convert a byte array to its (long) integer representation in the specified
+     * endianness.
+     *
+     * @param bytes     An array of bytes no smaller than the size to be converted
+     * @param size      Number of bytes to convert to the long. May not exceed 8.
+     * @param bigEndian True to parse big-endian, false to parse little-endian
+     * @return An long integer representing the byte array
+     */
+    public static long byteArrayToLong(byte[] bytes, int size, boolean bigEndian) {
         if (size > 8) {
             throw new IllegalArgumentException("Can't convert more than 8 bytes.");
         }
@@ -989,10 +1006,15 @@ public final class Builder {
         }
         long total = 0L;
         for (int i = 0; i < size; i++) {
-            total = total << 8 | bytes[i] & 0xff;
+            if (bigEndian) {
+                total = total << 8 | bytes[i] & 0xff;
+            } else {
+                total = total << 8 | bytes[size - i - 1] & 0xff;
+            }
         }
         return total;
     }
+
 
     /**
      * Convert a byte array to its floating point representation.

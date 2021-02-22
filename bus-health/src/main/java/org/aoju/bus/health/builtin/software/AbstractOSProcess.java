@@ -37,7 +37,7 @@ import java.util.function.Supplier;
  * execution that execute instructions concurrently.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 @ThreadSafe

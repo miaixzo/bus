@@ -35,7 +35,7 @@ import java.io.*;
  * 文件-异步回调
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public abstract class FileCallback extends AbsCallback {

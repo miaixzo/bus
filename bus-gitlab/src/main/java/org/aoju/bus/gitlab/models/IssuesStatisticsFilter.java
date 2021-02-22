@@ -39,7 +39,7 @@ import java.util.List;
  * This class is used to filter issues when getting issue statistics. of them.
  *
  * @author Kimi Liu
- * @version 6.1.9
+ * @version 6.2.0
  * @since JDK 1.8+
  */
 public class IssuesStatisticsFilter {
