@@ -195,7 +195,6 @@ public class TcpAioSession<T> extends AioSession {
      */
     public synchronized void close(boolean immediate) {
         if (status == SESSION_STATUS_CLOSED) {
-            System.out.println("ignore, session:" + getSessionID() + " is closed:");
             return;
         }
         status = immediate ? SESSION_STATUS_CLOSED : SESSION_STATUS_CLOSING;

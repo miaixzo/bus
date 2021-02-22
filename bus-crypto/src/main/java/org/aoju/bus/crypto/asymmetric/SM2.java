@@ -409,22 +409,24 @@ public class SM2 extends Safety<SM2> {
     }
 
     /**
-     * 获取密钥类型对应的加密参数对象{@link CipherParameters}
+     * 获得私钥D值（编码后的私钥）
      *
-     * @param keyType Key类型枚举，包括私钥或公钥
-     * @return {@link CipherParameters}
+     * @return D值
+     * @since 5.5.9
      */
-    private CipherParameters getCipherParameters(KeyType keyType) {
-        switch (keyType) {
-            case PublicKey:
-                Assert.notNull(this.publicKeyParams, "PublicKey must be not null !");
-                return this.publicKeyParams;
-            case PrivateKey:
-                Assert.notNull(this.privateKeyParams, "PrivateKey must be not null !");
-                return this.privateKeyParams;
-        }
+    public byte[] getD() {
+        return this.privateKeyParams.getD().toByteArray();
+    }
 
-        return null;
+    /**
+     * 获得公钥Q值（编码后的公钥）
+     *
+     * @param isCompressed 是否压缩
+     * @return Q值
+     * @since 5.5.9
+     */
+    public byte[] getQ(boolean isCompressed) {
+        return this.publicKeyParams.getQ().getEncoded(isCompressed);
     }
 
     /**
@@ -483,6 +485,25 @@ public class SM2 extends Safety<SM2> {
         this.engine = null;
         this.signer = null;
         return this;
+    }
+
+    /**
+     * 获取密钥类型对应的加密参数对象{@link CipherParameters}
+     *
+     * @param keyType Key类型枚举，包括私钥或公钥
+     * @return {@link CipherParameters}
+     */
+    private CipherParameters getCipherParameters(KeyType keyType) {
+        switch (keyType) {
+            case PublicKey:
+                Assert.notNull(this.publicKeyParams, "PublicKey must be not null !");
+                return this.publicKeyParams;
+            case PrivateKey:
+                Assert.notNull(this.privateKeyParams, "PrivateKey must be not null !");
+                return this.privateKeyParams;
+        }
+
+        return null;
     }
 
 }

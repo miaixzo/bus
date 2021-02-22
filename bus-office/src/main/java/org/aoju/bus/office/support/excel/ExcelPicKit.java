@@ -113,9 +113,11 @@ public class ExcelPicKit {
                 XSSFPicture pic;
                 CTMarker ctMarker;
                 for (XSSFShape shape : shapes) {
-                    pic = (XSSFPicture) shape;
-                    ctMarker = pic.getPreferredSize().getFrom();
-                    sheetIndexPicMap.put(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()), pic.getPictureData());
+                    if (shape instanceof XSSFPicture) {
+                        pic = (XSSFPicture) shape;
+                        ctMarker = pic.getPreferredSize().getFrom();
+                        sheetIndexPicMap.put(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()), pic.getPictureData());
+                    }
                 }
             }
         }

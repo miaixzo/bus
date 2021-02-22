@@ -27,6 +27,7 @@ package org.aoju.bus.extra.ftp;
 
 import org.aoju.bus.core.lang.Charset;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -127,7 +128,12 @@ public abstract class AbstractFtp implements Closeable {
     public boolean exist(String path) {
         final String fileName = FileKit.getName(path);
         final String dir = StringKit.removeSuffix(path, fileName);
-        final List<String> names = ls(dir);
+        final List<String> names;
+        try {
+            names = ls(dir);
+        } catch (InstrumentException ignore) {
+            return false;
+        }
         return containsIgnoreCase(names, fileName);
     }
 

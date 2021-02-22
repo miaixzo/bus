@@ -27,6 +27,7 @@ package org.aoju.bus.core.convert;
 
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.toolkit.MathKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
 
@@ -103,6 +104,43 @@ public class NumberWord {
         }
 
         return lm.trim() + Symbol.SPACE + xs + "ONLY";
+    }
+
+    /**
+     * 将阿拉伯数字转化为简洁计数单位，例如 2100 => 2.1k
+     * 范围默认只到w
+     *
+     * @param value 被格式化的数字
+     * @return 格式化后的数字
+     */
+    public static String formatSimple(long value) {
+        return formatSimple(value, true);
+    }
+
+    /**
+     * 将阿拉伯数字转化为简洁计数单位，例如 2100 => 2.1k
+     *
+     * @param value 对应数字的值
+     * @param isTwo 控制是否为只为k、w，例如当为{@code false}时返回4.38m，{@code true}返回438.43w
+     * @return 格式化后的数字
+     */
+    public static String formatSimple(long value, boolean isTwo) {
+        if (value < 1000) {
+            return String.valueOf(value);
+        }
+        int index = -1;
+        double res = value;
+        while (res > 10 && (false == isTwo || index < 1)) {
+            if (res > 1000) {
+                res = res / 1000;
+                index++;
+            }
+            if (res > 10) {
+                res = res / 10;
+                index++;
+            }
+        }
+        return String.format("%s%s", MathKit.decimalFormat("#.##", res), Normal.NUMBER_SUFFIX[index]);
     }
 
     private static String parseFirst(String s) {

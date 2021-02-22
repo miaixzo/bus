@@ -186,7 +186,7 @@ public class DayWrapper implements Serializable {
             this.lunar = new Solar(localDateTime.getYear(), localDateTime.getMonthValue(), localDateTime.getDayOfMonth()).getLunar();
             this.lunarDateStr = lunar.toString();
             this.lunarDay = lunar.getDayInChinese();
-            this.solarTerm = lunar.getSolarTerm();
+            this.solarTerm = lunar.getSolarTerm(false);
         }
 
         // 节假日

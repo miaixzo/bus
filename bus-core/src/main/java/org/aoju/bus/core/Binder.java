@@ -91,8 +91,10 @@ public class Binder {
         this(placeholderPrefix, placeholderSuffix, null, true);
     }
 
-    public Binder(String placeholderPrefix, String placeholderSuffix,
-                  String valueSeparator, boolean ignoreUnresolvablePlaceholders) {
+    public Binder(String placeholderPrefix,
+                  String placeholderSuffix,
+                  String valueSeparator,
+                  boolean ignoreUnresolvablePlaceholders) {
 
         Assert.notNull(placeholderPrefix, "'placeholderPrefix' must not be null");
         Assert.notNull(placeholderSuffix, "'placeholderSuffix' must not be null");

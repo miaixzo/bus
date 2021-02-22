@@ -921,6 +921,20 @@ public class Convert {
     }
 
     /**
+     * 将阿拉伯数字转为精简表示形式，例如:
+     *
+     * <pre>
+     *     1200 -> 1.2k
+     * </pre>
+     *
+     * @param number {@link Number}对象
+     * @return 英文表达式
+     */
+    public static String numberToSimple(Number number) {
+        return NumberWord.formatSimple(number.longValue());
+    }
+
+    /**
      * 将阿拉伯数字转为中文表达方式
      *
      * @param number          数字

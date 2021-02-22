@@ -2586,6 +2586,46 @@ public class Almanac extends Converter {
     }
 
     /**
+     * 获取某分钟的开始时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar beginOfMinute(Calendar calendar) {
+        return truncate(calendar, Fields.Type.MINUTE);
+    }
+
+    /**
+     * 获取某分钟的结束时间
+     *
+     * @param calendar 日期 {@link Calendar}
+     * @return {@link Calendar}
+     */
+    public static Calendar endOfMinute(Calendar calendar) {
+        return ceiling(calendar, Fields.Type.MINUTE);
+    }
+
+    /**
+     * 获取某分钟的开始时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime beginOfMinute(Date date) {
+        return new DateTime(beginOfMinute(toCalendar(date)));
+    }
+
+    /**
+     * 获取某分钟的结束时间
+     *
+     * @param date 日期
+     * @return {@link DateTime}
+     */
+    public static DateTime endOfMinute(Date date) {
+        return new DateTime(endOfMinute(toCalendar(date)));
+    }
+
+    /**
      * 获取某小时的开始时间
      *
      * @param calendar 日期 {@link Calendar}

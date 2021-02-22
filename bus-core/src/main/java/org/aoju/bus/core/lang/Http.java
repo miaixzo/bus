@@ -133,6 +133,10 @@ public class Http {
      */
     public static final String ALL = "ALL";
     /**
+     * HTTP Method NONE
+     */
+    public static final String NONE = "NONE";
+    /**
      * Supports some version of SSL; may support other versions
      */
     public static final String SSL = "SSL";

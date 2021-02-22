@@ -306,7 +306,7 @@ public class Sftp extends AbstractFtp {
      * @return 是否打开目录
      */
     @Override
-    public boolean cd(String directory) {
+    public synchronized boolean cd(String directory) {
         if (StringKit.isBlank(directory)) {
             // 当前目录
             return true;

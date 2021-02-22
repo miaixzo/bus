@@ -264,7 +264,7 @@ public class Ftp extends AbstractFtp {
      * @return 是否成功
      */
     @Override
-    public boolean cd(String directory) {
+    public synchronized boolean cd(String directory) {
         if (StringKit.isBlank(directory)) {
             return true;
         }

@@ -4411,6 +4411,27 @@ public class StringKit {
     }
 
     /**
+     * 给定字符串是否以任何一个字符串结尾（忽略大小写）
+     * 给定字符串和数组为空都返回false
+     *
+     * @param str      给定字符串
+     * @param suffixes 需要检测的结尾字符串
+     * @return 给定字符串是否以任何一个字符串结尾
+     */
+    public static boolean endWithAnyIgnoreCase(CharSequence str, CharSequence... suffixes) {
+        if (isEmpty(str) || ArrayKit.isEmpty(suffixes)) {
+            return false;
+        }
+
+        for (CharSequence suffix : suffixes) {
+            if (endWith(str, suffix, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 是否以指定字符串结尾,忽略大小写
      *
      * @param str    被监测字符串
