@@ -26,10 +26,10 @@
 package org.aoju.bus.health.unix.aix.software;
 
 import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractInternetProtocolStats;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatProtocol;
 
 import java.util.function.Supplier;

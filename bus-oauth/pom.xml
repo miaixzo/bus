@@ -43,7 +43,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
         <alipay.sdk.version>3.7.4.ALL</alipay.sdk.version>
-        <lombok.version>1.18.16</lombok.version>
+        <lombok.version>1.18.18</lombok.version>
         <fastjson.version>1.2.75</fastjson.version>
     </properties>
 

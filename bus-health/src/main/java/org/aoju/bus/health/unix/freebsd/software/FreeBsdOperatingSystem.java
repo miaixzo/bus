@@ -29,6 +29,7 @@ import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.software.*;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * FreeBSD is a free and open-source Unix-like operating system descended from
@@ -102,14 +104,14 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         String family = BsdSysctlKit.sysctl("kern.ostype", "FreeBSD");
 
         String version = BsdSysctlKit.sysctl("kern.osrelease", Normal.EMPTY);
         String versionInfo = BsdSysctlKit.sysctl("kern.version", Normal.EMPTY);
         String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
 
-        return new FamilyVersionInfo(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
+        return Pair.of(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
 
     @Override
@@ -136,9 +138,14 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getProcesses(int limit, OperatingSystem.ProcessSort sort) {
-        List<OSProcess> procs = getProcessListFromPS(-1);
-        return processSort(procs, limit, sort);
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromPS(-1);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        return queryAllProcesses().stream().filter(p -> p.getParentProcessID() == parentPid)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -194,7 +201,7 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, 0, OperatingSystem.ProcessSort.PID)) {
+        for (OSProcess p : getChildProcesses(1, ProcessFiltering.ALL_PROCESSES, ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

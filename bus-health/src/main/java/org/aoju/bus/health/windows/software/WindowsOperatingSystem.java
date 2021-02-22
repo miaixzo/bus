@@ -33,6 +33,7 @@ import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
@@ -256,22 +257,21 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public List<OSProcess> getProcesses(int limit, ProcessSort sort) {
-        List<OSProcess> procList = processMapToList(null);
-        return processSort(procList, limit, sort);
-    }
-
-    @Override
     public List<OSProcess> getProcesses(Collection<Integer> pids) {
         return processMapToList(pids);
     }
 
     @Override
-    public List<OSProcess> getChildProcesses(int parentPid, int limit, ProcessSort sort) {
+    public List<OSProcess> queryAllProcesses() {
+        return processMapToList(null);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
         Set<Integer> childPids = new HashSet<>();
         // Get processes from ToolHelp API for parent PID
         Tlhelp32.PROCESSENTRY32.ByReference processEntry = new Tlhelp32.PROCESSENTRY32.ByReference();
-        WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
+        com.sun.jna.platform.win32.WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
         try {
             while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
                 if (processEntry.th32ParentProcessID.intValue() == parentPid) {
@@ -281,8 +281,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         } finally {
             Kernel32.INSTANCE.CloseHandle(snapshot);
         }
-        List<OSProcess> procList = processMapToList(childPids);
-        return processSort(procList, limit, sort);
+        // Get modifiable version
+        return processMapToList(childPids);
     }
 
     @Override
@@ -348,10 +348,10 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public FamilyVersionInfo queryFamilyVersionInfo() {
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
         WbemcliUtil.WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
         if (versionInfo.getResultCount() < 1) {
-            return new FamilyVersionInfo("Windows", new OSVersionInfo(System.getProperty("os.version"), null, null));
+            return Pair.of("Windows", new OSVersionInfo(System.getProperty("os.version"), null, null));
         }
         // Guaranteed that versionInfo is not null and lists non-empty
         // before calling the parse*() methods
@@ -359,7 +359,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         String buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
         String version = parseVersion(versionInfo, suiteMask, buildNumber);
         String codeName = parseCodeName(suiteMask);
-        return new FamilyVersionInfo("Windows", new OSVersionInfo(version, codeName, buildNumber));
+        return Pair.of("Windows", new OSVersionInfo(version, codeName, buildNumber));
     }
 
     @Override
@@ -382,7 +382,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         boolean ntWorkstation = WmiKit.getUint32(versionInfo, OSVersionProperty.PRODUCTTYPE,
                 0) == WinNT.VER_NT_WORKSTATION;
 
-        StringBuilder verLookup = new StringBuilder(major).append('.').append(minor);
+        StringBuilder verLookup = new StringBuilder().append(major).append('.').append(minor);
 
         if (IS_VISTA_OR_GREATER && ntWorkstation) {
             verLookup.append(".nt");

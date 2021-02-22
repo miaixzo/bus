@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Apache Commons Logging
+ * Apache Commons Logging log.
  *
  * @author Kimi Liu
  * @version 6.1.9

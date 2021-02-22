@@ -25,11 +25,11 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.hardware;
 
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.hardware.*;
 import org.aoju.bus.health.unix.UnixDisplay;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.Lscfg;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatDisk;
 

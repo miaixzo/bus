@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.software;
 
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
@@ -36,7 +37,6 @@ import org.aoju.bus.health.Memoize;
 import org.aoju.bus.health.builtin.software.AbstractOSProcess;
 import org.aoju.bus.health.builtin.software.OSProcess;
 import org.aoju.bus.health.builtin.software.OSThread;
-import org.aoju.bus.health.unix.aix.Perfstat;
 import org.aoju.bus.health.unix.aix.drivers.perfstat.PerfstatCpu;
 
 import java.util.*;

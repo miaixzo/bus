@@ -26,6 +26,7 @@
 package org.aoju.bus.health.builtin.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.windows.drivers.Win32ProcessCached;
 
@@ -85,8 +86,8 @@ public interface OSProcess {
      * Gets the current working directory for the process.
      *
      * @return the process current working directory.
-     * <p>
-     * On Windows, this value is only populated for the current process.
+     *
+     *         On Windows, this value is only populated for the current process.
      */
     String getCurrentWorkingDirectory();
 
@@ -94,7 +95,7 @@ public interface OSProcess {
      * Gets the user name of the process owner.
      *
      * @return the user name. On Windows systems, also returns the domain prepended
-     * to the username.
+     *         to the username.
      */
     String getUser();
 
@@ -139,83 +140,81 @@ public interface OSProcess {
     State getState();
 
     /**
+     * Gets the process ID.
      * <p>
-     * Getter for the field <code>processID</code>.
-     * </p>
+     * While this is a 32-bit value, it is unsigned on Windows and in extremely rare
+     * circumstances may return a negative value.
      *
      * @return the processID.
      */
     int getProcessID();
 
     /**
-     * <p>
-     * Getter for the field <code>parentProcessID</code>.
-     * </p>
+     * Gets the process ID of this process's parent.
      *
      * @return the parentProcessID, if any; 0 otherwise.
      */
     int getParentProcessID();
 
     /**
-     * <p>
-     * Getter for the field <code>threadCount</code>.
-     * </p>
+     * Gets the number of threads being executed by this process. More information
+     * is available using {@link #getThreadDetails()}.
      *
      * @return the number of threads in this process.
      */
     int getThreadCount();
 
     /**
+     * Gets the priority of this process.
      * <p>
-     * Getter for the field <code>priority</code>.
-     * </p>
-     *
-     * @return the priority of this process.
-     * <p>
-     * For Linux and Unix, priority is a value in the range -20 to 19 (20 on
-     * some systems). The default priority is 0; lower priorities cause more
-     * favorable scheduling.
+     * For Linux and Unix, priority is a value in the range -20 to 19 (20 on some
+     * systems). The default priority is 0; lower priorities cause more favorable
+     * scheduling.
      * <p>
      * For Windows, priority values can range from 0 (lowest priority) to 31
      * (highest priority).
      * <p>
-     * macOS has 128 priority levels, ranging from 0 (lowest priority) to
-     * 127 (highest priority). They are divided into several major bands: 0
-     * through 51 are the normal levels; the default priority is 31. 52
-     * through 79 are the highest priority regular threads; 80 through 95
-     * are for kernel mode threads; and 96 through 127 correspond to
-     * real-time threads, which are treated differently than other threads
-     * by the scheduler.
+     * macOS has 128 priority levels, ranging from 0 (lowest priority) to 127
+     * (highest priority). They are divided into several major bands: 0 through 51
+     * are the normal levels; the default priority is 31. 52 through 79 are the
+     * highest priority regular threads; 80 through 95 are for kernel mode threads;
+     * and 96 through 127 correspond to real-time threads, which are treated
+     * differently than other threads by the scheduler.
+     *
+     * @return the priority of this process.
      */
     int getPriority();
 
     /**
-     * <p>
-     * Getter for the field <code>virtualSize</code>.
-     * </p>
+     * Gets the Virtual Memory Size (VSZ). Includes all memory that the process can
+     * access, including memory that is swapped out and memory that is from shared
+     * libraries.
      *
-     * @return the Virtual Memory Size (VSZ). It includes all memory that the
-     * process can access, including memory that is swapped out and memory
-     * that is from shared libraries.
+     * @return the Virtual Memory Size
      */
     long getVirtualSize();
 
     /**
+     * Gets the Resident Set Size (RSS). Used to show how much memory is allocated
+     * to that process and is in RAM. It does not include memory that is swapped
+     * out. It does include memory from shared libraries as long as the pages from
+     * those libraries are actually in memory. It does include all stack and heap
+     * memory.
      * <p>
-     * Getter for the field <code>residentSetSize</code>.
-     * </p>
+     * On Windows, returns the Private Working Set size, which should match the
+     * "Memory" column in the Windows Task Manager.
+     * <p>
+     * On Linux, returns the RSS value from {@code /proc/[pid]/stat}, which may be
+     * inaccurate because of a kernel-internal scalability optimization. If accurate
+     * values are required, read {@code /proc/[pid]/smaps} using
+     * {@link Builder#getKeyValueMapFromFile(String, String)}.
      *
-     * @return the Resident Set Size (RSS). On Windows, returns the Private Working
-     * Set size. It is used to show how much memory is allocated to that
-     * process and is in RAM. It does not include memory that is swapped
-     * out. It does include memory from shared libraries as long as the
-     * pages from those libraries are actually in memory. It does include
-     * all stack and heap memory.
+     * @return the Resident Set Size
      */
     long getResidentSetSize();
 
     /**
-     * Kernel/system (privileged) time used by the process.
+     * Gets kernel/system (privileged) time used by the process.
      *
      * @return the number of milliseconds the process has executed in kernel/system
      * mode.
@@ -240,7 +239,7 @@ public interface OSProcess {
      * Gets the process start time.
      *
      * @return the start time of the process in number of milliseconds since January
-     * 1, 1970 UTC.
+     *         1, 1970 UTC.
      */
     long getStartTime();
 
@@ -260,7 +259,7 @@ public interface OSProcess {
 
     /**
      * Gets the number of open file handles (or network connections) that belongs to
-     * the process
+     * the process.
      * <p>
      * On FreeBSD and Solaris, this value is only populated if information for a
      * single process id is requested.
@@ -277,7 +276,7 @@ public interface OSProcess {
      * presented by the "top" command on Linux/Unix machines.
      *
      * @return The proportion of up time that the process was executing in kernel or
-     * user mode.
+     *         user mode.
      */
     double getProcessCpuLoadCumulative();
 
@@ -295,12 +294,14 @@ public interface OSProcess {
      * System's tick counters. A polling interval of at least a few seconds is
      * recommended.
      *
-     * @param proc An {@link OSProcess} object containing statistics for this same
-     *             process collected at a prior point in time. May be null.
+     * @param proc
+     *            An {@link OSProcess} object containing statistics for this same
+     *            process collected at a prior point in time. May be null.
+     *
      * @return If the prior snapshot is for the same process at a prior point in
-     * time, the proportion of elapsed up time between the current process
-     * snapshot and the previous one that the process was executing in
-     * kernel or user mode. Returns cumulative load otherwise.
+     *         time, the proportion of elapsed up time between the current process
+     *         snapshot and the previous one that the process was executing in
+     *         kernel or user mode. Returns cumulative load otherwise.
      */
     double getProcessCpuLoadBetweenTicks(OSProcess proc);
 
@@ -312,7 +313,7 @@ public interface OSProcess {
     int getBitness();
 
     /**
-     * Retrieves the process affinity mask for this process.
+     * Gets the process affinity mask for this process.
      * <p>
      * On Windows systems with more than 64 processors, if the threads of the
      * calling process are in a single processor group, returns the process affinity
@@ -328,7 +329,7 @@ public interface OSProcess {
      * has terminated), returns zero.
      *
      * @return a bit vector in which each bit represents the processors that a
-     * process is allowed to run on.
+     *         process is allowed to run on.
      */
     long getAffinityMask();
 
@@ -337,8 +338,8 @@ public interface OSProcess {
      * which will occur if the process no longer exists.
      *
      * @return {@code true} if the update was successful, false if the update
-     * failed. In addition, on a failed update the process state will be
-     * changed to {@link State#INVALID}.
+     *         failed. In addition, on a failed update the process state will be
+     *         changed to {@link State#INVALID}.
      */
     boolean updateAttributes();
 
@@ -353,7 +354,7 @@ public interface OSProcess {
     List<OSThread> getThreadDetails();
 
     /**
-     * The number of minor (soft) faults the process has made which have not
+     * Gets the number of minor (soft) faults the process has made which have not
      * required loading a memory page from disk. Sometimes called reclaims.
      * <p>
      * Not available on Solaris. On Windows, this includes the total of major and
@@ -364,8 +365,8 @@ public interface OSProcess {
     long getMinorFaults();
 
     /**
-     * The number of major (hard) faults the process has made which have required
-     * loading a memory page from disk.
+     * Gets the number of major (hard) faults the process has made which have
+     * required loading a memory page from disk.
      * <p>
      * Not available on Solaris. Windows does not distinguish major and minor faults
      * at the process level, so this value returns 0 and major faults are included

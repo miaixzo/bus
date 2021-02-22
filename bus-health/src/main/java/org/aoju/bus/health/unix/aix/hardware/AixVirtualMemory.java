@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.aix.hardware;
 
+import com.sun.jna.platform.unix.aix.Perfstat;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractVirtualMemory;
-import org.aoju.bus.health.unix.aix.Perfstat;
 
 import java.util.function.Supplier;
 

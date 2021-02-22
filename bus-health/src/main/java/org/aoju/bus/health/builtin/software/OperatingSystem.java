@@ -29,10 +29,17 @@ import org.aoju.bus.core.annotation.Immutable;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
+import org.aoju.bus.health.Builder;
+import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.unix.Who;
+import org.aoju.bus.health.unix.Xwininfo;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * An operating system (OS) is the software on a computer that manages the way
@@ -58,13 +65,15 @@ public interface OperatingSystem {
      * The {@link Who#queryWho()} method produces similar output
      * parsing the output of the Posix-standard {@code who} command, and may
      * internally employ reentrant code on some platforms. Users may opt to use this
-     * command-line variant by default using the {@code whoCommand}
+     * command-line variant by default using the {@code oshi.os.unix.whoCommand}
      * configuration property.
      *
      * @return A list of {@link OSSession} objects representing
-     * logged-in users
+     *         logged-in users
      */
-    List<OSSession> getSessions();
+    default List<OSSession> getSessions() {
+        return Who.queryWho();
+    }
 
     /**
      * Operating system family.
@@ -104,30 +113,36 @@ public interface OperatingSystem {
     /**
      * Gets currently running processes. No order is guaranteed.
      *
-     * @return A list of {@link OSProcess} objects for the
+     * @return A list of {@link  OSProcess} objects for the
      * specified number (or all) of currently running processes, sorted as
      * specified. The list may contain null elements or processes with a
      * state of {@link OSProcess.State#INVALID} if a process terminates
      * during iteration.
      */
-    List<OSProcess> getProcesses();
+    default List<OSProcess> getProcesses() {
+        return getProcesses(null, null, 0);
+    }
 
     /**
-     * Gets currently running processes, optionally limited to the top "N" for a
-     * particular sorting order. If a positive limit is specified, returns only that
-     * number of processes; zero will return all processes. The order may be
-     * specified by the sort parameter, for example, to return the top cpu or memory
-     * consuming processes; if the sort is {@code null}, no order is guaranteed.
+     * Gets currently running processes, optionally filtering, sorting, and limited
+     * to the top "N".
      *
-     * @param limit Max number of results to return, or 0 to return all results
-     * @param sort  If not null, determines sorting of results
-     * @return A list of {@link OSProcess} objects for the
-     * specified number (or all) of currently running processes, sorted as
-     * specified. The list may contain null elements or processes with a
-     * state of {@link OSProcess.State#INVALID} if a process terminates
-     * during iteration.
+     * @param filter An optional {@link Predicate} limiting the results to the
+     *               specified filter. Some common predicates are available in
+     *               {@link ProcessSorting}. May be {@code null} for no filtering.
+     * @param sort   An optional {@link Comparator} specifying the sorting order. Some
+     *               common comparators are available in {@link ProcessSorting}. May be
+     *               {@code null} for no sorting.
+     * @param limit  Max number of results to return, or 0 to return all results
+     * @return A list of {@link  OSProcess} objects, optionally
+     * filtered, sorted, and limited to the specified number.
+     * <p>
+     * The list may contain processes with a state of
+     * {@link OSProcess.State#INVALID} if a process terminates during
+     * iteration.
      */
-    List<OSProcess> getProcesses(int limit, ProcessSort sort);
+    List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit);
+
 
     /**
      * Gets information on a {@link Collection} of currently running processes. This
@@ -137,26 +152,33 @@ public interface OperatingSystem {
      * @return A list of {@link OSProcess} objects for the
      * specified process ids if it is running
      */
-    List<OSProcess> getProcesses(Collection<Integer> pids);
+    default List<OSProcess> getProcesses(Collection<Integer> pids) {
+        return pids.stream().map(this::getProcess).filter(Objects::nonNull).filter(ProcessFiltering.VALID_PROCESS)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Gets currently running child processes of provided parent PID, optionally
-     * limited to the top "N" for a particular sorting order. If a positive limit is
-     * specified, returns only that number of processes; zero will return all
-     * processes. The order may be specified by the sort parameter, for example, to
-     * return the top cpu or memory consuming processes; if the sort is
-     * {@code null}, no order is guaranteed.
+     * filtering, sorting, and limited to the top "N".
      *
-     * @param parentPid A process ID
+     * @param parentPid The Process ID whose children to list.
+     * @param filter    An optional {@link Predicate} limiting the results to the
+     *                  specified filter. Some common predicates are available in
+     *                  {@link ProcessSorting}. May be {@code null} for no filtering.
+     * @param sort      An optional {@link Comparator} specifying the sorting order. Some
+     *                  common comparators are available in {@link ProcessSorting}. May be
+     *                  {@code null} for no sorting.
      * @param limit     Max number of results to return, or 0 to return all results
-     * @param sort      If not null, determines sorting of results
      * @return A list of {@link OSProcess} objects representing the
-     * specified number (or all) of currently running child processes of the
-     * provided PID, sorted as specified. The list may contain null elements
-     * or processes with a state of {@link OSProcess.State#INVALID} if a
-     * process terminates during iteration.
+     * currently running child processes of the provided PID, optionally
+     * filtered, sorted, and limited to the specified number.
+     * <p>
+     * The list may contain processes with a state of
+     * {@link OSProcess.State#INVALID} if a process terminates during
+     * iteration.
      */
-    List<OSProcess> getChildProcesses(int parentPid, int limit, ProcessSort sort);
+    List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
+                                      int limit);
 
     /**
      * Gets information on a currently running process
@@ -185,7 +207,11 @@ public interface OperatingSystem {
      * @return A list of {@link OSDesktopWindow} objects
      * representing the desktop windows.
      */
-    List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly);
+    default List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
+        // Default X11 implementation for Unix-like operating systems.
+        // Overridden on Windows and macOS
+        return Xwininfo.queryXWindows(visibleOnly);
+    }
 
     /**
      * Gets the current process ID
@@ -236,7 +262,9 @@ public interface OperatingSystem {
      *
      * @return True if this process has elevated permissions
      */
-    boolean isElevated();
+    default boolean isElevated() {
+        return 0 == Builder.parseIntOrDefault(Executor.getFirstAnswer("id -u"), -1);
+    }
 
     /**
      * Instantiates a {@link NetworkParams} object.
@@ -251,13 +279,83 @@ public interface OperatingSystem {
      *
      * @return An array of {@link OSService} objects
      */
-    OSService[] getServices();
+    default OSService[] getServices() {
+        return new OSService[0];
+    }
 
     /**
-     * Controls sorting of Process output
+     * Constants which may be used to filter Process lists in
+     * {@link #getProcesses(Predicate, Comparator, int)} and
+     * {@link #getChildProcesses(int, Predicate, Comparator, int)}.
      */
-    enum ProcessSort {
-        CPU, MEMORY, OLDEST, NEWEST, PID, PARENTPID, NAME
+    final class ProcessFiltering {
+
+        /**
+         * No filtering.
+         */
+        public static final Predicate<OSProcess> ALL_PROCESSES = p -> true;
+        /**
+         * Exclude processes with {@link OSProcess.State#INVALID} process state.
+         */
+        public static final Predicate<OSProcess> VALID_PROCESS = p -> !p.getState().equals(OSProcess.State.INVALID);
+        /**
+         * Exclude child processes. Only include processes which are their own parent.
+         */
+        public static final Predicate<OSProcess> NO_PARENT = p -> p.getParentProcessID() == p.getProcessID();
+        /**
+         * Only incude 64-bit processes.
+         */
+        public static final Predicate<OSProcess> BITNESS_64 = p -> p.getBitness() == 64;
+        /**
+         * Only include 32-bit processes.
+         */
+        public static final Predicate<OSProcess> BITNESS_32 = p -> p.getBitness() == 32;
+    }
+
+    /**
+     * Constants which may be used to sort Process lists in
+     * {@link #getProcesses(Predicate, Comparator, int)} and
+     * {@link #getChildProcesses(int, Predicate, Comparator, int)}.
+     */
+    final class ProcessSorting {
+
+        /**
+         * No sorting
+         */
+        public static final Comparator<OSProcess> NO_SORTING = (p1, p2) -> 0;
+        /**
+         * Sort by decreasing cumulative CPU percentage
+         */
+        public static final Comparator<OSProcess> CPU_DESC = Comparator
+                .comparingDouble(OSProcess::getProcessCpuLoadCumulative).reversed();
+        /**
+         * Sort by decreasing Resident Set Size (RSS)
+         */
+        public static final Comparator<OSProcess> RSS_DESC = Comparator.comparingLong(OSProcess::getResidentSetSize)
+                .reversed();
+        /**
+         * Sort by up time, newest processes first
+         */
+        public static final Comparator<OSProcess> UPTIME_ASC = Comparator.comparingLong(OSProcess::getUpTime);
+        /**
+         * Sort by up time, oldest processes first
+         */
+        public static final Comparator<OSProcess> UPTIME_DESC = UPTIME_ASC.reversed();
+        /**
+         * Sort by Process Id
+         */
+        public static final Comparator<OSProcess> PID_ASC = Comparator.comparingInt(OSProcess::getProcessID);
+        /**
+         * Sort by Parent Process Id
+         */
+        public static final Comparator<OSProcess> PARENTPID_ASC = Comparator
+                .comparingInt(OSProcess::getParentProcessID);
+        /**
+         * Sort by Process Name (case insensitive)
+         */
+        public static final Comparator<OSProcess> NAME_ASC = Comparator.comparing(OSProcess::getName,
+                String.CASE_INSENSITIVE_ORDER);
+
     }
 
     /**

@@ -37,7 +37,7 @@ import org.tinylog.provider.LoggingProvider;
 import org.tinylog.provider.ProviderRegistry;
 
 /**
- * tinylog2
+ * tinylog2 log.
  *
  * @author Kimi Liu
  * @version 6.1.9

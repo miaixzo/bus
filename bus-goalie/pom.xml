@@ -38,21 +38,17 @@
         <url>https://github.com/aoju/bus/issues</url>
     </issueManagement>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.0</version>
-    </parent>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.compiler.version>1.8</project.compiler.version>
-        <lombok.version>1.18.16</lombok.version>
+        <spring.boot.version>2.4.3</spring.boot.version>
+        <lombok.version>1.18.18</lombok.version>
         <guava.version>30.0-jre</guava.version>
         <netty.version>4.1.51.Final</netty.version>
         <marshalling.version>2.0.5.Final</marshalling.version>
         <asm.version>7.2</asm.version>
+        <lombok.version>1.18.18</lombok.version>
     </properties>
 
     <dependencies>
@@ -84,19 +80,21 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+            <version>${spring.boot.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>

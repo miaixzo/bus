@@ -25,12 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.hardware;
 
+import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
-import org.aoju.bus.health.windows.IPHlpAPI;
 import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
@@ -48,7 +48,7 @@ import java.util.List;
 public final class WindowsNetworkIF extends AbstractNetworkIF {
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
-    private static final byte CONNECTOR_PRESENT_BIT = 0b00100000;
+    private static final byte CONNECTOR_PRESENT_BIT = 0b00000100;
 
     private int ifType;
     private int ndisPhysicalMediumType;
