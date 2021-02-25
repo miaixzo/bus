@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.openbsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractSoundCard;
 import org.aoju.bus.health.builtin.hardware.SoundCard;
@@ -81,7 +82,7 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
         Map<String, String> nameMap = new HashMap<>();
         Map<String, String> codecMap = new HashMap<>();
         Map<String, String> versionMap = new HashMap<>();
-        String key = "";
+        String key = Normal.EMPTY;
         for (String line : dmesg) {
             Matcher m = PCI_AT.matcher(line);
             if (m.matches() && names.contains(m.group(1))) {
@@ -96,7 +97,7 @@ final class OpenBsdSoundCard extends AbstractSoundCard {
                     codecMap.put(key, line.substring(idx + 1).trim());
                 }
                 // clear key so we don't keep looking
-                key = "";
+                key = Normal.EMPTY;
             }
         }
         List<SoundCard> soundCards = new ArrayList<>();

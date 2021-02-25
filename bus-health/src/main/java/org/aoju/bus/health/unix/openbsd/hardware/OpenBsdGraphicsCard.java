@@ -80,11 +80,11 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
         if (devices.isEmpty()) {
             return Collections.emptyList();
         }
-        String name = "";
-        String vendorId = "";
-        String productId = "";
+        String name = Normal.EMPTY;
+        String vendorId = Normal.EMPTY;
+        String productId = Normal.EMPTY;
         boolean classCodeFound = false;
-        String versionInfo = "";
+        String versionInfo = Normal.EMPTY;
         for (String line : devices) {
             Matcher m = PCI_DUMP_HEADER.matcher(line);
             if (m.matches()) {
@@ -97,10 +97,10 @@ final class OpenBsdGraphicsCard extends AbstractGraphicsCard {
                 // Device name is the captured pattern
                 name = m.group(1);
                 // Reset values
-                vendorId = "";
-                productId = "";
+                vendorId = Normal.EMPTY;
+                productId = Normal.EMPTY;
                 classCodeFound = false;
-                versionInfo = "";
+                versionInfo = Normal.EMPTY;
             } else {
                 int idx;
                 // Look for:

@@ -781,7 +781,7 @@ public class Solar {
         // 年月日时分秒
         String strYmdHms = strYmd + Symbol.SPACE
                 + (hour < 10 ? "0" : Normal.EMPTY) + hour + Symbol.C_COLON
-                + (minute < 10 ? "0" : "") + minute + Symbol.C_COLON
+                + (minute < 10 ? "0" : Normal.EMPTY) + minute + Symbol.C_COLON
                 + (second < 10 ? "0" : Normal.EMPTY) + second;
 
         if (ObjectKit.isNotEmpty(args)) {

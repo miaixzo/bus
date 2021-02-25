@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.openbsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -86,7 +87,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
         return Builder.parseLongOrDefault(
-                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
+                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
                 System.currentTimeMillis() / 1000);
     }
 
@@ -102,10 +103,10 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         mib[1] = OpenBsdLibc.KERN_OSTYPE;
         String family = OpenBsdSysctlKit.sysctl(mib, "OpenBSD");
         mib[1] = OpenBsdLibc.KERN_OSRELEASE;
-        String version = OpenBsdSysctlKit.sysctl(mib, "");
+        String version = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
         mib[1] = OpenBsdLibc.KERN_VERSION;
-        String versionInfo = OpenBsdSysctlKit.sysctl(mib, "");
-        String buildNumber = versionInfo.split(":")[0].replace(family, "").replace(version, "").trim();
+        String versionInfo = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
+        String buildNumber = versionInfo.split(":")[0].replace(family, "").replace(version, Normal.EMPTY).trim();
 
         return Pair.of(family, new OSVersionInfo(version, null, buildNumber));
     }

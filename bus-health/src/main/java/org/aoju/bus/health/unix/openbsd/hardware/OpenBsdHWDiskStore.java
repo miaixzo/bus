@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.openbsd.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Quartet;
 import org.aoju.bus.health.Builder;
@@ -79,7 +80,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
 
         // Get list of disks from sysctl
         // hw.disknames=sd0:2cf69345d371cd82,cd0:,sd1:
-        String[] devices = OpenBsdSysctlKit.sysctl("hw.disknames", "").split(",");
+        String[] devices = OpenBsdSysctlKit.sysctl("hw.disknames", Normal.EMPTY).split(",");
         OpenBsdHWDiskStore store;
         String diskName;
         for (String device : devices) {

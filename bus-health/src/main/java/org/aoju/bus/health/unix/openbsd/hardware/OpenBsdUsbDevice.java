@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.openbsd.hardware;
 
 import org.aoju.bus.core.annotation.Immutable;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Executor;
 import org.aoju.bus.health.builtin.hardware.AbstractUsbDevice;
 import org.aoju.bus.health.builtin.hardware.UsbDevice;
@@ -90,10 +91,10 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
 
         List<String> rootHubs = new ArrayList<>();
         // For each item enumerated, store information in the maps
-        String key = "";
+        String key = Normal.EMPTY;
         // Addresses repeat for each controller:
         // prepend the controller /dev/usb* for the key
-        String parent = "";
+        String parent = Normal.EMPTY;
         // Enumerate all devices and build information maps.
         // This will build the entire device tree in hubMap
         for (String line : Executor.runNative("usbdevs -v")) {
@@ -133,7 +134,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
                 if (idx >= 0) {
                     serialMap.put(key, line.substring(idx + 8).trim());
                 }
-                key = "";
+                key = Normal.EMPTY;
             }
         }
 
@@ -181,7 +182,7 @@ public class OpenBsdUsbDevice extends AbstractUsbDevice {
         }
         Collections.sort(usbDevices);
         return new OpenBsdUsbDevice(nameMap.getOrDefault(devPath, vendorId + ":" + productId),
-                vendorMap.getOrDefault(devPath, ""), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
+                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, ""), devPath,
                 usbDevices);
     }
 

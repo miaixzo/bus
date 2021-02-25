@@ -50,7 +50,7 @@ public class OpenBsdFirmware extends AbstractFirmware {
     private static Triple<String, String, String> readDmesg() {
         String version = null;
         String vendor = null;
-        String releaseDate = "";
+        String releaseDate = Normal.EMPTY;
 
         List<String> dmesg = Executor.runNative("dmesg");
         for (String line : dmesg) {

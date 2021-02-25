@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.image.nimble.opencv;
 
+import org.aoju.bus.core.lang.Normal;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 
@@ -49,7 +50,7 @@ public class TiledProcessor {
     public void process(Mat sourceImage, Mat resultImage, int tileSize) {
 
         if (sourceImage.rows() != resultImage.rows() || sourceImage.cols() != resultImage.cols()) {
-            throw new IllegalStateException("");
+            throw new IllegalStateException(Normal.EMPTY);
         }
 
         final int rowTiles =

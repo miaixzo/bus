@@ -206,6 +206,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             this.collisions = Builder.unsignedIntToLong(ifRow.dwOutDiscards); // closest proxy
             this.inDrops = Builder.unsignedIntToLong(ifRow.dwInDiscards); // closest proxy
             this.speed = Builder.unsignedIntToLong(ifRow.dwSpeed);
+            this.ifAlias = ""; // not supported by MIB_IFROWs
         }
         this.timeStamp = System.currentTimeMillis();
         return true;
