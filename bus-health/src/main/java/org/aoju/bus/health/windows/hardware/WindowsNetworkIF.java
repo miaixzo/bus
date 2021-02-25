@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.hardware;
 
+import com.sun.jna.Native;
 import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
@@ -63,8 +64,9 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     private long collisions;
     private long speed;
     private long timeStamp;
+    private String ifAlias;
 
-    public WindowsNetworkIF(NetworkInterface netint) {
+    public WindowsNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
         updateAttributes();
     }
@@ -78,7 +80,11 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            ifList.add(new WindowsNetworkIF(ni));
+            try {
+                ifList.add(new WindowsNetworkIF(ni));
+            } catch (InstantiationException e) {
+                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+            }
         }
         return ifList;
     }
@@ -149,6 +155,11 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     }
 
     @Override
+    public String getIfAlias() {
+        return ifAlias;
+    }
+
+    @Override
     public boolean updateAttributes() {
         // MIB_IFROW2 requires Vista (6.0) or later.
         if (IS_VISTA_OR_GREATER) {
@@ -173,6 +184,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             this.collisions = ifRow.OutDiscards; // closest proxy
             this.inDrops = ifRow.InDiscards; // closest proxy
             this.speed = ifRow.ReceiveLinkSpeed;
+            this.ifAlias = Native.toString(ifRow.Alias);
         } else {
             // Create new MIB_IFROW and set index to this interface index
             IPHlpAPI.MIB_IFROW ifRow = new IPHlpAPI.MIB_IFROW();

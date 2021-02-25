@@ -25,10 +25,13 @@
  ********************************************************************************/
 package org.aoju.bus.health.linux.hardware;
 
+import com.sun.jna.platform.linux.Udev;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
+import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.net.NetworkInterface;
@@ -57,9 +60,10 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     private long collisions;
     private long speed;
     private long timeStamp;
+    private String ifAlias;
 
-    public LinuxNetworkIF(NetworkInterface netint) {
-        super(netint);
+    public LinuxNetworkIF(NetworkInterface netint) throws InstantiationException {
+        super(netint, queryIfModel(netint));
         updateAttributes();
     }
 
@@ -72,7 +76,11 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            ifList.add(new LinuxNetworkIF(ni));
+            try {
+                ifList.add(new LinuxNetworkIF(ni));
+            } catch (InstantiationException e) {
+                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+            }
         }
         return ifList;
     }
@@ -137,6 +145,32 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         return this.timeStamp;
     }
 
+    private static String queryIfModel(NetworkInterface netint) {
+        String name = netint.getName();
+        Udev.UdevContext udev = Udev.INSTANCE.udev_new();
+        Udev.UdevDevice device = udev.deviceNewFromSyspath("/sys/class/net/" + name);
+        if (device != null) {
+            try {
+                String devVendor = device.getPropertyValue("ID_VENDOR_FROM_DATABASE");
+                String devModel = device.getPropertyValue("ID_MODEL_FROM_DATABASE");
+                if (!StringKit.isBlank(devModel)) {
+                    if (!StringKit.isBlank(devVendor)) {
+                        return devVendor + " " + devModel;
+                    }
+                    return devModel;
+                }
+            } finally {
+                device.unref();
+            }
+        }
+        return name;
+    }
+
+    @Override
+    public String getIfAlias() {
+        return ifAlias;
+    }
+
     @Override
     public boolean updateAttributes() {
         try {
@@ -158,6 +192,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         String collisionsPath = String.format("/sys/class/net/%s/statistics/collisions", getName());
         String rxDropsPath = String.format("/sys/class/net/%s/statistics/rx_dropped", getName());
         String ifSpeed = String.format("/sys/class/net/%s/speed", getName());
+        String ifAliasPath = String.format("/sys/class/net/%s/ifalias", getName());
 
         this.timeStamp = System.currentTimeMillis();
         this.ifType = Builder.getIntFromFile(ifTypePath);
@@ -173,6 +208,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         long speedMiB = Builder.getLongFromFile(ifSpeed);
         // speed may be -1 from file.
         this.speed = speedMiB < 0 ? 0 : speedMiB << 20;
+        this.ifAlias = Builder.getStringFromFile(ifAliasPath);
 
         return true;
     }

@@ -37,10 +37,6 @@ import org.aoju.bus.crypto.digest.*;
 import org.aoju.bus.crypto.digest.mac.BCHMacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
 import org.aoju.bus.crypto.symmetric.*;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.gm.GMNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.digests.SM3Digest;
@@ -48,6 +44,7 @@ import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
@@ -2479,7 +2476,7 @@ public final class Builder {
      * @return c1c2c3 加密后的bytes，顺序为C1C2C3
      */
     public static byte[] changeC1C3C2ToC1C2C3(byte[] c1c3c2, ECDomainParameters ecDomainParameters) {
-        // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码。
+        // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码
         final int c1Len = (ecDomainParameters.getCurve().getFieldSize() + 7) / 8 * 2 + 1;
         final int c3Len = 32; // new SM3Digest().getDigestSize();
         byte[] result = new byte[c1c3c2.length];
@@ -2496,13 +2493,17 @@ public final class Builder {
      * @return sign result in plain byte array
      */
     public static byte[] rsAsn1ToPlain(byte[] rsDer) {
-        ASN1Sequence seq = ASN1Sequence.getInstance(rsDer);
-        byte[] r = bigIntToFixedLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(0)).getValue());
-        byte[] s = bigIntToFixedLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(1)).getValue());
-        byte[] result = new byte[RS_LEN * 2];
-        System.arraycopy(r, 0, result, 0, r.length);
-        System.arraycopy(s, 0, result, RS_LEN, s.length);
-        return result;
+        final BigInteger[] decode;
+        try {
+            decode = StandardDSAEncoding.INSTANCE.decode(SM2_DOMAIN_PARAMS.getN(), rsDer);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+
+        final byte[] r = bigIntToFixedLengthBytes(decode[0]);
+        final byte[] s = bigIntToFixedLengthBytes(decode[1]);
+
+        return ArrayKit.addAll(r, s);
     }
 
     /**
@@ -2518,11 +2519,8 @@ public final class Builder {
         }
         BigInteger r = new BigInteger(1, Arrays.copyOfRange(sign, 0, RS_LEN));
         BigInteger s = new BigInteger(1, Arrays.copyOfRange(sign, RS_LEN, RS_LEN * 2));
-        ASN1EncodableVector v = new ASN1EncodableVector();
-        v.add(new ASN1Integer(r));
-        v.add(new ASN1Integer(s));
         try {
-            return new DERSequence(v).getEncoded("DER");
+            return StandardDSAEncoding.INSTANCE.encode(SM2_DOMAIN_PARAMS.getN(), r, s);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }

@@ -25,10 +25,14 @@
  ********************************************************************************/
 package org.aoju.bus.health.mac.hardware;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.mac.CoreFoundation;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
+import org.aoju.bus.health.mac.SystemConfiguration;
 import org.aoju.bus.health.mac.drivers.NetStat;
+import org.aoju.bus.logger.Logger;
 
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -57,9 +61,32 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
 
-    public MacNetworkIF(NetworkInterface netint, Map<Integer, NetStat.IFdata> data) {
-        super(netint);
+    public MacNetworkIF(NetworkInterface netint, Map<Integer, NetStat.IFdata> data) throws InstantiationException {
+        super(netint, queryIfDisplayName(netint));
         updateNetworkStats(data);
+    }
+
+    private static String queryIfDisplayName(NetworkInterface netint) {
+        String name = netint.getName();
+        CoreFoundation.CFArrayRef ifArray = SystemConfiguration.INSTANCE.SCNetworkInterfaceCopyAll();
+        if (ifArray != null) {
+            try {
+                int count = ifArray.getCount();
+                for (int i = 0; i < count; i++) {
+                    Pointer pNetIf = ifArray.getValueAtIndex(i);
+                    SystemConfiguration.SCNetworkInterfaceRef scNetIf = new SystemConfiguration.SCNetworkInterfaceRef(pNetIf);
+                    CoreFoundation.CFStringRef cfName = SystemConfiguration.INSTANCE.SCNetworkInterfaceGetBSDName(scNetIf);
+                    if (name.equals(cfName.stringValue())) {
+                        CoreFoundation.CFStringRef cfDisplayName = SystemConfiguration.INSTANCE
+                                .SCNetworkInterfaceGetLocalizedDisplayName(scNetIf);
+                        return cfDisplayName.stringValue();
+                    }
+                }
+            } finally {
+                ifArray.release();
+            }
+        }
+        return name;
     }
 
     /**
@@ -73,7 +100,11 @@ public final class MacNetworkIF extends AbstractNetworkIF {
         final Map<Integer, NetStat.IFdata> data = NetStat.queryIFdata(-1);
         List<NetworkIF> ifList = new ArrayList<>();
         for (NetworkInterface ni : getNetworkInterfaces(includeLocalInterfaces)) {
-            ifList.add(new MacNetworkIF(ni, data));
+            try {
+                ifList.add(new MacNetworkIF(ni, data));
+            } catch (InstantiationException e) {
+                Logger.debug("Network Interface Instantiation failed: {}", e.getMessage());
+            }
         }
         return ifList;
     }
