@@ -130,7 +130,7 @@ public class CellKit {
         final Cell mergedCell = getMergedRegionCell(cell);
         if (mergedCell != cell) {
             cell = mergedCell;
-            cellType = cell.getCellTypeEnum();
+            cellType = cell.getCellType();
         }
 
         Object value;

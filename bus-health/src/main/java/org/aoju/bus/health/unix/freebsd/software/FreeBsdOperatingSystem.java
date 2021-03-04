@@ -61,43 +61,6 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
 
     private static final long BOOTTIME = querySystemBootTime();
 
-    private static List<OSProcess> getProcessListFromPS(int pid) {
-        List<OSProcess> procs = new ArrayList<>();
-        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,majflt,minflt,args";
-        if (pid >= 0) {
-            psCommand += " -p " + pid;
-        }
-        List<String> procList = Executor.runNative(psCommand);
-        if (procList.isEmpty() || procList.size() < 2) {
-            return procs;
-        }
-        // remove header row
-        procList.remove(0);
-        // Fill list
-        for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), 18);
-            // Elements should match ps command order
-            if (split.length == 18) {
-                procs.add(new FreeBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
-            }
-        }
-        return procs;
-    }
-
-    private static long querySystemBootTime() {
-        FreeBsdLibc.Timeval tv = new FreeBsdLibc.Timeval();
-        if (!BsdSysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec == 0) {
-            // Usually this works. If it doesn't, fall back to text parsing.
-            // Boot time will be the first consecutive string of digits.
-            return Builder.parseLongOrDefault(
-                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
-                    System.currentTimeMillis() / 1000);
-        }
-        // tv now points to a 128-bit timeval structure for boot time.
-        // First 8 bytes are seconds, second 8 bytes are microseconds (we ignore)
-        return tv.tv_sec;
-    }
-
     @Override
     public String queryManufacturer() {
         return "Unix/BSD";
@@ -142,10 +105,41 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
         return getProcessListFromPS(-1);
     }
 
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        return queryAllProcesses().stream().filter(p -> p.getParentProcessID() == parentPid)
-                .collect(Collectors.toList());
+    private static List<OSProcess> getProcessListFromPS(int pid) {
+        List<OSProcess> procs = new ArrayList<>();
+        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etimes,systime,time,comm,majflt,minflt,args";
+        if (pid >= 0) {
+            psCommand += " -p " + pid;
+        }
+        List<String> procList = Executor.runNative(psCommand);
+        if (procList.isEmpty() || procList.size() < 2) {
+            return procs;
+        }
+        // remove header row
+        procList.remove(0);
+        // Fill list
+        for (String proc : procList) {
+            String[] split = RegEx.SPACES.split(proc.trim(), 18);
+            // Elements should match ps command order
+            if (split.length == 18) {
+                procs.add(new FreeBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
+            }
+        }
+        return procs;
+    }
+
+    private static long querySystemBootTime() {
+        FreeBsdLibc.Timeval tv = new FreeBsdLibc.Timeval();
+        if (!BsdSysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec == 0) {
+            // Usually this works. If it doesn't, fall back to text parsing.
+            // Boot time will be the first consecutive string of digits.
+            return Builder.parseLongOrDefault(
+                    Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
+                    System.currentTimeMillis() / 1000);
+        }
+        // tv now points to a 128-bit timeval structure for boot time.
+        // First 8 bytes are seconds, second 8 bytes are microseconds (we ignore)
+        return tv.tv_sec;
     }
 
     @Override
@@ -221,6 +215,22 @@ public class FreeBsdOperatingSystem extends AbstractOperatingSystem {
             Logger.error("Directory: /etc/init does not exist");
         }
         return services.toArray(new OSService[0]);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = new HashSet<>();
+        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = new HashSet<>();
+        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
 }

@@ -59,38 +59,6 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     private static final long BOOTTIME = querySystemBootTime();
 
-    private static List<OSProcess> getProcessListFromPS(int pid) {
-        List<OSProcess> procs = new ArrayList<>();
-        // https://man.openbsd.org/ps#KEYWORDS
-        // missing are threadCount and kernelTime which is included in cputime
-        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,pri,vsz,rss,etime,cputime,comm,majflt,minflt,args";
-        if (pid >= 0) {
-            psCommand += " -p " + pid;
-        }
-        List<String> procList = Executor.runNative(psCommand);
-        if (procList.isEmpty() || procList.size() < 2) {
-            return procs;
-        }
-        // remove header row
-        procList.remove(0);
-        // Fill list
-        for (String proc : procList) {
-            String[] split = RegEx.SPACES.split(proc.trim(), 16);
-            // Elements should match ps command order
-            if (split.length == 16) {
-                procs.add(new OpenBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
-            }
-        }
-        return procs;
-    }
-
-    private static long querySystemBootTime() {
-        // Boot time will be the first consecutive string of digits.
-        return Builder.parseLongOrDefault(
-                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
-                System.currentTimeMillis() / 1000);
-    }
-
     @Override
     public String queryManufacturer() {
         return "Unix/BSD";
@@ -134,10 +102,36 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         return getProcessListFromPS(-1);
     }
 
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        return queryAllProcesses().stream().filter(p -> p.getParentProcessID() == parentPid)
-                .collect(Collectors.toList());
+    private static List<OSProcess> getProcessListFromPS(int pid) {
+        List<OSProcess> procs = new ArrayList<>();
+        // https://man.openbsd.org/ps#KEYWORDS
+        // missing are threadCount and kernelTime which is included in cputime
+        String psCommand = "ps -awwxo state,pid,ppid,user,uid,group,gid,pri,vsz,rss,etime,cputime,comm,majflt,minflt,args";
+        if (pid >= 0) {
+            psCommand += " -p " + pid;
+        }
+        List<String> procList = Executor.runNative(psCommand);
+        if (procList.isEmpty() || procList.size() < 2) {
+            return procs;
+        }
+        // remove header row
+        procList.remove(0);
+        // Fill list
+        for (String proc : procList) {
+            String[] split = RegEx.SPACES.split(proc.trim(), 16);
+            // Elements should match ps command order
+            if (split.length == 16) {
+                procs.add(new OpenBsdOSProcess(pid < 0 ? Builder.parseIntOrDefault(split[1], 0) : pid, split));
+            }
+        }
+        return procs;
+    }
+
+    private static long querySystemBootTime() {
+        // Boot time will be the first consecutive string of digits.
+        return Builder.parseLongOrDefault(
+                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
+                System.currentTimeMillis() / 1000);
     }
 
     @Override
@@ -217,6 +211,22 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             Logger.error("Directory: /etc/rc.d does not exist");
         }
         return services.toArray(new OSService[0]);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = new HashSet<>();
+        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = new HashSet<>();
+        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
 }

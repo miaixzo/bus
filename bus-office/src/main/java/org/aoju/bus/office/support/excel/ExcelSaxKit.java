@@ -110,7 +110,7 @@ public class ExcelSaxKit {
             case SSTINDEX:
                 try {
                     final int index = Integer.parseInt(value);
-                    result = new XSSFRichTextString(sharedStringsTable.getEntryAt(index)).getString();
+                    result = sharedStringsTable.getItemAt(index).getString();
                 } catch (NumberFormatException e) {
                     result = value;
                 }

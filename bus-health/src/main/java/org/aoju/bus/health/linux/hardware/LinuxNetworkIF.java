@@ -61,6 +61,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
     private String ifAlias;
+    private IfOperStatus ifOperStatus;
 
     public LinuxNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint, queryIfModel(netint));
@@ -171,6 +172,31 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         return ifAlias;
     }
 
+    private static IfOperStatus parseIfOperStatus(String operState) {
+        switch (operState) {
+            case "up":
+                return IfOperStatus.UP;
+            case "down":
+                return IfOperStatus.DOWN;
+            case "testing":
+                return IfOperStatus.TESTING;
+            case "dormant":
+                return IfOperStatus.DORMANT;
+            case "notpresent":
+                return IfOperStatus.NOT_PRESENT;
+            case "lowerlayerdown":
+                return IfOperStatus.LOWER_LAYER_DOWN;
+            case "unknown":
+            default:
+                return IfOperStatus.UNKNOWN;
+        }
+    }
+
+    @Override
+    public IfOperStatus getIfOperStatus() {
+        return ifOperStatus;
+    }
+
     @Override
     public boolean updateAttributes() {
         try {
@@ -193,6 +219,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         String rxDropsPath = String.format("/sys/class/net/%s/statistics/rx_dropped", getName());
         String ifSpeed = String.format("/sys/class/net/%s/speed", getName());
         String ifAliasPath = String.format("/sys/class/net/%s/ifalias", getName());
+        String ifOperStatusPath = String.format("/sys/class/net/%s/operstate", getName());
 
         this.timeStamp = System.currentTimeMillis();
         this.ifType = Builder.getIntFromFile(ifTypePath);
@@ -209,6 +236,7 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         // speed may be -1 from file.
         this.speed = speedMiB < 0 ? 0 : speedMiB << 20;
         this.ifAlias = Builder.getStringFromFile(ifAliasPath);
+        this.ifOperStatus = parseIfOperStatus(Builder.getStringFromFile(ifOperStatusPath));
 
         return true;
     }

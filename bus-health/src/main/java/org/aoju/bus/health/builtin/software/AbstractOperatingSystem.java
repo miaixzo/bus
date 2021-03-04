@@ -30,8 +30,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -112,6 +111,75 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     }
 
     protected abstract List<OSProcess> queryChildProcesses(int parentPid);
+
+    /**
+     * Utility method for subclasses to take a full process list as input and return
+     * the children or descendants of a particular process.
+     *
+     * @param allProcs       A collection of all processes
+     * @param parentPid      The process ID whose children or descendants to return
+     * @param descendantPids On input, an empty set, or a set of other children already
+     *                       retrieved when using recursion. On output, the children of the
+     *                       parent added to the set.
+     * @param recurse        If false, only gets immediate children of this process. If true,
+     *                       gets all descendants.
+     */
+    protected static void addChildrenToDescendantSet(Collection<OSProcess> allProcs, int parentPid,
+                                                     Set<Integer> descendantPids, boolean recurse) {
+        // Collect this process's children
+        Set<Integer> childPids = allProcs.stream().filter(p -> p.getParentProcessID() == parentPid)
+                .map(OSProcess::getProcessID).collect(Collectors.toSet());
+        // Add to descendant set
+        descendantPids.addAll(childPids);
+        // Recurse
+        if (recurse) {
+            for (int pid : childPids) {
+                if (pid != parentPid && !descendantPids.contains(pid)) {
+                    addChildrenToDescendantSet(allProcs, pid, descendantPids, true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Utility method for subclasses to take a map of pid to parent as input and
+     * return the children or descendants of a particular process.
+     *
+     * @param parentPidMap   a map of all processes with processID as key and parentProcessID
+     *                       as value
+     * @param parentPid      The process ID whose children or descendants to return
+     * @param descendantPids On input, an empty set, or a set of other children already
+     *                       retrieved when using recursion. On output, the children of the
+     *                       parent added to the set.
+     * @param recurse        If false, only gets immediate children of this process. If true,
+     *                       gets all descendants.
+     */
+    protected static void addChildrenToDescendantSet(Map<Integer, Integer> parentPidMap, int parentPid,
+                                                     Set<Integer> descendantPids, boolean recurse) {
+        // Collect this process's children
+        Set<Integer> childPids = parentPidMap.entrySet().stream().filter(e -> e.getValue().equals(parentPid))
+                .map(Map.Entry::getKey).collect(Collectors.toSet());
+        // Add to descendant set
+        descendantPids.addAll(childPids);
+        // Recurse
+        if (recurse) {
+            for (int pid : childPids) {
+                if (pid != parentPid && !descendantPids.contains(pid)) {
+                    addChildrenToDescendantSet(parentPidMap, pid, descendantPids, true);
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter,
+                                                  Comparator<OSProcess> sort, int limit) {
+        return queryDescendantProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
+                .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
+                .collect(Collectors.toList());
+    }
+
+    protected abstract List<OSProcess> queryDescendantProcesses(int parentPid);
 
     @Override
     public String toString() {

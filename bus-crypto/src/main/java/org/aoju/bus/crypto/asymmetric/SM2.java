@@ -96,8 +96,8 @@ public class SM2 extends Safety<SM2> {
      */
     public SM2(byte[] privateKey, byte[] publicKey) {
         this(
-                Builder.generatePrivateKey(Algorithm.SM2, privateKey),
-                Builder.generatePublicKey(Algorithm.SM2, publicKey)
+                Builder.decodePrivateKeyParams(privateKey),
+                Builder.decodePublicKeyParams(publicKey)
         );
     }
 

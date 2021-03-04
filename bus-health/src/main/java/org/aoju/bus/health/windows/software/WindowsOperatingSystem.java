@@ -92,6 +92,206 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     private Supplier<Map<Integer, PerfCounterBlock>> processMapFromPerfCounters = Memoize.memoize(
             WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoize.defaultExpiration());
 
+    private static Map<Integer, Integer> getParentPidsFromSnapshot() {
+        Map<Integer, Integer> parentPidMap = new HashMap<>();
+        // Get processes from ToolHelp API for parent PID
+        Tlhelp32.PROCESSENTRY32.ByReference processEntry = new Tlhelp32.PROCESSENTRY32.ByReference();
+        com.sun.jna.platform.win32.WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
+        try {
+            while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
+                parentPidMap.put(processEntry.th32ProcessID.intValue(), processEntry.th32ParentProcessID.intValue());
+            }
+        } finally {
+            Kernel32.INSTANCE.CloseHandle(snapshot);
+        }
+        return parentPidMap;
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return new WindowsFileSystem();
+    }
+
+    @Override
+    public InternetProtocolStats getInternetProtocolStats() {
+        return new WindowsInternetProtocolStats();
+    }
+
+    @Override
+    public List<OSSession> getSessions() {
+        List<OSSession> whoList = HkeyUserData.queryUserSessions();
+        whoList.addAll(SessionWtsData.queryUserSessions());
+        whoList.addAll(NetSessionData.queryUserSessions());
+        return whoList;
+    }
+
+    @Override
+    public List<OSProcess> getProcesses(Collection<Integer> pids) {
+        return processMapToList(pids);
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return processMapToList(null);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        Set<Integer> descendantPids = new HashSet<>();
+        addChildrenToDescendantSet(getParentPidsFromSnapshot(), parentPid, descendantPids, false);
+        return processMapToList(descendantPids);
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        Set<Integer> descendantPids = new HashSet<>();
+        addChildrenToDescendantSet(getParentPidsFromSnapshot(), parentPid, descendantPids, true);
+        return processMapToList(descendantPids);
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        List<OSProcess> procList = processMapToList(Arrays.asList(pid));
+        return procList.isEmpty() ? null : procList.get(0);
+    }
+
+    private List<OSProcess> processMapToList(Collection<Integer> pids) {
+        // Get data from the registry if possible
+        Map<Integer, PerfCounterBlock> processMap = processMapFromRegistry.get();
+        // otherwise performance counters with WMI backup
+        if (processMap == null) {
+            processMap = (pids == null) ? processMapFromPerfCounters.get()
+                    : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
+        }
+
+        Map<Integer, WtsInfo> processWtsMap = ProcessWtsData.queryProcessWtsMap(pids);
+
+        Set<Integer> mapKeys = new HashSet<>(processWtsMap.keySet());
+        mapKeys.retainAll(processMap.keySet());
+
+        List<OSProcess> processList = new ArrayList<>();
+        for (Integer pid : mapKeys) {
+            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap));
+        }
+        return processList;
+    }
+
+    @Override
+    public String queryManufacturer() {
+        return "Microsoft";
+    }
+
+    @Override
+    public int getProcessId() {
+        return Kernel32.INSTANCE.GetCurrentProcessId();
+    }
+
+    @Override
+    public int getProcessCount() {
+        PERFORMANCE_INFORMATION perfInfo = new PERFORMANCE_INFORMATION();
+        if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
+            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+            return 0;
+        }
+        return perfInfo.ProcessCount.intValue();
+    }
+
+    @Override
+    public int getThreadCount() {
+        PERFORMANCE_INFORMATION perfInfo = new PERFORMANCE_INFORMATION();
+        if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
+            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
+            return 0;
+        }
+        return perfInfo.ThreadCount.intValue();
+    }
+
+    @Override
+    public long getSystemUptime() {
+        return querySystemUptime();
+    }
+
+    @Override
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+        WbemcliUtil.WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
+        if (versionInfo.getResultCount() < 1) {
+            return Pair.of("Windows", new OSVersionInfo(System.getProperty("os.version"), null, null));
+        }
+        // Guaranteed that versionInfo is not null and lists non-empty
+        // before calling the parse*() methods
+        int suiteMask = WmiKit.getUint32(versionInfo, OSVersionProperty.SUITEMASK, 0);
+        String buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
+        String version = parseVersion(versionInfo, suiteMask, buildNumber);
+        String codeName = parseCodeName(suiteMask);
+        return Pair.of("Windows", new OSVersionInfo(version, codeName, buildNumber));
+    }
+
+    @Override
+    public long getSystemBootTime() {
+        return BOOTTIME;
+    }
+
+    @Override
+    public NetworkParams getNetworkParams() {
+        return new WindowsNetworkParams();
+    }
+
+    @Override
+    public OSService[] getServices() {
+        try (W32ServiceManager sm = new W32ServiceManager()) {
+            sm.open(Winsvc.SC_MANAGER_ENUMERATE_SERVICE);
+            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm.enumServicesStatusExProcess(WinNT.SERVICE_WIN32,
+                    Winsvc.SERVICE_STATE_ALL, null);
+            OSService[] svcArray = new OSService[services.length];
+            for (int i = 0; i < services.length; i++) {
+                State state;
+                switch (services[i].ServiceStatusProcess.dwCurrentState) {
+                    case 1:
+                        state = OSService.State.STOPPED;
+                        break;
+                    case 4:
+                        state = OSService.State.RUNNING;
+                        break;
+                    default:
+                        state = OSService.State.OTHER;
+                        break;
+                }
+                svcArray[i] = new OSService(services[i].lpDisplayName, services[i].ServiceStatusProcess.dwProcessId,
+                        state);
+            }
+            return svcArray;
+        } catch (com.sun.jna.platform.win32.Win32Exception ex) {
+            Logger.error("Win32Exception: {}", ex.getMessage());
+            return new OSService[0];
+        }
+    }
+
+    @Override
+    public boolean isElevated() {
+        WinNT.HANDLEByReference hToken = new WinNT.HANDLEByReference();
+        boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(), WinNT.TOKEN_QUERY,
+                hToken);
+        if (!success) {
+            Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
+            return false;
+        }
+        try {
+            WinNT.TOKEN_ELEVATION elevation = new WinNT.TOKEN_ELEVATION();
+            if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation, elevation.size(),
+                    new IntByReference())) {
+                return elevation.TokenIsElevated > 0;
+            }
+        } finally {
+            Kernel32.INSTANCE.CloseHandle(hToken.getValue());
+        }
+        return false;
+    }
+
+    @Override
+    public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
+        return EnumWindows.queryDesktopWindows(visibleOnly);
+    }
+
     private static Map<Integer, PerfCounterBlock> queryProcessMapFromRegistry() {
         return ProcessPerformanceData.buildProcessMapFromRegistry(null);
     }
@@ -238,135 +438,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return systemLog;
     }
 
-    @Override
-    public FileSystem getFileSystem() {
-        return new WindowsFileSystem();
-    }
-
-    @Override
-    public InternetProtocolStats getInternetProtocolStats() {
-        return new WindowsInternetProtocolStats();
-    }
-
-    @Override
-    public List<OSSession> getSessions() {
-        List<OSSession> whoList = HkeyUserData.queryUserSessions();
-        whoList.addAll(SessionWtsData.queryUserSessions());
-        whoList.addAll(NetSessionData.queryUserSessions());
-        return whoList;
-    }
-
-    @Override
-    public List<OSProcess> getProcesses(Collection<Integer> pids) {
-        return processMapToList(pids);
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return processMapToList(null);
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        Set<Integer> childPids = new HashSet<>();
-        // Get processes from ToolHelp API for parent PID
-        Tlhelp32.PROCESSENTRY32.ByReference processEntry = new Tlhelp32.PROCESSENTRY32.ByReference();
-        com.sun.jna.platform.win32.WinNT.HANDLE snapshot = Kernel32.INSTANCE.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new DWORD(0));
-        try {
-            while (Kernel32.INSTANCE.Process32Next(snapshot, processEntry)) {
-                if (processEntry.th32ParentProcessID.intValue() == parentPid) {
-                    childPids.add(processEntry.th32ProcessID.intValue());
-                }
-            }
-        } finally {
-            Kernel32.INSTANCE.CloseHandle(snapshot);
-        }
-        // Get modifiable version
-        return processMapToList(childPids);
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        List<OSProcess> procList = processMapToList(Arrays.asList(pid));
-        return procList.isEmpty() ? null : procList.get(0);
-    }
-
-    private List<OSProcess> processMapToList(Collection<Integer> pids) {
-        // Get data from the registry if possible
-        Map<Integer, PerfCounterBlock> processMap = processMapFromRegistry.get();
-        // otherwise performance counters with WMI backup
-        if (processMap == null) {
-            processMap = (pids == null) ? processMapFromPerfCounters.get()
-                    : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
-        }
-
-        Map<Integer, WtsInfo> processWtsMap = ProcessWtsData.queryProcessWtsMap(pids);
-
-        Set<Integer> mapKeys = new HashSet<>(processWtsMap.keySet());
-        mapKeys.retainAll(processMap.keySet());
-
-        List<OSProcess> processList = new ArrayList<>();
-        for (Integer pid : mapKeys) {
-            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap));
-        }
-        return processList;
-    }
-
-    @Override
-    public String queryManufacturer() {
-        return "Microsoft";
-    }
-
-    @Override
-    public int getProcessId() {
-        return Kernel32.INSTANCE.GetCurrentProcessId();
-    }
-
-    @Override
-    public int getProcessCount() {
-        PERFORMANCE_INFORMATION perfInfo = new PERFORMANCE_INFORMATION();
-        if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return 0;
-        }
-        return perfInfo.ProcessCount.intValue();
-    }
-
-    @Override
-    public int getThreadCount() {
-        PERFORMANCE_INFORMATION perfInfo = new PERFORMANCE_INFORMATION();
-        if (!Psapi.INSTANCE.GetPerformanceInfo(perfInfo, perfInfo.size())) {
-            Logger.error("Failed to get Performance Info. Error code: {}", Kernel32.INSTANCE.GetLastError());
-            return 0;
-        }
-        return perfInfo.ThreadCount.intValue();
-    }
-
-    @Override
-    public long getSystemUptime() {
-        return querySystemUptime();
-    }
-
-    @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
-        WbemcliUtil.WmiResult<OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
-        if (versionInfo.getResultCount() < 1) {
-            return Pair.of("Windows", new OSVersionInfo(System.getProperty("os.version"), null, null));
-        }
-        // Guaranteed that versionInfo is not null and lists non-empty
-        // before calling the parse*() methods
-        int suiteMask = WmiKit.getUint32(versionInfo, OSVersionProperty.SUITEMASK, 0);
-        String buildNumber = WmiKit.getString(versionInfo, OSVersionProperty.BUILDNUMBER, 0);
-        String version = parseVersion(versionInfo, suiteMask, buildNumber);
-        String codeName = parseCodeName(suiteMask);
-        return Pair.of("Windows", new OSVersionInfo(version, codeName, buildNumber));
-    }
-
-    @Override
-    public long getSystemBootTime() {
-        return BOOTTIME;
-    }
-
     private String parseVersion(WbemcliUtil.WmiResult<OSVersionProperty> versionInfo, int suiteMask, String buildNumber) {
         // Initialize a default, sane value
         String version = System.getProperty("os.version");
@@ -411,11 +482,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public NetworkParams getNetworkParams() {
-        return new WindowsNetworkParams();
-    }
-
-    @Override
     protected int queryBitness(int jvmBitness) {
         if (jvmBitness < 64 && System.getenv("ProgramFiles(x86)") != null && IS_VISTA_OR_GREATER) {
             WbemcliUtil.WmiResult<BitnessProperty> bitnessMap = Win32Processor.queryBitness();
@@ -424,62 +490,6 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return jvmBitness;
-    }
-
-    @Override
-    public OSService[] getServices() {
-        try (W32ServiceManager sm = new W32ServiceManager()) {
-            sm.open(Winsvc.SC_MANAGER_ENUMERATE_SERVICE);
-            Winsvc.ENUM_SERVICE_STATUS_PROCESS[] services = sm.enumServicesStatusExProcess(WinNT.SERVICE_WIN32,
-                    Winsvc.SERVICE_STATE_ALL, null);
-            OSService[] svcArray = new OSService[services.length];
-            for (int i = 0; i < services.length; i++) {
-                State state;
-                switch (services[i].ServiceStatusProcess.dwCurrentState) {
-                    case 1:
-                        state = OSService.State.STOPPED;
-                        break;
-                    case 4:
-                        state = OSService.State.RUNNING;
-                        break;
-                    default:
-                        state = OSService.State.OTHER;
-                        break;
-                }
-                svcArray[i] = new OSService(services[i].lpDisplayName, services[i].ServiceStatusProcess.dwProcessId,
-                        state);
-            }
-            return svcArray;
-        } catch (com.sun.jna.platform.win32.Win32Exception ex) {
-            Logger.error("Win32Exception: {}", ex.getMessage());
-            return new OSService[0];
-        }
-    }
-
-    @Override
-    public boolean isElevated() {
-        WinNT.HANDLEByReference hToken = new WinNT.HANDLEByReference();
-        boolean success = Advapi32.INSTANCE.OpenProcessToken(Kernel32.INSTANCE.GetCurrentProcess(), WinNT.TOKEN_QUERY,
-                hToken);
-        if (!success) {
-            Logger.error("OpenProcessToken failed. Error: {}", Native.getLastError());
-            return false;
-        }
-        try {
-            WinNT.TOKEN_ELEVATION elevation = new WinNT.TOKEN_ELEVATION();
-            if (Advapi32.INSTANCE.GetTokenInformation(hToken.getValue(), TOKENELEVATION, elevation, elevation.size(),
-                    new IntByReference())) {
-                return elevation.TokenIsElevated > 0;
-            }
-        } finally {
-            Kernel32.INSTANCE.CloseHandle(hToken.getValue());
-        }
-        return false;
-    }
-
-    @Override
-    public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
-        return EnumWindows.queryDesktopWindows(visibleOnly);
     }
 
 }

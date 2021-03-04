@@ -44,7 +44,6 @@ public class MultiFileResource extends MultiResource {
      * @param files 集合
      */
     public MultiFileResource(Collection<File> files) {
-        super();
         add(files);
     }
 
@@ -54,7 +53,6 @@ public class MultiFileResource extends MultiResource {
      * @param file 文件
      */
     public MultiFileResource(File... file) {
-        super();
         add(file);
     }
 

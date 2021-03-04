@@ -46,7 +46,7 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * 构造,默认值0
      */
     public MutableFloat() {
-        super();
+
     }
 
     /**
@@ -55,7 +55,6 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @param value 值
      */
     public MutableFloat(final float value) {
-        super();
         this.value = value;
     }
 
@@ -75,7 +74,6 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
      * @throws NumberFormatException 数字转换错误
      */
     public MutableFloat(final String value) throws NumberFormatException {
-        super();
         this.value = Float.parseFloat(value);
     }
 

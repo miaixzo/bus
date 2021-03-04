@@ -48,10 +48,7 @@ import org.aoju.bus.health.linux.drivers.Who;
 import org.aoju.bus.logger.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Linux is a family of open source Unix-like operating systems based on the
@@ -107,6 +104,253 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // Grab PPID
         long[] statArray = Builder.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
         return (int) statArray[0];
+    }
+
+    /**
+     * Looks for a collection of possible distrib-release filenames
+     *
+     * @return The first valid matching filename
+     */
+    protected static String getReleaseFilename() {
+        // Look for any /etc/*-release, *-version, and variants
+        File etc = new File("/etc");
+        // Find any *_input files in that path
+        File[] matchingFiles = etc.listFiles(//
+                f -> (f.getName().endsWith("-release") || //
+                        f.getName().endsWith("-version") || //
+                        f.getName().endsWith("_release") || //
+                        f.getName().endsWith("_version")) //
+                        && !(f.getName().endsWith("os-release") || //
+                        f.getName().endsWith("lsb-release") || //
+                        f.getName().endsWith("system-release")));
+        if (matchingFiles != null && matchingFiles.length > 0) {
+            return matchingFiles[0].getPath();
+        }
+        if (new File("/etc/release").exists()) {
+            return "/etc/release";
+        }
+        // If all else fails, try this
+        return "/etc/issue";
+    }
+
+
+    /**
+     * Gets Jiffies per second, useful for converting ticks to milliseconds and vice
+     * versa.
+     *
+     * @return Jiffies per second.
+     */
+    public static long getHz() {
+        return USER_HZ;
+    }
+
+    /**
+     * Converts a portion of a filename (e.g. the 'redhat' in /etc/redhat-release)
+     * to a mixed case string representing the family (e.g., Red Hat)
+     *
+     * @param name Stripped version of filename after removing /etc and -release
+     * @return Mixed case family
+     */
+    private static String filenameToFamily(String name) {
+        switch (name.toLowerCase()) {
+            // Handle known special cases
+            case Normal.EMPTY:
+                return "Solaris";
+            case "blackcat":
+                return "Black Cat";
+            case "bluewhite64":
+                return "BlueWhite64";
+            case "e-smith":
+                return "SME Server";
+            case "eos":
+                return "FreeEOS";
+            case "hlfs":
+                return "HLFS";
+            case "lfs":
+                return "Linux-From-Scratch";
+            case "linuxppc":
+                return "Linux-PPC";
+            case "meego":
+                return "MeeGo";
+            case "mandakelinux":
+                return "Mandrake";
+            case "mklinux":
+                return "MkLinux";
+            case "nld":
+                return "Novell Linux Desktop";
+            case "novell":
+            case "SuSE":
+                return "SUSE Linux";
+            case "pld":
+                return "PLD";
+            case "redhat":
+                return "Red Hat Linux";
+            case "sles":
+                return "SUSE Linux ES9";
+            case "sun":
+                return "Sun JDS";
+            case "synoinfo":
+                return "Synology";
+            case "tinysofa":
+                return "Tiny Sofa";
+            case "turbolinux":
+                return "TurboLinux";
+            case "ultrapenguin":
+                return "UltraPenguin";
+            case "va":
+                return "VA-Linux";
+            case "vmware":
+                return "VMWareESX";
+            case "yellowdog":
+                return "Yellow Dog";
+
+            // /etc/issue will end up here:
+            case "issue":
+                return "Unknown";
+            // If not a special case just capitalize first letter
+            default:
+                return name.substring(0, 1).toUpperCase() + name.substring(1);
+        }
+    }
+
+    private static List<OSProcess> queryProcessList(Set<Integer> descendantPids) {
+        List<OSProcess> procs = new ArrayList<>();
+        for (int pid : descendantPids) {
+            OSProcess proc = new LinuxOSProcess(pid);
+            if (!proc.getState().equals(State.INVALID)) {
+                procs.add(proc);
+            }
+        }
+        return procs;
+    }
+
+    private static Map<Integer, Integer> getParentPidsFromProcFiles(File[] pidFiles) {
+        Map<Integer, Integer> parentPidMap = new HashMap<>();
+        for (File procFile : pidFiles) {
+            int pid = Builder.parseIntOrDefault(procFile.getName(), 0);
+            parentPidMap.put(pid, getParentPidFromProcFile(pid));
+        }
+        return parentPidMap;
+    }
+
+    @Override
+    public String queryManufacturer() {
+        return "GNU/Linux";
+    }
+
+    @Override
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+        Triple<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
+        String buildNumber = null;
+        List<String> procVersion = FileKit.readLines(ProcPath.VERSION);
+        if (!procVersion.isEmpty()) {
+            String[] split = RegEx.SPACES.split(procVersion.get(0));
+            for (String s : split) {
+                if (!"Linux".equals(s) && !"version".equals(s)) {
+                    buildNumber = s;
+                    break;
+                }
+            }
+        }
+        OSVersionInfo versionInfo = new OSVersionInfo(familyVersionCodename.getMiddle(), familyVersionCodename.getRight(),
+                buildNumber);
+        return Pair.of(familyVersionCodename.getLeft(), versionInfo);
+    }
+
+    @Override
+    protected int queryBitness(int jvmBitness) {
+        if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
+            return jvmBitness;
+        }
+        return 64;
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return new LinuxFileSystem();
+    }
+
+    @Override
+    public InternetProtocolStats getInternetProtocolStats() {
+        return new LinuxInternetProtocolStats();
+    }
+
+    @Override
+    public List<OSSession> getSessions() {
+        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        OSProcess proc = new LinuxOSProcess(pid);
+        if (!proc.getState().equals(State.INVALID)) {
+            return proc;
+        }
+        return null;
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return queryChildProcesses(-1);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        File[] pidFiles = ProcessStat.getPidFiles();
+        Set<Integer> descendantPids = new HashSet<>();
+        if (parentPid == -1) {
+            // Put everything in the "descendant" set
+            for (File procFile : pidFiles) {
+                descendantPids.add(Builder.parseIntOrDefault(procFile.getName(), 0));
+            }
+        } else {
+            // Only put descendants in
+            addChildrenToDescendantSet(getParentPidsFromProcFiles(pidFiles), parentPid, descendantPids, false);
+        }
+        return queryProcessList(descendantPids);
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        File[] pidFiles = ProcessStat.getPidFiles();
+        Set<Integer> descendantPids = new HashSet<>();
+        addChildrenToDescendantSet(getParentPidsFromProcFiles(pidFiles), parentPid, descendantPids, false);
+        return queryProcessList(descendantPids);
+    }
+
+    @Override
+    public int getProcessId() {
+        return LinuxLibc.INSTANCE.getpid();
+    }
+
+    @Override
+    public int getProcessCount() {
+        return ProcessStat.getPidFiles().length;
+    }
+
+    @Override
+    public int getThreadCount() {
+        try {
+            Sysinfo info = new Sysinfo();
+            if (0 != LibC.INSTANCE.sysinfo(info)) {
+                Logger.error("Failed to get process thread count. Error code: {}", Native.getLastError());
+                return 0;
+            }
+            return info.procs;
+        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
+            Logger.error("Failed to get procs from sysinfo. {}", e.getMessage());
+        }
+        return 0;
+    }
+
+    @Override
+    public long getSystemUptime() {
+        return (long) UpTime.getSystemUptimeSeconds();
+    }
+
+    @Override
+    public long getSystemBootTime() {
+        return BOOTTIME;
     }
 
     private static Triple<String, String, String> queryFamilyVersionCodenameFromReleaseFiles() {
@@ -348,223 +592,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         return Triple.of(family, versionId, codeName);
     }
 
-    /**
-     * Looks for a collection of possible distrib-release filenames
-     *
-     * @return The first valid matching filename
-     */
-    protected static String getReleaseFilename() {
-        // Look for any /etc/*-release, *-version, and variants
-        File etc = new File("/etc");
-        // Find any *_input files in that path
-        File[] matchingFiles = etc.listFiles(//
-                f -> (f.getName().endsWith("-release") || //
-                        f.getName().endsWith("-version") || //
-                        f.getName().endsWith("_release") || //
-                        f.getName().endsWith("_version")) //
-                        && !(f.getName().endsWith("os-release") || //
-                        f.getName().endsWith("lsb-release") || //
-                        f.getName().endsWith("system-release")));
-        if (matchingFiles != null && matchingFiles.length > 0) {
-            return matchingFiles[0].getPath();
-        }
-        if (new File("/etc/release").exists()) {
-            return "/etc/release";
-        }
-        // If all else fails, try this
-        return "/etc/issue";
-    }
-
-    /**
-     * Converts a portion of a filename (e.g. the 'redhat' in /etc/redhat-release)
-     * to a mixed case string representing the family (e.g., Red Hat)
-     *
-     * @param name Stripped version of filename after removing /etc and -release
-     * @return Mixed case family
-     */
-    private static String filenameToFamily(String name) {
-        switch (name.toLowerCase()) {
-            // Handle known special cases
-            case Normal.EMPTY:
-                return "Solaris";
-            case "blackcat":
-                return "Black Cat";
-            case "bluewhite64":
-                return "BlueWhite64";
-            case "e-smith":
-                return "SME Server";
-            case "eos":
-                return "FreeEOS";
-            case "hlfs":
-                return "HLFS";
-            case "lfs":
-                return "Linux-From-Scratch";
-            case "linuxppc":
-                return "Linux-PPC";
-            case "meego":
-                return "MeeGo";
-            case "mandakelinux":
-                return "Mandrake";
-            case "mklinux":
-                return "MkLinux";
-            case "nld":
-                return "Novell Linux Desktop";
-            case "novell":
-            case "SuSE":
-                return "SUSE Linux";
-            case "pld":
-                return "PLD";
-            case "redhat":
-                return "Red Hat Linux";
-            case "sles":
-                return "SUSE Linux ES9";
-            case "sun":
-                return "Sun JDS";
-            case "synoinfo":
-                return "Synology";
-            case "tinysofa":
-                return "Tiny Sofa";
-            case "turbolinux":
-                return "TurboLinux";
-            case "ultrapenguin":
-                return "UltraPenguin";
-            case "va":
-                return "VA-Linux";
-            case "vmware":
-                return "VMWareESX";
-            case "yellowdog":
-                return "Yellow Dog";
-
-            // /etc/issue will end up here:
-            case "issue":
-                return "Unknown";
-            // If not a special case just capitalize first letter
-            default:
-                return name.substring(0, 1).toUpperCase() + name.substring(1);
-        }
-    }
-
-    /**
-     * Gets Jiffies per second, useful for converting ticks to milliseconds and vice
-     * versa.
-     *
-     * @return Jiffies per second.
-     */
-    public static long getHz() {
-        return USER_HZ;
-    }
-
-    @Override
-    public String queryManufacturer() {
-        return "GNU/Linux";
-    }
-
-    @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
-        Triple<String, String, String> familyVersionCodename = queryFamilyVersionCodenameFromReleaseFiles();
-        String buildNumber = null;
-        List<String> procVersion = FileKit.readLines(ProcPath.VERSION);
-        if (!procVersion.isEmpty()) {
-            String[] split = RegEx.SPACES.split(procVersion.get(0));
-            for (String s : split) {
-                if (!"Linux".equals(s) && !"version".equals(s)) {
-                    buildNumber = s;
-                    break;
-                }
-            }
-        }
-        OSVersionInfo versionInfo = new OSVersionInfo(familyVersionCodename.getMiddle(), familyVersionCodename.getRight(),
-                buildNumber);
-        return Pair.of(familyVersionCodename.getLeft(), versionInfo);
-    }
-
-    @Override
-    protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
-            return jvmBitness;
-        }
-        return 64;
-    }
-
-    @Override
-    public FileSystem getFileSystem() {
-        return new LinuxFileSystem();
-    }
-
-    @Override
-    public InternetProtocolStats getInternetProtocolStats() {
-        return new LinuxInternetProtocolStats();
-    }
-    @Override
-    public List<OSSession> getSessions() {
-        return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        OSProcess proc = new LinuxOSProcess(pid);
-        if (!proc.getState().equals(State.INVALID)) {
-            return proc;
-        }
-        return null;
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return queryChildProcesses(-1);
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        List<OSProcess> procs = new ArrayList<>();
-        // now for each file (with digit name) get process info
-        for (File procFile : ProcessStat.getPidFiles()) {
-            int pid = Builder.parseIntOrDefault(procFile.getName(), 0);
-            if (parentPid == -1 || parentPid == getParentPidFromProcFile(pid)) {
-                OSProcess proc = new LinuxOSProcess(pid);
-                if (!proc.getState().equals(State.INVALID)) {
-                    procs.add(proc);
-                }
-            }
-        }
-        return procs;
-    }
-
-    @Override
-    public int getProcessId() {
-        return LinuxLibc.INSTANCE.getpid();
-    }
-
-    @Override
-    public int getProcessCount() {
-        return ProcessStat.getPidFiles().length;
-    }
-
-    @Override
-    public int getThreadCount() {
-        try {
-            Sysinfo info = new Sysinfo();
-            if (0 != LibC.INSTANCE.sysinfo(info)) {
-                Logger.error("Failed to get process thread count. Error code: {}", Native.getLastError());
-                return 0;
-            }
-            return info.procs;
-        } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
-            Logger.error("Failed to get procs from sysinfo. {}", e.getMessage());
-        }
-        return 0;
-    }
-
-    @Override
-    public long getSystemUptime() {
-        return (long) UpTime.getSystemUptimeSeconds();
-    }
-
-    @Override
-    public long getSystemBootTime() {
-        return BOOTTIME;
-    }
-
     @Override
     public NetworkParams getNetworkParams() {
         return new LinuxNetworkParams();
@@ -616,5 +643,6 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         return services.toArray(new OSService[0]);
     }
+
 
 }

@@ -78,7 +78,7 @@ public final class Properties extends java.util.Properties implements BasicType<
      * 构造
      */
     public Properties() {
-        super();
+
     }
 
     /**

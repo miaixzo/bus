@@ -46,7 +46,7 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * 构造,默认值0
      */
     public MutableShort() {
-        super();
+
     }
 
     /**
@@ -55,7 +55,6 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @param value 值
      */
     public MutableShort(final short value) {
-        super();
         this.value = value;
     }
 
@@ -75,7 +74,6 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
      * @throws NumberFormatException 转为Short错误
      */
     public MutableShort(final String value) throws NumberFormatException {
-        super();
         this.value = Short.parseShort(value);
     }
 

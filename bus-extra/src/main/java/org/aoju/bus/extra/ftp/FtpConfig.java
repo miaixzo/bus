@@ -38,6 +38,12 @@ import java.nio.charset.Charset;
 public class FtpConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 设置服务器语言
+     */
+    private String serverLanguageCode;
+
     /**
      * 主机
      */
@@ -58,20 +64,20 @@ public class FtpConfig implements Serializable {
      * 编码
      */
     private Charset charset;
+
     /**
      * 连接超时时长，单位毫秒
      */
     private long connectionTimeout;
+
     /**
      * Socket连接超时时长，单位毫秒
      */
     private long soTimeout;
-
     /**
-     * 构造
+     * 设置服务器系统关键词
      */
-    public FtpConfig() {
-    }
+    private String systemKey;
 
     /**
      * 构造
@@ -83,11 +89,34 @@ public class FtpConfig implements Serializable {
      * @param charset  编码
      */
     public FtpConfig(String host, int port, String user, String password, Charset charset) {
+        this(host, port, user, password, charset, null, null);
+    }
+
+    /**
+     * 构造
+     */
+    public FtpConfig() {
+    }
+
+    /**
+     * 构造
+     *
+     * @param host               主机
+     * @param port               端口
+     * @param user               用户名
+     * @param password           密码
+     * @param charset            编码
+     * @param serverLanguageCode 服务器语言
+     * @param systemKey          系统关键字
+     */
+    public FtpConfig(String host, int port, String user, String password, Charset charset, String serverLanguageCode, String systemKey) {
         this.host = host;
         this.port = port;
         this.user = user;
         this.password = password;
         this.charset = charset;
+        this.serverLanguageCode = serverLanguageCode;
+        this.systemKey = systemKey;
     }
 
     public static FtpConfig create() {
@@ -154,6 +183,24 @@ public class FtpConfig implements Serializable {
 
     public FtpConfig setSoTimeout(long soTimeout) {
         this.soTimeout = soTimeout;
+        return this;
+    }
+
+    public String getServerLanguageCode() {
+        return serverLanguageCode;
+    }
+
+    public FtpConfig setServerLanguageCode(String serverLanguageCode) {
+        this.serverLanguageCode = serverLanguageCode;
+        return this;
+    }
+
+    public String getSystemKey() {
+        return systemKey;
+    }
+
+    public FtpConfig setSystemKey(String systemKey) {
+        this.systemKey = systemKey;
         return this;
     }
 

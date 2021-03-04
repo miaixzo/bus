@@ -98,7 +98,6 @@ public class Profile implements Serializable {
      * @param useVar  是否使用变量
      */
     public Profile(String profile, java.nio.charset.Charset charset, boolean useVar) {
-        super();
         this.profile = profile;
         this.charset = charset;
         this.useVar = useVar;

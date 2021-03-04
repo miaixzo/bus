@@ -41,7 +41,7 @@ public final class Holder<T> extends MutableObject<T> {
      * 构造
      */
     public Holder() {
-        super();
+
     }
 
     /**

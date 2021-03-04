@@ -678,7 +678,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
 
         UnpaddedMonthField() {
-            super();
+
         }
 
         @Override
@@ -783,7 +783,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
          * 构造一个{@code TwoDigitYearField}的实例
          */
         TwoDigitYearField() {
-            super();
+
         }
 
         @Override
@@ -812,7 +812,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
          * 构造{@code TwoDigitMonthField}的实例
          */
         TwoDigitMonthField() {
-            super();
+
         }
 
         @Override

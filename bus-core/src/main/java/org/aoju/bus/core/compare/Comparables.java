@@ -48,7 +48,7 @@ public class Comparables<E extends Comparable<? super E>> implements Comparator<
      * 构造
      */
     public Comparables() {
-        super();
+
     }
 
     /**

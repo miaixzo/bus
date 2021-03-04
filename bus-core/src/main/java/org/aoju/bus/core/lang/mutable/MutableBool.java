@@ -41,7 +41,7 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      * 构造,默认值0
      */
     public MutableBool() {
-        super();
+
     }
 
     /**
@@ -50,7 +50,6 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      * @param value 值
      */
     public MutableBool(final boolean value) {
-        super();
         this.value = value;
     }
 
@@ -61,7 +60,6 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean> {
      * @throws NumberFormatException 转为Boolean错误
      */
     public MutableBool(final String value) throws NumberFormatException {
-        super();
         this.value = Boolean.parseBoolean(value);
     }
 

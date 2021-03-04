@@ -26,7 +26,7 @@
 package org.aoju.bus.extra.ftp;
 
 import org.aoju.bus.core.lang.Assert;
-import org.aoju.bus.core.lang.Charset;
+import org.aoju.bus.core.lang.Filter;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.exception.InstrumentException;
@@ -34,8 +34,8 @@ import org.aoju.bus.core.toolkit.ArrayKit;
 import org.aoju.bus.core.toolkit.FileKit;
 import org.aoju.bus.core.toolkit.ObjectKit;
 import org.aoju.bus.core.toolkit.StringKit;
-import org.aoju.bus.logger.Logger;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
@@ -43,7 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,7 +98,7 @@ public class Ftp extends AbstractFtp {
      * @param password 密码
      */
     public Ftp(String host, int port, String user, String password) {
-        this(host, port, user, password, Charset.UTF_8);
+        this(host, port, user, password, org.aoju.bus.core.lang.Charset.UTF_8);
     }
 
     /**
@@ -109,21 +111,38 @@ public class Ftp extends AbstractFtp {
      * @param charset  编码
      */
     public Ftp(String host, int port, String user, String password, java.nio.charset.Charset charset) {
-        this(host, port, user, password, charset, null);
+        this(host, port, user, password, charset, null, null);
     }
 
     /**
      * 构造
      *
-     * @param host     域名或IP
-     * @param port     端口
-     * @param user     用户名
-     * @param password 密码
-     * @param charset  编码
-     * @param mode     模式
+     * @param host               域名或IP
+     * @param port               端口
+     * @param user               用户名
+     * @param password           密码
+     * @param charset            编码
+     * @param serverLanguageCode 服务器语言 例如：zh
+     * @param systemKey          服务器标识 例如：org.apache.commons.net.ftp.FTPClientConfig.SYST_NT
      */
-    public Ftp(String host, int port, String user, String password, java.nio.charset.Charset charset, FtpMode mode) {
-        this(new FtpConfig(host, port, user, password, charset), mode);
+    public Ftp(String host, int port, String user, String password, java.nio.charset.Charset charset, String serverLanguageCode, String systemKey) {
+        this(host, port, user, password, charset, serverLanguageCode, systemKey, null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param host               域名或IP
+     * @param port               端口
+     * @param user               用户名
+     * @param password           密码
+     * @param charset            编码
+     * @param serverLanguageCode 服务器语言
+     * @param systemKey          系统关键字
+     * @param mode               模式
+     */
+    public Ftp(String host, int port, String user, String password, Charset charset, String serverLanguageCode, String systemKey, FtpMode mode) {
+        this(new FtpConfig(host, port, user, password, charset, serverLanguageCode, systemKey), mode);
     }
 
     /**
@@ -171,7 +190,7 @@ public class Ftp extends AbstractFtp {
      * @return this
      */
     public Ftp init(String host, int port, String user, String password, FtpMode mode) {
-        return init(new FtpConfig(host, port, user, password, this.ftpConfig.getCharset()), mode);
+        return init(new FtpConfig(host, port, user, password, this.ftpConfig.getCharset(), null, null), mode);
     }
 
     /**
@@ -182,27 +201,43 @@ public class Ftp extends AbstractFtp {
      * @return this
      */
     public Ftp init(FtpConfig config, FtpMode mode) {
+        final FTPClient client = new FTPClient();
+        final Charset charset = config.getCharset();
+        if (null != charset) {
+            client.setControlEncoding(charset.toString());
+        }
+        client.setConnectTimeout((int) config.getConnectionTimeout());
+        final String systemKey = config.getSystemKey();
+        if (StringKit.isNotBlank(systemKey)) {
+            final FTPClientConfig conf = new FTPClientConfig(systemKey);
+            final String serverLanguageCode = config.getServerLanguageCode();
+            if (StringKit.isNotBlank(serverLanguageCode)) {
+                conf.setServerLanguageCode(config.getServerLanguageCode());
+            }
+            client.configure(conf);
+        }
+
         try {
-            final FTPClient client = new FTPClient();
-            client.setControlEncoding(config.getCharset().toString());
-            client.setConnectTimeout((int) config.getConnectionTimeout());
             // 连接ftp服务器
             client.connect(config.getHost(), config.getPort());
             client.setSoTimeout((int) config.getSoTimeout());
             // 登录ftp服务器
             client.login(config.getUser(), config.getPassword());
-            final int replyCode = client.getReplyCode();
-            // 是否成功登录服务器
-            if (false == FTPReply.isPositiveCompletion(replyCode)) {
-                client.disconnect();
-                Logger.error("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
-            }
-            this.client = client;
-            if (mode != null) {
-                setMode(mode);
-            }
         } catch (IOException e) {
-            Logger.error("Login to FTP server failed");
+            throw new InstrumentException(e);
+        }
+        final int replyCode = client.getReplyCode(); // 是否成功登录服务器
+        if (false == FTPReply.isPositiveCompletion(replyCode)) {
+            try {
+                client.disconnect();
+            } catch (IOException e) {
+                // ignore
+            }
+            throw new InstrumentException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
+        }
+        this.client = client;
+        if (mode != null) {
+            setMode(mode);
         }
         return this;
     }
@@ -296,17 +331,46 @@ public class Ftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录,不会递归遍历
+     * 遍历某个目录下所有文件和目录，不会递归遍历<br>
+     * 此方法自动过滤"."和".."两种目录
      *
-     * @param path 目录
+     * @param path   目录
+     * @param filter 过滤器，null表示不过滤，默认去掉"."和".."两种目录
      * @return 文件或目录列表
      */
-    public FTPFile[] lsFiles(String path) {
+    public List<FTPFile> lsFiles(String path, Filter<FTPFile> filter) {
+        final FTPFile[] ftpFiles = lsFiles(path);
+        if (ArrayKit.isEmpty(ftpFiles)) {
+            return new ArrayList<>();
+        }
+
+        final List<FTPFile> result = new ArrayList<>(ftpFiles.length - 2 <= 0 ? ftpFiles.length : ftpFiles.length - 2);
+        String fileName;
+        for (FTPFile ftpFile : ftpFiles) {
+            fileName = ftpFile.getName();
+            if (false == StringKit.equals(".", fileName) && false == StringKit.equals("..", fileName)) {
+                if (null == filter || filter.accept(ftpFile)) {
+                    result.add(ftpFile);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 遍历某个目录下所有文件和目录，不会递归遍历
+     *
+     * @param path 目录，如果目录不存在，抛出异常
+     * @return 文件或目录列表
+     * @throws InstrumentException 路径不存在
+     * @throws InstrumentException IO异常
+     */
+    public FTPFile[] lsFiles(String path) throws InstrumentException {
         String pwd = null;
         if (StringKit.isNotBlank(path)) {
             pwd = pwd();
             if (false == cd(path)) {
-                throw new InstrumentException("Change dir to [{}] error, maybe path not exist!");
+                throw new InstrumentException("Change dir to [{}] error, maybe path not exist!", path);
             }
         }
 

@@ -29,6 +29,7 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.win32.IPHlpAPI;
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.builtin.hardware.AbstractNetworkIF;
 import org.aoju.bus.health.builtin.hardware.NetworkIF;
@@ -65,6 +66,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
     private String ifAlias;
+    private IfOperStatus ifOperStatus;
 
     public WindowsNetworkIF(NetworkInterface netint) throws InstantiationException {
         super(netint);
@@ -160,6 +162,11 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
     }
 
     @Override
+    public IfOperStatus getIfOperStatus() {
+        return ifOperStatus;
+    }
+
+    @Override
     public boolean updateAttributes() {
         // MIB_IFROW2 requires Vista (6.0) or later.
         if (IS_VISTA_OR_GREATER) {
@@ -185,6 +192,7 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             this.inDrops = ifRow.InDiscards; // closest proxy
             this.speed = ifRow.ReceiveLinkSpeed;
             this.ifAlias = Native.toString(ifRow.Alias);
+            this.ifOperStatus = IfOperStatus.byValue(ifRow.OperStatus);
         } else {
             // Create new MIB_IFROW and set index to this interface index
             IPHlpAPI.MIB_IFROW ifRow = new IPHlpAPI.MIB_IFROW();
@@ -206,7 +214,8 @@ public final class WindowsNetworkIF extends AbstractNetworkIF {
             this.collisions = Builder.unsignedIntToLong(ifRow.dwOutDiscards); // closest proxy
             this.inDrops = Builder.unsignedIntToLong(ifRow.dwInDiscards); // closest proxy
             this.speed = Builder.unsignedIntToLong(ifRow.dwSpeed);
-            this.ifAlias = ""; // not supported by MIB_IFROWs
+            this.ifAlias = Normal.EMPTY; // not supported by MIB_IFROWs
+            this.ifOperStatus = IfOperStatus.UNKNOWN;
         }
         this.timeStamp = System.currentTimeMillis();
         return true;

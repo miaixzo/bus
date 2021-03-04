@@ -29,7 +29,6 @@ import org.aoju.bus.core.io.PageBuffer;
 import org.aoju.bus.core.io.VirtualBuffer;
 import org.aoju.bus.core.io.WriteBuffer;
 import org.aoju.bus.core.lang.Normal;
-import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.logger.Logger;
 
 import java.io.IOException;
@@ -39,7 +38,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
@@ -58,57 +56,60 @@ public class UdpChannel<Request> {
     /**
      * 与当前UDP通道对接的会话
      */
-    private final ConcurrentHashMap<String, UdpAioSession> udpAioSessionConcurrentHashMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<SocketAddress, UdpAioSession> sessionMap = new ConcurrentHashMap<>();
     /**
      * 待输出消息
      */
-    private final ConcurrentLinkedQueue<ResponseTask> responseTasks;
+    private final ConcurrentLinkedQueue<ResponseUnit> responseTasks;
     private final Semaphore writeSemaphore = new Semaphore(1);
+    private final UdpBootstrap.Worker worker;
     ServerConfig<Request> config;
     /**
      * 真实的UDP通道
      */
     private DatagramChannel channel;
     private SelectionKey selectionKey;
-    private ResponseTask failWriteEvent;
+    private ResponseUnit failResponseUnit;
 
-    UdpChannel(final DatagramChannel channel, SelectionKey selectionKey, ServerConfig<Request> config, PageBuffer pageBuffer) {
+    UdpChannel(final DatagramChannel channel, UdpBootstrap.Worker worker, ServerConfig config, PageBuffer pageBuffer) {
         this.channel = channel;
         responseTasks = new ConcurrentLinkedQueue<>();
-        this.selectionKey = selectionKey;
+        this.worker = worker;
         this.pageBuffer = pageBuffer;
         this.config = config;
     }
 
-    /**
-     * @param virtualBuffer
-     * @param remote
-     * @throws IOException
-     * @throws InterruptedException
-     */
     private void write(VirtualBuffer virtualBuffer, SocketAddress remote) throws IOException {
         if (writeSemaphore.tryAcquire() && responseTasks.isEmpty() && send(virtualBuffer.buffer(), remote) > 0) {
             virtualBuffer.clean();
             writeSemaphore.release();
             return;
         }
-        responseTasks.offer(new ResponseTask(remote, virtualBuffer));
-        if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) == 0) {
-            selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE);
+        responseTasks.offer(new ResponseUnit(remote, virtualBuffer));
+        if (selectionKey == null) {
+            worker.addRegister(selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
+        } else {
+            if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) == 0) {
+                selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE);
+            }
         }
     }
 
-    void flush() throws IOException {
+    void setSelectionKey(SelectionKey selectionKey) {
+        this.selectionKey = selectionKey;
+    }
+
+    void doWrite() throws IOException {
         while (true) {
-            ResponseTask responseTask;
-            if (failWriteEvent == null) {
-                responseTask = responseTasks.poll();
+            ResponseUnit responseUnit;
+            if (failResponseUnit == null) {
+                responseUnit = responseTasks.poll();
                 Logger.info("poll from writeBuffer");
             } else {
-                responseTask = failWriteEvent;
-                failWriteEvent = null;
+                responseUnit = failResponseUnit;
+                failResponseUnit = null;
             }
-            if (responseTask == null) {
+            if (responseUnit == null) {
                 writeSemaphore.release();
                 if (responseTasks.isEmpty()) {
                     selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_WRITE);
@@ -118,17 +119,17 @@ public class UdpChannel<Request> {
                 }
                 return;
             }
-            if (send(responseTask.response.buffer(), responseTask.remote) > 0) {
-                responseTask.response.clean();
+            if (send(responseUnit.response.buffer(), responseUnit.remote) > 0) {
+                responseUnit.response.clean();
             } else {
-                failWriteEvent = responseTask;
+                failResponseUnit = responseUnit;
                 break;
             }
         }
     }
 
     private int send(ByteBuffer byteBuffer, SocketAddress remote) throws IOException {
-        AioSession aioSession = udpAioSessionConcurrentHashMap.get(getSessionKey(remote));
+        AioSession aioSession = sessionMap.get(remote);
         if (config.getMonitor() != null) {
             config.getMonitor().beforeWrite(aioSession);
         }
@@ -150,14 +151,21 @@ public class UdpChannel<Request> {
     }
 
     /**
-     * 创建并缓存与指定地址的会话信息
+     * 建立与远程服务的连接会话,通过AioSession可进行数据传输
      *
-     * @param remote 地址
+     * @param host 地址
+     * @param port 端口
      * @return 会话信息
      */
+    public AioSession connect(String host, int port) {
+        return connect(new InetSocketAddress(host, port));
+    }
+
+    /**
+     * 创建并缓存与指定地址的会话信息
+     */
     UdpAioSession createAndCacheSession(final SocketAddress remote) {
-        String key = getSessionKey(remote);
-        UdpAioSession session = udpAioSessionConcurrentHashMap.computeIfAbsent(key, s -> {
+        return sessionMap.computeIfAbsent(remote, s -> {
             Consumer<WriteBuffer> consumer = writeBuffer -> {
                 VirtualBuffer virtualBuffer = writeBuffer.poll();
                 if (virtualBuffer == null) {
@@ -172,21 +180,10 @@ public class UdpChannel<Request> {
             WriteBuffer writeBuffer = new WriteBuffer(pageBuffer, consumer, config.getWriteBufferSize(), 1);
             return new UdpAioSession(UdpChannel.this, remote, writeBuffer);
         });
-        return session;
-    }
-
-    private String getSessionKey(final SocketAddress remote) {
-        if (!(remote instanceof InetSocketAddress)) {
-            throw new UnsupportedOperationException();
-
-        }
-        InetSocketAddress address = (InetSocketAddress) remote;
-        return address.getHostName() + Symbol.C_COLON + address.getPort();
     }
 
     void removeSession(final SocketAddress remote) {
-        String key = getSessionKey(remote);
-        UdpAioSession udpAioSession = udpAioSessionConcurrentHashMap.remove(key);
+        UdpAioSession udpAioSession = sessionMap.remove(remote);
         Logger.info("remove session:{}", udpAioSession);
     }
 
@@ -200,8 +197,8 @@ public class UdpChannel<Request> {
             selector.wakeup();
             selectionKey = null;
         }
-        for (Map.Entry<String, UdpAioSession> entry : udpAioSessionConcurrentHashMap.entrySet()) {
-            entry.getValue().close();
+        for (UdpAioSession session : sessionMap.values()) {
+            session.close();
         }
         try {
             if (channel != null) {
@@ -212,9 +209,12 @@ public class UdpChannel<Request> {
             Logger.error(Normal.EMPTY, e);
         }
         // 内存回收
-        ResponseTask task;
+        ResponseUnit task;
         while ((task = responseTasks.poll()) != null) {
             task.response.clean();
+        }
+        if (failResponseUnit != null) {
+            failResponseUnit.response.clean();
         }
     }
 
@@ -222,7 +222,7 @@ public class UdpChannel<Request> {
         return channel;
     }
 
-    static final class ResponseTask {
+    static final class ResponseUnit {
         /**
          * 待输出数据的接受地址
          */
@@ -232,10 +232,11 @@ public class UdpChannel<Request> {
          */
         private final VirtualBuffer response;
 
-        public ResponseTask(SocketAddress remote, VirtualBuffer response) {
+        public ResponseUnit(SocketAddress remote, VirtualBuffer response) {
             this.remote = remote;
             this.response = response;
         }
+
     }
 
 }

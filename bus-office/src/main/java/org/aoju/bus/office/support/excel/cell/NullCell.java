@@ -93,18 +93,16 @@ public class NullCell implements Cell {
         throw new UnsupportedOperationException("Can not set any thing to null cell!");
     }
 
-    @Override
     public CellType getCellTypeEnum() {
+        return null;
+    }
+
+    public CellType getCachedFormulaResultTypeEnum() {
         return null;
     }
 
     @Override
     public CellType getCachedFormulaResultType() {
-        return null;
-    }
-
-    @Override
-    public CellType getCachedFormulaResultTypeEnum() {
         return null;
     }
 
