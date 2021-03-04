@@ -35,6 +35,7 @@ import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
 import org.aoju.bus.goalie.metric.Authorize;
 import org.aoju.bus.goalie.metric.Delegate;
+import org.aoju.bus.goalie.metric.Token;
 import org.aoju.bus.goalie.registry.AssetsRegistry;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -74,6 +75,8 @@ public class AuthorizeFilter implements WebFilter {
         Map<String, String> params = context.getRequestMap();
 
         context.setFormat(Context.Format.valueOf(params.get(Consts.FORMAT)));
+        context.setChannel(Context.Channel.getChannel(params.get(Consts.X_REMOTE_CHANNEL)));
+        context.setToken(exchange.getRequest().getHeaders().getFirst(Consts.X_ACCESS_TOKEN));
 
         String method = params.get(Consts.METHOD);
         String version = params.get(Consts.VERSION);
@@ -85,7 +88,7 @@ public class AuthorizeFilter implements WebFilter {
         //校验方法
         checkMethod(exchange.getRequest(), assets);
         //校验参数
-        checkTokenIfNecessary(exchange.getRequest(), assets, params);
+        checkTokenIfNecessary(context, assets, params);
         //填充Ip
         fillXParam(exchange, params);
 
@@ -118,18 +121,18 @@ public class AuthorizeFilter implements WebFilter {
     /**
      * 校验 token 并 填充参数
      *
-     * @param request 请求
+     * @param context 请求
      * @param assets  路由
      * @param params  参数
      */
-    private void checkTokenIfNecessary(ServerHttpRequest request, Assets assets, Map<String, String> params) {
+    private void checkTokenIfNecessary(Context context, Assets assets, Map<String, String> params) {
         // 访问授权校验
         if (assets.isToken()) {
-            String token = request.getHeaders().getFirst(Consts.X_ACCESS_TOKEN);
-            if (StringKit.isBlank(token)) {
+            if (StringKit.isBlank(context.getToken())) {
                 throw new BusinessException(ErrorCode.EM_100106);
             }
-            Delegate delegate = authorize.authorize(token);
+            Token access = new Token(context.getToken(),context.getChannel().getTokenType());
+            Delegate delegate = authorize.authorize(access);
             if (delegate.isOk()) {
                 OAuth2 auth2 = delegate.getOAuth2();
                 Map<String, Object> map = BeanKit.beanToMap(auth2, false, true);
@@ -152,15 +155,14 @@ public class AuthorizeFilter implements WebFilter {
     }
 
     private void fillXParam(ServerWebExchange exchange, Map<String, String> requestParam) {
-        String ip = exchange.getRequest().getHeaders().getFirst("x-real-ip");
+        String ip = exchange.getRequest().getHeaders().getFirst("x_remote_ip");
         if (StringKit.isBlank(ip)) {
             InetSocketAddress address = exchange.getRequest().getRemoteAddress();
             if (null != address) {
                 ip = address.getAddress().getHostAddress();
             }
-
         }
-        requestParam.put("x-remote-ip", ip);
+        requestParam.put("x_remote_ip", ip);
     }
 
 }

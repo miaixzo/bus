@@ -15,7 +15,7 @@ public interface Authorize {
      * @param token 授权令牌
      * @return OAuth2
      */
-    default Delegate authorize(String token) {
+    default Delegate authorize(Token token) {
         return new Delegate();
     }
 

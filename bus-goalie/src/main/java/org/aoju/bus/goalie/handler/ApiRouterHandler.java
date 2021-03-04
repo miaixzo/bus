@@ -29,6 +29,7 @@ import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.goalie.Assets;
 import org.aoju.bus.goalie.Context;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.Part;
@@ -39,7 +40,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
 
@@ -78,7 +78,10 @@ public class ApiRouterHandler {
         WebClient.RequestBodySpec bodySpec = webClient
                 .method(assets.getHttpMethod())
                 .uri(builder.build().encode().toUri())
-                .headers((headers) -> headers.addAll(request.headers().asHttpHeaders()));
+                .headers(headers -> {
+                    headers.addAll(request.headers().asHttpHeaders());
+                    headers.clearContentHeaders();
+                });
         if (!HttpMethod.GET.equals(assets.getHttpMethod())) {
             if (request.headers().contentType().isPresent()) {
                 MediaType mediaType = request.headers().contentType().get();
@@ -94,9 +97,13 @@ public class ApiRouterHandler {
                 }
             }
         }
-        Flux<DataBuffer> flux = bodySpec
-                .retrieve().bodyToFlux(DataBuffer.class);
-        return ServerResponse.ok().body(flux, DataBuffer.class);
+        return bodySpec.exchange().flatMap(clientResponse -> ServerResponse.ok()
+                .headers(headers -> {
+                    clientResponse.headers().asHttpHeaders();
+                    headers.addAll(clientResponse.headers().asHttpHeaders());
+                    headers.remove(HttpHeaders.CONTENT_LENGTH);
+                })
+                .body(clientResponse.bodyToFlux(DataBuffer.class), DataBuffer.class));
     }
 
 }

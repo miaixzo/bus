@@ -44,4 +44,6 @@ public interface Consts {
 
     String X_ACCESS_TOKEN = "X-Access-Token";
 
+    String X_REMOTE_CHANNEL = "x_remote_channel";
+
 }
