@@ -1063,8 +1063,6 @@ public class MathKit {
             // last character is illegal
             return false;
         }
-        // allowSigns is true iff the val ends in 'E'
-        // found digit it to make sure weird stuff like '.' and '1E-' doesn't pass
         return !allowSigns && foundDigit;
     }
 
@@ -1287,6 +1285,54 @@ public class MathKit {
             values.add(i);
         }
         return values;
+    }
+
+    /**
+     * 计算阶乘
+     * <p>
+     * n! = n * (n-1) * ... * 2 * 1
+     * </p>
+     *
+     * @param n 阶乘起始
+     * @return 结果
+     */
+    public static BigInteger factorial(BigInteger n) {
+        if (n.equals(BigInteger.ZERO)) {
+            return BigInteger.ONE;
+        }
+        return factorial(n, BigInteger.ZERO);
+    }
+
+    /**
+     * 计算范围阶乘
+     * <p>
+     * factorial(start, end) = start * (start - 1) * ... * (end + 1)
+     * </p>
+     *
+     * @param start 阶乘起始（包含）
+     * @param end   阶乘结束，必须小于起始（不包括）
+     * @return 结果
+     */
+    public static BigInteger factorial(BigInteger start, BigInteger end) {
+        if (start.compareTo(BigInteger.ZERO) < 0 || end.compareTo(BigInteger.ZERO) < 0) {
+            throw new IllegalArgumentException(StringKit.format("Factorial start and end both must be > 0, but got start={}, end={}", start, end));
+        }
+
+        if (start.equals(BigInteger.ZERO)) {
+            start = BigInteger.ONE;
+        }
+
+        if (end.compareTo(BigInteger.ONE) < 0) {
+            end = BigInteger.ONE;
+        }
+
+        BigInteger result = start;
+        end = end.add(BigInteger.ONE);
+        while (start.compareTo(end) > 0) {
+            start = start.subtract(BigInteger.ONE);
+            result = result.multiply(start);
+        }
+        return result;
     }
 
     /**

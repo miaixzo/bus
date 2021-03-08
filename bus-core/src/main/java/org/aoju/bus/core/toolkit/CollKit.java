@@ -168,6 +168,25 @@ public class CollKit {
     }
 
     /**
+     * 判断两个{@link Collection} 是否元素和顺序相同，返回{@code true}的条件是：
+     * <ul>
+     *     <li>两个{@link Collection}必须长度相同</li>
+     *     <li>两个{@link Collection}元素相同index的对象必须equals，满足{@link Objects#equals(Object, Object)}</li>
+     * </ul>
+     * 此方法来自Apache-Commons-Collections4。
+     *
+     * @param list1 列表1
+     * @param list2 列表2
+     * @return 是否相同
+     */
+    public static boolean isEqualList(final Collection<?> list1, final Collection<?> list2) {
+        if (list1 == null || list2 == null || list1.size() != list2.size()) {
+            return false;
+        }
+        return IterKit.isEqualList(list1, list2);
+    }
+
+    /**
      * 是否包含{@code null}元素
      *
      * @param iterable 被检查的Iterable对象,如果为{@code null} 返回true

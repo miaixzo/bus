@@ -1118,7 +1118,7 @@ public class Normal {
      * </pre>
      */
     public static final String[] CAPACITY_NAMES = new String[]{
-            "B", "KB", "MB", "GB", "TB", "EB"
+            "B", "KB", "MB", "GB", "TB", "PB", "EB"
     };
 
 
