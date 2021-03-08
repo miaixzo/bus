@@ -128,8 +128,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
-        Set<Integer> descendantPids = new HashSet<>();
-        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, false);
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
@@ -258,8 +257,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
-        Set<Integer> descendantPids = new HashSet<>();
-        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, true);
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 

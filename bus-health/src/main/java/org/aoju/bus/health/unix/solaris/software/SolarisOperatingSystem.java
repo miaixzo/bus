@@ -42,6 +42,7 @@ import org.aoju.bus.health.unix.solaris.drivers.Who;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Solaris is a non-free Unix operating system originally developed by Sun
@@ -55,6 +56,7 @@ import java.util.*;
 @ThreadSafe
 public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
+    private static final String PROCESS_LIST_FOR_PID_COMMAND = "ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p ";
     private static final long BOOTTIME = querySystemBootTime();
 
     @Override
@@ -96,21 +98,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
-    @Override
-    public OSProcess getProcess(int pid) {
-        List<OSProcess> procs = getProcessListFromPS(
-                "ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p ", pid);
-        if (procs.isEmpty()) {
-            return null;
-        }
-        return procs.get(0);
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return getProcessListFromPS("ps -eo s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args", -1);
-    }
-
     private static List<OSProcess> getProcessListFromPS(String psCommand, int pid) {
         List<OSProcess> procs = new ArrayList<>();
         List<String> procList = Executor.runNative(psCommand + (pid < 0 ? Normal.EMPTY : pid));
@@ -139,6 +126,21 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return 0L;
+    }
+
+    private static List<OSProcess> queryAllProcessesFromPS() {
+        return getProcessListFromPS("ps -eo s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args", -1);
+    }
+
+    private static Set<String> getChildren(String parentPid) {
+        Set<String> childPids = new HashSet<>();
+        for (String s : Executor.runNative("pgrep -P " + parentPid)) {
+            String pid = s.trim();
+            if (!pid.equals(parentPid)) {
+                childPids.add(pid);
+            }
+        }
+        return childPids;
     }
 
     @Override
@@ -228,6 +230,40 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         return services.toArray(new OSService[0]);
     }
 
+    @Override
+    public OSProcess getProcess(int pid) {
+        List<OSProcess> procs = getProcessListFromPS(PROCESS_LIST_FOR_PID_COMMAND, pid);
+        if (procs.isEmpty()) {
+            return null;
+        }
+        return procs.get(0);
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return queryAllProcessesFromPS();
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        Set<String> childPids = getChildren(String.valueOf(parentPid)).stream().map(String::valueOf)
+                .collect(Collectors.toSet());
+        if (childPids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getProcessListFromPS(PROCESS_LIST_FOR_PID_COMMAND + String.join(",", childPids), -1);
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        Set<String> descendantPids = getChildrenOrDescendants(queryAllProcessesFromPS(), parentPid, true).stream()
+                .map(String::valueOf).collect(Collectors.toSet());
+        if (descendantPids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getProcessListFromPS(PROCESS_LIST_FOR_PID_COMMAND + String.join(",", descendantPids), -1);
+    }
+
     private static long querySystemBootTime() {
         try (KstatChain kc = KstatKit.openChain()) {
             LibKstat.Kstat ksp = KstatChain.lookup("unix", 0, "system_misc");
@@ -255,28 +291,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
                 addChildrenToDescendantSet(pid, descendantPids, true);
             }
         }
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        Set<String> descendantPids = new HashSet<>();
-        addChildrenToDescendantSet(Integer.toString(parentPid), descendantPids, false);
-        if (descendantPids.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return getProcessListFromPS("ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p "
-                + String.join(",", descendantPids), -1);
-    }
-
-    @Override
-    public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        Set<String> descendantPids = new HashSet<>();
-        addChildrenToDescendantSet(Integer.toString(parentPid), descendantPids, true);
-        if (descendantPids.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return getProcessListFromPS("ps -o s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args -p "
-                + String.join(",", descendantPids), -1);
     }
 
 }

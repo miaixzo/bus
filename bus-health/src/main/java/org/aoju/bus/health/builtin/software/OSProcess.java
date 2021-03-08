@@ -86,8 +86,8 @@ public interface OSProcess {
      * Gets the current working directory for the process.
      *
      * @return the process current working directory.
-     *
-     *         On Windows, this value is only populated for the current process.
+     * <p>
+     * On Windows, this value is only populated for the current process.
      */
     String getCurrentWorkingDirectory();
 
@@ -95,7 +95,7 @@ public interface OSProcess {
      * Gets the user name of the process owner.
      *
      * @return the user name. On Windows systems, also returns the domain prepended
-     *         to the username.
+     * to the username.
      */
     String getUser();
 
@@ -239,7 +239,7 @@ public interface OSProcess {
      * Gets the process start time.
      *
      * @return the start time of the process in number of milliseconds since January
-     *         1, 1970 UTC.
+     * 1, 1970 UTC.
      */
     long getStartTime();
 
@@ -276,7 +276,7 @@ public interface OSProcess {
      * presented by the "top" command on Linux/Unix machines.
      *
      * @return The proportion of up time that the process was executing in kernel or
-     *         user mode.
+     * user mode.
      */
     double getProcessCpuLoadCumulative();
 
@@ -294,14 +294,12 @@ public interface OSProcess {
      * System's tick counters. A polling interval of at least a few seconds is
      * recommended.
      *
-     * @param proc
-     *            An {@link OSProcess} object containing statistics for this same
-     *            process collected at a prior point in time. May be null.
-     *
+     * @param proc An {@link OSProcess} object containing statistics for this same
+     *             process collected at a prior point in time. May be null.
      * @return If the prior snapshot is for the same process at a prior point in
-     *         time, the proportion of elapsed up time between the current process
-     *         snapshot and the previous one that the process was executing in
-     *         kernel or user mode. Returns cumulative load otherwise.
+     * time, the proportion of elapsed up time between the current process
+     * snapshot and the previous one that the process was executing in
+     * kernel or user mode. Returns cumulative load otherwise.
      */
     double getProcessCpuLoadBetweenTicks(OSProcess proc);
 
@@ -329,7 +327,7 @@ public interface OSProcess {
      * has terminated), returns zero.
      *
      * @return a bit vector in which each bit represents the processors that a
-     *         process is allowed to run on.
+     * process is allowed to run on.
      */
     long getAffinityMask();
 
@@ -338,8 +336,8 @@ public interface OSProcess {
      * which will occur if the process no longer exists.
      *
      * @return {@code true} if the update was successful, false if the update
-     *         failed. In addition, on a failed update the process state will be
-     *         changed to {@link State#INVALID}.
+     * failed. In addition, on a failed update the process state will be
+     * changed to {@link State#INVALID}.
      */
     boolean updateAttributes();
 

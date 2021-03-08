@@ -168,17 +168,23 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     }
 
     @Override
-    public OSProcess getProcess(int pid) {
-        OSProcess proc = new MacOSProcess(pid, this.minor);
-        return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
     @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
         List<OSProcess> allProcs = queryAllProcesses();
-        Set<Integer> descendantPids = new HashSet<>();
-        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, false);
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
         return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        OSProcess proc = new MacOSProcess(pid, this.minor);
+        return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
     }
 
     @Override
@@ -264,14 +270,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
         return WindowInfo.queryDesktopWindows(visibleOnly);
-    }
-
-    @Override
-    public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        List<OSProcess> allProcs = queryAllProcesses();
-        Set<Integer> descendantPids = new HashSet<>();
-        addChildrenToDescendantSet(allProcs, parentPid, descendantPids, true);
-        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
     private String parseCodeName() {
