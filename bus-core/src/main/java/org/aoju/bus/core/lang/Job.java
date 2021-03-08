@@ -32,6 +32,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 任务类
+ *
+ * @author Kimi Liu
+ * @version 6.2.1
+ * @since JDK 1.8+
  */
 public class Job implements Runnable {
 

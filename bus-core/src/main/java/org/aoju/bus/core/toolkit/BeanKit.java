@@ -49,7 +49,7 @@ import java.util.function.Consumer;
  * 把一个拥有对属性进行set和get方法的类
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class BeanKit {

@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * 所有{@link OfficeManager}的基类
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public abstract class AbstractOfficeManager implements OfficeManager, TemporaryFileMaker {

@@ -60,7 +60,7 @@ file:<br />
 ```
 dependencies {
     ...
-    compile group: 'org.aoju', name: 'bus-gitlab', version: '6.2.0'
+    compile group: 'org.aoju', name: 'bus-gitlab', version: '6.2.1'
 }
 ```
 
@@ -70,7 +70,7 @@ dependencies {
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-gitlab</artifactId>
-    <version>6.2.0</version>
+    <version>6.2.1</version>
 </dependency>
 ```
 

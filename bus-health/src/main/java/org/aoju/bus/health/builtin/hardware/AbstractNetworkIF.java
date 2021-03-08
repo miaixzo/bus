@@ -28,6 +28,7 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.Memoize;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -67,9 +68,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      * {@link NetworkInterface}.
      *
      * @param netint The core java {@link NetworkInterface} backing this object.
-     * @throws InstantiationException If a socket exception prevents access to the backing interface.
      */
-    protected AbstractNetworkIF(NetworkInterface netint) throws InstantiationException {
+    protected AbstractNetworkIF(NetworkInterface netint) {
         this(netint, netint.getDisplayName());
     }
 
@@ -80,9 +80,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
      * @param netint      The core java {@link NetworkInterface} backing this object.
      * @param displayName A string to use for the display name in preference to the
      *                    {@link NetworkInterface} value.
-     * @throws InstantiationException If a socket exception prevents access to the backing interface.
      */
-    protected AbstractNetworkIF(NetworkInterface netint, String displayName) throws InstantiationException {
+    protected AbstractNetworkIF(NetworkInterface netint, String displayName) {
         this.networkInterface = netint;
         try {
             this.name = networkInterface.getName();
@@ -124,7 +123,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             this.ipv6 = ipv6list.toArray(new String[0]);
             this.prefixLengths = prefixLengthList.toArray(new Short[0]);
         } catch (SocketException e) {
-            throw new InstantiationException(e.getMessage());
+            throw new InstrumentException(e.getMessage());
         }
     }
 

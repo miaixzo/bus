@@ -42,7 +42,7 @@ import java.util.Properties;
  * 这对本地和远程会话bean都有效
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class SessionBeanProvider implements Provider {

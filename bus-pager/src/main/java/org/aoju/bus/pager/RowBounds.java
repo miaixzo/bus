@@ -29,7 +29,7 @@ package org.aoju.bus.pager;
  * 分页结果信息
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class RowBounds extends org.apache.ibatis.session.RowBounds {

@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>short</code> 类型
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @see Short
  * @since JDK 1.8+
  */
