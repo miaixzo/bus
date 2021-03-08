@@ -32,7 +32,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.http.Httpx;
 import org.aoju.bus.notify.Context;
 import org.aoju.bus.notify.magic.Message;
-import org.aoju.bus.notify.provider.generic.NativeDmProperty;
+import org.aoju.bus.notify.provider.generic.NativeEmailProperty;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,14 +44,14 @@ import java.util.*;
  * @version 6.2.0
  * @since JDK 1.8+
  */
-public class AliyunDmProvider extends AliyunProvider<AliyunDmProperty, Context> {
+public class AliyunEmailProvider extends AliyunProvider<AliyunEmailProperty, Context> {
 
     /**
      * 阿里云邮件产品域名
      */
     private static final String ALIYUN_DM_API = "dm.aliyuncs.com";
 
-    public AliyunDmProvider(Context properties) {
+    public AliyunEmailProvider(Context properties) {
         super(properties);
     }
 
@@ -63,7 +63,7 @@ public class AliyunDmProvider extends AliyunProvider<AliyunDmProperty, Context> 
      * @throws InstrumentException 异常信息
      */
     @Override
-    public Message send(AliyunDmProperty entity) throws InstrumentException {
+    public Message send(AliyunEmailProperty entity) throws InstrumentException {
         if (StringKit.isEmpty(entity.getContent())) {
             throw new InstrumentException("Email content cannot be empty");
         } else if (StringKit.isEmpty(entity.getReceive())) {
@@ -92,9 +92,9 @@ public class AliyunDmProvider extends AliyunProvider<AliyunDmProperty, Context> 
         params.put("FromAlias", entity.getSender());
         params.put("ToAddress", entity.getReceive());
 
-        if (NativeDmProperty.Type.HTML.equals(entity.getType())) {
+        if (NativeEmailProperty.Type.HTML.equals(entity.getType())) {
             params.put("HtmlBody", entity.getContent());
-        } else if (NativeDmProperty.Type.TEXT.equals(entity.getType())) {
+        } else if (NativeEmailProperty.Type.TEXT.equals(entity.getType())) {
             params.put("TextBody", entity.getContent());
         }
 

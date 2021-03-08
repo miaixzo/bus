@@ -40,7 +40,7 @@ import org.aoju.bus.notify.magic.Property;
 @Getter
 @Setter
 @SuperBuilder
-public class AliyunDmProperty extends Property {
+public class AliyunEmailProperty extends Property {
 
     /**
      * 邮件内容

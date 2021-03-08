@@ -35,7 +35,7 @@ import org.aoju.bus.notify.magic.Property;
 import java.io.File;
 
 /**
- * 邮件消息
+ * 电子邮件消息
  *
  * @author Kimi Liu
  * @version 6.2.0
@@ -44,7 +44,7 @@ import java.io.File;
 @Getter
 @Setter
 @SuperBuilder
-public class NativeDmProperty extends Property {
+public class NativeEmailProperty extends Property {
 
     private static final String SMTP_HOST = "mail.smtp.host";
     private static final String SMTP_PORT = "mail.smtp.port";
@@ -157,7 +157,7 @@ public class NativeDmProperty extends Property {
      *
      * @return this
      */
-    public NativeDmProperty defaultIfEmpty() {
+    public NativeEmailProperty defaultIfEmpty() {
         if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
             this.host = StringKit.format("smtp.{}", StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));

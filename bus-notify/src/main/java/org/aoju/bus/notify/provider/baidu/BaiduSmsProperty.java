@@ -42,5 +42,4 @@ import org.aoju.bus.notify.magic.Property;
 @SuperBuilder
 public class BaiduSmsProperty extends Property {
 
-
 }

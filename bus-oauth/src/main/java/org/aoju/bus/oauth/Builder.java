@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.aoju.bus.core.key.ObjectID;
 import org.aoju.bus.core.lang.Assert;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.toolkit.*;
@@ -198,6 +199,36 @@ public class Builder {
     @lombok.Builder
     public static class Token {
 
+        /**
+         * token风格: uuid
+         */
+        public static final String TOKEN_STYLE_UUID = "uuid";
+
+        /**
+         * token风格: 简单uuid (不带下划线)
+         */
+        public static final String TOKEN_STYLE_SIMPLE_UUID = "simple-uuid";
+
+        /**
+         * token风格: 32位随机字符串
+         */
+        public static final String TOKEN_STYLE_RANDOM_32 = "random-32";
+
+        /**
+         * token风格: 64位随机字符串
+         */
+        public static final String TOKEN_STYLE_RANDOM_64 = "random-64";
+
+        /**
+         * token风格: 128位随机字符串
+         */
+        public static final String TOKEN_STYLE_RANDOM_128 = "random-128";
+
+        /**
+         * token风格: tik风格 (2_14_16)
+         */
+        public static final String TOKEN_STYLE_RANDOM_TIK = "tik";
+
         private int expireIn;
         private String accessToken;
         private String refreshToken;
@@ -223,6 +254,41 @@ public class Builder {
          * 企业微信附带属性
          */
         private String code;
+
+        /**
+         * 根据配置的tokenStyle生成不同风格的token
+         *
+         * @param style token样式
+         * @return token
+         */
+        public static String create(String style) {
+            // UUID
+            if (TOKEN_STYLE_UUID.equals(style)) {
+                return org.aoju.bus.core.key.UUID.randomUUID().toString();
+            }
+            // 简单uuid (不带下划线)
+            if (TOKEN_STYLE_SIMPLE_UUID.equals(style)) {
+                return org.aoju.bus.core.key.UUID.randomUUID().toString().replaceAll("-", "");
+            }
+            // 32位随机字符串
+            if (TOKEN_STYLE_RANDOM_32.equals(style)) {
+                return RandomKit.randomString(32);
+            }
+            // 64位随机字符串
+            if (TOKEN_STYLE_RANDOM_64.equals(style)) {
+                return RandomKit.randomString(64);
+            }
+            // 128位随机字符串
+            if (TOKEN_STYLE_RANDOM_128.equals(style)) {
+                return RandomKit.randomString(128);
+            }
+            // tik风格 (2_14_16)
+            if (TOKEN_STYLE_RANDOM_TIK.equals(style)) {
+                return RandomKit.randomString(2) + "_" + RandomKit.randomString(14) + "_" + RandomKit.randomString(16) + "__";
+            }
+            // 默认，还是ObjectID
+            return ObjectID.id();
+        }
 
     }
 
