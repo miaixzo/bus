@@ -39,7 +39,7 @@ import java.util.List;
  *
  * @param <T> 子类类型,用于返回this
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
@@ -272,18 +272,19 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
+     * 创建某一列的样式，返回样式后可以设置样式内容
      *
-     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @param x X坐标，从0计数，即列号
      * @return {@link CellStyle}
      */
-    public CellStyle getOrCreateCellStyle(String locationRef) {
-        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
-        return getOrCreateCellStyle(cellLocation.getX(), cellLocation.getY());
+    public CellStyle createColumnStyle(int x) {
+        final CellStyle columnStyle = this.workbook.createCellStyle();
+        this.sheet.setDefaultColumnStyle(x, columnStyle);
+        return columnStyle;
     }
 
     /**
-     * 获取或创建某一行的样式,返回样式后可以设置样式内容
+     * 获取或创建某一列的样式,返回样式后可以设置样式内容
      *
      * @param x X坐标,从0计数,既列号
      * @return {@link CellStyle}
@@ -330,6 +331,17 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      */
     public CellStyle createCellStyle() {
         return StyleKit.createCellStyle(this.workbook);
+    }
+
+    /**
+     * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
+     *
+     * @param locationRef 单元格地址标识符，例如A11，B5
+     * @return {@link CellStyle}
+     */
+    public CellStyle getOrCreateCellStyle(String locationRef) {
+        final CellLocation cellLocation = ExcelKit.toLocation(locationRef);
+        return getOrCreateCellStyle(cellLocation.getX(), cellLocation.getY());
     }
 
     /**

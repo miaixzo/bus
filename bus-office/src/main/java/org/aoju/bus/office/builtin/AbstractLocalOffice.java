@@ -48,7 +48,7 @@ import java.util.Optional;
  * 所有本地office任务实现的基类.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public abstract class AbstractLocalOffice extends AbstractOffice {

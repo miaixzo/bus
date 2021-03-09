@@ -61,7 +61,7 @@ import java.util.function.Consumer;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class TcpAioSession<T> extends AioSession {
@@ -108,7 +108,7 @@ public class TcpAioSession<T> extends AioSession {
      */
     private InputStream inputStream;
 
-    private volatile int modCount = 0;
+    private int modCount = 0;
 
     /**
      * @param channel                Socket通道

@@ -29,7 +29,7 @@ package org.aoju.bus.goalie;
  * 常量
  *
  * @author Justubborn
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public interface Consts {
@@ -43,5 +43,7 @@ public interface Consts {
     String SIGN = "sign";
 
     String X_ACCESS_TOKEN = "X-Access-Token";
+
+    String X_REMOTE_CHANNEL = "x_remote_channel";
 
 }

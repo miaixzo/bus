@@ -34,7 +34,7 @@ import java.util.Arrays;
  * 默认常量
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class Normal {
@@ -1118,7 +1118,7 @@ public class Normal {
      * </pre>
      */
     public static final String[] CAPACITY_NAMES = new String[]{
-            "B", "KB", "MB", "GB", "TB", "EB"
+            "B", "KB", "MB", "GB", "TB", "PB", "EB"
     };
 
 

@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.health.unix.openbsd.software;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -45,7 +46,7 @@ import java.util.Map;
  * implementation specific means of file storage.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class OpenBsdFileSystem extends AbstractFileSystem {
@@ -75,7 +76,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
         // Get inode usage data
         Map<String, Long> inodeFreeMap = new HashMap<>();
         Map<String, Long> inodeUsedlMap = new HashMap<>();
-        String command = "df -i" + (localOnly ? " -l" : "");
+        String command = "df -i" + (localOnly ? " -l" : Normal.EMPTY);
         for (String line : Executor.runNative(command)) {
             /*- Sample Output:
              $ df -i
@@ -150,7 +151,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                     description = "Mount Point";
                 }
 
-                fsList.add(new OpenBsdOSFileStore(name, volume, name, path, options, uuid, "", description, type,
+                fsList.add(new OpenBsdOSFileStore(name, volume, name, path, options, uuid, Normal.EMPTY, description, type,
                         freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(volume, 0L),
                         inodeUsedlMap.getOrDefault(volume, 0L) + inodeFreeMap.getOrDefault(volume, 0L)));
             }

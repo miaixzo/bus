@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  * OpenBSD Firmware implementation
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class OpenBsdFirmware extends AbstractFirmware {
@@ -50,7 +50,7 @@ public class OpenBsdFirmware extends AbstractFirmware {
     private static Triple<String, String, String> readDmesg() {
         String version = null;
         String vendor = null;
-        String releaseDate = "";
+        String releaseDate = Normal.EMPTY;
 
         List<String> dmesg = Executor.runNative("dmesg");
         for (String line : dmesg) {

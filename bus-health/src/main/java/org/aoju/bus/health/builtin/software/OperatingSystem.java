@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  * controls the computer.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -69,7 +69,7 @@ public interface OperatingSystem {
      * configuration property.
      *
      * @return A list of {@link OSSession} objects representing
-     *         logged-in users
+     * logged-in users
      */
     default List<OSSession> getSessions() {
         return Who.queryWho();
@@ -181,6 +181,30 @@ public interface OperatingSystem {
                                       int limit);
 
     /**
+     * Gets currently running processes of provided parent PID's descendants,
+     * including their children, the children's children, etc., optionally
+     * filtering, sorting, and limited to the top "N".
+     *
+     * @param parentPid The Process ID whose children to list.
+     * @param filter    An optional {@link Predicate} limiting the results to the
+     *                  specified filter. Some common predicates are available in
+     *                  {@link ProcessSorting}. May be {@code null} for no filtering.
+     * @param sort      An optional {@link Comparator} specifying the sorting order. Some
+     *                  common comparators are available in {@link ProcessSorting}. May be
+     *                  {@code null} for no sorting.
+     * @param limit     Max number of results to return, or 0 to return all results
+     * @return A list of {@link OSProcess} objects representing the
+     * currently running descendant processes of the provided PID,
+     * optionally filtered, sorted, and limited to the specified number.
+     * <p>
+     * The list may contain processes with a state of
+     * {@link OSProcess.State#INVALID} if a process terminates during
+     * iteration.
+     */
+    List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
+                                           int limit);
+
+    /**
      * Gets information on a currently running process
      *
      * @param pid A process ID
@@ -285,8 +309,9 @@ public interface OperatingSystem {
 
     /**
      * Constants which may be used to filter Process lists in
-     * {@link #getProcesses(Predicate, Comparator, int)} and
-     * {@link #getChildProcesses(int, Predicate, Comparator, int)}.
+     * {@link #getProcesses(Predicate, Comparator, int)},
+     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
     final class ProcessFiltering {
 
@@ -314,8 +339,9 @@ public interface OperatingSystem {
 
     /**
      * Constants which may be used to sort Process lists in
-     * {@link #getProcesses(Predicate, Comparator, int)} and
-     * {@link #getChildProcesses(int, Predicate, Comparator, int)}.
+     * {@link #getProcesses(Predicate, Comparator, int)},
+     * {@link #getChildProcesses(int, Predicate, Comparator, int)}, and
+     * {@link #getDescendantProcesses(int, Predicate, Comparator, int)}.
      */
     final class ProcessSorting {
 

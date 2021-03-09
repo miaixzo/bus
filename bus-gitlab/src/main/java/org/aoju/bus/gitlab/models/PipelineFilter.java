@@ -38,7 +38,7 @@ import java.util.Date;
  * This class is used to filter Pipelines when getting lists of them.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class PipelineFilter {

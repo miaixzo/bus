@@ -30,8 +30,7 @@ import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Config;
 import org.aoju.bus.health.Memoize;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
  * Common methods for OperatingSystem implementations
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public abstract class AbstractOperatingSystem implements OperatingSystem {
@@ -103,15 +102,90 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     protected abstract List<OSProcess> queryAllProcesses();
 
-    @Override
-    public List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
-                                             int limit) {
-        return queryChildProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
-                .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
-                .collect(Collectors.toList());
+    private static Set<Integer> getChildren(Map<Integer, Integer> parentPidMap, int parentPid) {
+        return parentPidMap.entrySet().stream()
+                .filter(e -> e.getValue().equals(parentPid) && !e.getKey().equals(parentPid)).map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     protected abstract List<OSProcess> queryChildProcesses(int parentPid);
+
+    /**
+     * Utility method for subclasses to take a full process list as input and return
+     * the children or descendants of a particular process.
+     *
+     * @param allProcs       A collection of all processes
+     * @param parentPid      The process ID whose children or descendants to return
+     * @param allDescendants If false, only gets immediate children of this process. If true,
+     *                       gets all descendants.
+     * @return Set of children or descendants of parentPid
+     */
+    protected static Set<Integer> getChildrenOrDescendants(Collection<OSProcess> allProcs, int parentPid,
+                                                           boolean allDescendants) {
+        Map<Integer, Integer> parentPidMap = allProcs.stream()
+                .collect(Collectors.toMap(OSProcess::getProcessID, OSProcess::getParentProcessID));
+        return getChildrenOrDescendants(parentPidMap, parentPid, allDescendants);
+    }
+
+    /**
+     * Utility method for subclasses to take a map of pid to parent as input and
+     * return the children or descendants of a particular process.
+     *
+     * @param parentPidMap   a map of all processes with processID as key and parentProcessID
+     *                       as value
+     * @param parentPid      The process ID whose children or descendants to return
+     * @param allDescendants If false, only gets immediate children of this process. If true,
+     *                       gets all descendants.
+     * @return Set of children or descendants of parentPid
+     */
+    protected static Set<Integer> getChildrenOrDescendants(Map<Integer, Integer> parentPidMap, int parentPid,
+                                                           boolean allDescendants) {
+        Set<Integer> descendantPids = new HashSet<>();
+        Queue<Integer> queue = new ArrayDeque<>();
+        int currPid;
+        // Collect this process's children
+        Set<Integer> childPids = getChildren(parentPidMap, parentPid);
+        // Add to descendant set
+        descendantPids.addAll(childPids);
+        // Add all descendents
+        if (allDescendants) {
+            queue.addAll(descendantPids);
+            while (!queue.isEmpty()) {
+                currPid = queue.remove();
+                // Collect current process's children
+                childPids = getChildren(parentPidMap, currPid);
+                for (int pid : childPids) {
+                    if (!descendantPids.contains(pid)) {
+                        descendantPids.add(pid);
+                        queue.add(pid);
+                    }
+                }
+            }
+        }
+        return descendantPids;
+    }
+
+    @Override
+    public List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
+                                             int limit) {
+        OSProcess parent = getProcess(parentPid);
+        long parentStartTime = parent == null ? 0 : parent.getStartTime();
+        return queryChildProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
+                .filter(p -> p.getStartTime() >= parentStartTime).sorted(sort == null ? ProcessSorting.NO_SORTING : sort)
+                .limit(limit > 0 ? limit : Long.MAX_VALUE).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter,
+                                                  Comparator<OSProcess> sort, int limit) {
+        OSProcess parent = getProcess(parentPid);
+        long parentStartTime = parent == null ? 0 : parent.getStartTime();
+        return queryDescendantProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
+                .filter(p -> p.getStartTime() >= parentStartTime).sorted(sort == null ? ProcessSorting.NO_SORTING : sort)
+                .limit(limit > 0 ? limit : Long.MAX_VALUE).collect(Collectors.toList());
+    }
+
+    protected abstract List<OSProcess> queryDescendantProcesses(int parentPid);
 
     @Override
     public String toString() {

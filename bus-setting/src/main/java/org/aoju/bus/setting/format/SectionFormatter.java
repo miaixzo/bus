@@ -35,7 +35,7 @@ import org.aoju.bus.setting.magic.IniSectionImpl;
  * 将字符串值格式设置为{@link IniSection}
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class SectionFormatter extends AbstractFormatter<IniSection> {

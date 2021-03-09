@@ -39,7 +39,7 @@ import java.util.Date;
  * 此对象只用于标注单元格所在位置信息
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class NullCell implements Cell {
@@ -93,18 +93,16 @@ public class NullCell implements Cell {
         throw new UnsupportedOperationException("Can not set any thing to null cell!");
     }
 
-    @Override
     public CellType getCellTypeEnum() {
+        return null;
+    }
+
+    public CellType getCachedFormulaResultTypeEnum() {
         return null;
     }
 
     @Override
     public CellType getCachedFormulaResultType() {
-        return null;
-    }
-
-    @Override
-    public CellType getCachedFormulaResultTypeEnum() {
         return null;
     }
 

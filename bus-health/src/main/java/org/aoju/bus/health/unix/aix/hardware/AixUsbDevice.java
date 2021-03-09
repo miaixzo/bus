@@ -41,7 +41,7 @@ import java.util.function.Supplier;
  * AIX Usb Device
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @Immutable
@@ -80,7 +80,7 @@ public class AixUsbDevice extends AbstractUsbDevice {
             }
         }
         if (tree) {
-            return Arrays.asList(new AixUsbDevice("USB Controller", "", "0000", "0000", "", "", deviceList));
+            return Arrays.asList(new AixUsbDevice("USB Controller", Normal.EMPTY, "0000", "0000", Normal.EMPTY, Normal.EMPTY, deviceList));
         }
         return deviceList;
     }

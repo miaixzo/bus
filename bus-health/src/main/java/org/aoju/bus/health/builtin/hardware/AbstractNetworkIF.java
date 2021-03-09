@@ -28,6 +28,7 @@ package org.aoju.bus.health.builtin.hardware;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
+import org.aoju.bus.core.lang.exception.InstrumentException;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Formats;
 import org.aoju.bus.health.Memoize;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
  * 网络接口信息
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -53,6 +54,8 @@ public abstract class AbstractNetworkIF implements NetworkIF {
 
     private final Supplier<Properties> vmMacAddrProps = Memoize.memoize(AbstractNetworkIF::queryVmMacAddrProps);
     private NetworkInterface networkInterface;
+    private String name;
+    private String displayName;
     private int mtu;
     private String mac;
     private String[] ipv4;
@@ -61,13 +64,28 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private Short[] prefixLengths;
 
     /**
-     * 构造一个由指定的{@link NetworkInterface}支持的{@link NetworkIF}对象
+     * Construct a {@link NetworkIF} object backed by the specified
+     * {@link NetworkInterface}.
      *
-     * @param netint 支持此对象的核心java {@link NetworkInterface}
+     * @param netint The core java {@link NetworkInterface} backing this object.
      */
     protected AbstractNetworkIF(NetworkInterface netint) {
+        this(netint, netint.getDisplayName());
+    }
+
+    /**
+     * Construct a {@link NetworkIF} object backed by the specified
+     * {@link NetworkInterface}.
+     *
+     * @param netint      The core java {@link NetworkInterface} backing this object.
+     * @param displayName A string to use for the display name in preference to the
+     *                    {@link NetworkInterface} value.
+     */
+    protected AbstractNetworkIF(NetworkInterface netint, String displayName) {
         this.networkInterface = netint;
         try {
+            this.name = networkInterface.getName();
+            this.displayName = displayName;
             // Set MTU
             this.mtu = networkInterface.getMTU();
             // Set MAC
@@ -77,21 +95,21 @@ public abstract class AbstractNetworkIF implements NetworkIF {
                 for (byte b : hwmac) {
                     octets.add(String.format("%02x", b));
                 }
-                this.mac = String.join(Symbol.COLON, octets);
+                this.mac = String.join(":", octets);
             } else {
                 this.mac = Normal.UNKNOWN;
             }
-            // 设置IP阵列
-            List<String> ipv4list = new ArrayList<>();
-            List<Short> subnetMaskList = new ArrayList<>();
-            List<String> ipv6list = new ArrayList<>();
-            List<Short> prefixLengthList = new ArrayList<>();
+            // Set IP arrays
+            ArrayList<String> ipv4list = new ArrayList<>();
+            ArrayList<Short> subnetMaskList = new ArrayList<>();
+            ArrayList<String> ipv6list = new ArrayList<>();
+            ArrayList<Short> prefixLengthList = new ArrayList<>();
 
             for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                 InetAddress address = interfaceAddress.getAddress();
                 if (address.getHostAddress().length() > 0) {
-                    if (address.getHostAddress().contains(Symbol.COLON)) {
-                        ipv6list.add(address.getHostAddress().split(Symbol.PERCENT)[0]);
+                    if (address.getHostAddress().contains(":")) {
+                        ipv6list.add(address.getHostAddress().split("%")[0]);
                         prefixLengthList.add(interfaceAddress.getNetworkPrefixLength());
                     } else {
                         ipv4list.add(address.getHostAddress());
@@ -105,7 +123,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
             this.ipv6 = ipv6list.toArray(new String[0]);
             this.prefixLengths = prefixLengthList.toArray(new Short[0]);
         } catch (SocketException e) {
-            Logger.error("Socket exception: {}", e.getMessage());
+            throw new InstrumentException(e.getMessage());
         }
     }
 
@@ -159,12 +177,12 @@ public abstract class AbstractNetworkIF implements NetworkIF {
 
     @Override
     public String getName() {
-        return this.networkInterface.getName();
+        return this.name;
     }
 
     @Override
     public String getDisplayName() {
-        return this.networkInterface.getDisplayName();
+        return this.displayName;
     }
 
     @Override
@@ -204,24 +222,16 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     }
 
     @Override
-    public int getIfType() {
-        return 0;
-    }
-
-    @Override
-    public int getNdisPhysicalMediumType() {
-        return 0;
-    }
-
-    @Override
-    public boolean isConnectorPresent() {
-        return false;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: ").append(getName()).append(Symbol.SPACE).append(Symbol.PARENTHESE_LEFT).append(getDisplayName()).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
+        sb.append("Name: ").append(getName());
+        if (!getName().equals(getDisplayName())) {
+            sb.append(" (").append(getDisplayName()).append(")");
+        }
+        if (!getIfAlias().isEmpty()) {
+            sb.append(" [IfAlias=").append(getIfAlias()).append("]");
+        }
+        sb.append("\n");
         sb.append("  MAC Address: ").append(getMacaddr()).append(Symbol.LF);
         sb.append("  MTU: ").append(Builder.unsignedIntToLong(getMTU())).append(", ").append("Speed: ")
                 .append(getSpeed()).append("\n");

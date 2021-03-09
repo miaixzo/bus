@@ -29,7 +29,7 @@ package org.aoju.bus.mapper.criteria;
  * 条件处理
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public interface SqlsCriteria {

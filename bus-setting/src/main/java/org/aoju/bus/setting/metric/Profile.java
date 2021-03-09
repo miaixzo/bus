@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * </ol>
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class Profile implements Serializable {
@@ -98,7 +98,6 @@ public class Profile implements Serializable {
      * @param useVar  是否使用变量
      */
     public Profile(String profile, java.nio.charset.Charset charset, boolean useVar) {
-        super();
         this.profile = profile;
         this.charset = charset;
         this.useVar = useVar;

@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.openbsd.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.health.Builder;
@@ -50,13 +51,56 @@ import java.util.stream.Collectors;
  * three-quarters of all installed simply, permissively licensed BSD systems.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
 public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     private static final long BOOTTIME = querySystemBootTime();
+
+    @Override
+    public String queryManufacturer() {
+        return "Unix/BSD";
+    }
+
+    @Override
+    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
+        int[] mib = new int[2];
+        mib[0] = OpenBsdLibc.CTL_KERN;
+        mib[1] = OpenBsdLibc.KERN_OSTYPE;
+        String family = OpenBsdSysctlKit.sysctl(mib, "OpenBSD");
+        mib[1] = OpenBsdLibc.KERN_OSRELEASE;
+        String version = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
+        mib[1] = OpenBsdLibc.KERN_VERSION;
+        String versionInfo = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
+        String buildNumber = versionInfo.split(":")[0].replace(family, "").replace(version, Normal.EMPTY).trim();
+
+        return Pair.of(family, new OSVersionInfo(version, null, buildNumber));
+    }
+
+    @Override
+    protected int queryBitness(int jvmBitness) {
+        if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
+            return jvmBitness;
+        }
+        return 64;
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return new OpenBsdFileSystem();
+    }
+
+    @Override
+    public InternetProtocolStats getInternetProtocolStats() {
+        return new OpenBsdInternetProtocolStats();
+    }
+
+    @Override
+    public List<OSProcess> queryAllProcesses() {
+        return getProcessListFromPS(-1);
+    }
 
     private static List<OSProcess> getProcessListFromPS(int pid) {
         List<OSProcess> procs = new ArrayList<>();
@@ -86,57 +130,8 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
         return Builder.parseLongOrDefault(
-                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", ""),
+                Executor.getFirstAnswer("sysctl -n kern.boottime").split(",")[0].replaceAll("\\D", Normal.EMPTY),
                 System.currentTimeMillis() / 1000);
-    }
-
-    @Override
-    public String queryManufacturer() {
-        return "Unix/BSD";
-    }
-
-    @Override
-    public Pair<String, OSVersionInfo> queryFamilyVersionInfo() {
-        int[] mib = new int[2];
-        mib[0] = OpenBsdLibc.CTL_KERN;
-        mib[1] = OpenBsdLibc.KERN_OSTYPE;
-        String family = OpenBsdSysctlKit.sysctl(mib, "OpenBSD");
-        mib[1] = OpenBsdLibc.KERN_OSRELEASE;
-        String version = OpenBsdSysctlKit.sysctl(mib, "");
-        mib[1] = OpenBsdLibc.KERN_VERSION;
-        String versionInfo = OpenBsdSysctlKit.sysctl(mib, "");
-        String buildNumber = versionInfo.split(":")[0].replace(family, "").replace(version, "").trim();
-
-        return Pair.of(family, new OSVersionInfo(version, null, buildNumber));
-    }
-
-    @Override
-    protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < 64 && Executor.getFirstAnswer("uname -m").indexOf("64") == -1) {
-            return jvmBitness;
-        }
-        return 64;
-    }
-
-    @Override
-    public FileSystem getFileSystem() {
-        return new OpenBsdFileSystem();
-    }
-
-    @Override
-    public InternetProtocolStats getInternetProtocolStats() {
-        return new OpenBsdInternetProtocolStats();
-    }
-
-    @Override
-    public List<OSProcess> queryAllProcesses() {
-        return getProcessListFromPS(-1);
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
-        return queryAllProcesses().stream().filter(p -> p.getParentProcessID() == parentPid)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -216,6 +211,20 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             Logger.error("Directory: /etc/rc.d does not exist");
         }
         return services.toArray(new OSService[0]);
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
 }

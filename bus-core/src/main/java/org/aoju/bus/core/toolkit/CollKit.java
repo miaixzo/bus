@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  * 集合相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class CollKit {
@@ -165,6 +165,25 @@ public class CollKit {
      */
     public static boolean isNotEmpty(Enumeration<?> enumeration) {
         return null != enumeration && enumeration.hasMoreElements();
+    }
+
+    /**
+     * 判断两个{@link Collection} 是否元素和顺序相同，返回{@code true}的条件是：
+     * <ul>
+     *     <li>两个{@link Collection}必须长度相同</li>
+     *     <li>两个{@link Collection}元素相同index的对象必须equals，满足{@link Objects#equals(Object, Object)}</li>
+     * </ul>
+     * 此方法来自Apache-Commons-Collections4。
+     *
+     * @param list1 列表1
+     * @param list2 列表2
+     * @return 是否相同
+     */
+    public static boolean isEqualList(final Collection<?> list1, final Collection<?> list2) {
+        if (list1 == null || list2 == null || list1.size() != list2.size()) {
+            return false;
+        }
+        return IterKit.isEqualList(list1, list2);
     }
 
     /**
@@ -1275,6 +1294,7 @@ public class CollKit {
 
     /**
      * 截取集合的部分
+     * 与{@link List#subList(int, int)} 不同在于子列表是新的副本，操作子列表不会影响源列表
      *
      * @param <T>   集合元素类型
      * @param list  被截取的数组
@@ -1314,8 +1334,8 @@ public class CollKit {
             end = size;
         }
 
-        if (step <= 1) {
-            return list.subList(start, end);
+        if (step < 1) {
+            step = 1;
         }
 
         final List<T> result = new ArrayList<>();
@@ -2340,7 +2360,7 @@ public class CollKit {
         // 每页条目数大于总数直接返回所有
         if (resultSize <= pageSize) {
             if (pageNo <= 1) {
-                return Collections.unmodifiableList(list);
+                return unmodifiable(list);
             } else {
                 // 越界直接返回空
                 return new ArrayList<>(0);
@@ -2350,10 +2370,10 @@ public class CollKit {
         if (startEnd[1] > resultSize) {
             startEnd[1] = resultSize;
             if (startEnd[0] > startEnd[1]) {
-                return Collections.emptyList();
+                return new ArrayList<>(0);
             }
         }
-        return list.subList(startEnd[0], startEnd[1]);
+        return sub(list, startEnd[0], startEnd[1]);
     }
 
     /**

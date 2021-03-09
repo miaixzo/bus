@@ -37,7 +37,7 @@ import java.util.List;
  * Includes key statistics of TCP and UDP protocols
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -349,7 +349,7 @@ public interface InternetProtocolStats {
          * suspect.
          *
          * @return The local address, or an empty array if the listener can accept a
-         *         connection on any interface.
+         * connection on any interface.
          */
         public byte[] getLocalAddress() {
             return Arrays.copyOf(localAddress, localAddress.length);
@@ -372,7 +372,7 @@ public interface InternetProtocolStats {
          * in zeroes should be considered suspect.
          *
          * @return The foreign/remote address, or an empty array if unknown. An empty
-         *         array will also result if
+         * array will also result if
          */
         public byte[] getForeignAddress() {
             return Arrays.copyOf(foreignAddress, foreignAddress.length);
@@ -418,7 +418,7 @@ public interface InternetProtocolStats {
          * Gets the id of the process which holds this connection.
          *
          * @return The process id of the process which holds this connection if known,
-         *         -1 otherwise.
+         * -1 otherwise.
          */
         public int getowningProcessId() {
             return owningProcessId;

@@ -37,7 +37,7 @@ import java.util.*;
  * 阳历日期
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class Solar {
@@ -781,7 +781,7 @@ public class Solar {
         // 年月日时分秒
         String strYmdHms = strYmd + Symbol.SPACE
                 + (hour < 10 ? "0" : Normal.EMPTY) + hour + Symbol.C_COLON
-                + (minute < 10 ? "0" : "") + minute + Symbol.C_COLON
+                + (minute < 10 ? "0" : Normal.EMPTY) + minute + Symbol.C_COLON
                 + (second < 10 ? "0" : Normal.EMPTY) + second;
 
         if (ObjectKit.isNotEmpty(args)) {

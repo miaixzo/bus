@@ -26,8 +26,10 @@
 package org.aoju.bus.health.builtin.hardware;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 
 import java.net.NetworkInterface;
+import java.util.Arrays;
 
 /**
  * A network interface in the machine, including statistics.
@@ -38,7 +40,7 @@ import java.net.NetworkInterface;
  * usage to ensure consistent calculations.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -66,6 +68,35 @@ public interface NetworkIF {
      * identical to the name.
      */
     String getDisplayName();
+
+    /**
+     * The {@code ifAlias} as described in RFC 2863.
+     * <p>
+     * The ifAlias object allows a network manager to give one or more interfaces
+     * their own unique names, irrespective of any interface-stack relationship.
+     * Further, the ifAlias name is non-volatile, and thus an interface must retain
+     * its assigned ifAlias value across reboots, even if an agent chooses a new
+     * ifIndex value for the interface.
+     * <p>
+     * Only implemented for Windows and Linux.
+     *
+     * @return The {@code ifAlias} of the interface if available, otherwise the
+     * empty string.
+     */
+    default String getIfAlias() {
+        return Normal.EMPTY;
+    }
+
+    /**
+     * The {@code ifOperStatus} as described in RFC 2863.
+     * <p>
+     * Only implemented for Windows (Vista and newer) and Linux.
+     *
+     * @return The current operational state of the interface.
+     */
+    default IfOperStatus getIfOperStatus() {
+        return IfOperStatus.UNKNOWN;
+    }
 
     /**
      * The interface Maximum Transmission Unit (MTU).
@@ -139,7 +170,9 @@ public interface NetworkIF {
      *
      * @return the ifType
      */
-    int getIfType();
+    default int getIfType() {
+        return 0;
+    }
 
     /**
      * (Windows Vista and higher only) The NDIS physical medium type. This member
@@ -148,7 +181,9 @@ public interface NetworkIF {
      *
      * @return the ndisPhysicalMediumType
      */
-    int getNdisPhysicalMediumType();
+    default int getNdisPhysicalMediumType() {
+        return 0;
+    }
 
     /**
      * (Windows Vista and higher) Set if a connector is present on the network
@@ -159,7 +194,9 @@ public interface NetworkIF {
      * @return {@code true} if there is a physical network adapter (Windows) or a
      * connected cable (Linux), false otherwise
      */
-    boolean isConnectorPresent();
+    default boolean isConnectorPresent() {
+        return false;
+    }
 
     /**
      * <p>
@@ -304,5 +341,69 @@ public interface NetworkIF {
      * @return {@code true} if the update was successful, {@code false} otherwise.
      */
     boolean updateAttributes();
+
+
+    /**
+     * The current operational state of a network interface.
+     * <p>
+     * As described in RFC 2863.
+     */
+    enum IfOperStatus {
+        /**
+         * Up and operational. Ready to pass packets.
+         */
+        UP(1),
+        /**
+         * Down and not operational. Not ready to pass packets.
+         */
+        DOWN(2),
+        /**
+         * In some test mode.
+         */
+        TESTING(3),
+        /**
+         * The interface status is unknown.
+         */
+        UNKNOWN(4),
+        /**
+         * The interface is not up, but is in a pending state, waiting for some external
+         * event.
+         */
+        DORMANT(5),
+        /**
+         * Some component is missing
+         */
+        NOT_PRESENT(6),
+        /**
+         * Down due to state of lower-layer interface(s).
+         */
+        LOWER_LAYER_DOWN(7);
+
+        private final int value;
+
+        IfOperStatus(int value) {
+            this.value = value;
+        }
+
+        /**
+         * Find IfOperStatus by the integer value.
+         *
+         * @param value Integer value specified in RFC 2863
+         * @return the matching IfOperStatu or UNKNOWN if no matching IfOperStatus can
+         * be found
+         */
+        public static IfOperStatus byValue(int value) {
+            return Arrays.stream(IfOperStatus.values()).filter(st -> st.getValue() == value).findFirst()
+                    .orElse(UNKNOWN);
+        }
+
+        /**
+         * @return the integer value specified in RFC 2863 for this operational status.
+         */
+        public int getValue() {
+            return this.value;
+        }
+
+    }
 
 }

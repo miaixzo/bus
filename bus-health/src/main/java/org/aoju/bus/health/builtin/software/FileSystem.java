@@ -35,7 +35,7 @@ import java.util.List;
  * more file stores.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -71,7 +71,7 @@ public interface FileSystem {
      * handle used to access I/O resources such as files and network connections. On
      * UNIX-based systems there is a system-wide limit on the number of open file
      * descriptors.
-     *
+     * <p>
      * On Windows systems, this method returns the total number of handles held by
      * Processes. While Windows handles are conceptually similar to file
      * descriptors, they may also refer to a number of non-I/O related objects.
@@ -85,7 +85,7 @@ public interface FileSystem {
      * handle used to access I/O resources such as files and network connections. On
      * UNIX-based systems there is a system-wide limit on the number of open file
      * descriptors.
-     *
+     * <p>
      * On Windows systems, this method returns the theoretical max number of handles
      * (2^24-2^15 on 32-bit, 2^24-2^16 on 64-bit). There may be a lower per-process
      * limit. While Windows handles are conceptually similar to file descriptors,

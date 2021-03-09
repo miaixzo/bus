@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * This class implements the client side API for the GitLab namespace calls.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class NamespaceApi extends AbstractApi {

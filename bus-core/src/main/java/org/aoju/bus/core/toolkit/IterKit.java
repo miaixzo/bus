@@ -38,7 +38,7 @@ import java.util.function.Function;
  * {@link Iterable} 和 {@link Iterator} 相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class IterKit {
@@ -81,6 +81,38 @@ public class IterKit {
      */
     public static boolean isNotEmpty(Iterator<?> iterator) {
         return null != iterator && iterator.hasNext();
+    }
+
+    /**
+     * 判断两个{@link Iterable} 是否元素和顺序相同，返回{@code true}的条件是：
+     * <ul>
+     *     <li>两个{@link Iterable}必须长度相同</li>
+     *     <li>两个{@link Iterable}元素相同index的对象必须equals，满足{@link Objects#equals(Object, Object)}</li>
+     * </ul>
+     * 此方法来自Apache-Commons-Collections4。
+     *
+     * @param list1 列表1
+     * @param list2 列表2
+     * @return 是否相同
+     */
+    public static boolean isEqualList(final Iterable<?> list1, final Iterable<?> list2) {
+        if (list1 == list2) {
+            return true;
+        }
+
+        final Iterator<?> it1 = list1.iterator();
+        final Iterator<?> it2 = list2.iterator();
+        Object obj1;
+        Object obj2;
+        while (it1.hasNext() && it2.hasNext()) {
+            obj1 = it1.next();
+            obj2 = it2.next();
+
+            if (false == Objects.equals(obj1, obj2)) {
+                return false;
+            }
+        }
+        return false == (it1.hasNext() || it2.hasNext());
     }
 
     /**

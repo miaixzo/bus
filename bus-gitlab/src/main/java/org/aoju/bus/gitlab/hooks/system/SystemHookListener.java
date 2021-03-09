@@ -30,7 +30,7 @@ package org.aoju.bus.gitlab.hooks.system;
  * a System Hook notification has been received from a GitLab server.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public interface SystemHookListener extends java.util.EventListener {

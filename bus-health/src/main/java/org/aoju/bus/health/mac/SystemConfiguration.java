@@ -2,7 +2,7 @@
  *                                                                               *
  * The MIT License (MIT)                                                         *
  *                                                                               *
- * Copyright (c) 2015-2021 aoju.org sandao and other contributors.               *
+ * Copyright (c) 2015-2021 aoju.org OSHI and other contributors.                 *
  *                                                                               *
  * Permission is hereby granted, free of charge, to any person obtaining a copy  *
  * of this software and associated documentation files (the "Software"), to deal *
@@ -23,52 +23,42 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.socket;
+package org.aoju.bus.health.mac;
 
-import java.nio.channels.SelectableChannel;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
+import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
+import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
 
 /**
+ * Allow applications to access a device’s network configuration settings.
+ * Determine the reachability of the device, such as whether Wi-Fi or cell
+ * connectivity are active.
+ *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
-public class UdpSelectionKey extends SelectionKey {
+public interface SystemConfiguration extends Library {
 
-    @Override
-    public SelectableChannel channel() {
-        throw new UnsupportedOperationException();
-    }
+    SystemConfiguration INSTANCE = Native.load("SystemConfiguration", SystemConfiguration.class);
 
-    @Override
-    public Selector selector() {
-        throw new UnsupportedOperationException();
-    }
+    CFArrayRef SCNetworkInterfaceCopyAll();
 
-    @Override
-    public boolean isValid() {
-        throw new UnsupportedOperationException();
-    }
+    CFStringRef SCNetworkInterfaceGetBSDName(SCNetworkInterfaceRef netint);
 
-    @Override
-    public void cancel() {
-        throw new UnsupportedOperationException();
-    }
+    CFStringRef SCNetworkInterfaceGetLocalizedDisplayName(SCNetworkInterfaceRef netint);
 
-    @Override
-    public int interestOps() {
-        throw new UnsupportedOperationException();
-    }
+    class SCNetworkInterfaceRef extends CFTypeRef {
+        public SCNetworkInterfaceRef() {
+            super();
+        }
 
-    @Override
-    public SelectionKey interestOps(int ops) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public int readyOps() {
-        throw new UnsupportedOperationException();
+        public SCNetworkInterfaceRef(Pointer p) {
+            super(p);
+        }
     }
 
 }

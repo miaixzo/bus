@@ -26,6 +26,7 @@
 package org.aoju.bus.health.unix.openbsd;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Executor;
 
@@ -35,7 +36,7 @@ import java.util.List;
  * Reads from fstat.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -55,7 +56,7 @@ public final class FstatKit {
         if (!ps.isEmpty()) {
             return ps.get(1);
         }
-        return "";
+        return Normal.EMPTY;
     }
 
     /**

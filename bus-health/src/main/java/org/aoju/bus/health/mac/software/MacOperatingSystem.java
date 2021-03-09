@@ -43,6 +43,7 @@ import org.aoju.bus.logger.Logger;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * macOS, previously Mac Mac OS) is a series of proprietary
@@ -50,7 +51,7 @@ import java.util.*;
  * It is the primary operating system for Apple's Mac computers.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -101,14 +102,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         this.maxProc = SysctlKit.sysctl("kern.maxproc", 0x1000);
     }
 
-    private static int getParentProcessPid(int pid) {
-        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
-        if (0 > SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo, taskAllInfo.size())) {
-            return 0;
-        }
-        return taskAllInfo.pbsd.pbi_ppid;
-    }
-
     @Override
     public String queryManufacturer() {
         return "Apple";
@@ -123,47 +116,6 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         return Pair.of(family, new OperatingSystem.OSVersionInfo(this.osXVersion, codeName, buildNumber));
     }
 
-    private String parseCodeName() {
-        if (this.major >= 10) {
-            switch (this.minor) {
-                case 15:
-                    return "Catalina";
-                case 14:
-                    return "Mojave";
-                case 13:
-                    return "High Sierra";
-                case 12:
-                    return "Sierra";
-                case 11:
-                    return "El Capitan";
-                case 10:
-                    return "Yosemite";
-                case 9:
-                    return "Mavericks";
-                case 8:
-                    return "Mountain Lion";
-                case 7:
-                    return "Lion";
-                case 6:
-                    return "Snow Leopard";
-                case 5:
-                    return "Leopard";
-                case 4:
-                    return "Tiger";
-                case 3:
-                    return "Panther";
-                case 2:
-                    return "Jaguar";
-                case 1:
-                    return "Puma";
-                case 0:
-                    return "Cheetah";
-                default:
-            }
-        }
-        Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
-        return "Big Sur";
-    }
 
     @Override
     protected int queryBitness(int jvmBitness) {
@@ -188,19 +140,16 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         return USE_WHO_COMMAND ? super.getSessions() : Who.queryUtxent();
     }
 
+    private static int getParentProcessPid(int pid) {
+        ProcTaskAllInfo taskAllInfo = new ProcTaskAllInfo();
+        if (0 > SystemB.INSTANCE.proc_pidinfo(pid, SystemB.PROC_PIDTASKALLINFO, 0, taskAllInfo, taskAllInfo.size())) {
+            return 0;
+        }
+        return taskAllInfo.pbsd.pbi_ppid;
+    }
+
     @Override
     public List<OSProcess> queryAllProcesses() {
-        return queryChildProcesses(-1);
-    }
-
-    @Override
-    public OSProcess getProcess(int pid) {
-        OSProcess proc = new MacOSProcess(pid, this.minor);
-        return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
-    }
-
-    @Override
-    public List<OSProcess> queryChildProcesses(int parentPid) {
         List<OSProcess> procs = new ArrayList<>();
         int[] pids = new int[this.maxProc];
         int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids,
@@ -208,10 +157,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         for (int i = 0; i < numberOfProcesses; i++) {
             // Handle off-by-one bug in proc_listpids where the size returned
             // is: SystemB.INT_SIZE * (pids + 1)
-            if (pids[i] == 0) {
-                continue;
-            }
-            if (parentPid == -1 || parentPid == getParentProcessPid(pids[i])) {
+            if (pids[i] != 0) {
                 OSProcess proc = getProcess(pids[i]);
                 if (proc != null) {
                     procs.add(proc);
@@ -219,6 +165,26 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return procs;
+    }
+
+    @Override
+    public List<OSProcess> queryChildProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
+    }
+
+    @Override
+    public OSProcess getProcess(int pid) {
+        OSProcess proc = new MacOSProcess(pid, this.minor);
+        return proc.getState().equals(OSProcess.State.INVALID) ? null : proc;
     }
 
     @Override
@@ -304,6 +270,48 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
         return WindowInfo.queryDesktopWindows(visibleOnly);
+    }
+
+    private String parseCodeName() {
+        if (this.major >= 10) {
+            switch (this.minor) {
+                case 15:
+                    return "Catalina";
+                case 14:
+                    return "Mojave";
+                case 13:
+                    return "High Sierra";
+                case 12:
+                    return "Sierra";
+                case 11:
+                    return "El Capitan";
+                case 10:
+                    return "Yosemite";
+                case 9:
+                    return "Mavericks";
+                case 8:
+                    return "Mountain Lion";
+                case 7:
+                    return "Lion";
+                case 6:
+                    return "Snow Leopard";
+                case 5:
+                    return "Leopard";
+                case 4:
+                    return "Tiger";
+                case 3:
+                    return "Panther";
+                case 2:
+                    return "Jaguar";
+                case 1:
+                    return "Puma";
+                case 0:
+                    return "Cheetah";
+                default:
+            }
+        }
+        Logger.warn("Unable to parse version {}.{} to a codename.", this.major, this.minor);
+        return "Big Sur";
     }
 
 }

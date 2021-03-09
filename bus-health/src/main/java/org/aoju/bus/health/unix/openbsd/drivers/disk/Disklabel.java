@@ -40,7 +40,7 @@ import java.util.List;
  * Utility class parsing partition information from disklabel command
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public final class Disklabel {
@@ -71,9 +71,9 @@ public final class Disklabel {
         String bpsMarker = "bytes/sector:";
         int bytesPerSector = 1;
         String labelMarker = "label:";
-        String label = "";
+        String label = Normal.EMPTY;
         String duidMarker = "duid:";
-        String duid = "";
+        String duid = Normal.EMPTY;
         for (String line : Executor.runNative("disklabel -n " + diskName)) {
             // Check for values in the header we need for the HWDiskstore
             // # /dev/rsd1c:
@@ -127,7 +127,7 @@ public final class Disklabel {
                 if (split.length > 4) {
                     partitions.add(new HWPartition(diskName + name, name, split[3], duid + "." + name,
                             Builder.parseLongOrDefault(split[1], 0L) * bytesPerSector, majorMinor.getLeft(),
-                            majorMinor.getRight(), split.length > 5 ? split[split.length - 1] : ""));
+                            majorMinor.getRight(), split.length > 5 ? split[split.length - 1] : Normal.EMPTY));
                 }
             }
         }

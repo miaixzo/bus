@@ -29,7 +29,7 @@ package org.aoju.bus.extra.ssh;
  * 连接者对象,提供一些连接的基本信息
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class Connector {
@@ -64,7 +64,6 @@ public class Connector {
      * @param password 密码
      */
     public Connector(String host, int port, String user, String password) {
-        super();
         this.host = host;
         this.port = port;
         this.user = user;

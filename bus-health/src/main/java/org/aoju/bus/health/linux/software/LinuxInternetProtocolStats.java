@@ -26,6 +26,7 @@
 package org.aoju.bus.health.linux.software;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.core.lang.Symbol;
 import org.aoju.bus.core.lang.tuple.Pair;
@@ -46,7 +47,7 @@ import java.util.Map;
  * Internet Protocol Stats implementation
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -140,7 +141,7 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Integer, Integer> pidMap) {
         List<IPConnection> conns = new ArrayList<>();
-        for (String s : FileKit.readLines(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : ""))) {
+        for (String s : FileKit.readLines(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
             if (s.indexOf(':') >= 0) {
                 String[] split = RegEx.SPACES.split(s.trim());
                 if (split.length > 9) {

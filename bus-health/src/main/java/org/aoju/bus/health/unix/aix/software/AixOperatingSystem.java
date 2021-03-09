@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * platforms.
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -63,14 +63,6 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     private static final long BOOTTIME = querySystemBootTimeMillis() / 1000L;
     private final Supplier<Perfstat.perfstat_partition_config_t> config = Memoize.memoize(PerfstatConfig::queryConfig);
     Supplier<Perfstat.perfstat_process_t[]> procCpu = Memoize.memoize(PerfstatProcess::queryProcesses, Memoize.defaultExpiration());
-
-    private static long querySystemBootTimeMillis() {
-        long bootTime = Who.queryBootTime();
-        if (bootTime >= 1000L) {
-            return bootTime;
-        }
-        return System.currentTimeMillis() - Uptime.queryUpTime();
-    }
 
     @Override
     public String queryManufacturer() {
@@ -125,10 +117,19 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
                 "ps -A -o st,pid,ppid,user,uid,group,gid,thcount,pri,vsize,rssize,etime,time,comm,pagein,args", -1);
     }
 
+    private static long querySystemBootTimeMillis() {
+        long bootTime = Who.queryBootTime();
+        if (bootTime >= 1000L) {
+            return bootTime;
+        }
+        return System.currentTimeMillis() - Uptime.queryUpTime();
+    }
+
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
-        return queryAllProcesses().stream().filter(p -> p.getParentProcessID() == parentPid)
-                .collect(Collectors.toList());
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
     @Override
@@ -251,6 +252,13 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
             }
         }
         return services.toArray(new OSService[0]);
+    }
+
+    @Override
+    public List<OSProcess> queryDescendantProcesses(int parentPid) {
+        List<OSProcess> allProcs = queryAllProcesses();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
 }

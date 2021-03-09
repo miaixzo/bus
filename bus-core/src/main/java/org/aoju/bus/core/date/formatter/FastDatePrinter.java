@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentMap;
  * {@link java.text.SimpleDateFormat} 的线程安全版本,用于将 {@link Date} 格式化输出
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class FastDatePrinter extends AbstractMotd implements DatePrinter {
@@ -678,7 +678,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
         static final UnpaddedMonthField INSTANCE = new UnpaddedMonthField();
 
         UnpaddedMonthField() {
-            super();
+
         }
 
         @Override
@@ -783,7 +783,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
          * 构造一个{@code TwoDigitYearField}的实例
          */
         TwoDigitYearField() {
-            super();
+
         }
 
         @Override
@@ -812,7 +812,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
          * 构造{@code TwoDigitMonthField}的实例
          */
         TwoDigitMonthField() {
-            super();
+
         }
 
         @Override

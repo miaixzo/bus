@@ -29,6 +29,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.RegEx;
 import org.aoju.bus.health.Builder;
 import org.aoju.bus.health.Executor;
@@ -47,7 +48,7 @@ import java.util.function.Supplier;
  * OSProcess implemenation
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe
@@ -56,7 +57,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private final Supplier<Integer> bitness = Memoize.memoize(this::queryBitness);
 
     private String name;
-    private String path = "";
+    private String path = Normal.EMPTY;
     private String commandLine;
     private String user;
     private String userID;

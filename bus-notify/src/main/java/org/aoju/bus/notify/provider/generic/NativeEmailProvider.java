@@ -49,20 +49,20 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 邮件消息
+ * 电子邮件消息
  *
  * @author Justubborn
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK1.8+
  */
-public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context> {
+public class NativeEmailProvider extends AbstractProvider<NativeEmailProperty, Context> {
 
-    public NativeDmProvider(Context properties) {
+    public NativeEmailProvider(Context properties) {
         super(properties);
     }
 
     @Override
-    public Message send(NativeDmProperty entity) {
+    public Message send(NativeEmailProperty entity) {
         try {
             Transport.send(build(entity));
         } catch (MessagingException e) {
@@ -156,7 +156,7 @@ public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context
      * @return {@link MimeMessage}消息
      * @throws MessagingException 消息异常
      */
-    private MimeMessage build(NativeDmProperty entity) throws MessagingException {
+    private MimeMessage build(NativeEmailProperty entity) throws MessagingException {
         entity.defaultIfEmpty();
         final Charset charset = entity.getCharset();
         final MimeMessage msg = new MimeMessage(getSession(entity));
@@ -219,7 +219,7 @@ public class NativeDmProvider extends AbstractProvider<NativeDmProperty, Context
      * @param template 是否使用单例Session
      * @return 邮件会话 {@link Session}
      */
-    private Session getSession(NativeDmProperty template) {
+    private Session getSession(NativeEmailProperty template) {
         Authenticator authenticator = null;
         if (template.getAuth()) {
             authenticator = new UserPassAuthenticator(template.getUser(), template.getPass());

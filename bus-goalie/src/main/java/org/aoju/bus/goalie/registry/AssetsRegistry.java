@@ -7,7 +7,7 @@ import org.aoju.bus.goalie.Registry;
  * 路由注册
  *
  * @author Justubborn
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public interface AssetsRegistry extends Registry<Assets> {

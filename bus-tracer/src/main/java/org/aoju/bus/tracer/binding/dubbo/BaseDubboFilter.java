@@ -25,6 +25,7 @@
  ********************************************************************************/
 package org.aoju.bus.tracer.binding.dubbo;
 
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.apache.dubbo.rpc.Filter;
 
@@ -32,7 +33,7 @@ import org.apache.dubbo.rpc.Filter;
  * 基础dubbo过滤器
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public abstract class BaseDubboFilter implements Filter, Filter.Listener {
@@ -56,7 +57,7 @@ public abstract class BaseDubboFilter implements Filter, Filter.Listener {
     }
 
     String getAsyncIdTrace(String asyncId) {
-        return asyncId != null ? "-[异步ID: " + asyncId + "]" : "";
+        return asyncId != null ? "-[异步ID: " + asyncId + "]" : Normal.EMPTY;
     }
 
 }

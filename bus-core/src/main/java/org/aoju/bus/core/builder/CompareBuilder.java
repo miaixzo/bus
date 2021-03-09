@@ -70,7 +70,7 @@ import java.util.Comparator;
  * </pre>
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class CompareBuilder implements Builder<Integer> {
@@ -84,7 +84,6 @@ public class CompareBuilder implements Builder<Integer> {
      * 构造,构造后调用append方法增加比较项,然后调用{@link #toComparison()}获取结果
      */
     public CompareBuilder() {
-        super();
         comparison = 0;
     }
 

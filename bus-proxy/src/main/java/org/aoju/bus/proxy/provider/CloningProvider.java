@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
  * 仅对给定的{@link Cloneable}对象调用clone()(反射性地)
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class CloningProvider implements Provider {

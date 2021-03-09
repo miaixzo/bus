@@ -47,7 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 提供对Mac OS上SMC调用的访问
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe

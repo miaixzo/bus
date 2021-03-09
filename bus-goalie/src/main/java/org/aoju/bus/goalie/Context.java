@@ -36,6 +36,7 @@ import org.springframework.http.codec.multipart.Part;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,7 +44,7 @@ import java.util.Optional;
  * 上下文传参
  *
  * @author Justubborn
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @Data
@@ -64,6 +65,10 @@ public class Context {
     private Assets assets;
 
     private Format format = Format.json;
+
+    private Channel channel = Channel.web;
+
+    private String token;
 
     private boolean needDecrypt = false;
 
@@ -98,6 +103,27 @@ public class Context {
         private Provider provider;
 
         private MediaType mediaType;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public enum Channel {
+        web("1", 0),
+        app("2", 1),
+        ding("3", 1),
+        wechat("4", 1),
+        other("5", 0);
+
+        private String value;
+        private Integer tokenType;
+
+        public static Channel getChannel(String value) {
+            return Arrays.stream(Channel.values())
+                    .filter(c -> c.getValue().equals(value))
+                    .findFirst()
+                    .orElse(Channel.other);
+        }
     }
 
 }

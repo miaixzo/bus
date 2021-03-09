@@ -37,25 +37,33 @@ import org.aoju.bus.crypto.digest.*;
 import org.aoju.bus.crypto.digest.mac.BCHMacEngine;
 import org.aoju.bus.crypto.digest.mac.MacEngine;
 import org.aoju.bus.crypto.symmetric.*;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERSequence;
+import org.aoju.bus.logger.Logger;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.gm.GMNamedCurves;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.asn1.sec.ECPrivateKey;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.digests.SM3Digest;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
+import org.bouncycastle.jcajce.spec.OpenSSHPrivateKeySpec;
+import org.bouncycastle.jcajce.spec.OpenSSHPublicKeySpec;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.ECPointUtil;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
 import org.bouncycastle.math.ec.ECCurve;
+import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.util.BigIntegers;
 import org.bouncycastle.util.encoders.Hex;
@@ -88,7 +96,7 @@ import java.util.Map;
  * 3、摘要加密(digest)，例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public final class Builder {
@@ -97,7 +105,6 @@ public final class Builder {
      * Java密钥库(Java Key Store，JKS)KEY_STORE
      */
     public static final String KEY_TYPE_JKS = "JKS";
-
     /**
      * PKCS12是公钥加密标准，它规定了可包含所有私钥、公钥和证书。其以二进制格式存储，也称为 PFX 文件
      */
@@ -106,7 +113,6 @@ public final class Builder {
      * Certification类型：X.509
      */
     public static final String CERT_TYPE_X509 = "X.509";
-
     /**
      * 默认密钥字节数
      *
@@ -125,7 +131,15 @@ public final class Builder {
      * </pre>
      */
     public static final String SM2_DEFAULT_CURVE = "sm2p256v1";
+    /**
+     * SM2推荐曲线参数（来自https://github.com/ZZMarquis/gmhelper）
+     */
     public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(GMNamedCurves.getByName(SM2_DEFAULT_CURVE));
+    /**
+     * SM2国密算法公钥参数的Oid标识
+     */
+    public static final ASN1ObjectIdentifier ID_SM2_PUBLIC_KEY_PARAM = new ASN1ObjectIdentifier("1.2.156.10197.1.301");
+
     private final static int RS_LEN = 32;
 
     /**
@@ -255,7 +269,7 @@ public final class Builder {
     }
 
     /**
-     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成<br>
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成
      * 当指定keySize&lt;0时，AES默认长度为128，其它算法不指定。
      *
      * @param algorithm 算法，支持PBE算法
@@ -2316,10 +2330,10 @@ public final class Builder {
     }
 
     /**
-     * 写出pem密钥(私钥、公钥、证书)
+     * 写出pem密钥（私钥、公钥、证书）
      *
-     * @param type      密钥类型(私钥、公钥、证书)
-     * @param content   密钥内容
+     * @param type      密钥类型（私钥、公钥、证书）
+     * @param content   密钥内容，需为PKCS#1格式
      * @param keyStream pem流
      */
     public static void writePemObject(String type, byte[] content, OutputStream keyStream) {
@@ -2327,20 +2341,98 @@ public final class Builder {
     }
 
     /**
-     * 写出pem密钥(私钥、公钥、证书)
+     * 写出pem密钥（私钥、公钥、证书）
+     *
+     * @param type    密钥类型（私钥、公钥、证书）
+     * @param content 密钥内容，需为PKCS#1格式
+     * @param writer  pemWriter
+     */
+    public static void writePemObject(String type, byte[] content, Writer writer) {
+        writePemObject(new PemObject(type, content), writer);
+    }
+
+    /**
+     * 写出pem密钥（私钥、公钥、证书）
      *
      * @param pemObject pem对象，包括密钥和密钥类型等信息
      * @param keyStream pem流
      */
     public static void writePemObject(PemObjectGenerator pemObject, OutputStream keyStream) {
-        PemWriter writer = null;
+        writePemObject(pemObject, IoKit.getWriter(keyStream, Charset.UTF_8));
+    }
+
+    /**
+     * 写出pem密钥（私钥、公钥、证书）
+     *
+     * @param pemObject pem对象，包括密钥和密钥类型等信息
+     * @param writer    pemWriter
+     */
+    public static void writePemObject(PemObjectGenerator pemObject, Writer writer) {
+        final PemWriter pemWriter = new PemWriter(writer);
         try {
-            writer = new PemWriter(IoKit.getWriter(keyStream, Charset.UTF_8));
-            writer.writeObject(pemObject);
+            pemWriter.writeObject(pemObject);
         } catch (IOException e) {
             throw new InstrumentException(e);
         } finally {
-            IoKit.close(writer);
+            IoKit.close(pemWriter);
+        }
+    }
+
+    /**
+     * 读取OpenSSL生成的ANS1格式的Pem私钥文件，必须为PKCS#1格式
+     *
+     * @param keyStream 私钥pem流
+     * @return {@link PrivateKey}
+     */
+    public static PrivateKey readSm2PemPrivateKey(InputStream keyStream) {
+        try {
+            return generatePrivateKey("sm2", createOpenSSHPrivateKeySpec(readPem(keyStream)));
+        } finally {
+            IoKit.close(keyStream);
+        }
+    }
+
+    /**
+     * 将私钥或公钥转换为PEM格式的字符串
+     *
+     * @param type    密钥类型（私钥、公钥、证书）
+     * @param content 密钥内容
+     * @return PEM内容
+     */
+    public static String toPem(String type, byte[] content) {
+        final StringWriter stringWriter = new StringWriter();
+        writePemObject(type, content, stringWriter);
+        return stringWriter.toString();
+    }
+
+    /**
+     * Java中的PKCS#8格式私钥转换为OpenSSL支持的PKCS#1格式
+     *
+     * @param privateKey PKCS#8格式私钥
+     * @return PKCS#1格式私钥
+     */
+    public static byte[] toPkcs1(PrivateKey privateKey) {
+        final PrivateKeyInfo pkInfo = PrivateKeyInfo.getInstance(privateKey.getEncoded());
+        try {
+            return pkInfo.parsePrivateKey().toASN1Primitive().getEncoded();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * Java中的X.509格式公钥转换为OpenSSL支持的PKCS#1格式
+     *
+     * @param publicKey X.509格式公钥
+     * @return PKCS#1格式公钥
+     */
+    public static byte[] toPkcs1(PublicKey publicKey) {
+        final SubjectPublicKeyInfo spkInfo = SubjectPublicKeyInfo
+                .getInstance(publicKey.getEncoded());
+        try {
+            return spkInfo.parsePublicKey().getEncoded();
+        } catch (IOException e) {
+            throw new InstrumentException(e);
         }
     }
 
@@ -2370,14 +2462,40 @@ public final class Builder {
     /**
      * 创建SM2算法对象
      * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个,如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param privateKey 私钥，必须使用PKCS#8规范
+     * @param publicKey  公钥，必须使用X509规范
+     * @return {@link SM2}
+     */
+    public static SM2 sm2(byte[] privateKey, byte[] publicKey) {
+        return new SM2(privateKey, publicKey);
+    }
+
+    /**
+     * 创建SM2算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
      * @return {@link SM2}
      */
-    public static SM2 sm2(byte[] privateKey, byte[] publicKey) {
+    public static SM2 sm2(PrivateKey privateKey, PublicKey publicKey) {
         return new SM2(privateKey, publicKey);
+    }
+
+    /**
+     * 创建SM2算法对象
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥
+     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param privateKeyParams 私钥参数
+     * @param publicKeyParams  公钥参数
+     * @return {@link SM2}
+     */
+    public static SM2 sm2(ECPrivateKeyParameters privateKeyParams, ECPublicKeyParameters publicKeyParams) {
+        return new SM2(privateKeyParams, publicKeyParams);
     }
 
     /**
@@ -2479,7 +2597,7 @@ public final class Builder {
      * @return c1c2c3 加密后的bytes，顺序为C1C2C3
      */
     public static byte[] changeC1C3C2ToC1C2C3(byte[] c1c3c2, ECDomainParameters ecDomainParameters) {
-        // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码。
+        // sm2p256v1的这个固定65。可看GMNamedCurves、ECCurve代码
         final int c1Len = (ecDomainParameters.getCurve().getFieldSize() + 7) / 8 * 2 + 1;
         final int c3Len = 32; // new SM3Digest().getDigestSize();
         byte[] result = new byte[c1c3c2.length];
@@ -2496,13 +2614,17 @@ public final class Builder {
      * @return sign result in plain byte array
      */
     public static byte[] rsAsn1ToPlain(byte[] rsDer) {
-        ASN1Sequence seq = ASN1Sequence.getInstance(rsDer);
-        byte[] r = bigIntToFixedLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(0)).getValue());
-        byte[] s = bigIntToFixedLengthBytes(ASN1Integer.getInstance(seq.getObjectAt(1)).getValue());
-        byte[] result = new byte[RS_LEN * 2];
-        System.arraycopy(r, 0, result, 0, r.length);
-        System.arraycopy(s, 0, result, RS_LEN, s.length);
-        return result;
+        final BigInteger[] decode;
+        try {
+            decode = StandardDSAEncoding.INSTANCE.decode(SM2_DOMAIN_PARAMS.getN(), rsDer);
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+
+        final byte[] r = bigIntToFixedLengthBytes(decode[0]);
+        final byte[] s = bigIntToFixedLengthBytes(decode[1]);
+
+        return ArrayKit.addAll(r, s);
     }
 
     /**
@@ -2518,11 +2640,8 @@ public final class Builder {
         }
         BigInteger r = new BigInteger(1, Arrays.copyOfRange(sign, 0, RS_LEN));
         BigInteger s = new BigInteger(1, Arrays.copyOfRange(sign, RS_LEN, RS_LEN * 2));
-        ASN1EncodableVector v = new ASN1EncodableVector();
-        v.add(new ASN1Integer(r));
-        v.add(new ASN1Integer(s));
         try {
-            return new DERSequence(v).getEncoded("DER");
+            return StandardDSAEncoding.INSTANCE.encode(SM2_DOMAIN_PARAMS.getN(), r, s);
         } catch (IOException e) {
             throw new InstrumentException(e);
         }
@@ -2546,6 +2665,18 @@ public final class Builder {
      */
     public static HMac hmacSm3(byte[] key) {
         return new HMac(Algorithm.HmacSM3, key);
+    }
+
+    /**
+     * 根据私钥参数获取公钥参数
+     *
+     * @param privateKeyParameters 私钥参数
+     * @return 公钥参数
+     */
+    public static ECPublicKeyParameters toSm2PublicParams(ECPrivateKeyParameters privateKeyParameters) {
+        final ECDomainParameters domainParameters = privateKeyParameters.getParameters();
+        final org.bouncycastle.math.ec.ECPoint q = new FixedPointCombMultiplier().multiply(domainParameters.getG(), privateKeyParameters.getD());
+        return new ECPublicKeyParameters(q, domainParameters);
     }
 
     /**
@@ -2766,6 +2897,104 @@ public final class Builder {
         } catch (InvalidKeyException e) {
             throw new InstrumentException(e);
         }
+    }
+
+    /**
+     * 将SM2算法的{@link ECPrivateKey} 转换为 {@link PrivateKey}
+     *
+     * @param privateKey {@link ECPrivateKey}
+     * @return {@link PrivateKey}
+     */
+    public static PrivateKey toSm2PrivateKey(ECPrivateKey privateKey) {
+        try {
+            final PrivateKeyInfo info = new PrivateKeyInfo(
+                    new AlgorithmIdentifier(X9ObjectIdentifiers.id_ecPublicKey, ID_SM2_PUBLIC_KEY_PARAM), privateKey);
+            return generatePrivateKey("SM2", info.getEncoded(ASN1Encoding.DER));
+        } catch (IOException e) {
+            throw new InstrumentException(e);
+        }
+    }
+
+    /**
+     * 创建{@link OpenSSHPrivateKeySpec}
+     *
+     * @param key 私钥，需为PKCS#1格式
+     * @return {@link OpenSSHPrivateKeySpec}
+     */
+    public static KeySpec createOpenSSHPrivateKeySpec(byte[] key) {
+        return new OpenSSHPrivateKeySpec(key);
+    }
+
+    /**
+     * 创建{@link OpenSSHPublicKeySpec}
+     *
+     * @param key 公钥，需为PKCS#1格式
+     * @return {@link OpenSSHPublicKeySpec}
+     */
+    public static KeySpec createOpenSSHPublicKeySpec(byte[] key) {
+        return new OpenSSHPublicKeySpec(key);
+    }
+
+    /**
+     * 尝试解析转换各种类型私钥为{@link ECPrivateKeyParameters}，支持包括：
+     *
+     * <ul>
+     *     <li>D值</li>
+     *     <li>PKCS#8</li>
+     *     <li>PKCS#1</li>
+     * </ul>
+     *
+     * @param privateKeyBytes 私钥
+     * @return {@link ECPrivateKeyParameters}
+     */
+    public static ECPrivateKeyParameters decodePrivateKeyParams(byte[] privateKeyBytes) {
+        try {
+            // 尝试D值
+            return toSm2PrivateParams(privateKeyBytes);
+        } catch (Exception ignore) {
+            Logger.warn(ignore.getMessage());
+        }
+
+        PrivateKey privateKey;
+        // 尝试PKCS#8
+        try {
+            privateKey = generatePrivateKey("sm2", privateKeyBytes);
+        } catch (Exception ignore) {
+            // 尝试PKCS#1
+            privateKey = generatePrivateKey("sm2", createOpenSSHPrivateKeySpec(privateKeyBytes));
+        }
+        return toPrivateParams(privateKey);
+    }
+
+    /**
+     * 尝试解析转换各种类型公钥为{@link ECPublicKeyParameters}，支持包括：
+     *
+     * <ul>
+     *     <li>Q值</li>
+     *     <li>X.509</li>
+     *     <li>PKCS#1</li>
+     * </ul>
+     *
+     * @param publicKeyBytes 公钥
+     * @return {@link ECPublicKeyParameters}
+     */
+    public static ECPublicKeyParameters decodePublicKeyParams(byte[] publicKeyBytes) {
+        try {
+            // 尝试Q值
+            return toSm2PublicParams(publicKeyBytes);
+        } catch (Exception ignore) {
+            Logger.warn(ignore.getMessage());
+        }
+
+        PublicKey publicKey;
+        // 尝试X.509
+        try {
+            publicKey = generatePublicKey("sm2", publicKeyBytes);
+        } catch (Exception ignore) {
+            publicKey = generatePublicKey("sm2", createOpenSSHPublicKeySpec(publicKeyBytes));
+        }
+
+        return toPublicParams(publicKey);
     }
 
     /**

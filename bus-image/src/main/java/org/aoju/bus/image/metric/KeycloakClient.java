@@ -29,7 +29,7 @@ import org.aoju.bus.image.Device;
 
 /**
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  * @since April 2019
  */

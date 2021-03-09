@@ -6,7 +6,7 @@
 </p>
 <p align="center">
     <a target="_blank" href="https://search.maven.org/search?q=org.aoju">
-		<img src="https://img.shields.io/badge/maven--central-v6.2.0-blue.svg?label=Maven%20Central" />
+		<img src="https://img.shields.io/badge/maven--central-v6.2.1-blue.svg?label=Maven%20Central" />
 	</a>
 	<a target="_blank" href="https://travis-ci.org/aoju/bus">
 		<img src="https://travis-ci.org/aoju/bus.svg?branch=master">
@@ -39,7 +39,7 @@
 
 ## 项目说明
 
-Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
+Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java8编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
 
 很开心地告诉大家这套组件上手和学习难度非常小。如果是以学会使用为目的，只要你会Java语言即可。之前做项目的时候，往往会遇到各种各样的问题，这些问题有可能是会遇到很多次，不善于总结沉淀，这是很多人的一个通病，包括我自己也是。
 
@@ -53,7 +53,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 
 | 完成 |模块 | 描述信息 |
 |------| ------ | ------- |
-|[ √ ]|bus-all|为微服务提供统一的pom管理，以及通用组件| 
+|[ √ ]|bus-all|包含微服务所需的完整模块以及通用组件| 
 |[ √ ]|bus-base|基础功能及base相关功能,实体类(Entity),服务(Service),接口(Controller)|
 |[ √ ]|bus-bom|包含所有组建信息,当然可以通过配置按需加载等|
 |[ × ]|bus-cache|缓存服务及工具,支持redis,memcached,ehcache,hession等|
@@ -97,7 +97,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 <dependency>
     <groupId>org.aoju</groupId>
     <artifactId>bus-all</artifactId>
-    <version>6.2.0</version>
+    <version>6.2.1</version>
 </dependency>
 ```
 
@@ -114,7 +114,7 @@ Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Jav
 ### Gradle
 
 ```
-implementation 'org.aoju:bus-all:6.2.0'
+implementation 'org.aoju:bus-all:6.2.1'
 ```
 
 ### Downlad

@@ -37,7 +37,7 @@ import org.aoju.bus.socket.SocketStatus;
  *
  * @param <T> 消息对象实体类型
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public interface MessageProcessor<T> {
@@ -58,6 +58,10 @@ public interface MessageProcessor<T> {
      * @param throwable    异常对象，如果存在的话
      * @see SocketStatus
      */
-    void stateEvent(AioSession session, SocketStatus socketStatus, Throwable throwable);
+    default void stateEvent(AioSession session, SocketStatus socketStatus, Throwable throwable) {
+        if (socketStatus == SocketStatus.DECODE_EXCEPTION || socketStatus == SocketStatus.PROCESS_EXCEPTION) {
+            throwable.printStackTrace();
+        }
+    }
 
 }

@@ -27,6 +27,7 @@ package org.aoju.bus.health.unix.openbsd.hardware;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.tuple.Pair;
 import org.aoju.bus.core.lang.tuple.Triple;
 import org.aoju.bus.health.Builder;
@@ -45,7 +46,7 @@ import java.util.regex.Pattern;
  * OpenBSD Central Processor implementation
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
@@ -106,14 +107,14 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     protected ProcessorIdentifier queryProcessorId() {
-        String cpuVendor = OpenBsdSysctlKit.sysctl("machdep.cpuvendor", "");
+        String cpuVendor = OpenBsdSysctlKit.sysctl("machdep.cpuvendor", Normal.EMPTY);
         int[] mib = new int[2];
         mib[0] = OpenBsdLibc.CTL_HW;
         mib[1] = OpenBsdLibc.HW_MODEL;
-        String cpuName = OpenBsdSysctlKit.sysctl(mib, "");
+        String cpuName = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
         // CPUID: first 32 bits is cpufeature, last 32 bits is cpuid
-        int cpuid = Builder.hexStringToInt(OpenBsdSysctlKit.sysctl("machdep.cpuid", ""), 0);
-        int cpufeature = Builder.hexStringToInt(OpenBsdSysctlKit.sysctl("machdep.cpufeature", ""), 0);
+        int cpuid = Builder.hexStringToInt(OpenBsdSysctlKit.sysctl("machdep.cpuid", Normal.EMPTY), 0);
+        int cpufeature = Builder.hexStringToInt(OpenBsdSysctlKit.sysctl("machdep.cpufeature", Normal.EMPTY), 0);
         Triple<Integer, Integer, Integer> cpu = cpuidToFamilyModelStepping(cpuid);
         String cpuFamily = cpu.getLeft().toString();
         String cpuModel = cpu.getMiddle().toString();
@@ -123,7 +124,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
             cpuFreq = queryMaxFreq();
         }
         mib[1] = OpenBsdLibc.HW_MACHINE;
-        String machine = OpenBsdSysctlKit.sysctl(mib, "");
+        String machine = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
         boolean cpu64bit = machine != null && machine.contains("64")
                 || Executor.getFirstAnswer("uname -m").trim().contains("64");
         String processorID = String.format("%08x%08x", cpufeature, cpuid);

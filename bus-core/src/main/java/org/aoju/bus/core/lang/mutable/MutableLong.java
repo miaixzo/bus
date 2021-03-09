@@ -31,7 +31,7 @@ import org.aoju.bus.core.toolkit.MathKit;
  * 可变 <code>long</code> 类型
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @see Long
  * @since JDK 1.8+
  */
@@ -45,7 +45,7 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      * 构造,默认值0
      */
     public MutableLong() {
-        super();
+
     }
 
     /**
@@ -54,7 +54,6 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      * @param value 值
      */
     public MutableLong(final long value) {
-        super();
         this.value = value;
     }
 
@@ -74,7 +73,6 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      * @throws NumberFormatException 数字转换错误
      */
     public MutableLong(final String value) throws NumberFormatException {
-        super();
         this.value = Long.parseLong(value);
     }
 

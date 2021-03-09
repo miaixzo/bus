@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * Utility to query threads for a process
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 @ThreadSafe

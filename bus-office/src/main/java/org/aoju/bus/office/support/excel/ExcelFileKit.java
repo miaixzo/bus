@@ -37,7 +37,7 @@ import java.io.InputStream;
  * Excel文件工具类
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class ExcelFileKit {

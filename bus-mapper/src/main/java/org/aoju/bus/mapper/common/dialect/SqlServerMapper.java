@@ -33,7 +33,7 @@ import org.aoju.bus.mapper.common.dialect.sqlserver.InsertSelectiveMapper;
  * 通用Mapper接口,SqlServerMapper独有的通用方法
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public interface SqlServerMapper<T> extends

@@ -52,7 +52,7 @@ import java.io.InputStream;
  * Sax方式读取Excel相关工具类
  *
  * @author Kimi Liu
- * @version 6.2.0
+ * @version 6.2.1
  * @since JDK 1.8+
  */
 public class ExcelSaxKit {
@@ -110,7 +110,7 @@ public class ExcelSaxKit {
             case SSTINDEX:
                 try {
                     final int index = Integer.parseInt(value);
-                    result = new XSSFRichTextString(sharedStringsTable.getEntryAt(index)).getString();
+                    result = sharedStringsTable.getItemAt(index).getString();
                 } catch (NumberFormatException e) {
                     result = value;
                 }
