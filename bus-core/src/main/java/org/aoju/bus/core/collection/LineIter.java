@@ -81,7 +81,6 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
         this.bufferedReader = IoKit.getReader(reader);
     }
 
-
     /**
      * 判断{@link Reader}是否可以存在下一行.
      *

@@ -44,14 +44,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Singleton
 public class Manage {
 
-    // defaultCache和cachePool直接使用Pair实现, 减小new Object的损耗
+    /**
+     * defaultCache和cachePool直接使用Pair实现, 减小new Object的损耗
+     */
     private CachePair<String, CacheX> defaultCache;
 
     private Map<String, CachePair<String, CacheX>> cachePool = new ConcurrentHashMap<>();
 
     @Inject
     public void setCachePool(Map<String, CacheX> caches) {
-        // default cache impl
         Map.Entry<String, CacheX> entry = caches.entrySet().iterator().next();
         this.defaultCache = CachePair.of(entry.getKey(), entry.getValue());
 

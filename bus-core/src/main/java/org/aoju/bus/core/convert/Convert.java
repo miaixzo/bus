@@ -937,12 +937,26 @@ public class Convert {
     /**
      * 将阿拉伯数字转为中文表达方式
      *
-     * @param number          数字
-     * @param isUseTraditonal 是否使用繁体字(金额形式)
+     * @param number           数字
+     * @param isUseTraditional 是否使用繁体字(金额形式)
      * @return 中文
      */
-    public static String numberToChinese(double number, boolean isUseTraditonal) {
-        return NumberChinese.format(number, isUseTraditonal);
+    public static String numberToChinese(double number, boolean isUseTraditional) {
+        return NumberChinese.format(number, isUseTraditional);
+    }
+
+    /**
+     * 数字中文表示形式转数字
+     * <ul>
+     *     <li>一百一十二 - 112</li>
+     *     <li>一千零一十二 - 1012</li>
+     * </ul>
+     *
+     * @param number 数字中文表示
+     * @return 数字
+     */
+    public static int chineseToNumber(String number) {
+        return NumberChinese.chineseToNumber(number);
     }
 
     /**
@@ -1009,10 +1023,10 @@ public class Convert {
      * @return int值
      */
     public static int bytesToInt(byte[] bytes) {
-        return bytes[3] & 0xFF | //
-                (bytes[2] & 0xFF) << 8 | //
-                (bytes[1] & 0xFF) << 16 | //
-                (bytes[0] & 0xFF) << 24; //
+        return bytes[3] & 0xFF |
+                (bytes[2] & 0xFF) << 8 |
+                (bytes[1] & 0xFF) << 16 |
+                (bytes[0] & 0xFF) << 24;
     }
 
     /**

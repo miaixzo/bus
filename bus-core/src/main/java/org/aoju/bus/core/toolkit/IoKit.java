@@ -529,7 +529,17 @@ public class IoKit {
      * @throws InstrumentException IO异常
      */
     public static ByteArrayOutputStream read(InputStream in, boolean isClose) throws InstrumentException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final ByteArrayOutputStream out;
+        if (in instanceof FileInputStream) {
+            // 文件流的长度是可预见的，此时直接读取效率更高
+            try {
+                out = new ByteArrayOutputStream(in.available());
+            } catch (IOException e) {
+                throw new InstrumentException(e);
+            }
+        } else {
+            out = new ByteArrayOutputStream();
+        }
         try {
             copy(in, out);
         } finally {
@@ -658,11 +668,11 @@ public class IoKit {
      * 从流中读取bytes
      *
      * @param in      {@link InputStream}
-     * @param isCLose 是否关闭输入流
+     * @param isClose 是否关闭输入流
      * @return bytes
      * @throws InstrumentException IO异常
      */
-    public static byte[] readBytes(InputStream in, boolean isCLose) throws InstrumentException {
+    public static byte[] readBytes(InputStream in, boolean isClose) throws InstrumentException {
         if (in instanceof FileInputStream) {
             // 文件流的长度是可预见的，此时直接读取效率更高
             final byte[] result;
@@ -675,11 +685,16 @@ public class IoKit {
                 }
             } catch (IOException e) {
                 throw new InstrumentException(e);
+            } finally {
+                if (isClose) {
+                    close(in);
+                }
             }
             return result;
         }
+
         // 未知bytes总量的流
-        return read(in, isCLose).toByteArray();
+        return read(in, isClose).toByteArray();
     }
 
     /**
@@ -944,7 +959,20 @@ public class IoKit {
      * @return {@link BufferedInputStream}
      */
     public static BufferedInputStream toBuffered(InputStream in) {
+        Assert.notNull(in, "InputStream must be not null!");
         return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in);
+    }
+
+    /**
+     * 转换为{@link BufferedInputStream}
+     *
+     * @param in         {@link InputStream}
+     * @param bufferSize buffer size
+     * @return {@link BufferedInputStream}
+     */
+    public static BufferedInputStream toBuffered(InputStream in, int bufferSize) {
+        Assert.notNull(in, "InputStream must be not null!");
+        return (in instanceof BufferedInputStream) ? (BufferedInputStream) in : new BufferedInputStream(in, bufferSize);
     }
 
     /**
@@ -954,7 +982,20 @@ public class IoKit {
      * @return {@link BufferedOutputStream}
      */
     public static BufferedOutputStream toBuffered(OutputStream out) {
+        Assert.notNull(out, "OutputStream must be not null!");
         return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out);
+    }
+
+    /**
+     * 转换为{@link BufferedOutputStream}
+     *
+     * @param out        {@link OutputStream}
+     * @param bufferSize buffer size
+     * @return {@link BufferedOutputStream}
+     */
+    public static BufferedOutputStream toBuffered(OutputStream out, int bufferSize) {
+        Assert.notNull(out, "OutputStream must be not null!");
+        return (out instanceof BufferedOutputStream) ? (BufferedOutputStream) out : new BufferedOutputStream(out, bufferSize);
     }
 
     /**

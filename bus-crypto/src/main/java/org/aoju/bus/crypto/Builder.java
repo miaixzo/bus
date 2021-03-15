@@ -1678,6 +1678,44 @@ public final class Builder {
     }
 
     /**
+     * HmacSHA256加密器
+     * 例：
+     * HmacSHA256加密：hmacSha256(key).digest(data)
+     * HmacSHA256加密并转为16进制字符串：hmacSha256(key).digestHex(data)
+     *
+     * @param key 加密密钥，如果为{@code null}生成随机密钥
+     * @return {@link HMac}
+     */
+    public static HMac hmacSha256(String key) {
+        return hmacSha256(StringKit.bytes(key));
+    }
+
+    /**
+     * HmacSHA256加密器
+     * 例：
+     * HmacSHA256加密：hmacSha256(key).digest(data)
+     * HmacSHA256加密并转为16进制字符串：hmacSha256(key).digestHex(data)
+     *
+     * @param key 加密密钥，如果为{@code null}生成随机密钥
+     * @return {@link HMac}
+     */
+    public static HMac hmacSha256(byte[] key) {
+        return new HMac(Algorithm.HmacSHA256, key);
+    }
+
+    /**
+     * HmacSHA256加密器，生成随机KEY
+     * 例：
+     * HmacSHA256加密：hmacSha256().digest(data)
+     * HmacSHA256加密并转为16进制字符串：hmacSha256().digestHex(data)
+     *
+     * @return {@link HMac}
+     */
+    public static HMac hmacSha256() {
+        return new HMac(Algorithm.HmacSHA256);
+    }
+
+    /**
      * 创建RSA算法对象
      * 生成新的私钥公钥对
      *
