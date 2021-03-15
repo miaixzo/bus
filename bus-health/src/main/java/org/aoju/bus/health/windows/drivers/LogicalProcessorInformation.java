@@ -25,9 +25,9 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.drivers;
 
-import com.sun.jna.platform.win32.Kernel32Util;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
+import org.aoju.bus.health.windows.Kernel32Util;
 import org.aoju.bus.health.windows.WinNT;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public final class LogicalProcessorInformation {
         // Collect a list of logical processors on each physical core and
         // package. These will be 64-bit bitmasks.
         WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[] procInfo = Kernel32Util
-                .getLogicalProcessorInformationEx(WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationAll);
+                .getLogicalProcessorInformationExFutureproof(WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationAll);
         // Used to cross-reference a processor to package pr core
         List<WinNT.GROUP_AFFINITY[]> packages = new ArrayList<>();
         List<WinNT.GROUP_AFFINITY> cores = new ArrayList<>();

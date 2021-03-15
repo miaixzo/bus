@@ -25,14 +25,12 @@
  ********************************************************************************/
 package org.aoju.bus.health.windows.software;
 
-import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Advapi32Util.Account;
 import com.sun.jna.platform.win32.BaseTSD.ULONG_PTRByReference;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.core.lang.Normal;
 import org.aoju.bus.core.lang.Symbol;
@@ -338,7 +336,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         return Normal.UNKNOWN;
     }
 
-    // Temporary for debugging
+    // temp for testing
     private static Account getTokenAccount(WinNT.HANDLE hToken) {
         // get token group information size
         IntByReference tokenInformationLength = new IntByReference();
@@ -356,58 +354,15 @@ public class WindowsOSProcess extends AbstractOSProcess {
                 tokenInformationLength.getValue(), tokenInformationLength)) {
             throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
         }
-        return getAccountBySid(null, user.User.Sid);
-    }
-
-    // Temporary for debugging
-    public static Account getAccountBySid(String systemName, WinNT.PSID sid) {
-        IntByReference cchName = new IntByReference();
-        IntByReference cchDomainName = new IntByReference();
-        PointerByReference peUse = new PointerByReference();
-
-        if (Advapi32.INSTANCE.LookupAccountSid(systemName, sid, null, cchName, null, cchDomainName, peUse)) {
-            throw new RuntimeException("LookupAccountSidW was expected to fail with ERROR_INSUFFICIENT_BUFFER");
+        try {
+            return Advapi32Util.getAccountBySid(user.User.Sid);
+        } finally {
+            // Ensure, that the memory object is retained until the account
+            // extraction is done.
+            // From Java 9 onwards Reference#reachabilityFence would be
+            // preferred
+            user.getPointer().getByte(0);
         }
-
-        int rc = Kernel32.INSTANCE.GetLastError();
-        if (cchName.getValue() == 0 || rc != W32Errors.ERROR_INSUFFICIENT_BUFFER) {
-            throw new Win32Exception(rc);
-        }
-
-        char[] domainName = new char[cchDomainName.getValue()];
-        char[] name = new char[cchName.getValue()];
-
-        if (!Advapi32.INSTANCE.LookupAccountSid(systemName, sid, name, cchName, domainName, cchDomainName, peUse)) {
-            Logger.warn("Failed LookupAccountSid: Sid={}, cchName={}, cchDomainName={}. Trying again.", sid,
-                    cchName.getValue(), cchDomainName.getValue());
-            if (Advapi32.INSTANCE.LookupAccountSid(systemName, sid, null, cchName, null, cchDomainName, peUse)) {
-                throw new RuntimeException("LookupAccountSidW was expected to fail with ERROR_INSUFFICIENT_BUFFER");
-            }
-            Logger.warn("Trying LookupAccountSid: Sid={}, cchName={}, cchDomainName={}.", sid, cchName.getValue(),
-                    cchDomainName.getValue());
-            domainName = new char[cchDomainName.getValue()];
-            name = new char[cchName.getValue()];
-            if (!Advapi32.INSTANCE.LookupAccountSid(systemName, sid, name, cchName, domainName, cchDomainName, peUse)) {
-                Logger.warn("Failed LookupAccountSid: Sid={}, cchName={}, cchDomainName={}. Bailing out.", sid,
-                        cchName.getValue(), cchDomainName.getValue());
-                throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
-            }
-        }
-
-        Account account = new Account();
-        account.accountType = peUse.getPointer().getInt(0);
-        account.name = Native.toString(name);
-
-        if (cchDomainName.getValue() > 0) {
-            account.domain = Native.toString(domainName);
-            account.fqn = account.domain + "\\" + account.name;
-        } else {
-            account.fqn = account.name;
-        }
-
-        account.sid = sid.getBytes();
-        account.sidString = Advapi32Util.convertSidToStringSid(sid);
-        return account;
     }
 
     private Pair<String, String> queryUserInfo() {
@@ -417,7 +372,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
             final WinNT.HANDLEByReference phToken = new WinNT.HANDLEByReference();
             try {
                 if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
-                    Account account = Advapi32Util.getTokenAccount(phToken.getValue());
+                    Account account = getTokenAccount(phToken.getValue());
                     pair = Pair.of(account.name, account.sidString);
                 } else {
                     int error = Kernel32.INSTANCE.GetLastError();
