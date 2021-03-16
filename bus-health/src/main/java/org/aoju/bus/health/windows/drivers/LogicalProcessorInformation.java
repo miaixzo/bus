@@ -27,7 +27,7 @@ package org.aoju.bus.health.windows.drivers;
 
 import org.aoju.bus.core.annotation.ThreadSafe;
 import org.aoju.bus.health.builtin.hardware.CentralProcessor;
-import org.aoju.bus.health.windows.Kernel32Util;
+import org.aoju.bus.health.windows.Kernel32Kit;
 import org.aoju.bus.health.windows.WinNT;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public final class LogicalProcessorInformation {
     public static List<CentralProcessor.LogicalProcessor> getLogicalProcessorInformationEx() {
         // Collect a list of logical processors on each physical core and
         // package. These will be 64-bit bitmasks.
-        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[] procInfo = Kernel32Util
+        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX[] procInfo = Kernel32Kit
                 .getLogicalProcessorInformationExFutureproof(WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationAll);
         // Used to cross-reference a processor to package pr core
         List<WinNT.GROUP_AFFINITY[]> packages = new ArrayList<>();
@@ -148,7 +148,7 @@ public final class LogicalProcessorInformation {
         // package.
         List<Long> packageMaskList = new ArrayList<>();
         List<Long> coreMaskList = new ArrayList<>();
-        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[] processors = Kernel32Util.getLogicalProcessorInformation();
+        WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION[] processors = Kernel32Kit.getLogicalProcessorInformation();
         for (WinNT.SYSTEM_LOGICAL_PROCESSOR_INFORMATION proc : processors) {
             if (proc.relationship == WinNT.LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage) {
                 packageMaskList.add(proc.processorMask.longValue());
