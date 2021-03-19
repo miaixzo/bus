@@ -26,6 +26,7 @@
 package org.aoju.bus.goalie.handler;
 
 import org.aoju.bus.base.consts.ErrorCode;
+import org.aoju.bus.base.entity.Message;
 import org.aoju.bus.base.spring.Controller;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.StringKit;
@@ -67,10 +68,13 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
             method = map.get(Consts.METHOD);
         }
         Logger.error("traceId:{},request: {},error:{}", exchange.getLogPrefix(), method, ex.getMessage());
-        Logger.error(ex);
+        //Logger.error(ex);
         Object message;
         if (ex instanceof WebClientException) {
-            message = Controller.write(ErrorCode.EM_FAILURE);
+            message = Message.builder()
+                    .errcode(ErrorCode.EM_FAILURE)
+                    .errmsg("网络繁忙,请稍后再试！")
+                    .build();
         } else if (ex instanceof BusinessException) {
             BusinessException e = (BusinessException) ex;
             if (StringKit.isNotBlank(e.getErrcode())) {
@@ -79,7 +83,10 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
                 message = Controller.write(ErrorCode.EM_100513, e.getMessage());
             }
         } else {
-            message = Controller.write(ErrorCode.EM_100513);
+            message = Message.builder()
+                    .errcode(ErrorCode.EM_100513)
+                    .errmsg("未知错误！")
+                    .build();
         }
         Provider provider = context.getFormat().getProvider();
         String formatBody;

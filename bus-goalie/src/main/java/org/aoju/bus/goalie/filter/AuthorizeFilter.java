@@ -34,6 +34,7 @@ import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Assets;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
+import org.aoju.bus.goalie.ServerConfig;
 import org.aoju.bus.goalie.metric.Authorize;
 import org.aoju.bus.goalie.metric.Delegate;
 import org.aoju.bus.goalie.metric.Token;
@@ -65,8 +66,11 @@ public class AuthorizeFilter implements WebFilter {
 
     private final AssetsRegistry registry;
 
-    public AuthorizeFilter(Authorize authorize, AssetsRegistry registry) {
+    private final ServerConfig.Security security;
+
+    public AuthorizeFilter(Authorize authorize, ServerConfig.Security security, AssetsRegistry registry) {
         this.authorize = authorize;
+        this.security = security;
         this.registry = registry;
     }
 
@@ -137,7 +141,7 @@ public class AuthorizeFilter implements WebFilter {
             if (delegate.isOk()) {
                 OAuth2 auth2 = delegate.getOAuth2();
                 //api permissions
-                if (!apiPermissions(auth2, assets)) {
+                if (security.isEnabled() && !apiPermissions(auth2, assets)) {
                     throw new BusinessException(ErrorCode.EM_100500, "没有权限");
                 }
 
