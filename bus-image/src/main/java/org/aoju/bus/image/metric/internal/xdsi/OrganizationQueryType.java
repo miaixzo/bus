@@ -55,7 +55,7 @@ public class OrganizationQueryType extends RegistryObjectQueryType {
     protected PersonQueryType primaryContactQuery;
 
     public List<FilterType> getAddressFilter() {
-        if (this.null == addressFilter) {
+        if (this.addressFilter == null) {
             this.addressFilter = new ArrayList();
         }
         return this.addressFilter;
@@ -63,14 +63,14 @@ public class OrganizationQueryType extends RegistryObjectQueryType {
 
 
     public List<FilterType> getTelephoneNumberFilter() {
-        if (this.null == telephoneNumberFilter) {
+        if (this.telephoneNumberFilter == null) {
             this.telephoneNumberFilter = new ArrayList();
         }
         return this.telephoneNumberFilter;
     }
 
     public List<FilterType> getEmailAddressFilter() {
-        if (this.null == emailAddressFilter) {
+        if (this.emailAddressFilter == null) {
             this.emailAddressFilter = new ArrayList();
         }
         return this.emailAddressFilter;
@@ -85,7 +85,7 @@ public class OrganizationQueryType extends RegistryObjectQueryType {
     }
 
     public List<OrganizationQueryType> getChildOrganizationQuery() {
-        if (this.null == childOrganizationQuery) {
+        if (this.childOrganizationQuery == null) {
             this.childOrganizationQuery = new ArrayList();
         }
         return this.childOrganizationQuery;

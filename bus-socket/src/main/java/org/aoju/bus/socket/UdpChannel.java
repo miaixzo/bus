@@ -86,7 +86,7 @@ public class UdpChannel<Request> {
             return;
         }
         responseTasks.offer(new ResponseUnit(remote, virtualBuffer));
-        if (null == selectionKey) {
+        if (selectionKey == null) {
             worker.addRegister(selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
         } else {
             if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) == 0) {
@@ -102,14 +102,14 @@ public class UdpChannel<Request> {
     void doWrite() throws IOException {
         while (true) {
             ResponseUnit responseUnit;
-            if (null == failResponseUnit) {
+            if (failResponseUnit == null) {
                 responseUnit = responseTasks.poll();
                 Logger.info("poll from writeBuffer");
             } else {
                 responseUnit = failResponseUnit;
                 failResponseUnit = null;
             }
-            if (null == responseUnit) {
+            if (responseUnit == null) {
                 writeSemaphore.release();
                 if (responseTasks.isEmpty()) {
                     selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_WRITE);
@@ -130,11 +130,11 @@ public class UdpChannel<Request> {
 
     private int send(ByteBuffer byteBuffer, SocketAddress remote) throws IOException {
         AioSession aioSession = sessionMap.get(remote);
-        if (config.getMonitor() != null) {
+        if (null != config.getMonitor()) {
             config.getMonitor().beforeWrite(aioSession);
         }
         int size = channel.send(byteBuffer, remote);
-        if (config.getMonitor() != null) {
+        if (null != config.getMonitor()) {
             config.getMonitor().afterWrite(aioSession, size);
         }
         return size;
@@ -168,7 +168,7 @@ public class UdpChannel<Request> {
         return sessionMap.computeIfAbsent(remote, s -> {
             Consumer<WriteBuffer> consumer = writeBuffer -> {
                 VirtualBuffer virtualBuffer = writeBuffer.poll();
-                if (null == virtualBuffer) {
+                if (virtualBuffer == null) {
                     return;
                 }
                 try {
@@ -210,7 +210,7 @@ public class UdpChannel<Request> {
         }
         // 内存回收
         ResponseUnit task;
-        while ((task = responseTasks.poll()) != null) {
+        while (null != (task = responseTasks.poll())) {
             task.response.clean();
         }
         if (null != failResponseUnit) {

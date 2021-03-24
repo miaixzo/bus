@@ -45,7 +45,7 @@ public class RetrieveDocumentSetRequestType {
     protected List<DocumentRequest> documentRequest;
 
     public List<DocumentRequest> getDocumentRequest() {
-        if (this.null == documentRequest) {
+        if (this.documentRequest == null) {
             this.documentRequest = new ArrayList();
         }
         return this.documentRequest;

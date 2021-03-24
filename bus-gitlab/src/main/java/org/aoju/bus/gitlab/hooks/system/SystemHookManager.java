@@ -135,7 +135,7 @@ public class SystemHookManager implements HookManager {
     public SystemHookEvent handleRequest(HttpServletRequest request) throws GitLabApiException {
 
         String eventName = request.getHeader("X-Gitlab-Event");
-        if (null == eventName || eventName.trim().isEmpty()) {
+        if (eventName == null || eventName.trim().isEmpty()) {
             String message = "X-Gitlab-Event header is missing!";
             LOGGER.warning(message);
             return (null);

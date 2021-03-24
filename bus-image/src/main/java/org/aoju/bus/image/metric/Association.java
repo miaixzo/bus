@@ -234,7 +234,7 @@ public class Association {
 
     public boolean isSCPFor(String cuid) {
         RoleSelection rolsel = ac.getRoleSelectionFor(cuid);
-        if (null == rolsel)
+        if (rolsel == null)
             return !requestor;
         return requestor ? rolsel.isSCP() : rolsel.isSCU();
     }
@@ -251,7 +251,7 @@ public class Association {
 
     public boolean isSCUFor(String cuid) {
         RoleSelection rolsel = ac.getRoleSelectionFor(cuid);
-        if (null == rolsel)
+        if (rolsel == null)
             return requestor;
         return requestor ? rolsel.isSCU() : rolsel.isSCP();
     }
@@ -691,7 +691,7 @@ public class Association {
         int status = cmd.getInt(Tag.Status, 0);
         boolean pending = Status.isPending(status);
         DimseRSPHandler rspHandler = getDimseRSPHandler(msgId);
-        if (null == rspHandler) {
+        if (rspHandler == null) {
             Logger.info("{}: unexpected message ID in DIMSE RSP:", name);
             Logger.info("\n{}", cmd);
             throw new AAbort();
@@ -815,7 +815,7 @@ public class Association {
 
     private Map<String, Presentation> initTSMap(String as) {
         Map<String, Presentation> tsMap = pcMap.get(as);
-        if (null == tsMap)
+        if (tsMap == null)
             pcMap.put(as, tsMap = new HashMap<>());
         return tsMap;
     }
@@ -823,19 +823,19 @@ public class Association {
     public Presentation pcFor(String cuid, String tsuid)
             throws InstrumentException {
         Map<String, Presentation> tsMap = pcMap.get(cuid);
-        if (null == tsMap)
+        if (tsMap == null)
             throw new InstrumentException(cuid);
-        if (null == tsuid)
+        if (tsuid == null)
             return tsMap.values().iterator().next();
         Presentation pc = tsMap.get(tsuid);
-        if (null == pc)
+        if (pc == null)
             throw new InstrumentException(cuid, tsuid);
         return pc;
     }
 
     public Set<String> getTransferSyntaxesFor(String cuid) {
         Map<String, Presentation> tsMap = pcMap.get(cuid);
-        if (null == tsMap)
+        if (tsMap == null)
             return Collections.emptySet();
         return Collections.unmodifiableSet(tsMap.keySet());
     }

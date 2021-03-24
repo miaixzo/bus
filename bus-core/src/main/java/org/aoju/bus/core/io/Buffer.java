@@ -183,7 +183,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException 抛出异常
      */
     public final Buffer copyTo(OutputStream out, long offset, long byteCount) throws IOException {
-        if (null == out) throw new IllegalArgumentException("null == out");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
         IoKit.checkOffsetAndCount(size, offset, byteCount);
         if (byteCount == 0) return this;
 
@@ -212,7 +214,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @return Buffer 内容
      */
     public final Buffer copyTo(Buffer out, long offset, long byteCount) {
-        if (null == out) throw new IllegalArgumentException("null == out");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
         IoKit.checkOffsetAndCount(size, offset, byteCount);
         if (byteCount == 0) return this;
 
@@ -226,7 +230,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             Segment copy = s.sharedCopy();
             copy.pos += offset;
             copy.limit = Math.min(copy.pos + (int) byteCount, copy.limit);
-            if (out.null == head) {
+            if (null == out.head) {
                 out.head = copy.next = copy.prev = copy;
             } else {
                 out.head.prev.push(copy);
@@ -258,7 +262,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException 抛出异常
      */
     public final Buffer writeTo(OutputStream out, long byteCount) throws IOException {
-        if (null == out) throw new IllegalArgumentException("null == out");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
         IoKit.checkOffsetAndCount(size, 0, byteCount);
 
         Segment s = head;
@@ -307,7 +313,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     private void readFrom(InputStream in, long byteCount, boolean forever) throws IOException {
-        if (null == in) throw new IllegalArgumentException("null == in");
+        if (null == in) {
+            throw new IllegalArgumentException("in == null");
+        }
         while (byteCount > 0 || forever) {
             Segment tail = writableSegment(1);
             int maxToCopy = (int) Math.min(byteCount, Segment.SIZE - tail.limit);
@@ -767,7 +775,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public String readString(long byteCount, java.nio.charset.Charset charset) throws EOFException {
         IoKit.checkOffsetAndCount(size, 0, byteCount);
-        if (null == charset) throw new IllegalArgumentException("null == charset");
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
         if (byteCount > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("byteCount > Integer.MAX_VALUE: " + byteCount);
         }
@@ -946,9 +956,10 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public int read(byte[] sink, int offset, int byteCount) {
         IoKit.checkOffsetAndCount(sink.length, offset, byteCount);
-
         Segment s = head;
-        if (null == s) return -1;
+        if (null == s) {
+            return -1;
+        }
         int toCopy = Math.min(byteCount, s.limit - s.pos);
         System.arraycopy(s.data, s.pos, sink, offset, toCopy);
 
@@ -966,7 +977,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public int read(java.nio.ByteBuffer sink) throws IOException {
         Segment s = head;
-        if (null == s) return -1;
+        if (null == s) {
+            return -1;
+        }
 
         int toCopy = Math.min(sink.remaining(), s.limit - s.pos);
         sink.put(s.data, s.pos, toCopy);
@@ -999,7 +1012,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public void skip(long byteCount) throws EOFException {
         while (byteCount > 0) {
-            if (null == head) throw new EOFException();
+            if (null == head) {
+                throw new EOFException();
+            }
 
             int toSkip = (int) Math.min(byteCount, head.limit - head.pos);
             size -= toSkip;
@@ -1016,7 +1031,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public Buffer write(ByteString byteString) {
-        if (null == byteString) throw new IllegalArgumentException("null == byteString");
+        if (null == byteString) {
+            throw new IllegalArgumentException("byteString == null");
+        }
         byteString.write(this);
         return this;
     }
@@ -1028,8 +1045,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public Buffer writeUtf8(String string, int beginIndex, int endIndex) {
-        if (null == string) throw new IllegalArgumentException("null == string");
-        if (beginIndex < 0) throw new IllegalArgumentException("beginIndex < 0: " + beginIndex);
+        if (null == string) {
+            throw new IllegalArgumentException("string == null");
+        }
+        if (beginIndex < 0) {
+            throw new IllegalArgumentException("beginIndex < 0: " + beginIndex);
+        }
         if (endIndex < beginIndex) {
             throw new IllegalArgumentException("endIndex < beginIndex: " + endIndex + " < " + beginIndex);
         }
@@ -1129,8 +1150,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public Buffer writeString(String string, int beginIndex, int endIndex, java.nio.charset.Charset charset) {
-        if (null == string) throw new IllegalArgumentException("null == string");
-        if (beginIndex < 0) throw new IllegalAccessError("beginIndex < 0: " + beginIndex);
+        if (null == string) {
+            throw new IllegalArgumentException("string == null");
+        }
+        if (beginIndex < 0) {
+            throw new IllegalAccessError("beginIndex < 0: " + beginIndex);
+        }
         if (endIndex < beginIndex) {
             throw new IllegalArgumentException("endIndex < beginIndex: " + endIndex + " < " + beginIndex);
         }
@@ -1138,23 +1163,30 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             throw new IllegalArgumentException(
                     "endIndex > string.length: " + endIndex + " > " + string.length());
         }
-        if (null == charset) throw new IllegalArgumentException("null == charset");
-        if (charset.equals(Symbol.C_SLASH)) return writeUtf8(string, beginIndex, endIndex);
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
+        if (charset.equals(Symbol.C_SLASH)) {
+            return writeUtf8(string, beginIndex, endIndex);
+        }
         byte[] data = string.substring(beginIndex, endIndex).getBytes(charset);
         return write(data, 0, data.length);
     }
 
     @Override
     public Buffer write(byte[] source) {
-        if (null == source) throw new IllegalArgumentException("null == source");
+        if (null == source) {
+            throw new IllegalArgumentException("source == null");
+        }
         return write(source, 0, source.length);
     }
 
     @Override
     public Buffer write(byte[] source, int offset, int byteCount) {
-        if (null == source) throw new IllegalArgumentException("null == source");
+        if (null == source) {
+            throw new IllegalArgumentException("source == null");
+        }
         IoKit.checkOffsetAndCount(source.length, offset, byteCount);
-
         int limit = offset + byteCount;
         while (offset < limit) {
             Segment tail = writableSegment(1);
@@ -1172,7 +1204,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public int write(java.nio.ByteBuffer source) throws IOException {
-        if (null == source) throw new IllegalArgumentException("null == source");
+        if (null == source) {
+            throw new IllegalArgumentException("source == null");
+        }
 
         int byteCount = source.remaining();
         int remaining = byteCount;
@@ -1192,7 +1226,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public long writeAll(Source source) throws IOException {
-        if (null == source) throw new IllegalArgumentException("null == source");
+        if (null == source) {
+            throw new IllegalArgumentException("source == null");
+        }
         long totalBytesRead = 0;
         for (long readCount; (readCount = source.read(this, Segment.SIZE)) != -1; ) {
             totalBytesRead += readCount;
@@ -1373,8 +1409,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public void write(Buffer source, long byteCount) {
-        if (null == source) throw new IllegalArgumentException("null == source");
-        if (source == this) throw new IllegalArgumentException("source == this");
+        if (null == source) {
+            throw new IllegalArgumentException("source == null");
+        }
+        if (source == this) {
+            throw new IllegalArgumentException("source == this");
+        }
         IoKit.checkOffsetAndCount(source.size, 0, byteCount);
 
         while (byteCount > 0) {
@@ -1410,10 +1450,18 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public long read(Buffer sink, long byteCount) {
-        if (null == sink) throw new IllegalArgumentException("null == sink");
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-        if (size == 0) return -1L;
-        if (byteCount > size) byteCount = size;
+        if (null == sink) {
+            throw new IllegalArgumentException("sink == null");
+        }
+        if (byteCount < 0) {
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        }
+        if (size == 0) {
+            return -1L;
+        }
+        if (byteCount > size) {
+            byteCount = size;
+        }
         sink.write(this, byteCount);
         return byteCount;
     }
@@ -1443,7 +1491,6 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
         findSegmentAndOffset:
         {
-
             s = head;
             if (null == s) {
                 return -1L;
@@ -1673,7 +1720,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     List<Integer> segmentSizes() {
-        if (null == head) return Collections.emptyList();
+        if (null == head) {
+            return Collections.emptyList();
+        }
         List<Integer> result = new ArrayList<>();
         result.add(head.limit - head.pos);
         for (Segment s = head.next; s != head; s = s.next) {
@@ -1804,7 +1853,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public int hashCode() {
         Segment s = head;
-        if (null == s) return 0;
+        if (null == s) {
+            return 0;
+        }
         int result = 1;
         do {
             for (int pos = s.pos, limit = s.limit; pos < limit; pos++) {
@@ -1851,7 +1902,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     public final UnsafeCursor readUnsafe(UnsafeCursor unsafeCursor) {
-        if (unsafeCursor.null != buffer) {
+        if (null != unsafeCursor.buffer) {
             throw new IllegalStateException("already attached to a buffer");
         }
 
@@ -1865,7 +1916,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     public final UnsafeCursor readAndWriteUnsafe(UnsafeCursor unsafeCursor) {
-        if (unsafeCursor.null != buffer) {
+        if (null != unsafeCursor.buffer) {
             throw new IllegalStateException("already attached to a buffer");
         }
 
@@ -1909,7 +1960,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             long max = buffer.size;
             Segment head = buffer.head;
             Segment tail = buffer.head;
-            if (this.null != segment) {
+            if (null != this.segment) {
                 long segmentOffset = this.offset - (this.start - this.segment.pos);
                 if (segmentOffset > offset) {
                     // Set the cursor segment to be the 'end'

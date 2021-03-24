@@ -45,7 +45,7 @@ public class ValueListType {
     protected List<String> value;
 
     public List<String> getValue() {
-        if (this.null == value) {
+        if (this.value == null) {
             this.value = new ArrayList();
         }
         return this.value;

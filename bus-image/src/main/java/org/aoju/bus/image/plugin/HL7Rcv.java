@@ -105,7 +105,7 @@ public class HL7Rcv {
             storeToFile(msg.data(), new File(
                     new File(storageDir, msg.msh().getMessageType()),
                     msg.msh().getField(9, "_NULL_")));
-        return new UnparsedHL7Message(null == tpls
+        return new UnparsedHL7Message(tpls == null
                 ? HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null)
                 : xslt(msg));
     }

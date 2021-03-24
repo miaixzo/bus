@@ -169,7 +169,7 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
      * @return 成功初始化与否
      */
     public boolean init(Resource resource, java.nio.charset.Charset charset, boolean isUseVariable) {
-        if (null == resource) {
+        if (resource == null) {
             throw new NullPointerException("Null setting url define!");
         }
         this.settingUrl = resource.getUrl();
@@ -665,10 +665,10 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((null == charset) ? 0 : charset.hashCode());
+        result = prime * result + ((charset == null) ? 0 : charset.hashCode());
         result = prime * result + groupMap.hashCode();
         result = prime * result + (isUseVariable ? 1231 : 1237);
-        result = prime * result + ((null == settingUrl) ? 0 : settingUrl.hashCode());
+        result = prime * result + ((settingUrl == null) ? 0 : settingUrl.hashCode());
         return result;
     }
 
@@ -677,15 +677,15 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
         if (this == obj) {
             return true;
         }
-        if (null == obj) {
+        if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
         PopSetting other = (PopSetting) obj;
-        if (null == charset) {
-            if (other.null != charset) {
+        if (charset == null) {
+            if (null != other.charset) {
                 return false;
             }
         } else if (false == charset.equals(other.charset)) {
@@ -697,8 +697,8 @@ public class PopSetting extends AbstractSetting implements Map<String, String> {
         if (isUseVariable != other.isUseVariable) {
             return false;
         }
-        if (null == settingUrl) {
-            return other.null == settingUrl;
+        if (settingUrl == null) {
+            return other.settingUrl == null;
         } else {
             return settingUrl.equals(other.settingUrl);
         }

@@ -80,13 +80,13 @@ public class ValidationResult {
     }
 
     public void addMissingAttribute(IOD.DataElement dataElement) {
-        if (null == missingAttributes)
+        if (missingAttributes == null)
             missingAttributes = new ArrayList<>();
         missingAttributes.add(dataElement);
     }
 
     public void addMissingAttributeValue(IOD.DataElement dataElement) {
-        if (null == missingAttributeValues)
+        if (missingAttributeValues == null)
             missingAttributeValues = new ArrayList<>();
         missingAttributeValues.add(dataElement);
     }
@@ -97,7 +97,7 @@ public class ValidationResult {
 
     public void addInvalidAttributeValue(IOD.DataElement dataElement,
                                          Invalid reason, ValidationResult[] itemValidationResult, IOD[] missingItems) {
-        if (null == invalidAttributeValues)
+        if (invalidAttributeValues == null)
             invalidAttributeValues = new ArrayList<>();
         invalidAttributeValues.add(
                 new InvalidAttributeValue(dataElement, reason,
@@ -105,7 +105,7 @@ public class ValidationResult {
     }
 
     public void addNotAllowedAttribute(DataElement el) {
-        if (null == notAllowedAttributes)
+        if (notAllowedAttributes == null)
             notAllowedAttributes = new ArrayList<>();
         notAllowedAttributes.add(el);
     }
@@ -124,7 +124,7 @@ public class ValidationResult {
 
     public int[] tagsOfInvalidAttributeValues() {
         ArrayList<InvalidAttributeValue> list = invalidAttributeValues;
-        if (null == list)
+        if (list == null)
             return new int[]{};
 
         int[] tags = new int[list.size()];
@@ -154,7 +154,7 @@ public class ValidationResult {
     }
 
     private int[] tagsOf(List<DataElement> list) {
-        if (null == list)
+        if (list == null)
             return new int[]{};
 
         int[] tags = new int[list.size()];
@@ -259,7 +259,7 @@ public class ValidationResult {
                 appendIODRef(iav.dataElement.getLineNumber(), sb);
             }
             sb.append(Property.LINE_SEPARATOR);
-            if (iav.null != missingItems) {
+            if (null != iav.missingItems) {
                 for (IOD iod : iav.missingItems) {
                     appendPrefixTo(level + 1, sb);
                     sb.append("Missing Item");
@@ -267,7 +267,7 @@ public class ValidationResult {
                     sb.append(Property.LINE_SEPARATOR);
                 }
             }
-            if (iav.null != itemValidationResults) {
+            if (null != iav.itemValidationResults) {
                 Sequence seq = (Sequence) value;
                 for (int i = 0; i < iav.itemValidationResults.length; i++) {
                     ValidationResult itemResult = iav.itemValidationResults[i];

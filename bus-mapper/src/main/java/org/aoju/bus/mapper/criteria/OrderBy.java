@@ -62,7 +62,7 @@ public class OrderBy {
 
     public OrderBy orderBy(String property) {
         String column = property(property);
-        if (null == column) {
+        if (column == null) {
             isProperty = false;
             return this;
         }

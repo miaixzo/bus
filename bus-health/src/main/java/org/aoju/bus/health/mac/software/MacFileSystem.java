@@ -151,7 +151,7 @@ public class MacFileSystem extends AbstractFileSystem {
             // with bsd names
             DASessionRef session = DiskArbitration.INSTANCE
                     .DASessionCreate(CoreFoundation.INSTANCE.CFAllocatorGetDefault());
-            if (null == session) {
+            if (session == null) {
                 Logger.error("Unable to open session to DiskArbitration framework.");
             } else {
                 CFStringRef daVolumeNameKey = CFStringRef.createCFString("DAVolumeName");
@@ -224,7 +224,7 @@ public class MacFileSystem extends AbstractFileSystem {
                                 Pointer result = diskInfo.getValue(daVolumeNameKey);
                                 CFStringRef volumePtr = new CFStringRef(result);
                                 name = volumePtr.stringValue();
-                                if (null == name) {
+                                if (name == null) {
                                     name = Normal.UNKNOWN;
                                 }
                                 diskInfo.release();
@@ -254,7 +254,7 @@ public class MacFileSystem extends AbstractFileSystem {
                     }
 
                     fsList.add(new MacOSFileStore(name, volume, name, path, options.toString(),
-                            null == uuid ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
+                            uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
                             file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
                 }
                 daVolumeNameKey.release();

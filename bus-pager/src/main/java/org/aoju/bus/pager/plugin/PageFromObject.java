@@ -75,13 +75,13 @@ public abstract class PageFromObject {
      * @return 结果
      */
     public static <T> Page<T> getPageFromObject(Object params, boolean required) {
-        if (null == params) {
+        if (params == null) {
             throw new PageException("无法获取分页查询参数!");
         }
         if (params instanceof Paging) {
             Paging pageParams = (Paging) params;
             Page page = null;
-            if (pageParams.getPageNo() != null && pageParams.getPageSize() != null) {
+            if (null != pageParams.getPageNo() && null != pageParams.getPageSize()) {
                 page = new Page(pageParams.getPageNo(), pageParams.getPageSize());
             }
             if (isNotEmpty(pageParams.getOrderBy())) {
@@ -108,7 +108,7 @@ public abstract class PageFromObject {
         } else {
             paramsObject = MetaObject.forObject(params);
         }
-        if (null == paramsObject) {
+        if (paramsObject == null) {
             throw new PageException("分页查询参数处理失败!");
         }
         Object orderBy = getParamValue(paramsObject, "orderBy", false);
@@ -119,7 +119,7 @@ public abstract class PageFromObject {
         try {
             Object _pageNo = getParamValue(paramsObject, "pageNo", required);
             Object _pageSize = getParamValue(paramsObject, "pageSize", required);
-            if (null == _pageNo || null == _pageSize) {
+            if (_pageNo == null || _pageSize == null) {
                 if (hasOrderBy) {
                     Page page = new Page();
                     page.setOrderBy(orderBy.toString());
@@ -177,7 +177,7 @@ public abstract class PageFromObject {
                 value = values[0];
             }
         }
-        if (required && null == value) {
+        if (required && value == null) {
             throw new PageException("分页查询缺少必要的参数:" + PARAMS.get(paramName));
         }
         return value;
@@ -196,7 +196,7 @@ public abstract class PageFromObject {
     }
 
     public static boolean isEmpty(Object obj) {
-        return null == obj || obj.toString().equals(Normal.EMPTY);
+        return obj == null || obj.toString().equals(Normal.EMPTY);
     }
 
     public static boolean isNotEmpty(String str) {

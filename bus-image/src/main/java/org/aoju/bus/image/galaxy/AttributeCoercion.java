@@ -47,7 +47,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     public AttributeCoercion(String commonName, String[] sopClasses,
                              Dimse dimse, TransferCapability.Role role, String[] aeTitles, String uri) {
-        if (null == commonName)
+        if (commonName == null)
             throw new NullPointerException("commonName");
         if (commonName.isEmpty())
             throw new IllegalArgumentException("commonName cannot be empty");
@@ -148,9 +148,9 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
         public Condition(String[] sopClasses, Dimse dimse, TransferCapability.Role role,
                          String[] aeTitles) {
-            if (null == dimse)
+            if (dimse == null)
                 throw new NullPointerException("dimse");
-            if (null == role)
+            if (role == null)
                 throw new NullPointerException("role");
 
             this.sopClasses = sopClasses;
@@ -162,7 +162,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         }
 
         private static boolean isEmptyOrContains(Object[] a, Object o) {
-            if (null == o || a.length == 0)
+            if (o == null || a.length == 0)
                 return true;
 
             for (int i = 0; i < a.length; i++)

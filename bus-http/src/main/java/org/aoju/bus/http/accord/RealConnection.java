@@ -128,7 +128,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
     public void connect(int connectTimeout, int readTimeout, int writeTimeout,
                         int pingIntervalMillis, boolean connectionRetryEnabled, NewCall call,
                         EventListener eventListener) {
-        if (null != protocol) throw new IllegalStateException("already connected");
+        if (null != protocol) throw new IllegalStateException("Already connected");
 
         RouteException routeException = null;
         List<ConnectionSuite> connectionSuites = route.address().connectionSpecs();
@@ -155,7 +155,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             try {
                 if (route.requiresTunnel()) {
                     connectTunnel(connectTimeout, readTimeout, writeTimeout, call, eventListener);
-                    if (null == rawSocket) {
+                    if (rawSocket == null) {
                         // 我们无法连接隧道，但适当地关闭了我们的资源
                         break;
                     }
@@ -178,7 +178,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
 
                 eventListener.connectFailed(call, route.socketAddress(), route.proxy(), null, e);
 
-                if (null == routeException) {
+                if (routeException == null) {
                     routeException = new RouteException(e);
                 } else {
                     routeException.addConnectException(e);
@@ -190,7 +190,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             }
         }
 
-        if (route.requiresTunnel() && null == rawSocket) {
+        if (route.requiresTunnel() && rawSocket == null) {
             ProtocolException exception = new ProtocolException("Too many tunnel connections attempted: "
                     + MAX_TUNNEL_ATTEMPTS);
             throw new RouteException(exception);
@@ -223,7 +223,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             tunnelRequest = createTunnel(readTimeout, writeTimeout, tunnelRequest, url);
 
             // 通道成功创建
-            if (null == tunnelRequest) {
+            if (tunnelRequest == null) {
                 break;
             }
 
@@ -419,7 +419,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
 
                 case Http.HTTP_PROXY_AUTH:
                     tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
-                    if (null == tunnelRequest) throw new IOException("Failed to authenticate with proxy");
+                    if (tunnelRequest == null) throw new IOException("Failed to authenticate with proxy");
 
                     if ("close".equalsIgnoreCase(response.header("Connection"))) {
                         return tunnelRequest;
@@ -488,11 +488,11 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
 
         // 1. 这个连接必须是 HTTP/2
-        if (null == http2Connection) return false;
+        if (http2Connection == null) return false;
 
         // 2. 路由必须共享一个IP地址。这要求我们为两个主机都有一个DNS地址，这只在路由规划之后
         // 才会发生。我们无法合并使用代理的连接，因为代理不会告诉我们原始服务器的IP地址
-        if (null == route) return false;
+        if (route == null) return false;
         if (route.proxy().type() != Proxy.Type.DIRECT) return false;
         if (this.route.proxy().type() != Proxy.Type.DIRECT) return false;
         if (!this.route.socketAddress().equals(route.socketAddress())) return false;

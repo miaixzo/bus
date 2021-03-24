@@ -191,7 +191,7 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     private void encodeStringItem(int type, String s) {
-        if (null == s)
+        if (s == null)
             return;
 
         encodeItemHeader(type, s.length());
@@ -261,7 +261,7 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     private void encode(IdentityRQ userIdentity) {
-        if (null == userIdentity)
+        if (userIdentity == null)
             return;
 
         encodeItemHeader(Builder.RQ_USER_IDENTITY, userIdentity.length());
@@ -272,7 +272,7 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     private void encode(IdentityAC userIdentity) {
-        if (null == userIdentity)
+        if (userIdentity == null)
             return;
 
         encodeItemHeader(Builder.AC_USER_IDENTITY, userIdentity.length());

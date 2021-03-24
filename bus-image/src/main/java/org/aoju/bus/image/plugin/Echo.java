@@ -69,7 +69,7 @@ public class Echo {
     public static Status process(Args args,
                                  Node callingNode,
                                  Node calledNode) {
-        if (null == callingNode || null == calledNode) {
+        if (callingNode == null || calledNode == null) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 

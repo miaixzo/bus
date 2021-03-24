@@ -45,7 +45,7 @@ public class SlotListType {
     protected List<SlotType> slot;
 
     public List<SlotType> getSlot() {
-        if (this.null == slot) {
+        if (this.slot == null) {
             this.slot = new ArrayList();
         }
         return this.slot;

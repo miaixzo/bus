@@ -405,7 +405,7 @@ public final class CipherSuite {
     public final String javaName;
 
     private CipherSuite(String javaName) {
-        if (null == javaName) {
+        if (javaName == null) {
             throw new NullPointerException();
         }
         this.javaName = javaName;
@@ -418,10 +418,10 @@ public final class CipherSuite {
      */
     public static synchronized CipherSuite forJavaName(String javaName) {
         CipherSuite result = INSTANCES.get(javaName);
-        if (null == result) {
+        if (result == null) {
             result = INSTANCES.get(secondaryName(javaName));
 
-            if (null == result) {
+            if (result == null) {
                 result = new CipherSuite(javaName);
             }
 

@@ -98,7 +98,7 @@ public class InterceptorChain {
      */
     public Provider createProxyProvider(Factory factory, ClassLoader classLoader, Object object,
                                         Class[] proxyClasses) {
-        if (null == proxyClasses || proxyClasses.length == 0) {
+        if (proxyClasses == null || proxyClasses.length == 0) {
             proxyClasses = Builder.getAllInterfaces(object.getClass());
         }
         return new ProxyProvider(factory, classLoader, object, proxyClasses);

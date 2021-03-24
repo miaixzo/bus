@@ -187,7 +187,7 @@ public class MultipartInputStream extends FilterInputStream {
                 name = name.substring(0, endName);
             }
             List<String> list = map.get(name);
-            if (null == list) {
+            if (list == null) {
                 map.put(name.toLowerCase(), list = new ArrayList<>(1));
             }
             list.add(value);

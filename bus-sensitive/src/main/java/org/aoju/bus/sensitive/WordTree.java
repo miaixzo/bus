@@ -115,7 +115,7 @@ public class WordTree extends HashMap<Character, WordTree> {
             currentChar = word.charAt(i);
             if (charFilter.accept(currentChar)) {//只处理合法字符
                 child = current.get(currentChar);
-                if (null == child) {
+                if (child == null) {
                     // 无子类，新建一个子节点后存放下一个字符
                     child = new WordTree();
                     current.put(currentChar, child);

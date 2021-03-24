@@ -217,13 +217,13 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part create(Headers headers, RequestBody body) {
-            if (null == body) {
-                throw new NullPointerException("null == body");
+            if (body == null) {
+                throw new NullPointerException("body == null");
             }
-            if (null != headers && headers.get(Header.CONTENT_TYPE) != null) {
+            if (null != headers && null != headers.get(Header.CONTENT_TYPE)) {
                 throw new IllegalArgumentException("Unexpected header: Content-Type");
             }
-            if (null != headers && headers.get(Header.CONTENT_LENGTH) != null) {
+            if (null != headers && null != headers.get(Header.CONTENT_LENGTH)) {
                 throw new IllegalArgumentException("Unexpected header: Content-Length");
             }
             return new Part(headers, body);
@@ -234,8 +234,8 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part createFormData(String name, String filename, RequestBody body) {
-            if (null == name) {
-                throw new NullPointerException("null == name");
+            if (name == null) {
+                throw new NullPointerException("name == null");
             }
             StringBuilder disposition = new StringBuilder("form-data; name=");
             appendQuotedString(disposition, name);
@@ -276,8 +276,8 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder setType(MimeType type) {
-            if (null == type) {
-                throw new NullPointerException("null == type");
+            if (type == null) {
+                throw new NullPointerException("type == null");
             }
             if (!"multipart".equals(type.type())) {
                 throw new IllegalArgumentException("multipart != " + type);
@@ -303,7 +303,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder addPart(Part part) {
-            if (null == part) throw new NullPointerException("null == part");
+            if (part == null) throw new NullPointerException("part == null");
             parts.add(part);
             return this;
         }

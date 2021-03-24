@@ -163,7 +163,7 @@ public final class RetryAndFollowUp implements Interceptor {
                 throw e;
             }
 
-            if (null == followUp) {
+            if (followUp == null) {
                 streamAllocation.release();
                 return response;
             }
@@ -185,7 +185,7 @@ public final class RetryAndFollowUp implements Interceptor {
                 streamAllocation = new StreamAllocation(client.connectionPool(),
                         createAddress(followUp.url()), call, eventListener, callStackTrace);
                 this.streamAllocation = streamAllocation;
-            } else if (streamAllocation.codec() != null) {
+            } else if (null != streamAllocation.codec()) {
                 throw new IllegalStateException("Closing the body of " + response
                         + " didn't close its backing stream. Bad interceptor?");
             }
@@ -262,7 +262,7 @@ public final class RetryAndFollowUp implements Interceptor {
     }
 
     private Request followUpRequest(Response userResponse, Route route) throws IOException {
-        if (null == userResponse) throw new IllegalStateException();
+        if (userResponse == null) throw new IllegalStateException();
         int responseCode = userResponse.code();
 
         final String method = userResponse.request().method();
@@ -289,10 +289,10 @@ public final class RetryAndFollowUp implements Interceptor {
                 if (!client.followRedirects()) return null;
 
                 String location = userResponse.header("Location");
-                if (null == location) return null;
+                if (location == null) return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
-                if (null == url) return null;
+                if (url == null) return null;
 
                 boolean sameScheme = url.scheme().equals(userResponse.request().url().scheme());
                 if (!sameScheme && !client.followSslRedirects()) return null;
@@ -328,7 +328,7 @@ public final class RetryAndFollowUp implements Interceptor {
                     return null;
                 }
 
-                if (userResponse.priorResponse() != null
+                if (null != userResponse.priorResponse()
                         && userResponse.priorResponse().code() == Http.HTTP_CLIENT_TIMEOUT) {
                     return null;
                 }
@@ -340,7 +340,7 @@ public final class RetryAndFollowUp implements Interceptor {
                 return userResponse.request();
 
             case Http.HTTP_UNAVAILABLE:
-                if (userResponse.priorResponse() != null
+                if (null != userResponse.priorResponse()
                         && userResponse.priorResponse().code() == Http.HTTP_UNAVAILABLE) {
                     return null;
                 }
@@ -359,7 +359,7 @@ public final class RetryAndFollowUp implements Interceptor {
     private int retryAfter(Response userResponse, int defaultDelay) {
         String header = userResponse.header("Retry-After");
 
-        if (null == header) {
+        if (header == null) {
             return defaultDelay;
         }
 

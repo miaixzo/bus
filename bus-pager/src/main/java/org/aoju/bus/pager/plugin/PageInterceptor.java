@@ -118,9 +118,9 @@ public class PageInterceptor implements Interceptor {
      * 因此这里会出现 null 的情况 fixed #26
      */
     private void checkDialectExists() {
-        if (null == dialect) {
+        if (dialect == null) {
             synchronized (default_dialect_class) {
-                if (null == dialect) {
+                if (dialect == null) {
                     setProperties(new Properties());
                 }
             }
@@ -139,7 +139,7 @@ public class PageInterceptor implements Interceptor {
         } else {
             countMs = msCountMap.get(countMsId);
             // 自动创建
-            if (null == countMs) {
+            if (countMs == null) {
                 // 根据当前的 ms 创建一个返回值为 Long 类型的 ms
                 countMs = CountMappedStatement.newCountMappedStatement(ms, countMsId);
                 msCountMap.put(countMsId, countMs);

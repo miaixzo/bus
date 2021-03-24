@@ -141,7 +141,7 @@ public class RedisClusterCache implements CacheX {
 
     @PreDestroy
     public void tearDown() {
-        if (this.null != jedisCluster) {
+        if (null != this.jedisCluster) {
             try {
                 this.jedisCluster.close();
             } catch (IOException e) {

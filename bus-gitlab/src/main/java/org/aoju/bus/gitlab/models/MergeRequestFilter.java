@@ -370,7 +370,7 @@ public class MergeRequestFilter {
                 .withParam("target_branch", targetBranch)
                 .withParam("search", search)
                 .withParam("in", in)
-                .withParam("wip", (null == wip ? null : wip ? "yes" : "no"));
+                .withParam("wip", (wip == null ? null : wip ? "yes" : "no"));
 
         if (null != authorId && (scope == Constants.MergeRequestScope.ALL
                 || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {

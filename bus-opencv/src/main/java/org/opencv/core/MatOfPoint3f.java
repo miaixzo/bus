@@ -41,7 +41,7 @@ public class MatOfPoint3f extends Mat {
     }
 
     public void fromArray(Point3... a) {
-        if (null == a || a.length == 0)
+        if (a == null || a.length == 0)
             return;
         int num = a.length;
         alloc(num);

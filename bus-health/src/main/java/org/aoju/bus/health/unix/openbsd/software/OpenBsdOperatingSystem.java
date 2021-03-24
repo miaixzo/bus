@@ -199,7 +199,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         // Get Directories for stopped services
         File dir = new File("/etc/rc.d");
         File[] listFiles;
-        if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
+        if (dir.exists() && dir.isDirectory() && null != (listFiles = dir.listFiles())) {
             for (File f : listFiles) {
                 String name = f.getName();
                 if (!running.contains(name)) {

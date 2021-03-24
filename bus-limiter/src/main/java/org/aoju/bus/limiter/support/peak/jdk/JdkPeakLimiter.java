@@ -91,7 +91,7 @@ public class JdkPeakLimiter extends PeakLimiter {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (null == o || getClass() != o.getClass()) return false;
+            if (o == null || getClass() != o.getClass()) return false;
             CacheKey cacheKey = (CacheKey) o;
             return max == cacheKey.max &&
                     Objects.equals(key, cacheKey.key);

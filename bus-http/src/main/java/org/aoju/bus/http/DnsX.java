@@ -47,7 +47,7 @@ public interface DnsX {
      * 查找IP地址的DNS。大多数自定义{@link DnsX}实现应该委托给这个实例.
      */
     DnsX SYSTEM = hostname -> {
-        if (null == hostname) throw new UnknownHostException("null == hostname");
+        if (hostname == null) throw new UnknownHostException("hostname == null");
         try {
             return Arrays.asList(InetAddress.getAllByName(hostname));
         } catch (NullPointerException e) {

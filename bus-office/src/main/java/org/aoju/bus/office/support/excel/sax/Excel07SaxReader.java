@@ -307,7 +307,7 @@ public class Excel07SaxReader extends DefaultHandler implements ExcelSaxReader<E
         // 获取当前列坐标
         final String tempCurCoordinate = AttributeName.r.getValue(attributes);
         // 前一列为null，则将其设置为"@",A为第一列，ascii码为65，前一列即为@，ascii码64
-        if (null == preCoordinate) {
+        if (preCoordinate == null) {
             preCoordinate = String.valueOf(ExcelSaxKit.CELL_FILL_CHAR);
         } else {
             // 存在，则前一列要设置为上一列的坐标

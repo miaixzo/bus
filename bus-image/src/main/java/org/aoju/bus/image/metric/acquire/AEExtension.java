@@ -43,13 +43,14 @@ public class AEExtension implements Serializable {
     }
 
     public void setApplicationEntity(ApplicationEntity ae) {
-        if (null != ae && this.null != ae)
+        if (null != ae && null != this.ae)
             throw new IllegalStateException(
                     "already owned by AE: " + ae.getAETitle());
         this.ae = ae;
     }
 
     public void reconfigure(AEExtension from) {
+
     }
 
 }

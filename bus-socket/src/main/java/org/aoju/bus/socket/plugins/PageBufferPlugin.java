@@ -62,7 +62,7 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
         long mills = TimeUnit.SECONDS.toMillis(seconds);
         future = QuickTimer.scheduleAtFixedRate(() -> {
             {
-                if (null == server) {
+                if (server == null) {
                     Logger.error("unKnow server or client need to monitor!");
                     shutdown();
                     return;
@@ -71,7 +71,7 @@ public class PageBufferPlugin<T> extends AbstractPlugin {
                     Field bufferPoolField = AioQuickServer.class.getDeclaredField("bufferPool");
                     bufferPoolField.setAccessible(true);
                     ByteBuffer pagePool = (ByteBuffer) bufferPoolField.get(server);
-                    if (null == pagePool) {
+                    if (pagePool == null) {
                         Logger.error("server maybe has not started!");
                         shutdown();
                         return;

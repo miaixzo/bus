@@ -59,8 +59,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
         String encodingCharacters = seg.getEncodingCharacters();
         String charsetName = HL7Charset.toCharsetName(seg.getField(17, defCharset));
         msg.add(seg);
-        while ((seg = HL7Segment.parse(
-                b, size, pos, fieldSeparator, encodingCharacters, charsetName)) != null)
+        while (null != (seg = HL7Segment.parse(b, size, pos, fieldSeparator, encodingCharacters, charsetName)))
             msg.add(seg);
         msg.trimToSize();
         return msg;

@@ -59,7 +59,7 @@ public class AssociationHandler {
                     AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_APP_CTX_NAME_NOT_SUPPORTED);
         ApplicationEntity ae = as.getApplicationEntity();
-        if (null == ae || !ae.getConnections().contains(as.getConnection())
+        if (ae == null || !ae.getConnections().contains(as.getConnection())
                 || !ae.isInstalled() || !ae.isAssociationAcceptor())
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
@@ -68,7 +68,7 @@ public class AssociationHandler {
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
                     AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_CALLING_AET_NOT_RECOGNIZED);
-        IdentityAC userIdentity = getUserIdNegotiator() != null
+        IdentityAC userIdentity = null != getUserIdNegotiator()
                 ? getUserIdNegotiator().negotiate(as, rq.getIdentityRQ())
                 : null;
         if (ae.getDevice().isLimitOfAssociationsExceeded(rq))

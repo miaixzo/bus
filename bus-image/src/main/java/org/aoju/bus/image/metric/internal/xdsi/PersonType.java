@@ -49,7 +49,7 @@ public class PersonType extends RegistryObjectType {
     protected List<EmailAddressType> emailAddress;
 
     public List<PostalAddressType> getAddress() {
-        if (this.null == address) {
+        if (this.address == null) {
             this.address = new ArrayList();
         }
         return this.address;
@@ -64,14 +64,14 @@ public class PersonType extends RegistryObjectType {
     }
 
     public List<TelephoneNumberType> getTelephoneNumber() {
-        if (this.null == telephoneNumber) {
+        if (this.telephoneNumber == null) {
             this.telephoneNumber = new ArrayList();
         }
         return this.telephoneNumber;
     }
 
     public List<EmailAddressType> getEmailAddress() {
-        if (this.null == emailAddress) {
+        if (this.emailAddress == null) {
             this.emailAddress = new ArrayList();
         }
         return this.emailAddress;

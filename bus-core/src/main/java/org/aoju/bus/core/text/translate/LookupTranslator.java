@@ -85,7 +85,6 @@ public class LookupTranslator extends CharSequenceTranslator {
             for (int i = max; i >= shortest; i--) {
                 final CharSequence subSeq = input.subSequence(index, index + i);
                 final String result = lookupMap.get(subSeq.toString());
-
                 if (null != result) {
                     out.write(result);
                     return i;

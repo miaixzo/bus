@@ -70,7 +70,7 @@ public class CMove {
                                  String destinationAet,
                                  Progress progress,
                                  Args... keys) {
-        if (null == callingNode || null == calledNode || null == destinationAet) {
+        if (callingNode == null || calledNode == null || destinationAet == null) {
             throw new IllegalArgumentException("callingNode, calledNode or destinationAet cannot be null!");
         }
 

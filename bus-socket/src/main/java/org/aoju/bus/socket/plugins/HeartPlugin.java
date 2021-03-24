@@ -157,7 +157,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
                     return;
                 }
                 Long lastTime = sessionMap.get(session);
-                if (null == lastTime) {
+                if (lastTime == null) {
                     Logger.warn("session:{} timeout is null", session);
                     lastTime = System.currentTimeMillis();
                     sessionMap.put(session, lastTime);

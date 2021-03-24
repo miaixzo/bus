@@ -73,14 +73,14 @@ public final class CallServerInterceptor implements Interceptor {
         realChain.eventListener().requestHeadersEnd(realChain.call(), request);
 
         Response.Builder responseBuilder = null;
-        if (HttpMethod.permitsRequestBody(request.method()) && request.body() != null) {
+        if (HttpMethod.permitsRequestBody(request.method()) && null != request.body()) {
             if ("100-continue".equalsIgnoreCase(request.header("Expect"))) {
                 httpCodec.flushRequest();
                 realChain.eventListener().responseHeadersStart(realChain.call());
                 responseBuilder = httpCodec.readResponseHeaders(true);
             }
 
-            if (null == responseBuilder) {
+            if (responseBuilder == null) {
                 realChain.eventListener().requestBodyStart(realChain.call());
                 long contentLength = request.body().contentLength();
                 CountingSink requestBodyOut =
@@ -98,7 +98,7 @@ public final class CallServerInterceptor implements Interceptor {
 
         httpCodec.finishRequest();
 
-        if (null == responseBuilder) {
+        if (responseBuilder == null) {
             realChain.eventListener().responseHeadersStart(realChain.call());
             responseBuilder = httpCodec.readResponseHeaders(false);
         }

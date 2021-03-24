@@ -178,7 +178,7 @@ public class CompareBuilder implements Builder<Integer> {
         }
         final CompareBuilder compareBuilder = new CompareBuilder();
         reflectionAppend(left, right, leftClazz, compareBuilder, compareTransients, excludeFields);
-        while (leftClazz.getSuperclass() != null && leftClazz != reflectUpToClass) {
+        while (null != leftClazz.getSuperclass() && leftClazz != reflectUpToClass) {
             leftClazz = leftClazz.getSuperclass();
             reflectionAppend(left, right, leftClazz, compareBuilder, compareTransients, excludeFields);
         }

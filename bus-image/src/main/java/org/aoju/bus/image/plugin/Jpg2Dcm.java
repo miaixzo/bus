@@ -178,13 +178,13 @@ public class Jpg2Dcm {
         jpeg(UID.SecondaryCaptureImageStorage, UID.JPEGBaseline1) {
             @Override
             boolean parseHeader(Jpg2Dcm main) {
-                return (main.jpegHeader = new JPEGHeader(main.buffer, JPEG.SOS)).toAttributes(main.metadata) != null;
+                return null != (main.jpegHeader = new JPEGHeader(main.buffer, JPEG.SOS)).toAttributes(main.metadata);
             }
         },
         mpeg(UID.VideoPhotographicImageStorage, UID.MPEG2) {
             @Override
             boolean parseHeader(Jpg2Dcm main) {
-                return new MPEGHeader(main.buffer).toAttributes(main.metadata, main.fileLength) != null;
+                return null != (new MPEGHeader(main.buffer).toAttributes(main.metadata, main.fileLength));
             }
         };
 

@@ -53,18 +53,18 @@ public class ImageWriterFactory implements Serializable {
     private PatchJPEGLS patchJPEGLS;
 
     private static String nullify(String s) {
-        return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
+        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageWriterFactory getDefault() {
-        if (null == defaultFactory)
+        if (defaultFactory == null)
             defaultFactory = initDefault();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageWriterFactory factory) {
-        if (null == factory)
+        if (factory == null)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -101,7 +101,7 @@ public class ImageWriterFactory implements Serializable {
             throw new RuntimeException("No Writer for format: " + param.formatName + " registered");
 
         ImageWriter writer = iter.next();
-        if (param.null != className) {
+        if (null != param.className) {
             while (!param.className.equals(writer.getClass().getName())) {
                 if (iter.hasNext())
                     writer = iter.next();
@@ -124,13 +124,13 @@ public class ImageWriterFactory implements Serializable {
     }
 
     private static ImageWriterSpi getImageWriterSpi(ImageWriterParam param) {
-        Iterator<ImageWriterSpi> iter = new FormatNameFilterIterator<ImageWriterSpi>(
+        Iterator<ImageWriterSpi> iter = new FormatNameFilterIterator<>(
                 ServiceLoader.load(ImageWriterSpi.class).iterator(), param.formatName);
         if (!iter.hasNext())
             throw new RuntimeException("No Writer for format: " + param.formatName + " registered");
 
         ImageWriterSpi spi = iter.next();
-        if (param.null != className) {
+        if (null != param.className) {
             while (!param.className.equals(spi.getPluginClassName())) {
                 if (iter.hasNext())
                     spi = iter.next();
@@ -213,12 +213,12 @@ public class ImageWriterFactory implements Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (null == o || getClass() != o.getClass()) return false;
+            if (o == null || getClass() != o.getClass()) return false;
 
             ImageWriterParam that = (ImageWriterParam) o;
 
             if (!formatName.equals(that.formatName)) return false;
-            if (null != className ? !className.equals(that.className) : that.null != className) return false;
+            if (null != className ? !className.equals(that.className) : null != that.className) return false;
             if (patchJPEGLS != that.patchJPEGLS) return false;
             return Arrays.equals(imageWriteParams, that.imageWriteParams);
 

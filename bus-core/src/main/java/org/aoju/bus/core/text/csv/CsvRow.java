@@ -272,7 +272,7 @@ public final class CsvRow implements List<String> {
                 final Map.Entry<String, String> entry = it.next();
                 sb.append(entry.getKey());
                 sb.append(Symbol.C_EQUAL);
-                if (entry.getValue() != null) {
+                if (null != entry.getValue()) {
                     sb.append(entry.getValue());
                 }
                 if (it.hasNext()) {

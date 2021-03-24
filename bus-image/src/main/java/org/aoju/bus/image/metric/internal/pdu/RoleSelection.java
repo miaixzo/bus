@@ -40,7 +40,7 @@ public class RoleSelection {
     private final boolean scp;
 
     public RoleSelection(String cuid, boolean scu, boolean scp) {
-        if (null == cuid) {
+        if (cuid == null) {
             throw new NullPointerException("cuid cannot be null");
         }
 

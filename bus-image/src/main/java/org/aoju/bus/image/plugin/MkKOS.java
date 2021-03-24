@@ -145,10 +145,10 @@ public class MkKOS {
     }
 
     public Attributes toCodeItem(String codeValue) {
-        if (null == codes)
+        if (codes == null)
             throw new IllegalStateException("codec not initialized");
         String codeMeaning = codes.getProperty(codeValue);
-        if (null == codeMeaning)
+        if (codeMeaning == null)
             throw new IllegalArgumentException("undefined internal value: "
                     + codeValue);
         int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
@@ -171,9 +171,9 @@ public class MkKOS {
         String seriesIUID = inst.getString(Tag.SeriesInstanceUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
         String cuid = inst.getString(Tag.SOPClassUID);
-        if (null == studyIUID || null == seriesIUID || null == iuid || null == cuid)
+        if (studyIUID == null || seriesIUID == null || iuid == null || cuid == null)
             return false;
-        if (null == kos)
+        if (kos == null)
             kos = createKOS(inst);
         refSOPSeq(refSeriesSeq(studyIUID), seriesIUID).add(refSOP(cuid, iuid));
         contentSeq.add(contentItem(valueTypeOf(inst), refSOP(cuid, iuid)));
@@ -256,10 +256,13 @@ public class MkKOS {
         evidenceSeq = attrs.newSequence(Tag.CurrentRequestedProcedureEvidenceSequence, 1);
         attrs.newSequence(Tag.ContentTemplateSequence, 1).add(templateIdentifier());
         contentSeq = attrs.newSequence(Tag.ContentSequence, 1);
-        if (null != documentTitleModifier)
+        if (null != documentTitleModifier) {
             contentSeq.add(documentTitleModifier());
-        if (null != keyObjectDescription)
+        }
+
+        if (null != keyObjectDescription) {
             contentSeq.add(keyObjectDescription());
+        }
         return attrs;
     }
 

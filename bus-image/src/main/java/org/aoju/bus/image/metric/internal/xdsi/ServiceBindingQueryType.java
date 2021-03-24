@@ -57,7 +57,7 @@ public class ServiceBindingQueryType extends RegistryObjectQueryType {
     }
 
     public List<SpecificationLinkQueryType> getSpecificationLinkQuery() {
-        if (this.null == specificationLinkQuery) {
+        if (this.specificationLinkQuery == null) {
             this.specificationLinkQuery = new ArrayList();
         }
         return this.specificationLinkQuery;

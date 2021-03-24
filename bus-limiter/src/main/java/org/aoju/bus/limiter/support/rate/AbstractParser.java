@@ -54,7 +54,9 @@ public abstract class AbstractParser<T extends Limiter<?>, V extends Annotation>
 
     @Override
     public Class<Annotation> getSupportAnnotation() {
-        if (null != supportAnnotation) return supportAnnotation;
+        if (null != supportAnnotation) {
+            return supportAnnotation;
+        }
         return computeSupportAnnotation();
     }
 

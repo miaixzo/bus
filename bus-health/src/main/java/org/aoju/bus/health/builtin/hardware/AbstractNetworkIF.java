@@ -148,7 +148,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private static List<NetworkInterface> getAllNetworkInterfaces() {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            return null == interfaces ? Collections.emptyList() : Collections.list(interfaces);
+            return interfaces == null ? Collections.emptyList() : Collections.list(interfaces);
         } catch (SocketException ex) {
             Logger.error("Socket exception when retrieving interfaces: {}", ex.getMessage());
         }

@@ -42,7 +42,7 @@ public abstract class ConfigurationCache<C, T> {
     private long staleTimeout;
 
     public ConfigurationCache(C conf) {
-        if (null == conf)
+        if (conf == null)
             throw new NullPointerException();
         this.conf = conf;
     }
@@ -62,7 +62,7 @@ public abstract class ConfigurationCache<C, T> {
     public T get(String key) throws InstrumentException {
         long now = System.currentTimeMillis();
         CacheEntry<T> entry = cache.get(key);
-        if (null == entry
+        if (entry == null
                 || (staleTimeout != 0 && now > entry.fetchTime + staleTimeout)) {
             T value = null;
             try {

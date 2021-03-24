@@ -123,7 +123,7 @@ public final class Http2Codec implements HttpCodec {
                 Builder.instance.addLenient(headersBuilder, name, value);
             }
         }
-        if (null == statusLine) throw new ProtocolException("Expected ':status' header not present");
+        if (statusLine == null) throw new ProtocolException("Expected ':status' header not present");
 
         return new Response.Builder()
                 .protocol(protocol)
@@ -141,7 +141,7 @@ public final class Http2Codec implements HttpCodec {
     public void writeRequestHeaders(Request request) throws IOException {
         if (null != stream) return;
 
-        boolean hasRequestBody = request.body() != null;
+        boolean hasRequestBody = null != request.body();
         List<HttpHeaders> requestHeaders = http2HeadersList(request);
         stream = connection.newStream(requestHeaders, hasRequestBody);
         stream.readTimeout().timeout(chain.readTimeoutMillis(), TimeUnit.MILLISECONDS);

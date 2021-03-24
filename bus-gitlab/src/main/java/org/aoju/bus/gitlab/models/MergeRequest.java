@@ -100,7 +100,7 @@ public class MergeRequest {
     private List<User> approvedBy;
 
     public static final boolean isValid(MergeRequest mergeRequest) {
-        return (null != mergeRequest && mergeRequest.getId() != null);
+        return (null != mergeRequest && null != mergeRequest.getId());
     }
 
     public Boolean getAllowCollaboration() {

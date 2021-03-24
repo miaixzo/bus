@@ -69,10 +69,10 @@ public class DnsOverHttps implements DnsX {
     private final boolean resolvePublicAddresses;
 
     DnsOverHttps(Builder builder) {
-        if (builder.null == client) {
+        if (builder.client == null) {
             throw new NullPointerException("client not set");
         }
-        if (builder.null == url) {
+        if (builder.url == null) {
             throw new NullPointerException("url not set");
         }
 
@@ -188,7 +188,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     public static long size(String string, int beginIndex, int endIndex) {
-        if (null == string) throw new IllegalArgumentException("null == string");
+        if (string == null) throw new IllegalArgumentException("string == null");
         if (beginIndex < 0) throw new IllegalArgumentException("beginIndex < 0: " + beginIndex);
         if (endIndex < beginIndex) {
             throw new IllegalArgumentException("endIndex < beginIndex: " + endIndex + " < " + beginIndex);
@@ -373,7 +373,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     private Response getCacheOnlyResponse(Request request) {
-        if (!post && client.cache() != null) {
+        if (!post && null != client.cache()) {
             try {
                 Request cacheRequest = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
 

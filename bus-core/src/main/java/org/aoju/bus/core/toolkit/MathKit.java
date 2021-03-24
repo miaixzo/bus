@@ -1974,7 +1974,6 @@ public class MathKit {
      * @return {@link BigDecimal}参数为空时返回0的值
      */
     public static BigDecimal null2Zero(BigDecimal decimal) {
-
         return null == decimal ? BigDecimal.ZERO : decimal;
     }
 
@@ -2668,7 +2667,7 @@ public class MathKit {
         }
         return value.setScale(
                 scale,
-                (null == roundingMode) ? RoundingMode.HALF_EVEN : roundingMode
+                null == roundingMode ? RoundingMode.HALF_EVEN : roundingMode
         );
     }
 

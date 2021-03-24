@@ -46,7 +46,9 @@ public final class RealSource implements BufferSource {
     boolean closed;
 
     public RealSource(Source source) {
-        if (null == source) throw new NullPointerException("null == source");
+        if (null == source) {
+            throw new NullPointerException("source == null");
+        }
         this.source = source;
     }
 
@@ -62,9 +64,15 @@ public final class RealSource implements BufferSource {
 
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
-        if (null == sink) throw new IllegalArgumentException("null == sink");
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-        if (closed) throw new IllegalStateException("closed");
+        if (null == sink) {
+            throw new IllegalArgumentException("sink == null");
+        }
+        if (byteCount < 0) {
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        }
+        if (closed) {
+            throw new IllegalStateException("closed");
+        }
 
         if (buffer.size == 0) {
             long read = source.read(buffer, Segment.SIZE);
@@ -77,13 +85,17 @@ public final class RealSource implements BufferSource {
 
     @Override
     public boolean exhausted() throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed) {
+            throw new IllegalStateException("closed");
+        }
         return buffer.exhausted() && source.read(buffer, Segment.SIZE) == -1;
     }
 
     @Override
     public void require(long byteCount) throws IOException {
-        if (!request(byteCount)) throw new EOFException();
+        if (!request(byteCount)) {
+            throw new EOFException();
+        }
     }
 
     @Override
@@ -204,7 +216,9 @@ public final class RealSource implements BufferSource {
 
     @Override
     public long readAll(Sink sink) throws IOException {
-        if (null == sink) throw new IllegalArgumentException("null == sink");
+        if (null == sink) {
+            throw new IllegalArgumentException("sink == null");
+        }
 
         long totalBytesWritten = 0;
         while (source.read(buffer, Segment.SIZE) != -1) {
@@ -235,7 +249,9 @@ public final class RealSource implements BufferSource {
 
     @Override
     public String readString(Charset charset) throws IOException {
-        if (null == charset) throw new IllegalArgumentException("null == charset");
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
 
         buffer.writeAll(source);
         return buffer.readString(charset);
@@ -244,7 +260,9 @@ public final class RealSource implements BufferSource {
     @Override
     public String readString(long byteCount, Charset charset) throws IOException {
         require(byteCount);
-        if (null == charset) throw new IllegalArgumentException("null == charset");
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
         return buffer.readString(byteCount, charset);
     }
 

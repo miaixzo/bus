@@ -59,7 +59,7 @@ public class KeycloakClient {
 
     public void setDevice(Device device) {
         if (null != device) {
-            if (this.null != device)
+            if (null != this.device)
                 throw new IllegalStateException("already owned by " +
                         this.device.getDeviceName());
         }

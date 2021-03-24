@@ -65,7 +65,7 @@ public class SessionBeanProvider implements Provider {
 
     public Object getObject() {
         try {
-            final InitialContext initialContext = null == properties ? new InitialContext() :
+            final InitialContext initialContext = properties == null ? new InitialContext() :
                     new InitialContext(properties);
             Object homeObject = PortableRemoteObject.narrow(initialContext.lookup(jndiName), clazz);
             final Method createMethod = homeObject.getClass().getMethod("create", Builder.EMPTY_ARGUMENT_TYPES);

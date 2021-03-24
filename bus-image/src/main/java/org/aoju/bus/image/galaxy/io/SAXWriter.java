@@ -348,9 +348,9 @@ public class SAXWriter implements ImageInputHandler {
 
     private void writeBulkData(BulkData bulkData)
             throws SAXException {
-        if (bulkData.getUUID() != null)
+        if (null != bulkData.getUUID())
             addAttribute("uuid", bulkData.getUUID());
-        if (bulkData.getURI() != null)
+        if (null != bulkData.getURI())
             addAttribute("uri", bulkData.getURI());
         startElement("BulkData");
         endElement("BulkData");

@@ -79,7 +79,7 @@ public class LoggingInterceptor implements Interceptor {
     }
 
     private void convert(StringBuffer buffer, Object input) {
-        if (null == input) {
+        if (input == null) {
             buffer.append("<null>");
             return;
         }

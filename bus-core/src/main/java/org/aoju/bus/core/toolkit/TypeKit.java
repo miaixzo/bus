@@ -179,7 +179,7 @@ public class TypeKit {
      * @return 是否为 java 类
      */
     public static boolean isJdk(Class<?> clazz) {
-        return null != clazz && clazz.getClassLoader() == null;
+        return null != clazz && null == clazz.getClassLoader();
     }
 
     /**
@@ -1430,7 +1430,7 @@ public class TypeKit {
             if (type instanceof ParameterizedType) {
                 final ParameterizedType p = (ParameterizedType) type;
                 final Map<TypeVariable<?>, Type> parameterizedTypeArguments;
-                if (p.getOwnerType() == null) {
+                if (null == p.getOwnerType()) {
                     parameterizedTypeArguments = typeArguments;
                 } else {
                     parameterizedTypeArguments = new HashMap<>(typeArguments);
@@ -1541,7 +1541,7 @@ public class TypeKit {
                                                                 final Type... typeArguments) {
         Assert.notNull(raw, "raw class is null");
         final Type useOwner;
-        if (raw.getEnclosingClass() == null) {
+        if (null == raw.getEnclosingClass()) {
             Assert.isTrue(null == owner, "no owner allowed for top-level %s", raw);
             useOwner = null;
         } else if (null == owner) {
@@ -1736,7 +1736,7 @@ public class TypeKit {
         if (d instanceof Class<?>) {
             Class<?> c = (Class<?>) d;
             while (true) {
-                if (c.getEnclosingClass() == null) {
+                if (null == c.getEnclosingClass()) {
                     buf.insert(0, c.getName());
                     break;
                 }
@@ -1764,7 +1764,7 @@ public class TypeKit {
 
         final StringBuilder buf = new StringBuilder();
 
-        if (c.getEnclosingClass() != null) {
+        if (null != c.getEnclosingClass()) {
             buf.append(classToString(c.getEnclosingClass())).append(Symbol.C_DOT).append(c.getSimpleName());
         } else {
             buf.append(c.getName());
@@ -1860,7 +1860,7 @@ public class TypeKit {
         final StringBuilder buf = new StringBuilder().append(Symbol.C_QUESTION_MARK);
         final Type[] lowerBounds = w.getLowerBounds();
         final Type[] upperBounds = w.getUpperBounds();
-        if (lowerBounds.length > 1 || lowerBounds.length == 1 && lowerBounds[0] != null) {
+        if (lowerBounds.length > 1 || lowerBounds.length == 1 && null != lowerBounds[0]) {
             appendAllTo(buf.append(" super "), " & ", lowerBounds);
         } else if (upperBounds.length > 1 || upperBounds.length == 1 && !Object.class.equals(upperBounds[0])) {
             appendAllTo(buf.append(" extends "), " & ", upperBounds);

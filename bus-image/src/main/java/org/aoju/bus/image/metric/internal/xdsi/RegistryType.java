@@ -86,7 +86,7 @@ public class RegistryType extends RegistryObjectType {
     }
 
     public String getConformanceProfile() {
-        if (this.null == conformanceProfile) {
+        if (this.conformanceProfile == null) {
             return "registryLite";
         }
         return this.conformanceProfile;

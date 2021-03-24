@@ -49,7 +49,7 @@ public class PersonQueryType extends RegistryObjectQueryType {
     protected List<FilterType> emailAddressFilter;
 
     public List<FilterType> getAddressFilter() {
-        if (this.null == addressFilter) {
+        if (this.addressFilter == null) {
             this.addressFilter = new ArrayList();
         }
         return this.addressFilter;
@@ -65,14 +65,14 @@ public class PersonQueryType extends RegistryObjectQueryType {
     }
 
     public List<FilterType> getTelephoneNumberFilter() {
-        if (this.null == telephoneNumberFilter) {
+        if (this.telephoneNumberFilter == null) {
             this.telephoneNumberFilter = new ArrayList();
         }
         return this.telephoneNumberFilter;
     }
 
     public List<FilterType> getEmailAddressFilter() {
-        if (this.null == emailAddressFilter) {
+        if (this.emailAddressFilter == null) {
             this.emailAddressFilter = new ArrayList();
         }
         return this.emailAddressFilter;

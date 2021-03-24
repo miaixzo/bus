@@ -75,7 +75,7 @@ public final class Dispatcher {
     }
 
     public synchronized ExecutorService executorService() {
-        if (null == executorService) {
+        if (executorService == null) {
             executorService = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
                     new SynchronousQueue<>(), Builder.threadFactory("Httpd Dispatcher", false));
         }

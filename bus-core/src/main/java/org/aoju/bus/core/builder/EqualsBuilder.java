@@ -137,7 +137,7 @@ public class EqualsBuilder implements Builder<Boolean> {
      */
     static void register(final Object lhs, final Object rhs) {
         synchronized (EqualsBuilder.class) {
-            if (getRegistry() == null) {
+            if (null == getRegistry()) {
                 REGISTRY.set(new HashSet<>());
             }
         }
@@ -245,7 +245,7 @@ public class EqualsBuilder implements Builder<Boolean> {
                 equalsBuilder.append(lhs, rhs);
             } else {
                 reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
-                while (testClass.getSuperclass() != null && testClass != reflectUpToClass) {
+                while (null != testClass.getSuperclass() && testClass != reflectUpToClass) {
                     testClass = testClass.getSuperclass();
                     reflectionAppend(lhs, rhs, testClass, equalsBuilder, testTransients, excludeFields);
                 }

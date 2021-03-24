@@ -42,7 +42,7 @@ public class MatOfInt extends Mat {
     }
 
     public void fromArray(int... a) {
-        if (null == a || a.length == 0)
+        if (a == null || a.length == 0)
             return;
         int num = a.length / _channels;
         alloc(num);
@@ -61,7 +61,7 @@ public class MatOfInt extends Mat {
     }
 
     public void fromList(List<Integer> lb) {
-        if (null == lb || lb.size() == 0)
+        if (lb == null || lb.size() == 0)
             return;
         Integer ab[] = lb.toArray(new Integer[0]);
         int a[] = new int[ab.length];

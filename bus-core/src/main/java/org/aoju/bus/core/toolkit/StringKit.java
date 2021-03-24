@@ -464,7 +464,7 @@ public class StringKit {
      * @return 字符串本身或指定的默认字符串
      */
     public static String nullToDefault(CharSequence str, String defaultStr) {
-        return (null == str) ? defaultStr : str.toString();
+        return null == str ? defaultStr : str.toString();
     }
 
     /**
@@ -2545,7 +2545,7 @@ public class StringKit {
      * @return 位置
      */
     public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
-        if (null == str || null == searchStr) {
+        if (null == str || null searchStr){
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
@@ -3690,8 +3690,8 @@ public class StringKit {
         int tempIndex = -1;
 
         for (int i = 0; i < searchLength; i++) {
-            if (noMoreMatchesForReplIndex[i] || searchList[i] == null ||
-                    searchList[i].isEmpty() || replacementList[i] == null) {
+            if (noMoreMatchesForReplIndex[i] || null == searchList[i] ||
+                    searchList[i].isEmpty() || null == replacementList[i]) {
                 continue;
             }
             tempIndex = text.indexOf(searchList[i]);
@@ -3715,7 +3715,7 @@ public class StringKit {
         int increase = 0;
 
         for (int i = 0; i < searchList.length; i++) {
-            if (searchList[i] == null || replacementList[i] == null) {
+            if (null == searchList[i] || null == replacementList[i]) {
                 continue;
             }
             final int greater = replacementList[i].length() - searchList[i].length();
@@ -3725,23 +3725,20 @@ public class StringKit {
         }
 
         increase = Math.min(increase, text.length() / 5);
-
         final StringBuilder buf = new StringBuilder(text.length() + increase);
 
         while (textIndex != -1) {
-
             for (int i = start; i < textIndex; i++) {
                 buf.append(text.charAt(i));
             }
             buf.append(replacementList[replaceIndex]);
-
             start = textIndex + searchList[replaceIndex].length();
 
             textIndex = -1;
             replaceIndex = -1;
             for (int i = 0; i < searchLength; i++) {
-                if (noMoreMatchesForReplIndex[i] || searchList[i] == null ||
-                        searchList[i].isEmpty() || replacementList[i] == null) {
+                if (noMoreMatchesForReplIndex[i] || null == searchList[i] ||
+                        searchList[i].isEmpty() || null == replacementList[i]) {
                     continue;
                 }
                 tempIndex = text.indexOf(searchList[i], start);

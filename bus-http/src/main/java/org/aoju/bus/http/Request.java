@@ -151,7 +151,7 @@ public final class Request {
         }
 
         public Builder url(UnoUrl url) {
-            if (null == url) throw new NullPointerException("null == url");
+            if (url == null) throw new NullPointerException("url == null");
             this.url = url;
             return this;
         }
@@ -163,7 +163,7 @@ public final class Request {
          * @return 构造器
          */
         public Builder url(String url) {
-            if (null == url) throw new NullPointerException("null == url");
+            if (url == null) throw new NullPointerException("url == null");
 
             // 用HTTP url替换web套接字url.
             if (url.regionMatches(true, 0, "ws:", 0, 3)) {
@@ -182,7 +182,7 @@ public final class Request {
          * @return 构造器
          */
         public Builder url(URL url) {
-            if (null == url) throw new NullPointerException("null == url");
+            if (url == null) throw new NullPointerException("url == null");
             return url(UnoUrl.get(url.toString()));
         }
 
@@ -269,12 +269,12 @@ public final class Request {
         }
 
         public Builder method(String method, RequestBody body) {
-            if (null == method) throw new NullPointerException("null == method");
+            if (method == null) throw new NullPointerException("method == null");
             if (method.length() == 0) throw new IllegalArgumentException("method.length() == 0");
             if (null != body && !HttpMethod.permitsRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must not have a request body.");
             }
-            if (null == body && HttpMethod.requiresRequestBody(method)) {
+            if (body == null && HttpMethod.requiresRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must have a request body.");
             }
             this.method = method;
@@ -287,9 +287,9 @@ public final class Request {
         }
 
         public <T> Builder tag(Class<? super T> type, T tag) {
-            if (null == type) throw new NullPointerException("null == type");
+            if (type == null) throw new NullPointerException("type == null");
 
-            if (null == tag) {
+            if (tag == null) {
                 tags.remove(type);
             } else {
                 if (tags.isEmpty()) tags = new LinkedHashMap<>();
@@ -300,7 +300,7 @@ public final class Request {
         }
 
         public Request build() {
-            if (null == url) throw new IllegalStateException("null == url");
+            if (url == null) throw new IllegalStateException("url == null");
             return new Request(this);
         }
     }

@@ -53,9 +53,9 @@ public final class SolarisPowerSource extends AbstractPowerSource {
 
     static {
         try (KstatChain kc = KstatKit.openChain()) {
-            if (KstatChain.lookup(KSTAT_BATT_MOD[1], 0, null) != null) {
+            if (null != KstatChain.lookup(KSTAT_BATT_MOD[1], 0, null)) {
                 KSTAT_BATT_IDX = 1;
-            } else if (KstatChain.lookup(KSTAT_BATT_MOD[2], 0, null) != null) {
+            } else if (null != KstatChain.lookup(KSTAT_BATT_MOD[2], 0, null)) {
                 KSTAT_BATT_IDX = 2;
             } else {
                 KSTAT_BATT_IDX = 0;

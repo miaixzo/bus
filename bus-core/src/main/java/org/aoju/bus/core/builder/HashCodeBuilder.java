@@ -194,7 +194,7 @@ public class HashCodeBuilder implements Builder<Integer> {
         final HashCodeBuilder builder = new HashCodeBuilder(initialNonZeroOddNumber, multiplierNonZeroOddNumber);
         Class<?> clazz = object.getClass();
         reflectionAppend(object, clazz, builder, testTransients, excludeFields);
-        while (clazz.getSuperclass() != null && clazz != reflectUpToClass) {
+        while (null != clazz.getSuperclass() && clazz != reflectUpToClass) {
             clazz = clazz.getSuperclass();
             reflectionAppend(object, clazz, builder, testTransients, excludeFields);
         }

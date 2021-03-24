@@ -65,12 +65,16 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString of(byte... data) {
-        if (null == data) throw new IllegalArgumentException("null == data");
+        if (null == data) {
+            throw new IllegalArgumentException("data == null");
+        }
         return new ByteString(data.clone());
     }
 
     public static ByteString of(byte[] data, int offset, int byteCount) {
-        if (null == data) throw new IllegalArgumentException("null == data");
+        if (null == data) {
+            throw new IllegalArgumentException("data == null");
+        }
         IoKit.checkOffsetAndCount(data.length, offset, byteCount);
 
         byte[] copy = new byte[byteCount];
@@ -79,7 +83,9 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString of(ByteBuffer data) {
-        if (null == data) throw new IllegalArgumentException("null == data");
+        if (null == data) {
+            throw new IllegalArgumentException("data == null");
+        }
 
         byte[] copy = new byte[data.remaining()];
         data.get(copy);
@@ -87,27 +93,39 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString encodeUtf8(String s) {
-        if (null == s) throw new IllegalArgumentException("null == s");
+        if (null == s) {
+            throw new IllegalArgumentException("s == null");
+        }
         ByteString byteString = new ByteString(s.getBytes(Charset.UTF_8));
         byteString.utf8 = s;
         return byteString;
     }
 
     public static ByteString encodeString(String s, java.nio.charset.Charset charset) {
-        if (null == s) throw new IllegalArgumentException("null == s");
-        if (null == charset) throw new IllegalArgumentException("null == charset");
+        if (null == s) {
+            throw new IllegalArgumentException("s == null");
+        }
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
         return new ByteString(s.getBytes(charset));
     }
 
     public static ByteString decodeBase64(String base64) {
-        if (null == base64) throw new IllegalArgumentException("null == base64");
+        if (null == base64) {
+            throw new IllegalArgumentException("base64 == null");
+        }
         byte[] decoded = Base64.decode(base64);
         return null != decoded ? new ByteString(decoded) : null;
     }
 
     public static ByteString decodeHex(String hex) {
-        if (null == hex) throw new IllegalArgumentException("null == hex");
-        if (hex.length() % 2 != 0) throw new IllegalArgumentException("Unexpected hex string: " + hex);
+        if (null == hex) {
+            throw new IllegalArgumentException("hex == null");
+        }
+        if (hex.length() % 2 != 0) {
+            throw new IllegalArgumentException("Unexpected hex string: " + hex);
+        }
 
         byte[] result = new byte[hex.length() / 2];
         for (int i = 0; i < result.length; i++) {
@@ -126,8 +144,12 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public static ByteString read(InputStream in, int byteCount) throws IOException {
-        if (null == in) throw new IllegalArgumentException("null == in");
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (null == in) {
+            throw new IllegalArgumentException("in == null");
+        }
+        if (byteCount < 0) {
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        }
 
         byte[] result = new byte[byteCount];
         for (int offset = 0, read; offset < byteCount; offset += read) {
@@ -159,7 +181,9 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public String string(java.nio.charset.Charset charset) {
-        if (null == charset) throw new IllegalArgumentException("null == charset");
+        if (null == charset) {
+            throw new IllegalArgumentException("charset == null");
+        }
         return new String(data, charset);
     }
 
@@ -312,7 +336,9 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     public void write(OutputStream out) throws IOException {
-        if (null == out) throw new IllegalArgumentException("null == out");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
         out.write(data);
     }
 

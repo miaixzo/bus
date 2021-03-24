@@ -81,10 +81,10 @@ public class EntityTable {
      * @return ResultMap
      */
     public ResultMap getResultMap(Configuration configuration) {
-        if (this.null != resultMap) {
+        if (null != this.resultMap) {
             return this.resultMap;
         }
-        if (null == entityClassColumns || entityClassColumns.size() == 0) {
+        if (entityClassColumns == null || entityClassColumns.size() == 0) {
             return null;
         }
         List<ResultMapping> resultMappings = new ArrayList<>();
@@ -96,10 +96,10 @@ public class EntityTable {
                 column = matcher.group(1);
             }
             ResultMapping.Builder builder = new ResultMapping.Builder(configuration, entityColumn.getProperty(), column, entityColumn.getJavaType());
-            if (entityColumn.getJdbcType() != null) {
+            if (null != entityColumn.getJdbcType()) {
                 builder.jdbcType(entityColumn.getJdbcType());
             }
-            if (entityColumn.getTypeHandler() != null) {
+            if (null != entityColumn.getTypeHandler()) {
                 try {
                     builder.typeHandler(getInstance(entityColumn.getJavaType(), entityColumn.getTypeHandler()));
                 } catch (Exception e) {
@@ -188,7 +188,7 @@ public class EntityTable {
     }
 
     public void setKeyColumns(String keyColumn) {
-        if (this.null == keyColumns) {
+        if (this.keyColumns == null) {
             this.keyColumns = new ArrayList<>();
             this.keyColumns.add(keyColumn);
         } else {
@@ -208,7 +208,7 @@ public class EntityTable {
     }
 
     public void setKeyProperties(String keyProperty) {
-        if (this.null == keyProperties) {
+        if (this.keyProperties == null) {
             this.keyProperties = new ArrayList<>();
             this.keyProperties.add(keyProperty);
         } else {

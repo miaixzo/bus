@@ -119,7 +119,7 @@ public class JPEGHeader {
         if (offsetSOF == -1)
             return null;
 
-        if (null == attrs)
+        if (attrs == null)
             attrs = new Attributes(10);
 
         int sof = data[offsetSOF] & 255;

@@ -67,7 +67,7 @@ public class Variable {
      */
     public static final List<Variable> convertMapToList(Map<String, String> variables) {
 
-        if (null == variables) {
+        if (variables == null) {
             return null;
         }
 

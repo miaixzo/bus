@@ -92,7 +92,7 @@ public class AsyncTimeout extends Timeout {
         // 按排序顺序插入节点
         long remainingNanos = node.remainingNanos(now);
         for (AsyncTimeout prev = head; true; prev = prev.next) {
-            if (prev.null == next || remainingNanos < prev.next.remainingNanos(now)) {
+            if (null == prev.next || remainingNanos < prev.next.remainingNanos(now)) {
                 node.next = prev.next;
                 prev.next = node;
                 if (prev == head) {
@@ -138,7 +138,7 @@ public class AsyncTimeout extends Timeout {
         if (null == node) {
             long startNanos = System.nanoTime();
             AsyncTimeout.class.wait(IDLE_TIMEOUT_MILLIS);
-            return head.null == next && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
+            return null == head.next && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
                     ? head  // 空闲超时过期
                     : null; // 情况发生了变化
         }

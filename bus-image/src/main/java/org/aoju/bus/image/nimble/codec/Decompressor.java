@@ -78,17 +78,17 @@ public class Decompressor {
     protected ImageDescriptor imageDescriptor;
 
     public Decompressor(Attributes dataset, String tsuid) {
-        if (null == tsuid)
+        if (tsuid == null)
             throw new NullPointerException("tsuid");
 
         this.dataset = dataset;
         this.tsuid = tsuid;
         this.tstype = TransferSyntaxType.forUID(tsuid);
         Object pixeldata = dataset.getValue(Tag.PixelData);
-        if (null == pixeldata)
+        if (pixeldata == null)
             return;
 
-        if (null == tstype)
+        if (tstype == null)
             throw new IllegalArgumentException("Unknown Transfer Syntax: " + tsuid);
         this.rows = dataset.getInt(Tag.Rows, 0);
         this.cols = dataset.getInt(Tag.Columns, 0);
@@ -121,7 +121,7 @@ public class Decompressor {
             this.file = ((BulkData) pixeldataFragments.get(1)).getFile();
             ImageReaderFactory.ImageReaderParam param =
                     ImageReaderFactory.getImageReaderParam(tsuid);
-            if (null == param)
+            if (param == null)
                 throw new UnsupportedOperationException(
                         "Unsupported Transfer Syntax: " + tsuid);
 
@@ -232,7 +232,7 @@ public class Decompressor {
     }
 
     public boolean decompress() {
-        if (null == decompressor)
+        if (decompressor == null)
             return false;
 
         if (tstype == TransferSyntaxType.RLE)

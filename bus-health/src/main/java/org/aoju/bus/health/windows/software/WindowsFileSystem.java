@@ -174,7 +174,7 @@ public class WindowsFileSystem extends AbstractFileSystem {
                 Kernel32.INSTANCE.GetVolumePathNamesForVolumeName(volume, mount, BUFSIZE, null);
 
                 strMount = Native.toString(mount);
-                if (!strMount.isEmpty() && (null == volumeToMatch || volumeToMatch.equals(volume))) {
+                if (!strMount.isEmpty() && (volumeToMatch == null || volumeToMatch.equals(volume))) {
                     strName = Native.toString(name);
                     strFsType = Native.toString(fstype);
 

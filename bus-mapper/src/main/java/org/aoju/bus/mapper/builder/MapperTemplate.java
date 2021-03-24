@@ -111,7 +111,7 @@ public abstract class MapperTemplate {
         Class<?> mapperClass = Reflector.getMapperClass(msId);
         if (null != mapperClass && this.mapperClass.isAssignableFrom(mapperClass)) {
             String methodName = Reflector.getMethodName(msId);
-            return methodMap.get(methodName) != null;
+            return null != methodMap.get(methodName);
         }
         return false;
     }
@@ -263,7 +263,7 @@ public abstract class MapperTemplate {
         } catch (IllegalAccessException e) {
             throw new InstrumentException(e);
         } catch (InvocationTargetException e) {
-            throw new InstrumentException(e.getTargetException() != null ? e.getTargetException() : e);
+            throw new InstrumentException(null != e.getTargetException() ? e.getTargetException() : e);
         }
     }
 

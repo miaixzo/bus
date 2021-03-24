@@ -80,7 +80,7 @@ public class MethodExecuteCostHandler {
                 if (StringKit.isEmpty(tacerCostLogger.methodName())) {
                     //当methodName为默认值时,用signature(原方法名)代替
                     methodName = pjp.getSignature().toString();
-                } else if (tacerCostLogger.methodName() != null) {
+                } else if (null != tacerCostLogger.methodName()) {
                     //有值则用值
                     methodName = tacerCostLogger.methodName();
                 }
@@ -89,7 +89,7 @@ public class MethodExecuteCostHandler {
                 String remark = null;
                 if (StringKit.isEmpty(tacerCostLogger.remark())) {
                     remark = "";
-                } else if (tacerCostLogger.remark() != null) {
+                } else if (null != tacerCostLogger.remark()) {
                     //有值则用值
                     remark = " [" + tacerCostLogger.remark() + "]";
                 }

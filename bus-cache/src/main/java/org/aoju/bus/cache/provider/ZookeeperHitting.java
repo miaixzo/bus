@@ -196,7 +196,7 @@ public class ZookeeperHitting implements Hitting {
 
         // 将queue中所有的 || 前100条数据聚合到一个暂存Map中
         Map<String, AtomicLong> holdMap = new HashMap<>();
-        while ((head = queue.poll()) != null && count <= 100) {
+        while (null != (head = queue.poll()) && count <= 100) {
             holdMap
                     .computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L))
                     .addAndGet(head.getRight());

@@ -41,7 +41,7 @@ public class FilterType {
     protected Boolean negate;
 
     public boolean isNegate() {
-        if (this.null == negate) {
+        if (this.negate == null) {
             return false;
         }
         return this.negate.booleanValue();

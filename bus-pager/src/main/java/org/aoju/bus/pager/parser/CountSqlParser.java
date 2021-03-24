@@ -261,11 +261,11 @@ public class CountSqlParser {
      */
     public boolean isSimpleCount(PlainSelect select) {
         // 包含group by的时候不可以
-        if (select.getGroupBy() != null) {
+        if (null != select.getGroupBy()) {
             return false;
         }
         // 包含distinct的时候不可以
-        if (select.getDistinct() != null) {
+        if (null != select.getDistinct()) {
             return false;
         }
         for (SelectItem item : select.getSelectItems()) {
@@ -308,12 +308,12 @@ public class CountSqlParser {
             processPlainSelect((PlainSelect) selectBody);
         } else if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (withItem.getSelectBody() != null) {
+            if (null != withItem.getSelectBody()) {
                 processSelectBody(withItem.getSelectBody());
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;
-            if (operationList.getSelects() != null && operationList.getSelects().size() > 0) {
+            if (null != operationList.getSelects() && operationList.getSelects().size() > 0) {
                 List<SelectBody> plainSelects = operationList.getSelects();
                 for (SelectBody plainSelect : plainSelects) {
                     processSelectBody(plainSelect);
@@ -334,13 +334,13 @@ public class CountSqlParser {
         if (!orderByHashParameters(plainSelect.getOrderByElements())) {
             plainSelect.setOrderByElements(null);
         }
-        if (plainSelect.getFromItem() != null) {
+        if (null != plainSelect.getFromItem()) {
             processFromItem(plainSelect.getFromItem());
         }
-        if (plainSelect.getJoins() != null && plainSelect.getJoins().size() > 0) {
+        if (null != plainSelect.getJoins() && plainSelect.getJoins().size() > 0) {
             List<Join> joins = plainSelect.getJoins();
             for (Join join : joins) {
-                if (join.getRightItem() != null) {
+                if (null != join.getRightItem()) {
                     processFromItem(join.getRightItem());
                 }
             }
@@ -368,26 +368,26 @@ public class CountSqlParser {
     public void processFromItem(FromItem fromItem) {
         if (fromItem instanceof SubJoin) {
             SubJoin subJoin = (SubJoin) fromItem;
-            if (subJoin.getJoinList() != null && subJoin.getJoinList().size() > 0) {
+            if (null != subJoin.getJoinList() && subJoin.getJoinList().size() > 0) {
                 for (Join join : subJoin.getJoinList()) {
-                    if (join.getRightItem() != null) {
+                    if (null != join.getRightItem()) {
                         processFromItem(join.getRightItem());
                     }
                 }
             }
-            if (subJoin.getLeft() != null) {
+            if (null != subJoin.getLeft()) {
                 processFromItem(subJoin.getLeft());
             }
         } else if (fromItem instanceof SubSelect) {
             SubSelect subSelect = (SubSelect) fromItem;
-            if (subSelect.getSelectBody() != null) {
+            if (null != subSelect.getSelectBody()) {
                 processSelectBody(subSelect.getSelectBody());
             }
         } else if (fromItem instanceof LateralSubSelect) {
             LateralSubSelect lateralSubSelect = (LateralSubSelect) fromItem;
-            if (lateralSubSelect.getSubSelect() != null) {
+            if (null != lateralSubSelect.getSubSelect()) {
                 SubSelect subSelect = lateralSubSelect.getSubSelect();
-                if (subSelect.getSelectBody() != null) {
+                if (null != subSelect.getSelectBody()) {
                     processSelectBody(subSelect.getSelectBody());
                 }
             }
@@ -402,7 +402,7 @@ public class CountSqlParser {
      * @return the boolean
      */
     public boolean orderByHashParameters(List<OrderByElement> orderByElements) {
-        if (null == orderByElements) {
+        if (orderByElements == null) {
             return false;
         }
         for (OrderByElement orderByElement : orderByElements) {

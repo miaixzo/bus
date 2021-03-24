@@ -194,7 +194,7 @@ public class User {
 public interface CountryMapper {
     List<User> selectByPageNoSize(User user);
 }
-    //当 user 中的 PageNo!= null && pageSize!= null 时，会自动分页
+    //当 user 中的 null != PageNo && null != pageSize 时，会自动分页
     List<User> list = userMapper.selectByPageNoSize(user);
 
     //第六种，ISelect 接口方式

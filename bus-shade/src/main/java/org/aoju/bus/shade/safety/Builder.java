@@ -125,7 +125,7 @@ public abstract class Builder {
      * @throws IOException I/O 异常
      */
     public static void writeln(OutputStream out, byte[] line) throws IOException {
-        if (null == line) {
+        if (line == null) {
             return;
         }
         out.write(line);
@@ -154,7 +154,7 @@ public abstract class Builder {
      * @throws IOException 当quietly == false, 时捕获到的I/O异常将会往外抛
      */
     public static void close(Closeable closeable, boolean quietly) throws IOException {
-        if (null == closeable) return;
+        if (closeable == null) return;
         try {
             closeable.close();
         } catch (IOException e) {
@@ -450,7 +450,7 @@ public abstract class Builder {
         Set<File> roots = new HashSet<>();
         Collections.addAll(roots, File.listRoots());
         File root = new File(path);
-        while (root.getParentFile() != null) {
+        while (null != root.getParentFile()) {
             root = root.getParentFile();
         }
         return roots.contains(root);

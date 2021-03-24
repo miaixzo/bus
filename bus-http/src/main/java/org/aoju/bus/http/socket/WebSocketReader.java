@@ -58,8 +58,8 @@ final class WebSocketReader {
     boolean isControlFrame;
 
     WebSocketReader(boolean isClient, BufferSource source, FrameCallback frameCallback) {
-        if (null == source) throw new NullPointerException("null == source");
-        if (null == frameCallback) throw new NullPointerException("null == frameCallback");
+        if (source == null) throw new NullPointerException("source == null");
+        if (frameCallback == null) throw new NullPointerException("frameCallback == null");
         this.isClient = isClient;
         this.source = source;
         this.frameCallback = frameCallback;
@@ -162,7 +162,9 @@ final class WebSocketReader {
                     code = controlFrameBuffer.readShort();
                     reason = controlFrameBuffer.readUtf8();
                     String codeExceptionMessage = WebSocketProtocol.closeCodeExceptionMessage(code);
-                    if (null != codeExceptionMessage) throw new ProtocolException(codeExceptionMessage);
+                    if (null != codeExceptionMessage) {
+                        throw new ProtocolException(codeExceptionMessage);
+                    }
                 }
                 frameCallback.onReadClose(code, reason);
                 closed = true;

@@ -1664,7 +1664,7 @@ public class ClassKit {
         }
         final Class<?>[] classes = new Class[array.length];
         for (int i = 0; i < array.length; i++) {
-            classes[i] = array[i] == null ? null : array[i].getClass();
+            classes[i] = null == array[i] ? null : array[i].getClass();
         }
         return classes;
     }
@@ -1693,7 +1693,7 @@ public class ClassKit {
 
                 @Override
                 public boolean hasNext() {
-                    return next.get() != null;
+                    return null != next.get();
                 }
 
                 @Override
@@ -2305,7 +2305,6 @@ public class ClassKit {
     private static Method getAccessibleMethodFromInterfaceNest(Class<?> cls,
                                                                final String methodName,
                                                                final Class<?>... parameterTypes) {
-
         for (; null != cls; cls = cls.getSuperclass()) {
 
             final Class<?>[] interfaces = cls.getInterfaces();
@@ -2555,7 +2554,7 @@ public class ClassKit {
         for (final Class<?> acls : classes) {
             final Method[] methods = (ignoreAccess ? acls.getDeclaredMethods() : acls.getMethods());
             for (final Method method : methods) {
-                if (method.getAnnotation(annotationCls) != null) {
+                if (null != method.getAnnotation(annotationCls)) {
                     annotatedMethods.add(method);
                 }
             }
@@ -2804,7 +2803,7 @@ public class ClassKit {
         final List<Field> allFields = getAllFieldsList(cls);
         final List<Field> annotatedFields = new ArrayList<>();
         for (final Field field : allFields) {
-            if (field.getAnnotation(annotationCls) != null) {
+            if (null != field.getAnnotation(annotationCls)) {
                 annotatedFields.add(field);
             }
         }

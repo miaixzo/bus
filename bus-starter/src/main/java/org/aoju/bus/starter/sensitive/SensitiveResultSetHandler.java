@@ -125,7 +125,7 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
     }
 
     private Map<String, Privacy> getSensitiveByResultMap(ResultMap resultMap) {
-        if (null == resultMap) {
+        if (resultMap == null) {
             return new HashMap<>(16);
         }
         return getSensitiveByType(resultMap.getType());

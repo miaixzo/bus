@@ -293,7 +293,7 @@ public final class Builder {
                         if (inetAddr.isSiteLocalAddress()) {
                             /** 如果是site-local地址,就是它了 */
                             return inetAddr;
-                        } else if (null == inetAddress) {
+                        } else if (inetAddress == null) {
                             /** site-local类型的地址未被发现,先记录候选地址 */
                             inetAddress = inetAddr;
                         }
@@ -305,7 +305,7 @@ public final class Builder {
             }
             /**  如果没有发现 non-loopback地址.只能用最次选的方案 */
             inetAddress = InetAddress.getLocalHost();
-            if (null == inetAddress) {
+            if (inetAddress == null) {
                 throw new InstrumentException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
             }
             return inetAddress;
@@ -1141,13 +1141,13 @@ public final class Builder {
         Matcher m = DHMS.matcher(s);
         if (m.matches()) {
             long milliseconds = 0L;
-            if (m.group(1) != null) {
+            if (null != m.group(1)) {
                 milliseconds += parseLongOrDefault(m.group(1), 0L) * 86_400_000L;
             }
-            if (m.group(2) != null) {
+            if (null != m.group(2)) {
                 milliseconds += parseLongOrDefault(m.group(2), 0L) * 3_600_000L;
             }
-            if (m.group(3) != null) {
+            if (null != m.group(3)) {
                 milliseconds += parseLongOrDefault(m.group(3), 0L) * 60_000L;
             }
             milliseconds += parseLongOrDefault(m.group(4), 0L) * 1000L;
@@ -1239,7 +1239,7 @@ public final class Builder {
      * @return The string with all matching substrings removed
      */
     public static String removeMatchingString(final String original, final String toRemove) {
-        if (null == original || original.isEmpty() || null == toRemove || toRemove.isEmpty()) {
+        if (original == null || original.isEmpty() || toRemove == null || toRemove.isEmpty()) {
             return original;
         }
 
@@ -1969,7 +1969,7 @@ public final class Builder {
         }
 
         double number = parseDoubleOrDefault(mem[0], 0L);
-        if (mem.length == 2 && mem[1] != null && mem[1].length() >= 1) {
+        if (mem.length == 2 && null != mem[1] && mem[1].length() >= 1) {
             switch ((mem[1].charAt(0))) {
                 case 'T':
                     number *= 1_000_000_000_000L;

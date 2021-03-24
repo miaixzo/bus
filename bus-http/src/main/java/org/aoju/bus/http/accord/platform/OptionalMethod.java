@@ -87,7 +87,7 @@ public class OptionalMethod<T> {
      * @return the true/false
      */
     public boolean isSupported(T target) {
-        return getMethod(target.getClass()) != null;
+        return null != getMethod(target.getClass());
     }
 
     /**
@@ -101,7 +101,7 @@ public class OptionalMethod<T> {
      */
     public Object invokeOptional(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
-        if (null == m) {
+        if (m == null) {
             return null;
         }
         try {
@@ -145,7 +145,7 @@ public class OptionalMethod<T> {
      */
     public Object invoke(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
-        if (null == m) {
+        if (m == null) {
             throw new AssertionError("Method " + methodName + " not supported for object " + target);
         }
         try {

@@ -237,8 +237,8 @@ public class Weighing<T> implements Serializable {
                 return false;
             }
             WeightObj<?> other = (WeightObj<?>) obj;
-            if (this.null == obj) {
-                if (other.null != obj) {
+            if (null == this.obj) {
+                if (null != other.obj) {
                     return false;
                 }
             } else if (!this.obj.equals(other.obj)) {

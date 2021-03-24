@@ -184,7 +184,7 @@ public final class Builder {
                     "/Applications/LibreOffice.app/Contents",
                     "/Applications/OpenOffice.app/Contents",
                     "/Applications/OpenOffice.org.app/Contents");
-            if (null == homeDir) {
+            if (homeDir == null) {
                 homeDir = findOfficeHome(
                         EXECUTABLE_MAC,
                         "/Applications/LibreOffice.app/Contents",
@@ -241,7 +241,7 @@ public final class Builder {
      * @return office URL的数组。如果两个参数都为空，则返回一个带有单个office URL的数组，使用默认端口号8102.
      */
     public static UnoUrl[] buildOfficeUrls(final int[] portNumbers, final String[] pipeNames) {
-        if (null == portNumbers && null == pipeNames) {
+        if (portNumbers == null && pipeNames == null) {
             return new UnoUrl[]{new UnoUrl(DEFAULT_PORT_NUMBER)};
         }
 
@@ -362,7 +362,7 @@ public final class Builder {
      * @throws IllegalStateException 如果指定的目录不是有效的office主目录.
      */
     public static void validateOfficeHome(final File officeHome) {
-        if (null == officeHome) {
+        if (officeHome == null) {
             throw new IllegalStateException("officeHome not set and could not be auto-detected");
         }
 
@@ -384,7 +384,7 @@ public final class Builder {
      * @throws IllegalStateException 如果指定的目录不是有效的office模板配置文件目录.
      */
     public static void validateOfficeTemplateProfileDirectory(final File templateProfileDir) {
-        if (null == templateProfileDir || new File(templateProfileDir, "user").isDirectory()) {
+        if (templateProfileDir == null || new File(templateProfileDir, "user").isDirectory()) {
             return;
         }
 

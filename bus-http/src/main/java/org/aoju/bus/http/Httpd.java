@@ -235,7 +235,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             isTLS = isTLS || spec.isTls();
         }
 
-        if (builder.null != sslSocketFactory || !isTLS) {
+        if (null != builder.sslSocketFactory || !isTLS) {
             this.sslSocketFactory = builder.sslSocketFactory;
             this.certificateChainCleaner = builder.certificateChainCleaner;
         } else {
@@ -445,7 +445,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             connectionSuites = DEFAULT_CONNECTION_SPECS;
             eventListenerFactory = EventListener.factory(EventListener.NONE);
             proxySelector = ProxySelector.getDefault();
-            if (null == proxySelector) {
+            if (proxySelector == null) {
                 proxySelector = new NullProxySelector();
             }
             cookieJar = CookieJar.NO_COOKIES;
@@ -640,7 +640,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder proxySelector(ProxySelector proxySelector) {
-            if (null == proxySelector) throw new NullPointerException("null == proxySelector");
+            if (proxySelector == null) throw new NullPointerException("proxySelector == null");
             this.proxySelector = proxySelector;
             return this;
         }
@@ -652,7 +652,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder cookieJar(CookieJar cookieJar) {
-            if (null == cookieJar) throw new NullPointerException("null == cookieJar");
+            if (cookieJar == null) throw new NullPointerException("cookieJar == null");
             this.cookieJar = cookieJar;
             return this;
         }
@@ -687,7 +687,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder dns(DnsX dns) {
-            if (null == dns) throw new NullPointerException("null == dns");
+            if (dns == null) throw new NullPointerException("dns == null");
             this.dns = dns;
             return this;
         }
@@ -701,7 +701,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder socketFactory(SocketFactory socketFactory) {
-            if (null == socketFactory) throw new NullPointerException("null == socketFactory");
+            if (socketFactory == null) throw new NullPointerException("socketFactory == null");
             this.socketFactory = socketFactory;
             return this;
         }
@@ -713,7 +713,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
-            if (null == sslSocketFactory) throw new NullPointerException("null == sslSocketFactory");
+            if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
             this.sslSocketFactory = sslSocketFactory;
             this.certificateChainCleaner = Platform.get().buildCertificateChainCleaner(sslSocketFactory);
             return this;
@@ -750,8 +750,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
-            if (null == sslSocketFactory) throw new NullPointerException("null == sslSocketFactory");
-            if (null == trustManager) throw new NullPointerException("null == trustManager");
+            if (sslSocketFactory == null) throw new NullPointerException("sslSocketFactory == null");
+            if (trustManager == null) throw new NullPointerException("trustManager == null");
             this.sslSocketFactory = sslSocketFactory;
             this.certificateChainCleaner = CertificateChainCleaner.get(trustManager);
             return this;
@@ -765,7 +765,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder hostnameVerifier(javax.net.ssl.HostnameVerifier hostnameVerifier) {
-            if (null == hostnameVerifier) throw new NullPointerException("null == hostnameVerifier");
+            if (hostnameVerifier == null) throw new NullPointerException("hostnameVerifier == null");
             this.hostnameVerifier = hostnameVerifier;
             return this;
         }
@@ -779,7 +779,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder certificatePinner(CertificatePinner certificatePinner) {
-            if (null == certificatePinner) throw new NullPointerException("null == certificatePinner");
+            if (certificatePinner == null) throw new NullPointerException("certificatePinner == null");
             this.certificatePinner = certificatePinner;
             return this;
         }
@@ -791,7 +791,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder authenticator(Authenticator authenticator) {
-            if (null == authenticator) throw new NullPointerException("null == authenticator");
+            if (authenticator == null) throw new NullPointerException("authenticator == null");
             this.authenticator = authenticator;
             return this;
         }
@@ -804,7 +804,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder proxyAuthenticator(Authenticator proxyAuthenticator) {
-            if (null == proxyAuthenticator) throw new NullPointerException("null == proxyAuthenticator");
+            if (proxyAuthenticator == null) throw new NullPointerException("proxyAuthenticator == null");
             this.proxyAuthenticator = proxyAuthenticator;
             return this;
         }
@@ -817,7 +817,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder connectionPool(ConnectionPool connectionPool) {
-            if (null == connectionPool) throw new NullPointerException("null == connectionPool");
+            if (connectionPool == null) throw new NullPointerException("connectionPool == null");
             this.connectionPool = connectionPool;
             return this;
         }
@@ -865,7 +865,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder dispatcher(Dispatcher dispatcher) {
-            if (null == dispatcher) throw new IllegalArgumentException("null == dispatcher");
+            if (dispatcher == null) throw new IllegalArgumentException("dispatcher == null");
             this.dispatcher = dispatcher;
             return this;
         }
@@ -924,7 +924,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         public Builder addInterceptor(Interceptor interceptor) {
-            if (null == interceptor) throw new IllegalArgumentException("null == interceptor");
+            if (interceptor == null) throw new IllegalArgumentException("interceptor == null");
             interceptors.add(interceptor);
             return this;
         }
@@ -941,7 +941,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         public Builder addNetworkInterceptor(Interceptor interceptor) {
-            if (null == interceptor) throw new IllegalArgumentException("null == interceptor");
+            if (interceptor == null) throw new IllegalArgumentException("interceptor == null");
             networkInterceptors.add(interceptor);
             return this;
         }
@@ -953,7 +953,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder eventListener(EventListener eventListener) {
-            if (null == eventListener) throw new NullPointerException("null == eventListener");
+            if (eventListener == null) throw new NullPointerException("eventListener == null");
             this.eventListenerFactory = EventListener.factory(eventListener);
             return this;
         }
@@ -965,8 +965,8 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
          * @return 构造器
          */
         public Builder eventListenerFactory(EventListener.Factory eventListenerFactory) {
-            if (null == eventListenerFactory) {
-                throw new NullPointerException("null == eventListenerFactory");
+            if (eventListenerFactory == null) {
+                throw new NullPointerException("eventListenerFactory == null");
             }
             this.eventListenerFactory = eventListenerFactory;
             return this;

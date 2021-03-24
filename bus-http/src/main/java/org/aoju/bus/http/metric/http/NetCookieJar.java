@@ -90,7 +90,7 @@ public final class NetCookieJar implements CookieJar {
             if (("Cookie".equalsIgnoreCase(key) || "Cookie2".equalsIgnoreCase(key))
                     && !entry.getValue().isEmpty()) {
                 for (String header : entry.getValue()) {
-                    if (null == cookies) cookies = new ArrayList<>();
+                    if (cookies == null) cookies = new ArrayList<>();
                     cookies.addAll(decodeHeaderAsJavaNetCookies(url, header));
                 }
             }

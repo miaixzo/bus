@@ -123,7 +123,7 @@ public class Factory {
 
         public ReflectionInvocation(Object target, Method method, Object[] arguments) {
             this.method = method;
-            this.arguments = (null == arguments ? Builder.EMPTY_ARGUMENTS : arguments);
+            this.arguments = (arguments == null ? Builder.EMPTY_ARGUMENTS : arguments);
             this.target = target;
         }
 

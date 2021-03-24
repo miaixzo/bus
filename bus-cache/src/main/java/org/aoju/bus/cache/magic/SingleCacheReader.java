@@ -70,7 +70,7 @@ public class SingleCacheReader extends AbstractReader {
         }
 
         Object invokeResult = doLogInvoke(baseInvoker::proceed);
-        if (null != invokeResult && methodHolder.getInnerReturnType() == null) {
+        if (null != invokeResult && null == methodHolder.getInnerReturnType()) {
             methodHolder.setInnerReturnType(invokeResult.getClass());
         }
 
@@ -92,9 +92,8 @@ public class SingleCacheReader extends AbstractReader {
 
     private void doRecord(Object result, String key, AnnoHolder annoHolder) {
         Logger.info("single cache hit rate: {}/1, key: {}", null == result ? 0 : 1, key);
-        if (this.null != baseHitting) {
+        if (null != this.baseHitting) {
             String pattern = PatternGenerator.generatePattern(annoHolder);
-
             if (null != result) {
                 this.baseHitting.hitIncr(pattern, 1);
             }

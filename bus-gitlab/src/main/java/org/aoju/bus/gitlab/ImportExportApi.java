@@ -149,15 +149,15 @@ public class ImportExportApi extends AbstractApi {
         Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD,
                 "projects", getProjectIdOrPath(projectIdOrPath), "export", "download");
 
-        if (null == directory) {
+        if (directory == null) {
             directory = new File(System.getProperty("java.io.tmpdir"));
         }
 
-        if (null == filename) {
+        if (filename == null) {
 
             // No filename provided
             String disposition = response.getHeaderString("Content-Disposition");
-            if (null == disposition) {
+            if (disposition == null) {
 
                 // On GitLab.com the Content-Disposition returned is null
                 String name = null;

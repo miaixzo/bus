@@ -114,12 +114,12 @@ public abstract class AbstractSqlParserHandler extends AbstractSqlHandler {
     public void processSelectBody(SelectBody selectBody) {
         if (selectBody instanceof WithItem) {
             WithItem withItem = (WithItem) selectBody;
-            if (withItem.getSelectBody() != null) {
+            if (null != withItem.getSelectBody()) {
                 processSelectBody(withItem.getSelectBody());
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;
-            if (operationList.getSelects() != null && operationList.getSelects().size() > 0) {
+            if (null != operationList.getSelects() && operationList.getSelects().size() > 0) {
                 operationList.getSelects().forEach(this::processSelectBody);
             }
         }

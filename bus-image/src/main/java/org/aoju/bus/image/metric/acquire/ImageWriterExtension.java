@@ -37,7 +37,7 @@ public class ImageWriterExtension extends DeviceExtension {
     public volatile ImageWriterFactory factory;
 
     public ImageWriterExtension(ImageWriterFactory factory) {
-        if (null == factory)
+        if (factory == null)
             throw new NullPointerException();
         this.factory = factory;
     }

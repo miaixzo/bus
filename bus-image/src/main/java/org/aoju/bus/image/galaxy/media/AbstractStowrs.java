@@ -186,7 +186,7 @@ public class AbstractStowrs implements AutoCloseable {
             httpPost.setReadTimeout(60000);
             httpPost.setRequestProperty("Content-Type",
                     MimeType.MULTIPART_RELATED + "; type=\"" + contentType + "\"; boundary=" + MULTIPART_BOUNDARY);
-            httpPost.setRequestProperty("User-Agent", null == agentName ? "STOWRS" : agentName);
+            httpPost.setRequestProperty("User-Agent", agentName == null ? "STOWRS" : agentName);
             httpPost.setRequestProperty("Accept",
                     contentType == MimeType.APPLICATION_DICOM_JSON ? MimeType.APPLICATION_DICOM_JSON : MimeType.APPLICATION_DICOM_XML);
 

@@ -89,10 +89,10 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
     private void handleHttpMessage(final Message message, final TraceFilterConfig filterConfiguration) {
         final Map<String, List<String>> requestHeaders = CastUtils.cast((Map<?, ?>) message.get(Message.PROTOCOL_HEADERS));
         if (null != requestHeaders && !requestHeaders.isEmpty()) {
-            final List<String> TraceHeader = requestHeaders.get(Builder.TPIC_HEADER);
+            final List<String> traceHeader = requestHeaders.get(Builder.TPIC_HEADER);
 
-            if (null != TraceHeader && !TraceHeader.isEmpty()) {
-                final Map<String, String> parsedContext = httpJsonSerializer.parse(TraceHeader);
+            if (null != traceHeader && !traceHeader.isEmpty()) {
+                final Map<String, String> parsedContext = httpJsonSerializer.parse(traceHeader);
                 backend.putAll(filterConfiguration.filterDeniedParams(parsedContext, channel));
             }
         }

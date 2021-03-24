@@ -300,7 +300,7 @@ public abstract class AbstractPowerSource implements PowerSource {
         sb.append("Design Capacity: ").append(getDesignCapacity()).append(Symbol.NEWLINE);
         sb.append("Cycle Count: ").append(getCycleCount()).append(", ");
         sb.append("Chemistry: ").append(getChemistry()).append(", ");
-        sb.append("Manufacture Date: ").append(getManufactureDate() != null ? getManufactureDate() : Normal.UNKNOWN).append(", ");
+        sb.append("Manufacture Date: ").append(null != getManufactureDate() ? getManufactureDate() : Normal.UNKNOWN).append(", ");
         sb.append("Manufacturer: ").append(getManufacturer()).append(Symbol.NEWLINE);
         sb.append("SerialNumber: ").append(getSerialNumber()).append(", ");
         sb.append("Temperature: ");

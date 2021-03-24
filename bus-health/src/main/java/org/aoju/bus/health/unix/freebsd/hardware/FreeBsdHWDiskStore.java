@@ -89,7 +89,7 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
             String[] split = RegEx.SPACES.split(line);
             if (split.length > 6 && devices.contains(split[0])) {
                 Triple<String, String, Long> storeInfo = diskInfoMap.get(split[0]);
-                FreeBsdHWDiskStore store = (null == storeInfo)
+                FreeBsdHWDiskStore store = (storeInfo == null)
                         ? new FreeBsdHWDiskStore(split[0], Normal.UNKNOWN, Normal.UNKNOWN, 0L)
                         : new FreeBsdHWDiskStore(split[0], storeInfo.getLeft(), storeInfo.getMiddle(), storeInfo.getRight());
                 store.reads = (long) Builder.parseDoubleOrDefault(split[1], 0d);

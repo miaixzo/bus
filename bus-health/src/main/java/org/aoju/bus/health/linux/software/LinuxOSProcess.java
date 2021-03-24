@@ -118,7 +118,7 @@ public class LinuxOSProcess extends AbstractOSProcess {
      * @param stat   string to read from.
      */
     private static void getMissingDetails(Map<String, String> status, String stat) {
-        if (null == status || null == stat) {
+        if (status == null || stat == null) {
             return;
         }
 

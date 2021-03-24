@@ -111,7 +111,7 @@ public final class RealCall implements NewCall {
         try {
             client.dispatcher().executed(this);
             Response result = getResponseWithInterceptorChain();
-            if (null == result) throw new IOException("Canceled");
+            if (result == null) throw new IOException("Canceled");
             return result;
         } catch (IOException e) {
             e = timeoutExit(e);

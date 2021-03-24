@@ -52,7 +52,7 @@ public class GetBuilder extends RequestBuilder<GetBuilder> {
     }
 
     protected String appendParams(String url, Map<String, String> params) {
-        if (null == url || null == params || params.isEmpty()) {
+        if (url == null || params == null || params.isEmpty()) {
             return url;
         }
         StringBuilder builder = new StringBuilder();

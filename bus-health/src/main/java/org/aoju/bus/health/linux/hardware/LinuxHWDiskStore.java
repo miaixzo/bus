@@ -143,9 +143,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                     long devSize = Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                             * SECTORSIZE;
                                     store = new LinuxHWDiskStore(devnode,
-                                            null == devModel ? Normal.UNKNOWN : devModel,
-                                            null == devSerial ? Normal.UNKNOWN : devSerial, devSize);
-                                    if (null == storeToUpdate) {
+                                            devModel == null ? Normal.UNKNOWN : devModel,
+                                            devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
+                                    if (storeToUpdate == null) {
                                         // If getting all stores, add to the list with stats
                                         computeDiskStats(store, device.getSysattrValue(STAT));
                                         result.add(store);
@@ -160,7 +160,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         result.add(storeToUpdate);
                                         break;
                                     }
-                                } else if (null == storeToUpdate && null != store // only add if getting new list
+                                } else if (storeToUpdate == null && null != store // only add if getting new list
                                         && PARTITION.equals(device.getDevtype())) {
                                     // udev_device_get_parent_*() does not take a reference on the returned device,
                                     // it is automatically unref'd with the parent

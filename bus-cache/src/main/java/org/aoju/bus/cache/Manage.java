@@ -112,21 +112,18 @@ public class Manage {
                 Set<String> notHitKeys = new LinkedHashSet<>();
                 for (String key : keys) {
                     Object value = cacheMap.get(key);
-
                     if (null == value) {
                         notHitKeys.add(key);
                     } else {
                         hitValueMap.put(key, value);
                     }
                 }
-
                 cacheKeys = new CacheKeys(hitValueMap, notHitKeys);
             } catch (Throwable e) {
                 Logger.error("read multi cache failed, keys: {}", keys, e);
                 cacheKeys = new CacheKeys();
             }
         }
-
         return cacheKeys;
     }
 

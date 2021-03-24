@@ -92,7 +92,7 @@ public class Builder {
 
     public Builder select(String... properties) {
         if (null != properties && properties.length > 0) {
-            if (this.null == selectColumns) {
+            if (this.selectColumns == null) {
                 this.selectColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
@@ -108,7 +108,7 @@ public class Builder {
 
     public Builder notSelect(String... properties) {
         if (null != properties && properties.length > 0) {
-            if (this.null == excludeColumns) {
+            if (this.excludeColumns == null) {
                 this.excludeColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
@@ -186,7 +186,7 @@ public class Builder {
         StringBuilder columns = new StringBuilder();
         for (String property : properties) {
             String column;
-            if ((column = propertyforOderBy(property)) != null) {
+            if (null != (column = propertyforOderBy(property))) {
                 columns.append(Symbol.COMMA).append(column);
             }
         }

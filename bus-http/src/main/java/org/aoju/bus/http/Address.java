@@ -105,24 +105,24 @@ public final class Address {
                 .port(uriPort)
                 .build();
 
-        if (null == dns) throw new NullPointerException("null == dns");
+        if (dns == null) throw new NullPointerException("dns == null");
         this.dns = dns;
 
-        if (null == socketFactory) throw new NullPointerException("null == socketFactory");
+        if (socketFactory == null) throw new NullPointerException("socketFactory == null");
         this.socketFactory = socketFactory;
 
-        if (null == proxyAuthenticator) {
-            throw new NullPointerException("null == proxyAuthenticator");
+        if (proxyAuthenticator == null) {
+            throw new NullPointerException("proxyAuthenticator == null");
         }
         this.proxyAuthenticator = proxyAuthenticator;
 
-        if (null == protocols) throw new NullPointerException("null == protocols");
+        if (protocols == null) throw new NullPointerException("protocols == null");
         this.protocols = Builder.immutableList(protocols);
 
-        if (null == connectionSuites) throw new NullPointerException("null == connectionSpecs");
+        if (connectionSuites == null) throw new NullPointerException("connectionSpecs == null");
         this.connectionSuites = Builder.immutableList(connectionSuites);
 
-        if (null == proxySelector) throw new NullPointerException("null == proxySelector");
+        if (proxySelector == null) throw new NullPointerException("proxySelector == null");
         this.proxySelector = proxySelector;
 
         this.proxy = proxy;

@@ -110,10 +110,10 @@ public final class UnoUrl {
         this.host = builder.host;
         this.port = builder.effectivePort();
         this.pathSegments = percentDecode(builder.encodedPathSegments, false);
-        this.queryNamesAndValues = builder.null != encodedQueryNamesAndValues
+        this.queryNamesAndValues = null != builder.encodedQueryNamesAndValues
                 ? percentDecode(builder.encodedQueryNamesAndValues, true)
                 : null;
-        this.fragment = builder.null != encodedFragment
+        this.fragment = null != builder.encodedFragment
                 ? percentDecode(builder.encodedFragment, false)
                 : null;
         this.url = builder.toString();
@@ -273,11 +273,11 @@ public final class UnoUrl {
                     || encodeSet.indexOf(codePoint) != -1
                     || codePoint == Symbol.C_PERCENT && (!alreadyEncoded || strict && !percentEncoded(input, i, limit))) {
 
-                if (null == encodedCharBuffer) {
+                if (encodedCharBuffer == null) {
                     encodedCharBuffer = new Buffer();
                 }
 
-                if (null == charset || charset.equals(Charset.UTF_8)) {
+                if (charset == null || charset.equals(Charset.UTF_8)) {
                     encodedCharBuffer.writeUtf8CodePoint(codePoint);
                 } else {
                     encodedCharBuffer.writeString(input, i, i + Character.charCount(codePoint), charset);
@@ -531,7 +531,7 @@ public final class UnoUrl {
      * @return the string
      */
     public String encodedQuery() {
-        if (null == queryNamesAndValues) return null;
+        if (queryNamesAndValues == null) return null;
         int queryStart = url.indexOf(Symbol.C_QUESTION_MARK) + 1;
         int queryEnd = org.aoju.bus.http.Builder.delimiterOffset(url, queryStart, url.length(), Symbol.C_SHAPE);
         return url.substring(queryStart, queryEnd);
@@ -555,7 +555,7 @@ public final class UnoUrl {
      * @return the string
      */
     public String query() {
-        if (null == queryNamesAndValues) return null;
+        if (queryNamesAndValues == null) return null;
         StringBuilder result = new StringBuilder();
         namesAndValuesToQueryString(result, queryNamesAndValues);
         return result.toString();
@@ -598,7 +598,7 @@ public final class UnoUrl {
      * @return the string
      */
     public String queryParameter(String name) {
-        if (null == queryNamesAndValues) return null;
+        if (queryNamesAndValues == null) return null;
         for (int i = 0, size = queryNamesAndValues.size(); i < size; i += 2) {
             if (name.equals(queryNamesAndValues.get(i))) {
                 return queryNamesAndValues.get(i + 1);
@@ -623,7 +623,7 @@ public final class UnoUrl {
      * @return the set
      */
     public Set<String> queryParameterNames() {
-        if (null == queryNamesAndValues) return Collections.emptySet();
+        if (queryNamesAndValues == null) return Collections.emptySet();
         Set<String> result = new LinkedHashSet<>();
         for (int i = 0, size = queryNamesAndValues.size(); i < size; i += 2) {
             result.add(queryNamesAndValues.get(i));
@@ -653,7 +653,7 @@ public final class UnoUrl {
      * @return the list
      */
     public List<String> queryParameterValues(String name) {
-        if (null == queryNamesAndValues) return Collections.emptyList();
+        if (queryNamesAndValues == null) return Collections.emptyList();
         List<String> result = new ArrayList<>();
         for (int i = 0, size = queryNamesAndValues.size(); i < size; i += 2) {
             if (name.equals(queryNamesAndValues.get(i))) {
@@ -684,7 +684,7 @@ public final class UnoUrl {
      * @return the string
      */
     public String queryParameterName(int index) {
-        if (null == queryNamesAndValues) throw new IndexOutOfBoundsException();
+        if (queryNamesAndValues == null) throw new IndexOutOfBoundsException();
         return queryNamesAndValues.get(index * 2);
     }
 
@@ -709,7 +709,7 @@ public final class UnoUrl {
      * @return the string
      */
     public String queryParameterValue(int index) {
-        if (null == queryNamesAndValues) throw new IndexOutOfBoundsException();
+        if (queryNamesAndValues == null) throw new IndexOutOfBoundsException();
         return queryNamesAndValues.get(index * 2 + 1);
     }
 
@@ -726,7 +726,7 @@ public final class UnoUrl {
      * @return the string
      */
     public String encodedFragment() {
-        if (null == fragment) return null;
+        if (fragment == null) return null;
         int fragmentStart = url.indexOf(Symbol.C_SHAPE) + 1;
         return url.substring(fragmentStart);
     }
@@ -912,8 +912,8 @@ public final class UnoUrl {
         }
 
         public Builder scheme(String scheme) {
-            if (null == scheme) {
-                throw new NullPointerException("null == scheme");
+            if (scheme == null) {
+                throw new NullPointerException("scheme == null");
             } else if (scheme.equalsIgnoreCase(Http.HTTP)) {
                 this.scheme = Http.HTTP;
             } else if (scheme.equalsIgnoreCase(Http.HTTPS)) {
@@ -925,35 +925,35 @@ public final class UnoUrl {
         }
 
         public Builder username(String username) {
-            if (null == username) throw new NullPointerException("null == username");
+            if (username == null) throw new NullPointerException("username == null");
             this.encodedUsername = canonicalize(username, USERNAME_ENCODE_SET, false, false, false, true);
             return this;
         }
 
         public Builder encodedUsername(String encodedUsername) {
-            if (null == encodedUsername) throw new NullPointerException("null == encodedUsername");
+            if (encodedUsername == null) throw new NullPointerException("encodedUsername == null");
             this.encodedUsername = canonicalize(
                     encodedUsername, USERNAME_ENCODE_SET, true, false, false, true);
             return this;
         }
 
         public Builder password(String password) {
-            if (null == password) throw new NullPointerException("null == password");
+            if (password == null) throw new NullPointerException("password == null");
             this.encodedPassword = canonicalize(password, PASSWORD_ENCODE_SET, false, false, false, true);
             return this;
         }
 
         public Builder encodedPassword(String encodedPassword) {
-            if (null == encodedPassword) throw new NullPointerException("null == encodedPassword");
+            if (encodedPassword == null) throw new NullPointerException("encodedPassword == null");
             this.encodedPassword = canonicalize(
                     encodedPassword, PASSWORD_ENCODE_SET, true, false, false, true);
             return this;
         }
 
         public Builder host(String host) {
-            if (null == host) throw new NullPointerException("null == host");
+            if (host == null) throw new NullPointerException("host == null");
             String encoded = canonicalizeHost(host, 0, host.length());
-            if (null == encoded) throw new IllegalArgumentException("unexpected host: " + host);
+            if (encoded == null) throw new IllegalArgumentException("unexpected host: " + host);
             this.host = encoded;
             return this;
         }
@@ -969,27 +969,27 @@ public final class UnoUrl {
         }
 
         public Builder addPathSegment(String pathSegment) {
-            if (null == pathSegment) throw new NullPointerException("null == pathSegment");
+            if (pathSegment == null) throw new NullPointerException("pathSegment == null");
             push(pathSegment, 0, pathSegment.length(), false, false);
             return this;
         }
 
         public Builder addPathSegments(String pathSegments) {
-            if (null == pathSegments) throw new NullPointerException("null == pathSegments");
+            if (pathSegments == null) throw new NullPointerException("pathSegments == null");
             return addPathSegments(pathSegments, false);
         }
 
         public Builder addEncodedPathSegment(String encodedPathSegment) {
-            if (null == encodedPathSegment) {
-                throw new NullPointerException("null == encodedPathSegment");
+            if (encodedPathSegment == null) {
+                throw new NullPointerException("encodedPathSegment == null");
             }
             push(encodedPathSegment, 0, encodedPathSegment.length(), false, true);
             return this;
         }
 
         public Builder addEncodedPathSegments(String encodedPathSegments) {
-            if (null == encodedPathSegments) {
-                throw new NullPointerException("null == encodedPathSegments");
+            if (encodedPathSegments == null) {
+                throw new NullPointerException("encodedPathSegments == null");
             }
             return addPathSegments(encodedPathSegments, true);
         }
@@ -1006,7 +1006,7 @@ public final class UnoUrl {
         }
 
         public Builder setPathSegment(int index, String pathSegment) {
-            if (null == pathSegment) throw new NullPointerException("null == pathSegment");
+            if (pathSegment == null) throw new NullPointerException("pathSegment == null");
             String canonicalPathSegment = canonicalize(
                     pathSegment, 0, pathSegment.length(), PATH_SEGMENT_ENCODE_SET, false, false, false, true,
                     null);
@@ -1018,8 +1018,8 @@ public final class UnoUrl {
         }
 
         public Builder setEncodedPathSegment(int index, String encodedPathSegment) {
-            if (null == encodedPathSegment) {
-                throw new NullPointerException("null == encodedPathSegment");
+            if (encodedPathSegment == null) {
+                throw new NullPointerException("encodedPathSegment == null");
             }
             String canonicalPathSegment = canonicalize(encodedPathSegment,
                     0, encodedPathSegment.length(), PATH_SEGMENT_ENCODE_SET, true, false, false, true,
@@ -1040,7 +1040,7 @@ public final class UnoUrl {
         }
 
         public Builder encodedPath(String encodedPath) {
-            if (null == encodedPath) throw new NullPointerException("null == encodedPath");
+            if (encodedPath == null) throw new NullPointerException("encodedPath == null");
             if (!encodedPath.startsWith(Symbol.SLASH)) {
                 throw new IllegalArgumentException("unexpected encodedPath: " + encodedPath);
             }
@@ -1065,8 +1065,8 @@ public final class UnoUrl {
         }
 
         public Builder addQueryParameter(String name, String value) {
-            if (null == name) throw new NullPointerException("null == name");
-            if (null == encodedQueryNamesAndValues) encodedQueryNamesAndValues = new ArrayList<>();
+            if (name == null) throw new NullPointerException("name == null");
+            if (encodedQueryNamesAndValues == null) encodedQueryNamesAndValues = new ArrayList<>();
             encodedQueryNamesAndValues.add(
                     canonicalize(name, QUERY_COMPONENT_ENCODE_SET, false, false, true, true));
             encodedQueryNamesAndValues.add(null != value
@@ -1076,8 +1076,8 @@ public final class UnoUrl {
         }
 
         public Builder addEncodedQueryParameter(String encodedName, String encodedValue) {
-            if (null == encodedName) throw new NullPointerException("null == encodedName");
-            if (null == encodedQueryNamesAndValues) encodedQueryNamesAndValues = new ArrayList<>();
+            if (encodedName == null) throw new NullPointerException("encodedName == null");
+            if (encodedQueryNamesAndValues == null) encodedQueryNamesAndValues = new ArrayList<>();
             encodedQueryNamesAndValues.add(
                     canonicalize(encodedName, QUERY_COMPONENT_REENCODE_SET, true, false, true, true));
             encodedQueryNamesAndValues.add(null != encodedValue
@@ -1099,8 +1099,8 @@ public final class UnoUrl {
         }
 
         public Builder removeAllQueryParameters(String name) {
-            if (null == name) throw new NullPointerException("null == name");
-            if (null == encodedQueryNamesAndValues) return this;
+            if (name == null) throw new NullPointerException("name == null");
+            if (encodedQueryNamesAndValues == null) return this;
             String nameToRemove = canonicalize(
                     name, QUERY_COMPONENT_ENCODE_SET, false, false, true, true);
             removeAllCanonicalQueryParameters(nameToRemove);
@@ -1108,8 +1108,8 @@ public final class UnoUrl {
         }
 
         public Builder removeAllEncodedQueryParameters(String encodedName) {
-            if (null == encodedName) throw new NullPointerException("null == encodedName");
-            if (null == encodedQueryNamesAndValues) return this;
+            if (encodedName == null) throw new NullPointerException("encodedName == null");
+            if (encodedQueryNamesAndValues == null) return this;
             removeAllCanonicalQueryParameters(
                     canonicalize(encodedName, QUERY_COMPONENT_REENCODE_SET, true, false, true, true));
             return this;
@@ -1165,8 +1165,8 @@ public final class UnoUrl {
         }
 
         public UnoUrl build() {
-            if (null == scheme) throw new IllegalStateException("null == scheme");
-            if (null == host) throw new IllegalStateException("null == host");
+            if (scheme == null) throw new IllegalStateException("scheme == null");
+            if (host == null) throw new IllegalStateException("host == null");
             return new UnoUrl(this);
         }
 
@@ -1201,7 +1201,7 @@ public final class UnoUrl {
 
             if (port != -1 || null != scheme) {
                 int effectivePort = effectivePort();
-                if (null == scheme || effectivePort != defaultPort(scheme)) {
+                if (scheme == null || effectivePort != defaultPort(scheme)) {
                     result.append(Symbol.C_COLON);
                     result.append(effectivePort);
                 }
@@ -1248,7 +1248,7 @@ public final class UnoUrl {
             boolean hasUsername = false;
             boolean hasPassword = false;
             int slashCount = slashCount(input, pos, limit);
-            if (slashCount >= 2 || null == base || !base.scheme.equals(this.scheme)) {
+            if (slashCount >= 2 || base == null || !base.scheme.equals(this.scheme)) {
                 pos += slashCount;
                 authority:
                 while (true) {
@@ -1299,7 +1299,7 @@ public final class UnoUrl {
                                 host = canonicalizeHost(input, pos, portColonOffset);
                                 port = defaultPort(scheme);
                             }
-                            if (null == host) {
+                            if (host == null) {
                                 throw new IllegalArgumentException(
                                         INVALID_HOST + ": " + input.substring(pos, portColonOffset) + Symbol.C_DOUBLE_QUOTES);
                             }

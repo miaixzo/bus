@@ -49,7 +49,7 @@ public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL
     public HL7Application findHL7Application(String name)
             throws InstrumentException {
         HL7Application ae = get(name);
-        if (null == ae)
+        if (ae == null)
             throw new InstrumentException("Unknown HL7 Application: " + name);
         return ae;
     }

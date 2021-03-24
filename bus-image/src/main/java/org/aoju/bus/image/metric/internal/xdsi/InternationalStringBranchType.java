@@ -45,7 +45,7 @@ public class InternationalStringBranchType extends BranchType {
     protected List<FilterType> localizedStringFilter;
 
     public List<FilterType> getLocalizedStringFilter() {
-        if (this.null == localizedStringFilter) {
+        if (this.localizedStringFilter == null) {
             this.localizedStringFilter = new ArrayList();
         }
         return this.localizedStringFilter;

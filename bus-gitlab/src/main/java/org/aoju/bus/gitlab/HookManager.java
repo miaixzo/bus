@@ -60,7 +60,7 @@ public interface HookManager {
      */
     default boolean isValidSecretToken(String secretToken) {
         String ourSecretToken = getSecretToken();
-        return (null == ourSecretToken ||
+        return (ourSecretToken == null ||
                 ourSecretToken.trim().isEmpty() ||
                 ourSecretToken.equals(secretToken) ? true : false);
     }
@@ -75,7 +75,7 @@ public interface HookManager {
      */
     default boolean isValidSecretToken(HttpServletRequest request) {
 
-        if (getSecretToken() != null) {
+        if (null != getSecretToken()) {
             String secretToken = request.getHeader("X-Gitlab-Token");
             return (isValidSecretToken(secretToken));
         }

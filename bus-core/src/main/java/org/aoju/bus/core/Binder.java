@@ -193,7 +193,7 @@ public class Binder {
                 ClassKit.writeField(field, obj, value);
                 return;
             }
-            if (!(field.getType().getClassLoader() == null) && source
+            if (!(null == field.getType().getClassLoader()) && source
                     .containPrefix(key + Symbol.DOT)) {
                 value = ClassKit.readField(field, obj);
                 if (null == value) {
@@ -276,7 +276,7 @@ public class Binder {
     }
 
     private String getCommonVal(Properties properties, String placeholder, String propVal) {
-        if (null == propVal && this.null != valueSeparator) {
+        if (null == propVal && null != this.valueSeparator) {
             int separatorIndex = placeholder.indexOf(this.valueSeparator);
             if (separatorIndex != -1) {
                 String actualPlaceholder = placeholder.substring(0, separatorIndex);

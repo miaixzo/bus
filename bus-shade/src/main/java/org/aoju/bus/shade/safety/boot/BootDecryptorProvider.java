@@ -96,7 +96,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
             AlwaysOutputStream nos = new AlwaysOutputStream(zos);
             JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(decryptorProvider, level, filter);
             JarArchiveEntry entry;
-            while ((entry = zis.getNextJarEntry()) != null) {
+            while (null != (entry = zis.getNextJarEntry())) {
                 if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)

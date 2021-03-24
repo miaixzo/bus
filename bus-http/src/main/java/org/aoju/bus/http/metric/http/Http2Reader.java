@@ -222,7 +222,7 @@ public final class Http2Reader implements Closeable {
         if (streamId == 0) throw Http2.ioException("TYPE_RST_STREAM streamId == 0");
         int errorCodeInt = source.readInt();
         ErrorCode errorCode = ErrorCode.fromHttp2(errorCodeInt);
-        if (null == errorCode) {
+        if (errorCode == null) {
             throw Http2.ioException("TYPE_RST_STREAM unexpected error code: %d", errorCodeInt);
         }
         handler.rstStream(streamId, errorCode);
@@ -306,7 +306,7 @@ public final class Http2Reader implements Closeable {
         int errorCodeInt = source.readInt();
         int opaqueDataLength = length - 8;
         ErrorCode errorCode = ErrorCode.fromHttp2(errorCodeInt);
-        if (null == errorCode) {
+        if (errorCode == null) {
             throw Http2.ioException("TYPE_GOAWAY unexpected error code: %d", errorCodeInt);
         }
         ByteString debugData = ByteString.EMPTY;

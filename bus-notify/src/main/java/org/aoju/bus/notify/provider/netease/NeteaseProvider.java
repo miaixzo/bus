@@ -61,7 +61,7 @@ public abstract class NeteaseProvider<T extends Property, K extends Context> ext
     }
 
     private static String encode(String value) {
-        if (null == value) {
+        if (value == null) {
             return null;
         }
         try {

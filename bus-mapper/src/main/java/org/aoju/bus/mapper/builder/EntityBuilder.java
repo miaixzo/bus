@@ -69,7 +69,7 @@ public class EntityBuilder {
      */
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
-        if (null == entityTable) {
+        if (entityTable == null) {
             throw new InstrumentException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
         }
         return entityTable;
@@ -83,12 +83,12 @@ public class EntityBuilder {
      */
     public static String getOrderByClause(Class<?> entityClass) {
         EntityTable table = getEntityTable(entityClass);
-        if (table.getOrderByClause() != null) {
+        if (null != table.getOrderByClause()) {
             return table.getOrderByClause();
         }
         StringBuilder orderBy = new StringBuilder();
         for (EntityColumn column : table.getEntityClassColumns()) {
-            if (column.getOrderBy() != null) {
+            if (null != column.getOrderBy()) {
                 if (orderBy.length() != 0) {
                     orderBy.append(Symbol.COMMA);
                 }
@@ -127,7 +127,7 @@ public class EntityBuilder {
      */
     public static String getSelectColumns(Class<?> entityClass) {
         EntityTable entityTable = getEntityTable(entityClass);
-        if (entityTable.getBaseSelect() != null) {
+        if (null != entityTable.getBaseSelect()) {
             return entityTable.getBaseSelect();
         }
         Set<EntityColumn> columnList = getColumns(entityClass);
@@ -157,7 +157,7 @@ public class EntityBuilder {
      * @param config      配置
      */
     public static synchronized void initEntityNameMap(Class<?> entityClass, Config config) {
-        if (entityTableMap.get(entityClass) != null) {
+        if (null != entityTableMap.get(entityClass)) {
             return;
         }
         Style style = config.getStyle();
@@ -176,7 +176,7 @@ public class EntityBuilder {
                 entityTable.setTable(table);
             }
         }
-        if (null == entityTable) {
+        if (entityTable == null) {
             entityTable = new EntityTable(entityClass);
             //可以通过stye控制
             entityTable.setName(convertByStyle(entityClass.getSimpleName(), style));

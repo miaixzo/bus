@@ -15,7 +15,6 @@ public class ServerConfig {
     private final Encrypt encrypt = new Encrypt();
     private final Decrypt decrypt = new Decrypt();
     private final Limit limit = new Limit();
-    private final Security security = new Security();
     private String path;
     private int port;
 
@@ -37,12 +36,7 @@ public class ServerConfig {
 
     @Data
     public static class Limit {
-        private boolean enabled = false;
-    }
-
-    @Data
-    public static class Security {
-        private boolean enabled = true;
+        private boolean enabled;
     }
 
 }

@@ -73,7 +73,7 @@ public class IniSetting extends ArrayList<IniElement> {
             StringJoiner joiner = new StringJoiner(newLineSplit);
             for (IniElement iniElement : this) {
                 // if null, show a empty line.
-                joiner.add(null == iniElement ? Normal.EMPTY : iniElement.toString());
+                joiner.add(iniElement == null ? Normal.EMPTY : iniElement.toString());
             }
             return joiner.toString();
         }
@@ -158,7 +158,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = null == element ? getNewLineSplit() :
+            str = element == null ? getNewLineSplit() :
                     withComment ? element.toString() + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
             out.write(str.getBytes(charset));
         }
@@ -192,7 +192,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = null == element ? getNewLineSplit() :
+            str = element == null ? getNewLineSplit() :
                     withComment ? element.toString() + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
             writer.write(str);
         }
@@ -211,7 +211,7 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            str = null == element ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
+            str = element == null ? Normal.EMPTY : withComment ? element.toString() : element.toNoCommentString();
             print.println(str);
         }
         print.flush();

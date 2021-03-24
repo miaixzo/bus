@@ -92,7 +92,7 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
 
     private static String querySystemSerialNumber() {
         String result;
-        if (((result = querySerialFromBios()) != null || (result = querySerialFromCsProduct()) != null)
+        if ((null != (result = querySerialFromBios()) || null != (result = querySerialFromCsProduct()))
                 && !StringKit.isBlank(result)) {
             return result;
         }

@@ -85,7 +85,7 @@ public class ZipEncryptorProvider extends EntryEncryptorProvider<ZipArchiveEntry
             zos.setLevel(level);
             AlwaysOutputStream nos = new AlwaysOutputStream(zos);
             ZipArchiveEntry entry;
-            while ((entry = zis.getNextZipEntry()) != null) {
+            while (null != (entry = zis.getNextZipEntry())) {
                 if (entry.isDirectory()) {
                     continue;
                 }

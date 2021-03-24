@@ -121,7 +121,7 @@ public class ContainerRegistryApi extends AbstractApi {
      */
     public void deleteRepository(Object projectIdOrPath, Integer repositoryId) throws GitLabApiException {
 
-        if (null == repositoryId) {
+        if (repositoryId == null) {
             throw new RuntimeException("repositoryId cannot be null");
         }
 
@@ -220,7 +220,7 @@ public class ContainerRegistryApi extends AbstractApi {
      */
     public void deleteRepositoryTag(Object projectIdOrPath, Integer repositoryId, String tagName) throws GitLabApiException {
 
-        if (null == repositoryId) {
+        if (repositoryId == null) {
             throw new RuntimeException("repositoryId cannot be null");
         }
 

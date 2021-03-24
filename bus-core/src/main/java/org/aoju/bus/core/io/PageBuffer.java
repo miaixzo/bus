@@ -143,7 +143,7 @@ public class PageBuffer {
         try {
             if (null != cleanBuffer) {
                 clean0(cleanBuffer);
-                while ((cleanBuffer = cleanBuffers.poll()) != null) {
+                while (null != (cleanBuffer = cleanBuffers.poll())) {
                     if (cleanBuffer.getParentLimit() - cleanBuffer.getParentPosition() >= size) {
                         cleanBuffer.buffer().clear();
                         cleanBuffer.buffer(cleanBuffer.buffer());
@@ -255,7 +255,7 @@ public class PageBuffer {
         } else if (!cleanBuffers.isEmpty() && lock.tryLock()) {
             try {
                 VirtualBuffer cleanBuffer;
-                while ((cleanBuffer = cleanBuffers.poll()) != null) {
+                while (null != (cleanBuffer = cleanBuffers.poll())) {
                     clean0(cleanBuffer);
                 }
             } finally {

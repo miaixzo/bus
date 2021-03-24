@@ -93,7 +93,7 @@ public class ISO8601 {
      */
     public static String toString(Calendar cal) {
 
-        if (null == cal) {
+        if (cal == null) {
             return (null);
         }
 
@@ -109,7 +109,7 @@ public class ISO8601 {
      */
     public static String toString(Date date, boolean withMsec) {
 
-        if (null == date) {
+        if (date == null) {
             return (null);
         }
 
@@ -127,7 +127,7 @@ public class ISO8601 {
      */
     public static String dateOnly(Date date) {
 
-        if (null == date) {
+        if (date == null) {
             return (null);
         }
 
@@ -152,7 +152,7 @@ public class ISO8601 {
      */
     public static Instant toInstant(String dateTimeString) {
 
-        if (null == dateTimeString) {
+        if (dateTimeString == null) {
             return (null);
         }
 
@@ -195,7 +195,7 @@ public class ISO8601 {
     public static Calendar toCalendar(String dateTimeString) {
 
         Date date = toDate(dateTimeString);
-        if (null == date) {
+        if (date == null) {
             return (null);
         }
 
@@ -213,7 +213,7 @@ public class ISO8601 {
 
             Map<String, SimpleDateFormat> formatMap = safeFormats.get();
             SimpleDateFormat format = formatMap.get(formatSpec);
-            if (null == format) {
+            if (format == null) {
                 format = new SimpleDateFormat(formatSpec);
                 format.setLenient(true);
                 format.setTimeZone(TimeZone.getTimeZone("UTC"));

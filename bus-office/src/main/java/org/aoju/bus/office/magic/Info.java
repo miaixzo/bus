@@ -201,7 +201,7 @@ public final class Info {
                         context,
                         XMultiServiceFactory.class,
                         "com.sun.star.configuration.ConfigurationProvider");
-        if (null == provider) {
+        if (provider == null) {
             Logger.debug("Could not create configuration provider");
             return Optional.empty();
         }

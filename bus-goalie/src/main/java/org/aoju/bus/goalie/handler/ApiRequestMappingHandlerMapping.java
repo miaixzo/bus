@@ -54,7 +54,7 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
         RequestMappingInfo mappinginfo = super.getMappingForMethod(method, handlerType);
         if (null != mappinginfo) {
             RequestMappingInfo apiVersionMappingInfo = getApiVersionMappingInfo(method, handlerType);
-            return null == apiVersionMappingInfo ? mappinginfo : apiVersionMappingInfo.combine(mappinginfo);
+            return apiVersionMappingInfo == null ? mappinginfo : apiVersionMappingInfo.combine(mappinginfo);
         }
         return mappinginfo;
     }
@@ -78,13 +78,13 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
     }
 
     private RequestCondition<?> createRequestCondtion(ClientVersion clientVersion) {
-        if (null == clientVersion) {
+        if (clientVersion == null) {
             return null;
         }
-        if (clientVersion.value() != null && clientVersion.value().length > 0) {
+        if (null != clientVersion.value() && clientVersion.value().length > 0) {
             return new ApiVersionRequestCondition(clientVersion.value());
         }
-        if (clientVersion.expression() != null && clientVersion.expression().length > 0) {
+        if (null != clientVersion.expression() && clientVersion.expression().length > 0) {
             return new ApiVersionRequestCondition(clientVersion.expression());
         }
         return null;
@@ -98,10 +98,10 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
     private RequestMappingInfo getApiVersionMappingInfo(Method method, Class<?> handlerType) {
         // 优先查找method
         ApiVersion apiVersion = AnnotatedElementUtils.findMergedAnnotation(method, ApiVersion.class);
-        if (null == apiVersion || StringKit.isBlank(apiVersion.value())) {
+        if (apiVersion == null || StringKit.isBlank(apiVersion.value())) {
             apiVersion = AnnotatedElementUtils.findMergedAnnotation(handlerType, ApiVersion.class);
         }
-        return null == apiVersion || StringKit.isBlank(apiVersion.value()) ? null : RequestMappingInfo
+        return apiVersion == null || StringKit.isBlank(apiVersion.value()) ? null : RequestMappingInfo
                 .paths(apiVersion.value())
                 .build();
     }

@@ -63,7 +63,7 @@ public enum HL7Handler implements TCPHandler {
                 s.setSoTimeout(conn.getIdleTimeout());
                 MLLPConnection mllp = new MLLPConnection(s);
                 byte[] data;
-                while ((data = mllp.readMessage()) != null) {
+                while (null != (data = mllp.readMessage())) {
                     HL7ConnectionMonitor monitor = hl7dev.getHL7ConnectionMonitor();
                     UnparsedHL7Message msg = new UnparsedHL7Message(data);
                     if (null != monitor)

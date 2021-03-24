@@ -277,7 +277,7 @@ public class Status {
 
     public static Status build(Status dcmState, String timeMessage, Exception e) {
         Status state = dcmState;
-        if (null == state) {
+        if (state == null) {
             state = new Status(Status.UnableToProcess, null, null);
         }
 
@@ -309,7 +309,7 @@ public class Status {
             msg.append(e.getLocalizedMessage());
         }
 
-        if (null != p && p.getAttributes() != null) {
+        if (null != p && null != p.getAttributes()) {
             String error = p.getErrorComment();
             if (StringKit.hasText(error)) {
                 hasFailed = true;
@@ -347,7 +347,7 @@ public class Status {
     }
 
     public int getStatus() {
-        if (null != progress && progress.getAttributes() != null) {
+        if (null != progress && null != progress.getAttributes()) {
             return progress.getStatus();
         }
         return status;

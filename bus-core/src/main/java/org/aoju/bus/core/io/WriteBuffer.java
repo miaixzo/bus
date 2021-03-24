@@ -325,7 +325,7 @@ public final class WriteBuffer extends OutputStream {
             flush();
             closed = true;
             VirtualBuffer byteBuf;
-            while ((byteBuf = poll()) != null) {
+            while (null != (byteBuf = poll())) {
                 byteBuf.clean();
             }
         } finally {

@@ -49,7 +49,7 @@ public class ConfigurationChange {
     }
 
     public static ModifiedObject addModifiedObjectIfVerbose(ConfigurationChange diffs, String dn, ChangeType changeType) {
-        if (null == diffs || !diffs.isVerbose())
+        if (diffs == null || !diffs.isVerbose())
             return null;
 
         ModifiedObject object = new ModifiedObject(dn, changeType);
@@ -58,7 +58,7 @@ public class ConfigurationChange {
     }
 
     public static ModifiedObject addModifiedObject(ConfigurationChange diffs, String dn, ChangeType changeType) {
-        if (null == diffs)
+        if (diffs == null)
             return null;
 
         ModifiedObject object = new ModifiedObject(dn, changeType);
@@ -98,7 +98,7 @@ public class ConfigurationChange {
         StringBuilder sb = new StringBuilder(objects.size() * 64);
         for (ModifiedObject obj : objects) {
             sb.append(obj.changeType).append(Symbol.C_SPACE).append(obj.dn).append(Symbol.C_LF);
-            if (obj.null != attributes) {
+            if (null != obj.attributes) {
                 for (ModifiedAttribute attr : obj.attributes) {
                     sb.append(Symbol.SPACE).append(attr.name).append(": ")
                             .append(attr.removedValues).append("=>")

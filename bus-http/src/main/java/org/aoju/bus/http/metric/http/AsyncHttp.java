@@ -155,7 +155,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
      * @return GiveCall
      */
     public GiveCall request(String method) {
-        if (null == method || method.isEmpty()) {
+        if (method == null || method.isEmpty()) {
             throw new IllegalArgumentException("Request method method cannot be empty!");
         }
         PreGiveCall call = new PreGiveCall();
@@ -223,7 +223,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
         @Override
         public synchronized boolean cancel() {
-            canceled = null == call || call.cancel();
+            canceled = call == null || call.cancel();
             latch.countDown();
             return canceled;
         }
@@ -252,7 +252,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
                 cancel();
                 return timeoutResult();
             }
-            if (canceled || null == call) {
+            if (canceled || call == null) {
                 return new RealResult(AsyncHttp.this, State.CANCELED);
             }
             return call.getResult();
@@ -272,7 +272,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
         @Override
         public synchronized boolean cancel() {
-            if (null == result) {
+            if (result == null) {
                 call.cancel();
                 return true;
             }
@@ -291,7 +291,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
         @Override
         public Results getResult() {
-            if (null == result) {
+            if (result == null) {
                 if (!timeoutAwait(latch)) {
                     cancel();
                     return timeoutResult();

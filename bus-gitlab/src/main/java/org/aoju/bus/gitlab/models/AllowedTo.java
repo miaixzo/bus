@@ -64,7 +64,7 @@ public class AllowedTo {
 
     public GitLabApiForm getForm(GitLabApiForm form, String allowedToName) {
 
-        if (null == form) {
+        if (form == null) {
             form = new GitLabApiForm();
         }
 

@@ -819,7 +819,7 @@ public class PatternKit {
                 return false;
             }
             if (null == regex) {
-                return other.null == regex;
+                return null == other.regex;
             } else return regex.equals(other.regex);
         }
 

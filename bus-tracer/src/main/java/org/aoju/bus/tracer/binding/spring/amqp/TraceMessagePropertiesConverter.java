@@ -66,10 +66,10 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
 
         final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
         if (filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
-            final Map<String, String> TraceContextMap = transformToTraceContextMap(
+            final Map<String, String> traceContextMap = transformToTraceContextMap(
                     (Map<String, ?>) messageProperties.getHeaders().get(Builder.TPIC_HEADER));
-            if (null != TraceContextMap && !TraceContextMap.isEmpty()) {
-                backend.putAll(filterConfiguration.filterDeniedParams(TraceContextMap, TraceFilterConfig.Channel.AsyncProcess));
+            if (null != traceContextMap && !traceContextMap.isEmpty()) {
+                backend.putAll(filterConfiguration.filterDeniedParams(traceContextMap, TraceFilterConfig.Channel.AsyncProcess));
             }
         }
         org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);

@@ -127,7 +127,7 @@ public final class Expression implements Serializable, Cloneable {
         } catch (ParseException ex) {
             throw new AssertionError();
         }
-        if (expression.getTimeZone() != null) {
+        if (null != expression.getTimeZone()) {
             setTimeZone((TimeZone) expression.getTimeZone().clone());
         }
     }
@@ -971,8 +971,6 @@ public final class Expression implements Serializable, Cloneable {
         boolean gotOne = false;
         // loop until we've computed the next time, or we've past the endTime
         while (!gotOne) {
-
-            //if (null != endTime && cl.getTime().after(endTime)) return null;
             if (cl.get(Calendar.YEAR) > 2999) { // prevent endless loop...
                 return null;
             }

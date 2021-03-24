@@ -379,7 +379,9 @@ public class MimeType {
             }
 
             String name = parameter.group(1);
-            if (null == name || !name.equalsIgnoreCase("charset")) continue;
+            if (null == name || !name.equalsIgnoreCase("charset")) {
+                continue;
+            }
             String charsetParameter;
             String token = parameter.group(2);
             if (null != token) {

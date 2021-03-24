@@ -84,14 +84,14 @@ public class RegistryObjectType extends IdentifiableType {
     }
 
     public List<ClassificationType> getClassification() {
-        if (this.null == classification) {
+        if (this.classification == null) {
             this.classification = new ArrayList();
         }
         return this.classification;
     }
 
     public List<ExternalIdentifierType> getExternalIdentifier() {
-        if (this.null == externalIdentifier) {
+        if (this.externalIdentifier == null) {
             this.externalIdentifier = new ArrayList();
         }
         return this.externalIdentifier;

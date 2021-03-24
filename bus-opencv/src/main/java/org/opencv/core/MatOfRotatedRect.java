@@ -42,7 +42,7 @@ public class MatOfRotatedRect extends Mat {
     }
 
     public void fromArray(RotatedRect... a) {
-        if (null == a || a.length == 0)
+        if (a == null || a.length == 0)
             return;
         int num = a.length;
         alloc(num);

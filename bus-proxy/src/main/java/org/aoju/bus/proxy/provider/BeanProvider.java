@@ -48,7 +48,7 @@ public class BeanProvider implements Provider {
 
     public Object getObject() {
         try {
-            if (null == beanClass) {
+            if (beanClass == null) {
                 throw new InstrumentException("No bean class provided.");
             }
             return beanClass.newInstance();

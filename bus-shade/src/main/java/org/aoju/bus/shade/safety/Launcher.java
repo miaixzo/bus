@@ -86,23 +86,23 @@ public class Launcher {
 
         ProtectionDomain domain = this.getClass().getProtectionDomain();
         CodeSource source = domain.getCodeSource();
-        URI location = (null == source ? null : source.getLocation().toURI());
-        String filepath = (null == location ? null : location.getSchemeSpecificPart());
+        URI location = (source == null ? null : source.getLocation().toURI());
+        String filepath = (location == null ? null : location.getSchemeSpecificPart());
         if (null != filepath) {
             File file = new File(filepath);
             JarFile jar = new JarFile(file, false);
             Manifest manifest = jar.getManifest();
             Attributes attributes = manifest.getMainAttributes();
-            if (attributes.getValue(Builder.XJAR_ALGORITHM_KEY) != null) {
+            if (null != attributes.getValue(Builder.XJAR_ALGORITHM_KEY)) {
                 algorithm = attributes.getValue(Builder.XJAR_ALGORITHM_KEY);
             }
-            if (attributes.getValue(Builder.XJAR_KEYSIZE_KEY) != null) {
+            if (null != attributes.getValue(Builder.XJAR_KEYSIZE_KEY)) {
                 keysize = Integer.valueOf(attributes.getValue(Builder.XJAR_KEYSIZE_KEY));
             }
-            if (attributes.getValue(Builder.XJAR_IVSIZE_KEY) != null) {
+            if (null != attributes.getValue(Builder.XJAR_IVSIZE_KEY)) {
                 ivsize = Integer.valueOf(attributes.getValue(Builder.XJAR_IVSIZE_KEY));
             }
-            if (attributes.getValue(Builder.XJAR_PASSWORD_KEY) != null) {
+            if (null != attributes.getValue(Builder.XJAR_PASSWORD_KEY)) {
                 password = attributes.getValue(Builder.XJAR_PASSWORD_KEY);
             }
         }
@@ -158,18 +158,18 @@ public class Launcher {
             }
         }
 
-        if (null == hold || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
+        if (hold == null || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
             if (null != keyfile && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
                 throw new IOException("could not delete key file : " + keyfile.getCanonicalPath());
             }
         }
 
-        if (null == password && System.console() != null) {
+        if (password == null && null != System.console()) {
             Console console = System.console();
             char[] chars = console.readPassword("password:");
             password = new String(chars);
         }
-        if (null == password) {
+        if (password == null) {
             Scanner scanner = new Scanner(System.in);
             password = scanner.nextLine();
         }

@@ -570,7 +570,7 @@ public class RuntimeKit {
      * @return true 来自或者包含
      */
     public static boolean isFromOrSuppressedThrowable(Throwable throwable, Class<? extends Throwable> exceptionClass) {
-        return convertFromOrSuppressedThrowable(throwable, exceptionClass, true) != null;
+        return null != convertFromOrSuppressedThrowable(throwable, exceptionClass, true);
     }
 
     /**
@@ -582,7 +582,7 @@ public class RuntimeKit {
      * @return true 来自或者包含
      */
     public static boolean isFromOrSuppressedThrowable(Throwable throwable, Class<? extends Throwable> exceptionClass, boolean checkCause) {
-        return convertFromOrSuppressedThrowable(throwable, exceptionClass, checkCause) != null;
+        return null != convertFromOrSuppressedThrowable(throwable, exceptionClass, checkCause);
     }
 
     /**

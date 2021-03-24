@@ -121,7 +121,7 @@ public class Option {
                   String truststoreURL,
                   String truststoreType,
                   String truststorePass) {
-        if (null == cipherSuites) {
+        if (cipherSuites == null) {
             throw new IllegalArgumentException("cipherSuites cannot be null");
         }
         this.cipherSuites = cipherSuites;

@@ -119,7 +119,7 @@ public abstract class AbstractLimitedResourceMetadata<T extends LimitedResource>
             Field field = fields[i];
             field.setAccessible(true);
             if (AnnotatedElementUtils.hasAnnotation(field, LimiterParameter.class)) {
-                if (null == retVal) {
+                if (retVal == null) {
                     retVal = new HashMap<>();
                 }
                 try {

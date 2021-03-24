@@ -57,7 +57,7 @@ public abstract class RequestBody {
         java.nio.charset.Charset charset = Charset.UTF_8;
         if (null != contentType) {
             charset = contentType.charset();
-            if (null == charset) {
+            if (charset == null) {
                 charset = Charset.UTF_8;
                 contentType = MimeType.valueOf(contentType + "; charset=utf-8");
             }
@@ -116,7 +116,7 @@ public abstract class RequestBody {
      */
     public static RequestBody create(final MimeType contentType, final byte[] content,
                                      final int offset, final int byteCount) {
-        if (null == content) throw new NullPointerException("null == content");
+        if (content == null) throw new NullPointerException("content == null");
         Builder.checkOffsetAndCount(content.length, offset, byteCount);
         return new RequestBody() {
             @Override
@@ -144,7 +144,7 @@ public abstract class RequestBody {
      * @return 传输请求体
      */
     public static RequestBody create(final MimeType contentType, final File file) {
-        if (null == file) throw new NullPointerException("null == file");
+        if (file == null) throw new NullPointerException("file == null");
 
         return new RequestBody() {
             @Override

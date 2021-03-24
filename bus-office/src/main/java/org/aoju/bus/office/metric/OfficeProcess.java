@@ -234,7 +234,7 @@ public class OfficeProcess {
             Logger.warn("Profile dir '{}' already exists; deleting", instanceProfileDir);
             deleteInstanceProfileDir();
         }
-        if (config.getTemplateProfileDir() != null) {
+        if (null != config.getTemplateProfileDir()) {
             try {
                 FileKit.copyFile(config.getTemplateProfileDir(), instanceProfileDir);
             } catch (InstrumentException ioEx) {
@@ -252,7 +252,7 @@ public class OfficeProcess {
     private ProcessBuilder prepareProcessBuilder(final String acceptString) {
         final List<String> command = new ArrayList<>();
         final File executable = Builder.getOfficeExecutable(config.getOfficeHome());
-        if (config.getRunAsArgs() != null) {
+        if (null != config.getRunAsArgs()) {
             command.addAll(Arrays.asList(config.getRunAsArgs()));
         }
 
@@ -343,7 +343,7 @@ public class OfficeProcess {
     private void detectOfficeVersion() {
         final List<String> command = new ArrayList<>();
         final File executable = Builder.getOfficeExecutable(config.getOfficeHome());
-        if (config.getRunAsArgs() != null) {
+        if (null != config.getRunAsArgs()) {
             command.addAll(Arrays.asList(config.getRunAsArgs()));
         }
 

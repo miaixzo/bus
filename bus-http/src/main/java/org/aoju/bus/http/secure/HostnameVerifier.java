@@ -65,16 +65,16 @@ public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
         List<String> result = new ArrayList<>();
         try {
             Collection<?> subjectAltNames = certificate.getSubjectAlternativeNames();
-            if (null == subjectAltNames) {
+            if (subjectAltNames == null) {
                 return Collections.emptyList();
             }
             for (Object subjectAltName : subjectAltNames) {
                 List<?> entry = (List<?>) subjectAltName;
-                if (null == entry || entry.size() < 2) {
+                if (entry == null || entry.size() < 2) {
                     continue;
                 }
                 Integer altNameType = (Integer) entry.get(0);
-                if (null == altNameType) {
+                if (altNameType == null) {
                     continue;
                 }
                 if (altNameType == type) {
@@ -136,11 +136,11 @@ public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
      */
     public boolean verifyHostname(String hostname, String pattern) {
         // 基本健康检查
-        if ((null == hostname) || (hostname.length() == 0) || (hostname.startsWith(Symbol.DOT))
+        if ((hostname == null) || (hostname.length() == 0) || (hostname.startsWith(Symbol.DOT))
                 || (hostname.endsWith(Symbol.DOUBLE_DOT))) {
             return false;
         }
-        if ((null == pattern) || (pattern.length() == 0) || (pattern.startsWith(Symbol.DOT))
+        if ((pattern == null) || (pattern.length() == 0) || (pattern.startsWith(Symbol.DOT))
                 || (pattern.endsWith(Symbol.DOUBLE_DOT))) {
             return false;
         }

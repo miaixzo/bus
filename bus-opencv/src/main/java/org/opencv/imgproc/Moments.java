@@ -63,7 +63,7 @@ public class Moments {
     }
 
     public void set(double[] vals) {
-        if (null != vals) {
+        if (vals != null) {
             m00 = vals.length > 0 ? vals[0] : 0;
             m10 = vals.length > 1 ? vals[1] : 0;
             m01 = vals.length > 2 ? vals[2] : 0;

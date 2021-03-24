@@ -53,18 +53,18 @@ public class ImageReaderFactory implements Serializable {
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
 
     private static String nullify(String s) {
-        return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
+        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageReaderFactory getDefault() {
-        if (null == defaultFactory)
+        if (defaultFactory == null)
             defaultFactory = initDefault();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageReaderFactory factory) {
-        if (null == factory)
+        if (factory == null)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -107,7 +107,7 @@ public class ImageReaderFactory implements Serializable {
             throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
 
         ImageReader reader = iter.next();
-        if (param.null != className) {
+        if (null != param.className) {
             while (!param.className.equals(reader.getClass().getName())) {
                 if (iter.hasNext())
                     reader = iter.next();
@@ -130,13 +130,13 @@ public class ImageReaderFactory implements Serializable {
     }
 
     private static ImageReaderSpi getImageReaderSpi(ImageReaderParam param) {
-        Iterator<ImageReaderSpi> iter = new FormatNameFilterIterator<ImageReaderSpi>(
+        Iterator<ImageReaderSpi> iter = new FormatNameFilterIterator<>(
                 ServiceLoader.load(ImageReaderSpi.class).iterator(), param.formatName);
         if (!iter.hasNext())
             throw new RuntimeException("No Reader for format: " + param.formatName + " registered");
 
         ImageReaderSpi spi = iter.next();
-        if (param.null != className) {
+        if (null != param.className) {
             while (!param.className.equals(spi.getPluginClassName())) {
                 if (iter.hasNext())
                     spi = iter.next();
@@ -215,12 +215,12 @@ public class ImageReaderFactory implements Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (null == o || getClass() != o.getClass()) return false;
+            if (o == null || getClass() != o.getClass()) return false;
 
             ImageReaderParam that = (ImageReaderParam) o;
 
             if (!formatName.equals(that.formatName)) return false;
-            if (null != className ? !className.equals(that.className) : that.null != className) return false;
+            if (null != className ? !className.equals(that.className) : null != that.className) return false;
             if (patchJPEGLS != that.patchJPEGLS) return false;
             return Arrays.equals(imageReadParams, that.imageReadParams);
 

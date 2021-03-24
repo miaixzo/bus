@@ -247,7 +247,7 @@ public class JobApi extends AbstractApi implements Constants {
 
         try {
 
-            if (null == directory)
+            if (directory == null)
                 directory = new File(System.getProperty("java.io.tmpdir"));
 
             String filename = jobName + "-artifacts.zip";
@@ -301,7 +301,7 @@ public class JobApi extends AbstractApi implements Constants {
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts");
         try {
 
-            if (null == directory)
+            if (directory == null)
                 directory = new File(System.getProperty("java.io.tmpdir"));
 
             String filename = "job-" + jobId + "-artifacts.zip";
@@ -352,7 +352,7 @@ public class JobApi extends AbstractApi implements Constants {
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", artifactsFile.getFilename());
         try {
 
-            if (null == directory)
+            if (directory == null)
                 directory = new File(System.getProperty("java.io.tmpdir"));
 
             String filename = artifactsFile.getFilename();
@@ -407,7 +407,7 @@ public class JobApi extends AbstractApi implements Constants {
                 "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts", path);
         try {
 
-            if (null == directory)
+            if (directory == null)
                 directory = new File(System.getProperty("java.io.tmpdir"));
 
             String filename = artifactPath.getFileName().toString();

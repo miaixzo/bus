@@ -152,7 +152,7 @@ public final class SuffixDatabase {
     }
 
     public String getEffectiveTldPlusOne(String domain) {
-        if (null == domain) throw new NullPointerException("null == domain");
+        if (domain == null) throw new NullPointerException("domain == null");
 
         String unicodeDomain = IDN.toUnicode(domain);
         String[] domainLabels = unicodeDomain.split("\\.");
@@ -190,7 +190,7 @@ public final class SuffixDatabase {
         }
 
         synchronized (this) {
-            if (null == publicSuffixListBytes) {
+            if (publicSuffixListBytes == null) {
                 throw new IllegalStateException("Unable to load " + PUBLIC_SUFFIX_RESOURCE + " resource "
                         + "from the classpath.");
             }
@@ -238,7 +238,7 @@ public final class SuffixDatabase {
         if (null != exception) {
             exception = Symbol.NOT + exception;
             return exception.split("\\.");
-        } else if (null == exactMatch && null == wildcardMatch) {
+        } else if (exactMatch == null && wildcardMatch == null) {
             return PREVAILING_RULE;
         }
 
@@ -282,7 +282,7 @@ public final class SuffixDatabase {
         byte[] publicSuffixExceptionListBytes;
 
         InputStream resource = SuffixDatabase.class.getResourceAsStream(PUBLIC_SUFFIX_RESOURCE);
-        if (null == resource) return;
+        if (resource == null) return;
 
         BufferSource bufferedSource = IoKit.buffer(new GzipSource(IoKit.source(resource)));
         try {

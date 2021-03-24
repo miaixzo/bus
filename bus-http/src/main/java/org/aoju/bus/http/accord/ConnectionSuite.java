@@ -166,10 +166,10 @@ public final class ConnectionSuite {
     public void apply(SSLSocket sslSocket, boolean isFallback) {
         ConnectionSuite specToApply = supportedSuite(sslSocket, isFallback);
 
-        if (specToApply.null != tlsVersions) {
+        if (null != specToApply.tlsVersions) {
             sslSocket.setEnabledProtocols(specToApply.tlsVersions);
         }
-        if (specToApply.null != cipherSuites) {
+        if (null != specToApply.cipherSuites) {
             sslSocket.setEnabledCipherSuites(specToApply.cipherSuites);
         }
     }

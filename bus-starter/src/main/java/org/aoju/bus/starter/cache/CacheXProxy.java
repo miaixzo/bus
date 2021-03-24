@@ -64,17 +64,17 @@ public class CacheXProxy<T> implements FactoryBean<T> {
 
             Method method = invocation.getMethod();
             Cached cached;
-            if ((cached = method.getAnnotation(Cached.class)) != null) {
+            if (null != (cached = method.getAnnotation(Cached.class))) {
                 return cacheCore.readWrite(cached, method, new JoinPointInvoker(target, invocation));
             }
 
             CachedGet cachedGet;
-            if ((cachedGet = method.getAnnotation(CachedGet.class)) != null) {
+            if (null != (cachedGet = method.getAnnotation(CachedGet.class))) {
                 return cacheCore.read(cachedGet, method, new JoinPointInvoker(target, invocation));
             }
 
             Invalid invalid;
-            if ((invalid = method.getAnnotation(Invalid.class)) != null) {
+            if (null != (invalid = method.getAnnotation(Invalid.class))) {
                 cacheCore.remove(invalid, method, invocation.getArguments());
                 return null;
             }

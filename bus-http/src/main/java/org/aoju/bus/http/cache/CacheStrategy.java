@@ -87,7 +87,7 @@ public final class CacheStrategy {
                 break;
             case Http.HTTP_MOVED_TEMP:
             case Http.HTTP_TEMP_REDIRECT:
-                if (response.header(Header.EXPIRES) != null
+                if (null != response.header(Header.EXPIRES)
                         || response.cacheControl().maxAgeSeconds() != -1
                         || response.cacheControl().isPublic()
                         || response.cacheControl().isPrivate()) {
@@ -182,7 +182,7 @@ public final class CacheStrategy {
          * @return the true/false
          */
         private static boolean hasConditions(Request request) {
-            return request.header(Header.IF_MODIFIED_SINCE) != null || request.header(Header.IF_NONE_MATCH) != null;
+            return null != request.header(Header.IF_MODIFIED_SINCE) || null != request.header(Header.IF_NONE_MATCH);
         }
 
         /**
@@ -191,7 +191,7 @@ public final class CacheStrategy {
         public CacheStrategy get() {
             CacheStrategy candidate = getCandidate();
 
-            if (candidate.null != networkRequest && request.cacheControl().onlyIfCached()) {
+            if (null != candidate.networkRequest && request.cacheControl().onlyIfCached()) {
                 // 被禁止使用网络和缓存是不够的
                 return new CacheStrategy(null, null);
             }
@@ -204,7 +204,7 @@ public final class CacheStrategy {
          */
         private CacheStrategy getCandidate() {
             //没有缓存的响应.
-            if (null == cacheResponse) {
+            if (cacheResponse == null) {
                 return new CacheStrategy(request, null);
             }
 
@@ -327,7 +327,7 @@ public final class CacheStrategy {
          * 如果我们使用启发式来服务大于24小时的缓存响应，则需要附加一个警告
          */
         private boolean isFreshnessLifetimeHeuristic() {
-            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && null == expires;
+            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && expires == null;
         }
     }
 

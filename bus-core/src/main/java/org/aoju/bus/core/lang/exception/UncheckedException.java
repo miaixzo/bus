@@ -150,15 +150,17 @@ public class UncheckedException extends RuntimeException {
     }
 
     protected static Throwable unwrapThrow(Throwable e) {
-        if (null == e)
+        if (null == e) {
             return null;
+        }
         if (e instanceof InvocationTargetException) {
             InvocationTargetException itE = (InvocationTargetException) e;
-            if (itE.getTargetException() != null)
+            if (null != itE.getTargetException())
                 return unwrapThrow(itE.getTargetException());
         }
-        if (e instanceof RuntimeException && e.getCause() != null)
+        if (e instanceof RuntimeException && null != e.getCause()) {
             return unwrapThrow(e.getCause());
+        }
         return e;
     }
 

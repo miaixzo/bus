@@ -90,7 +90,7 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
             AlwaysInputStream nis = new AlwaysInputStream(zis);
             AlwaysOutputStream nos = new AlwaysOutputStream(zos);
             JarArchiveEntry entry;
-            while ((entry = zis.getNextJarEntry()) != null) {
+            while (null != (entry = zis.getNextJarEntry())) {
                 if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)

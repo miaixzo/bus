@@ -55,7 +55,7 @@ public final class Write {
      * @return 如果文档不是文本文档，则为null.
      */
     public static XTextDocument getTextDoc(final XComponent document) {
-        if (null == document) {
+        if (document == null) {
             return null;
         }
 

@@ -58,7 +58,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
         Logger.info(Symbol.DELIM, JsonKit.toJsonString(request.getParameterMap()));
         // 从InputStream获取参数，并保存以便多次获取
         this.body = IoKit.readBytes(request.getInputStream());
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.null != body ? this.body : DEFAULT_BYTE);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(null != this.body ? this.body : DEFAULT_BYTE);
         // 初始 ServletInputStreamWrapper
         this.inputStreamWrapper = new ServletInputStreamWrapper(byteArrayInputStream);
         // 设置 InputStream 到我们自己的包装类中
@@ -82,7 +82,7 @@ public class CacheRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public String[] getParameterValues(String parameter) {
         String[] values = super.getParameterValues(parameter);
-        if (null == values || values.length <= 0) {
+        if (values == null || values.length <= 0) {
             return null;
         }
         int count = values.length;

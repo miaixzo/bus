@@ -45,7 +45,7 @@ public class SingletonProvider extends DecoratorProvider {
 
     public Object getObject() {
         synchronized (this) {
-            if (null == instance) {
+            if (instance == null) {
                 instance = super.getObject();
                 inner = null;
             }

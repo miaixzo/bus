@@ -23,7 +23,7 @@ public class Range {
     }
 
     public void set(double[] vals) {
-        if (null != vals) {
+        if (vals != null) {
             start = vals.length > 0 ? (int) vals[0] : 0;
             end = vals.length > 1 ? (int) vals[1] : 0;
         } else {

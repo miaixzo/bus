@@ -78,7 +78,7 @@ public class GetSCU implements AutoCloseable {
         @Override
         protected void store(Association as, Presentation pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
-            if (null == storageDir) {
+            if (storageDir == null) {
                 return;
             }
 
@@ -178,7 +178,7 @@ public class GetSCU implements AutoCloseable {
         if (relational) {
             rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         }
-        if (model.null != level) {
+        if (null != model.level) {
             addLevel(model.level);
         }
     }

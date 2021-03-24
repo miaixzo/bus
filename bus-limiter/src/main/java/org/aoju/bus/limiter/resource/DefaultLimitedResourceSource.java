@@ -118,7 +118,7 @@ public class DefaultLimitedResourceSource implements LimitedResourceSource {
         for (Parser parser : annotationParsers) {
             for (Annotation ai : annotations) {
                 if (ai.annotationType().equals(parser.getSupportAnnotation())) {
-                    if (null == retVal) {
+                    if (retVal == null) {
                         retVal = new ArrayList<>();
                     }
                     AnnotationAttributes attributes = AnnotationUtils.getAnnotationAttributes(ae, ai);

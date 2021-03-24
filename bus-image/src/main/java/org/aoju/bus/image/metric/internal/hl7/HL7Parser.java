@@ -72,7 +72,7 @@ public class HL7Parser {
         startDocument();
         delimiters = Delimiter.DEFAULT;
         String line;
-        while ((line = reader.readLine()) != null) {
+        while (null != (line = reader.readLine())) {
             line = line.trim();
             if (line.length() == 0)
                 continue;

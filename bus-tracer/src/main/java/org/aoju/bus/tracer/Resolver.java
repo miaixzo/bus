@@ -75,7 +75,7 @@ public class Resolver {
     }
 
     boolean isLookupNeeded(Set<TraceBackendProvider> classLoaderProviders) {
-        return null == classLoaderProviders || !(classLoaderProviders instanceof EmptyBackendProviderSet) && classLoaderProviders.isEmpty();
+        return classLoaderProviders == null || !(classLoaderProviders instanceof EmptyBackendProviderSet) && classLoaderProviders.isEmpty();
     }
 
     private void updatedCache(final ClassLoader classLoader, final Set<TraceBackendProvider> provider) {
@@ -114,14 +114,14 @@ public class Resolver {
         }
 
         public static ClassLoader fromClass(Class<?> clazz) {
-            if (null == clazz) {
+            if (clazz == null) {
                 throw new IllegalArgumentException("Class is null");
             }
             return doPrivileged(new GetClassLoader(clazz));
         }
 
         private static ClassLoader doPrivileged(GetClassLoader action) {
-            if (System.getSecurityManager() != null) {
+            if (null != System.getSecurityManager()) {
                 return AccessController.doPrivileged(action);
             } else {
                 return action.run();

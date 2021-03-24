@@ -73,7 +73,7 @@ public class CellLocation implements Serializable {
         if (this == o) {
             return true;
         }
-        if (null == o || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         final CellLocation that = (CellLocation) o;

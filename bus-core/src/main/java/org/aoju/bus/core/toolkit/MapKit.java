@@ -478,7 +478,7 @@ public class MapKit {
         final StringBuilder stringBuilder = new StringBuilder();
         boolean isFirst = true;
         for (Entry<K, V> entry : map.entrySet())
-            if (false == isIgnoreNull || entry.getKey() != null && entry.getValue() != null) {
+            if (false == isIgnoreNull || null != entry.getKey() && null != entry.getValue()) {
                 if (isFirst) {
                     isFirst = false;
                 } else {
@@ -551,7 +551,7 @@ public class MapKit {
         boolean isFirst = true;
         if (isNotEmpty(map)) {
             for (Entry<K, V> entry : map.entrySet()) {
-                if (false == isIgnoreNull || entry.getKey() != null && entry.getValue() != null) {
+                if (false == isIgnoreNull || null != entry.getKey() && null != entry.getValue()) {
                     if (isFirst) {
                         isFirst = false;
                     } else {

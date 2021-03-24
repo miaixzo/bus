@@ -65,11 +65,11 @@ public class DateRange implements Serializable {
             return false;
 
         DateRange other = (DateRange) obj;
-        return (null == start
-                ? other.null == start
+        return (start == null
+                ? other.start == null
                 : start.equals(other.start))
-                && (null == end
-                ? other.null == end
+                && (end == null
+                ? other.end == null
                 : end.equals(other.end));
     }
 

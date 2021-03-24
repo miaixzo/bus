@@ -1206,7 +1206,7 @@ public enum Setting {
      */
     public final boolean isValid(Object value) {
 
-        if (null == value) {
+        if (value == null) {
             return (true);
         }
 

@@ -28,7 +28,6 @@ package org.aoju.bus.goalie;
 import lombok.Data;
 import org.springframework.http.HttpMethod;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -53,13 +52,12 @@ public class Assets {
     private boolean firewall;
     private String version;
     private String description;
-    private List<String> roleIds;
 
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Assets assets = (Assets) o;
         return id.equals(assets.id);
     }

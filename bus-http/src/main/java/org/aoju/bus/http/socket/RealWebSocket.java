@@ -386,13 +386,13 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
     @Override
     public boolean send(String text) {
-        if (null == text) throw new NullPointerException("null == text");
+        if (text == null) throw new NullPointerException("text == null");
         return send(ByteString.encodeUtf8(text), WebSocketProtocol.OPCODE_TEXT);
     }
 
     @Override
     public boolean send(ByteString bytes) {
-        if (null == bytes) throw new NullPointerException("null == bytes");
+        if (bytes == null) throw new NullPointerException("bytes == null");
         return send(bytes, WebSocketProtocol.OPCODE_BINARY);
     }
 
@@ -479,7 +479,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
 
             writer = this.writer;
             pong = pongQueue.poll();
-            if (null == pong) {
+            if (pong == null) {
                 messageOrClose = messageAndCloseQueue.poll();
                 if (messageOrClose instanceof Close) {
                     receivedCloseCode = this.receivedCloseCode;
@@ -493,7 +493,7 @@ public final class RealWebSocket implements WebSocket, WebSocketReader.FrameCall
                         cancelFuture = executor.schedule(new CancelRunnable(),
                                 ((Close) messageOrClose).cancelAfterCloseMillis, TimeUnit.MILLISECONDS);
                     }
-                } else if (null == messageOrClose) {
+                } else if (messageOrClose == null) {
                     // 队列已满
                     return false;
                 }

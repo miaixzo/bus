@@ -66,7 +66,7 @@ final class PeekSource implements Source {
         }
 
         upstream.request(pos + byteCount);
-        if (null == expectedSegment && buffer.null != head) {
+        if (null == expectedSegment && null != buffer.head) {
             expectedSegment = buffer.head;
             expectedPos = buffer.head.pos;
         }

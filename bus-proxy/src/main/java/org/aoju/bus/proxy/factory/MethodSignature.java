@@ -50,7 +50,7 @@ public class MethodSignature {
         if (this == o) {
             return true;
         }
-        if (null == o || getClass() != o.getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         final MethodSignature that = (MethodSignature) o;

@@ -139,7 +139,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pager<Pipeline> getPipelines(Object projectIdOrPath, PipelineFilter filter, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = (null != filter ? filter.getQueryParams() : new GitLabApiForm());
-        return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, formData.asMap(),
+        return (new Pager<>(this, Pipeline.class, itemsPerPage, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "pipelines"));
     }
 
@@ -335,11 +335,11 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pipeline createPipeline(Object projectIdOrPath, String ref, List<Variable> variables) throws GitLabApiException {
 
-        if (null == ref || ref.trim().isEmpty()) {
+        if (ref == null || ref.trim().isEmpty()) {
             throw new GitLabApiException("ref cannot be null or empty");
         }
 
-        if (null == variables || variables.isEmpty()) {
+        if (variables == null || variables.isEmpty()) {
             GitLabApiForm formData = new GitLabApiForm().withParam("ref", ref, true);
             Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "pipeline");
             return (response.readEntity(Pipeline.class));
@@ -798,7 +798,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pipeline triggerPipeline(Object projectIdOrPath, Trigger trigger, String ref, List<Variable> variables) throws GitLabApiException {
 
-        if (null == trigger) {
+        if (trigger == null) {
             throw new GitLabApiException("trigger cannot be null");
         }
 

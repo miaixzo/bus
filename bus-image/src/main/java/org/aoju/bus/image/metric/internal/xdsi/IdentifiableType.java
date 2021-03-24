@@ -49,7 +49,7 @@ public class IdentifiableType {
     protected String home;
 
     public List<SlotType> getSlot() {
-        if (this.null == slot) {
+        if (this.slot == null) {
             this.slot = new ArrayList();
         }
         return this.slot;

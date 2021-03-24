@@ -91,7 +91,7 @@ public final class HttpHeaders {
     }
 
     private static long stringToLong(String s) {
-        if (null == s) return -1;
+        if (s == null) return -1;
         try {
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
@@ -170,17 +170,17 @@ public final class HttpHeaders {
         String peek = null;
 
         while (true) {
-            if (null == peek) {
+            if (peek == null) {
                 skipWhitespaceAndCommas(header);
                 peek = readToken(header);
-                if (null == peek) return;
+                if (peek == null) return;
             }
 
             String schemeName = peek;
 
             boolean commaPrefixed = skipWhitespaceAndCommas(header);
             peek = readToken(header);
-            if (null == peek) {
+            if (peek == null) {
                 if (!header.exhausted()) return;
                 result.add(new Challenge(schemeName, Collections.emptyMap()));
                 return;
@@ -199,7 +199,7 @@ public final class HttpHeaders {
             Map<String, String> parameters = new LinkedHashMap<>();
             eqCount += skipAll(header, (byte) Symbol.C_EQUAL);
             while (true) {
-                if (null == peek) {
+                if (peek == null) {
                     peek = readToken(header);
                     if (skipWhitespaceAndCommas(header)) break;
                     eqCount = skipAll(header, (byte) Symbol.C_EQUAL);
@@ -211,7 +211,7 @@ public final class HttpHeaders {
                 String parameterValue = !header.exhausted() && header.getByte(0) == Symbol.C_DOUBLE_QUOTES
                         ? readQuotedString(header)
                         : readToken(header);
-                if (null == parameterValue) return;
+                if (parameterValue == null) return;
                 String replaced = parameters.put(peek, parameterValue);
                 peek = null;
                 if (null != replaced) return;

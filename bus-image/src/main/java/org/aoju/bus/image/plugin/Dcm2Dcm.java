@@ -84,7 +84,7 @@ public class Dcm2Dcm {
     public final void setTransferSyntax(String uid) {
         this.tsuid = uid;
         this.tstype = TransferSyntaxType.forUID(uid);
-        if (null == tstype) {
+        if (tstype == null) {
             throw new IllegalArgumentException(
                     "Unsupported Transfer Syntax: " + tsuid);
         }
@@ -135,12 +135,7 @@ public class Dcm2Dcm {
         }
         final File finalDest = dest.isDirectory() ? new File(dest, src.getName()) : dest;
         if (null != executer) {
-            executer.execute(new Runnable() {
-                @Override
-                public void run() {
-                    transcode(src, finalDest);
-                }
-            });
+            executer.execute(() -> transcode(src, finalDest));
         } else {
             transcode(src, finalDest);
         }

@@ -202,7 +202,7 @@ public class ResultBody extends AbstractBody implements Body {
 
     @Override
     public Download toFile(File file) {
-        if (null == taskExecutor) {
+        if (taskExecutor == null) {
             throw new IllegalStateException("Task executor is null!");
         }
         if (!file.exists()) {
@@ -265,7 +265,7 @@ public class ResultBody extends AbstractBody implements Body {
 
     private byte[] cacheBytes() {
         synchronized (response) {
-            if (null == data) {
+            if (data == null) {
                 data = bodyToBytes();
             }
         }
@@ -335,7 +335,7 @@ public class ResultBody extends AbstractBody implements Body {
     private String resolveFileName() {
         String fileName = response.header("Content-Disposition");
         // 通过Content-Disposition获取文件名
-        if (null == fileName || fileName.length() < 1) {
+        if (fileName == null || fileName.length() < 1) {
             fileName = response.request().url().encodedPath();
             fileName = fileName.substring(fileName.lastIndexOf(Symbol.SLASH) + 1);
         } else {

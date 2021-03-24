@@ -66,7 +66,7 @@ public enum AccessLevel {
         }
 
         GitLabApi.getLogger().warning(String.format("[%d] is not a valid GitLab access level.", value));
-        return (null == value ? null : INVALID);
+        return (value == null ? null : INVALID);
     }
 
     @JsonValue

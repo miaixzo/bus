@@ -772,7 +772,7 @@ public class ReflectKit {
      * @return 是否为equals方法
      */
     public static boolean isEqualsMethod(Method method) {
-        if (null == method || false == ObjectKit.equal(method.getName(), Normal.EQUALS)) {
+        if (null == methodl || false == ObjectKit.equal(method.getName(), Normal.EQUALS)) {
             return false;
         }
         final Class<?>[] paramTypes = method.getParameterTypes();

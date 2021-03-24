@@ -48,10 +48,10 @@ public class DocumentRepositoryService extends Service {
 
     static {
         URL url = DocumentRepositoryService.class.getResource("/wsdl/XDS.b_DocumentRepository.wsdl");
-        if (null == url) {
+        if (url == null) {
             url = DocumentRepositoryService.class.getClassLoader().getResource("/wsdl/XDS.b_DocumentRepository.wsdl");
         }
-        if (null == url) {
+        if (url == null) {
             Logger.getLogger(DocumentRepositoryService.class.getName()).log(Level.INFO, "Can not initialize the default wsdl from {0}", "/wsdl/XDS.b_DocumentRepository.wsdl");
         }
         WSDL_LOCATION = url;

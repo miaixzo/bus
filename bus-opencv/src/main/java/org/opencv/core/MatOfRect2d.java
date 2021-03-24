@@ -42,7 +42,7 @@ public class MatOfRect2d extends Mat {
     }
 
     public void fromArray(Rect2d... a) {
-        if (null == a || a.length == 0)
+        if (a == null || a.length == 0)
             return;
         int num = a.length;
         alloc(num);

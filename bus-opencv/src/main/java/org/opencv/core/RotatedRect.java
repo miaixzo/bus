@@ -25,7 +25,7 @@ public class RotatedRect {
     }
 
     public void set(double[] vals) {
-        if (null != vals) {
+        if (vals != null) {
             center.x = vals.length > 0 ? (double) vals[0] : 0;
             center.y = vals.length > 1 ? (double) vals[1] : 0;
             size.width = vals.length > 2 ? (double) vals[2] : 0;

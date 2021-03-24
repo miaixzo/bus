@@ -46,7 +46,7 @@ public class MatOfByte extends Mat {
     }
 
     public void fromArray(byte... a) {
-        if (null == a || a.length == 0)
+        if (a == null || a.length == 0)
             return;
         int num = a.length / _channels;
         alloc(num);
@@ -56,7 +56,7 @@ public class MatOfByte extends Mat {
     public void fromArray(int offset, int length, byte... a) {
         if (offset < 0)
             throw new IllegalArgumentException("offset < 0");
-        if (null == a)
+        if (a == null)
             throw new NullPointerException();
         if (length < 0 || length + offset > a.length)
             throw new IllegalArgumentException("invalid 'length' parameter: " + Integer.toString(length));
@@ -79,7 +79,7 @@ public class MatOfByte extends Mat {
     }
 
     public void fromList(List<Byte> lb) {
-        if (null == lb || lb.size() == 0)
+        if (lb == null || lb.size() == 0)
             return;
         Byte ab[] = lb.toArray(new Byte[0]);
         byte a[] = new byte[ab.length];

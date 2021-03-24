@@ -64,7 +64,7 @@ public final class Who {
         LIBC.setutxent();
         try {
             // Iterate
-            while ((ut = LIBC.getutxent()) != null) {
+            while (null != (ut = LIBC.getutxent())) {
                 if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
                     String user = Native.toString(ut.ut_user, Charset.defaultCharset());
                     String device = Native.toString(ut.ut_line, Charset.defaultCharset());

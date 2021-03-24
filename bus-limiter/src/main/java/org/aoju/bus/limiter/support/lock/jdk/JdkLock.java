@@ -81,7 +81,7 @@ public class JdkLock extends org.aoju.bus.limiter.support.lock.Lock {
     @Override
     public void unlock(Object key) {
         Lock lock = locks.remove(key);
-        if (null == lock) {
+        if (lock == null) {
             throw new RuntimeException("未找到该锁！");
         }
         lock.unlock();

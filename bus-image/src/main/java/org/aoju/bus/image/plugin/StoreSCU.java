@@ -107,7 +107,7 @@ public class StoreSCU implements AutoCloseable {
     }
 
     public static boolean updateAttributes(Attributes data, Attributes attrs, String uidSuffix) {
-        if (attrs.isEmpty() && null == uidSuffix) {
+        if (attrs.isEmpty() && uidSuffix == null) {
             return false;
         }
         if (null != uidSuffix) {
@@ -139,7 +139,7 @@ public class StoreSCU implements AutoCloseable {
         if (f.getName().endsWith(".xml")) {
             try {
                 SAXParser p = saxParser;
-                if (null == p) {
+                if (p == null) {
                     SAXParserFactory factory = SAXParserFactory.newInstance();
                     factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
                     saxParser = p = factory.newSAXParser();
@@ -148,7 +148,7 @@ public class StoreSCU implements AutoCloseable {
                 ContentHandlerAdapter ch = new ContentHandlerAdapter(ds);
                 p.parse(f, ch);
                 Attributes fmi = ch.getFileMetaInformation();
-                if (null == fmi) {
+                if (fmi == null) {
                     fmi = ds.createFileMetaInformation(UID.ExplicitVRLittleEndian);
                 }
                 boolean b = scb.dicomFile(f, fmi, -1, ds);
@@ -167,7 +167,7 @@ public class StoreSCU implements AutoCloseable {
                 Attributes fmi = in.readFileMetaInformation();
                 long dsPos = in.getPosition();
                 Attributes ds = in.readDataset(-1, Tag.PixelData);
-                if (null == fmi || !fmi.containsValue(Tag.TransferSyntaxUID)
+                if (fmi == null || !fmi.containsValue(Tag.TransferSyntaxUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPClassUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPInstanceUID)) {
                     fmi = ds.createFileMetaInformation(in.getTransferSyntax());
@@ -268,7 +268,7 @@ public class StoreSCU implements AutoCloseable {
         BufferedReader fileInfos = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile)));
         try {
             String line;
-            while (as.isReadyForDataTransfer() && (line = fileInfos.readLine()) != null) {
+            while (as.isReadyForDataTransfer() && null != (line = fileInfos.readLine())) {
                 Progress p = state.getProgress();
                 if (null != p) {
                     if (p.isCancel()) {
@@ -300,7 +300,7 @@ public class StoreSCU implements AutoCloseable {
         String cuid = fmi.getString(Tag.MediaStorageSOPClassUID);
         String iuid = fmi.getString(Tag.MediaStorageSOPInstanceUID);
         String ts = fmi.getString(Tag.TransferSyntaxUID);
-        if (null == cuid || null == iuid) {
+        if (cuid == null || iuid == null) {
             return false;
         }
 
@@ -346,7 +346,7 @@ public class StoreSCU implements AutoCloseable {
             throws IOException, InterruptedException, ParserConfigurationException, SAXException {
         String ts = selectTransferSyntax(as, cuid, filets);
 
-        boolean noChange = null == uidSuffix && attrs.isEmpty() && ts.equals(filets) && null == attributesEditors;
+        boolean noChange = uidSuffix == null && attrs.isEmpty() && ts.equals(filets) && attributesEditors == null;
         DataWriter dataWriter = null;
         InputStream in = null;
         Attributes data = null;

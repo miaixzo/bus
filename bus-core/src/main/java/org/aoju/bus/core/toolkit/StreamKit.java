@@ -146,7 +146,7 @@ public class StreamKit {
 
     public static String readText(InputStream in, String encoding, int bufferSize)
             throws IOException {
-        Reader reader = (null == encoding) ? new InputStreamReader(in) : new InputStreamReader(in,
+        Reader reader = null == encoding ? new InputStreamReader(in) : new InputStreamReader(in,
                 encoding);
 
         return readText(reader, bufferSize);
@@ -627,8 +627,9 @@ public class StreamKit {
             throws IOException {
         int count;
         while ((count = in.read(buf, 0, buf.length)) > 0)
-            if (null != out)
+            if (null != out) {
                 out.write(buf, 0, count);
+            }
     }
 
     public static void copy(InputStream in, OutputStream out)

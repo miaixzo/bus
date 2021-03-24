@@ -72,7 +72,7 @@ public class TextPainter implements Painter {
             }
 
             //旋转
-            if (textLineElement.getRotate() != null) {
+            if (null != textLineElement.getRotate()) {
                 if (textWidth == 0) {
                     textWidth = this.getFrontWidth(textLineElement.getText(), textLineElement.getFont());
                 }
@@ -95,7 +95,7 @@ public class TextPainter implements Painter {
             }
 
             //绘制完后反向旋转，以免影响后续元素
-            if (textLineElement.getRotate() != null) {
+            if (null != textLineElement.getRotate()) {
                 g.rotate(-Math.toRadians(textLineElement.getRotate()), textLineElement.getX() + textWidth / 2, textLineElement.getY());
             }
         }

@@ -181,7 +181,7 @@ public class ObjectKit {
      * @return the true/false
      */
     public static boolean isArray(Object object) {
-        return (null != object && object.getClass().isArray());
+        return null != object && object.getClass().isArray();
     }
 
     /**
@@ -321,7 +321,9 @@ public class ObjectKit {
      * @return 如果相等，则为true，否则为false
      */
     public static boolean equal(byte[] byte1, byte[] byte2) {
-        if (byte1 == byte2) return true;
+        if (byte1 == byte2) {
+            return true;
+        }
         if (null == byte1 || null == byte2) {
             return false;
         }

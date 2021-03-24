@@ -76,7 +76,7 @@ public abstract class AbstractProcessor<T> implements MessageProcessor<T>, NetMo
         AsynchronousSocketChannel acceptChannel = channel;
         for (Plugin<T> plugin : plugins) {
             acceptChannel = plugin.shouldAccept(acceptChannel);
-            if (null == acceptChannel) {
+            if (acceptChannel == null) {
                 return null;
             }
         }

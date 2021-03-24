@@ -46,7 +46,7 @@ public class RegistryObjectListType {
     protected List<JAXBElement<? extends IdentifiableType>> identifiable;
 
     public List<JAXBElement<? extends IdentifiableType>> getIdentifiable() {
-        if (this.null == identifiable) {
+        if (this.identifiable == null) {
             this.identifiable = new ArrayList();
         }
         return this.identifiable;

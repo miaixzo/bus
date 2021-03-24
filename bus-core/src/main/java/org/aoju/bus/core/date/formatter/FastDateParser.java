@@ -207,7 +207,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
      */
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
         synchronized (CACHES) {
-            if (CACHES[field] == null) {
+            if (null == CACHES[field]) {
                 CACHES[field] = new ConcurrentHashMap<>(3);
             }
             return CACHES[field];
@@ -642,7 +642,7 @@ public class FastDateParser extends AbstractMotd implements DateParser {
                             tzInfo = standard;
                             break;
                     }
-                    if (zoneNames[i] != null) {
+                    if (null != zoneNames[i]) {
                         final String key = zoneNames[i].toLowerCase(locale);
                         // 忽略附加名称中提供的与重复项关联的数据
                         if (sorted.add(key)) {

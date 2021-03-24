@@ -762,11 +762,15 @@ public class Formatter {
             } else if (length == Fields.MSEC_PATTERN.length() + 2 || length == Fields.MSEC_PATTERN.length() + 3) {
                 // 格式类似：2020-01-15T05:32:30.999+0800 或 2020-01-15T05:32:30.999+08:00
                 return parse(utcString, Fields.MSEC_FORMAT);
-            } else if (length == Fields.UTC_SIMPLE_PATTERN.length() - 2) {
-                // 格式类似：2020-07-07T15:31:20
-                return parse(utcString, Fields.UTC_SIMPLE_FORMAT);
+            } else if (length == Fields.SIMPLE_PATTERN.length() - 2) {
+                // 格式类似：2018-09-13T05:34:31
+                return parse(utcString, Fields.SIMPLE_FORMAT);
+            } else if (StringKit.contains(utcString, Symbol.DOT)) {
+                // 可能为：  2021-03-17T06:31:33.99
+                return parse(utcString, Fields.SIMPLE_MS_FORMAT);
             }
         }
+
         // 没有更多匹配的时间格式
         throw new InstrumentException("No format fit for date String [{}] !", utcString);
     }

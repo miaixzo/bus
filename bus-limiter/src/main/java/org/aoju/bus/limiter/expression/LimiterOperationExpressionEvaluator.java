@@ -80,7 +80,7 @@ public class LimiterOperationExpressionEvaluator {
 
         ExpressionKey expressionKey = new ExpressionKey(elementKey, expression);
         Expression expr = keyCache.get(expressionKey);
-        if (null == expr) {
+        if (expr == null) {
             expr = this.parser.parseExpression(expression);
             keyCache.put(expressionKey, expr);
         }

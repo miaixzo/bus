@@ -117,13 +117,13 @@ public class MapperBuilder {
                 tempClass = provider.type();
                 methodSet.add(method.getName());
             }
-            if (null == templateClass) {
+            if (templateClass == null) {
                 templateClass = tempClass;
             } else if (templateClass != tempClass) {
                 throw new InstrumentException("一个通用Mapper中只允许存在一个MapperTemplate子类!");
             }
         }
-        if (null == templateClass || !MapperTemplate.class.isAssignableFrom(templateClass)) {
+        if (templateClass == null || !MapperTemplate.class.isAssignableFrom(templateClass)) {
             templateClass = EmptyProvider.class;
         }
         MapperTemplate mapperTemplate;
@@ -182,7 +182,7 @@ public class MapperBuilder {
      * @return the boolean
      */
     public boolean isMapperMethod(String msId) {
-        if (msIdSkip.get(msId) != null) {
+        if (null != msIdSkip.get(msId)) {
             return msIdSkip.get(msId);
         }
         for (Map.Entry<Class<?>, MapperTemplate> entry : registerMapper.entrySet()) {
@@ -271,7 +271,7 @@ public class MapperBuilder {
      */
     public void setConfig(Config config) {
         this.config = config;
-        if (config.getMappers() != null && config.getMappers().size() > 0) {
+        if (null != config.getMappers() && config.getMappers().size() > 0) {
             for (Class mapperClass : config.getMappers()) {
                 registerMapper(mapperClass);
             }

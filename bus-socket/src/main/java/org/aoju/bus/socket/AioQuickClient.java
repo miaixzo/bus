@@ -133,12 +133,12 @@ public class AioQuickClient<T> {
     public CompletableFuture<AioSession> asyncStart(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
         Objects.requireNonNull(asynchronousChannelGroup);
         AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open(asynchronousChannelGroup);
-        if (null == bufferPool) {
+        if (bufferPool == null) {
             bufferPool = config.getBufferFactory().create();
             this.innerBufferPool = bufferPool;
         }
         //set socket options
-        if (config.getSocketOptions() != null) {
+        if (null != config.getSocketOptions()) {
             for (Map.Entry<SocketOption<Object>, Object> entry : config.getSocketOptions().entrySet()) {
                 socketChannel.setOption(entry.getKey(), entry.getValue());
             }
@@ -152,10 +152,10 @@ public class AioQuickClient<T> {
             @Override
             public void completed(Void result, AsynchronousSocketChannel socketChannel) {
                 AsynchronousSocketChannel connectedChannel = socketChannel;
-                if (config.getMonitor() != null) {
+                if (null != config.getMonitor()) {
                     connectedChannel = config.getMonitor().shouldAccept(socketChannel);
                 }
-                if (null == connectedChannel) {
+                if (connectedChannel == null) {
                     throw new RuntimeException("NetMonitor refuse channel");
                 }
                 //连接成功则构造AIOSession对象
@@ -260,7 +260,7 @@ public class AioQuickClient<T> {
      * @return 当前客户端实例
      */
     public final AioQuickClient<T> bindLocal(String local, int port) {
-        localAddress = null == local ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
+        localAddress = local == null ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
         return this;
     }
 

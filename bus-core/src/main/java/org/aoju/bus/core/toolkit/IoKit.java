@@ -882,7 +882,7 @@ public class IoKit {
         final BufferedReader bReader = getReader(reader);
         String line;
         try {
-            while ((line = bReader.readLine()) != null) {
+            while (null != (line = bReader.readLine())) {
                 lineHandler.handle(line);
             }
         } catch (IOException e) {
@@ -1395,8 +1395,12 @@ public class IoKit {
      * @return 接收器
      */
     private static Sink sink(final OutputStream out, final Timeout timeout) {
-        if (null == out) throw new IllegalArgumentException("null == out");
-        if (null == timeout) throw new IllegalArgumentException("null == timeout");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
+        if (null == timeout) {
+            throw new IllegalArgumentException("timeout == null");
+        }
 
         return new Sink() {
             @Override
@@ -1451,8 +1455,12 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Sink sink(Socket socket) throws IOException {
-        if (null == socket) throw new IllegalArgumentException("null == socket");
-        if (socket.getOutputStream() == null) throw new IOException("socket's output null == stream");
+        if (null == socket) {
+            throw new IllegalArgumentException("socket == null");
+        }
+        if (null == socket.getOutputStream()) {
+            throw new IOException("socket's output stream == null");
+        }
         AsyncTimeout timeout = timeout(socket);
         Sink sink = sink(socket.getOutputStream(), timeout);
         return timeout.sink(sink);
@@ -1476,8 +1484,12 @@ public class IoKit {
      * @return 缓冲数据
      */
     private static Source source(final InputStream in, final Timeout timeout) {
-        if (null == in) throw new IllegalArgumentException("null == in");
-        if (null == timeout) throw new IllegalArgumentException("null == timeout");
+        if (null == in) {
+            throw new IllegalArgumentException("in == null");
+        }
+        if (null == timeout) {
+            throw new IllegalArgumentException("timeout == null");
+        }
 
         return new Source() {
             @Override
@@ -1524,7 +1536,9 @@ public class IoKit {
      * @throws FileNotFoundException 文件未找到
      */
     public static Source source(File file) throws FileNotFoundException {
-        if (null == file) throw new IllegalArgumentException("null == file");
+        if (null == file) {
+            throw new IllegalArgumentException("file == null");
+        }
         return source(new FileInputStream(file));
     }
 
@@ -1537,7 +1551,9 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Source source(Path path, OpenOption... options) throws IOException {
-        if (null == path) throw new IllegalArgumentException("null == path");
+        if (null == path) {
+            throw new IllegalArgumentException("path == null");
+        }
         return source(Files.newInputStream(path, options));
     }
 
@@ -1549,7 +1565,9 @@ public class IoKit {
      * @throws FileNotFoundException 文件未找到
      */
     public static Sink sink(File file) throws FileNotFoundException {
-        if (null == file) throw new IllegalArgumentException("null == file");
+        if (null == file) {
+            throw new IllegalArgumentException("file == null");
+        }
         return sink(new FileOutputStream(file));
     }
 
@@ -1561,7 +1579,9 @@ public class IoKit {
      * @throws FileNotFoundException 文件未找到
      */
     public static Sink appendingSink(File file) throws FileNotFoundException {
-        if (null == file) throw new IllegalArgumentException("null == file");
+        if (null == file) {
+            throw new IllegalArgumentException("file == null");
+        }
         return sink(new FileOutputStream(file, true));
     }
 
@@ -1574,7 +1594,9 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Sink sink(Path path, OpenOption... options) throws IOException {
-        if (null == path) throw new IllegalArgumentException("null == path");
+        if (null == path) {
+            throw new IllegalArgumentException("path == null");
+        }
         return sink(Files.newOutputStream(path, options));
     }
 
@@ -1614,8 +1636,12 @@ public class IoKit {
      * @throws IOException IO异常
      */
     public static Source source(Socket socket) throws IOException {
-        if (null == socket) throw new IllegalArgumentException("null == socket");
-        if (socket.getInputStream() == null) throw new IOException("socket's input null == stream");
+        if (null == socket) {
+            throw new IllegalArgumentException("socket == null");
+        }
+        if (null == socket.getInputStream()) {
+            throw new IOException("socket's input stream == null");
+        }
         AsyncTimeout timeout = timeout(socket);
         Source source = source(socket.getInputStream(), timeout);
         return timeout.source(source);
@@ -1650,7 +1676,7 @@ public class IoKit {
     }
 
     static boolean isAndroidGetsocknameError(AssertionError e) {
-        return e.getCause() != null && e.getMessage() != null
+        return null != e.getCause() && null != e.getMessage()
                 && e.getMessage().contains("getsockname failed");
     }
 

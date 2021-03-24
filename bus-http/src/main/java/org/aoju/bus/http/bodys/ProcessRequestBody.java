@@ -73,7 +73,7 @@ public class ProcessRequestBody extends RequestBody {
 
     @Override
     public void writeTo(BufferSink sink) throws IOException {
-        if (null == bufferedSink) {
+        if (bufferedSink == null) {
             bufferedSink = IoKit.buffer(new DelegateSink(sink) {
 
                 @Override

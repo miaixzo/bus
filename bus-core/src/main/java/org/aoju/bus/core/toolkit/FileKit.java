@@ -745,7 +745,9 @@ public class FileKit {
      * @throws InstrumentException 异常
      */
     public static boolean clean(File directory) throws InstrumentException {
-        if (null == directory || directory.exists() == false || false == directory.isDirectory()) {
+        if (null == directory
+                || directory.exists() == false
+                || false == directory.isDirectory()) {
             return true;
         }
 
@@ -1223,7 +1225,7 @@ public class FileKit {
             String tempString;
             String all = Normal.EMPTY;
             // 一次读入一行,直到读入null为文件结束
-            while ((tempString = reader.readLine()) != null) {
+            while (null != (tempString = reader.readLine())) {
                 // 显示行号
                 all += tempString;
             }
@@ -2592,7 +2594,7 @@ public class FileKit {
     public static void readLines(RandomAccessFile file, java.nio.charset.Charset charset, LineHandler lineHandler) {
         String line;
         try {
-            while ((line = file.readLine()) != null) {
+            while (null != (line = file.readLine())) {
                 lineHandler.handle(Charset.convert(line, Charset.ISO_8859_1, charset));
             }
         } catch (IOException e) {

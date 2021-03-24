@@ -78,7 +78,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                 Tag.CodingSchemeDesignator, VR.SH, DataElementType.TYPE_1, 1, 1, 0)
                 .setValues(code.getCodingSchemeDesignator()));
         String codingSchemeVersion = code.getCodingSchemeVersion();
-        if (null == codingSchemeVersion)
+        if (codingSchemeVersion == null)
             iod.add(new DataElement(
                     Tag.CodingSchemeVersion, VR.SH, DataElementType.TYPE_0, -1, -1, 0));
         else
@@ -164,7 +164,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         public DataElement addItemIOD(IOD iod) {
-            if (this.null == values) {
+            if (this.values == null) {
                 this.values = new IOD[]{iod};
             } else {
                 IOD[] iods = (IOD[]) this.values;
@@ -358,10 +358,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         public boolean match(Attributes attrs) {
-            if (null == values)
+            if (values == null)
                 throw new IllegalStateException("values not initialized");
             Attributes item = item(attrs);
-            if (null == item)
+            if (item == null)
                 return matchNotPresent;
 
             if (values instanceof int[])
@@ -374,7 +374,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         private boolean match(Attributes item, String[] ss) {
             String val = item.getString(tag, valueIndex);
-            if (null == val)
+            if (val == null)
                 return not != matchNotPresent;
             for (String s : ss) {
                 if (s.equals(val))
@@ -523,11 +523,11 @@ public class IOD extends ArrayList<IOD.DataElement> {
                                String codingSchemeDesignator,
                                String codingSchemeVersion,
                                String codeMeaning) throws SAXException {
-            if (null == codeValue)
+            if (codeValue == null)
                 throw new SAXException("missing codeValue attribute");
-            if (null == codingSchemeDesignator)
+            if (codingSchemeDesignator == null)
                 throw new SAXException("missing codingSchemeDesignator attribute");
-            if (null == codeMeaning)
+            if (codeMeaning == null)
                 throw new SAXException("missing codeMeaning attribute");
             codes.add(new Code(codeValue, codingSchemeDesignator,
                     codingSchemeVersion, codeMeaning));
@@ -592,8 +592,9 @@ public class IOD extends ArrayList<IOD.DataElement> {
         private void startDataElement(String tagStr, String vrStr,
                                       String typeStr, String vmStr, String items,
                                       String valueNumberStr) throws SAXException {
-            if (null != idref)
+            if (null != idref) {
                 throw new SAXException("<Item> with idref must be empty");
+            }
 
             IOD iod = iodStack.getLast();
             int tag = tagOf(tagStr);
@@ -624,15 +625,16 @@ public class IOD extends ArrayList<IOD.DataElement> {
             }
             DataElement el = new DataElement(tag, vr, type, minVM, maxVM,
                     valueNumberOf(valueNumberStr, 0));
-            if (null != locator)
+            if (null != locator) {
                 el.setLineNumber(locator.getLineNumber());
+            }
             iod.add(el);
             elementConditions = true;
             itemConditions = false;
         }
 
         private DataElementType typeOf(String s) throws SAXException {
-            if (null == s)
+            if (s == null)
                 throw new SAXException("missing type attribute");
             try {
                 return DataElementType.valueOf("TYPE_" + s);
@@ -744,7 +746,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                     throw new SAXException("<Item> with idref must not specify type");
 
                 iod = id2iod.get(idref);
-                if (null == iod)
+                if (iod == null)
                     throw new SAXException(
                             "could not resolve <Item idref:\"" + idref + "\"/>");
             } else {
@@ -776,7 +778,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             Condition cond;
             if (null != idref) {
                 cond = id2cond.get(idref);
-                if (null == cond)
+                if (cond == null)
                     throw new SAXException(
                             "could not resolve <If idref:\"" + idref + "\"/>");
             } else {

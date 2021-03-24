@@ -168,11 +168,11 @@ public class StgSCU {
         String cuid = inst.getString(Tag.SOPClassUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
         String splitkey = splitTag != 0 ? inst.getString(splitTag) : Normal.EMPTY;
-        if (null == cuid || null == iuid || null == splitkey)
+        if (cuid == null || iuid == null || splitkey == null)
             return false;
 
         List<String> refSOPs = map.get(splitkey);
-        if (null == refSOPs)
+        if (refSOPs == null)
             map.put(splitkey, refSOPs = new ArrayList<>());
 
         refSOPs.add(cuid);
@@ -263,7 +263,7 @@ public class StgSCU {
 
     private Attributes eventRecord(Association as, Attributes cmd, Attributes eventInfo)
             throws ImageException {
-        if (null == storageDir)
+        if (storageDir == null)
             return null;
 
         String cuid = cmd.getString(Tag.AffectedSOPClassUID);

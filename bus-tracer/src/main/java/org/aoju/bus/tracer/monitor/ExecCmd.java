@@ -74,7 +74,7 @@ public class ExecCmd {
             StringBuilder sb = new StringBuilder();
             String line;
 
-            while ((line = bufferedReader.readLine()) != null) {
+            while (null != (line = bufferedReader.readLine())) {
                 sb.append(line);
                 sb.append(Symbol.LF);
             }
@@ -121,7 +121,7 @@ public class ExecCmd {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             StringBuilder sb = new StringBuilder();
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while (null != (line = bufferedReader.readLine())) {
                 sb.append(line);
                 sb.append(Symbol.LF);
             }

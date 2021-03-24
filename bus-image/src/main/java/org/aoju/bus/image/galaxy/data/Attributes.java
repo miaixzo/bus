@@ -93,8 +93,8 @@ public class Attributes implements Serializable {
 
     public Attributes(Attributes other, boolean bigEndian) {
         this(bigEndian, other.size);
-        if (other.null != properties)
-            properties = new HashMap<String, Object>(other.properties);
+        if (null != other.properties)
+            properties = new HashMap<>(other.properties);
         addAll(other);
     }
 
@@ -104,15 +104,15 @@ public class Attributes implements Serializable {
 
     public Attributes(Attributes other, boolean bigEndian, int... selection) {
         this(bigEndian, selection.length);
-        if (other.null != properties)
-            properties = new HashMap<String, Object>(other.properties);
+        if (null != other.properties)
+            properties = new HashMap<>(other.properties);
         addSelected(other, selection);
     }
 
     public Attributes(Attributes other, boolean bigEndian, Attributes selection) {
         this(bigEndian, selection.size());
-        if (other.null != properties)
-            properties = new HashMap<String, Object>(other.properties);
+        if (null != other.properties)
+            properties = new HashMap<>(other.properties);
         addSelected(other, selection);
     }
 
@@ -156,11 +156,11 @@ public class Attributes implements Serializable {
     }
 
     private static String toString(DateRange range, VR vr, TimeZone tz, DatePrecision precision) {
-        String start = range.getStartDate() != null
+        String start = null != range.getStartDate()
                 ? (String) vr.toValue(new Date[]{range.getStartDate()}, tz,
                 precision)
                 : Normal.EMPTY;
-        String end = range.getEndDate() != null
+        String end = null != range.getEndDate()
                 ? (String) vr.toValue(new Date[]{range.getEndDate()}, tz,
                 precision)
                 : Normal.EMPTY;
@@ -198,11 +198,11 @@ public class Attributes implements Serializable {
 
     public static Attributes createFileMetaInformation(String iuid,
                                                        String cuid, String tsuid) {
-        if (null == iuid || iuid.isEmpty())
+        if (iuid == null || iuid.isEmpty())
             throw new IllegalArgumentException("Missing SOP Instance UID");
-        if (null == cuid || cuid.isEmpty())
+        if (cuid == null || cuid.isEmpty())
             throw new IllegalArgumentException("Missing SOP Class UID");
-        if (null == tsuid || tsuid.isEmpty())
+        if (tsuid == null || tsuid.isEmpty())
             throw new IllegalArgumentException("Missing Transfer Syntax UID");
 
         Attributes fmi = new Attributes(6);
@@ -275,7 +275,7 @@ public class Attributes implements Serializable {
     }
 
     public Object getProperty(String key, Object defVal) {
-        if (null == properties)
+        if (properties == null)
             return defVal;
 
         Object val = properties.get(key);
@@ -283,8 +283,8 @@ public class Attributes implements Serializable {
     }
 
     public Object setProperty(String key, Object value) {
-        if (null == properties)
-            properties = new HashMap<String, Object>();
+        if (properties == null)
+            properties = new HashMap<>();
         return properties.put(key, value);
     }
 
@@ -293,7 +293,7 @@ public class Attributes implements Serializable {
     }
 
     public final boolean isRoot() {
-        return null == parent;
+        return parent == null;
     }
 
     public final int getLevel() {
@@ -313,7 +313,7 @@ public class Attributes implements Serializable {
             if (parent.bigEndian != bigEndian)
                 throw new IllegalArgumentException(
                         "Endian of Item must match Endian of parent Data Set");
-            if (this.null != parent)
+            if (null != this.parent)
                 throw new IllegalArgumentException(
                         "Item already contained by Sequence");
             if (!containsSpecificCharacterSet)
@@ -823,7 +823,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return defVal;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -858,7 +858,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return Normal.EMPTY_STRING_ARRAY;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -905,7 +905,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return defVal;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -942,7 +942,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return new int[]{};
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -991,7 +991,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return defVal;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -1028,7 +1028,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return new float[]{};
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -1077,7 +1077,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return defVal;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -1114,7 +1114,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return new double[]{};
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -1245,7 +1245,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return defVal;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -1299,11 +1299,11 @@ public class Attributes implements Serializable {
         int tmTag = (int) tag;
 
         String tm = getString(privateCreator, tmTag, VR.TM, null);
-        if (null == tm)
+        if (tm == null)
             return getDate(daTag, defVal, precision);
 
         String da = getString(privateCreator, daTag, VR.DA, null);
-        if (null == da)
+        if (da == null)
             return defVal;
         try {
             return VR.DT.toDate(da + tm, getTimeZone(), 0, false, null,
@@ -1349,7 +1349,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return Format.EMPTY_DATES;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -1388,11 +1388,11 @@ public class Attributes implements Serializable {
         int tmTag = (int) tag;
 
         String[] tm = getStrings(privateCreator, tmTag);
-        if (null == tm || tm.length == 0)
+        if (tm == null || tm.length == 0)
             return getDates(daTag, precisions);
 
         String[] da = getStrings(privateCreator, daTag);
-        if (null == da || da.length == 0)
+        if (da == null || da.length == 0)
             return Format.EMPTY_DATES;
 
         Date[] dates = new Date[da.length];
@@ -1444,7 +1444,7 @@ public class Attributes implements Serializable {
         if (value == Value.NULL)
             return defVal;
 
-        if (null == vr)
+        if (vr == null)
             vr = vrs[index];
         else
             updateVR(index, vr);
@@ -1493,11 +1493,11 @@ public class Attributes implements Serializable {
         int tmTag = (int) tag;
 
         String tm = getString(privateCreator, tmTag, VR.TM, null);
-        if (null == tm)
+        if (tm == null)
             return getDateRange(daTag, defVal);
 
         String da = getString(privateCreator, daTag, VR.DA, null);
-        if (null == da)
+        if (da == null)
             return defVal;
 
         try {
@@ -1988,7 +1988,7 @@ public class Attributes implements Serializable {
     }
 
     private Object set(String privateCreator, int tag, VR vr, Object value) {
-        if (null == vr)
+        if (vr == null)
             throw new NullPointerException("vr");
 
         if (null != privateCreator) {
@@ -2202,7 +2202,7 @@ public class Attributes implements Serializable {
                     Sequence dest;
                     if (mergeOriginalAttributesSequence
                             && tag == Tag.OriginalAttributesSequence
-                            && (dest = getSequence(tag)) != null)
+                            && null != (dest = getSequence(tag)))
                         mergeOriginalAttributesSequence((Sequence) value, dest);
                     else
                         set(privateCreator, tag, (Sequence) value,
@@ -2611,7 +2611,7 @@ public class Attributes implements Serializable {
         if (isEmpty())
             return;
 
-        if (null == groupLengths && out.getEncodingOptions().groupLength)
+        if (groupLengths == null && out.getEncodingOptions().groupLength)
             throw new IllegalStateException(
                     "groupLengths not initialized by calcLength()");
 
@@ -2789,7 +2789,7 @@ public class Attributes implements Serializable {
     private boolean matches(String privateCreator, int tag, VR vr,
                             boolean ignorePNCase, boolean matchNoValue, String[] keyVals) {
         String[] vals = getStrings(privateCreator, tag, null);
-        if (null == vals || vals.length == 0)
+        if (vals == null || vals.length == 0)
             return matchNoValue;
 
         boolean ignoreCase = ignorePNCase && vr == VR.PN;
@@ -2809,7 +2809,7 @@ public class Attributes implements Serializable {
             if (Property.containsWildCard(keyVal)) {
                 Pattern pattern = Property.compilePattern(keyVal, ignoreCase);
                 for (String val : vals) {
-                    if (null == val)
+                    if (val == null)
                         if (matchNoValue)
                             return true;
                         else
@@ -2821,7 +2821,7 @@ public class Attributes implements Serializable {
                 }
             } else {
                 for (String val : vals) {
-                    if (null == val)
+                    if (val == null)
                         if (matchNoValue)
                             return true;
                         else
@@ -2855,7 +2855,7 @@ public class Attributes implements Serializable {
             return true;
 
         Object value = getValue(privateCreator, tag);
-        if (null == value || isEmpty(value))
+        if (value == null || isEmpty(value))
             return matchNoValue;
 
         if (value instanceof Sequence) {
@@ -2908,7 +2908,7 @@ public class Attributes implements Serializable {
         if (null != condition) {
             String id = condition.id();
             Boolean match = null != id ? processedConditions.get(id) : null;
-            if (null == match) {
+            if (match == null) {
                 match = condition.match(this);
                 if (null != id)
                     processedConditions.put(id, match);
@@ -2973,8 +2973,7 @@ public class Attributes implements Serializable {
                 ValidationResult[] itemValidationResults = new ValidationResult[seqSize];
                 for (int i = 0; i < seqSize; i++) {
                     ValidationResult itemValidationResult = new ValidationResult();
-                    HashMap<String, Boolean> resolvedItemConditions =
-                            new HashMap<String, Boolean>();
+                    HashMap<String, Boolean> resolvedItemConditions = new HashMap<>();
                     Attributes item = seq.get(i);
                     for (int j = 0; j < itemIODs.length; j++) {
                         IOD itemIOD = itemIODs[j];
@@ -2982,7 +2981,7 @@ public class Attributes implements Serializable {
                         if (null != itemCondition) {
                             String id = itemCondition.id();
                             Boolean match = null != id ? resolvedItemConditions.get(id) : null;
-                            if (null == match) {
+                            if (match == null) {
                                 match = itemCondition.match(item);
                                 if (null != id)
                                     resolvedItemConditions.put(id, match);
@@ -3016,7 +3015,7 @@ public class Attributes implements Serializable {
                 return;
             }
         }
-        if (null == validVals)
+        if (validVals == null)
             return;
 
         if (validVals instanceof String[]) {
@@ -3073,7 +3072,7 @@ public class Attributes implements Serializable {
     }
 
     private <T> boolean isOneOf(Object val, T[] ss) {
-        if (null == ss)
+        if (ss == null)
             return true;
         for (T s : ss)
             if (val.equals(s))
@@ -3092,7 +3091,7 @@ public class Attributes implements Serializable {
     }
 
     private boolean isOneOf(int val, int[] is) {
-        if (null == is)
+        if (is == null)
             return true;
         for (int i : is)
             if (val == i)
@@ -3110,7 +3109,7 @@ public class Attributes implements Serializable {
      * @return result data set.
      */
     public Attributes getModified(Attributes other, Attributes result) {
-        if (null == result)
+        if (result == null)
             result = new Attributes(other.size);
         int creatorTag = -1;
         int prevOtherCreatorTag = -1;
@@ -3201,7 +3200,7 @@ public class Attributes implements Serializable {
                         }
                     }
                 }
-                if (null == privateCreator)
+                if (privateCreator == null)
                     continue; // no Private Creator
 
                 if (otherCreatorTag != -1)

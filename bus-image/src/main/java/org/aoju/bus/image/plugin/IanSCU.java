@@ -148,11 +148,11 @@ public class IanSCU {
     public boolean addInstance(Attributes inst) {
         Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
-        if (null == suid)
+        if (suid == null)
             return false;
 
         Attributes ian = map.get(suid);
-        if (null == ian)
+        if (ian == null)
             map.put(suid, ian = createIAN(inst));
         updateIAN(ian, inst);
         return true;

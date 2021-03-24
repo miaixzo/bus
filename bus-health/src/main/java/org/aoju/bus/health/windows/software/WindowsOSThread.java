@@ -117,14 +117,14 @@ public class WindowsOSThread extends AbstractOSThread {
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
                 .buildThreadMapFromRegistry(pids);
         // otherwise performance counters with WMI backup
-        if (null == threads) {
+        if (threads == null) {
             threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(pids);
         }
         return updateAttributes(this.name.split(Symbol.SLASH)[0], threads.get(getThreadId()));
     }
 
     private boolean updateAttributes(String procName, ThreadPerformanceData.PerfCounterBlock pcb) {
-        if (null == pcb) {
+        if (pcb == null) {
             this.state = OSProcess.State.INVALID;
             return false;
         } else if (pcb.getName().contains(Symbol.SLASH) || procName.isEmpty()) {

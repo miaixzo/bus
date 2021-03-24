@@ -200,7 +200,7 @@ public final class CsvReader {
     private void read(CsvParser csvParser, CsvHandler rowHandler) {
         try {
             CsvRow csvRow;
-            while ((csvRow = csvParser.nextRow()) != null) {
+            while (null != (csvRow = csvParser.nextRow())) {
                 rowHandler.handle(csvRow);
             }
         } finally {

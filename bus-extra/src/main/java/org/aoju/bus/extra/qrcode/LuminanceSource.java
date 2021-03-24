@@ -91,7 +91,7 @@ public final class LuminanceSource extends com.google.zxing.LuminanceSource {
             throw new IllegalArgumentException("Requested row is outside the image: " + y);
         }
         int width = getWidth();
-        if (null == row || row.length < width) {
+        if (row == null || row.length < width) {
             row = new byte[width];
         }
         image.getRaster().getDataElements(left, top + y, width, 1, row);

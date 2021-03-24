@@ -270,7 +270,7 @@ public class UserAgent {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((null == name) ? 0 : name.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -279,15 +279,15 @@ public class UserAgent {
         if (this == obj) {
             return true;
         }
-        if (null == obj) {
+        if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
         final UserAgent other = (UserAgent) obj;
-        if (null == name) {
-            return other.null == name;
+        if (name == null) {
+            return other.name == null;
         } else return name.equals(other.name);
     }
 

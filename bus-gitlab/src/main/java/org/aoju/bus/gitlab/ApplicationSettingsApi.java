@@ -117,7 +117,7 @@ public class ApplicationSettingsApi extends AbstractApi {
      */
     public ApplicationSettings updateApplicationSettings(ApplicationSettings appSettings) throws GitLabApiException {
 
-        if (null == appSettings || appSettings.getSettings().isEmpty()) {
+        if (appSettings == null || appSettings.getSettings().isEmpty()) {
             throw new GitLabApiException("ApplicationSettings cannot be null or empty.");
         }
 
@@ -140,7 +140,7 @@ public class ApplicationSettingsApi extends AbstractApi {
      */
     public ApplicationSettings updateApplicationSetting(Setting setting, Object value) throws GitLabApiException {
 
-        if (null == setting) {
+        if (setting == null) {
             throw new GitLabApiException("setting cannot be null.");
         }
 
@@ -159,7 +159,7 @@ public class ApplicationSettingsApi extends AbstractApi {
      */
     public ApplicationSettings updateApplicationSetting(String setting, Object value) throws GitLabApiException {
 
-        if (null == setting || setting.trim().isEmpty()) {
+        if (setting == null || setting.trim().isEmpty()) {
             throw new GitLabApiException("setting cannot be null or empty.");
         }
 

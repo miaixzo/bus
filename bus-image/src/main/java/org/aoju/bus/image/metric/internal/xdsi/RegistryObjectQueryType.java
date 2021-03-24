@@ -61,7 +61,7 @@ public class RegistryObjectQueryType extends FilterQueryType {
     protected List<AssociationQueryType> targetAssociationQuery;
 
     public List<SlotBranchType> getSlotBranch() {
-        if (this.null == slotBranch) {
+        if (this.slotBranch == null) {
             this.slotBranch = new ArrayList();
         }
         return this.slotBranch;
@@ -92,14 +92,14 @@ public class RegistryObjectQueryType extends FilterQueryType {
     }
 
     public List<ClassificationQueryType> getClassificationQuery() {
-        if (this.null == classificationQuery) {
+        if (this.classificationQuery == null) {
             this.classificationQuery = new ArrayList();
         }
         return this.classificationQuery;
     }
 
     public List<ExternalIdentifierQueryType> getExternalIdentifierQuery() {
-        if (this.null == externalIdentifierQuery) {
+        if (this.externalIdentifierQuery == null) {
             this.externalIdentifierQuery = new ArrayList();
         }
         return this.externalIdentifierQuery;
@@ -122,14 +122,14 @@ public class RegistryObjectQueryType extends FilterQueryType {
     }
 
     public List<AssociationQueryType> getSourceAssociationQuery() {
-        if (this.null == sourceAssociationQuery) {
+        if (this.sourceAssociationQuery == null) {
             this.sourceAssociationQuery = new ArrayList();
         }
         return this.sourceAssociationQuery;
     }
 
     public List<AssociationQueryType> getTargetAssociationQuery() {
-        if (this.null == targetAssociationQuery) {
+        if (this.targetAssociationQuery == null) {
             this.targetAssociationQuery = new ArrayList();
         }
         return this.targetAssociationQuery;

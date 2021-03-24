@@ -1183,7 +1183,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     public Builders appendFixedWidthPadLeft(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
-            String str = (null == obj ? getNullText() : obj.toString());
+            String str = null == obj ? getNullText() : obj.toString();
             if (null == str) {
                 str = Normal.EMPTY;
             }
@@ -1230,7 +1230,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     public Builders appendFixedWidthPadRight(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
-            String str = (null == obj ? getNullText() : obj.toString());
+            String str = null == obj ? getNullText() : obj.toString();
             if (null == str) {
                 str = Normal.EMPTY;
             }
@@ -1533,7 +1533,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders deleteAll(final String str) {
-        final int len = (null == str ? 0 : str.length());
+        final int len = null == str ? 0 : str.length();
         if (len > 0) {
             int index = indexOf(str, 0);
             while (index >= 0) {
@@ -1551,7 +1551,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders deleteFirst(final String str) {
-        final int len = (null == str ? 0 : str.length());
+        final int len = null == str ? 0 : str.length();
         if (len > 0) {
             final int index = indexOf(str, 0);
             if (index >= 0) {
@@ -1619,7 +1619,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public Builders replace(final int startIndex, int endIndex, final String replaceStr) {
         endIndex = validateRange(startIndex, endIndex);
-        final int insertLen = (null == replaceStr ? 0 : replaceStr.length());
+        final int insertLen = null == replaceStr ? 0 : replaceStr.length();
         replaceImpl(startIndex, endIndex, endIndex - startIndex, replaceStr, insertLen);
         return this;
     }
@@ -1669,9 +1669,9 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders replaceAll(final String searchStr, final String replaceStr) {
-        final int searchLen = (null == searchStr ? 0 : searchStr.length());
+        final int searchLen = null == searchStr ? 0 : searchStr.length();
         if (searchLen > 0) {
-            final int replaceLen = (null == replaceStr ? 0 : replaceStr.length());
+            final int replaceLen = null == replaceStr ? 0 : replaceStr.length();
             int index = indexOf(searchStr, 0);
             while (index >= 0) {
                 replaceImpl(index, index + searchLen, searchLen, replaceStr, replaceLen);
@@ -1689,11 +1689,11 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders replaceFirst(final String searchStr, final String replaceStr) {
-        final int searchLen = (null == searchStr ? 0 : searchStr.length());
+        final int searchLen = null == searchStr ? 0 : searchStr.length();
         if (searchLen > 0) {
             final int index = indexOf(searchStr, 0);
             if (index >= 0) {
-                final int replaceLen = (null == replaceStr ? 0 : replaceStr.length());
+                final int replaceLen = null == replaceStr ? 0 : replaceStr.length();
                 replaceImpl(index, index + searchLen, searchLen, replaceStr, replaceLen);
             }
         }
@@ -1757,7 +1757,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         if (null == matcher || size == 0) {
             return this;
         }
-        final int replaceLen = (null == replaceStr ? 0 : replaceStr.length());
+        final int replaceLen = null == replaceStr ? 0 : replaceStr.length();
         final char[] buf = buffer;
         for (int i = from; i < to && replaceCount != 0; i++) {
             final int removeLen = matcher.isMatch(buf, i, from, to);

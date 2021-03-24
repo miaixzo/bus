@@ -92,7 +92,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                         }
                     } else if (i == 2) {
                         operator = TerminalVersion.Version.parse(content);
-                        if (null == operator) {
+                        if (operator == null) {
                             throw new IllegalArgumentException("check the versionOperator!!!");
                         }
                     } else if (i == 3) {
@@ -202,7 +202,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
 
         public final boolean match(HttpServletRequest request) {
             // 匹配客户端类型
-            if (this.null != terminals && this.terminals.length > 0) {
+            if (null != this.terminals && this.terminals.length > 0) {
                 int terminal = getTerminal(request);
                 int i = Arrays.binarySearch(terminals, terminal);
                 // 未找到则匹配失败
@@ -210,7 +210,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                     return false;
                 }
             }
-            if (this.null != operator && this.operator != TerminalVersion.Version.NIL) {
+            if (null != this.operator && this.operator != TerminalVersion.Version.NIL) {
                 String clientVersion = getVersion(request);
                 String checkVersion = getVersion();
                 if (StringKit.isBlank(clientVersion)) {

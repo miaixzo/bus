@@ -155,8 +155,8 @@ public class Args {
         this.bindCallingAet = bindCallingAet;
         this.storagePattern = storagePattern;
         this.transferCapabilityFile = transferCapabilityFile;
-        this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0] : acceptedCallingAETitles;
-        if (null == option && this.null != option) {
+        this.acceptedCallingAETitles = acceptedCallingAETitles == null ? new String[0] : acceptedCallingAETitles;
+        if (option == null && null != this.option) {
             this.option.setMaxOpsInvoked(15);
             this.option.setMaxOpsPerformed(15);
         }
@@ -174,10 +174,10 @@ public class Args {
      */
     public void configureBind(Connection connection,
                               Node callingNode) {
-        if (callingNode.getHostname() != null) {
+        if (null != callingNode.getHostname()) {
             connection.setHostname(callingNode.getHostname());
         }
-        if (callingNode.getPort() != null) {
+        if (null != callingNode.getPort()) {
             connection.setPort(callingNode.getPort());
         }
     }
@@ -204,10 +204,10 @@ public class Args {
                               Connection connection,
                               Node callingNode) {
         applicationEntity.setAETitle(callingNode.getAet());
-        if (callingNode.getHostname() != null) {
+        if (null != callingNode.getHostname()) {
             connection.setHostname(callingNode.getHostname());
         }
-        if (callingNode.getPort() != null) {
+        if (null != callingNode.getPort()) {
             connection.setPort(callingNode.getPort());
         }
     }

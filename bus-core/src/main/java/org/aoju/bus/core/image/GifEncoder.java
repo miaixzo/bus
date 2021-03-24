@@ -298,7 +298,9 @@ public class GifEncoder {
      * @return false if initial write failed.
      */
     public boolean start(OutputStream os) {
-        if (null == os) return false;
+        if (null == os) {
+            return false;
+        }
         boolean ok = true;
         closeStream = false;
         out = os;
@@ -375,7 +377,9 @@ public class GifEncoder {
      * @return index
      */
     protected int findClosest(Color c) {
-        if (null == colorTab) return -1;
+        if (null == colorTab) {
+            return -1;
+        }
         int r = c.getRed();
         int g = c.getGreen();
         int b = c.getBlue();

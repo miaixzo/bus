@@ -76,7 +76,7 @@ public class StreamPumper extends Thread {
         try (BufferedReader bufferedReader =
                      new BufferedReader(Channels.newReader(Channels.newChannel(stream), Charset.DEFAULT_UTF_8))) {
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while (null != (line = bufferedReader.readLine())) {
                 consumer.consume(line);
             }
         } catch (IOException ex) {

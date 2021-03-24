@@ -46,7 +46,7 @@ public class ClassificationSchemeType extends RegistryObjectType {
     protected String nodeType;
 
     public List<ClassificationNodeType> getClassificationNode() {
-        if (this.null == classificationNode) {
+        if (this.classificationNode == null) {
             this.classificationNode = new ArrayList();
         }
         return this.classificationNode;

@@ -103,7 +103,7 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
             return parameterObject;
         }
         Map<String, Object> paramMap;
-        if (null == parameterObject) {
+        if (parameterObject == null) {
             paramMap = new HashMap<>();
         } else if (parameterObject instanceof Map) {
             // 解决不可变Map的情况
@@ -122,7 +122,7 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
                 }
             }
             // 下面这段方法,主要解决一个常见类型的参数时的问题
-            if (boundSql.getParameterMappings() != null && boundSql.getParameterMappings().size() > 0) {
+            if (null != boundSql.getParameterMappings() && boundSql.getParameterMappings().size() > 0) {
                 for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
                     String name = parameterMapping.getProperty();
                     if (!name.equals(PAGEPARAMETER_FIRST)
@@ -190,13 +190,13 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     @Override
     public Object afterPage(List pageList, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
-        if (null == page) {
+        if (page == null) {
             return pageList;
         }
         page.addAll(pageList);
         if (!page.isCount()) {
             page.setTotal(-1);
-        } else if ((page.getPageSizeZero() != null && page.getPageSizeZero()) && page.getPageSize() == 0) {
+        } else if ((null != page.getPageSizeZero() && page.getPageSizeZero()) && page.getPageSize() == 0) {
             page.setTotal(pageList.size());
         } else if (page.isOrderByOnly()) {
             page.setTotal(pageList.size());
@@ -215,7 +215,7 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     }
 
     protected void handleParameter(BoundSql boundSql, MappedStatement ms) {
-        if (boundSql.getParameterMappings() != null) {
+        if (null != boundSql.getParameterMappings()) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, Integer.class).build());
             newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, Integer.class).build());

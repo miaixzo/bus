@@ -44,14 +44,14 @@ public final class Route {
     final InetSocketAddress inetSocketAddress;
 
     public Route(Address address, Proxy proxy, InetSocketAddress inetSocketAddress) {
-        if (null == address) {
-            throw new NullPointerException("null == address");
+        if (address == null) {
+            throw new NullPointerException("address == null");
         }
-        if (null == proxy) {
-            throw new NullPointerException("null == proxy");
+        if (proxy == null) {
+            throw new NullPointerException("proxy == null");
         }
-        if (null == inetSocketAddress) {
-            throw new NullPointerException("null == inetSocketAddress");
+        if (inetSocketAddress == null) {
+            throw new NullPointerException("inetSocketAddress == null");
         }
         this.address = address;
         this.proxy = proxy;
@@ -71,7 +71,7 @@ public final class Route {
     }
 
     public boolean requiresTunnel() {
-        return address.null != sslSocketFactory && proxy.type() == Proxy.Type.HTTP;
+        return null != address.sslSocketFactory && proxy.type() == Proxy.Type.HTTP;
     }
 
     @Override

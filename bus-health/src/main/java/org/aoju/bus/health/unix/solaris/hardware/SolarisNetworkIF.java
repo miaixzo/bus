@@ -130,7 +130,7 @@ public final class SolarisNetworkIF extends AbstractNetworkIF {
     public boolean updateAttributes() {
         try (KstatChain kc = KstatKit.openChain()) {
             LibKstat.Kstat ksp = KstatChain.lookup("link", -1, getName());
-            if (null == ksp) { // Solaris 10 compatibility
+            if (ksp == null) { // Solaris 10 compatibility
                 ksp = KstatChain.lookup(null, -1, getName());
             }
             if (null != ksp && KstatChain.read(ksp)) {

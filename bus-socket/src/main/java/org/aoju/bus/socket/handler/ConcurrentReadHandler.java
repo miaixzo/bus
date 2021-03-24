@@ -55,7 +55,7 @@ public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
 
     @Override
     public void completed(final Integer result, final TcpAioSession<T> aioSession) {
-        if (threadLocal.get() != null) {
+        if (null != threadLocal.get()) {
             super.completed(result, aioSession);
             return;
         }
@@ -64,7 +64,7 @@ public class ConcurrentReadHandler<T> extends CompletionReadHandler<T> {
             //处理当前读回调任务
             super.completed(result, aioSession);
             Runnable task;
-            while ((task = taskQueue.poll()) != null) {
+            while (null != (task = taskQueue.poll())) {
                 task.run();
             }
             semaphore.release();

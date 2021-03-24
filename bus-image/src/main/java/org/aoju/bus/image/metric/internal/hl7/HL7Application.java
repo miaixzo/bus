@@ -74,7 +74,7 @@ public class HL7Application implements Serializable {
 
     public void setDevice(Device device) {
         if (null != device) {
-            if (this.null != device)
+            if (null != this.device)
                 throw new IllegalStateException("already owned by " +
                         this.device.getDeviceName());
             for (Connection conn : conns)
@@ -172,7 +172,7 @@ public class HL7Application implements Serializable {
 
     public boolean isInstalled() {
         return null != device && device.isInstalled()
-                && (null == installed || installed.booleanValue());
+                && (installed == null || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -188,13 +188,12 @@ public class HL7Application implements Serializable {
 
     public HL7MessageListener getHL7MessageListener() {
         HL7MessageListener listener = hl7MessageListener;
-        if (null != listener)
+        if (null != listener) {
             return listener;
+        }
 
         HL7DeviceExtension hl7Ext = device.getDeviceExtension(HL7DeviceExtension.class);
-        return null != hl7Ext
-                ? hl7Ext.getHL7MessageListener()
-                : null;
+        return null != hl7Ext ? hl7Ext.getHL7MessageListener() : null;
     }
 
     public final void setHL7MessageListener(HL7MessageListener listener) {
@@ -244,7 +243,7 @@ public class HL7Application implements Serializable {
                             .setUserMessage("Message Type not supported"));
 
         HL7MessageListener listener = getHL7MessageListener();
-        if (null == listener)
+        if (listener == null)
             throw new HL7Exception(new ERRSegment(msh)
                     .setHL7ErrorCode(Builder.ApplicationInternalError)
                     .setUserMessage("No HL7 Message Listener configured"));
@@ -321,7 +320,7 @@ public class HL7Application implements Serializable {
     }
 
     private void checkDevice() {
-        if (null == device)
+        if (device == null)
             throw new IllegalStateException("Not attached to Device");
     }
 
@@ -340,7 +339,7 @@ public class HL7Application implements Serializable {
         for (HL7ApplicationExtension src : from.extensions.values()) {
             Class<? extends HL7ApplicationExtension> clazz = src.getClass();
             HL7ApplicationExtension ext = extensions.get(clazz);
-            if (null == ext)
+            if (ext == null)
                 try {
                     addHL7ApplicationExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
@@ -394,7 +393,7 @@ public class HL7Application implements Serializable {
 
     public <T extends HL7ApplicationExtension> T getHL7AppExtensionNotNull(Class<T> clazz) {
         T hl7AppExt = getHL7ApplicationExtension(clazz);
-        if (null == hl7AppExt)
+        if (hl7AppExt == null)
             throw new IllegalStateException("No " + clazz.getName()
                     + " configured for HL7 Application: " + name);
         return hl7AppExt;

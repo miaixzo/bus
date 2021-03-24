@@ -408,7 +408,7 @@ public class PDUDecoder extends PDVInputStream {
         nextPDV(Builder.COMMAND, -1);
 
         Presentation pc = as.getPresentationContext(pcid);
-        if (null == pc) {
+        if (pc == null) {
             Logger.warn(
                     "{}: No Presentation Context with given ID - {}",
                     as, pcid);

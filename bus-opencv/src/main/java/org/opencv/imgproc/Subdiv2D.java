@@ -232,7 +232,7 @@ public class Subdiv2D {
     public int edgeDst(int edge, Point dstpt) {
         double[] dstpt_out = new double[2];
         int retVal = edgeDst_0(nativeObj, edge, dstpt_out);
-        if (null != dstpt) {
+        if (dstpt != null) {
             dstpt.x = dstpt_out[0];
             dstpt.y = dstpt_out[1];
         }
@@ -249,7 +249,7 @@ public class Subdiv2D {
     public int edgeOrg(int edge, Point orgpt) {
         double[] orgpt_out = new double[2];
         int retVal = edgeOrg_0(nativeObj, edge, orgpt_out);
-        if (null != orgpt) {
+        if (orgpt != null) {
             orgpt.x = orgpt_out[0];
             orgpt.y = orgpt_out[1];
         }
@@ -464,7 +464,7 @@ public class Subdiv2D {
     public Point getVertex(int vertex, int[] firstEdge) {
         double[] firstEdge_out = new double[1];
         Point retVal = new Point(getVertex_0(nativeObj, vertex, firstEdge_out));
-        if (null != firstEdge) firstEdge[0] = (int) firstEdge_out[0];
+        if (firstEdge != null) firstEdge[0] = (int) firstEdge_out[0];
         return retVal;
     }
 
@@ -503,7 +503,7 @@ public class Subdiv2D {
     public int findNearest(Point pt, Point nearestPt) {
         double[] nearestPt_out = new double[2];
         int retVal = findNearest_0(nativeObj, pt.x, pt.y, nearestPt_out);
-        if (null != nearestPt) {
+        if (nearestPt != null) {
             nearestPt.x = nearestPt_out[0];
             nearestPt.y = nearestPt_out[1];
         }
@@ -546,8 +546,8 @@ public class Subdiv2D {
         double[] edge_out = new double[1];
         double[] vertex_out = new double[1];
         int retVal = locate_0(nativeObj, pt.x, pt.y, edge_out, vertex_out);
-        if (null != edge) edge[0] = (int) edge_out[0];
-        if (null != vertex) vertex[0] = (int) vertex_out[0];
+        if (edge != null) edge[0] = (int) edge_out[0];
+        if (vertex != null) vertex[0] = (int) vertex_out[0];
         return retVal;
     }
 

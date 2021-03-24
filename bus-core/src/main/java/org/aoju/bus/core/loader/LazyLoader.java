@@ -23,7 +23,7 @@
  * THE SOFTWARE.                                                                 *
  *                                                                               *
  ********************************************************************************/
-package org.aoju.bus.core.lang;
+package org.aoju.bus.core.loader;
 
 import java.io.Serializable;
 import java.util.function.Supplier;
@@ -35,13 +35,13 @@ import java.util.function.Supplier;
  * @version 6.2.1
  * @since JDK 1.8+
  */
-public class Lazy<T> implements Supplier<T>, Serializable {
+public class LazyLoader<T> implements Supplier<T>, Serializable {
 
     private transient volatile Supplier<? extends T> supplier;
 
     private T value;
 
-    private Lazy(final Supplier<T> supplier) {
+    private LazyLoader(final Supplier<T> supplier) {
         this.supplier = supplier;
     }
 
@@ -52,8 +52,8 @@ public class Lazy<T> implements Supplier<T>, Serializable {
      * @param <T>      泛型标记
      * @return Lazy
      */
-    public static <T> Lazy<T> of(final Supplier<T> supplier) {
-        return new Lazy<>(supplier);
+    public static <T> LazyLoader<T> of(final Supplier<T> supplier) {
+        return new LazyLoader<>(supplier);
     }
 
     /**
@@ -63,7 +63,7 @@ public class Lazy<T> implements Supplier<T>, Serializable {
      */
     @Override
     public T get() {
-        return (null == supplier) ? value : computeValue();
+        return null == supplier ? value : computeValue();
     }
 
     private synchronized T computeValue() {

@@ -165,7 +165,7 @@ public class DirWriter extends DirReader {
     public synchronized Attributes addRootDirectoryRecord(Attributes rec)
             throws IOException {
         Attributes lastRootRecord = readLastRootDirectoryRecord();
-        if (null == lastRootRecord) {
+        if (lastRootRecord == null) {
             writeRecord(firstRecordPos, rec);
             setOffsetOfFirstRootDirectoryRecord(firstRecordPos);
         } else {
@@ -178,7 +178,7 @@ public class DirWriter extends DirReader {
     public synchronized Attributes addLowerDirectoryRecord(
             Attributes parentRec, Attributes rec) throws IOException {
         Attributes prevRec = lastChildRecords.get(parentRec);
-        if (null == prevRec)
+        if (prevRec == null)
             prevRec = findLastLowerDirectoryRecord(parentRec);
 
         if (null != prevRec)
@@ -214,7 +214,7 @@ public class DirWriter extends DirReader {
             return false;
 
         for (Attributes lowerRec = readLowerDirectoryRecord(rec);
-             null != lowerRec;
+             lowerRec != null;
              lowerRec = readNextDirectoryRecord(lowerRec))
             deleteRecord(lowerRec);
 

@@ -4511,8 +4511,9 @@ public class Almanac extends Converter {
      * @return true/false
      */
     public static boolean isDate(String dptDate, String pattern) {
-        if (null == dptDate || dptDate.isEmpty())
+        if (null == dptDate || dptDate.isEmpty()) {
             return false;
+        }
         String formatDate = Formatter.format(dptDate, pattern, pattern);
         return formatDate.equals(dptDate);
     }

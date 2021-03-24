@@ -226,7 +226,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
         if (Modifier.isStatic(field.getModifiers()) && !this.isAppendStatics()) {
             return false;
         }
-        if (this.null != excludeFieldNames
+        if (null != this.excludeFieldNames
                 && Arrays.binarySearch(this.excludeFieldNames, field.getName()) >= 0) {
             return false;
         }
@@ -324,12 +324,12 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
 
     @Override
     public String toString() {
-        if (this.getObject() == null) {
+        if (null == this.getObject()) {
             return this.getStyle().getNullText();
         }
         Class<?> clazz = this.getObject().getClass();
         this.appendFieldsIn(clazz);
-        while (clazz.getSuperclass() != null && clazz != this.getUpToClass()) {
+        while (null != clazz.getSuperclass() && clazz != this.getUpToClass()) {
             clazz = clazz.getSuperclass();
             this.appendFieldsIn(clazz);
         }

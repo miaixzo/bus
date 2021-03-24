@@ -110,7 +110,7 @@ public class Java implements Serializable {
      * @return Java版本的<code>float</code>值或<code>0</code>
      */
     private float getJavaVersionAsFloat() {
-        if (null == JAVA_VERSION) {
+        if (JAVA_VERSION == null) {
             return 0f;
         }
 
@@ -129,7 +129,7 @@ public class Java implements Serializable {
      * @return Java版本的<code>int</code>值或<code>0</code>
      */
     private int getJavaVersionAsInt() {
-        if (null == JAVA_VERSION) {
+        if (JAVA_VERSION == null) {
             return 0;
         }
 
@@ -274,7 +274,7 @@ public class Java implements Serializable {
      * @return 如果版本匹配, 则返回<code>true</code>
      */
     private boolean getJavaVersionMatches(String versionPrefix) {
-        if (null == JAVA_VERSION) {
+        if (JAVA_VERSION == null) {
             return false;
         }
 

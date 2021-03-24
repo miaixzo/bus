@@ -74,7 +74,7 @@ public class Multiframe {
 
     private static Impl implFor(String mfcuid) {
         Impl impl = impls.get(mfcuid);
-        if (null == impl)
+        if (impl == null)
             throw new IllegalArgumentException(
                     "Unsupported SOP Class: " + mfcuid);
         return impl;
@@ -103,7 +103,7 @@ public class Multiframe {
     }
 
     public final void setUIDMapper(UIDMapper uidMapper) {
-        if (null == uidMapper)
+        if (uidMapper == null)
             throw new NullPointerException();
         this.uidMapper = uidMapper;
     }
@@ -122,11 +122,11 @@ public class Multiframe {
 
     private Attributes extract(Attributes emf, int frame, String cuid) {
         Attributes sfgs = emf.getNestedDataset(Tag.SharedFunctionalGroupsSequence);
-        if (null == sfgs)
+        if (sfgs == null)
             throw new IllegalArgumentException(
                     "Missing (5200,9229) Shared Functional Groups Sequence");
         Attributes fgs = emf.getNestedDataset(Tag.PerFrameFunctionalGroupsSequence, frame);
-        if (null == fgs)
+        if (fgs == null)
             throw new IllegalArgumentException(
                     "Missing (5200,9230) Per-frame Functional Groups Sequence Item for frame #" + (frame + 1));
         Attributes dest = new Attributes(emf.size() * 2);
@@ -151,20 +151,20 @@ public class Multiframe {
 
     private void adjustReferencedImages(Attributes attrs, int sqtag) {
         Sequence sq = attrs.getSequence(sqtag);
-        if (null == sq)
+        if (sq == null)
             return;
 
         ArrayList<Attributes> newRefs = new ArrayList<Attributes>();
         for (Iterator<Attributes> itr = sq.iterator(); itr.hasNext(); ) {
             Attributes ref = itr.next();
             String cuid = legacySOPClassUID(ref.getString(Tag.ReferencedSOPClassUID));
-            if (null == cuid)
+            if (cuid == null)
                 continue;
 
             itr.remove();
             String iuid = uidMapper.get(ref.getString(Tag.ReferencedSOPInstanceUID));
             int[] frames = ref.getInts(Tag.ReferencedFrameNumber);
-            int n = null == frames ? 1 : frames.length;
+            int n = frames == null ? 1 : frames.length;
             ref.remove(Tag.ReferencedFrameNumber);
             ref.setString(Tag.ReferencedSOPClassUID, VR.UI, cuid);
             for (int i = 0; i < n; i++) {
@@ -183,7 +183,7 @@ public class Multiframe {
         Attributes fg;
         for (int sqTag : fgs.tags())
             if (sqTag != Tag.ReferencedImageSequence
-                    && (fg = fgs.getNestedDataset(sqTag)) != null)
+                    && null != (fg = fgs.getNestedDataset(sqTag)))
                 dest.addAll(fg);
     }
 

@@ -49,7 +49,8 @@ public abstract class OGNL {
      * @return the boolean
      */
     public static boolean checkEntityClass(Object parameter, String entityFullName) {
-        if (null != parameter && parameter instanceof Condition && Assert.isNotEmpty(entityFullName)) {
+        if (null != parameter
+                && parameter instanceof Condition && Assert.isNotEmpty(entityFullName)) {
             Condition condition = (Condition) parameter;
             Class<?> entityClass = condition.getEntityClass();
             if (!entityClass.getCanonicalName().equals(entityFullName)) {
@@ -69,7 +70,7 @@ public abstract class OGNL {
     public static boolean hasSelectColumns(Object parameter) {
         if (null != parameter && parameter instanceof Condition) {
             Condition condition = (Condition) parameter;
-            if (condition.getSelectColumns() != null && condition.getSelectColumns().size() > 0) {
+            if (null != condition.getSelectColumns() && condition.getSelectColumns().size() > 0) {
                 return true;
             }
         }

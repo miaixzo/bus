@@ -73,7 +73,7 @@ public class ResponseCache extends java.net.ResponseCache {
                              Map<String, List<String>> requestHeaders) throws IOException {
         Request request = NetApiConvert.createRequest(uri, requestMethod, requestHeaders);
         Response response = delegate.internalCache.get(request);
-        if (null == response) {
+        if (response == null) {
             return null;
         }
         return NetApiConvert.createJavaCacheResponse(response);
@@ -82,12 +82,12 @@ public class ResponseCache extends java.net.ResponseCache {
     @Override
     public java.net.CacheRequest put(URI uri, URLConnection urlConnection) throws IOException {
         Response response = NetApiConvert.createResponseForCachePut(uri, urlConnection);
-        if (null == response) {
+        if (response == null) {
             return null;
         }
         CacheRequest cacheRequest =
                 delegate.internalCache.put(response);
-        if (null == cacheRequest) {
+        if (cacheRequest == null) {
             return null;
         }
         return NetApiConvert.createJavaCacheRequest(cacheRequest);

@@ -81,7 +81,7 @@ public class RetentionPeriod implements Comparable<RetentionPeriod> {
 
     @Override
     public int compareTo(RetentionPeriod o) {
-        return null != schedule ? o.null != schedule ? value.compareTo(o.value) : -1 : o.null != schedule ? 1 : 0;
+        return null != schedule ? null != o.schedule ? value.compareTo(o.value) : -1 : null != o.schedule ? 1 : 0;
     }
 
     public enum DeleteStudies {

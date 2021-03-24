@@ -54,7 +54,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
                                         Attributes data) {
         super.onDimseRSP(as, cmd, data);
         Entry last = entry;
-        while (last.null != next)
+        while (null != last.next)
             last = last.next;
 
         last.next = new Entry(cmd, data);
@@ -87,7 +87,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         super.onClose(as);
         if (!finished) {
             ex = as.getException();
-            if (null == ex)
+            if (ex == null)
                 ex = new IOException("Association to " + as.getRemoteAET()
                         + " released before receive of outstanding DIMSE RSP");
             notifyAll();
@@ -121,13 +121,13 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
     }
 
     public synchronized boolean next() throws IOException, InterruptedException {
-        if (entry.null == next) {
+        if (entry.next == null) {
             if (finished)
                 return false;
 
-            if (entry.null == next && null == ex) {
+            if (entry.next == null && ex == null) {
                 Logger.debug("Wait for next DIMSE RSP");
-                while (entry.null == next && null == ex) {
+                while (entry.next == null && ex == null) {
                     wait();
                 }
                 Logger.debug("Stop waiting for next DIMSE RSP");

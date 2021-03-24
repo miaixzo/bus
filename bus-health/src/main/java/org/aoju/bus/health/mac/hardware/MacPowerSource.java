@@ -205,7 +205,7 @@ public final class MacPowerSource extends AbstractPowerSource {
                     result = dictionary.getValue(nameKey);
                     CFStringRef cfName = new CFStringRef(result);
                     String psName = cfName.stringValue();
-                    if (null == psName) {
+                    if (psName == null) {
                         psName = Normal.UNKNOWN;
                     }
                     // Remaining Capacity = current / max

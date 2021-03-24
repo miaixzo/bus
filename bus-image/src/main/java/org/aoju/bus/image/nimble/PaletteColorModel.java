@@ -103,7 +103,7 @@ public class PaletteColorModel extends ColorModel {
 
     private int[] lutDescriptor(Attributes ds, int descTag) {
         int[] desc = ds.getInts(descTag);
-        if (null == desc) {
+        if (desc == null) {
             throw new IllegalArgumentException("Missing LUT Descriptor!");
         }
         if (desc.length != 3) {
@@ -124,9 +124,9 @@ public class PaletteColorModel extends ColorModel {
         int len = desc[0] == 0 ? 0x10000 : desc[0];
         int bits = desc[2];
         byte[] data = ds.getSafeBytes(dataTag);
-        if (null == data) {
+        if (data == null) {
             int[] segm = ds.getInts(segmTag);
-            if (null == segm) {
+            if (segm == null) {
                 throw new IllegalArgumentException("Missing LUT Data!");
             }
             if (bits == 8) {

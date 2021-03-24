@@ -112,7 +112,7 @@ public final class Http1Codec implements HttpCodec {
     }
 
     @Override
-    public ResponseBody openResponseBody(Response response) throws IOException {
+    public ResponseBody openResponseBody(Response response) {
         streamAllocation.eventListener.responseBodyStart(streamAllocation.call);
         String contentType = response.header("Content-Type");
 
@@ -233,7 +233,7 @@ public final class Http1Codec implements HttpCodec {
 
     public Source newUnknownLengthSource() {
         if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
-        if (null == streamAllocation) throw new IllegalStateException("null == streamAllocation");
+        if (streamAllocation == null) throw new IllegalStateException("streamAllocation == null");
         state = STATE_READING_RESPONSE_BODY;
         streamAllocation.noNewStreams();
         return new UnknownLengthSource();

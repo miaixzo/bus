@@ -60,9 +60,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
      * @return the DynamicDataSource
      */
     public static synchronized DynamicDataSource getInstance() {
-        if (null == instance) {
+        if (instance == null) {
             synchronized (lock) {
-                if (null == instance) {
+                if (instance == null) {
                     instance = new DynamicDataSource();
                 }
             }
@@ -111,7 +111,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         if (!keySet.contains(key)) {
             logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource", key));
         }
-        if (null == key) {
+        if (key == null) {
             Logger.info("The current datasource key ：{}", "dataSource");
         } else {
             Logger.info("The current datasource key ：{}", key);

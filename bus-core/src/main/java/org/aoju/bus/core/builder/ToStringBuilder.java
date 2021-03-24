@@ -974,7 +974,7 @@ public class ToStringBuilder implements Builder<String> {
      */
     @Override
     public String toString() {
-        if (this.getObject() == null) {
+        if (null == this.getObject()) {
             this.getStringBuffer().append(this.getStyle().getNullText());
         } else {
             style.appendEnd(this.getStringBuffer(), this.getObject());

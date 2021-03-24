@@ -143,7 +143,7 @@ public class Condition implements EntityTableName {
      */
     public Condition excludeProperties(String... properties) {
         if (null != properties && properties.length > 0) {
-            if (this.null == excludeColumns) {
+            if (this.excludeColumns == null) {
                 this.excludeColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
@@ -165,7 +165,7 @@ public class Condition implements EntityTableName {
      */
     public Condition selectProperties(String... properties) {
         if (null != properties && properties.length > 0) {
-            if (this.null == selectColumns) {
+            if (this.selectColumns == null) {
                 this.selectColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {

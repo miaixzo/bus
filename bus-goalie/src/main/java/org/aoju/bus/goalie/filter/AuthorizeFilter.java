@@ -29,12 +29,10 @@ import org.aoju.bus.base.consts.ErrorCode;
 import org.aoju.bus.base.entity.OAuth2;
 import org.aoju.bus.core.lang.exception.BusinessException;
 import org.aoju.bus.core.toolkit.BeanKit;
-import org.aoju.bus.core.toolkit.CollKit;
 import org.aoju.bus.core.toolkit.StringKit;
 import org.aoju.bus.goalie.Assets;
 import org.aoju.bus.goalie.Consts;
 import org.aoju.bus.goalie.Context;
-import org.aoju.bus.goalie.ServerConfig;
 import org.aoju.bus.goalie.metric.Authorize;
 import org.aoju.bus.goalie.metric.Delegate;
 import org.aoju.bus.goalie.metric.Token;
@@ -66,11 +64,8 @@ public class AuthorizeFilter implements WebFilter {
 
     private final AssetsRegistry registry;
 
-    private final ServerConfig.Security security;
-
-    public AuthorizeFilter(Authorize authorize, ServerConfig.Security security, AssetsRegistry registry) {
+    public AuthorizeFilter(Authorize authorize, AssetsRegistry registry) {
         this.authorize = authorize;
-        this.security = security;
         this.registry = registry;
     }
 
@@ -140,11 +135,6 @@ public class AuthorizeFilter implements WebFilter {
             Delegate delegate = authorize.authorize(access);
             if (delegate.isOk()) {
                 OAuth2 auth2 = delegate.getOAuth2();
-                //api permissions
-                if (security.isEnabled() && !apiPermissions(auth2, assets)) {
-                    throw new BusinessException(ErrorCode.EM_100500, "没有权限");
-                }
-
                 Map<String, Object> map = BeanKit.beanToMap(auth2, false, true);
                 map.forEach((k, v) -> params.put(k, v.toString()));
             } else {
@@ -162,15 +152,8 @@ public class AuthorizeFilter implements WebFilter {
         params.remove(Consts.METHOD);
         params.remove(Consts.FORMAT);
         params.remove(Consts.VERSION);
-        params.remove(Consts.SIGN);
     }
 
-    /**
-     * 填充参数
-     *
-     * @param exchange     exchange
-     * @param requestParam 请求参数
-     */
     private void fillXParam(ServerWebExchange exchange, Map<String, String> requestParam) {
         String ip = exchange.getRequest().getHeaders().getFirst("x_remote_ip");
         if (StringKit.isBlank(ip)) {
@@ -182,27 +165,4 @@ public class AuthorizeFilter implements WebFilter {
         requestParam.put("x_remote_ip", ip);
     }
 
-    /**
-     * 是否有权限
-     *
-     * @param oAuth2 认证
-     * @param assets 路由
-     * @return 是否
-     */
-    private boolean apiPermissions(OAuth2 oAuth2, Assets assets) {
-        if (CollKit.isEmpty(assets.getRoleIds())) {
-            return false;
-        }
-        if (StringKit.isEmpty(oAuth2.getX_role_id())) {
-            return false;
-        }
-        boolean result = false;
-        for (String roleId : assets.getRoleIds()) {
-            if (oAuth2.getX_role_id().contains(roleId)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
-    }
 }

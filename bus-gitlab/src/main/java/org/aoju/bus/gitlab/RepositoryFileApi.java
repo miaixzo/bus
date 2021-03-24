@@ -351,7 +351,7 @@ public class RepositoryFileApi extends AbstractApi {
      */
     public void deleteFile(Object projectIdOrPath, String filePath, String branchName, String commitMessage) throws GitLabApiException {
 
-        if (null == filePath) {
+        if (filePath == null) {
             throw new RuntimeException("filePath cannot be null");
         }
 
@@ -413,7 +413,7 @@ public class RepositoryFileApi extends AbstractApi {
 
         try {
 
-            if (null == directory) {
+            if (directory == null) {
                 directory = new File(System.getProperty("java.io.tmpdir"));
             }
 
@@ -484,7 +484,7 @@ public class RepositoryFileApi extends AbstractApi {
 
         // Cannot use addFormParam() as it does not accept an empty or whitespace only string
         String content = file.getContent();
-        if (null == content) {
+        if (content == null) {
             throw new IllegalArgumentException("content cannot be null");
         }
         form.param("content", content);

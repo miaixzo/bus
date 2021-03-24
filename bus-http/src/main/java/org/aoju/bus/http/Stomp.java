@@ -183,7 +183,7 @@ public class Stomp {
      * @param message 消息
      */
     public void send(Message message) {
-        if (null == websocket) {
+        if (websocket == null) {
             throw new IllegalArgumentException("You must call connect before send");
         }
         websocket.send(message.compile(legacyWhitespace));
@@ -327,7 +327,7 @@ public class Stomp {
         } else if (Builder.MESSAGE.equals(command)) {
             String id = msg.headerValue(Header.SUBSCRIPTION);
             String destination = msg.headerValue(Header.DESTINATION);
-            if (null == id || null == destination) {
+            if (id == null || destination == null) {
                 return;
             }
             Subscriber subscriber = subscribers.get(destination);
@@ -392,7 +392,7 @@ public class Stomp {
         }
 
         public static Message from(String data) {
-            if (null == data || data.trim().isEmpty()) {
+            if (data == null || data.trim().isEmpty()) {
                 return new Message(Builder.UNKNOWN, null, data);
             }
 
@@ -496,7 +496,7 @@ public class Stomp {
                 headers.add(new Header(Header.ID, id));
                 headers.add(new Header(Header.DESTINATION, destination));
                 boolean ackNotAdded = true;
-                if (this.null != headers) {
+                if (null != this.headers) {
                     for (Header header : this.headers) {
                         if (Header.ACK.equals(header.getKey())) {
                             ackNotAdded = false;

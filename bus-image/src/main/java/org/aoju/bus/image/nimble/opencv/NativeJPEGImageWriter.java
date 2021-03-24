@@ -78,7 +78,7 @@ public class NativeJPEGImageWriter extends ImageWriter {
 
     @Override
     public void write(IIOMetadata streamMetadata, IIOImage image, ImageWriteParam param) throws IOException {
-        if (null == output) {
+        if (output == null) {
             throw new IllegalStateException("input cannot be null");
         }
 

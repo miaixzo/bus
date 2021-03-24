@@ -50,7 +50,7 @@ public class LimitedResourceMetadataCache {
     public LimitedResourceMetadata getLimitedResourceMetadata(LimitedResource limitedResource, Method method, Class<?> targetClass) {
         LimitedResourceKey limitedResourceKey = new LimitedResourceKey(limitedResource, method, targetClass);
         LimitedResourceMetadata metadata = this.metadataCache.get(limitedResourceKey);
-        if (null == metadata) {
+        if (metadata == null) {
             metadata = limitedResource.createMetadata(this.beanFactory, targetClass, method);
             this.metadataCache.put(limitedResourceKey, metadata);
         }

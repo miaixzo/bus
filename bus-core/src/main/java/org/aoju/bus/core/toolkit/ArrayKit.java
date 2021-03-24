@@ -2535,7 +2535,7 @@ public class ArrayKit {
         }
         if (null == value) {
             for (int i = index; i < array.length; i++) {
-                if (array[i] == null) {
+                if (null == array[i]) {
                     return i;
                 }
             }
@@ -2579,7 +2579,7 @@ public class ArrayKit {
         }
         if (null == value) {
             for (int i = index; i >= 0; i--) {
-                if (array[i] == null) {
+                if (null == array[i]) {
                     return i;
                 }
             }

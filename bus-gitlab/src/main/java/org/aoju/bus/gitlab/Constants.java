@@ -591,7 +591,7 @@ public interface Constants {
 
         public static ArchiveFormat forValue(String value) throws GitLabApiException {
 
-            if (null == value || value.trim().isEmpty()) {
+            if (value == null || value.trim().isEmpty()) {
                 return (null);
             }
 

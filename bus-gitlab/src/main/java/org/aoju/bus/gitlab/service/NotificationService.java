@@ -288,7 +288,7 @@ public abstract class NotificationService {
     }
 
     protected void setProperty(String prop, Object value) {
-        if (null == properties) {
+        if (properties == null) {
             properties = new HashMap<>(16);
         }
 

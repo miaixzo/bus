@@ -98,7 +98,7 @@ public class GoalieConfiguration {
 
     @Bean
     WebFilter authorizeFilter(Authorize authorize, AssetsRegistry registry) {
-        return new AuthorizeFilter(authorize, this.goalieProperties.getServer().getSecurity(), registry);
+        return new AuthorizeFilter(authorize, registry);
     }
 
     @Bean

@@ -498,6 +498,9 @@ public class BeanKit {
      * @return Bean对象
      */
     public static <T> T toBean(Object source, Class<T> clazz, CopyOptions options) {
+        if (null == source) {
+            return null;
+        }
         final T target = ReflectKit.newInstanceIfPossible(clazz);
         copyProperties(source, target, options);
         return target;
@@ -513,6 +516,9 @@ public class BeanKit {
      * @return Bean
      */
     public static <T> T toBean(Class<T> beanClass, ValueProvider<String> valueProvider, CopyOptions copyOptions) {
+        if (null == beanClass || null == valueProvider) {
+            return null;
+        }
         return fillBean(ReflectKit.newInstance(beanClass), valueProvider, copyOptions);
     }
 
@@ -693,6 +699,9 @@ public class BeanKit {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, boolean isToUnderlineCase, boolean ignoreNullValue) {
+        if (null == bean) {
+            return null;
+        }
         return beanToMap(bean, new LinkedHashMap<>(), isToUnderlineCase, ignoreNullValue);
     }
 
@@ -709,7 +718,6 @@ public class BeanKit {
         if (null == bean) {
             return null;
         }
-
         return beanToMap(bean, targetMap, ignoreNullValue, key -> isToUnderlineCase ? StringKit.toUnderlineCase(key) : key);
     }
 
@@ -1058,7 +1066,7 @@ public class BeanKit {
     private static int modifiersToInt(BeanKit.ModifierType... modifierTypes) {
         int modifier = modifierTypes[0].getValue();
         for (int i = 1; i < modifierTypes.length; i++) {
-            modifier &= modifierTypes[i].getValue();
+            modifier |= modifierTypes[i].getValue();
         }
         return modifier;
     }

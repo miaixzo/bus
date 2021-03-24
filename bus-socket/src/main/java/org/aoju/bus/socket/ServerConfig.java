@@ -179,7 +179,7 @@ public class ServerConfig<T> {
      * @param f            socketOption值
      */
     public void setOption(SocketOption socketOption, Object f) {
-        if (null == socketOptions) {
+        if (socketOptions == null) {
             socketOptions = new HashMap<>(4);
         }
         socketOptions.put(socketOption, f);

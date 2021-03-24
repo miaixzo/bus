@@ -108,7 +108,7 @@ public class SpecificCharacterSet {
     }
 
     public static SpecificCharacterSet valueOf(String... codes) {
-        if (null == codes || codes.length == 0)
+        if (codes == null || codes.length == 0)
             return DEFAULT;
 
         if (codes.length > 1)
@@ -227,7 +227,7 @@ public class SpecificCharacterSet {
     @Override
     public boolean equals(Object other) {
 
-        if (null == other) {
+        if (other == null) {
             return false;
         }
         if (getClass() != other.getClass()) {
@@ -312,13 +312,13 @@ public class SpecificCharacterSet {
 
         private static Codec forCodeChecked(String code) {
             Codec codec = forCode(code, null);
-            if (null == codec)
+            if (codec == null)
                 throw new IllegalArgumentException("No such Specific Character Set Code: " + code);
             return codec;
         }
 
         private static Codec forCode(String code, Codec defCodec) {
-            switch (null != code ? code : "") {
+            switch (null != code ? code : Normal.EMPTY) {
                 case Normal.EMPTY:
                 case "ISO 2022 IR 6":
                     return SpecificCharacterSet.DEFAULT.codecs[0];

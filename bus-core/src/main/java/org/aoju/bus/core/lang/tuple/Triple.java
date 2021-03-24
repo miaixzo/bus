@@ -94,9 +94,9 @@ public abstract class Triple<L, M, R> implements Comparable<Triple<L, M, R>>, Se
 
     @Override
     public int hashCode() {
-        return (getLeft() == null ? 0 : getLeft().hashCode()) ^
-                (getMiddle() == null ? 0 : getMiddle().hashCode()) ^
-                (getRight() == null ? 0 : getRight().hashCode());
+        return (null == getLeft() ? 0 : getLeft().hashCode()) ^
+                (null == getMiddle() ? 0 : getMiddle().hashCode()) ^
+                (null == getRight() ? 0 : getRight().hashCode());
     }
 
     @Override

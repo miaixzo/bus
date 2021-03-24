@@ -108,7 +108,7 @@ public class Progress implements CancelListener {
 
     private int getIntTag(int tag) {
         Attributes dcm = attributes;
-        if (null == dcm) {
+        if (dcm == null) {
             return -1;
         }
         return dcm.getInt(tag, -1);
@@ -119,7 +119,7 @@ public class Progress implements CancelListener {
             return Status.Cancel;
         }
         Attributes dcm = attributes;
-        if (null == dcm) {
+        if (dcm == null) {
             return Status.Pending;
         }
         return dcm.getInt(Tag.Status, Status.Pending);
@@ -127,7 +127,7 @@ public class Progress implements CancelListener {
 
     public String getErrorComment() {
         Attributes dcm = attributes;
-        if (null == dcm) {
+        if (dcm == null) {
             return null;
         }
         return dcm.getString(Tag.ErrorComment);

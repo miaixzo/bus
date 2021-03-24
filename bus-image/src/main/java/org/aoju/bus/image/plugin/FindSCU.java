@@ -119,7 +119,7 @@ public class FindSCU extends Device implements AutoCloseable {
             rq.addExtendedNegotiate(
                     new ExtendedNegotiate(model.cuid, Option.Type.toExtendedNegotiationInformation(types)));
         }
-        if (model.null != level) {
+        if (null != model.level) {
             addLevel(model.level);
         }
     }
@@ -272,12 +272,12 @@ public class FindSCU extends Device implements AutoCloseable {
     private void onResult(Attributes data) {
         state.setList(data);
         int numMatches = totNumMatches.incrementAndGet();
-        if (null == outDir) {
+        if (outDir == null) {
             return;
         }
 
         try {
-            if (null == out) {
+            if (out == null) {
                 File f = new File(outDir, fname(numMatches));
                 out = new BufferedOutputStream(new FileOutputStream(f));
             }
@@ -318,16 +318,16 @@ public class FindSCU extends Device implements AutoCloseable {
 
     private TransformerHandler getTransformerHandler() throws Exception {
         SAXTransformerFactory tf = saxtf;
-        if (null == tf) {
+        if (tf == null) {
             saxtf = tf = (SAXTransformerFactory) TransformerFactory.newInstance();
             tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         }
-        if (null == xsltFile) {
+        if (xsltFile == null) {
             return tf.newTransformerHandler();
         }
 
         Templates tpls = xsltTpls;
-        if (null == tpls) {
+        if (tpls == null) {
             xsltTpls = tpls = tf.newTemplates(new StreamSource(xsltFile));
         }
 
@@ -360,7 +360,7 @@ public class FindSCU extends Device implements AutoCloseable {
         }
 
         public void adjustQueryOptions(EnumSet<Option.Type> types) {
-            if (null == level) {
+            if (level == null) {
                 types.add(Option.Type.RELATIONAL);
                 types.add(Option.Type.DATETIME);
             }

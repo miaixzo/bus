@@ -64,7 +64,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getProjectIdOrPath(Object obj) throws GitLabApiException {
 
-        if (null == obj) {
+        if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -99,7 +99,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getGroupIdOrPath(Object obj) throws GitLabApiException {
 
-        if (null == obj) {
+        if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -134,7 +134,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getUserIdOrUsername(Object obj) throws GitLabApiException {
 
-        if (null == obj) {
+        if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or username from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -169,7 +169,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getLabelIdOrName(Object obj) throws GitLabApiException {
 
-        if (null == obj) {
+        if (obj == null) {
             throw (new RuntimeException("Cannot determine ID or name from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -621,7 +621,7 @@ public abstract class AbstractApi implements Constants {
      */
     protected void addFormParam(Form formData, String name, Object value, boolean required) throws IllegalArgumentException {
 
-        if (null == value) {
+        if (value == null) {
 
             if (required) {
                 throw new IllegalArgumentException(name + " cannot be empty or null");

@@ -274,10 +274,10 @@ public class MppsSCU {
     }
 
     public final void setDiscontinuationReason(String codeValue) {
-        if (null == codes)
+        if (codes == null)
             throw new IllegalStateException("codec not initialized");
         String codeMeaning = codes.getProperty(codeValue);
-        if (null == codeMeaning)
+        if (codeMeaning == null)
             throw new IllegalArgumentException("undefined internal value: " + codeValue);
         int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
         Attributes attrs = new Attributes(3);
@@ -353,10 +353,10 @@ public class MppsSCU {
     public boolean addInstance(Attributes inst) {
         Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
-        if (null == suid)
+        if (suid == null)
             return false;
         MppsWithIUID mppsWithIUID = map.get(suid);
-        if (null == mppsWithIUID)
+        if (mppsWithIUID == null)
             map.put(suid, mppsWithIUID = new MppsWithIUID(ppsuid(null), createMPPS(inst)));
         updateMPPS(mppsWithIUID.mpps, inst);
         return true;
@@ -368,7 +368,7 @@ public class MppsSCU {
     }
 
     private String ppsuid(String defval) {
-        if (null == ppsuid)
+        if (ppsuid == null)
             return defval;
 
         int size = map.size();
@@ -412,7 +412,7 @@ public class MppsSCU {
             dcrSeq.add(new Attributes(discontinuationReason));
 
         Sequence raSeq = inst.getSequence(Tag.RequestAttributesSequence);
-        if (null == raSeq || raSeq.isEmpty()) {
+        if (raSeq == null || raSeq.isEmpty()) {
             Sequence ssaSeq =
                     mpps.newSequence(Tag.ScheduledStepAttributesSequence, 1);
             Attributes ssa = new Attributes();
@@ -438,9 +438,9 @@ public class MppsSCU {
 
     private void updateMPPS(Attributes mpps, Attributes inst) {
         String endTime = inst.getString(Tag.AcquisitionTime);
-        if (null == endTime) {
+        if (endTime == null) {
             endTime = inst.getString(Tag.ContentTime);
-            if (null == endTime)
+            if (endTime == null)
                 endTime = inst.getString(Tag.SeriesTime);
         }
         if (null != endTime && endTime.compareTo(

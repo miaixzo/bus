@@ -195,7 +195,7 @@ public enum Dimse {
     private static void promptAttributeIdentifierListTo(Attributes cmd,
                                                         StringBuilder sb) {
         int[] tags = cmd.getInts(Tag.AttributeIdentifierList);
-        if (null == tags)
+        if (tags == null)
             return;
 
         sb.append(Property.LINE_SEPARATOR).append("  tags=[");

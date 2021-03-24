@@ -125,7 +125,7 @@ public class Xml2Dcm {
     public void writeTo(OutputStream out) throws IOException {
         if (nofmi)
             fmi = null;
-        else if (null == fmi
+        else if (fmi == null
                 ? withfmi
                 : null != tsuid && !tsuid.equals(
                 fmi.getString(Tag.TransferSyntaxUID, null))) {
@@ -163,7 +163,7 @@ public class Xml2Dcm {
     }
 
     public void mergeXML(String fname) throws Exception {
-        if (null == dataset)
+        if (dataset == null)
             dataset = new Attributes();
         ContentHandlerAdapter ch = new ContentHandlerAdapter(dataset);
         parseXML(fname, ch);

@@ -87,7 +87,7 @@ public class Modality {
                                  Node calledNode,
                                  int cancelAfter,
                                  Args... keys) {
-        if (null == callingNode || null == calledNode) {
+        if (callingNode == null || calledNode == null) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 
@@ -142,13 +142,13 @@ public class Modality {
     private static void addKeys(FindSCU findSCU, Args[] keys) {
         for (Args p : keys) {
             int[] pSeq = p.getParentSeqTags();
-            if (null == pSeq || pSeq.length == 0) {
+            if (pSeq == null || pSeq.length == 0) {
                 CFind.addAttributes(findSCU.getKeys(), p);
             } else {
                 Attributes parent = findSCU.getKeys();
                 for (int value : pSeq) {
                     Sequence lastSeq = parent.getSequence(value);
-                    if (null == lastSeq || lastSeq.isEmpty()) {
+                    if (lastSeq == null || lastSeq.isEmpty()) {
                         lastSeq = parent.newSequence(value, 1);
                         lastSeq.add(new Attributes());
                     }

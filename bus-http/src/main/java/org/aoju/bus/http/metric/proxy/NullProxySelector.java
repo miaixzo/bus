@@ -44,7 +44,7 @@ public class NullProxySelector extends ProxySelector {
 
     @Override
     public List<Proxy> select(URI uri) {
-        if (null == uri) {
+        if (uri == null) {
             throw new IllegalArgumentException("uri must not be null");
         }
         return Collections.singletonList(Proxy.NO_PROXY);

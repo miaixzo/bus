@@ -52,7 +52,7 @@ public class ImageConversion {
      * @return BufferedImage
      */
     public static BufferedImage toBufferedImage(Mat matrix) {
-        if (null == matrix) {
+        if (matrix == null) {
             return null;
         }
 
@@ -106,7 +106,7 @@ public class ImageConversion {
     }
 
     public static BufferedImage toBufferedImage(PlanarImage matrix) {
-        if (null == matrix) {
+        if (matrix == null) {
             return null;
         }
         return toBufferedImage(matrix.toMat());
@@ -154,7 +154,7 @@ public class ImageConversion {
     }
 
     public static ImageCV toMat(RenderedImage img, Rectangle region, boolean toBGR) {
-        Raster raster = null == region ? img.getData() : img.getData(region);
+        Raster raster = region == null ? img.getData() : img.getData(region);
         DataBuffer buf = raster.getDataBuffer();
         int[] samples = raster.getSampleModel().getSampleSize();
         int[] offsets;
@@ -812,7 +812,7 @@ public class ImageConversion {
     }
 
     public static BufferedImage convertRenderedImage(RenderedImage img) {
-        if (null == img) {
+        if (img == null) {
             return null;
         }
         if (img instanceof BufferedImage) {

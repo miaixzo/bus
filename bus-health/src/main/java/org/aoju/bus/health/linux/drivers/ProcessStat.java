@@ -180,7 +180,7 @@ public final class ProcessStat {
         File threadDir = new File(String.format(ProcPath.TASK_PATH, pid));
         File[] threads = threadDir
                 .listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches() && Integer.valueOf(file.getName()) != pid);
-        return (null != threads) ? Arrays.stream(threads)
+        return null != threads ? Arrays.stream(threads)
                 .map(thread -> Builder.parseIntOrDefault(thread.getName(), 0)).collect(Collectors.toList())
                 : Collections.emptyList();
     }

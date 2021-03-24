@@ -82,7 +82,7 @@ public class ApplicationSettings {
     @JsonIgnore
     public Object getSetting(Setting setting) {
 
-        if (null == setting) {
+        if (setting == null) {
             return (null);
         }
 
@@ -93,7 +93,7 @@ public class ApplicationSettings {
     @JsonIgnore
     public Object getSetting(String setting) {
 
-        if (null == setting) {
+        if (setting == null) {
             return (null);
         }
 

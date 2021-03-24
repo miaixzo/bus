@@ -81,7 +81,7 @@ public abstract class ResponseBody implements Closeable {
         java.nio.charset.Charset charset = Charset.UTF_8;
         if (null != contentType) {
             charset = contentType.charset();
-            if (null == charset) {
+            if (charset == null) {
                 charset = Charset.UTF_8;
                 contentType = MimeType.valueOf(contentType + "; charset=utf-8");
             }
@@ -125,7 +125,7 @@ public abstract class ResponseBody implements Closeable {
     public static ResponseBody create(final MimeType contentType,
                                       final long contentLength,
                                       final BufferSource content) {
-        if (null == content) throw new NullPointerException("null == source");
+        if (content == null) throw new NullPointerException("source == null");
         return new ResponseBody() {
             @Override
             public MimeType contentType() {
@@ -215,7 +215,7 @@ public abstract class ResponseBody implements Closeable {
             if (closed) throw new IOException("Stream closed");
 
             Reader delegate = this.delegate;
-            if (null == delegate) {
+            if (delegate == null) {
                 java.nio.charset.Charset charset = Builder.bomAwareCharset(source, this.charset);
                 delegate = this.delegate = new InputStreamReader(source.inputStream(), charset);
             }

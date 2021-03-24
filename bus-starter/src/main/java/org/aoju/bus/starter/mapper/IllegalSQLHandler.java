@@ -263,7 +263,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
         if (StringKit.isNotBlank(key)) {
             indexInfos = indexInfoMap.get(key);
         }
-        if (null == indexInfos || indexInfos.isEmpty()) {
+        if (indexInfos == null || indexInfos.isEmpty()) {
             ResultSet rs;
             try {
                 DatabaseMetaData metadata = conn.getMetaData();
@@ -332,7 +332,7 @@ public class IllegalSQLHandler extends AbstractSqlParserHandler implements Inter
             joins = delete.getJoins();
         }
         //where条件不能为空
-        if (null == where) {
+        if (where == null) {
             throw new InstrumentException("非法SQL，必须要有where条件");
         }
         validWhere(where, table, connection);

@@ -40,7 +40,7 @@ public class DataWriterAdapter implements DataWriter {
     private final Attributes data;
 
     public DataWriterAdapter(Attributes data) {
-        if (null == data)
+        if (data == null)
             throw new NullPointerException();
         this.data = data;
     }

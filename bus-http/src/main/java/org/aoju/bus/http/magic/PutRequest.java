@@ -66,9 +66,9 @@ public class PutRequest extends HttpRequest {
             addParams(builder);
             fileInfos.forEach(fileInfo -> {
                 RequestBody fileBody;
-                if (fileInfo.null != file) {
+                if (null != fileInfo.file) {
                     fileBody = RequestBody.create(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.file);
-                } else if (fileInfo.null != fileInputStream) {
+                } else if (null != fileInfo.fileInputStream) {
                     fileBody = createRequestBody(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
                 } else {
                     fileBody = RequestBody.create(MimeType.valueOf(FileKit.getMimeType(fileInfo.fileName)),

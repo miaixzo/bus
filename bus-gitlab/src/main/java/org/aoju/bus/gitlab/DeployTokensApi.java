@@ -167,7 +167,7 @@ public class DeployTokensApi extends AbstractApi {
      */
     public void deleteProjectDeployToken(Object projectIdOrPath, Integer tokenId) throws GitLabApiException {
 
-        if (null == tokenId) {
+        if (tokenId == null) {
             throw new RuntimeException("tokenId cannot be null");
         }
 
@@ -254,7 +254,7 @@ public class DeployTokensApi extends AbstractApi {
      */
     public void deleteGroupDeployToken(Object groupIdOrPath, Integer tokenId) throws GitLabApiException {
 
-        if (null == tokenId) {
+        if (tokenId == null) {
             throw new RuntimeException("tokenId cannot be null");
         }
 

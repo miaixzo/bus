@@ -48,10 +48,10 @@ public class ImagingDocumentSource extends Service {
 
     static {
         URL url = ImagingDocumentSource.class.getResource("/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");
-        if (null == url) {
+        if (url == null) {
             url = ImagingDocumentSource.class.getClassLoader().getResource("/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");
         }
-        if (null == url) {
+        if (url == null) {
             Logger.getLogger(ImagingDocumentSource.class.getName()).log(Level.INFO, "Can not initialize the default wsdl from {0}", "/wsdl/XDS-I.b_ImagingDocumentSource.wsdl");
         }
         WSDL_LOCATION = url;

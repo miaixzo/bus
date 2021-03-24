@@ -32,7 +32,7 @@ public class Rect {
     }
 
     public void set(double[] vals) {
-        if (null != vals) {
+        if (vals != null) {
             x = vals.length > 0 ? (int) vals[0] : 0;
             y = vals.length > 1 ? (int) vals[1] : 0;
             width = vals.length > 2 ? (int) vals[2] : 0;

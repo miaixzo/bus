@@ -280,7 +280,7 @@ public class MilestonesApi extends AbstractApi {
      */
     public Milestone closeGroupMilestone(Object groupIdOrPath, Integer milestoneId) throws GitLabApiException {
 
-        if (null == milestoneId) {
+        if (milestoneId == null) {
             throw new RuntimeException("milestoneId cannot be null");
         }
 
@@ -302,7 +302,7 @@ public class MilestonesApi extends AbstractApi {
      */
     public Milestone activateGroupMilestone(Object groupIdOrPath, Integer milestoneId) throws GitLabApiException {
 
-        if (null == milestoneId) {
+        if (milestoneId == null) {
             throw new RuntimeException("milestoneId cannot be null");
         }
 
@@ -330,7 +330,7 @@ public class MilestonesApi extends AbstractApi {
     public Milestone updateGroupMilestone(Object groupIdOrPath, Integer milestoneId, String title, String description,
                                           Date dueDate, Date startDate, MilestoneState milestoneState) throws GitLabApiException {
 
-        if (null == milestoneId) {
+        if (milestoneId == null) {
             throw new RuntimeException("milestoneId cannot be null");
         }
 
@@ -575,7 +575,7 @@ public class MilestonesApi extends AbstractApi {
      */
     public Milestone closeMilestone(Object projectIdOrPath, Integer milestoneId) throws GitLabApiException {
 
-        if (null == milestoneId) {
+        if (milestoneId == null) {
             throw new RuntimeException("milestoneId cannot be null");
         }
 
@@ -597,7 +597,7 @@ public class MilestonesApi extends AbstractApi {
      */
     public Milestone activateMilestone(Object projectIdOrPath, Integer milestoneId) throws GitLabApiException {
 
-        if (null == milestoneId) {
+        if (milestoneId == null) {
             throw new RuntimeException("milestoneId cannot be null");
         }
 
@@ -625,7 +625,7 @@ public class MilestonesApi extends AbstractApi {
     public Milestone updateMilestone(Object projectIdOrPath, Integer milestoneId, String title, String description,
                                      Date dueDate, Date startDate, MilestoneState milestoneState) throws GitLabApiException {
 
-        if (null == milestoneId) {
+        if (milestoneId == null) {
             throw new RuntimeException("milestoneId cannot be null");
         }
 

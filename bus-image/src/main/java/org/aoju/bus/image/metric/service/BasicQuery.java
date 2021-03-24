@@ -113,7 +113,7 @@ public class BasicQuery implements Query {
     }
 
     protected Attributes adjust(Attributes match) {
-        if (null == match)
+        if (match == null)
             return null;
 
         Attributes filtered = new Attributes(match.size());

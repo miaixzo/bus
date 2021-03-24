@@ -106,9 +106,9 @@ public final class Cookie {
     }
 
     Cookie(Builder builder) {
-        if (builder.null == name) throw new NullPointerException("builder.null == name");
-        if (builder.null == value) throw new NullPointerException("builder.null == value");
-        if (builder.null == domain) throw new NullPointerException("builder.null == domain");
+        if (builder.name == null) throw new NullPointerException("builder.name == null");
+        if (builder.value == null) throw new NullPointerException("builder.value == null");
+        if (builder.domain == null) throw new NullPointerException("builder.domain == null");
 
         this.name = builder.name;
         this.value = builder.value;
@@ -234,7 +234,7 @@ public final class Cookie {
 
         // 如果存在域，则必须匹配域。否则我们只有一个主机cookie.
         String urlHost = url.host();
-        if (null == domain) {
+        if (domain == null) {
             domain = urlHost;
         } else if (!domainMatch(urlHost, domain)) {
             return null;
@@ -246,7 +246,7 @@ public final class Cookie {
             return null;
         }
 
-        if (null == path || !path.startsWith(Symbol.SLASH)) {
+        if (path == null || !path.startsWith(Symbol.SLASH)) {
             String encodedPath = url.encodedPath();
             int lastSlash = encodedPath.lastIndexOf(Symbol.C_SLASH);
             path = lastSlash != 0 ? encodedPath.substring(0, lastSlash) : Symbol.SLASH;
@@ -345,7 +345,7 @@ public final class Cookie {
             s = s.substring(1);
         }
         String canonicalDomain = org.aoju.bus.http.Builder.canonicalizeHost(s);
-        if (null == canonicalDomain) {
+        if (canonicalDomain == null) {
             throw new IllegalArgumentException();
         }
         return canonicalDomain;
@@ -357,14 +357,14 @@ public final class Cookie {
 
         for (int i = 0, size = cookieStrings.size(); i < size; i++) {
             Cookie cookie = Cookie.parse(url, cookieStrings.get(i));
-            if (null == cookie) continue;
-            if (null == cookies) cookies = new ArrayList<>();
+            if (cookie == null) continue;
+            if (cookies == null) cookies = new ArrayList<>();
             cookies.add(cookie);
         }
 
         return null != cookies
                 ? Collections.unmodifiableList(cookies)
-                : Collections.<Cookie>emptyList();
+                : Collections.emptyList();
     }
 
     public String name() {
@@ -506,14 +506,14 @@ public final class Cookie {
         boolean hostOnly;
 
         public Builder name(String name) {
-            if (null == name) throw new NullPointerException("null == name");
+            if (name == null) throw new NullPointerException("name == null");
             if (!name.trim().equals(name)) throw new IllegalArgumentException("name is not trimmed");
             this.name = name;
             return this;
         }
 
         public Builder value(String value) {
-            if (null == value) throw new NullPointerException("null == value");
+            if (value == null) throw new NullPointerException("value == null");
             if (!value.trim().equals(value)) throw new IllegalArgumentException("value is not trimmed");
             this.value = value;
             return this;
@@ -536,9 +536,9 @@ public final class Cookie {
         }
 
         private Builder domain(String domain, boolean hostOnly) {
-            if (null == domain) throw new NullPointerException("null == domain");
+            if (domain == null) throw new NullPointerException("domain == null");
             String canonicalDomain = org.aoju.bus.http.Builder.canonicalizeHost(domain);
-            if (null == canonicalDomain) {
+            if (canonicalDomain == null) {
                 throw new IllegalArgumentException("unexpected domain: " + domain);
             }
             this.domain = canonicalDomain;

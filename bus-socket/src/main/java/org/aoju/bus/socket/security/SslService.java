@@ -256,7 +256,7 @@ public class SslService {
                         break;
                     case NEED_TASK:
                         Runnable task;
-                        while ((task = engine.getDelegatedTask()) != null) {
+                        while (null != (task = engine.getDelegatedTask())) {
                             task.run();
                         }
                         break;

@@ -174,7 +174,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         Map<Integer, EnumSet<VR>> vrsByLength = new HashMap<>();
         for (Map.Entry<VR, Integer> entry : lengthsThresholdByVR.entrySet()) {
             EnumSet<VR> vrs = vrsByLength.get(entry.getValue());
-            if (null == vrs)
+            if (vrs == null)
                 vrsByLength.put(entry.getValue(), vrs = EnumSet.noneOf(VR.class));
             vrs.add(entry.getKey());
         }

@@ -52,7 +52,9 @@ public final class GzipSink implements Sink {
     private boolean closed;
 
     public GzipSink(Sink sink) {
-        if (null == sink) throw new IllegalArgumentException("null == sink");
+        if (null == sink) {
+            throw new IllegalArgumentException("sink == null");
+        }
         this.deflater = new Deflater(Deflater.DEFAULT_COMPRESSION, true);
         this.sink = IoKit.buffer(sink);
         this.deflaterSink = new DeflaterSink(this.sink, deflater);
@@ -94,13 +96,17 @@ public final class GzipSink implements Sink {
         try {
             deflater.end();
         } catch (Throwable e) {
-            if (null == thrown) thrown = e;
+            if (null == thrown) {
+                thrown = e;
+            }
         }
 
         try {
             sink.close();
         } catch (Throwable e) {
-            if (null == thrown) thrown = e;
+            if (null == thrown) {
+                thrown = e;
+            }
         }
         closed = true;
 

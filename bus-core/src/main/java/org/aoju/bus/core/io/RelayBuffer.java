@@ -201,7 +201,9 @@ final class RelayBuffer {
      */
     public Source newSource() {
         synchronized (RelayBuffer.this) {
-            if (null == file) return null;
+            if (null == file) {
+                return null;
+            }
             sourceCount++;
         }
 
@@ -223,7 +225,9 @@ final class RelayBuffer {
 
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
-            if (null == fileOperator) throw new IllegalStateException("closed");
+            if (null == fileOperator) {
+                throw new IllegalStateException("closed");
+            }
 
             long upstreamPos;
             int source;
@@ -310,7 +314,9 @@ final class RelayBuffer {
 
         @Override
         public void close() throws IOException {
-            if (null == fileOperator) return;
+            if (null == fileOperator) {
+                return;
+            }
             fileOperator = null;
 
             RandomAccessFile fileToClose = null;

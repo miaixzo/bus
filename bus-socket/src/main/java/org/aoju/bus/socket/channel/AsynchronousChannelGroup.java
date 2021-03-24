@@ -153,7 +153,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
 
     private int getIntSystemProperty(String key, int defaultValue) {
         String value = System.getProperty(key);
-        if (null == value || value.length() == 0) {
+        if (value == null || value.length() == 0) {
             return defaultValue;
         }
         try {
@@ -300,7 +300,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
             try {
                 while (running) {
                     WorkerRegister register;
-                    while ((register = registers.poll()) != null) {
+                    while (null != (register = registers.poll())) {
                         register.callback(selector);
                     }
                     if (keySet.isEmpty() && selector.select() == 0) {

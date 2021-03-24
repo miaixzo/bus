@@ -68,7 +68,7 @@ public abstract class AbstractService implements ImageService {
 
     private Attributes readDataset(Presentation pc, PDVInputStream data)
             throws IOException {
-        if (null == data)
+        if (data == null)
             return null;
 
         Attributes dataset = data.readDataset(pc.getTransferSyntax());

@@ -86,7 +86,7 @@ public class TCPListener implements SocketListener {
             while (!ss.isClosed()) {
                 Logger.debug("Wait for connection on {}", sockAddr);
                 Socket s = ss.accept();
-                Monitoring monitor = conn.getDevice() != null
+                Monitoring monitor = null != conn.getDevice()
                         ? conn.getDevice().getMonitoring()
                         : null;
                 if (conn.isBlackListed(s.getInetAddress())) {

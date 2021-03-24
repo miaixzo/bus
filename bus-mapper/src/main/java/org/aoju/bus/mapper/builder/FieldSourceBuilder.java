@@ -183,10 +183,10 @@ public class FieldSourceBuilder {
          * @return 结果
          */
         private List<EntityField> _getFields(Class<?> entityClass, List<EntityField> fieldList, Integer level) {
-            if (null == fieldList) {
+            if (fieldList == null) {
                 fieldList = new ArrayList<>();
             }
-            if (null == level) {
+            if (level == null) {
                 level = 0;
             }
             if (entityClass.equals(Object.class)) {
@@ -275,12 +275,12 @@ public class FieldSourceBuilder {
             for (PropertyDescriptor desc : descriptors) {
                 if (null != desc && !"class".equals(desc.getName())) {
                     EntityField entityField = new EntityField(null, desc);
-                    if (desc.getReadMethod() != null
-                            && desc.getReadMethod().getGenericReturnType() != null
+                    if (null != desc.getReadMethod()
+                            && null != desc.getReadMethod().getGenericReturnType()
                             && desc.getReadMethod().getGenericReturnType() instanceof TypeVariable) {
                         entityField.setJavaType(genericMap.get(((TypeVariable) desc.getReadMethod().getGenericReturnType()).getName()));
-                    } else if (desc.getWriteMethod() != null
-                            && desc.getWriteMethod().getGenericParameterTypes() != null
+                    } else if (null != desc.getWriteMethod()
+                            && null != desc.getWriteMethod().getGenericParameterTypes()
                             && desc.getWriteMethod().getGenericParameterTypes().length == 1
                             && desc.getWriteMethod().getGenericParameterTypes()[0] instanceof TypeVariable) {
                         entityField.setJavaType(genericMap.get(((TypeVariable) desc.getWriteMethod().getGenericParameterTypes()[0]).getName()));
@@ -298,10 +298,10 @@ public class FieldSourceBuilder {
          * @param level       等级
          */
         private void _getFields(Class<?> entityClass, List<EntityField> fieldList, Map<String, Class<?>> genericMap, Integer level) {
-            if (null == fieldList) {
+            if (fieldList == null) {
                 throw new NullPointerException("fieldList参数不能为空!");
             }
-            if (null == level) {
+            if (level == null) {
                 level = 0;
             }
             if (entityClass == Object.class) {
@@ -313,8 +313,8 @@ public class FieldSourceBuilder {
                 //忽略static和transient字段#106
                 if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
                     EntityField entityField = new EntityField(field, null);
-                    if (field.getGenericType() != null && field.getGenericType() instanceof TypeVariable) {
-                        if (null == genericMap || !genericMap.containsKey(((TypeVariable) field.getGenericType()).getName())) {
+                    if (null != field.getGenericType() && field.getGenericType() instanceof TypeVariable) {
+                        if (genericMap == null || !genericMap.containsKey(((TypeVariable) field.getGenericType()).getName())) {
                             throw new InstrumentException(entityClass + "字段" + field.getName() + "的泛型类型无法获取!");
                         } else {
                             entityField.setJavaType(genericMap.get(((TypeVariable) field.getGenericType()).getName()));

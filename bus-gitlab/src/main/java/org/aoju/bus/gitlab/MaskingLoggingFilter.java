@@ -335,7 +335,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
 
         final LoggingStream stream = (LoggingStream) context.getProperty(ENTITY_STREAM_PROPERTY);
         context.proceed();
-        if (null == stream) {
+        if (stream == null) {
             return;
         }
 

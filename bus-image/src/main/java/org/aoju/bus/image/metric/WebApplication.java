@@ -66,7 +66,7 @@ public class WebApplication {
 
     public void setDevice(Device device) {
         if (null != device) {
-            if (this.null != device)
+            if (null != this.device)
                 throw new IllegalStateException("already owned by " +
                         this.device.getDeviceName());
             for (Connection conn : conns)
@@ -134,7 +134,7 @@ public class WebApplication {
 
     public boolean isInstalled() {
         return null != device && device.isInstalled()
-                && (null == installed || installed.booleanValue());
+                && (installed == null || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {

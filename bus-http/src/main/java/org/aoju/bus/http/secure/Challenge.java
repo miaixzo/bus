@@ -53,8 +53,8 @@ public final class Challenge {
     private final Map<String, String> authParams;
 
     public Challenge(String scheme, Map<String, String> authParams) {
-        if (null == scheme) throw new NullPointerException("null == scheme");
-        if (null == authParams) throw new NullPointerException("null == authParams");
+        if (scheme == null) throw new NullPointerException("scheme == null");
+        if (authParams == null) throw new NullPointerException("authParams == null");
         this.scheme = scheme;
         Map<String, String> newAuthParams = new LinkedHashMap<>();
         for (Entry<String, String> authParam : authParams.entrySet()) {
@@ -65,8 +65,8 @@ public final class Challenge {
     }
 
     public Challenge(String scheme, String realm) {
-        if (null == scheme) throw new NullPointerException("null == scheme");
-        if (null == realm) throw new NullPointerException("null == realm");
+        if (scheme == null) throw new NullPointerException("scheme == null");
+        if (realm == null) throw new NullPointerException("realm == null");
         this.scheme = scheme;
         this.authParams = Collections.singletonMap("realm", realm);
     }
@@ -78,7 +78,7 @@ public final class Challenge {
      * @return 返回此字符集的副本
      */
     public Challenge withCharset(java.nio.charset.Charset charset) {
-        if (null == charset) throw new NullPointerException("null == charset");
+        if (charset == null) throw new NullPointerException("charset == null");
         Map<String, String> authParams = new LinkedHashMap<>(this.authParams);
         authParams.put("charset", charset.name());
         return new Challenge(scheme, authParams);

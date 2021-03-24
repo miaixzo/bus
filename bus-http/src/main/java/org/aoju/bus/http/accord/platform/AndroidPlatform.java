@@ -86,7 +86,7 @@ public class AndroidPlatform extends Platform {
      * @return 是否提供ALPN支持
      */
     private static boolean supportsAlpn() {
-        if (Security.getProvider("GMSCore_OpenSSL") != null) {
+        if (null != Security.getProvider("GMSCore_OpenSSL")) {
             return true;
         } else {
             try {
@@ -154,7 +154,7 @@ public class AndroidPlatform extends Platform {
     @Override
     protected X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
         Object context = readFieldOrNull(sslSocketFactory, sslParametersClass, "sslParameters");
-        if (null == context) {
+        if (context == null) {
             // 如果这不起作用，请在放弃之前尝试谷歌Play Services SSL提供者。
             // 这必须由SSLSocketFactory的类装入器装入.
             try {
@@ -192,7 +192,7 @@ public class AndroidPlatform extends Platform {
 
     @Override
     public String getSelectedProtocol(SSLSocket socket) {
-        if (null == getAlpnSelectedProtocol) return null;
+        if (getAlpnSelectedProtocol == null) return null;
         if (!getAlpnSelectedProtocol.isSupported(socket)) return null;
 
         byte[] alpnResult = (byte[]) getAlpnSelectedProtocol.invokeWithoutCheckedException(socket);

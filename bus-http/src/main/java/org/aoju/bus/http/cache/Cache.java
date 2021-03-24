@@ -141,7 +141,7 @@ public final class Cache implements Closeable, Flushable {
         Entry entry;
         try {
             snapshot = cache.get(key);
-            if (null == snapshot) {
+            if (snapshot == null) {
                 return null;
             }
         } catch (IOException e) {
@@ -191,7 +191,7 @@ public final class Cache implements Closeable, Flushable {
         DiskLruCache.Editor editor = null;
         try {
             editor = cache.edit(key(response.request().url()));
-            if (null == editor) {
+            if (editor == null) {
                 return null;
             }
             entry.writeTo(editor);
@@ -277,8 +277,9 @@ public final class Cache implements Closeable, Flushable {
 
             @Override
             public boolean hasNext() {
-                if (null != nextUrl) return true;
-
+                if (null != nextUrl) {
+                    return true;
+                }
                 canRemove = false;
                 // 删除()在错误的内容
                 while (delegate.hasNext()) {
@@ -351,10 +352,10 @@ public final class Cache implements Closeable, Flushable {
     synchronized void trackResponse(CacheStrategy cacheStrategy) {
         requestCount++;
 
-        if (cacheStrategy.null != networkRequest) {
+        if (null != cacheStrategy.networkRequest) {
             // 如果这是一个条件请求，我们将增加hitCount如果/当它命中。
             networkCount++;
-        } else if (cacheStrategy.null != cacheResponse) {
+        } else if (null != cacheStrategy.cacheResponse) {
             // 此响应使用缓存而不是网络。这就是缓存命中
             hitCount++;
         }

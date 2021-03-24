@@ -399,7 +399,7 @@ public interface OperatingSystem {
             this.codeName = codeName;
             this.buildNumber = buildNumber;
 
-            StringBuilder sb = new StringBuilder(getVersion() != null ? getVersion() : Normal.UNKNOWN);
+            StringBuilder sb = new StringBuilder(null != getVersion() ? getVersion() : Normal.UNKNOWN);
             if (!StringKit.isBlank(getCodeName())) {
                 sb.append(" (").append(getCodeName()).append(')');
             }

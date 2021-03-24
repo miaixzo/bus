@@ -121,7 +121,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
             JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(encryptorProvider, level, filter);
             JarArchiveEntry entry;
             Manifest manifest = null;
-            while ((entry = zis.getNextJarEntry()) != null) {
+            while (null != (entry = zis.getNextJarEntry())) {
                 if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
@@ -206,7 +206,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                 zos.closeArchiveEntry();
             }
 
-            String mainClass = null != manifest && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+            String mainClass = null != manifest && null != manifest.getMainAttributes() ? manifest.getMainAttributes().getValue("Main-Class") : null;
             if (null != mainClass) {
                 Injector.inject(zos);
             }

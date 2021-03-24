@@ -83,7 +83,7 @@ public class MPEGHeader {
         if (seqHeaderOffset == -1)
             return null;
 
-        if (null == attrs)
+        if (attrs == null)
             attrs = new Attributes(15);
 
         int off = seqHeaderOffset;

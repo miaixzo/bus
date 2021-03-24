@@ -62,7 +62,7 @@ public class JarClassLoader extends URLClassLoader {
     @Override
     public URL findResource(String name) {
         URL url = super.findResource(name);
-        if (null == url) {
+        if (url == null) {
             return null;
         }
         try {
@@ -75,7 +75,7 @@ public class JarClassLoader extends URLClassLoader {
     @Override
     public Enumeration<URL> findResources(String name) throws IOException {
         Enumeration<URL> enumeration = super.findResources(name);
-        if (null == enumeration) {
+        if (enumeration == null) {
             return null;
         }
         return new XJarEnumeration(enumeration);
@@ -87,7 +87,7 @@ public class JarClassLoader extends URLClassLoader {
             return super.findClass(name);
         } catch (ClassFormatError e) {
             URL resource = findResource(name.replace(Symbol.C_DOT, Symbol.C_SLASH) + ".class");
-            if (null == resource) {
+            if (resource == null) {
                 throw new ClassNotFoundException(name, e);
             }
             try (InputStream in = resource.openStream()) {
@@ -116,7 +116,7 @@ public class JarClassLoader extends URLClassLoader {
         @Override
         public URL nextElement() {
             URL url = enumeration.nextElement();
-            if (null == url) {
+            if (url == null) {
                 return null;
             }
             try {

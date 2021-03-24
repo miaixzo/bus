@@ -153,25 +153,18 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return procList.isEmpty() ? null : procList.get(0);
     }
 
-    private List<OSProcess> processMapToList(Collection<Integer> pids) {
-        // Get data from the registry if possible
-        Map<Integer, PerfCounterBlock> processMap = processMapFromRegistry.get();
-        // otherwise performance counters with WMI backup
-        if (null == processMap || processMap.isEmpty()) {
-            processMap = (null == pids) ? processMapFromPerfCounters.get()
-                    : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
+    private static String querySystemLog() {
+        String systemLog = Config.get("oshi.os.windows.eventlog", "System");
+        if (systemLog.isEmpty()) {
+            return null;
         }
-
-        Map<Integer, WtsInfo> processWtsMap = ProcessWtsData.queryProcessWtsMap(pids);
-
-        Set<Integer> mapKeys = new HashSet<>(processWtsMap.keySet());
-        mapKeys.retainAll(processMap.keySet());
-
-        List<OSProcess> processList = new ArrayList<>();
-        for (Integer pid : mapKeys) {
-            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap));
+        WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
+        if (h == null) {
+            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
+                    systemLog);
+            return null;
         }
-        return processList;
+        return systemLog;
     }
 
     @Override
@@ -422,18 +415,25 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         return true;
     }
 
-    private static String querySystemLog() {
-        String systemLog = Config.get("oshi.os.windows.eventlog", "System");
-        if (systemLog.isEmpty()) {
-            return null;
+    private List<OSProcess> processMapToList(Collection<Integer> pids) {
+        // Get data from the registry if possible
+        Map<Integer, PerfCounterBlock> processMap = processMapFromRegistry.get();
+        // otherwise performance counters with WMI backup
+        if (processMap == null || processMap.isEmpty()) {
+            processMap = (pids == null) ? processMapFromPerfCounters.get()
+                    : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
         }
-        WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
-        if (null == h) {
-            Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
-                    systemLog);
-            return null;
+
+        Map<Integer, WtsInfo> processWtsMap = ProcessWtsData.queryProcessWtsMap(pids);
+
+        Set<Integer> mapKeys = new HashSet<>(processWtsMap.keySet());
+        mapKeys.retainAll(processMap.keySet());
+
+        List<OSProcess> processList = new ArrayList<>();
+        for (Integer pid : mapKeys) {
+            processList.add(new WindowsOSProcess(pid, this, processMap, processWtsMap));
         }
-        return systemLog;
+        return processList;
     }
 
     private String parseVersion(WbemcliUtil.WmiResult<OSVersionProperty> versionInfo, int suiteMask, String buildNumber) {
@@ -468,7 +468,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         }
 
         Properties verProps = Builder.readProperties(WIN_VERSION_PROPERTIES);
-        version = verProps.getProperty(verLookup.toString()) != null ? verProps.getProperty(verLookup.toString())
+        version = null != verProps.getProperty(verLookup.toString()) ? verProps.getProperty(verLookup.toString())
                 : version;
 
         String sp = WmiKit.getString(versionInfo, OSVersionProperty.CSDVERSION, 0);
@@ -481,7 +481,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     protected int queryBitness(int jvmBitness) {
-        if (jvmBitness < 64 && System.getenv("ProgramFiles(x86)") != null && IS_VISTA_OR_GREATER) {
+        if (jvmBitness < 64 && null != System.getenv("ProgramFiles(x86)") && IS_VISTA_OR_GREATER) {
             WbemcliUtil.WmiResult<BitnessProperty> bitnessMap = Win32Processor.queryBitness();
             if (bitnessMap.getResultCount() > 0) {
                 return WmiKit.getUint16(bitnessMap, BitnessProperty.ADDRESSWIDTH, 0);

@@ -41,7 +41,9 @@ public abstract class DelegateSink implements Sink {
     private final Sink delegate;
 
     public DelegateSink(Sink delegate) {
-        if (null == delegate) throw new IllegalArgumentException("null == delegate");
+        if (null == delegate) {
+            throw new IllegalArgumentException("delegate == null");
+        }
         this.delegate = delegate;
     }
 

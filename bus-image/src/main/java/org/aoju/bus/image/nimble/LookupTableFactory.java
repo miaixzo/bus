@@ -113,11 +113,11 @@ public class LookupTableFactory {
 
     public void setVOI(Attributes img, int windowIndex, int voiLUTIndex,
                        boolean preferWindow) {
-        if (null == img)
+        if (img == null)
             return;
 
         Attributes vLUT = img.getNestedDataset(Tag.VOILUTSequence, voiLUTIndex);
-        if (preferWindow || null == vLUT) {
+        if (preferWindow || vLUT == null) {
             float[] wcs = img.getFloats(Tag.WindowCenter);
             float[] wws = img.getFloats(Tag.WindowWidth);
             if (null != wcs && wcs.length != 0
@@ -143,7 +143,7 @@ public class LookupTableFactory {
         int[] desc = vLUT.getInts(Tag.LUTDescriptor);
         byte[] data;
         if (null != desc && desc.length == 3 && desc[2] == 16
-                && (data = vLUT.getSafeBytes(Tag.LUTData)) != null) {
+                && null != (data = vLUT.getSafeBytes(Tag.LUTData))) {
             int hiByte = 0;
             for (int i = vLUT.bigEndian() ? 0 : 1; i < data.length; i++, i++)
                 hiByte |= data[i];
@@ -155,7 +155,7 @@ public class LookupTableFactory {
     }
 
     private LookupTable createLUT(StoredValue inBits, Attributes attrs) {
-        if (null == attrs)
+        if (attrs == null)
             return null;
 
         return createLUT(inBits, attrs.getInts(Tag.LUTDescriptor),
@@ -165,7 +165,7 @@ public class LookupTableFactory {
     private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data,
                                   boolean bigEndian) {
 
-        if (null == desc)
+        if (desc == null)
             return null;
 
         if (desc.length != 3)
@@ -174,7 +174,7 @@ public class LookupTableFactory {
         int len = desc[0] == 0 ? 0x10000 : desc[0];
         int offset = (short) desc[1];
         int outBits = desc[2];
-        if (null == data)
+        if (data == null)
             return null;
 
         if (data.length == len << 1) {
@@ -220,7 +220,7 @@ public class LookupTableFactory {
         float b = rescaleIntercept;
         LookupTable modalityLUT = this.modalityLUT;
         LookupTable lut = this.voiLUT;
-        if (null == lut) {
+        if (lut == null) {
             float c = windowCenter;
             float w = windowWidth;
 

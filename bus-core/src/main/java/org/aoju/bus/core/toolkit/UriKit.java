@@ -1567,7 +1567,7 @@ public class UriKit {
             return this;
         }
 
-        if (this.null == path) {
+        if (null == this.path) {
             this.path = new Path();
         }
         this.path.add(segment);
@@ -1615,7 +1615,7 @@ public class UriKit {
             return this;
         }
 
-        if (this.null == query) {
+        if (null == this.query) {
             this.query = new Query();
         }
         this.query.add(key, value);
@@ -2020,7 +2020,7 @@ public class UriKit {
             }
 
 
-            if (this.null == segments) {
+            if (null == this.segments) {
                 this.segments = new LinkedList<>();
             }
             if (before) {

@@ -105,7 +105,7 @@ public class Centre {
      */
     public synchronized void start(boolean... flag) {
         if (BooleanKit.or(flag)) {
-            if (null == executor) {
+            if (executor == null) {
                 executor = Executors.newSingleThreadExecutor();
                 scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
                 device.setExecutor(executor);

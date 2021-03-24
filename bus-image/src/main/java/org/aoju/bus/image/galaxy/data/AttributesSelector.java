@@ -140,7 +140,7 @@ public class AttributesSelector implements Serializable {
 
     @Override
     public String toString() {
-        if (null == str)
+        if (str == null)
             str = toStringBuilder().toString();
         return str;
     }
@@ -148,7 +148,7 @@ public class AttributesSelector implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         AttributesSelector that = (AttributesSelector) o;
         return tag == that.tag &&
                 Objects.equals(privateCreator, that.privateCreator) &&

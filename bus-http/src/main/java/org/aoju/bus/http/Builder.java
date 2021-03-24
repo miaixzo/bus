@@ -159,7 +159,7 @@ public abstract class Builder {
         synchronized (BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS) {
             for (int i = 0, count = BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length; i < count; i++) {
                 DateFormat format = BROWSER_COMPATIBLE_DATE_FORMATS[i];
-                if (null == format) {
+                if (format == null) {
                     format = new SimpleDateFormat(BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS[i], Locale.US);
                     format.setTimeZone(Builder.UTC);
                     BROWSER_COMPATIBLE_DATE_FORMATS[i] = format;
@@ -266,7 +266,7 @@ public abstract class Builder {
 
     public static boolean nonEmptyIntersection(
             Comparator<String> comparator, String[] first, String[] second) {
-        if (null == first || null == second || first.length == 0 || second.length == 0) {
+        if (first == null || second == null || first.length == 0 || second.length == 0) {
             return false;
         }
         for (String a : first) {
@@ -289,7 +289,7 @@ public abstract class Builder {
     }
 
     public static boolean isAndroidGetsocknameError(AssertionError e) {
-        return e.getCause() != null && e.getMessage() != null
+        return null != e.getCause() && null != e.getMessage()
                 && e.getMessage().contains("getsockname failed");
     }
 
@@ -364,7 +364,7 @@ public abstract class Builder {
             InetAddress inetAddress = host.startsWith(Symbol.BRACKET_LEFT) && host.endsWith(Symbol.BRACKET_RIGHT)
                     ? decodeIpv6(host, 1, host.length() - 1)
                     : decodeIpv6(host, 0, host.length());
-            if (null == inetAddress) return null;
+            if (inetAddress == null) return null;
             byte[] address = inetAddress.getAddress();
             if (address.length == 16) return inet6AddressToAscii(address);
             throw new AssertionError("Invalid IPv6 address: '" + host + Symbol.SINGLE_QUOTE);
@@ -437,7 +437,7 @@ public abstract class Builder {
 
     public static int checkDuration(String name, long duration, TimeUnit unit) {
         if (duration < 0) throw new IllegalArgumentException(name + " < 0");
-        if (null == unit) throw new NullPointerException("null == unit");
+        if (unit == null) throw new NullPointerException("unit == null");
         long millis = unit.toMillis(duration);
         if (millis > Integer.MAX_VALUE) throw new IllegalArgumentException(name + " too large.");
         if (millis == 0 && duration > 0) throw new IllegalArgumentException(name + " too small.");

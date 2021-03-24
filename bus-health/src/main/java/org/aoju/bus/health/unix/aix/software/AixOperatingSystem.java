@@ -240,7 +240,7 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
         // Get installed services from /etc/rc.d/init.d
         File dir = new File("/etc/rc.d/init.d");
         File[] listFiles;
-        if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
+        if (dir.exists() && dir.isDirectory() && null != (listFiles = dir.listFiles())) {
             for (File file : listFiles) {
                 String installedService = Executor.getFirstAnswer(file.getAbsolutePath() + " status");
                 // Apache httpd daemon is running with PID 3997858.

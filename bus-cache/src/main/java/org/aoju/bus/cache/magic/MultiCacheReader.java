@@ -259,7 +259,7 @@ public class MultiCacheReader extends AbstractReader {
         Logger.info("multi cache hit rate: {}/{}, missed keys: {}",
                 hitCount, totalCount, missKeys);
 
-        if (this.null != baseHitting) {
+        if (null != this.baseHitting) {
             // 分组模板
             String pattern = PatternGenerator.generatePattern(annoHolder);
 

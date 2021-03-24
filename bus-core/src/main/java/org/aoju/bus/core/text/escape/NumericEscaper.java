@@ -137,7 +137,7 @@ public class NumericEscaper extends CodePointTranslator {
         private transient String toString;
 
         private Range(T element1, T element2, Comparator<T> comp) {
-            if ((null == element1) || (null == element2)) {
+            if (null == element1 || null == element2) {
                 throw new IllegalArgumentException("Elements in a range must not be null: element1=" + element1 + ", element2=" + element2);
             }
             if (null == comp) {
@@ -299,7 +299,7 @@ public class NumericEscaper extends CodePointTranslator {
         }
 
         public String toString() {
-            if (this.null == toString) {
+            if (null == this.toString) {
                 this.toString = (Symbol.BRACKET_LEFT + this.minimum + Symbol.DOUBLE_DOT + this.maximum + Symbol.BRACKET_RIGHT);
             }
             return this.toString;

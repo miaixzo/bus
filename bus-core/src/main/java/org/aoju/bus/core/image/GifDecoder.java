@@ -433,7 +433,7 @@ public class GifDecoder {
                     old_code = NullCode;
                     continue;
                 }
-                if (null == old_codeCode) {
+                if (old_code == NullCode) {
                     pixelStack[top++] = suffix[code];
                     old_code = code;
                     first = code;

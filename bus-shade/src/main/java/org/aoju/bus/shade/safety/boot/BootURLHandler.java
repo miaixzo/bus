@@ -70,7 +70,7 @@ public class BootURLHandler extends Handler {
             InputStreamReader isr = new InputStreamReader(in);
             LineNumberReader lnr = new LineNumberReader(isr);
             String name;
-            while ((name = lnr.readLine()) != null) indexes.add(classpath + name);
+            while (null != (name = lnr.readLine())) indexes.add(classpath + name);
         }
     }
 

@@ -53,7 +53,7 @@ public class PersonName {
     }
 
     private static String trim(String s) {
-        return null == s || (s = s.trim()).isEmpty() ? null : s;
+        return s == null || (s = s.trim()).isEmpty() ? null : s;
     }
 
     private void parse(String s, boolean lenient) {
@@ -189,7 +189,7 @@ public class PersonName {
     }
 
     public boolean contains(Group g, Component c) {
-        return get(g, c) != null;
+        return null != get(g, c);
     }
 
     public boolean contains(Component c) {

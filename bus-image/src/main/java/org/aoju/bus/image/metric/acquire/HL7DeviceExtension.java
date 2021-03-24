@@ -73,7 +73,7 @@ public class HL7DeviceExtension extends DeviceExtension {
     }
 
     public boolean removeHL7Application(HL7Application hl7App) {
-        return removeHL7Application(hl7App.getApplicationName()) != null;
+        return null != removeHL7Application(hl7App.getApplicationName());
     }
 
     public HL7Application getHL7Application(String name) {
@@ -82,9 +82,9 @@ public class HL7DeviceExtension extends DeviceExtension {
 
     public HL7Application getHL7Application(String name, boolean matchOtherAppNames) {
         HL7Application app = hl7apps.get(name);
-        if (null == app)
+        if (app == null)
             app = hl7apps.get(Symbol.STAR);
-        if (null == app && matchOtherAppNames)
+        if (app == null && matchOtherAppNames)
             for (HL7Application app1 : getHL7Applications())
                 if (app1.isOtherApplicationName(name))
                     return app1;
@@ -121,7 +121,7 @@ public class HL7DeviceExtension extends DeviceExtension {
 
     public UnparsedHL7Message onMessage(Connection conn, Socket s, UnparsedHL7Message msg) throws HL7Exception {
         HL7Application hl7App = getHL7Application(msg.msh().getReceivingApplicationWithFacility(), true);
-        if (null == hl7App)
+        if (hl7App == null)
             throw new HL7Exception(
                     new ERRSegment(msg.msh())
                             .setHL7ErrorCode(Builder.TableValueNotFound)
@@ -139,7 +139,7 @@ public class HL7DeviceExtension extends DeviceExtension {
         hl7apps.keySet().retainAll(from.hl7apps.keySet());
         for (HL7Application src : from.hl7apps.values()) {
             HL7Application hl7app = hl7apps.get(src.getApplicationName());
-            if (null == hl7app)
+            if (hl7app == null)
                 addHL7Application(hl7app = new HL7Application(src.getApplicationName()));
             hl7app.reconfigure(src);
         }

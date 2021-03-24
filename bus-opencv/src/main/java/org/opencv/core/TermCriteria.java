@@ -45,7 +45,7 @@ public class TermCriteria {
     }
 
     public void set(double[] vals) {
-        if (null != vals) {
+        if (vals != null) {
             type = vals.length > 0 ? (int) vals[0] : 0;
             maxCount = vals.length > 1 ? (int) vals[1] : 0;
             epsilon = vals.length > 2 ? (double) vals[2] : 0;

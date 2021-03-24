@@ -53,7 +53,7 @@ public class StdLoader extends ResourceLoader implements Loader {
     private final ClassLoader classLoader;
 
     public StdLoader() {
-        this(Thread.currentThread().getContextClassLoader() != null ? Thread.currentThread().getContextClassLoader() : ClassLoader.getSystemClassLoader());
+        this(null != Thread.currentThread().getContextClassLoader() ? Thread.currentThread().getContextClassLoader() : ClassLoader.getSystemClassLoader());
     }
 
     public StdLoader(ClassLoader classLoader) {

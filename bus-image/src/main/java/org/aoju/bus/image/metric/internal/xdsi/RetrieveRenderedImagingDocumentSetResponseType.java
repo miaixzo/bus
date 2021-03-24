@@ -53,7 +53,7 @@ public class RetrieveRenderedImagingDocumentSetResponseType {
     }
 
     public List<RenderedDocumentResponse> getRenderedDocumentResponse() {
-        if (this.null == renderedDocumentResponse) {
+        if (this.renderedDocumentResponse == null) {
             this.renderedDocumentResponse = new ArrayList();
         }
         return this.renderedDocumentResponse;

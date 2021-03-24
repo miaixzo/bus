@@ -125,7 +125,7 @@ public class ConcurrentHashSet<E> extends AbstractSet<E> implements java.io.Seri
 
     @Override
     public boolean add(E e) {
-        return map.put(e, PRESENT) == null;
+        return null == map.put(e, PRESENT);
     }
 
     @Override

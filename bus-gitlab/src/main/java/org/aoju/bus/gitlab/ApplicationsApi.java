@@ -115,7 +115,7 @@ public class ApplicationsApi extends AbstractApi {
      */
     public Application createApplication(String name, String redirectUri, ApplicationScope[] scopes) throws GitLabApiException {
 
-        if (null == scopes || scopes.length == 0) {
+        if (scopes == null || scopes.length == 0) {
             throw new GitLabApiException("scopes cannot be null or empty");
         }
 
@@ -135,7 +135,7 @@ public class ApplicationsApi extends AbstractApi {
      */
     public Application createApplication(String name, String redirectUri, List<ApplicationScope> scopes) throws GitLabApiException {
 
-        if (null == scopes || scopes.isEmpty()) {
+        if (scopes == null || scopes.isEmpty()) {
             throw new GitLabApiException("scopes cannot be null or empty");
         }
 

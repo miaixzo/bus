@@ -185,7 +185,7 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         List<String> legacySvcs = new ArrayList<>();
         File dir = new File("/etc/init.d");
         File[] listFiles;
-        if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
+        if (dir.exists() && dir.isDirectory() && null != (listFiles = dir.listFiles())) {
             for (File f : listFiles) {
                 legacySvcs.add(f.getName());
             }

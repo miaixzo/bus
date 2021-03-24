@@ -113,7 +113,7 @@ public class DirReader implements Closeable {
     }
 
     public File toFile(String[] fileIDs) {
-        if (null == fileIDs || fileIDs.length == 0)
+        if (fileIDs == null || fileIDs.length == 0)
             return null;
 
         return new File(file.getParent(),
@@ -190,11 +190,11 @@ public class DirReader implements Closeable {
     protected Attributes findLastLowerDirectoryRecord(Attributes rec)
             throws IOException {
         Attributes lower = readLowerDirectoryRecord(rec);
-        if (null == lower)
+        if (lower == null)
             return null;
 
         Attributes next;
-        while ((next = readNextDirectoryRecord(lower)) != null)
+        while (null != (next = readNextDirectoryRecord(lower)))
             lower = next;
         return lower;
     }
@@ -350,7 +350,7 @@ public class DirReader implements Closeable {
     }
 
     private Attributes pk(String... iuids) {
-        if (null == iuids || iuids.length == 0)
+        if (iuids == null || iuids.length == 0)
             return null;
 
         Attributes pk = new Attributes(1);
@@ -382,7 +382,7 @@ public class DirReader implements Closeable {
         while (offset != 0) {
             Attributes item = readRecord(offset);
             if (inUse(item) && !(ignorePrivate && isPrivate(item))
-                    && (null == keys || item.matches(keys, ignoreCaseOfPN, matchNoValue)))
+                    && (keys == null || item.matches(keys, ignoreCaseOfPN, matchNoValue)))
                 return item;
             offset = item.getInt(Tag.OffsetOfTheNextDirectoryRecord, 0);
         }
@@ -394,7 +394,7 @@ public class DirReader implements Closeable {
             return null;
 
         Attributes item = cache.get(offset);
-        if (null == item) {
+        if (item == null) {
             long off = offset & 0xffffffffL;
             raf.seek(off);
             in.setPosition(off);

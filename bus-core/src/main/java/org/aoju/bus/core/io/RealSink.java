@@ -45,7 +45,9 @@ public final class RealSink implements BufferSink {
     boolean closed;
 
     public RealSink(Sink sink) {
-        if (null == sink) throw new NullPointerException("null == sink");
+        if (null == sink) {
+            throw new NullPointerException("sink == null");
+        }
         this.sink = sink;
     }
 
@@ -130,7 +132,9 @@ public final class RealSink implements BufferSink {
 
     @Override
     public long writeAll(Source source) throws IOException {
-        if (null == source) throw new IllegalArgumentException("null == source");
+        if (null == source) {
+            throw new IllegalArgumentException("source == null");
+        }
         long totalBytesRead = 0;
         for (long readCount; (readCount = source.read(buffer, Segment.SIZE)) != -1; ) {
             totalBytesRead += readCount;

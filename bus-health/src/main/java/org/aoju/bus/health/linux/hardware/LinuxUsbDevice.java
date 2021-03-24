@@ -138,7 +138,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
                 serialMap.put(path, value);
             }
             UdevDevice parent = Udev.INSTANCE.udev_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device");
-            if (null == parent) {
+            if (parent == null) {
                 // This is a controller with no parent, add to list
                 usbControllers.add(path);
             } else {

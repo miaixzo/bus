@@ -55,7 +55,7 @@ public class ExtrinsicObjectType extends RegistryObjectType {
     }
 
     public String getMimeType() {
-        if (this.null == mimeType) {
+        if (this.mimeType == null) {
             return MimeType.APPLICATION_OCTET_STREAM;
         }
         return this.mimeType;
@@ -66,7 +66,7 @@ public class ExtrinsicObjectType extends RegistryObjectType {
     }
 
     public boolean isIsOpaque() {
-        if (this.null == isOpaque) {
+        if (this.isOpaque == null) {
             return false;
         }
         return this.isOpaque.booleanValue();

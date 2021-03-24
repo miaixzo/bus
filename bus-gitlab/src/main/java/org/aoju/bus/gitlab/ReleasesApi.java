@@ -150,7 +150,7 @@ public class ReleasesApi extends AbstractApi {
     public Release updateRelease(Object projectIdOrPath, ReleaseParams params) throws GitLabApiException {
 
         String tagName = params.getTagName();
-        if (null == tagName || tagName.trim().isEmpty()) {
+        if (tagName == null || tagName.trim().isEmpty()) {
             throw new RuntimeException("params.tagName cannot be null or empty");
         }
 

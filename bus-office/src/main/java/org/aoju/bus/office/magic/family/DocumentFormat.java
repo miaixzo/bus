@@ -194,7 +194,7 @@ public class DocumentFormat {
      * @return 包含将文档存储为这种格式时要应用的属性的映射.
      */
     public Map<String, Object> getStoreProperties(final FamilyType family) {
-        return null == storeProperties ? null : storeProperties.get(family);
+        return storeProperties == null ? null : storeProperties.get(family);
     }
 
     @Override
@@ -340,11 +340,11 @@ public class DocumentFormat {
                 final FamilyType family,
                 final String name,
                 final Object value) {
-            if (null == value) {
+            if (value == null) {
                 Optional.ofNullable(storeProperties).map(familyMap ->
                         familyMap.get(family)).ifPresent(propMap -> propMap.remove(name));
             } else {
-                if (null == storeProperties) {
+                if (storeProperties == null) {
                     storeProperties = new EnumMap<>(FamilyType.class);
                 }
                 storeProperties.computeIfAbsent(family, key -> new HashMap<>()).put(name, value);

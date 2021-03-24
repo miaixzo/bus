@@ -89,7 +89,7 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
         }
 
         final URL url = UriKit.getURL(pathBaseClassLoader);
-        if (null == url) {
+        if (url == null) {
             throw new RuntimeException(StringKit.format("Can not find GroupSet file : [{}]", pathBaseClassLoader));
         }
         this.init(url, charset);
@@ -102,11 +102,11 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
      * @param charset    字符集
      */
     public GroupSet(File configFile, java.nio.charset.Charset charset) {
-        if (null == configFile) {
+        if (configFile == null) {
             throw new RuntimeException("Null GroupSet file!");
         }
         final URL url = UriKit.getURL(configFile);
-        if (null == url) {
+        if (url == null) {
             throw new RuntimeException(StringKit.format("Can not find GroupSet file : [{}]", configFile.getAbsolutePath()));
         }
         this.init(url, charset);
@@ -121,7 +121,7 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
      */
     public GroupSet(String path, Class<?> clazz, java.nio.charset.Charset charset) {
         final URL url = UriKit.getURL(path, clazz);
-        if (null == url) {
+        if (url == null) {
             throw new RuntimeException(StringKit.format("Can not find GroupSet file : [{}]", path));
         }
         this.init(url, charset);
@@ -134,7 +134,7 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
      * @param charset 字符集
      */
     public GroupSet(URL url, java.nio.charset.Charset charset) {
-        if (null == url) {
+        if (url == null) {
             throw new RuntimeException("Null url define!");
         }
         this.init(url, charset);
@@ -157,7 +157,7 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
      * @return 成功初始化与否
      */
     public boolean init(URL groupedSetUrl, java.nio.charset.Charset charset) {
-        if (null == groupedSetUrl) {
+        if (groupedSetUrl == null) {
             throw new RuntimeException("Null GroupSet url or charset define!");
         }
         this.charset = charset;
@@ -173,7 +173,7 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
      * @return 加载是否成功
      */
     synchronized public boolean load(URL groupedSetUrl) {
-        if (null == groupedSetUrl) {
+        if (groupedSetUrl == null) {
             throw new RuntimeException("Null GroupSet url define!");
         }
         // log.debug("Load GroupSet file [{}]", groupedSetUrl.getPath());
@@ -215,7 +215,7 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
 
             while (true) {
                 String line = reader.readLine();
-                if (null == line) {
+                if (line == null) {
                     break;
                 }
                 line = line.trim();
@@ -275,7 +275,7 @@ public class GroupSet extends HashMap<String, LinkedHashSet<String>> {
      * @return 分组的值集合
      */
     public LinkedHashSet<String> getValues(String group) {
-        if (null == group) {
+        if (group == null) {
             group = Normal.EMPTY;
         }
         return super.get(group);

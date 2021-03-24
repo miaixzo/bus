@@ -95,7 +95,7 @@ public final class EnumWindows {
             // First is highest, so decrement
             do {
                 zOrderMap.put(h, --zOrder);
-            } while ((h = User32.INSTANCE.GetWindow(h, GW_HWNDNEXT)) != null);
+            } while (null != (h = User32.INSTANCE.GetWindow(h, GW_HWNDNEXT)));
             // now add lowest value to all
             final int offset = zOrder * -1;
             zOrderMap.replaceAll((k, v) -> v + offset);

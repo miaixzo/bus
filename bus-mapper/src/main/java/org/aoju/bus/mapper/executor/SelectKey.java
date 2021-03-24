@@ -154,7 +154,8 @@ public class SelectKey implements KeyGenerator {
 
     private void processGeneratedKeys(Executor executor, MappedStatement ms, Object parameter) {
         try {
-            if (null != parameter && null != keyStatement && keyStatement.getKeyProperties() != null) {
+            if (null != parameter && null != keyStatement
+                    && null != keyStatement.getKeyProperties()) {
                 String[] keyProperties = keyStatement.getKeyProperties();
                 final Configuration configuration = ms.getConfiguration();
                 final MetaObject metaParam = configuration.newMetaObject(parameter);
@@ -190,7 +191,7 @@ public class SelectKey implements KeyGenerator {
                                           MetaObject metaParam, MetaObject metaResult) {
         String[] keyColumns = keyStatement.getKeyColumns();
 
-        if (null == keyColumns || keyColumns.length == 0) {
+        if (keyColumns == null || keyColumns.length == 0) {
             // no key columns specified, just use the property names
             for (String keyProperty : keyProperties) {
                 setValue(metaParam, keyProperty, metaResult.getValue(keyProperty));

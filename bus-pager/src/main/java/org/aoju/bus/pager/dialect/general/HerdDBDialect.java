@@ -52,7 +52,7 @@ public class HerdDBDialect extends AbstractSqlDialect {
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
-        if (boundSql.getParameterMappings() != null) {
+        if (null != boundSql.getParameterMappings()) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             if (page.getStartRow() == 0) {
                 newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());

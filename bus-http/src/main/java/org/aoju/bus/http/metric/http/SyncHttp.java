@@ -111,7 +111,7 @@ public class SyncHttp extends CoverHttp<SyncHttp> {
      * @return 请求结果
      */
     public Results request(String method) {
-        if (null == method || method.isEmpty()) {
+        if (method == null || method.isEmpty()) {
             throw new IllegalArgumentException("Request method method cannot be empty!");
         }
         RealResult result = new RealResult(this, httpv.executor());

@@ -47,7 +47,7 @@ public class LocalizedStringType {
     protected String value;
 
     public String getLang() {
-        if (this.null == lang) {
+        if (this.lang == null) {
             return "en-US";
         }
         return this.lang;
@@ -58,7 +58,7 @@ public class LocalizedStringType {
     }
 
     public String getCharset() {
-        if (this.null == charset) {
+        if (this.charset == null) {
             return Charset.DEFAULT_UTF_8;
         }
         return this.charset;

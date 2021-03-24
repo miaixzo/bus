@@ -971,7 +971,7 @@ public class Words {
     public static boolean containsWord(String word) {
         boolean rc;
 
-        if (null == word) {
+        if (word == null) {
             rc = false;
         } else {
             rc = RESERVED_WORDS.contains(word.toUpperCase());

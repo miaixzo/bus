@@ -422,8 +422,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         List<Long> idleList = valueMap.get(ProcessorInformation.ProcessorTickCountProperty.PERCENTPROCESSORTIME);
 
         long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
-        if (instances.isEmpty() || null == systemList || null == userList || null == irqList || null == softIrqList
-                || null == idleList) {
+        if (instances.isEmpty() || systemList == null || userList == null || irqList == null || softIrqList == null
+                || idleList == null) {
             return ticks;
         }
         for (int p = 0; p < instances.size(); p++) {

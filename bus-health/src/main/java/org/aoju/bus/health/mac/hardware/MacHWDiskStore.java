@@ -89,7 +89,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
 
         // Open a DiskArbitration session
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
-        if (null == session) {
+        if (session == null) {
             Logger.error("Unable to open session to DiskArbitration framework.");
             return Collections.emptyList();
         }
@@ -131,7 +131,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                     Pointer result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_DEVICE_MODEL));
                     CFStringRef modelPtr = new CFStringRef(result);
                     model = modelPtr.stringValue();
-                    if (null == model) {
+                    if (model == null) {
                         model = Normal.UNKNOWN;
                     }
                     result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_MEDIA_SIZE));
@@ -170,7 +170,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                             }
                             serviceIterator.release();
                         }
-                        if (null == serial) {
+                        if (serial == null) {
                             serial = Normal.EMPTY;
                         }
                     }
@@ -253,7 +253,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     public boolean updateAttributes() {
         // Open a session and create CFStrings
         DASessionRef session = DA.DASessionCreate(CF.CFAllocatorGetDefault());
-        if (null == session) {
+        if (session == null) {
             Logger.error("Unable to open session to DiskArbitration framework.");
             return false;
         }
@@ -376,11 +376,11 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                         result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_MEDIA_NAME));
                                         CFStringRef volumePtr = new CFStringRef(result);
                                         type = volumePtr.stringValue();
-                                        if (null == type) {
+                                        if (type == null) {
                                             type = Normal.UNKNOWN;
                                         }
                                         result = diskInfo.getValue(cfKeyMap.get(CFKey.DA_VOLUME_NAME));
-                                        if (null == result) {
+                                        if (result == null) {
                                             name = type;
                                         } else {
                                             volumePtr.setPointer(result);
@@ -401,8 +401,8 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
                                 Integer bsdMinor = sdService.getIntegerProperty("BSD Minor");
                                 String uuid = sdService.getStringProperty("UUID");
                                 partitions.add(new HWPartition(partBsdName, name, type,
-                                        null == uuid ? Normal.UNKNOWN : uuid, null == size ? 0L : size,
-                                        null == bsdMajor ? 0 : bsdMajor, null == bsdMinor ? 0 : bsdMinor, mountPoint));
+                                        uuid == null ? Normal.UNKNOWN : uuid, size == null ? 0L : size,
+                                        bsdMajor == null ? 0 : bsdMajor, bsdMinor == null ? 0 : bsdMinor, mountPoint));
                                 // iterate
                                 sdService.release();
                                 sdService = IOKit.INSTANCE.IOIteratorNext(serviceIterator);

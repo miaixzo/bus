@@ -87,7 +87,7 @@ public final class AccessToken {
     public static final String createPersonalAccessToken(final String baseUrl, final String username,
                                                          final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
-        if (null == scopes || scopes.length == 0) {
+        if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
         }
 
@@ -243,7 +243,7 @@ public final class AccessToken {
     public static final void revokePersonalAccessToken(final String baseUrl, final String username,
                                                        final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
-        if (null == scopes || scopes.length == 0) {
+        if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
         }
 
@@ -713,7 +713,7 @@ public final class AccessToken {
      */
     public static final StringBuilder addFormData(StringBuilder formData, String name, String value) throws GitLabApiException {
 
-        if (null == formData) {
+        if (formData == null) {
             formData = new StringBuilder();
         } else if (formData.length() > 0) {
             formData.append("&");

@@ -57,7 +57,7 @@ public class UnparsedHL7Message implements Serializable {
     }
 
     private void init() {
-        if (null == msh) {
+        if (msh == null) {
             ParsePosition pos = new ParsePosition(0);
             msh = HL7Segment.parseMSH(data, data.length, pos);
             mshLength = pos.getIndex();

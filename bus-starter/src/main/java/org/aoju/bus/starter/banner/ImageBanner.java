@@ -56,7 +56,7 @@ public class ImageBanner {
     private Map<String, Color> colors = new HashMap<>();
 
     public ImageBanner(File image) {
-        if (null == image || !image.exists()) {
+        if (image == null || !image.exists()) {
             throw new RuntimeException("Image not found !");
         }
         this.image = image;
@@ -278,7 +278,7 @@ public class ImageBanner {
                 distance = getColorDistance(color, colorOption.getValue());
             }
 
-            if (null == minColorDistance || distance < minColorDistance) {
+            if (minColorDistance == null || distance < minColorDistance) {
                 minColorDistance = distance;
                 matchedColorName = colorOption.getKey();
             }

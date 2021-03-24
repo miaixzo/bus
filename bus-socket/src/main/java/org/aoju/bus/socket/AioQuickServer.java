@@ -138,7 +138,7 @@ public class AioQuickServer<T> {
         checkAndResetConfig();
         try {
             aioCompletionWriteHandler = new CompletionWriteHandler<>();
-            if (null == bufferPool) {
+            if (bufferPool == null) {
                 this.bufferPool = config.getBufferFactory().create();
                 this.innerBufferPool = bufferPool;
             }
@@ -158,13 +158,13 @@ public class AioQuickServer<T> {
             });
             this.serverSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);
             // 设置socket属性
-            if (config.getSocketOptions() != null) {
+            if (null != config.getSocketOptions()) {
                 for (Map.Entry<SocketOption<Object>, Object> entry : config.getSocketOptions().entrySet()) {
                     this.serverSocketChannel.setOption(entry.getKey(), entry.getValue());
                 }
             }
             // 绑定地址
-            if (config.getHost() != null) {
+            if (null != config.getHost()) {
                 serverSocketChannel.bind(new InetSocketAddress(config.getHost(), config.getPort()), config.getBacklog());
             } else {
                 serverSocketChannel.bind(new InetSocketAddress(config.getPort()), config.getBacklog());
@@ -220,7 +220,7 @@ public class AioQuickServer<T> {
         TcpAioSession<T> session = null;
         AsynchronousSocketChannel acceptChannel = channel;
         try {
-            if (config.getMonitor() != null) {
+            if (null != config.getMonitor()) {
                 acceptChannel = config.getMonitor().shouldAccept(channel);
             }
             if (null != acceptChannel) {
@@ -233,7 +233,7 @@ public class AioQuickServer<T> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (null == session) {
+            if (session == null) {
                 IoKit.close(channel);
             } else {
                 session.close();

@@ -370,21 +370,21 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
         // Attempt to read /etc/system-release which has more details than
         // os-release on (CentOS and Fedora)
-        if ((familyVersionCodename = readDistribRelease("/etc/system-release")) != null) {
+        if (null != (familyVersionCodename = readDistribRelease("/etc/system-release"))) {
             // If successful, we're done. this.family has been set and
             // possibly the versionID and codeName
             return familyVersionCodename;
         }
 
         // Attempt to read /etc/os-release file.
-        if ((familyVersionCodename = readOsRelease()) != null) {
+        if (null != (familyVersionCodename = readOsRelease())) {
             // If successful, we're done. this.family has been set and
             // possibly the versionID and codeName
             return familyVersionCodename;
         }
 
         // Attempt to execute the `lsb_release` command
-        if ((familyVersionCodename = execLsbRelease()) != null) {
+        if (null != (familyVersionCodename = execLsbRelease())) {
             // If successful, we're done. this.family has been set and
             // possibly the versionID and codeName
             return familyVersionCodename;
@@ -393,7 +393,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // The above two options should hopefully work on most
         // distributions. If not, we keep having fun.
         // Attempt to read /etc/lsb-release file
-        if ((familyVersionCodename = readLsbRelease()) != null) {
+        if (null != (familyVersionCodename = readLsbRelease())) {
             // If successful, we're done. this.family has been set and
             // possibly the versionID and codeName
             return familyVersionCodename;
@@ -404,7 +404,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // "Distributor release x.x (Codename)" format or possibly a
         // "Distributor VERSION x.x (Codename)" format
         String etcDistribRelease = getReleaseFilename();
-        if ((familyVersionCodename = readDistribRelease(etcDistribRelease)) != null) {
+        if (null != (familyVersionCodename = readDistribRelease(etcDistribRelease))) {
             // If successful, we're done. this.family has been set and
             // possibly the versionID and codeName
             return familyVersionCodename;
@@ -446,7 +446,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 if (split.length > 1) {
                     codeName = split[1].trim();
                 }
-            } else if (line.startsWith("NAME=") && null == family) {
+            } else if (line.startsWith("NAME=") && family == null) {
                 Logger.debug(OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // NAME="Ubuntu"
@@ -458,7 +458,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 versionId = line.replace("VERSION_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             }
         }
-        return null == family ? null : Triple.of(family, versionId, codeName);
+        return family == null ? null : Triple.of(family, versionId, codeName);
     }
 
     /**
@@ -489,7 +489,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                         codeName = Triple.getRight();
                     }
                 }
-            } else if (line.startsWith("Distributor ID:") && null == family) {
+            } else if (line.startsWith("Distributor ID:") && family == null) {
                 Logger.debug(LSB_RELEASE_A_LOG, line);
                 family = line.replace("Distributor ID:", Normal.EMPTY).trim();
             } else if (line.startsWith("Release:") && versionId.equals(Normal.UNKNOWN)) {
@@ -500,7 +500,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 codeName = line.replace("Codename:", Normal.EMPTY).trim();
             }
         }
-        return null == family ? null : Triple.of(family, versionId, codeName);
+        return family == null ? null : Triple.of(family, versionId, codeName);
     }
 
     /**
@@ -530,7 +530,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                         codeName = Triple.getRight();
                     }
                 }
-            } else if (line.startsWith("DISTRIB_ID=") && null == family) {
+            } else if (line.startsWith("DISTRIB_ID=") && family == null) {
                 Logger.debug(LSB_RELEASE_LOG, line);
                 family = line.replace("DISTRIB_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("DISTRIB_RELEASE=") && versionId.equals(Normal.UNKNOWN)) {
@@ -541,7 +541,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 codeName = line.replace("DISTRIB_CODENAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             }
         }
-        return null == family ? null : Triple.of(family, versionId, codeName);
+        return family == null ? null : Triple.of(family, versionId, codeName);
     }
 
     /**

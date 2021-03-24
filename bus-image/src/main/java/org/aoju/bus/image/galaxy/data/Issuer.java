@@ -95,13 +95,13 @@ public class Issuer implements Serializable {
             if (null != universalEntityID && null != universalEntityIDType)
                 return new Issuer(issuerOfPatientID, universalEntityID, universalEntityIDType);
         }
-        return (null != issuerOfPatientID)
+        return null != issuerOfPatientID
                 ? new Issuer(issuerOfPatientID, null, null)
                 : null;
     }
 
     public static Issuer valueOf(Attributes issuerItem) {
-        if (null == issuerItem)
+        if (issuerItem == null)
             return null;
 
         String localNamespaceEntityID = issuerItem.getString(Tag.LocalNamespaceEntityID);
@@ -116,11 +116,11 @@ public class Issuer implements Serializable {
     }
 
     private void validate() {
-        if (null == localNamespaceEntityID && null == universalEntityID)
+        if (localNamespaceEntityID == null && universalEntityID == null)
             throw new IllegalArgumentException(
                     "Missing Local Namespace Entity ID or Universal Entity ID");
         if (null != universalEntityID) {
-            if (null == universalEntityIDType)
+            if (universalEntityIDType == null)
                 throw new IllegalArgumentException("Missing Universal Entity ID Type");
         }
     }
@@ -147,12 +147,12 @@ public class Issuer implements Serializable {
 
         boolean mergeLocalNamespace;
         boolean mergeUniversal;
-        if (mergeLocalNamespace = this.null == localNamespaceEntityID
-                && other.null != localNamespaceEntityID) {
+        if (mergeLocalNamespace = this.localNamespaceEntityID == null
+                && null != other.localNamespaceEntityID) {
             this.localNamespaceEntityID = other.localNamespaceEntityID;
         }
-        if (mergeUniversal = this.null == universalEntityID
-                && other.null != universalEntityID) {
+        if (mergeUniversal = this.universalEntityID == null
+                && null != other.universalEntityID) {
             this.universalEntityID = other.universalEntityID;
             this.universalEntityIDType = other.universalEntityIDType;
         }
@@ -168,7 +168,7 @@ public class Issuer implements Serializable {
     }
 
     private int hashCode(String s) {
-        return null == s ? 0 : s.hashCode();
+        return s == null ? 0 : s.hashCode();
     }
 
     @Override
@@ -188,13 +188,13 @@ public class Issuer implements Serializable {
     }
 
     public boolean matches(Issuer other) {
-        if (this == other || null == other)
+        if (this == other || other == null)
             return true;
 
         boolean matchLocal = null != localNamespaceEntityID
-                && other.null != localNamespaceEntityID;
+                && null != other.localNamespaceEntityID;
         boolean matchUniversal = null != universalEntityID
-                && other.null != universalEntityID;
+                && null != other.universalEntityID;
 
         return (matchLocal || matchUniversal)
                 && (!matchLocal
@@ -210,11 +210,12 @@ public class Issuer implements Serializable {
     }
 
     public String toString(char delim) {
-        if (null == universalEntityID)
+        if (universalEntityID == null)
             return localNamespaceEntityID;
         StringBuilder sb = new StringBuilder();
-        if (null != localNamespaceEntityID)
+        if (null != localNamespaceEntityID) {
             sb.append(localNamespaceEntityID);
+        }
         sb.append(delim);
         sb.append(universalEntityID);
         sb.append(delim);
@@ -224,28 +225,44 @@ public class Issuer implements Serializable {
 
     public Attributes toItem() {
         int size = 0;
-        if (null != localNamespaceEntityID)
+        if (null != localNamespaceEntityID) {
             size++;
-        if (null != universalEntityID)
+        }
+
+        if (null != universalEntityID) {
             size++;
-        if (null != universalEntityIDType)
+        }
+
+        if (null != universalEntityIDType) {
             size++;
+        }
+
 
         Attributes item = new Attributes(size);
-        if (null != localNamespaceEntityID)
+        if (null != localNamespaceEntityID) {
             item.setString(Tag.LocalNamespaceEntityID, VR.UT, localNamespaceEntityID);
-        if (null != universalEntityID)
+        }
+
+        if (null != universalEntityID) {
             item.setString(Tag.UniversalEntityID, VR.UT, universalEntityID);
-        if (null != universalEntityIDType)
+        }
+
+        if (null != universalEntityIDType) {
             item.setString(Tag.UniversalEntityIDType, VR.CS, universalEntityIDType);
+        }
+
         return item;
     }
 
     public Attributes toIssuerOfPatientID(Attributes attrs) {
-        if (null == attrs)
+        if (attrs == null) {
             attrs = new Attributes(2);
-        if (null != localNamespaceEntityID)
+        }
+
+        if (null != localNamespaceEntityID) {
             attrs.setString(Tag.IssuerOfPatientID, VR.LO, localNamespaceEntityID);
+        }
+
         if (null != universalEntityID) {
             Attributes item = new Attributes(2);
             item.setString(Tag.UniversalEntityID, VR.UT, universalEntityID);

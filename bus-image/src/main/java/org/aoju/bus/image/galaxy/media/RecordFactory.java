@@ -60,7 +60,7 @@ public class RecordFactory {
     private HashMap<String, int[]> privateRecordKeys;
 
     private void lazyLoadDefaultConfiguration() {
-        if (null == recordTypes)
+        if (recordTypes == null)
             loadDefaultConfiguration();
     }
 
@@ -76,7 +76,7 @@ public class RecordFactory {
             throws ParserConfigurationException, SAXException, IOException {
         Attributes attrs = parseXML(uri);
         Sequence sq = attrs.getSequence(Tag.DirectoryRecordSequence);
-        if (null == sq)
+        if (sq == null)
             throw new IllegalArgumentException(
                     "Missing Directory Record Sequence in " + uri);
 
@@ -108,11 +108,11 @@ public class RecordFactory {
             item.remove(Tag.ReferencedSOPClassUIDInFile);
             int[] keys = item.tags();
             if (null != privuid) {
-                if (privateRecordKeys.put(privuid, keys) != null)
+                if (null != privateRecordKeys.put(privuid, keys))
                     throw new IllegalArgumentException(
                             "Duplicate Private Record UID: " + privuid);
             } else {
-                if (recordKeys.put(type, keys) != null)
+                if (null != recordKeys.put(type, keys))
                     throw new IllegalArgumentException(
                             "Duplicate Record Type: " + type);
             }
@@ -138,7 +138,7 @@ public class RecordFactory {
     }
 
     public RecordType getRecordType(String cuid) {
-        if (null == cuid)
+        if (cuid == null)
             throw new NullPointerException();
         lazyLoadDefaultConfiguration();
         RecordType recordType = recordTypes.get(cuid);
@@ -146,14 +146,14 @@ public class RecordFactory {
     }
 
     public RecordType setRecordType(String cuid, RecordType type) {
-        if (null == cuid || null == type)
+        if (cuid == null || type == null)
             throw new NullPointerException();
         lazyLoadDefaultConfiguration();
         return recordTypes.put(cuid, type);
     }
 
     public void setRecordKeys(RecordType type, int[] keys) {
-        if (null == type)
+        if (type == null)
             throw new NullPointerException();
         int[] tmp = keys.clone();
         Arrays.sort(tmp);
@@ -167,7 +167,7 @@ public class RecordFactory {
     }
 
     public String getPrivateRecordUID(String cuid) {
-        if (null == cuid)
+        if (cuid == null)
             throw new NullPointerException();
 
         lazyLoadDefaultConfiguration();
@@ -176,7 +176,7 @@ public class RecordFactory {
     }
 
     public String setPrivateRecordUID(String cuid, String uid) {
-        if (null == cuid || null == uid)
+        if (cuid == null || uid == null)
             throw new NullPointerException();
 
         lazyLoadDefaultConfiguration();
@@ -184,7 +184,7 @@ public class RecordFactory {
     }
 
     public int[] setPrivateRecordKeys(String uid, int[] keys) {
-        if (null == uid)
+        if (uid == null)
             throw new NullPointerException();
 
         int[] tmp = keys.clone();
@@ -204,15 +204,15 @@ public class RecordFactory {
 
     public Attributes createRecord(RecordType type, String privRecUID,
                                    Attributes dataset, Attributes fmi, String[] fileIDs) {
-        if (null == type)
+        if (type == null)
             throw new NullPointerException("type");
-        if (null == dataset)
+        if (dataset == null)
             throw new NullPointerException("dataset");
 
         lazyLoadDefaultConfiguration();
         int[] keys = null;
         if (type == RecordType.PRIVATE) {
-            if (null == privRecUID)
+            if (privRecUID == null)
                 throw new NullPointerException(
                         "privRecUID must not be null for type = PRIVATE");
             keys = privateRecordKeys.get(privRecUID);
@@ -221,7 +221,7 @@ public class RecordFactory {
                 throw new IllegalArgumentException(
                         "privRecUID must be null for type != PRIVATE");
         }
-        if (null == keys)
+        if (keys == null)
             keys = recordKeys.get(type);
         Attributes rec = new Attributes(keys.length + (null != fileIDs ? 9 : 5));
         rec.setInt(Tag.OffsetOfTheNextDirectoryRecord, VR.UL, 0);
@@ -251,7 +251,7 @@ public class RecordFactory {
         for (Attributes item : srcSeq) {
             if ("HAS CONCEPT MOD".equals(item.getString(Tag.RelationshipType,
                     null))) {
-                if (null == dstSeq)
+                if (dstSeq == null)
                     dstSeq = rec.newSequence(Tag.ContentSequence, 1);
                 dstSeq.add(new Attributes(item, false));
             }

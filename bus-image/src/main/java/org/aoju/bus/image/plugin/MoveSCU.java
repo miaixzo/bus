@@ -89,7 +89,7 @@ public class MoveSCU extends Device implements AutoCloseable {
         if (relational) {
             rq.addExtendedNegotiate(new ExtendedNegotiate(model.cuid, new byte[]{1}));
         }
-        if (model.null != level) {
+        if (null != model.level) {
             addLevel(model.level);
         }
     }

@@ -356,7 +356,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public Pager<Issue> getGroupIssues(Object groupIdOrPath, IssueFilter filter, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = (null != filter ? filter.getQueryParams() : new GitLabApiForm());
-        return (new Pager<Issue>(this, Issue.class, itemsPerPage, formData.asMap(),
+        return (new Pager<>(this, Issue.class, itemsPerPage, formData.asMap(),
                 "groups", getGroupIdOrPath(groupIdOrPath), "issues"));
     }
 
@@ -473,7 +473,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public Issue closeIssue(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -504,7 +504,7 @@ public class IssuesApi extends AbstractApi implements Constants {
     public Issue updateIssue(Object projectIdOrPath, Integer issueIid, String title, String description, Boolean confidential, List<Integer> assigneeIds,
                              Integer milestoneId, String labels, StateEvent stateEvent, Date updatedAt, Date dueDate) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -535,7 +535,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public Issue assignIssue(Object projectIdOrPath, Integer issueIid, Integer assigneeId) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -555,7 +555,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public void deleteIssue(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -606,7 +606,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public TimeStats estimateTime(Object projectIdOrPath, Integer issueIid, Duration duration) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -630,7 +630,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public TimeStats resetEstimatedTime(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -682,7 +682,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public TimeStats addSpentTime(Object projectIdOrPath, Integer issueIid, Duration duration) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -706,7 +706,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public TimeStats resetSpentTime(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 
@@ -727,7 +727,7 @@ public class IssuesApi extends AbstractApi implements Constants {
      */
     public TimeStats getTimeTrackingStats(Object projectIdOrPath, Integer issueIid) throws GitLabApiException {
 
-        if (null == issueIid) {
+        if (issueIid == null) {
             throw new RuntimeException("issue IID cannot be null");
         }
 

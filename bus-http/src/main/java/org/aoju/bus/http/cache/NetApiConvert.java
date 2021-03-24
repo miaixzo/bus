@@ -93,7 +93,7 @@ public final class NetApiConvert {
         Headers responseHeaders = createHeaders(urlConnection.getHeaderFields());
         // 不同的缓存需要一些请求头
         Headers varyHeaders = varyHeaders(urlConnection, responseHeaders);
-        if (null == varyHeaders) {
+        if (varyHeaders == null) {
             return null;
         }
 
@@ -178,7 +178,7 @@ public final class NetApiConvert {
         Headers.Builder result = new Headers.Builder();
         for (String fieldName : varyFields) {
             List<String> fieldValues = requestProperties.get(fieldName);
-            if (null == fieldValues) {
+            if (fieldValues == null) {
                 if (fieldName.equals("Accept-Encoding")) {
                     result.add("Accept-Encoding", "gzip");
                 }
@@ -233,7 +233,7 @@ public final class NetApiConvert {
                 peerCertificates = Collections.emptyList();
             }
             List<Certificate> localCertificates = javaSecureCacheResponse.getLocalCertificateChain();
-            if (null == localCertificates) {
+            if (localCertificates == null) {
                 localCertificates = Collections.emptyList();
             }
 
@@ -276,27 +276,27 @@ public final class NetApiConvert {
 
                 @Override
                 public List<Certificate> getLocalCertificateChain() {
-                    if (null == handshake) return null;
+                    if (handshake == null) return null;
                     List<Certificate> certificates = handshake.localCertificates();
                     return certificates.size() > 0 ? certificates : null;
                 }
 
                 @Override
                 public List<Certificate> getServerCertificateChain() {
-                    if (null == handshake) return null;
+                    if (handshake == null) return null;
                     List<Certificate> certificates = handshake.peerCertificates();
                     return certificates.size() > 0 ? certificates : null;
                 }
 
                 @Override
                 public Principal getPeerPrincipal() {
-                    if (null == handshake) return null;
+                    if (handshake == null) return null;
                     return handshake.peerPrincipal();
                 }
 
                 @Override
                 public Principal getLocalPrincipal() {
-                    if (null == handshake) return null;
+                    if (handshake == null) return null;
                     return handshake.localPrincipal();
                 }
 
@@ -307,7 +307,7 @@ public final class NetApiConvert {
 
                 @Override
                 public InputStream getBody() {
-                    if (null == body) return null;
+                    if (body == null) return null;
                     return body.byteStream();
                 }
             };
@@ -320,7 +320,7 @@ public final class NetApiConvert {
 
                 @Override
                 public InputStream getBody() {
-                    if (null == body) return null;
+                    if (body == null) return null;
                     return body.byteStream();
                 }
             };
@@ -337,7 +337,7 @@ public final class NetApiConvert {
             @Override
             public OutputStream getBody() throws IOException {
                 Sink body = cacheRequest.body();
-                if (null == body) {
+                if (body == null) {
                     return null;
                 }
                 return IoKit.buffer(body).outputStream();
@@ -386,7 +386,7 @@ public final class NetApiConvert {
         Headers.Builder headersBuilder = new Headers.Builder();
         for (Map.Entry<String, List<String>> javaHeader : javaHeaders.entrySet()) {
             String name = javaHeader.getKey();
-            if (null == name) {
+            if (name == null) {
                 continue;
             }
             if (null != responseBuilder && javaHeader.getValue().size() == 1) {
@@ -418,7 +418,7 @@ public final class NetApiConvert {
     static String extractStatusLine(Map<String, List<String>> javaResponseHeaders)
             throws ProtocolException {
         List<String> values = javaResponseHeaders.get(null);
-        if (null == values || values.size() == 0) {
+        if (values == null || values.size() == 0) {
             throw new ProtocolException(
                     "CacheResponse is missing a null header containing the status line. Headers="
                             + javaResponseHeaders);
@@ -433,7 +433,7 @@ public final class NetApiConvert {
             @Override
             public MimeType contentType() {
                 String contentTypeHeader = headers.get(Header.CONTENT_TYPE);
-                return null == contentTypeHeader ? null : MimeType.valueOf(contentTypeHeader);
+                return contentTypeHeader == null ? null : MimeType.valueOf(contentTypeHeader);
             }
 
             @Override
@@ -458,7 +458,7 @@ public final class NetApiConvert {
             @Override
             public MimeType contentType() {
                 String contentTypeHeader = urlConnection.getContentType();
-                return null == contentTypeHeader ? null : MimeType.valueOf(contentTypeHeader);
+                return contentTypeHeader == null ? null : MimeType.valueOf(contentTypeHeader);
             }
 
             @Override
@@ -487,11 +487,11 @@ public final class NetApiConvert {
     }
 
     private static <T> List<T> nullSafeImmutableList(T[] elements) {
-        return null == elements ? Collections.emptyList() : Builder.immutableList(elements);
+        return elements == null ? Collections.emptyList() : Builder.immutableList(elements);
     }
 
     private static long stringToLong(String s) {
-        if (null == s) return -1;
+        if (s == null) return -1;
         try {
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
@@ -510,7 +510,7 @@ public final class NetApiConvert {
             this.response = response;
 
             this.connected = true;
-            this.doOutput = request.body() != null;
+            this.doOutput = null != request.body();
             this.doInput = true;
             this.useCaches = true;
 
@@ -609,7 +609,7 @@ public final class NetApiConvert {
 
         @Override
         public String getHeaderField(String fieldName) {
-            return null == fieldName
+            return fieldName == null
                     ? StatusLine.get(response).toString()
                     : response.headers().get(fieldName);
         }

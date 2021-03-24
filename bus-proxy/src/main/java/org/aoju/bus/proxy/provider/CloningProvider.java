@@ -49,7 +49,7 @@ public class CloningProvider implements Provider {
     }
 
     private synchronized Method getCloneMethod() {
-        if (null == cloneMethod) {
+        if (cloneMethod == null) {
             try {
                 cloneMethod = cloneable.getClass().getMethod("clone", Builder.EMPTY_ARGUMENT_TYPES);
             } catch (NoSuchMethodException e) {

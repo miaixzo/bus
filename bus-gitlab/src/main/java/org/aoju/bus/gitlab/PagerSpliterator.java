@@ -52,7 +52,7 @@ class PagerSpliterator<T> implements Spliterator<T> {
 
     @Override
     public boolean tryAdvance(Consumer<? super T> action) {
-        if (null == action) {
+        if (action == null) {
             throw new NullPointerException("Action is null");
         }
         if (elements.hasNext()) {

@@ -66,7 +66,7 @@ public class TransferCapability implements Serializable {
 
     public void setApplicationEntity(ApplicationEntity ae) {
         if (null != ae) {
-            if (this.null != ae)
+            if (null != this.ae)
                 throw new IllegalStateException("already owned by AE " +
                         this.ae.getAETitle());
         }
@@ -96,7 +96,7 @@ public class TransferCapability implements Serializable {
     }
 
     public void setRole(Role role) {
-        if (null == role)
+        if (role == null)
             throw new NullPointerException();
 
         if (this.role == role)

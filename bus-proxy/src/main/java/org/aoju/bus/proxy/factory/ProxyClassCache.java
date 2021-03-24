@@ -54,13 +54,13 @@ public class ProxyClassCache {
         final String key = toClassCacheKey(proxyClasses);
         Class proxyClass;
         WeakReference proxyClassReference = (WeakReference) classCache.get(key);
-        if (null == proxyClassReference) {
+        if (proxyClassReference == null) {
             proxyClass = proxyClassGenerator.createProxy(classLoader, proxyClasses);
             classCache.put(key, new WeakReference(proxyClass));
         } else {
             synchronized (proxyClassReference) {
                 proxyClass = (Class) proxyClassReference.get();
-                if (null == proxyClass) {
+                if (proxyClass == null) {
                     proxyClass = proxyClassGenerator.createProxy(classLoader, proxyClasses);
                     classCache.put(key, new WeakReference(proxyClass));
                 }
@@ -71,7 +71,7 @@ public class ProxyClassCache {
 
     private Map getClassCache(ClassLoader classLoader) {
         Map cache = (Map) loaderToClassCache.get(classLoader);
-        if (null == cache) {
+        if (cache == null) {
             cache = new HashMap();
             loaderToClassCache.put(classLoader, cache);
         }

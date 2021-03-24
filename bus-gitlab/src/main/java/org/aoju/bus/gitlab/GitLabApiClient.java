@@ -238,7 +238,6 @@ public class GitLabApiClient implements AutoCloseable {
 
         clientConfig = new ClientConfig();
         if (null != clientConfigProperties) {
-
             if (clientConfigProperties.containsKey(ClientProperties.PROXY_URI)) {
                 clientConfig.connectorProvider(new ApacheConnectorProvider());
             }
@@ -387,11 +386,11 @@ public class GitLabApiClient implements AutoCloseable {
      */
     protected boolean validateSecretToken(Response response) {
 
-        if (this.null == secretToken)
+        if (this.secretToken == null)
             return (true);
 
         String secretToken = response.getHeaderString(X_GITLAB_TOKEN_HEADER);
-        if (null == secretToken)
+        if (secretToken == null)
             return (false);
 
         return (this.secretToken.equals(secretToken));
@@ -690,7 +689,7 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response put(MultivaluedMap<String, String> queryParams, URL url) {
-        if (null == queryParams || queryParams.isEmpty()) {
+        if (queryParams == null || queryParams.isEmpty()) {
             Entity<?> empty = Entity.text(Normal.EMPTY);
             return (invocation(url, null).put(empty));
         } else {
@@ -790,7 +789,7 @@ public class GitLabApiClient implements AutoCloseable {
 
     protected Invocation.Builder invocation(URL url, MultivaluedMap<String, String> queryParams, String accept) {
 
-        if (null == apiClient) {
+        if (apiClient == null) {
             createApiClient();
         }
 
@@ -804,7 +803,7 @@ public class GitLabApiClient implements AutoCloseable {
         String authHeader = (tokenType == TokenType.OAUTH2_ACCESS ? AUTHORIZATION_HEADER : PRIVATE_TOKEN_HEADER);
         String authValue = (tokenType == TokenType.OAUTH2_ACCESS ? "Bearer " + authToken : authToken);
         Invocation.Builder builder = target.request();
-        if (null == accept || accept.trim().length() == 0) {
+        if (accept == null || accept.trim().length() == 0) {
             builder = builder.header(authHeader, authValue);
         } else {
             builder = builder.header(authHeader, authValue).accept(accept);

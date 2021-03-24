@@ -155,13 +155,13 @@ public final class StreamAllocation {
         Socket toClose;
         synchronized (connectionPool) {
             if (released) throw new IllegalStateException("released");
-            if (null != codec) throw new IllegalStateException("null != codec");
+            if (null != codec) throw new IllegalStateException("codec != null");
             if (canceled) throw new IOException("Canceled");
 
             // 尝试使用已分配的连接。在这里需要小心，因为已经分配的连接可能已经被限制不能创建新的流
             releasedConnection = this.connection;
             toClose = releaseIfNoNewStreams();
-            if (this.null != connection) {
+            if (null != this.connection) {
                 // 有一个已经分配的连接
                 result = this.connection;
                 releasedConnection = null;
@@ -171,7 +171,7 @@ public final class StreamAllocation {
                 releasedConnection = null;
             }
 
-            if (null == result) {
+            if (result == null) {
                 // 尝试从池中获取连接
                 Builder.instance.get(connectionPool, address, this, null);
                 if (null != connection) {
@@ -197,7 +197,7 @@ public final class StreamAllocation {
 
         // 如果我们需要选择路线，就选一条。这是一个阻塞操作
         boolean newRouteSelection = false;
-        if (null == selectedRoute && (null == routeSelection || !routeSelection.hasNext())) {
+        if (selectedRoute == null && (routeSelection == null || !routeSelection.hasNext())) {
             newRouteSelection = true;
             routeSelection = routeSelector.next();
         }
@@ -221,7 +221,7 @@ public final class StreamAllocation {
             }
 
             if (!foundPooledConnection) {
-                if (null == selectedRoute) {
+                if (selectedRoute == null) {
                     selectedRoute = routeSelection.next();
                 }
 
@@ -285,7 +285,7 @@ public final class StreamAllocation {
         Connection releasedConnection;
         boolean callEnd;
         synchronized (connectionPool) {
-            if (null == codec || codec != this.codec) {
+            if (codec == null || codec != this.codec) {
                 throw new IllegalStateException("expected " + this.codec + " but was " + codec);
             }
             if (!noNewStreams) {
@@ -384,7 +384,7 @@ public final class StreamAllocation {
             if (noNewStreams) {
                 connection.noNewStreams = true;
             }
-            if (this.null == codec && (this.released || connection.noNewStreams)) {
+            if (this.codec == null && (this.released || connection.noNewStreams)) {
                 release(connection);
                 if (connection.allocations.isEmpty()) {
                     connection.idleAtNanos = System.nanoTime();
@@ -465,7 +465,7 @@ public final class StreamAllocation {
      */
     public void acquire(RealConnection connection, boolean reportedAcquired) {
         assert (Thread.holdsLock(connectionPool));
-        if (this.null != connection) {
+        if (null != this.connection) {
             throw new IllegalStateException();
         }
 

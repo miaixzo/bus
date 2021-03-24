@@ -134,7 +134,7 @@ public class Provider {
      */
     public static boolean isAnnotation(Annotation annotation) {
         Class<? extends Annotation> annotationType = annotation.annotationType();
-        return annotationType.getAnnotation(Complex.class) != null;
+        return null != annotationType.getAnnotation(Complex.class);
     }
 
     /**
@@ -175,10 +175,10 @@ public class Provider {
      * @return true：当前校验组中为空,或任意一个组环境存在于校验环境中
      */
     public static boolean isGroup(String[] group, List<String> list) {
-        if (null == group || group.length == 0) {
+        if (group == null || group.length == 0) {
             return true;
         } else {
-            if (null == list || list.isEmpty()) {
+            if (list == null || list.isEmpty()) {
                 return false;
             } else {
                 return Arrays.stream(group)
@@ -196,7 +196,7 @@ public class Provider {
      */
     public static ValidateException resolve(Property property, Context context) {
         Class<? extends ValidateException> clazz = context.getException();
-        clazz = null == clazz ? property.getException() : clazz;
+        clazz = clazz == null ? property.getException() : clazz;
         String propertyEcode = property.getErrcode();
         String globalEcode = context.getErrcode();
         String ecode = Builder.DEFAULT_ERRCODE.equals(propertyEcode) ? globalEcode : propertyEcode;

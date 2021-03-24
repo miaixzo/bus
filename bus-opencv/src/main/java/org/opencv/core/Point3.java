@@ -27,7 +27,7 @@ public class Point3 {
     }
 
     public void set(double[] vals) {
-        if (null != vals) {
+        if (vals != null) {
             x = vals.length > 0 ? vals[0] : 0;
             y = vals.length > 1 ? vals[1] : 0;
             z = vals.length > 2 ? vals[2] : 0;

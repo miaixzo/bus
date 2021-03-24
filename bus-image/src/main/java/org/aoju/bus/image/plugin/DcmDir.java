@@ -79,12 +79,13 @@ public class DcmDir {
     private char quote;
 
     private int readCSVFile(int num) throws Exception {
-        if (null != recordConfig)
+        if (null != recordConfig) {
             loadCustomConfiguration();
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
             CSVParser parser = new CSVParser(delim, quote, br.readLine());
             String nextLine;
-            while ((nextLine = br.readLine()) != null) {
+            while (null != (nextLine = br.readLine())) {
                 checkOut();
                 checkRecordFactory();
                 Attributes dataset = parser.toDataset(nextLine);
@@ -292,12 +293,12 @@ public class DcmDir {
                 }
         }
         char prompt = Symbol.C_DOT;
-        if (null == fmi) {
+        if (fmi == null) {
             fmi = dataset.createFileMetaInformation(UID.ImplicitVRLittleEndian);
             prompt = 'F';
         }
         String iuid = fmi.getString(Tag.MediaStorageSOPInstanceUID, null);
-        if (null == iuid) {
+        if (iuid == null) {
             Logger.info(MessageFormat.format("skip-file", f));
             return 0;
         }
@@ -312,19 +313,19 @@ public class DcmDir {
         String seruid = dataset.getString(Tag.SeriesInstanceUID, null);
 
         if (null != styuid) {
-            if (null == pid) {
+            if (pid == null) {
                 dataset.setString(Tag.PatientID, VR.LO, pid = styuid);
                 prompt = prompt == 'F' ? 'P' : 'p';
             }
             Attributes patRec = in.findPatientRecord(pid);
-            if (null == patRec) {
+            if (patRec == null) {
                 patRec = recFact.createRecord(RecordType.PATIENT, null,
                         dataset, null, null);
                 out.addRootDirectoryRecord(patRec);
                 num++;
             }
             Attributes studyRec = in.findStudyRecord(patRec, styuid);
-            if (null == studyRec) {
+            if (studyRec == null) {
                 studyRec = recFact.createRecord(RecordType.STUDY, null,
                         dataset, null, null);
                 out.addLowerDirectoryRecord(patRec, studyRec);
@@ -333,7 +334,7 @@ public class DcmDir {
 
             if (null != seruid) {
                 Attributes seriesRec = in.findSeriesRecord(studyRec, seruid);
-                if (null == seriesRec) {
+                if (seriesRec == null) {
                     seriesRec = recFact.createRecord(RecordType.SERIES, null,
                             dataset, null, null);
                     out.addLowerDirectoryRecord(studyRec, seriesRec);
@@ -356,7 +357,7 @@ public class DcmDir {
         } else {
             if (null != iuid) {
                 if (checkDuplicate) {
-                    if (in.findRootInstanceRecord(false, iuid) != null) {
+                    if (null != in.findRootInstanceRecord(false, iuid)) {
                         return 0;
                     }
                 }
@@ -390,7 +391,7 @@ public class DcmDir {
             iuid = (null != fmi)
                     ? fmi.getString(Tag.MediaStorageSOPInstanceUID, null)
                     : dataset.getString(Tag.SOPInstanceUID, null);
-            if (null == iuid) {
+            if (iuid == null) {
                 Logger.info(MessageFormat.format("skip-file", f));
                 return 0;
             }
@@ -412,23 +413,23 @@ public class DcmDir {
         Attributes instRec;
         if (null != styuid && null != seruid) {
             Attributes patRec =
-                    in.findPatientRecord(null == pid ? styuid : pid);
-            if (null == patRec) {
+                    in.findPatientRecord(pid == null ? styuid : pid);
+            if (patRec == null) {
                 return 0;
             }
             Attributes studyRec = in.findStudyRecord(patRec, styuid);
-            if (null == studyRec) {
+            if (studyRec == null) {
                 return 0;
             }
             Attributes seriesRec = in.findSeriesRecord(studyRec, seruid);
-            if (null == seriesRec) {
+            if (seriesRec == null) {
                 return 0;
             }
             instRec = in.findLowerInstanceRecord(seriesRec, false, iuid);
         } else {
             instRec = in.findRootInstanceRecord(false, iuid);
         }
-        if (null == instRec) {
+        if (instRec == null) {
             return 0;
         }
         out.deleteRecord(instRec);
@@ -446,18 +447,18 @@ public class DcmDir {
     }
 
     private void checkIn() {
-        if (null == in)
+        if (in == null)
             throw new IllegalStateException("no open file");
     }
 
     private void checkOut() {
         checkIn();
-        if (null == out)
+        if (out == null)
             throw new IllegalStateException("file opened for read-only");
     }
 
     private void checkRecordFactory() {
-        if (null == recFact)
+        if (recFact == null)
             throw new IllegalStateException("no Record Factory initialized");
     }
 

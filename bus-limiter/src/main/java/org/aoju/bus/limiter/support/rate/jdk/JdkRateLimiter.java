@@ -92,7 +92,7 @@ public class JdkRateLimiter extends RateLimiter {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (null == o || getClass() != o.getClass()) return false;
+            if (o == null || getClass() != o.getClass()) return false;
             CacheKey cacheKey = (CacheKey) o;
             return Double.compare(cacheKey.rate, rate) == 0 &&
                     capacity == cacheKey.capacity &&

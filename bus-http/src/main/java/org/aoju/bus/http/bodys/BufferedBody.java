@@ -63,8 +63,9 @@ public final class BufferedBody extends OutputStreamBody {
      */
     @Override
     public Request prepareToSendRequest(Request request) throws IOException {
-        if (request.header("Content-Length") != null) return request;
-
+        if (null != request.header("Content-Length")) {
+            return request;
+        }
         outputStream().close();
         contentLength = buffer.size();
         return request.newBuilder()

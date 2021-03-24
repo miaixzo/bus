@@ -97,7 +97,7 @@ public class CStore {
                                  Node calledNode,
                                  List<String> files,
                                  Progress progress) {
-        if (null == callingNode || null == calledNode) {
+        if (callingNode == null || calledNode == null) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 

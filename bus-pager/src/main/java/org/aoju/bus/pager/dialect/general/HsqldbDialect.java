@@ -54,7 +54,7 @@ public class HsqldbDialect extends AbstractSqlDialect {
         pageKey.update(page.getPageSize());
         pageKey.update(page.getStartRow());
         // 处理参数配置
-        if (boundSql.getParameterMappings() != null) {
+        if (null != boundSql.getParameterMappings()) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             if (page.getPageSize() > 0) {
                 newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, Integer.class).build());

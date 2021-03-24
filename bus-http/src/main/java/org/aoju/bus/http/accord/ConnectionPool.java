@@ -281,7 +281,7 @@ public final class ConnectionPool {
         for (int i = 0; i < references.size(); ) {
             Reference<StreamAllocation> reference = references.get(i);
 
-            if (reference.get() != null) {
+            if (null != reference.get()) {
                 i++;
                 continue;
             }

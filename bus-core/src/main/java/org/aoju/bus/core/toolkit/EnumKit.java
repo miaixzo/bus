@@ -327,7 +327,7 @@ public class EnumKit {
      * @return 如果枚举名有效，则为真，否则为假
      */
     public static <E extends Enum<E>> boolean isValidEnum(final Class<E> enumClass, final String enumName) {
-        return getEnum(enumClass, enumName) != null;
+        return null != getEnum(enumClass, enumName);
     }
 
     /**
@@ -339,7 +339,7 @@ public class EnumKit {
      * @return 如果枚举名有效，则为真，否则为假
      */
     public static <E extends Enum<E>> boolean isValidEnumIgnoreCase(final Class<E> enumClass, final String enumName) {
-        return getEnumIgnoreCase(enumClass, enumName) != null;
+        return null != getEnumIgnoreCase(enumClass, enumName);
     }
 
     /**

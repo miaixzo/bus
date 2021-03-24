@@ -295,7 +295,7 @@ public class RunnersApi extends AbstractApi {
      */
     public RunnerDetail getRunnerDetail(Integer runnerId) throws GitLabApiException {
 
-        if (null == runnerId) {
+        if (runnerId == null) {
             throw new RuntimeException("runnerId cannot be null");
         }
 
@@ -320,7 +320,7 @@ public class RunnersApi extends AbstractApi {
      */
     public RunnerDetail updateRunner(Integer runnerId, String description, Boolean active, List<String> tagList,
                                      Boolean runUntagged, Boolean locked, RunnerDetail.RunnerAccessLevel accessLevel) throws GitLabApiException {
-        if (null == runnerId) {
+        if (runnerId == null) {
             throw new RuntimeException("runnerId cannot be null");
         }
 
@@ -345,7 +345,7 @@ public class RunnersApi extends AbstractApi {
      */
     public void removeRunner(Integer runnerId) throws GitLabApiException {
 
-        if (null == runnerId) {
+        if (runnerId == null) {
             throw new RuntimeException("runnerId cannot be null");
         }
 
@@ -433,7 +433,7 @@ public class RunnersApi extends AbstractApi {
      */
     public Pager<Job> getJobs(Integer runnerId, JobStatus status, int itemsPerPage) throws GitLabApiException {
 
-        if (null == runnerId) {
+        if (runnerId == null) {
             throw new RuntimeException("runnerId cannot be null");
         }
 

@@ -51,9 +51,9 @@ public abstract class AbstractBackend implements Backend {
 
     @Override
     public final TraceFilterConfig getConfiguration(String profileName) {
-        final String lookupProfile = null == profileName ? Builder.DEFAULT : profileName;
+        final String lookupProfile = profileName == null ? Builder.DEFAULT : profileName;
         TraceFilterConfig filterConfiguration = configurationCache.get(lookupProfile);
-        if (null == filterConfiguration) {
+        if (filterConfiguration == null) {
             filterConfiguration = new PropertiesBasedTraceFilter(getPropertyChain(), lookupProfile);
             configurationCache.put(lookupProfile, filterConfiguration);
         }
@@ -71,7 +71,7 @@ public abstract class AbstractBackend implements Backend {
     }
 
     private PropertyChain getPropertyChain() {
-        if (null == _lazyPropertyChain) {
+        if (_lazyPropertyChain == null) {
             _lazyPropertyChain = PropertiesBasedTraceFilter.loadPropertyChain();
         }
         return _lazyPropertyChain;

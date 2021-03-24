@@ -79,7 +79,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
 
         @Override
         public BufferSource source() {
-            if (null == bufferedSource) {
+            if (bufferedSource == null) {
                 bufferedSource = IoKit.buffer(source(body.source()));
             }
             return bufferedSource;

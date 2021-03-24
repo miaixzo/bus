@@ -43,7 +43,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
     protected List<StudyRequest> studyRequest;
 
     public List<StudyRequest> getStudyRequest() {
-        if (this.null == studyRequest) {
+        if (this.studyRequest == null) {
             this.studyRequest = new ArrayList();
         }
         return this.studyRequest;
@@ -61,7 +61,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
         protected String studyInstanceUID;
 
         public List<SeriesRequest> getSeriesRequest() {
-            if (this.null == seriesRequest) {
+            if (this.seriesRequest == null) {
                 this.seriesRequest = new ArrayList();
 
             }
@@ -91,7 +91,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
 
 
             public List<RenderedDocumentRequest> getRenderedDocumentRequest() {
-                if (this.null == renderedDocumentRequest) {
+                if (this.renderedDocumentRequest == null) {
                     this.renderedDocumentRequest = new ArrayList();
                 }
                 return this.renderedDocumentRequest;
@@ -290,7 +290,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                 }
 
                 public List<Object> getAny() {
-                    if (this.null == any) {
+                    if (this.any == null) {
                         this.any = new ArrayList();
                     }
                     return this.any;
@@ -304,7 +304,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                     protected List<String> charset;
 
                     public List<String> getCharset() {
-                        if (this.null == charset) {
+                        if (this.charset == null) {
                             this.charset = new ArrayList();
                         }
                         return this.charset;
@@ -319,7 +319,7 @@ public class RetrieveRenderedImagingDocumentSetRequestType {
                     protected List<String> contentType;
 
                     public List<String> getContentType() {
-                        if (this.null == contentType) {
+                        if (this.contentType == null) {
                             this.contentType = new ArrayList();
                         }
                         return this.contentType;

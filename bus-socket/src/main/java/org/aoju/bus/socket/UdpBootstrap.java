@@ -110,14 +110,14 @@ public class UdpBootstrap<R> {
      */
     public UdpChannel<R> open(String host, int port) throws IOException {
         //启动线程服务
-        if (null == worker) {
+        if (worker == null) {
             initThreadServer();
         }
 
         DatagramChannel channel = DatagramChannel.open();
         channel.configureBlocking(false);
         if (port > 0) {
-            InetSocketAddress inetSocketAddress = null == host ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
+            InetSocketAddress inetSocketAddress = host == null ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
             channel.socket().bind(inetSocketAddress);
         }
         UdpChannel<R> udpChannel = new UdpChannel(channel, worker, config, bufferPage);
@@ -168,7 +168,7 @@ public class UdpBootstrap<R> {
             ByteBuffer buffer = readBuffer.buffer();
             buffer.clear();
             SocketAddress remote = channel.getChannel().receive(buffer);
-            if (null == remote) {
+            if (remote == null) {
                 return;
             }
             buffer.flip();
@@ -189,7 +189,7 @@ public class UdpBootstrap<R> {
                 throw e;
             }
             // 理论上每个UDP包都是一个完整的消息
-            if (null == request) {
+            if (request == null) {
                 config.getProcessor().stateEvent(aioSession, SocketStatus.DECODE_EXCEPTION, new InstrumentException("decode result is null"));
             } else {
                 // 任务分发
@@ -262,7 +262,7 @@ public class UdpBootstrap<R> {
             try {
                 while (running) {
                     Consumer<Selector> register;
-                    while ((register = registers.poll()) != null) {
+                    while (null != (register = registers.poll())) {
                         register.accept(selector);
                     }
                     if (keySet.isEmpty() && selector.select() == 0) {

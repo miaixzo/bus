@@ -77,7 +77,7 @@ public class PageParams {
      */
     public Page getPage(Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = PageContext.getLocalPage();
-        if (null == page) {
+        if (page == null) {
             if (rowBounds != org.apache.ibatis.session.RowBounds.DEFAULT) {
                 if (offsetAsPageNo) {
                     page = new Page(rowBounds.getOffset(), rowBounds.getLimit(), rowBoundsWithCount);
@@ -97,7 +97,7 @@ public class PageParams {
                     return null;
                 }
             }
-            if (null == page) {
+            if (page == null) {
                 return null;
             }
             PageContext.setLocalPage(page);

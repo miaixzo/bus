@@ -117,7 +117,7 @@ public class AsynchronousServerSocketChannel extends java.nio.channels.Asynchron
                 }
             }
             // 首次注册selector
-            else if (null == selectionKey) {
+            else if (selectionKey == null) {
                 acceptWorker.addRegister(selector -> {
                     try {
                         selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);

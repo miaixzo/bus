@@ -76,7 +76,7 @@ final class ExtMemoryOutputStream extends MemoryCacheImageOutputStream
 
     @Override
     public void flushBefore(long pos) throws IOException {
-        if (stream.getOutputStream() != null)
+        if (null != stream.getOutputStream())
             super.flushBefore(pos);
     }
 

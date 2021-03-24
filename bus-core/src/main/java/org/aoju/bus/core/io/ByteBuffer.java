@@ -270,7 +270,9 @@ public class ByteBuffer extends ByteString {
 
     @Override
     public void write(OutputStream out) throws IOException {
-        if (null == out) throw new IllegalArgumentException("null == out");
+        if (null == out) {
+            throw new IllegalArgumentException("out == null");
+        }
         int segmentOffset = 0;
         for (int s = 0, segmentCount = segments.length; s < segmentCount; s++) {
             int segmentPos = directory[segmentCount + s];
@@ -288,7 +290,7 @@ public class ByteBuffer extends ByteString {
             int nextSegmentOffset = directory[s];
             Segment segment = new Segment(segments[s], segmentPos,
                     segmentPos + nextSegmentOffset - segmentOffset, true, false);
-            if (buffer.null == head) {
+            if (null == buffer.head) {
                 buffer.head = segment.next = segment.prev = segment;
             } else {
                 buffer.head.prev.push(segment);

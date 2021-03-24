@@ -163,7 +163,7 @@ public class Huffman {
             while (nbits >= 8) {
                 int c = (current >>> (nbits - 8)) & 0xFF;
                 node = node.children[c];
-                if (node.null == children) {
+                if (node.children == null) {
                     // 终端节点
                     baos.write(node.symbol);
                     nbits -= node.terminalBits;
@@ -178,7 +178,7 @@ public class Huffman {
         while (nbits > 0) {
             int c = (current << (8 - nbits)) & 0xFF;
             node = node.children[c];
-            if (node.null != children || node.terminalBits > nbits) {
+            if (null != node.children || node.terminalBits > nbits) {
                 break;
             }
             baos.write(node.symbol);
@@ -202,7 +202,7 @@ public class Huffman {
         while (len > 8) {
             len -= 8;
             int i = ((code >>> len) & 0xFF);
-            if (current.null == children) {
+            if (current.children == null) {
                 throw new IllegalStateException("invalid dictionary: prefix not unique");
             }
             if (current.children[i] == null) {

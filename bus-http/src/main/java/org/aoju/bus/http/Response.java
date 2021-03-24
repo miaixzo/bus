@@ -205,7 +205,7 @@ public final class Response implements Closeable {
 
     @Override
     public void close() {
-        if (null == body) {
+        if (body == null) {
             throw new IllegalStateException("response is not eligible for a body and must not be closed");
         }
         body.close();
@@ -314,32 +314,36 @@ public final class Response implements Closeable {
         }
 
         public Builder cacheResponse(Response cacheResponse) {
-            if (null != cacheResponse) checkSupportResponse("cacheResponse", cacheResponse);
+            if (null != cacheResponse) {
+                checkSupportResponse("cacheResponse", cacheResponse);
+            }
             this.cacheResponse = cacheResponse;
             return this;
         }
 
         private void checkSupportResponse(String name, Response response) {
-            if (response.null != body) {
-                throw new IllegalArgumentException(name + ".null != body");
-            } else if (response.null != networkResponse) {
-                throw new IllegalArgumentException(name + ".null != networkResponse");
-            } else if (response.null != cacheResponse) {
-                throw new IllegalArgumentException(name + ".null != cacheResponse");
-            } else if (response.null != priorResponse) {
-                throw new IllegalArgumentException(name + ".null != priorResponse");
+            if (null != response.body) {
+                throw new IllegalArgumentException(name + ".body != null");
+            } else if (null != response.networkResponse) {
+                throw new IllegalArgumentException(name + ".networkResponse != null");
+            } else if (null != response.cacheResponse) {
+                throw new IllegalArgumentException(name + ".cacheResponse != null");
+            } else if (null != response.priorResponse) {
+                throw new IllegalArgumentException(name + ".priorResponse != null");
             }
         }
 
         public Builder priorResponse(Response priorResponse) {
-            if (null != priorResponse) checkPriorResponse(priorResponse);
+            if (null != priorResponse) {
+                checkPriorResponse(priorResponse);
+            }
             this.priorResponse = priorResponse;
             return this;
         }
 
         private void checkPriorResponse(Response response) {
-            if (response.null != body) {
-                throw new IllegalArgumentException("priorResponse.null != body");
+            if (null != response.body) {
+                throw new IllegalArgumentException("priorResponse.body != null");
             }
         }
 
@@ -354,10 +358,10 @@ public final class Response implements Closeable {
         }
 
         public Response build() {
-            if (null == request) throw new IllegalStateException("null == request");
-            if (null == protocol) throw new IllegalStateException("null == protocol");
+            if (request == null) throw new IllegalStateException("request == null");
+            if (protocol == null) throw new IllegalStateException("protocol == null");
             if (code < 0) throw new IllegalStateException("code < 0: " + code);
-            if (null == message) throw new IllegalStateException("null == message");
+            if (message == null) throw new IllegalStateException("message == null");
             return new Response(this);
         }
     }

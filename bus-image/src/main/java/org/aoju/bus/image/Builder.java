@@ -192,7 +192,7 @@ public class Builder {
     }
 
     public static boolean delete(File fileOrDirectory) {
-        if (null == fileOrDirectory || !fileOrDirectory.exists()) {
+        if (fileOrDirectory == null || !fileOrDirectory.exists()) {
             return false;
         }
 
@@ -330,7 +330,7 @@ public class Builder {
                 dos.writeDataset(attrs.createFileMetaInformation(mpeg ? UID.MPEG2 : UID.JPEGBaseline1), attrs);
                 dos.writeHeader(Tag.PixelData, VR.OB, -1);
                 dos.writeHeader(Tag.Item, null, 0);
-                if (p.null != jpegHeader && noAPPn) {
+                if (null != p.jpegHeader && noAPPn) {
                     int offset = p.jpegHeader.offsetAfterAPP();
                     itemLen -= offset - 3;
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
@@ -362,10 +362,10 @@ public class Builder {
             boolean jpgHeader;
             if (mpeg) {
                 MPEGHeader mpegHeader = new MPEGHeader(p.buffer);
-                jpgHeader = mpegHeader.toAttributes(metadata, p.fileLength) != null;
+                jpgHeader = null != mpegHeader.toAttributes(metadata, p.fileLength);
             } else {
                 p.jpegHeader = new JPEGHeader(p.buffer, JPEG.SOS);
-                jpgHeader = p.jpegHeader.toAttributes(metadata) != null;
+                jpgHeader = null != p.jpegHeader.toAttributes(metadata);
             }
             if (jpgHeader) {
                 ensureString(metadata, Tag.SOPClassUID, VR.UI,
@@ -396,7 +396,7 @@ public class Builder {
 
     public static boolean updateAttributes(Attributes data, Attributes attrs,
                                            String uidSuffix) {
-        if (attrs.isEmpty() && null == uidSuffix)
+        if (attrs.isEmpty() && uidSuffix == null)
             return false;
         if (null != uidSuffix) {
             data.setString(Tag.StudyInstanceUID, VR.UI,

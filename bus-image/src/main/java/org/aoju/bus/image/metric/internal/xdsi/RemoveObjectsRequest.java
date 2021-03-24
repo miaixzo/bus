@@ -61,7 +61,7 @@ public class RemoveObjectsRequest extends RegistryRequestType {
     }
 
     public String getDeletionScope() {
-        if (this.null == deletionScope) {
+        if (this.deletionScope == null) {
             return "urn:oasis:names:tc:ebxml-regrep:DeletionScopeType:DeleteAll";
         }
         return this.deletionScope;

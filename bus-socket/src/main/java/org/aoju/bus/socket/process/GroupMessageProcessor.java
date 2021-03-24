@@ -52,7 +52,7 @@ public abstract class GroupMessageProcessor<T> implements MessageProcessor<T>, G
     @Override
     public final synchronized void join(String group, AioSession session) {
         GroupUnit groupUnit = sessionGroup.get(group);
-        if (null == groupUnit) {
+        if (groupUnit == null) {
             groupUnit = new GroupUnit();
             sessionGroup.put(group, groupUnit);
         }
@@ -62,7 +62,7 @@ public abstract class GroupMessageProcessor<T> implements MessageProcessor<T>, G
     @Override
     public final synchronized void remove(String group, AioSession session) {
         GroupUnit groupUnit = sessionGroup.get(group);
-        if (null == groupUnit) {
+        if (groupUnit == null) {
             return;
         }
         groupUnit.groupList.remove(session);

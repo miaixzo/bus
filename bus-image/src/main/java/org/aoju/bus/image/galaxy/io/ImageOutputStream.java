@@ -80,7 +80,7 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public final void setEncodingOptions(ImageEncodingOptions encOpts) {
-        if (null == encOpts)
+        if (encOpts == null)
             throw new NullPointerException();
         this.encOpts = encOpts;
     }

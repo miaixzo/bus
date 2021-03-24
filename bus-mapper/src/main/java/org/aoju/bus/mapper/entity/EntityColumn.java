@@ -128,10 +128,10 @@ public class EntityColumn {
         if (Assert.isNotEmpty(suffix)) {
             sb.append(suffix);
         }
-        if (this.null != jdbcType) {
+        if (null != this.jdbcType) {
             sb.append(",jdbcType=");
             sb.append(this.jdbcType.toString());
-        } else if (this.null != typeHandler) {
+        } else if (null != this.typeHandler) {
             sb.append(",typeHandler=");
             sb.append(this.typeHandler.getCanonicalName());
         } else if (!this.javaType.isArray()) {//当类型为数组时,不设置javaType#103
@@ -148,22 +148,22 @@ public class EntityColumn {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         EntityColumn that = (EntityColumn) o;
 
         if (id != that.id) return false;
         if (uuid != that.uuid) return false;
         if (identity != that.identity) return false;
-        if (null != table ? !table.equals(that.table) : that.null != table) return false;
-        if (null != property ? !property.equals(that.property) : that.null != property) return false;
-        if (null != column ? !column.equals(that.column) : that.null != column) return false;
-        if (null != javaType ? !javaType.equals(that.javaType) : that.null != javaType) return false;
+        if (null != table ? !table.equals(that.table) : null != that.table) return false;
+        if (null != property ? !property.equals(that.property) : null != that.property) return false;
+        if (null != column ? !column.equals(that.column) : null != that.column) return false;
+        if (null != javaType ? !javaType.equals(that.javaType) : null != that.javaType) return false;
         if (jdbcType != that.jdbcType) return false;
-        if (null != typeHandler ? !typeHandler.equals(that.typeHandler) : that.null != typeHandler) return false;
-        if (null != sequenceName ? !sequenceName.equals(that.sequenceName) : that.null != sequenceName) return false;
-        if (null != generator ? !generator.equals(that.generator) : that.null != generator) return false;
-        return !(null != orderBy ? !orderBy.equals(that.orderBy) : that.null != orderBy);
+        if (null != typeHandler ? !typeHandler.equals(that.typeHandler) : null != that.typeHandler) return false;
+        if (null != sequenceName ? !sequenceName.equals(that.sequenceName) : null != that.sequenceName) return false;
+        if (null != generator ? !generator.equals(that.generator) : null != that.generator) return false;
+        return !(null != orderBy ? !orderBy.equals(that.orderBy) : null != that.orderBy);
 
     }
 

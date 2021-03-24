@@ -2084,7 +2084,6 @@ public abstract class ToStringStyle implements Serializable {
         @Override
         public void append(final StringBuffer buffer, final String fieldName,
                            final Object[] array, final Boolean fullDetail) {
-
             if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
@@ -2100,7 +2099,6 @@ public abstract class ToStringStyle implements Serializable {
         @Override
         public void append(final StringBuffer buffer, final String fieldName, final long[] array,
                            final Boolean fullDetail) {
-
             if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");

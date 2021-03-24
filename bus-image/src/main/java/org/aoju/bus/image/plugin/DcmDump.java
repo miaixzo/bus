@@ -191,7 +191,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     private void promptPreamble(byte[] preamble) {
-        if (null == preamble)
+        if (preamble == null)
             return;
 
         StringBuilder line = new StringBuilder(width);

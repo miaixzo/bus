@@ -54,7 +54,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     public void msgType(String type) {
-        if (null == type || type.equalsIgnoreCase(Builder.FORM)) {
+        if (type == null || type.equalsIgnoreCase(Builder.FORM)) {
             throw new IllegalArgumentException("msgType 不可为空 或 form");
         }
         this.msgType = type;
@@ -68,7 +68,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     public boolean send(Object msg) {
-        if (null == msg) {
+        if (msg == null) {
             return false;
         }
         synchronized (queues) {
@@ -92,7 +92,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     boolean send(WebSocket webSocket, Object msg) {
-        if (null == msg) {
+        if (msg == null) {
             return false;
         }
         if (msg instanceof String) {
@@ -197,31 +197,31 @@ public class CoverWebSocket implements Cancelable {
             TaskListener<Results> listener = client.httpv.executor().getResponseListener();
             Results result = new RealResult(client, response, client.httpv.executor());
             if (null != listener) {
-                if (listener.listen(client, result) && client.null != onOpen) {
+                if (listener.listen(client, result) && null != client.onOpen) {
                     client.execute(() -> client.onOpen.on(this.webSocket, result), client.openOnIO);
                 }
-            } else if (client.null != onOpen) {
+            } else if (null != client.onOpen) {
                 client.execute(() -> client.onOpen.on(this.webSocket, result), client.openOnIO);
             }
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            if (client.null != onMessage) {
+            if (null != client.onMessage) {
                 client.execute(() -> client.onMessage.on(this.webSocket, new Message(text, client.httpv.executor(), charset)), client.messageOnIO);
             }
         }
 
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
-            if (client.null != onMessage) {
+            if (null != client.onMessage) {
                 client.execute(() -> client.onMessage.on(this.webSocket, new Message(bytes, client.httpv.executor(), charset)), client.messageOnIO);
             }
         }
 
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
-            if (client.null != onClosing) {
+            if (null != client.onClosing) {
                 client.execute(() -> client.onClosing.on(this.webSocket, new Close(code, reason)), client.closingOnIO);
             }
         }
@@ -234,10 +234,10 @@ public class CoverWebSocket implements Cancelable {
         private void doOnClose(Results.State state, int code, String reason) {
             TaskListener<Results.State> listener = client.httpv.executor().getCompleteListener();
             if (null != listener) {
-                if (listener.listen(client, state) && client.null != onClosed) {
+                if (listener.listen(client, state) && null != client.onClosed) {
                     client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)), client.closedOnIO);
                 }
-            } else if (client.null != onClosed) {
+            } else if (null != client.onClosed) {
                 client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)), client.closedOnIO);
             }
         }
@@ -264,10 +264,10 @@ public class CoverWebSocket implements Cancelable {
             doOnClose(client.toState(e), 0, t.getMessage());
             TaskListener<IOException> listener = client.httpv.executor().getExceptionListener();
             if (null != listener) {
-                if (listener.listen(client, e) && client.null != onException) {
+                if (listener.listen(client, e) && null != client.onException) {
                     client.execute(() -> client.onException.on(this.webSocket, t), client.exceptionOnIO);
                 }
-            } else if (client.null != onException) {
+            } else if (null != client.onException) {
                 client.execute(() -> client.onException.on(this.webSocket, t), client.exceptionOnIO);
             } else if (!client.nothrow) {
                 throw new InstrumentException("WebSocket exception", t);
@@ -495,7 +495,7 @@ public class CoverWebSocket implements Cancelable {
                 return new InputStream() {
 
                     @Override
-                    public int read() throws IOException {
+                    public int read() {
                         if (buffer.hasRemaining()) {
                             return buffer.get();
                         }

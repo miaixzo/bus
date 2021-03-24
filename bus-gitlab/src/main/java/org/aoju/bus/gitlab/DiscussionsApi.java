@@ -524,7 +524,7 @@ public class DiscussionsApi extends AbstractApi {
     public Discussion createCommitDiscussion(Object projectIdOrPath, String commitSha,
                                              String body, Date createdAt, String positionHash, Position position) throws GitLabApiException {
 
-        if (null == position) {
+        if (position == null) {
             throw new GitLabApiException("position instance can not be null");
         }
 
