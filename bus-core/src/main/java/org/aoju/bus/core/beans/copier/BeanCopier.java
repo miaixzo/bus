@@ -50,6 +50,8 @@ import java.util.Map;
  */
 public class BeanCopier<T> implements Copier<T>, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 源对象
      */
@@ -213,6 +215,10 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
                 }
                 if (CollKit.contains(ignoreSet, key)) {
                     // 目标属性值被忽略或值提供者无此key时跳过
+                    continue;
+                }
+                if (null != copyOptions.propertiesFilter
+                        && false == copyOptions.propertiesFilter.test(prop.getField(), value)) {
                     continue;
                 }
                 if (null == value && copyOptions.ignoreNullValue) {
