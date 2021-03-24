@@ -162,7 +162,7 @@ public enum Dimse {
     private static void promptStringTo(Attributes cmd, String name, int tag,
                                        StringBuilder sb) {
         String s = cmd.getString(tag, null);
-        if (s != null)
+        if (null != s)
             sb.append(name).append(s);
     }
 
@@ -170,7 +170,7 @@ public enum Dimse {
                                     StringBuilder sb) {
         if (tag != 0) {
             String uid = cmd.getString(tag, null);
-            if (uid != null)
+            if (null != uid)
                 promptUIDTo(name, uid, sb);
         }
     }
@@ -183,7 +183,7 @@ public enum Dimse {
     private static void promptMoveOriginatorTo(Attributes cmd, StringBuilder sb) {
         String aet = cmd.getString(Tag.MoveOriginatorApplicationEntityTitle,
                 null);
-        if (aet != null)
+        if (null != aet)
             sb.append(Property.LINE_SEPARATOR)
                     .append("  orig=")
                     .append(aet)
@@ -195,7 +195,7 @@ public enum Dimse {
     private static void promptAttributeIdentifierListTo(Attributes cmd,
                                                         StringBuilder sb) {
         int[] tags = cmd.getInts(Tag.AttributeIdentifierList);
-        if (tags == null)
+        if (null == tags)
             return;
 
         sb.append(Property.LINE_SEPARATOR).append("  tags=[");

@@ -82,16 +82,16 @@ public class StowrsMultiFiles extends AbstractStowrs {
                 }
             }
             Attributes error = writeEndMarkers(httpPost, out);
-            if (error == null) {
+            if (null == error) {
                 state.setStatus(org.aoju.bus.image.Status.Success);
                 message = "all the files has been tranfered";
             } else {
                 message = "one or more files has not been tranfered";
                 state.setStatus(org.aoju.bus.image.Status.OneOrMoreFailures);
                 Progress p = state.getProgress();
-                if (p != null) {
+                if (null != p) {
                     Sequence seq = error.getSequence(Tag.FailedSOPSequence);
-                    if (seq != null && !seq.isEmpty()) {
+                    if (null != seq && !seq.isEmpty()) {
                         Attributes cmd = Optional.ofNullable(p.getAttributes()).orElseGet(Attributes::new);
                         cmd.setInt(Tag.Status, VR.US, org.aoju.bus.image.Status.OneOrMoreFailures);
                         cmd.setInt(Tag.NumberOfCompletedSuboperations, VR.US, nbFile);

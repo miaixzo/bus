@@ -59,7 +59,7 @@ public class IdentityRQ {
         this.type = type;
         this.rspReq = rspReq;
         this.primaryField = primaryField.clone();
-        this.secondaryField = secondaryField != null
+        this.secondaryField = null != secondaryField
                 ? secondaryField.clone()
                 : new byte[0];
     }

@@ -136,10 +136,10 @@ public class SqlServerParser {
         Select pageSelect = getPageSelect((Select) stmt);
         String pageSql = pageSelect.toString();
         // 缓存移到外面了,所以不替换参数
-        if (offset != null) {
+        if (null != offset) {
             pageSql = pageSql.replace(START_ROW, String.valueOf(offset));
         }
-        if (limit != null) {
+        if (null != limit) {
             pageSql = pageSql.replace(PAGE_SIZE, String.valueOf(limit));
         }
         return pageSql;
@@ -409,7 +409,7 @@ public class SqlServerParser {
     }
 
     public boolean isNotEmptyList(List<?> list) {
-        if (list == null || list.size() == 0) {
+        if (null == list || list.size() == 0) {
             return false;
         }
         return true;
@@ -470,7 +470,7 @@ public class SqlServerParser {
                 selectMap.put(expItem.getExpression().toString(), expItem);
 
                 Alias alias = expItem.getAlias();
-                if (alias != null) {
+                if (null != alias) {
                     aliases.add(alias.getName());
                 }
 
@@ -488,9 +488,9 @@ public class SqlServerParser {
             orderByElement = iterator.next();
             Expression expression = orderByElement.getExpression();
             SelectExpressionItem selectExpressionItem = selectMap.get(expression.toString());
-            if (selectExpressionItem != null) { // OrderByElement 在查询列表中
+            if (null != selectExpressionItem) { // OrderByElement 在查询列表中
                 Alias alias = selectExpressionItem.getAlias();
-                if (alias != null) { // 查询列含有别名时用查询列别名
+                if (null != alias) { // 查询列含有别名时用查询列别名
                     iterator.set(cloneOrderByElement(orderByElement, alias.getName()));
 
                 } else { // 查询列不包含别名
@@ -512,7 +512,7 @@ public class SqlServerParser {
             } else { // OrderByElement 不在查询列表中,需要自动生成一个查询列
                 if (expression instanceof Column) { // OrderByElement 为普通列
                     Table table = ((Column) expression).getTable();
-                    if (table == null) { // 表名为空
+                    if (null == table) { // 表名为空
                         if (allColumns ||
                                 (allColumnsTables.size() == 1 && plainSelect.getJoins() == null) ||
                                 aliases.contains(((Column) expression).getColumnName())) {

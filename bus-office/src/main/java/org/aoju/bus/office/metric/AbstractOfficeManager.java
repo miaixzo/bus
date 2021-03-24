@@ -96,7 +96,7 @@ public abstract class AbstractOfficeManager implements OfficeManager, TemporaryF
      * 删除临时目录
      */
     protected void deleteTempDir() {
-        if (tempDir != null) {
+        if (null != tempDir) {
             Logger.debug("Deleting temporary directory '{}'", tempDir);
             try {
                 FileKit.delete(tempDir);

@@ -38,7 +38,7 @@ public class CoverWebSocket implements Cancelable {
 
     @Override
     public synchronized boolean cancel() {
-        if (webSocket != null) {
+        if (null != webSocket) {
             webSocket.cancel();
         }
         cancelOrClosed = true;
@@ -46,7 +46,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     public synchronized boolean close(int code, String reason) {
-        if (webSocket != null) {
+        if (null != webSocket) {
             webSocket.close(code, reason);
         }
         cancelOrClosed = true;
@@ -54,25 +54,25 @@ public class CoverWebSocket implements Cancelable {
     }
 
     public void msgType(String type) {
-        if (type == null || type.equalsIgnoreCase(Builder.FORM)) {
+        if (null == type || type.equalsIgnoreCase(Builder.FORM)) {
             throw new IllegalArgumentException("msgType 不可为空 或 form");
         }
         this.msgType = type;
     }
 
     public long queueSize() {
-        if (webSocket != null) {
+        if (null != webSocket) {
             return webSocket.queueSize();
         }
         return queues.size();
     }
 
     public boolean send(Object msg) {
-        if (msg == null) {
+        if (null == msg) {
             return false;
         }
         synchronized (queues) {
-            if (webSocket != null) {
+            if (null != webSocket) {
                 return send(webSocket, msg);
             } else {
                 queues.add(msg);
@@ -92,7 +92,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     boolean send(WebSocket webSocket, Object msg) {
-        if (msg == null) {
+        if (null == msg) {
             return false;
         }
         if (msg instanceof String) {
@@ -196,32 +196,32 @@ public class CoverWebSocket implements Cancelable {
             this.webSocket.setWebSocket(webSocket);
             TaskListener<Results> listener = client.httpv.executor().getResponseListener();
             Results result = new RealResult(client, response, client.httpv.executor());
-            if (listener != null) {
-                if (listener.listen(client, result) && client.onOpen != null) {
+            if (null != listener) {
+                if (listener.listen(client, result) && client.null != onOpen) {
                     client.execute(() -> client.onOpen.on(this.webSocket, result), client.openOnIO);
                 }
-            } else if (client.onOpen != null) {
+            } else if (client.null != onOpen) {
                 client.execute(() -> client.onOpen.on(this.webSocket, result), client.openOnIO);
             }
         }
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            if (client.onMessage != null) {
+            if (client.null != onMessage) {
                 client.execute(() -> client.onMessage.on(this.webSocket, new Message(text, client.httpv.executor(), charset)), client.messageOnIO);
             }
         }
 
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
-            if (client.onMessage != null) {
+            if (client.null != onMessage) {
                 client.execute(() -> client.onMessage.on(this.webSocket, new Message(bytes, client.httpv.executor(), charset)), client.messageOnIO);
             }
         }
 
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
-            if (client.onClosing != null) {
+            if (client.null != onClosing) {
                 client.execute(() -> client.onClosing.on(this.webSocket, new Close(code, reason)), client.closingOnIO);
             }
         }
@@ -233,11 +233,11 @@ public class CoverWebSocket implements Cancelable {
 
         private void doOnClose(Results.State state, int code, String reason) {
             TaskListener<Results.State> listener = client.httpv.executor().getCompleteListener();
-            if (listener != null) {
-                if (listener.listen(client, state) && client.onClosed != null) {
+            if (null != listener) {
+                if (listener.listen(client, state) && client.null != onClosed) {
                     client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)), client.closedOnIO);
                 }
-            } else if (client.onClosed != null) {
+            } else if (client.null != onClosed) {
                 client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)), client.closedOnIO);
             }
         }
@@ -263,11 +263,11 @@ public class CoverWebSocket implements Cancelable {
             IOException e = t instanceof IOException ? (IOException) t : new IOException(t.getMessage(), t);
             doOnClose(client.toState(e), 0, t.getMessage());
             TaskListener<IOException> listener = client.httpv.executor().getExceptionListener();
-            if (listener != null) {
-                if (listener.listen(client, e) && client.onException != null) {
+            if (null != listener) {
+                if (listener.listen(client, e) && client.null != onException) {
                     client.execute(() -> client.onException.on(this.webSocket, t), client.exceptionOnIO);
                 }
-            } else if (client.onException != null) {
+            } else if (client.null != onException) {
                 client.execute(() -> client.onException.on(this.webSocket, t), client.exceptionOnIO);
             } else if (!client.nothrow) {
                 throw new InstrumentException("WebSocket exception", t);
@@ -447,15 +447,15 @@ public class CoverWebSocket implements Cancelable {
         }
 
         public boolean isText() {
-            return text != null;
+            return null != text;
         }
 
         @Override
         public byte[] toBytes() {
-            if (text != null) {
+            if (null != text) {
                 return text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8);
             }
-            if (bytes != null) {
+            if (null != bytes) {
                 return bytes.toByteArray();
             }
             return null;
@@ -463,10 +463,10 @@ public class CoverWebSocket implements Cancelable {
 
         @Override
         public String toString() {
-            if (text != null) {
+            if (null != text) {
                 return text;
             }
-            if (bytes != null) {
+            if (null != bytes) {
                 return bytes.utf8();
             }
             return null;
@@ -474,7 +474,7 @@ public class CoverWebSocket implements Cancelable {
 
         @Override
         public ByteString toByteString() {
-            if (text != null) {
+            if (null != text) {
                 return ByteString.encodeUtf8(text);
             }
             return bytes;
@@ -487,10 +487,10 @@ public class CoverWebSocket implements Cancelable {
 
         @Override
         public InputStream toByteStream() {
-            if (text != null) {
+            if (null != text) {
                 return new ByteArrayInputStream(text.getBytes(org.aoju.bus.core.lang.Charset.UTF_8));
             }
-            if (bytes != null) {
+            if (null != bytes) {
                 ByteBuffer buffer = bytes.asByteBuffer();
                 return new InputStream() {
 

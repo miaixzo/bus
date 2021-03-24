@@ -77,7 +77,7 @@ public class Manage {
     }
 
     public void writeSingle(String cache, String key, Object value, int expire) {
-        if (value != null) {
+        if (null != value) {
             try {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 
@@ -113,7 +113,7 @@ public class Manage {
                 for (String key : keys) {
                     Object value = cacheMap.get(key);
 
-                    if (value == null) {
+                    if (null == value) {
                         notHitKeys.add(key);
                     } else {
                         hitValueMap.put(key, value);
@@ -146,7 +146,7 @@ public class Manage {
     }
 
     public void remove(String cache, String... keys) {
-        if (keys != null && keys.length != 0) {
+        if (null != keys && keys.length != 0) {
             try {
                 CachePair<String, CacheX> cacheImpl = getCacheImpl(cache);
 

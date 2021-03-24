@@ -90,7 +90,7 @@ public class TCPListener implements SocketListener {
                         ? conn.getDevice().getMonitoring()
                         : null;
                 if (conn.isBlackListed(s.getInetAddress())) {
-                    if (monitor != null)
+                    if (null != monitor)
                         monitor.onConnectionRejectedBlacklisted(conn, s);
                     Logger.info("Reject blacklisted connection {}", s);
                     conn.close(s);
@@ -101,14 +101,14 @@ public class TCPListener implements SocketListener {
                             ((SSLSocket) s).startHandshake();
                         }
                     } catch (Throwable e) {
-                        if (monitor != null)
+                        if (null != monitor)
                             monitor.onConnectionRejected(conn, s, e);
                         Logger.warn("Reject connection {}:", s, e);
                         conn.close(s);
                         continue;
                     }
 
-                    if (monitor != null)
+                    if (null != monitor)
                         monitor.onConnectionAccepted(conn, s);
                     Logger.info("Accept connection {}", s);
                     try {

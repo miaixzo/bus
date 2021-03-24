@@ -351,7 +351,7 @@ public class EnumKit {
      * @return 枚举，如果没有找到则为空
      */
     public static <E extends Enum<E>> E getEnum(final Class<E> enumClass, final String enumName) {
-        if (enumName == null) {
+        if (null == enumName) {
             return null;
         }
         try {
@@ -370,7 +370,7 @@ public class EnumKit {
      * @return 枚举，如果没有找到则为空
      */
     public static <E extends Enum<E>> E getEnumIgnoreCase(final Class<E> enumClass, final String enumName) {
-        if (enumName == null || !enumClass.isEnum()) {
+        if (null == enumName || !enumClass.isEnum()) {
             return null;
         }
         for (final E each : enumClass.getEnumConstants()) {

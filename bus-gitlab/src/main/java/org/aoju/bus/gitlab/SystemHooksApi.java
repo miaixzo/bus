@@ -116,7 +116,7 @@ public class SystemHooksApi extends AbstractApi {
     public SystemHook addSystemHook(String url, String token, Boolean pushEvents,
                                     Boolean tagPushEvents, Boolean enablSsslVerification) throws GitLabApiException {
 
-        if (url == null) {
+        if (null == url) {
             throw new RuntimeException("url cannot be null");
         }
 
@@ -140,7 +140,7 @@ public class SystemHooksApi extends AbstractApi {
      */
     public void deleteSystemHook(SystemHook hook) throws GitLabApiException {
 
-        if (hook == null) {
+        if (null == hook) {
             throw new RuntimeException("hook cannot be null");
         }
 
@@ -157,7 +157,7 @@ public class SystemHooksApi extends AbstractApi {
      */
     public void deleteSystemHook(Integer hookId) throws GitLabApiException {
 
-        if (hookId == null) {
+        if (null == hookId) {
             throw new RuntimeException("hookId cannot be null");
         }
 
@@ -175,7 +175,7 @@ public class SystemHooksApi extends AbstractApi {
      */
     public void testSystemHook(SystemHook hook) throws GitLabApiException {
 
-        if (hook == null) {
+        if (null == hook) {
             throw new RuntimeException("hook cannot be null");
         }
 
@@ -192,7 +192,7 @@ public class SystemHooksApi extends AbstractApi {
      */
     public void testSystemHook(Integer hookId) throws GitLabApiException {
 
-        if (hookId == null) {
+        if (null == hookId) {
             throw new RuntimeException("hookId cannot be null");
         }
 

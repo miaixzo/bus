@@ -70,7 +70,7 @@ public class ExternalOfficeBuilder implements OfficeManagerBuilder {
             final long retryInterval) {
 
         this.workingDir =
-                workingDir == null ? new File(System.getProperty("java.io.tmpdir")) : workingDir;
+                null == workingDir ? new File(System.getProperty("java.io.tmpdir")) : workingDir;
         this.connectOnStart = connectOnStart;
         this.connectTimeout = connectTimeout;
         this.retryInterval = retryInterval;

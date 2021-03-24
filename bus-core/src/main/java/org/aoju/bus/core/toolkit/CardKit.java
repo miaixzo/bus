@@ -788,7 +788,7 @@ public class CardKit {
      * @return 校验位
      */
     public static char getBankCardCode(String nonCodeCardId) {
-        if (nonCodeCardId == null || nonCodeCardId.trim().length() == 0
+        if (null == nonCodeCardId || nonCodeCardId.trim().length() == 0
                 || !nonCodeCardId.matches("\\d+")) {
             //如果传的不是数据返回N
             return 'N';

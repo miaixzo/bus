@@ -64,7 +64,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getProjectIdOrPath(Object obj) throws GitLabApiException {
 
-        if (obj == null) {
+        if (null == obj) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -73,12 +73,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Project) {
 
             Integer id = ((Project) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String path = ((Project) obj).getPathWithNamespace();
-            if (path != null && path.trim().length() > 0) {
+            if (null != path && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
 
@@ -99,7 +99,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getGroupIdOrPath(Object obj) throws GitLabApiException {
 
-        if (obj == null) {
+        if (null == obj) {
             throw (new RuntimeException("Cannot determine ID or path from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -108,12 +108,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Group) {
 
             Integer id = ((Group) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String path = ((Group) obj).getFullPath();
-            if (path != null && path.trim().length() > 0) {
+            if (null != path && path.trim().length() > 0) {
                 return (urlEncode(path.trim()));
             }
 
@@ -134,7 +134,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getUserIdOrUsername(Object obj) throws GitLabApiException {
 
-        if (obj == null) {
+        if (null == obj) {
             throw (new RuntimeException("Cannot determine ID or username from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -143,12 +143,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof User) {
 
             Integer id = ((User) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String username = ((User) obj).getUsername();
-            if (username != null && username.trim().length() > 0) {
+            if (null != username && username.trim().length() > 0) {
                 return (urlEncode(username.trim()));
             }
 
@@ -169,7 +169,7 @@ public abstract class AbstractApi implements Constants {
      */
     public Object getLabelIdOrName(Object obj) throws GitLabApiException {
 
-        if (obj == null) {
+        if (null == obj) {
             throw (new RuntimeException("Cannot determine ID or name from null object"));
         } else if (obj instanceof Integer) {
             return (obj);
@@ -178,12 +178,12 @@ public abstract class AbstractApi implements Constants {
         } else if (obj instanceof Label) {
 
             Integer id = ((Label) obj).getId();
-            if (id != null && id.intValue() > 0) {
+            if (null != id && id.intValue() > 0) {
                 return (id);
             }
 
             String name = ((User) obj).getName();
-            if (name != null && name.trim().length() > 0) {
+            if (null != name && name.trim().length() > 0) {
                 return (urlEncode(name.trim()));
             }
 
@@ -621,7 +621,7 @@ public abstract class AbstractApi implements Constants {
      */
     protected void addFormParam(Form formData, String name, Object value, boolean required) throws IllegalArgumentException {
 
-        if (value == null) {
+        if (null == value) {
 
             if (required) {
                 throw new IllegalArgumentException(name + " cannot be empty or null");

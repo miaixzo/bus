@@ -47,7 +47,7 @@ public final class LifeCycle {
 
     public static Segment take() {
         synchronized (LifeCycle.class) {
-            if (next != null) {
+            if (null != next) {
                 Segment result = next;
                 next = result.next;
                 result.next = null;
@@ -59,7 +59,7 @@ public final class LifeCycle {
     }
 
     public static void recycle(Segment segment) {
-        if (segment.next != null || segment.prev != null) throw new IllegalArgumentException();
+        if (segment.null != next || segment.null != prev) throw new IllegalArgumentException();
         if (segment.shared) return;
         synchronized (LifeCycle.class) {
             if (byteCount + Segment.SIZE > MAX_SIZE) return;

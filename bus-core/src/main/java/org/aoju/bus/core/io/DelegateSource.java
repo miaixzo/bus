@@ -41,7 +41,7 @@ public abstract class DelegateSource implements Source {
     private final Source delegate;
 
     public DelegateSource(Source delegate) {
-        if (delegate == null) throw new IllegalArgumentException("delegate == null");
+        if (null == delegate) throw new IllegalArgumentException("null == delegate");
         this.delegate = delegate;
     }
 

@@ -141,7 +141,7 @@ public class Jpg2Dcm {
                 dos.writeDataset(metadata.createFileMetaInformation(inFileType.getTransferSyntaxUID()), metadata);
                 dos.writeHeader(Tag.PixelData, VR.OB, -1);
                 dos.writeHeader(Tag.Item, null, 0);
-                if (jpegHeader != null && noAPPn) {
+                if (null != jpegHeader && noAPPn) {
                     int offset = jpegHeader.offsetAfterAPP();
                     itemLen -= offset - 3;
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);

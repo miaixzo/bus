@@ -118,7 +118,7 @@ public class StgSCU {
     }
 
     public void setStorageDirectory(File storageDir) {
-        if (storageDir != null)
+        if (null != storageDir)
             storageDir.mkdirs();
         this.storageDir = storageDir;
     }
@@ -168,11 +168,11 @@ public class StgSCU {
         String cuid = inst.getString(Tag.SOPClassUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
         String splitkey = splitTag != 0 ? inst.getString(splitTag) : Normal.EMPTY;
-        if (cuid == null || iuid == null || splitkey == null)
+        if (null == cuid || null == iuid || null == splitkey)
             return false;
 
         List<String> refSOPs = map.get(splitkey);
-        if (refSOPs == null)
+        if (null == refSOPs)
             map.put(splitkey, refSOPs = new ArrayList<>());
 
         refSOPs.add(cuid);
@@ -190,7 +190,7 @@ public class StgSCU {
     }
 
     public void close() throws IOException, InterruptedException {
-        if (as != null) {
+        if (null != as) {
             if (as.isReadyForDataTransfer()) {
                 as.waitForOutstandingRSP();
                 if (keepAlive)
@@ -263,7 +263,7 @@ public class StgSCU {
 
     private Attributes eventRecord(Association as, Attributes cmd, Attributes eventInfo)
             throws ImageException {
-        if (storageDir == null)
+        if (null == storageDir)
             return null;
 
         String cuid = cmd.getString(Tag.AffectedSOPClassUID);

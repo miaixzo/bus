@@ -768,11 +768,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project getProject(String namespace, String project) throws GitLabApiException {
 
-        if (namespace == null) {
+        if (null == namespace) {
             throw new RuntimeException("namespace cannot be null");
         }
 
-        if (project == null) {
+        if (null == project) {
             throw new RuntimeException("project cannot be null");
         }
 
@@ -817,11 +817,11 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project getProject(String namespace, String project, Boolean includeStatistics) throws GitLabApiException {
 
-        if (namespace == null) {
+        if (null == namespace) {
             throw new RuntimeException("namespace cannot be null");
         }
 
-        if (project == null) {
+        if (null == project) {
             throw new RuntimeException("project cannot be null");
         }
 
@@ -879,7 +879,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project createProject(Integer namespaceId, Project project) throws GitLabApiException {
 
-        if (project == null) {
+        if (null == project) {
             throw new RuntimeException("Project instance cannot be null.");
         }
 
@@ -911,7 +911,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project createProject(String name, String path) throws GitLabApiException {
 
-        if ((name == null || name.trim().isEmpty()) && (path == null || path.trim().isEmpty())) {
+        if ((null == name || name.trim().isEmpty()) && (null == path || path.trim().isEmpty())) {
             throw new RuntimeException("Either name or path must be specified.");
         }
 
@@ -967,14 +967,14 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Project createProject(Project project, String importUrl) throws GitLabApiException {
-        if (project == null) {
+        if (null == project) {
             return (null);
         }
 
         String name = project.getName();
         String path = project.getPath();
 
-        if ((name == null || name.trim().length() == 0) && (path == null || path.trim().length() == 0)) {
+        if ((null == name || name.trim().length() == 0) && (null == path || path.trim().length() == 0)) {
             return (null);
         }
 
@@ -1008,7 +1008,7 @@ public class ProjectApi extends AbstractApi implements Constants {
                 .withParam("build_coverage_regex", project.getBuildCoverageRegex());
 
         Namespace namespace = project.getNamespace();
-        if (namespace != null && namespace.getId() != null) {
+        if (null != namespace && namespace.getId() != null) {
             formData.withParam("namespace_id", namespace.getId());
         }
 
@@ -1062,7 +1062,7 @@ public class ProjectApi extends AbstractApi implements Constants {
                     wikiEnabled, snippetsEnabled, isPublic, visibilityLevel, importUrl));
         }
 
-        if (name == null || name.trim().length() == 0) {
+        if (null == name || name.trim().length() == 0) {
             return (null);
         }
 
@@ -1109,7 +1109,7 @@ public class ProjectApi extends AbstractApi implements Constants {
                     wikiEnabled, snippetsEnabled, isPublic, visibilityLevel, importUrl));
         }
 
-        if (name == null || name.trim().length() == 0) {
+        if (null == name || name.trim().length() == 0) {
             return (null);
         }
 
@@ -1152,7 +1152,7 @@ public class ProjectApi extends AbstractApi implements Constants {
     public Project createProject(String name, Integer namespaceId, String description, Boolean issuesEnabled, Boolean mergeRequestsEnabled,
                                  Boolean wikiEnabled, Boolean snippetsEnabled, Boolean isPublic, Integer visibilityLevel, String importUrl) throws GitLabApiException {
 
-        if (name == null || name.trim().length() == 0) {
+        if (null == name || name.trim().length() == 0) {
             return (null);
         }
 
@@ -1219,7 +1219,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public Project updateProject(Project project) throws GitLabApiException {
 
-        if (project == null) {
+        if (null == project) {
             throw new RuntimeException("Project instance cannot be null.");
         }
 
@@ -1853,7 +1853,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<ProjectUser> getProjectUsers(Object projectIdOrPath, String search, int itemsPerPage) throws GitLabApiException {
-        MultivaluedMap<String, String> params = (search != null ? new GitLabApiForm().withParam("search", search).asMap() : null);
+        MultivaluedMap<String, String> params = (null != search ? new GitLabApiForm().withParam("search", search).asMap() : null);
         return (new Pager<ProjectUser>(this, ProjectUser.class, itemsPerPage, params,
                 "projects", getProjectIdOrPath(projectIdOrPath), "users"));
     }
@@ -3452,7 +3452,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public ApprovalRule updateApprovalRule(Object projectIdOrPath, Integer approvalRuleId, ApprovalRuleParams params) throws GitLabApiException {
 
-        if (approvalRuleId == null) {
+        if (null == approvalRuleId) {
             throw new RuntimeException("approvalRuleId cannot be null");
         }
 
@@ -3474,7 +3474,7 @@ public class ProjectApi extends AbstractApi implements Constants {
      */
     public void deleteApprovalRule(Object projectIdOrPath, Integer approvalRuleId) throws GitLabApiException {
 
-        if (approvalRuleId == null) {
+        if (null == approvalRuleId) {
             throw new RuntimeException("approvalRuleId cannot be null");
         }
 

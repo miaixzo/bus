@@ -180,7 +180,7 @@ public class JiraService extends NotificationService {
      */
     private void fixJiraIssueTransitionId(Map<String, Object> properties) {
 
-        if (properties != null) {
+        if (null != properties) {
             Object jiraIssueTransitionId = properties.get(JIRA_ISSUE_TRANSITION_ID_PROP);
             if (jiraIssueTransitionId instanceof String) {
                 if (((String) jiraIssueTransitionId).trim().isEmpty()) {

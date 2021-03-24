@@ -135,7 +135,7 @@ public class SystemHookManager implements HookManager {
     public SystemHookEvent handleRequest(HttpServletRequest request) throws GitLabApiException {
 
         String eventName = request.getHeader("X-Gitlab-Event");
-        if (eventName == null || eventName.trim().isEmpty()) {
+        if (null == eventName || eventName.trim().isEmpty()) {
             String message = "X-Gitlab-Event header is missing!";
             LOGGER.warning(message);
             return (null);
@@ -201,7 +201,7 @@ public class SystemHookManager implements HookManager {
             }
 
             StringBuffer requestUrl = request.getRequestURL();
-            event.setRequestUrl(requestUrl != null ? requestUrl.toString() : null);
+            event.setRequestUrl(null != requestUrl ? requestUrl.toString() : null);
             event.setRequestQueryString(request.getQueryString());
 
             String secretToken = request.getHeader("X-Gitlab-Token");
@@ -232,7 +232,7 @@ public class SystemHookManager implements HookManager {
      * @throws GitLabApiException if the event is not supported
      */
     public void handleEvent(SystemHookEvent event) throws GitLabApiException {
-        if (event != null) {
+        if (null != event) {
             LOGGER.info("handleEvent:" + event.getClass().getSimpleName() + ", eventName=" + event.getEventName());
             fireEvent(event);
         } else {

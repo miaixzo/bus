@@ -43,14 +43,14 @@ public class TemplatesCache {
     private final HashMap<String, Templates> map = new HashMap<>();
 
     public static synchronized TemplatesCache getDefault() {
-        if (defaultCache == null) {
+        if (null == defaultCache) {
             defaultCache = new TemplatesCache();
         }
         return defaultCache;
     }
 
     public static synchronized void setDefault(TemplatesCache cache) {
-        if (cache == null) {
+        if (null == cache) {
             throw new NullPointerException();
         }
         defaultCache = cache;
@@ -62,7 +62,7 @@ public class TemplatesCache {
 
     public Templates get(String uri) throws TransformerConfigurationException {
         Templates tpl = map.get(uri);
-        if (tpl == null)
+        if (null == tpl)
             map.put(uri, tpl = SAXTransformer.newTemplates(new StreamSource(uri)));
         return tpl;
     }

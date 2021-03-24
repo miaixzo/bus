@@ -156,7 +156,7 @@ public class DcmDump implements ImageInputHandler {
     private void appendHeader(ImageInputStream dis, StringBuilder line) {
         line.append(Tag.toString(dis.tag())).append(Symbol.C_SPACE);
         VR vr = dis.vr();
-        if (vr != null)
+        if (null != vr)
             line.append(vr).append(Symbol.C_TAB);
         line.append(Symbol.C_SHAPE).append(dis.length());
     }
@@ -191,7 +191,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     private void promptPreamble(byte[] preamble) {
-        if (preamble == null)
+        if (null == preamble)
             return;
 
         StringBuilder line = new StringBuilder(width);

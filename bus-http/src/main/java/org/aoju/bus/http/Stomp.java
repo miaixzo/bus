@@ -106,19 +106,19 @@ public class Stomp {
             cHeaders.add(new Header(Header.VERSION, SUPPORTED_VERSIONS));
             cHeaders.add(new Header(Header.HEART_BEAT,
                     cover.pingSeconds() * 1000 + Symbol.COMMA + cover.pongSeconds() * 1000));
-            if (headers != null) {
+            if (null != headers) {
                 cHeaders.addAll(headers);
             }
             send(new Message(Builder.CONNECT, cHeaders, null));
         });
         cover.setOnMessage((ws, msg) -> {
             Message message = Message.from(msg.toString());
-            if (message != null) {
+            if (null != message) {
                 receive(message);
             }
         });
         cover.setOnClosed((ws, close) -> {
-            if (onDisconnected != null) {
+            if (null != onDisconnected) {
                 onDisconnected.on(close);
             }
         });
@@ -127,7 +127,7 @@ public class Stomp {
     }
 
     public void disconnect() {
-        if (websocket != null) {
+        if (null != websocket) {
             websocket.close(1000, "disconnect by user");
         }
     }
@@ -183,7 +183,7 @@ public class Stomp {
      * @param message 消息
      */
     public void send(Message message) {
-        if (websocket == null) {
+        if (null == websocket) {
             throw new IllegalArgumentException("You must call connect before send");
         }
         websocket.send(message.compile(legacyWhitespace));
@@ -263,7 +263,7 @@ public class Stomp {
     public void ack(Message message) {
         Header subscription = message.header(Header.SUBSCRIPTION);
         Header msgId = message.header(Header.MESSAGE_ID);
-        if (subscription != null || msgId != null) {
+        if (null != subscription || null != msgId) {
             List<Header> headers = new ArrayList<>();
             headers.add(subscription);
             headers.add(msgId);
@@ -298,7 +298,7 @@ public class Stomp {
      */
     public synchronized void unsubscribe(String destination) {
         Subscriber subscriber = subscribers.remove(destination);
-        if (subscriber != null) {
+        if (null != subscriber) {
             subscriber.unsubscribe();
         }
     }
@@ -307,7 +307,7 @@ public class Stomp {
         String command = msg.getCommand();
         if (Builder.CONNECTED.equals(command)) {
             String hbHeader = msg.headerValue(Header.HEART_BEAT);
-            if (hbHeader != null) {
+            if (null != hbHeader) {
                 String[] heartbeats = hbHeader.split(Symbol.COMMA);
                 int pingSeconds = Integer.parseInt(heartbeats[1]) / 1000;
                 int pongSeconds = Integer.parseInt(heartbeats[0]) / 1000;
@@ -321,21 +321,21 @@ public class Stomp {
                     s.subscribe();
                 }
             }
-            if (onConnected != null) {
+            if (null != onConnected) {
                 onConnected.on(this);
             }
         } else if (Builder.MESSAGE.equals(command)) {
             String id = msg.headerValue(Header.SUBSCRIPTION);
             String destination = msg.headerValue(Header.DESTINATION);
-            if (id == null || destination == null) {
+            if (null == id || null == destination) {
                 return;
             }
             Subscriber subscriber = subscribers.get(destination);
-            if (subscriber != null && id.equals(subscriber.id)) {
+            if (null != subscriber && id.equals(subscriber.id)) {
                 subscriber.callback.on(msg);
             }
         } else if (Builder.ERROR.equals(command)) {
-            if (onError != null) {
+            if (null != onError) {
                 onError.on(msg);
             }
         }
@@ -392,7 +392,7 @@ public class Stomp {
         }
 
         public static Message from(String data) {
-            if (data == null || data.trim().isEmpty()) {
+            if (null == data || data.trim().isEmpty()) {
                 return new Message(Builder.UNKNOWN, null, data);
             }
 
@@ -438,14 +438,14 @@ public class Stomp {
 
         public String headerValue(String key) {
             Header header = header(key);
-            if (header != null) {
+            if (null != header) {
                 return header.getValue();
             }
             return null;
         }
 
         public Header header(String key) {
-            if (headers != null) {
+            if (null != headers) {
                 for (Header header : headers) {
                     if (header.getKey().equals(key)) return header;
                 }
@@ -460,7 +460,7 @@ public class Stomp {
                 builder.append(header.getKey()).append(Symbol.C_COLON).append(header.getValue()).append('\n');
             }
             builder.append('\n');
-            if (payload != null) {
+            if (null != payload) {
                 builder.append(payload);
                 if (legacyWhitespace) builder.append("\n\n");
             }
@@ -496,7 +496,7 @@ public class Stomp {
                 headers.add(new Header(Header.ID, id));
                 headers.add(new Header(Header.DESTINATION, destination));
                 boolean ackNotAdded = true;
-                if (this.headers != null) {
+                if (this.null != headers) {
                     for (Header header : this.headers) {
                         if (Header.ACK.equals(header.getKey())) {
                             ackNotAdded = false;

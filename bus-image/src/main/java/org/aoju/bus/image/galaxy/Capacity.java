@@ -65,7 +65,7 @@ public class Capacity<V> implements Cloneable, java.io.Serializable {
     private static boolean isFalse(String name) {
         try {
             String s = System.getProperty(name);
-            return ((s != null) && s.equalsIgnoreCase("false"));
+            return ((null != s) && s.equalsIgnoreCase("false"));
         } catch (IllegalArgumentException | NullPointerException e) {
         }
         return false;

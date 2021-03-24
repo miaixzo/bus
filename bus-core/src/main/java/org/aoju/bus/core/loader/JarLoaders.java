@@ -130,7 +130,7 @@ public class JarLoaders extends URLClassLoader {
     private static List<File> loopJar(File file) {
         return FileKit.loopFiles(file, file1 -> {
             final String path = file1.getPath();
-            return path != null && path.toLowerCase().endsWith(".jar");
+            return null != path && path.toLowerCase().endsWith(".jar");
         });
     }
 

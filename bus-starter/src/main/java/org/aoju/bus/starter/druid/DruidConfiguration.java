@@ -147,7 +147,7 @@ public class DruidConfiguration {
      */
     private <T> Map<String, Object> beanToMap(T bean) {
         Map<String, Object> map = Maps.newHashMap();
-        if (bean != null) {
+        if (null != bean) {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
                 Object value = beanMap.get(key);

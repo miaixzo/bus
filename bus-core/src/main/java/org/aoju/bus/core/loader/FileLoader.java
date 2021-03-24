@@ -58,10 +58,10 @@ public class FileLoader extends ResourceLoader implements Loader {
     }
 
     public FileLoader(URL context, File root) {
-        if (context == null) {
+        if (null == context) {
             throw new IllegalArgumentException("context must not be null");
         }
-        if (root == null) {
+        if (null == root) {
             throw new IllegalArgumentException("root must not be null");
         }
         this.context = context;
@@ -69,7 +69,7 @@ public class FileLoader extends ResourceLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) {
-        return new Enumerator(context, root, path, recursively, filter != null ? filter : Filters.ALWAYS);
+        return new Enumerator(context, root, path, recursively, null != filter ? filter : Filters.ALWAYS);
     }
 
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
@@ -86,7 +86,7 @@ public class FileLoader extends ResourceLoader implements Loader {
             File file = new File(root, path);
             if (file.isDirectory()) {
                 File[] files = file.listFiles();
-                for (int i = 0; files != null && i < files.length; i++) {
+                for (int i = 0; null != files && i < files.length; i++) {
                     queue.offer(files[i]);
                 }
             } else {
@@ -95,7 +95,7 @@ public class FileLoader extends ResourceLoader implements Loader {
         }
 
         public boolean hasMoreElements() {
-            if (next != null) {
+            if (null != next) {
                 return true;
             }
             while (!queue.isEmpty()) {
@@ -119,7 +119,7 @@ public class FileLoader extends ResourceLoader implements Loader {
                 }
                 if (file.isDirectory() && recursively) {
                     File[] files = file.listFiles();
-                    for (int i = 0; files != null && i < files.length; i++) {
+                    for (int i = 0; null != files && i < files.length; i++) {
                         queue.offer(files[i]);
                     }
                     return hasMoreElements();

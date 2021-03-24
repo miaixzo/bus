@@ -197,7 +197,7 @@ public class BasicRetrieve<T extends Instance> implements Retrieve {
     }
 
     private void stopWritePendingRSP() {
-        if (writePendingRSP != null)
+        if (null != writePendingRSP)
             writePendingRSP.cancel(false);
     }
 

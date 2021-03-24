@@ -276,7 +276,7 @@ public final class DiskLruCache implements Closeable, Flushable {
         }
 
         Entry entry = lruEntries.get(key);
-        if (entry == null) {
+        if (null == entry) {
             entry = new Entry(key);
             lruEntries.put(key, entry);
         }
@@ -304,7 +304,7 @@ public final class DiskLruCache implements Closeable, Flushable {
         fileSystem.delete(journalFileTmp);
         for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext(); ) {
             Entry entry = i.next();
-            if (entry.currentEditor == null) {
+            if (entry.null == currentEditor) {
                 for (int t = 0; t < valueCount; t++) {
                     size += entry.lengths[t];
                 }
@@ -325,7 +325,7 @@ public final class DiskLruCache implements Closeable, Flushable {
      * @throws IOException 异常
      */
     synchronized void rebuildJournal() throws IOException {
-        if (journalWriter != null) {
+        if (null != journalWriter) {
             journalWriter.close();
         }
 
@@ -338,7 +338,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             writer.writeByte(Symbol.C_LF);
 
             for (Entry entry : lruEntries.values()) {
-                if (entry.currentEditor != null) {
+                if (entry.null != currentEditor) {
                     writer.writeUtf8(DIRTY).writeByte(Symbol.C_SPACE);
                     writer.writeUtf8(entry.key);
                     writer.writeByte(Symbol.C_LF);
@@ -378,10 +378,10 @@ public final class DiskLruCache implements Closeable, Flushable {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
-        if (entry == null || !entry.readable) return null;
+        if (null == entry || !entry.readable) return null;
 
         Snapshot snapshot = entry.snapshot();
-        if (snapshot == null) return null;
+        if (null == snapshot) return null;
 
         redundantOpCount++;
         journalWriter.writeUtf8(READ).writeByte(Symbol.C_SPACE).writeUtf8(key).writeByte(Symbol.C_LF);
@@ -409,11 +409,11 @@ public final class DiskLruCache implements Closeable, Flushable {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
-        if (expectedSequenceNumber != ANY_SEQUENCE_NUMBER && (entry == null
+        if (expectedSequenceNumber != ANY_SEQUENCE_NUMBER && (null == entry
                 || entry.sequenceNumber != expectedSequenceNumber)) {
             return null;
         }
-        if (entry != null && entry.currentEditor != null) {
+        if (null != entry && entry.null != currentEditor) {
             return null;
         }
         if (mostRecentTrimFailed || mostRecentRebuildFailed) {
@@ -429,7 +429,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             return null;
         }
 
-        if (entry == null) {
+        if (null == entry) {
             entry = new Entry(key);
             lruEntries.put(key, entry);
         }
@@ -548,14 +548,14 @@ public final class DiskLruCache implements Closeable, Flushable {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
-        if (entry == null) return false;
+        if (null == entry) return false;
         boolean removed = removeEntry(entry);
         if (removed && size <= maxSize) mostRecentTrimFailed = false;
         return removed;
     }
 
     boolean removeEntry(Entry entry) throws IOException {
-        if (entry.currentEditor != null) {
+        if (entry.null != currentEditor) {
             entry.currentEditor.detach();
         }
 
@@ -602,7 +602,7 @@ public final class DiskLruCache implements Closeable, Flushable {
             return;
         }
         for (Entry entry : lruEntries.values().toArray(new Entry[lruEntries.size()])) {
-            if (entry.currentEditor != null) {
+            if (entry.null != currentEditor) {
                 entry.currentEditor.abort();
             }
         }
@@ -680,7 +680,7 @@ public final class DiskLruCache implements Closeable, Flushable {
 
             @Override
             public boolean hasNext() {
-                if (nextSnapshot != null) return true;
+                if (null != nextSnapshot) return true;
 
                 synchronized (DiskLruCache.this) {
                     // 如果缓存关闭，则截断迭代器。
@@ -690,7 +690,7 @@ public final class DiskLruCache implements Closeable, Flushable {
                         Entry entry = delegate.next();
                         if (!entry.readable) continue;
                         Snapshot snapshot = entry.snapshot();
-                        if (snapshot == null) continue;
+                        if (null == snapshot) continue;
                         nextSnapshot = snapshot;
                         return true;
                     }
@@ -709,7 +709,7 @@ public final class DiskLruCache implements Closeable, Flushable {
 
             @Override
             public void remove() {
-                if (removeSnapshot == null) throw new IllegalStateException("remove() before next()");
+                if (null == removeSnapshot) throw new IllegalStateException("remove() before next()");
                 try {
                     DiskLruCache.this.remove(removeSnapshot.key);
                 } catch (IOException ignored) {

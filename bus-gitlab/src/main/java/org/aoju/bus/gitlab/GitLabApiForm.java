@@ -96,7 +96,7 @@ public class GitLabApiForm extends Form {
      * @throws IllegalArgumentException if a required parameter is null or empty
      */
     public GitLabApiForm withParam(String name, Date date, boolean required) throws IllegalArgumentException {
-        return (withParam(name, (date == null ? null : ISO8601.toString(date)), required));
+        return (withParam(name, (null == date ? null : ISO8601.toString(date)), required));
     }
 
     /**
@@ -120,7 +120,7 @@ public class GitLabApiForm extends Form {
      * @throws IllegalArgumentException if a required parameter is null or empty
      */
     public GitLabApiForm withParam(String name, AccessLevel level, boolean required) throws IllegalArgumentException {
-        return (withParam(name, (level == null ? null : level.toValue()), required));
+        return (withParam(name, (null == level ? null : level.toValue()), required));
     }
 
     /**
@@ -147,7 +147,7 @@ public class GitLabApiForm extends Form {
      */
     public <T> GitLabApiForm withParam(String name, List<T> values, boolean required) throws IllegalArgumentException {
 
-        if (values == null || values.isEmpty()) {
+        if (null == values || values.isEmpty()) {
             if (required) {
                 throw new IllegalArgumentException(name + " cannot be empty or null");
             }
@@ -156,7 +156,7 @@ public class GitLabApiForm extends Form {
         }
 
         for (T value : values) {
-            if (value != null) {
+            if (null != value) {
                 this.param(name + "[]", value.toString());
             }
         }
@@ -175,7 +175,7 @@ public class GitLabApiForm extends Form {
      */
     public GitLabApiForm withParam(String name, Map<String, ?> variables, boolean required) throws IllegalArgumentException {
 
-        if (variables == null || variables.isEmpty()) {
+        if (null == variables || variables.isEmpty()) {
             if (required) {
                 throw new IllegalArgumentException(name + " cannot be empty or null");
             }
@@ -185,7 +185,7 @@ public class GitLabApiForm extends Form {
 
         for (Entry<String, ?> variable : variables.entrySet()) {
             Object value = variable.getValue();
-            if (value != null) {
+            if (null != value) {
                 this.param(name + "[][key]", variable.getKey());
                 this.param(name + "[][value]", value.toString());
             }
@@ -206,7 +206,7 @@ public class GitLabApiForm extends Form {
      */
     public GitLabApiForm withParam(String name, Object value, boolean required) throws IllegalArgumentException {
 
-        if (value == null) {
+        if (null == value) {
             if (required) {
                 throw new IllegalArgumentException(name + " cannot be empty or null");
             }
@@ -231,13 +231,13 @@ public class GitLabApiForm extends Form {
      */
     public GitLabApiForm withParam(List<Variable> variables) {
 
-        if (variables == null || variables.isEmpty()) {
+        if (null == variables || variables.isEmpty()) {
             return (this);
         }
 
         variables.forEach(v -> {
             String value = v.getValue();
-            if (value != null) {
+            if (null != value) {
                 this.param("variables[" + v.getKey() + "]", value);
             }
         });

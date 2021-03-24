@@ -1626,7 +1626,7 @@ public class MathKit {
         if (bigNum1 == bigNum2) {
             return true;
         }
-        if (bigNum1 == null || bigNum2 == null) {
+        if (null == bigNum1 || null == bigNum2) {
             return false;
         }
         return 0 == bigNum1.compareTo(bigNum2);
@@ -1975,7 +1975,7 @@ public class MathKit {
      */
     public static BigDecimal null2Zero(BigDecimal decimal) {
 
-        return decimal == null ? BigDecimal.ZERO : decimal;
+        return null == decimal ? BigDecimal.ZERO : decimal;
     }
 
     /**
@@ -2401,7 +2401,7 @@ public class MathKit {
      * @return 字符串表示的int，如果转换失败则默认值
      */
     public static int toInt(final String str, final int defaultValue) {
-        if (str == null) {
+        if (null == str) {
             return defaultValue;
         }
         try {
@@ -2441,7 +2441,7 @@ public class MathKit {
      * @return 字符串表示的long，如果转换失败则默认值
      */
     public static long toLong(final String str, final long defaultValue) {
-        if (str == null) {
+        if (null == str) {
             return defaultValue;
         }
         try {
@@ -2481,7 +2481,7 @@ public class MathKit {
      * @return 字符串表示的float，如果转换失败则默认值
      */
     public static float toFloat(final String str, final float defaultValue) {
-        if (str == null) {
+        if (null == str) {
             return defaultValue;
         }
         try {
@@ -2521,7 +2521,7 @@ public class MathKit {
      * @return 字符串表示的double，如果转换失败则默认值
      */
     public static double toDouble(final String str, final double defaultValue) {
-        if (str == null) {
+        if (null == str) {
             return defaultValue;
         }
         try {
@@ -2559,7 +2559,7 @@ public class MathKit {
      * @return 字符串表示的double，如果转换失败则默认值
      */
     public static double toDouble(final BigDecimal value, final double defaultValue) {
-        return value == null ? defaultValue : value.doubleValue();
+        return null == value ? defaultValue : value.doubleValue();
     }
 
     /**
@@ -2592,7 +2592,7 @@ public class MathKit {
      * @return 字符串表示的byte，如果转换失败则默认值
      */
     public static byte toByte(final String str, final byte defaultValue) {
-        if (str == null) {
+        if (null == str) {
             return defaultValue;
         }
         try {
@@ -2632,7 +2632,7 @@ public class MathKit {
      * @return 字符串表示的short，如果转换失败则默认值
      */
     public static short toShort(final String str, final short defaultValue) {
-        if (str == null) {
+        if (null == str) {
             return defaultValue;
         }
         try {
@@ -2663,12 +2663,12 @@ public class MathKit {
      * @return 按比例取适当的四舍五入.
      */
     public static BigDecimal toScaledBigDecimal(final BigDecimal value, final int scale, final RoundingMode roundingMode) {
-        if (value == null) {
+        if (null == value) {
             return BigDecimal.ZERO;
         }
         return value.setScale(
                 scale,
-                (roundingMode == null) ? RoundingMode.HALF_EVEN : roundingMode
+                (null == roundingMode) ? RoundingMode.HALF_EVEN : roundingMode
         );
     }
 
@@ -2693,7 +2693,7 @@ public class MathKit {
      * @return 按比例取适当的四舍五入.
      */
     public static BigDecimal toScaledBigDecimal(final Float value, final int scale, final RoundingMode roundingMode) {
-        if (value == null) {
+        if (null == value) {
             return BigDecimal.ZERO;
         }
         return toScaledBigDecimal(
@@ -2724,7 +2724,7 @@ public class MathKit {
      * @return 按比例取适当的四舍五入.
      */
     public static BigDecimal toScaledBigDecimal(final Double value, final int scale, final RoundingMode roundingMode) {
-        if (value == null) {
+        if (null == value) {
             return BigDecimal.ZERO;
         }
         return toScaledBigDecimal(
@@ -2755,7 +2755,7 @@ public class MathKit {
      * @return 按比例取适当的四舍五入.
      */
     public static BigDecimal toScaledBigDecimal(final String value, final int scale, final RoundingMode roundingMode) {
-        if (value == null) {
+        if (null == value) {
             return BigDecimal.ZERO;
         }
         return toScaledBigDecimal(
@@ -2773,7 +2773,7 @@ public class MathKit {
      * @throws NumberFormatException 如果值不能被转换
      */
     public static BigDecimal createBigDecimal(final String str) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         if (StringKit.isBlank(str)) {
@@ -2978,7 +2978,7 @@ public class MathKit {
      * @return {@link String}
      */
     private static String determineDataUnit(String suffix, String defaultUnit) {
-        String defaultUnitToUse = (defaultUnit != null ? defaultUnit : Normal.CAPACITY_NAMES[0]);
+        String defaultUnitToUse = (null != defaultUnit ? defaultUnit : Normal.CAPACITY_NAMES[0]);
         return (StringKit.isNotEmpty(suffix) ? getCapacity(suffix) : defaultUnitToUse);
     }
 

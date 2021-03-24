@@ -75,7 +75,7 @@ public class Resolver {
     }
 
     boolean isLookupNeeded(Set<TraceBackendProvider> classLoaderProviders) {
-        return classLoaderProviders == null || !(classLoaderProviders instanceof EmptyBackendProviderSet) && classLoaderProviders.isEmpty();
+        return null == classLoaderProviders || !(classLoaderProviders instanceof EmptyBackendProviderSet) && classLoaderProviders.isEmpty();
     }
 
     private void updatedCache(final ClassLoader classLoader, final Set<TraceBackendProvider> provider) {
@@ -114,7 +114,7 @@ public class Resolver {
         }
 
         public static ClassLoader fromClass(Class<?> clazz) {
-            if (clazz == null) {
+            if (null == clazz) {
                 throw new IllegalArgumentException("Class is null");
             }
             return doPrivileged(new GetClassLoader(clazz));
@@ -129,7 +129,7 @@ public class Resolver {
         }
 
         public ClassLoader run() {
-            if (clazz != null) {
+            if (null != clazz) {
                 return clazz.getClassLoader();
             } else {
                 return Thread.currentThread().getContextClassLoader();

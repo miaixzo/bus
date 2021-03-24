@@ -87,7 +87,7 @@ public class StoreSCU implements AutoCloseable {
             StoreSCU.this.onCStoreRSP(cmd, file);
 
             Progress progress = state.getProgress();
-            if (progress != null) {
+            if (null != progress) {
                 progress.setProcessedFile(file);
                 progress.setAttributes(cmd);
             }
@@ -107,10 +107,10 @@ public class StoreSCU implements AutoCloseable {
     }
 
     public static boolean updateAttributes(Attributes data, Attributes attrs, String uidSuffix) {
-        if (attrs.isEmpty() && uidSuffix == null) {
+        if (attrs.isEmpty() && null == uidSuffix) {
             return false;
         }
-        if (uidSuffix != null) {
+        if (null != uidSuffix) {
             data.setString(Tag.StudyInstanceUID, VR.UI, data.getString(Tag.StudyInstanceUID) + uidSuffix);
             data.setString(Tag.SeriesInstanceUID, VR.UI, data.getString(Tag.SeriesInstanceUID) + uidSuffix);
             data.setString(Tag.SOPInstanceUID, VR.UI, data.getString(Tag.SOPInstanceUID) + uidSuffix);
@@ -139,7 +139,7 @@ public class StoreSCU implements AutoCloseable {
         if (f.getName().endsWith(".xml")) {
             try {
                 SAXParser p = saxParser;
-                if (p == null) {
+                if (null == p) {
                     SAXParserFactory factory = SAXParserFactory.newInstance();
                     factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
                     saxParser = p = factory.newSAXParser();
@@ -148,7 +148,7 @@ public class StoreSCU implements AutoCloseable {
                 ContentHandlerAdapter ch = new ContentHandlerAdapter(ds);
                 p.parse(f, ch);
                 Attributes fmi = ch.getFileMetaInformation();
-                if (fmi == null) {
+                if (null == fmi) {
                     fmi = ds.createFileMetaInformation(UID.ExplicitVRLittleEndian);
                 }
                 boolean b = scb.dicomFile(f, fmi, -1, ds);
@@ -167,7 +167,7 @@ public class StoreSCU implements AutoCloseable {
                 Attributes fmi = in.readFileMetaInformation();
                 long dsPos = in.getPosition();
                 Attributes ds = in.readDataset(-1, Tag.PixelData);
-                if (fmi == null || !fmi.containsValue(Tag.TransferSyntaxUID)
+                if (null == fmi || !fmi.containsValue(Tag.TransferSyntaxUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPClassUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPInstanceUID)) {
                     fmi = ds.createFileMetaInformation(in.getTransferSyntax());
@@ -270,7 +270,7 @@ public class StoreSCU implements AutoCloseable {
             String line;
             while (as.isReadyForDataTransfer() && (line = fileInfos.readLine()) != null) {
                 Progress p = state.getProgress();
-                if (p != null) {
+                if (null != p) {
                     if (p.isCancel()) {
                         Logger.info("Aborting C-Store: {}", "cancel by progress");
                         as.abort();
@@ -300,7 +300,7 @@ public class StoreSCU implements AutoCloseable {
         String cuid = fmi.getString(Tag.MediaStorageSOPClassUID);
         String iuid = fmi.getString(Tag.MediaStorageSOPInstanceUID);
         String ts = fmi.getString(Tag.TransferSyntaxUID);
-        if (cuid == null || iuid == null) {
+        if (null == cuid || null == iuid) {
             return false;
         }
 
@@ -346,7 +346,7 @@ public class StoreSCU implements AutoCloseable {
             throws IOException, InterruptedException, ParserConfigurationException, SAXException {
         String ts = selectTransferSyntax(as, cuid, filets);
 
-        boolean noChange = uidSuffix == null && attrs.isEmpty() && ts.equals(filets) && attributesEditors == null;
+        boolean noChange = null == uidSuffix && attrs.isEmpty() && ts.equals(filets) && null == attributesEditors;
         DataWriter dataWriter = null;
         InputStream in = null;
         Attributes data = null;
@@ -366,7 +366,7 @@ public class StoreSCU implements AutoCloseable {
             }
 
             if (!noChange) {
-                if (attributesEditors != null) {
+                if (null != attributesEditors) {
                     AttributeContext context = new AttributeContext(ts, Node.buildLocalDicomNode(as),
                             Node.buildRemoteDicomNode(as));
                     if (attributesEditors.apply(data, context)) {
@@ -389,7 +389,7 @@ public class StoreSCU implements AutoCloseable {
 
     @Override
     public void close() throws IOException, InterruptedException {
-        if (as != null) {
+        if (null != as) {
             if (as.isReadyForDataTransfer()) {
                 as.release();
             }
@@ -464,7 +464,7 @@ public class StoreSCU implements AutoCloseable {
 
         public CommonExtended getCommonExtendedNegotiation(String cuid) {
             CommonExtended commonExtNeg = commonExtNegs.get(cuid);
-            return commonExtNeg != null ? commonExtNeg : new CommonExtended(cuid, UID.StorageServiceClass);
+            return null != commonExtNeg ? commonExtNeg : new CommonExtended(cuid, UID.StorageServiceClass);
         }
 
     }

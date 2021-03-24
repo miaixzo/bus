@@ -128,7 +128,7 @@ public class CommitPayload {
 
     public CommitPayload withAction(CommitAction action) {
 
-        if (actions == null) {
+        if (null == actions) {
             actions = new ArrayList<>();
         }
 

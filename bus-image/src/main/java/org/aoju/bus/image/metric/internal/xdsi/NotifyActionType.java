@@ -43,7 +43,7 @@ public class NotifyActionType extends ActionType {
     protected String endPoint;
 
     public String getNotificationOption() {
-        if (this.notificationOption == null) {
+        if (this.null == notificationOption) {
             return "urn:oasis:names:tc:ebxml-regrep:NotificationOptionType:ObjectRefs";
         }
         return this.notificationOption;

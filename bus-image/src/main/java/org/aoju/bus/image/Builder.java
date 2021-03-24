@@ -136,7 +136,7 @@ public class Builder {
     }
 
     public static void close(ImageInputStream in) {
-        if (in != null) {
+        if (null != in) {
             for (File file : in.getBulkDataFiles()) {
                 Builder.delete(file);
             }
@@ -144,7 +144,7 @@ public class Builder {
     }
 
     public static void close(final AutoCloseable object) {
-        if (object != null) {
+        if (null != object) {
             try {
                 object.close();
             } catch (Exception e) {
@@ -154,7 +154,7 @@ public class Builder {
     }
 
     public static void shutdown(ExecutorService executorService) {
-        if (executorService != null) {
+        if (null != executorService) {
             try {
                 executorService.shutdown();
             } catch (Exception e) {
@@ -165,7 +165,7 @@ public class Builder {
 
     public static void forceGettingAttributes(Status dcmState, AutoCloseable closeable) {
         Progress p = dcmState.getProgress();
-        if (p != null) {
+        if (null != p) {
             Builder.close(closeable);
         }
     }
@@ -192,13 +192,13 @@ public class Builder {
     }
 
     public static boolean delete(File fileOrDirectory) {
-        if (fileOrDirectory == null || !fileOrDirectory.exists()) {
+        if (null == fileOrDirectory || !fileOrDirectory.exists()) {
             return false;
         }
 
         if (fileOrDirectory.isDirectory()) {
             final File[] files = fileOrDirectory.listFiles();
-            if (files != null) {
+            if (null != files) {
                 for (File child : files) {
                     delete(child);
                 }
@@ -213,7 +213,7 @@ public class Builder {
             // 创建一个新文件。如果创建成功，则该文件可写
             File outputDir = file.getParentFile();
             // 需要检查是否存在，否则当dir存在时mkdirs()为false
-            if (outputDir != null && !outputDir.exists() && !outputDir.mkdirs()) {
+            if (null != outputDir && !outputDir.exists() && !outputDir.mkdirs()) {
                 throw new IOException("Cannot write parent directory of " + file.getPath());
             }
         }
@@ -235,7 +235,7 @@ public class Builder {
                               int numberOfSuboperations) {
         state.setStatus(intStatus);
         Progress p = state.getProgress();
-        if (p != null) {
+        if (null != p) {
             Attributes cmd = Optional.ofNullable(p.getAttributes()).orElseGet(Attributes::new);
             cmd.setInt(Tag.Status, VR.US, intStatus);
             cmd.setString(Tag.AffectedSOPInstanceUID, VR.UI, iuid);
@@ -249,7 +249,7 @@ public class Builder {
                               Attributes attributes,
                               String status,
                               int numberOfSuboperations) {
-        if (progress != null && attributes != null) {
+        if (null != progress && null != attributes) {
             int c;
             int f;
             int r;
@@ -330,7 +330,7 @@ public class Builder {
                 dos.writeDataset(attrs.createFileMetaInformation(mpeg ? UID.MPEG2 : UID.JPEGBaseline1), attrs);
                 dos.writeHeader(Tag.PixelData, VR.OB, -1);
                 dos.writeHeader(Tag.Item, null, 0);
-                if (p.jpegHeader != null && noAPPn) {
+                if (p.null != jpegHeader && noAPPn) {
                     int offset = p.jpegHeader.offsetAfterAPP();
                     itemLen -= offset - 3;
                     dos.writeHeader(Tag.Item, null, (itemLen + 1) & ~1);
@@ -396,9 +396,9 @@ public class Builder {
 
     public static boolean updateAttributes(Attributes data, Attributes attrs,
                                            String uidSuffix) {
-        if (attrs.isEmpty() && uidSuffix == null)
+        if (attrs.isEmpty() && null == uidSuffix)
             return false;
-        if (uidSuffix != null) {
+        if (null != uidSuffix) {
             data.setString(Tag.StudyInstanceUID, VR.UI,
                     data.getString(Tag.StudyInstanceUID) + uidSuffix);
             data.setString(Tag.SeriesInstanceUID, VR.UI,

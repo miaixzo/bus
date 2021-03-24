@@ -156,7 +156,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
 
     public Page<E> setPageNo(int pageNo) {
         // 分页合理化,针对不合理的页码自动处理
-        this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
+        this.pageNo = ((null != reasonable && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
 
@@ -194,7 +194,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
             pages = 0;
         }
         // 分页合理化,针对不合理的页码自动处理
-        if ((reasonable != null && reasonable) && pageNo > pages) {
+        if ((null != reasonable && reasonable) && pageNo > pages) {
             if (pages != 0) {
                 pageNo = pages;
             }
@@ -207,7 +207,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setReasonable(Boolean reasonable) {
-        if (reasonable == null) {
+        if (null == reasonable) {
             return this;
         }
         this.reasonable = reasonable;
@@ -224,7 +224,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setPageSizeZero(Boolean pageSizeZero) {
-        if (pageSizeZero != null) {
+        if (null != pageSizeZero) {
             this.pageSizeZero = pageSizeZero;
         }
         return this;
@@ -272,7 +272,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     public Page<E> pageNo(int pageNo) {
         // 分页合理化,针对不合理的页码自动处理
-        this.pageNo = ((reasonable != null && reasonable) && pageNo <= 0) ? 1 : pageNo;
+        this.pageNo = ((null != reasonable && reasonable) && pageNo <= 0) ? 1 : pageNo;
         return this;
     }
 

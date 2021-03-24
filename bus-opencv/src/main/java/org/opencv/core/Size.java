@@ -24,7 +24,7 @@ public class Size {
     }
 
     public void set(double[] vals) {
-        if (vals != null) {
+        if (null != vals) {
             width = vals.length > 0 ? vals[0] : 0;
             height = vals.length > 1 ? vals[1] : 0;
         } else {

@@ -262,7 +262,7 @@ public class CellKit {
         final Workbook wb = sheet.getWorkbook();
         final Drawing<?> drawing = sheet.createDrawingPatriarch();
         final CreationHelper factory = wb.getCreationHelper();
-        if (anchor == null) {
+        if (null == anchor) {
             anchor = factory.createClientAnchor();
             anchor.setCol1(cell.getColumnIndex() + 1);
             anchor.setCol2(cell.getColumnIndex() + 3);

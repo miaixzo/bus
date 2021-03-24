@@ -88,7 +88,7 @@ public class PageSelectorFilter implements Filter {
             } else if (i > seekIdx) {
                 drawPage = Lo.qi(XDrawPage.class, drawPages.getByIndex(1));
             }
-            if (drawPage != null) {
+            if (null != drawPage) {
                 drawPages.remove(drawPage);
             }
         }

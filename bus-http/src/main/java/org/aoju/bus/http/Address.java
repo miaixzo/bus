@@ -100,29 +100,29 @@ public final class Address {
                    Proxy proxy, List<Protocol> protocols, List<ConnectionSuite> connectionSuites,
                    ProxySelector proxySelector) {
         this.url = new UnoUrl.Builder()
-                .scheme(sslSocketFactory != null ? Http.HTTPS : Http.HTTP)
+                .scheme(null != sslSocketFactory ? Http.HTTPS : Http.HTTP)
                 .host(uriHost)
                 .port(uriPort)
                 .build();
 
-        if (dns == null) throw new NullPointerException("dns == null");
+        if (null == dns) throw new NullPointerException("null == dns");
         this.dns = dns;
 
-        if (socketFactory == null) throw new NullPointerException("socketFactory == null");
+        if (null == socketFactory) throw new NullPointerException("null == socketFactory");
         this.socketFactory = socketFactory;
 
-        if (proxyAuthenticator == null) {
-            throw new NullPointerException("proxyAuthenticator == null");
+        if (null == proxyAuthenticator) {
+            throw new NullPointerException("null == proxyAuthenticator");
         }
         this.proxyAuthenticator = proxyAuthenticator;
 
-        if (protocols == null) throw new NullPointerException("protocols == null");
+        if (null == protocols) throw new NullPointerException("null == protocols");
         this.protocols = Builder.immutableList(protocols);
 
-        if (connectionSuites == null) throw new NullPointerException("connectionSpecs == null");
+        if (null == connectionSuites) throw new NullPointerException("null == connectionSpecs");
         this.connectionSuites = Builder.immutableList(connectionSuites);
 
-        if (proxySelector == null) throw new NullPointerException("proxySelector == null");
+        if (null == proxySelector) throw new NullPointerException("null == proxySelector");
         this.proxySelector = proxySelector;
 
         this.proxy = proxy;
@@ -191,10 +191,10 @@ public final class Address {
         result = 31 * result + protocols.hashCode();
         result = 31 * result + connectionSuites.hashCode();
         result = 31 * result + proxySelector.hashCode();
-        result = 31 * result + (proxy != null ? proxy.hashCode() : 0);
-        result = 31 * result + (sslSocketFactory != null ? sslSocketFactory.hashCode() : 0);
-        result = 31 * result + (hostnameVerifier != null ? hostnameVerifier.hashCode() : 0);
-        result = 31 * result + (certificatePinner != null ? certificatePinner.hashCode() : 0);
+        result = 31 * result + (null != proxy ? proxy.hashCode() : 0);
+        result = 31 * result + (null != sslSocketFactory ? sslSocketFactory.hashCode() : 0);
+        result = 31 * result + (null != hostnameVerifier ? hostnameVerifier.hashCode() : 0);
+        result = 31 * result + (null != certificatePinner ? certificatePinner.hashCode() : 0);
         return result;
     }
 
@@ -217,7 +217,7 @@ public final class Address {
                 .append("Address{")
                 .append(url.host()).append(Symbol.COLON).append(url.port());
 
-        if (proxy != null) {
+        if (null != proxy) {
             result.append(", proxy=").append(proxy);
         } else {
             result.append(", proxySelector=").append(proxySelector);

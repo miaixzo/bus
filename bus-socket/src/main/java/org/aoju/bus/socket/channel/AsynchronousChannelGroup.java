@@ -153,7 +153,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
 
     private int getIntSystemProperty(String key, int defaultValue) {
         String value = System.getProperty(key);
-        if (value == null || value.length() == 0) {
+        if (null == value || value.length() == 0) {
             return defaultValue;
         }
         try {
@@ -223,7 +223,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         running = false;
         readExecutorService.shutdown();
         writeExecutorService.shutdown();
-        if (acceptExecutorService != null) {
+        if (null != acceptExecutorService) {
             acceptExecutorService.shutdown();
         }
         scheduledExecutor.shutdown();
@@ -234,7 +234,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
         running = false;
         readExecutorService.shutdownNow();
         writeExecutorService.shutdownNow();
-        if (acceptExecutorService != null) {
+        if (null != acceptExecutorService) {
             acceptExecutorService.shutdownNow();
         }
         scheduledExecutor.shutdownNow();

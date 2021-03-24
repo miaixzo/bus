@@ -126,7 +126,7 @@ public abstract class JavassistInvocation implements Invocation {
 
     private static Map getClassCache(ClassLoader classLoader) {
         Map cache = (Map) loaderToClassCache.get(classLoader);
-        if (cache == null) {
+        if (null == cache) {
             cache = new HashMap();
             loaderToClassCache.put(classLoader, cache);
         }
@@ -140,13 +140,13 @@ public abstract class JavassistInvocation implements Invocation {
         final String key = toClassCacheKey(interfaceMethod);
         final WeakReference invocationClassRef = (WeakReference) classCache.get(key);
         Class invocationClass;
-        if (invocationClassRef == null) {
+        if (null == invocationClassRef) {
             invocationClass = createInvocationClass(classLoader, interfaceMethod);
             classCache.put(key, new WeakReference(invocationClass));
         } else {
             synchronized (invocationClassRef) {
                 invocationClass = (Class) invocationClassRef.get();
-                if (invocationClass == null) {
+                if (null == invocationClass) {
                     invocationClass = createInvocationClass(classLoader, interfaceMethod);
                     classCache.put(key, new WeakReference(invocationClass));
                 }

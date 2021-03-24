@@ -53,9 +53,9 @@ public class Property implements Serializable {
     private final Object value;
 
     public Property(String name, Object value) {
-        if (name == null)
+        if (null == name)
             throw new NullPointerException("name");
-        if (value == null)
+        if (null == value)
             throw new NullPointerException("value");
 
         if (!(value instanceof String
@@ -111,11 +111,11 @@ public class Property implements Serializable {
 
         if (n == 1) {
             String s = ss[0];
-            return s != null ? s : Normal.EMPTY;
+            return null != s ? s : Normal.EMPTY;
         }
         int len = n - 1;
         for (String s : ss)
-            if (s != null)
+            if (null != s)
                 len += s.length();
 
         char[] cs = new char[len];
@@ -124,7 +124,7 @@ public class Property implements Serializable {
         for (String s : ss) {
             if (i++ != 0)
                 cs[off++] = delim;
-            if (s != null) {
+            if (null != s) {
                 int l = s.length();
                 s.getChars(0, l, cs, off);
                 off += l;
@@ -140,11 +140,11 @@ public class Property implements Serializable {
 
         if (n == 1) {
             String s = ss.iterator().next();
-            return s != null ? s : Normal.EMPTY;
+            return null != s ? s : Normal.EMPTY;
         }
         int len = n - 1;
         for (String s : ss)
-            if (s != null)
+            if (null != s)
                 len += s.length();
 
         char[] cs = new char[len];
@@ -153,7 +153,7 @@ public class Property implements Serializable {
         for (String s : ss) {
             if (i++ != 0)
                 cs[off++] = delim;
-            if (s != null) {
+            if (null != s) {
                 int l = s.length();
                 s.getChars(0, l, cs, off);
                 off += l;
@@ -182,7 +182,7 @@ public class Property implements Serializable {
     }
 
     public static String[] split(String s, char delim) {
-        if (s == null || s.isEmpty())
+        if (null == s || s.isEmpty())
             return Normal.EMPTY_STRING_ARRAY;
 
         int count = 1;
@@ -231,13 +231,13 @@ public class Property implements Serializable {
     }
 
     public static int parseIS(String s) {
-        return s != null && s.length() != 0
+        return null != s && s.length() != 0
                 ? Integer.parseInt(s.charAt(0) == Symbol.C_PLUS ? s.substring(1) : s)
                 : 0;
     }
 
     public static double parseDS(String s) {
-        return s != null && s.length() != 0
+        return null != s && s.length() != 0
                 ? Double.parseDouble(s.replace(Symbol.C_COMMA, Symbol.C_DOT))
                 : 0;
     }
@@ -273,10 +273,10 @@ public class Property implements Serializable {
 
     public static boolean matches(String s, String key,
                                   boolean matchNullOrEmpty, boolean ignoreCase) {
-        if (key == null || key.isEmpty())
+        if (null == key || key.isEmpty())
             return true;
 
-        if (s == null || s.isEmpty())
+        if (null == s || s.isEmpty())
             return matchNullOrEmpty;
 
         return containsWildCard(key)
@@ -311,7 +311,7 @@ public class Property implements Serializable {
     }
 
     public static <T> T maskNull(T o, T mask) {
-        return o == null ? mask : o;
+        return null == o ? mask : o;
     }
 
     public static <T> T nullify(T o, T val) {
@@ -319,7 +319,7 @@ public class Property implements Serializable {
     }
 
     public static String maskEmpty(String s, String mask) {
-        return s == null || s.isEmpty() ? mask : s;
+        return null == s || s.isEmpty() ? mask : s;
     }
 
     public static String truncate(String s, int maxlen) {
@@ -327,7 +327,7 @@ public class Property implements Serializable {
     }
 
     public static <T> boolean equals(T o1, T o2) {
-        return o1 == o2 || o1 != null && o1.equals(o2);
+        return o1 == o2 || null != o1 && o1.equals(o2);
     }
 
     public static String replaceSystemProperties(String s) {
@@ -346,7 +346,7 @@ public class Property implements Serializable {
             String val = s.startsWith("env.", i + 2)
                     ? System.getenv(s.substring(i + 6, j))
                     : System.getProperty(s.substring(i + 2, j));
-            sb.append(val != null ? val : s.substring(i, j + 1));
+            sb.append(null != val ? val : s.substring(i, j + 1));
             i = s.indexOf("${", j + 1);
         } while (i != -1);
         sb.append(s.substring(j + 1));
@@ -441,7 +441,7 @@ public class Property implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (null == obj)
             return false;
         if (getClass() != obj.getClass())
             return false;

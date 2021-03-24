@@ -260,13 +260,13 @@ public class BeanKit {
      * @return the object
      */
     public static <T> T trimStrField(T bean, String... ignoreField) {
-        if (bean == null) {
+        if (null == bean) {
             return bean;
         }
 
         final Field[] fields = ReflectKit.getFields(bean.getClass());
         for (Field field : fields) {
-            if (ignoreField != null && ArrayKit.containsIgnoreCase(ignoreField, field.getName())) {
+            if (null != ignoreField && ArrayKit.containsIgnoreCase(ignoreField, field.getName())) {
                 // 不处理忽略的Fields
                 continue;
             }
@@ -706,7 +706,7 @@ public class BeanKit {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, final boolean isToUnderlineCase, boolean ignoreNullValue) {
-        if (bean == null) {
+        if (null == bean) {
             return null;
         }
 
@@ -730,7 +730,7 @@ public class BeanKit {
      * @return Map
      */
     public static Map<String, Object> beanToMap(Object bean, Map<String, Object> targetMap, boolean ignoreNullValue, Editor<String> keyEditor) {
-        if (bean == null) {
+        if (null == bean) {
             return null;
         }
 
@@ -839,7 +839,7 @@ public class BeanKit {
      * @return 处理后的Bean对象
      */
     public static <T> T trimStrFields(T bean, String... ignoreFields) {
-        if (bean == null) {
+        if (null == bean) {
             return null;
         }
 
@@ -848,7 +848,7 @@ public class BeanKit {
             if (isStatic(field)) {
                 continue;
             }
-            if (ignoreFields != null && ArrayKit.containsIgnoreCase(ignoreFields, field.getName())) {
+            if (null != ignoreFields && ArrayKit.containsIgnoreCase(ignoreFields, field.getName())) {
                 // 不处理忽略的Fields
                 continue;
             }
@@ -875,7 +875,7 @@ public class BeanKit {
      */
     public static void trimAllFields(Object bean) {
         try {
-            if (bean != null) {
+            if (null != bean) {
                 // 获取所有的字段包括public,private,protected,private
                 Field[] fields = bean.getClass().getDeclaredFields();
                 for (Field f : fields) {
@@ -884,7 +884,7 @@ public class BeanKit {
                         String key = f.getName();
                         Object value = getFieldValue(bean, key);
 
-                        if (value == null) {
+                        if (null == value) {
                             continue;
                         }
                         setFieldValue(bean, key, EscapeKit.escapeXml11(value.toString()));
@@ -903,7 +903,7 @@ public class BeanKit {
      */
     public static void replaceStrFields(Object bean) {
         try {
-            if (bean != null) {
+            if (null != bean) {
                 // 获取所有的字段包括public,private,protected,private
                 Field[] fields = bean.getClass().getDeclaredFields();
                 for (Field f : fields) {
@@ -911,7 +911,7 @@ public class BeanKit {
                         // 获取字段名
                         String key = f.getName();
                         Object value = getFieldValue(bean, key);
-                        if (value == null) {
+                        if (null == value) {
                             continue;
                         }
                         setFieldValue(bean, key, StringKit.replaceBlank(value.toString()));

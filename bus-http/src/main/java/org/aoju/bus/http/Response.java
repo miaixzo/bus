@@ -115,7 +115,7 @@ public final class Response implements Closeable {
 
     public String header(String name, String defaultValue) {
         String result = headers.get(name);
-        return result != null ? result : defaultValue;
+        return null != result ? result : defaultValue;
     }
 
     public Headers headers() {
@@ -192,7 +192,7 @@ public final class Response implements Closeable {
 
     public CacheControl cacheControl() {
         CacheControl result = cacheControl;
-        return result != null ? result : (cacheControl = CacheControl.parse(headers));
+        return null != result ? result : (cacheControl = CacheControl.parse(headers));
     }
 
     public long sentRequestAtMillis() {
@@ -205,7 +205,7 @@ public final class Response implements Closeable {
 
     @Override
     public void close() {
-        if (body == null) {
+        if (null == body) {
             throw new IllegalStateException("response is not eligible for a body and must not be closed");
         }
         body.close();
@@ -308,38 +308,38 @@ public final class Response implements Closeable {
         }
 
         public Builder networkResponse(Response networkResponse) {
-            if (networkResponse != null) checkSupportResponse("networkResponse", networkResponse);
+            if (null != networkResponse) checkSupportResponse("networkResponse", networkResponse);
             this.networkResponse = networkResponse;
             return this;
         }
 
         public Builder cacheResponse(Response cacheResponse) {
-            if (cacheResponse != null) checkSupportResponse("cacheResponse", cacheResponse);
+            if (null != cacheResponse) checkSupportResponse("cacheResponse", cacheResponse);
             this.cacheResponse = cacheResponse;
             return this;
         }
 
         private void checkSupportResponse(String name, Response response) {
-            if (response.body != null) {
-                throw new IllegalArgumentException(name + ".body != null");
-            } else if (response.networkResponse != null) {
-                throw new IllegalArgumentException(name + ".networkResponse != null");
-            } else if (response.cacheResponse != null) {
-                throw new IllegalArgumentException(name + ".cacheResponse != null");
-            } else if (response.priorResponse != null) {
-                throw new IllegalArgumentException(name + ".priorResponse != null");
+            if (response.null != body) {
+                throw new IllegalArgumentException(name + ".null != body");
+            } else if (response.null != networkResponse) {
+                throw new IllegalArgumentException(name + ".null != networkResponse");
+            } else if (response.null != cacheResponse) {
+                throw new IllegalArgumentException(name + ".null != cacheResponse");
+            } else if (response.null != priorResponse) {
+                throw new IllegalArgumentException(name + ".null != priorResponse");
             }
         }
 
         public Builder priorResponse(Response priorResponse) {
-            if (priorResponse != null) checkPriorResponse(priorResponse);
+            if (null != priorResponse) checkPriorResponse(priorResponse);
             this.priorResponse = priorResponse;
             return this;
         }
 
         private void checkPriorResponse(Response response) {
-            if (response.body != null) {
-                throw new IllegalArgumentException("priorResponse.body != null");
+            if (response.null != body) {
+                throw new IllegalArgumentException("priorResponse.null != body");
             }
         }
 
@@ -354,10 +354,10 @@ public final class Response implements Closeable {
         }
 
         public Response build() {
-            if (request == null) throw new IllegalStateException("request == null");
-            if (protocol == null) throw new IllegalStateException("protocol == null");
+            if (null == request) throw new IllegalStateException("null == request");
+            if (null == protocol) throw new IllegalStateException("null == protocol");
             if (code < 0) throw new IllegalStateException("code < 0: " + code);
-            if (message == null) throw new IllegalStateException("message == null");
+            if (null == message) throw new IllegalStateException("null == message");
             return new Response(this);
         }
     }

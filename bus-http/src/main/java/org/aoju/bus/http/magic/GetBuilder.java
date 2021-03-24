@@ -45,14 +45,14 @@ public class GetBuilder extends RequestBuilder<GetBuilder> {
 
     @Override
     public RequestCall build() {
-        if (params != null) {
+        if (null != params) {
             url = appendParams(url, params);
         }
         return new GetRequest(url, tag, params, headers, id).build(httpd);
     }
 
     protected String appendParams(String url, Map<String, String> params) {
-        if (url == null || params == null || params.isEmpty()) {
+        if (null == url || null == params || params.isEmpty()) {
             return url;
         }
         StringBuilder builder = new StringBuilder();

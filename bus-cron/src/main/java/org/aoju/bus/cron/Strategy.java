@@ -58,7 +58,7 @@ public enum Strategy {
     }
 
     public static Strategy match(String name, Strategy defaultItem) {
-        if (name != null) {
+        if (null != name) {
             for (Strategy item : Strategy.values()) {
                 if (item.name().equals(name)) {
                     return item;

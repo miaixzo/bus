@@ -158,11 +158,11 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
     static String getTimeZoneDisplay(final TimeZone tz, final boolean daylight, final int style, final Locale locale) {
         final TimeZoneDisplayKey key = new TimeZoneDisplayKey(tz, daylight, style, locale);
         String value = C_TIME_ZONE_DISPLAY_CACHE.get(key);
-        if (value == null) {
+        if (null == value) {
             // This is a very slow call, so cache the results.
             value = tz.getDisplayName(daylight, style, locale);
             final String prior = C_TIME_ZONE_DISPLAY_CACHE.putIfAbsent(key, value);
-            if (prior != null) {
+            if (null != prior) {
                 value = prior;
             }
         }
@@ -413,7 +413,7 @@ public class FastDatePrinter extends AbstractMotd implements DatePrinter {
         } else if (obj instanceof Long) {
             return format(((Long) obj).longValue());
         } else {
-            throw new IllegalArgumentException("Unknown class: " + (obj == null ? "<null>" : obj.getClass().getName()));
+            throw new IllegalArgumentException("Unknown class: " + (null == obj ? "<null>" : obj.getClass().getName()));
         }
     }
 

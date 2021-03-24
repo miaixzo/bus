@@ -222,7 +222,7 @@ public final class PerfDataKit {
         public String getCounterPath() {
             StringBuilder sb = new StringBuilder();
             sb.append(Symbol.C_BACKSLASH).append(object);
-            if (instance != null) {
+            if (null != instance) {
                 sb.append(Symbol.C_PARENTHESE_LEFT).append(instance).append(Symbol.C_PARENTHESE_RIGHT);
             }
             sb.append(Symbol.C_BACKSLASH).append(counter);

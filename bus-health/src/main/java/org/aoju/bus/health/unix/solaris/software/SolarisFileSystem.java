@@ -98,7 +98,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
                 total = Builder.getTextBetweenStrings(line, "available", "total files").trim();
             } else if (line.contains("free files")) {
                 free = Builder.getTextBetweenStrings(line, Normal.EMPTY, "free files").trim();
-                if (key != null && total != null) {
+                if (null != key && null != total) {
                     inodeFreeMap.put(key, Builder.parseLongOrDefault(free, 0L));
                     inodeTotalMap.put(key, Builder.parseLongOrDefault(total, 0L));
                     key = null;
@@ -136,7 +136,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
                 name = volume.substring(volume.lastIndexOf(Symbol.C_SLASH) + 1);
             }
 
-            if (nameToMatch != null && !nameToMatch.equals(name)) {
+            if (null != nameToMatch && !nameToMatch.equals(name)) {
                 continue;
             }
             File f = new File(path);
@@ -172,7 +172,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
         try (KstatChain kc = KstatKit.openChain()) {
             LibKstat.Kstat ksp = KstatChain.lookup(null, -1, "file_cache");
             // Set values
-            if (ksp != null && KstatChain.read(ksp)) {
+            if (null != ksp && KstatChain.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "buf_inuse");
             }
         }
@@ -184,7 +184,7 @@ public class SolarisFileSystem extends AbstractFileSystem {
         try (KstatChain kc = KstatKit.openChain()) {
             LibKstat.Kstat ksp = KstatChain.lookup(null, -1, "file_cache");
             // Set values
-            if (ksp != null && KstatChain.read(ksp)) {
+            if (null != ksp && KstatChain.read(ksp)) {
                 return KstatKit.dataLookupLong(ksp, "buf_max");
             }
         }

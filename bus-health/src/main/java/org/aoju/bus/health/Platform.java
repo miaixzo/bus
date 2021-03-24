@@ -317,7 +317,7 @@ public class Platform {
      */
     public static boolean getBoolean(String key, boolean defaultValue) {
         String value = get(key);
-        if (value == null) {
+        if (null == value) {
             return defaultValue;
         }
 

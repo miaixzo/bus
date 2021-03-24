@@ -67,7 +67,7 @@ public class RepositoryApi extends AbstractApi {
     public static String getFilenameFromContentDisposition(Response response) {
 
         String disposition = response.getHeaderString("Content-Disposition");
-        if (disposition == null || disposition.trim().length() == 0)
+        if (null == disposition || disposition.trim().length() == 0)
             return (null);
 
         return (disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1"));
@@ -173,7 +173,7 @@ public class RepositoryApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Branch> getBranches(Object projectIdOrPath, String search, int itemsPerPage) throws GitLabApiException {
-        MultivaluedMap<String, String> queryParams = (search == null ? null :
+        MultivaluedMap<String, String> queryParams = (null == search ? null :
                 new GitLabApiForm().withParam("search", urlEncode(search)).asMap());
 
         return (new Pager<Branch>(this, Branch.class, itemsPerPage, queryParams, "projects",
@@ -422,7 +422,7 @@ public class RepositoryApi extends AbstractApi {
         Form formData = new GitLabApiForm()
                 .withParam("id", getProjectIdOrPath(projectIdOrPath), true)
                 .withParam("path", filePath, false)
-                .withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref", (refName != null ? urlEncode(refName) : null), false)
+                .withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref", (null != refName ? urlEncode(refName) : null), false)
                 .withParam("recursive", recursive, false);
         return (new Pager<TreeItem>(this, TreeItem.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "tree"));
@@ -512,7 +512,7 @@ public class RepositoryApi extends AbstractApi {
      */
     public InputStream getRepositoryArchive(Object projectIdOrPath, String sha, ArchiveFormat format) throws GitLabApiException {
 
-        if (format == null) {
+        if (null == format) {
             format = ArchiveFormat.TAR_GZ;
         }
 
@@ -549,7 +549,7 @@ public class RepositoryApi extends AbstractApi {
 
         try {
 
-            if (directory == null)
+            if (null == directory)
                 directory = new File(System.getProperty("java.io.tmpdir"));
 
             String filename = getFilenameFromContentDisposition(response);
@@ -597,7 +597,7 @@ public class RepositoryApi extends AbstractApi {
      */
     public File getRepositoryArchive(Object projectIdOrPath, String sha, File directory, ArchiveFormat format) throws GitLabApiException {
 
-        if (format == null) {
+        if (null == format) {
             format = ArchiveFormat.TAR_GZ;
         }
 
@@ -614,7 +614,7 @@ public class RepositoryApi extends AbstractApi {
 
         try {
 
-            if (directory == null)
+            if (null == directory)
                 directory = new File(System.getProperty("java.io.tmpdir"));
 
             String filename = getFilenameFromContentDisposition(response);
@@ -736,7 +736,7 @@ public class RepositoryApi extends AbstractApi {
      */
     public Commit getMergeBase(Object projectIdOrPath, List<String> refs) throws GitLabApiException {
 
-        if (refs == null || refs.size() < 2) {
+        if (null == refs || refs.size() < 2) {
             throw new RuntimeException("refs must conatin at least 2 refs");
         }
 

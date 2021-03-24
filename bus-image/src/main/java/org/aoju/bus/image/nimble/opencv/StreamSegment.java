@@ -80,7 +80,7 @@ public abstract class StreamSegment {
             Class<? extends ImageInputStream> clazz = iis.getClass();
             Field fStream = clazz.getDeclaredField("stream");
             Field fCurSegment = clazz.getDeclaredField("curSegment");
-            if (fCurSegment != null && fStream != null) {
+            if (null != fCurSegment && null != fStream) {
                 fCurSegment.setAccessible(true);
                 fStream.setAccessible(true);
 
@@ -92,10 +92,10 @@ public abstract class StreamSegment {
                     fRaf = FileCacheImageInputStream.class.getDeclaredField("cache");
                 }
 
-                if (fRaf != null) {
+                if (null != fRaf) {
                     fRaf.setAccessible(true);
                     long[][] seg = getSegments(iis, clazz, fCurSegment);
-                    if (seg != null) {
+                    if (null != seg) {
                         RandomAccessFile raf = (RandomAccessFile) fRaf.get(fstream);
                         /*
                          * PS 3.5.8.2 Though a fragment may not contain encoded data from more than one frame, the
@@ -107,9 +107,9 @@ public abstract class StreamSegment {
                 if (fstream instanceof MemoryCacheImageInputStream) {
                     MemoryCacheImageInputStream mstream = (MemoryCacheImageInputStream) fstream;
                     byte[] b = getByte(MemoryStreamSegment.getByteArrayInputStream(mstream));
-                    if (b != null) {
+                    if (null != b) {
                         long[][] seg = getSegments(iis, clazz, fCurSegment);
-                        if (seg != null) {
+                        if (null != seg) {
                             int offset = (int) seg[0][0];
                             return new MemoryStreamSegment(
                                     ByteBuffer.wrap(Arrays.copyOfRange(b, offset, offset + (int) seg[1][0])),
@@ -127,11 +127,11 @@ public abstract class StreamSegment {
 
     private static long[][] getSegments(SegmentedImageStream iis, Class<? extends ImageInputStream> clazz, Field fCurSegment) throws Exception {
         Integer curSegment = (Integer) fCurSegment.get(iis);
-        if (curSegment != null && curSegment >= 0) {
+        if (null != curSegment && curSegment >= 0) {
             ImageDescriptor desc = iis.getImageDescriptor();
             Field ffragments = clazz.getDeclaredField("fragments");
             Field flastSegment = clazz.getDeclaredField("lastSegment");
-            if (ffragments != null && flastSegment != null) {
+            if (null != ffragments && null != flastSegment) {
                 ffragments.setAccessible(true);
                 flastSegment.setAccessible(true);
                 List<Object> fragments = (List<Object>) ffragments.get(iis);
@@ -169,10 +169,10 @@ public abstract class StreamSegment {
     }
 
     public static byte[] getByte(ByteArrayInputStream inputStream) {
-        if (inputStream != null) {
+        if (null != inputStream) {
             try {
                 Field fid = ByteArrayInputStream.class.getDeclaredField("buf");
-                if (fid != null) {
+                if (null != fid) {
                     fid.setAccessible(true);
                     return (byte[]) fid.get(inputStream);
                 }

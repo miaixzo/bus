@@ -68,7 +68,7 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
         if (filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
             final Map<String, String> TraceContextMap = transformToTraceContextMap(
                     (Map<String, ?>) messageProperties.getHeaders().get(Builder.TPIC_HEADER));
-            if (TraceContextMap != null && !TraceContextMap.isEmpty()) {
+            if (null != TraceContextMap && !TraceContextMap.isEmpty()) {
                 backend.putAll(filterConfiguration.filterDeniedParams(TraceContextMap, TraceFilterConfig.Channel.AsyncProcess));
             }
         }
@@ -78,7 +78,7 @@ public class TraceMessagePropertiesConverter extends DefaultMessagePropertiesCon
 
     private Map<String, String> transformToTraceContextMap(final Map<String, ?> tpicMessageHeader) {
         final Map<String, String> TraceContext = new HashMap<>();
-        if (tpicMessageHeader != null) {
+        if (null != tpicMessageHeader) {
             for (Map.Entry<String, ?> stringObjectEntry : tpicMessageHeader.entrySet()) {
                 TraceContext.put(stringObjectEntry.getKey(), String.valueOf(stringObjectEntry.getValue()));
             }

@@ -111,7 +111,7 @@ public class SyncHttp extends CoverHttp<SyncHttp> {
      * @return 请求结果
      */
     public Results request(String method) {
-        if (method == null || method.isEmpty()) {
+        if (null == method || method.isEmpty()) {
             throw new IllegalArgumentException("Request method method cannot be empty!");
         }
         RealResult result = new RealResult(this, httpv.executor());
@@ -149,7 +149,7 @@ public class SyncHttp extends CoverHttp<SyncHttp> {
         }
         IOException e = result.getError();
         State state = result.getState();
-        if (e != null && state != State.CANCELED
+        if (null != e && state != State.CANCELED
                 && !nothrow) {
             throw new InstrumentException("Abnormal execution", e);
         }
@@ -168,7 +168,7 @@ public class SyncHttp extends CoverHttp<SyncHttp> {
             if (done) {
                 return false;
             }
-            if (call != null) {
+            if (null != call) {
                 call.cancel();
             }
             canceled = true;

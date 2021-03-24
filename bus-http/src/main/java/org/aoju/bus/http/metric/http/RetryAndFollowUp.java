@@ -86,7 +86,7 @@ public final class RetryAndFollowUp implements Interceptor {
     public void cancel() {
         canceled = true;
         StreamAllocation streamAllocation = this.streamAllocation;
-        if (streamAllocation != null) streamAllocation.cancel();
+        if (null != streamAllocation) streamAllocation.cancel();
     }
 
     public boolean isCanceled() {
@@ -147,7 +147,7 @@ public final class RetryAndFollowUp implements Interceptor {
             }
 
             // 如果先前的响应存在，则附加它。这样的反应永远不会有body.
-            if (priorResponse != null) {
+            if (null != priorResponse) {
                 response = response.newBuilder()
                         .priorResponse(priorResponse.newBuilder()
                                 .body(null)
@@ -163,7 +163,7 @@ public final class RetryAndFollowUp implements Interceptor {
                 throw e;
             }
 
-            if (followUp == null) {
+            if (null == followUp) {
                 streamAllocation.release();
                 return response;
             }
@@ -262,7 +262,7 @@ public final class RetryAndFollowUp implements Interceptor {
     }
 
     private Request followUpRequest(Response userResponse, Route route) throws IOException {
-        if (userResponse == null) throw new IllegalStateException();
+        if (null == userResponse) throw new IllegalStateException();
         int responseCode = userResponse.code();
 
         final String method = userResponse.request().method();
@@ -289,10 +289,10 @@ public final class RetryAndFollowUp implements Interceptor {
                 if (!client.followRedirects()) return null;
 
                 String location = userResponse.header("Location");
-                if (location == null) return null;
+                if (null == location) return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
-                if (url == null) return null;
+                if (null == url) return null;
 
                 boolean sameScheme = url.scheme().equals(userResponse.request().url().scheme());
                 if (!sameScheme && !client.followSslRedirects()) return null;
@@ -359,7 +359,7 @@ public final class RetryAndFollowUp implements Interceptor {
     private int retryAfter(Response userResponse, int defaultDelay) {
         String header = userResponse.header("Retry-After");
 
-        if (header == null) {
+        if (null == header) {
             return defaultDelay;
         }
 

@@ -92,8 +92,8 @@ public class DifferentBuilder implements Builder<DifferentResult> {
                             final ToStringStyle style,
                             final boolean testTriviallyEqual) {
 
-        Assert.isTrue(lhs != null, "lhs cannot be null");
-        Assert.isTrue(rhs != null, "rhs cannot be null");
+        Assert.isTrue(null != lhs, "lhs cannot be null");
+        Assert.isTrue(null != rhs, "rhs cannot be null");
 
         this.differents = new ArrayList<>();
         this.left = lhs;
@@ -668,7 +668,7 @@ public class DifferentBuilder implements Builder<DifferentResult> {
         }
 
         Object objectToTest;
-        if (lhs != null) {
+        if (null != lhs) {
             objectToTest = lhs;
         } else {
             // rhs cannot be null, as lhs != rhs
@@ -704,7 +704,7 @@ public class DifferentBuilder implements Builder<DifferentResult> {
             return append(fieldName, (Object[]) lhs, (Object[]) rhs);
         }
 
-        if (lhs != null && lhs.equals(rhs)) {
+        if (null != lhs && lhs.equals(rhs)) {
             return this;
         }
 
@@ -787,7 +787,7 @@ public class DifferentBuilder implements Builder<DifferentResult> {
     public DifferentBuilder append(final String fieldName,
                                    final DifferentResult differentResult) {
         validateFieldNameNotNull(fieldName);
-        Assert.isTrue(differentResult != null, "Diff result cannot be null");
+        Assert.isTrue(null != differentResult, "Diff result cannot be null");
         if (objectsTriviallyEqual) {
             return this;
         }
@@ -806,7 +806,7 @@ public class DifferentBuilder implements Builder<DifferentResult> {
     }
 
     private void validateFieldNameNotNull(final String fieldName) {
-        Assert.isTrue(fieldName != null, "Field name cannot be null");
+        Assert.isTrue(null != fieldName, "Field name cannot be null");
     }
 
 }

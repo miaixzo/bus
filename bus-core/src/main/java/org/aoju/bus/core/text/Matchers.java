@@ -180,7 +180,7 @@ public abstract class Matchers {
      * @return 给定字符的新匹配器[]
      */
     public static Matchers charSetMatcher(final char... chars) {
-        if (chars == null || chars.length == 0) {
+        if (null == chars || chars.length == 0) {
             return NONE_MATCHER;
         }
         if (chars.length == 1) {

@@ -212,7 +212,7 @@ public abstract class AbstractPushEvent {
     public String getBranch() {
 
         String ref = getRef();
-        if (ref == null || ref.trim().length() == 0) {
+        if (null == ref || ref.trim().length() == 0) {
             return (null);
         }
 

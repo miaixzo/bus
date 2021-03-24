@@ -881,7 +881,7 @@ public class UriKit {
         for (Map.Entry<String, ?> entry : uriVariables.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            String stringValue = (value != null ? value.toString() : Normal.EMPTY);
+            String stringValue = (null != value ? value.toString() : Normal.EMPTY);
             result.put(key, encode(stringValue, StandardCharsets.UTF_8));
         }
         return result;
@@ -896,7 +896,7 @@ public class UriKit {
     public static Object[] encodeUriVariables(Object... uriVariables) {
         List<String> result = new ArrayList<>();
         for (Object value : uriVariables) {
-            String stringValue = (value != null ? value.toString() : Normal.EMPTY);
+            String stringValue = (null != value ? value.toString() : Normal.EMPTY);
             result.add(encode(stringValue, Charset.UTF_8));
         }
         return result.toArray();
@@ -933,13 +933,13 @@ public class UriKit {
      * @throws IllegalArgumentException 当给定值不是有效的URI组件时
      */
     static String encodeUriComponent(String source, java.nio.charset.Charset charset, Type type) {
-        if (!(source != null && source.length() > 0)) {
+        if (!(null != source && source.length() > 0)) {
             return source;
         }
-        if (charset == null) {
+        if (null == charset) {
             throw new IllegalArgumentException("Charset must not be null");
         }
-        if (type == null) {
+        if (null == type) {
             throw new IllegalArgumentException("Type must not be null");
         }
 
@@ -978,7 +978,7 @@ public class UriKit {
         if (length == 0) {
             return source;
         }
-        if (charset == null) {
+        if (null == charset) {
             throw new IllegalArgumentException("Charset must not be null");
         }
 
@@ -1271,7 +1271,7 @@ public class UriKit {
                 if (null == name && pos != i) {
                     // 对于像&a&这类无参数值的字符串,我们将name为a的值设为""
                     addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
-                } else if (name != null) {
+                } else if (null != name) {
                     addParam(map, name, params.substring(pos, i), charset);
                     name = null;
                 }
@@ -1281,12 +1281,12 @@ public class UriKit {
 
         // 处理结尾
         if (pos != i) {
-            if (name == null) {
+            if (null == name) {
                 addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
             } else {
                 addParam(map, name, params.substring(pos, i), charset);
             }
-        } else if (name != null) {
+        } else if (null != name) {
             addParam(map, name, Normal.EMPTY, charset);
         }
 
@@ -1357,7 +1357,7 @@ public class UriKit {
         name = decode(name, charset);
         value = decode(value, charset);
         List<String> values = params.get(name);
-        if (values == null) {
+        if (null == values) {
             values = new ArrayList<>(1);
             params.put(name, values);
         }
@@ -1567,7 +1567,7 @@ public class UriKit {
             return this;
         }
 
-        if (this.path == null) {
+        if (this.null == path) {
             this.path = new Path();
         }
         this.path.add(segment);
@@ -1615,7 +1615,7 @@ public class UriKit {
             return this;
         }
 
-        if (this.query == null) {
+        if (this.null == query) {
             this.query = new Query();
         }
         this.query.add(key, value);
@@ -2020,7 +2020,7 @@ public class UriKit {
             }
 
 
-            if (this.segments == null) {
+            if (this.null == segments) {
                 this.segments = new LinkedList<>();
             }
             if (before) {

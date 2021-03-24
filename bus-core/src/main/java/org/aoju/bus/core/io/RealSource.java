@@ -46,7 +46,7 @@ public final class RealSource implements BufferSource {
     boolean closed;
 
     public RealSource(Source source) {
-        if (source == null) throw new NullPointerException("source == null");
+        if (null == source) throw new NullPointerException("null == source");
         this.source = source;
     }
 
@@ -62,7 +62,7 @@ public final class RealSource implements BufferSource {
 
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
-        if (sink == null) throw new IllegalArgumentException("sink == null");
+        if (null == sink) throw new IllegalArgumentException("null == sink");
         if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         if (closed) throw new IllegalStateException("closed");
 
@@ -204,7 +204,7 @@ public final class RealSource implements BufferSource {
 
     @Override
     public long readAll(Sink sink) throws IOException {
-        if (sink == null) throw new IllegalArgumentException("sink == null");
+        if (null == sink) throw new IllegalArgumentException("null == sink");
 
         long totalBytesWritten = 0;
         while (source.read(buffer, Segment.SIZE) != -1) {
@@ -235,7 +235,7 @@ public final class RealSource implements BufferSource {
 
     @Override
     public String readString(Charset charset) throws IOException {
-        if (charset == null) throw new IllegalArgumentException("charset == null");
+        if (null == charset) throw new IllegalArgumentException("null == charset");
 
         buffer.writeAll(source);
         return buffer.readString(charset);
@@ -244,7 +244,7 @@ public final class RealSource implements BufferSource {
     @Override
     public String readString(long byteCount, Charset charset) throws IOException {
         require(byteCount);
-        if (charset == null) throw new IllegalArgumentException("charset == null");
+        if (null == charset) throw new IllegalArgumentException("null == charset");
         return buffer.readString(byteCount, charset);
     }
 

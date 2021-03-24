@@ -179,7 +179,7 @@ public class TypeKit {
      * @return 是否为 java 类
      */
     public static boolean isJdk(Class<?> clazz) {
-        return clazz != null && clazz.getClassLoader() == null;
+        return null != clazz && clazz.getClassLoader() == null;
     }
 
     /**
@@ -614,7 +614,7 @@ public class TypeKit {
      */
     private static boolean isAssignable(final Type type, final Type toType,
                                         final Map<TypeVariable<?>, Type> typeVarAssigns) {
-        if (toType == null || toType instanceof Class<?>) {
+        if (null == toType || toType instanceof Class<?>) {
             return isAssignable(type, (Class<?>) toType);
         }
 
@@ -645,13 +645,13 @@ public class TypeKit {
      * @return 如果{@code type}可赋值给{@code toClass}，则{@code true}
      */
     private static boolean isAssignable(final Type type, final Class<?> toClass) {
-        if (type == null) {
-            return toClass == null || !toClass.isPrimitive();
+        if (null == type) {
+            return null == toClass || !toClass.isPrimitive();
         }
 
         // 只有一个null类型可以被赋值给null类型，
         // 而null类型会导致前一个返回true
-        if (toClass == null) {
+        if (null == toClass) {
             return false;
         }
 
@@ -707,10 +707,10 @@ public class TypeKit {
      */
     private static boolean isAssignable(final Type type, final ParameterizedType toParameterizedType,
                                         final Map<TypeVariable<?>, Type> typeVarAssigns) {
-        if (type == null) {
+        if (null == type) {
             return true;
         }
-        if (toParameterizedType == null) {
+        if (null == toParameterizedType) {
             return false;
         }
         if (toParameterizedType.equals(type)) {
@@ -720,7 +720,7 @@ public class TypeKit {
         final Class<?> toClass = getRawType(toParameterizedType);
         final Map<TypeVariable<?>, Type> fromTypeVarAssigns = getTypeArguments(type, toClass, null);
 
-        if (fromTypeVarAssigns == null) {
+        if (null == fromTypeVarAssigns) {
             return false;
         }
         if (fromTypeVarAssigns.isEmpty()) {
@@ -733,11 +733,11 @@ public class TypeKit {
             final Type toTypeArg = unrollVariableAssignments(var, toTypeVarAssigns);
             final Type fromTypeArg = unrollVariableAssignments(var, fromTypeVarAssigns);
 
-            if (toTypeArg == null && fromTypeArg instanceof Class) {
+            if (null == toTypeArg && fromTypeArg instanceof Class) {
                 continue;
             }
 
-            if (fromTypeArg != null
+            if (null != fromTypeArg
                     && !toTypeArg.equals(fromTypeArg)
                     && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg,
                     typeVarAssigns))) {
@@ -776,10 +776,10 @@ public class TypeKit {
      */
     private static boolean isAssignable(final Type type, final GenericArrayType toGenericArrayType,
                                         final Map<TypeVariable<?>, Type> typeVarAssigns) {
-        if (type == null) {
+        if (null == type) {
             return true;
         }
-        if (toGenericArrayType == null) {
+        if (null == toGenericArrayType) {
             return false;
         }
         if (toGenericArrayType.equals(type)) {
@@ -834,10 +834,10 @@ public class TypeKit {
      */
     private static boolean isAssignable(final Type type, final WildcardType toWildcardType,
                                         final Map<TypeVariable<?>, Type> typeVarAssigns) {
-        if (type == null) {
+        if (null == type) {
             return true;
         }
-        if (toWildcardType == null) {
+        if (null == toWildcardType) {
             return false;
         }
         if (toWildcardType.equals(type)) {
@@ -898,10 +898,10 @@ public class TypeKit {
      */
     private static boolean isAssignable(final Type type, final TypeVariable<?> toTypeVariable,
                                         final Map<TypeVariable<?>, Type> typeVarAssigns) {
-        if (type == null) {
+        if (null == type) {
             return true;
         }
-        if (toTypeVariable == null) {
+        if (null == toTypeVariable) {
             return false;
         }
         if (toTypeVariable.equals(type)) {
@@ -934,10 +934,10 @@ public class TypeKit {
      * @return 取代类型
      */
     private static Type substituteTypeVariables(final Type type, final Map<TypeVariable<?>, Type> typeVarAssigns) {
-        if (type instanceof TypeVariable<?> && typeVarAssigns != null) {
+        if (type instanceof TypeVariable<?> && null != typeVarAssigns) {
             final Type replacementType = typeVarAssigns.get(type);
 
-            if (replacementType == null) {
+            if (null == replacementType) {
                 throw new IllegalArgumentException("missing assignment type for type variable "
                         + type);
             }
@@ -1032,7 +1032,7 @@ public class TypeKit {
             typeVarAssigns = getTypeArguments(parameterizedOwnerType,
                     getRawType(parameterizedOwnerType), subtypeVarAssigns);
         } else {
-            typeVarAssigns = subtypeVarAssigns == null ? new HashMap<>()
+            typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>()
                     : new HashMap<>(subtypeVarAssigns);
         }
 
@@ -1073,7 +1073,7 @@ public class TypeKit {
             cls = ClassKit.primitiveToWrapper(cls);
         }
 
-        final HashMap<TypeVariable<?>, Type> typeVarAssigns = subtypeVarAssigns == null ? new HashMap<>()
+        final HashMap<TypeVariable<?>, Type> typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>()
                 : new HashMap<>(subtypeVarAssigns);
 
         if (toClass.equals(cls)) {
@@ -1183,7 +1183,7 @@ public class TypeKit {
                 }
             }
 
-            if (genericInterface != null) {
+            if (null != genericInterface) {
                 return genericInterface;
             }
         }
@@ -1199,11 +1199,11 @@ public class TypeKit {
      * @return 如果{@code value}是{@code type}的实例，则{@code true}.
      */
     public static boolean isInstance(final Object value, final Type type) {
-        if (type == null) {
+        if (null == type) {
             return false;
         }
 
-        return value == null ? !(type instanceof Class<?>) || !((Class<?>) type).isPrimitive()
+        return null == value ? !(type instanceof Class<?>) || !((Class<?>) type).isPrimitive()
                 : isAssignable(value.getClass(), type, null);
     }
 
@@ -1340,7 +1340,7 @@ public class TypeKit {
         }
 
         if (type instanceof TypeVariable<?>) {
-            if (assigningType == null) {
+            if (null == assigningType) {
                 return null;
             }
 
@@ -1353,14 +1353,14 @@ public class TypeKit {
             final Map<TypeVariable<?>, Type> typeVarAssigns = getTypeArguments(assigningType,
                     (Class<?>) genericDeclaration);
 
-            if (typeVarAssigns == null) {
+            if (null == typeVarAssigns) {
                 return null;
             }
 
             // 获取分配给该类型变量的参数
             final Type typeArgument = typeVarAssigns.get(type);
 
-            if (typeArgument == null) {
+            if (null == typeArgument) {
                 return null;
             }
 
@@ -1420,7 +1420,7 @@ public class TypeKit {
      * @return Type
      */
     public static Type unrollVariables(Map<TypeVariable<?>, Type> typeArguments, final Type type) {
-        if (typeArguments == null) {
+        if (null == typeArguments) {
             typeArguments = Collections.emptyMap();
         }
         if (containsTypeVariables(type)) {
@@ -1439,7 +1439,7 @@ public class TypeKit {
                 final Type[] args = p.getActualTypeArguments();
                 for (int i = 0; i < args.length; i++) {
                     final Type unrolled = unrollVariables(parameterizedTypeArguments, args[i]);
-                    if (unrolled != null) {
+                    if (null != unrolled) {
                         args[i] = unrolled;
                     }
                 }
@@ -1466,7 +1466,7 @@ public class TypeKit {
         int i = 0;
         for (; i < result.length; i++) {
             final Type unrolled = unrollVariables(typeArguments, result[i]);
-            if (unrolled == null) {
+            if (null == unrolled) {
                 result = ArrayKit.remove(result, i--);
             } else {
                 result[i] = unrolled;
@@ -1542,9 +1542,9 @@ public class TypeKit {
         Assert.notNull(raw, "raw class is null");
         final Type useOwner;
         if (raw.getEnclosingClass() == null) {
-            Assert.isTrue(owner == null, "no owner allowed for top-level %s", raw);
+            Assert.isTrue(null == owner, "no owner allowed for top-level %s", raw);
             useOwner = null;
-        } else if (owner == null) {
+        } else if (null == owner) {
             useOwner = raw.getEnclosingClass();
         } else {
             Assert.isTrue(isAssignable(owner, raw.getEnclosingClass()),
@@ -1805,7 +1805,7 @@ public class TypeKit {
         final Type useOwner = p.getOwnerType();
         final Class<?> raw = (Class<?>) p.getRawType();
 
-        if (useOwner == null) {
+        if (null == useOwner) {
             buf.append(raw.getName());
         } else {
             if (useOwner instanceof Class<?>) {

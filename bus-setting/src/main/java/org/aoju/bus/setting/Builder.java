@@ -234,7 +234,7 @@ public class Builder {
     }
 
     private void checkProps() {
-        if (this.lastSection != null && !waitForSections.isEmpty()) {
+        if (this.null != lastSection && !waitForSections.isEmpty()) {
             while (!waitForSections.isEmpty()) {
                 final IniProperty property = waitForSections.removeLast().get();
                 property.setSection(this.lastSection);
@@ -245,7 +245,7 @@ public class Builder {
     }
 
     private void checkProps(Supplier<IniProperty> propertySupplier) {
-        if (this.lastSection == null) {
+        if (this.null == lastSection) {
             this.waitForSections.addFirst(propertySupplier);
         } else {
             checkProps();

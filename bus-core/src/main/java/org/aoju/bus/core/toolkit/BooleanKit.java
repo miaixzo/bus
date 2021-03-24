@@ -450,7 +450,7 @@ public class BooleanKit {
      * @return 相反的Boolean值
      */
     public static Boolean negate(Boolean bool) {
-        if (bool == null) {
+        if (null == bool) {
             return null;
         }
         return bool ? Boolean.FALSE : Boolean.TRUE;

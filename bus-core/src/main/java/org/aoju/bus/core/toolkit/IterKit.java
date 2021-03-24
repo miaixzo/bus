@@ -832,7 +832,7 @@ public class IterKit {
      */
     public static int size(final Iterator<?> iterator) {
         int size = 0;
-        if (iterator != null) {
+        if (null != iterator) {
             while (iterator.hasNext()) {
                 iterator.next();
                 size++;

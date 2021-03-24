@@ -876,11 +876,11 @@ public class Mat {
         double[] wholeSize_out = new double[2];
         double[] ofs_out = new double[2];
         locateROI_0(nativeObj, wholeSize_out, ofs_out);
-        if (wholeSize != null) {
+        if (null != wholeSize) {
             wholeSize.width = wholeSize_out[0];
             wholeSize.height = wholeSize_out[1];
         }
-        if (ofs != null) {
+        if (null != ofs) {
             ofs.x = ofs_out[0];
             ofs.y = ofs_out[1];
         }
@@ -1044,10 +1044,10 @@ public class Mat {
     // javadoc:Mat::put(row,col,data)
     public int put(int row, int col, double... data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         return nPutD(nativeObj, row, col, data.length, data);
@@ -1056,10 +1056,10 @@ public class Mat {
     // javadoc:Mat::put(idx,data)
     public int put(int[] idx, double... data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1070,10 +1070,10 @@ public class Mat {
     // javadoc:Mat::put(row,col,data)
     public int put(int row, int col, float[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32F) {
@@ -1085,10 +1085,10 @@ public class Mat {
     // javadoc:Mat::put(idx,data)
     public int put(int[] idx, float[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1102,10 +1102,10 @@ public class Mat {
     // javadoc:Mat::put(row,col,data)
     public int put(int row, int col, int[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32S) {
@@ -1117,10 +1117,10 @@ public class Mat {
     // javadoc:Mat::put(idx,data)
     public int put(int[] idx, int[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1134,10 +1134,10 @@ public class Mat {
     // javadoc:Mat::put(row,col,data)
     public int put(int row, int col, short[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
@@ -1149,10 +1149,10 @@ public class Mat {
     // javadoc:Mat::put(idx,data)
     public int put(int[] idx, short[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1166,10 +1166,10 @@ public class Mat {
     // javadoc:Mat::put(row,col,data)
     public int put(int row, int col, byte[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
@@ -1181,10 +1181,10 @@ public class Mat {
     // javadoc:Mat::put(idx,data)
     public int put(int[] idx, byte[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1198,10 +1198,10 @@ public class Mat {
     // javadoc:Mat::put(row,col,data,offset,length)
     public int put(int row, int col, byte[] data, int offset, int length) {
         int t = type();
-        if (data == null || length % CvType.channels(t) != 0)
+        if (null == data || length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
@@ -1213,10 +1213,10 @@ public class Mat {
     // javadoc:Mat::put(idx,data,offset,length)
     public int put(int[] idx, byte[] data, int offset, int length) {
         int t = type();
-        if (data == null || length % CvType.channels(t) != 0)
+        if (null == data || length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1230,10 +1230,10 @@ public class Mat {
     // javadoc:Mat::get(row,col,data)
     public int get(int row, int col, byte[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
@@ -1245,10 +1245,10 @@ public class Mat {
     // javadoc:Mat::get(idx,data)
     public int get(int[] idx, byte[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1262,10 +1262,10 @@ public class Mat {
     // javadoc:Mat::get(row,col,data)
     public int get(int row, int col, short[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
@@ -1277,10 +1277,10 @@ public class Mat {
     // javadoc:Mat::get(idx,data)
     public int get(int[] idx, short[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1294,10 +1294,10 @@ public class Mat {
     // javadoc:Mat::get(row,col,data)
     public int get(int row, int col, int[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32S) {
@@ -1309,10 +1309,10 @@ public class Mat {
     // javadoc:Mat::get(idx,data)
     public int get(int[] idx, int[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1326,10 +1326,10 @@ public class Mat {
     // javadoc:Mat::get(row,col,data)
     public int get(int row, int col, float[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_32F) {
@@ -1341,10 +1341,10 @@ public class Mat {
     // javadoc:Mat::get(idx,data)
     public int get(int[] idx, float[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())
@@ -1358,10 +1358,10 @@ public class Mat {
     // javadoc:Mat::get(row,col,data)
     public int get(int row, int col, double[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (CvType.depth(t) == CvType.CV_64F) {
@@ -1373,10 +1373,10 @@ public class Mat {
     // javadoc:Mat::get(idx,data)
     public int get(int[] idx, double[] data) {
         int t = type();
-        if (data == null || data.length % CvType.channels(t) != 0)
+        if (null == data || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException(
                     "Provided data element number (" +
-                            (data == null ? 0 : data.length) +
+                            (null == data ? 0 : data.length) +
                             ") should be multiple of the Mat channels count (" +
                             CvType.channels(t) + ")");
         if (idx.length != dims())

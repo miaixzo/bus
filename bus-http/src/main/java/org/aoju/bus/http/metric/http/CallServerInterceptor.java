@@ -80,7 +80,7 @@ public final class CallServerInterceptor implements Interceptor {
                 responseBuilder = httpCodec.readResponseHeaders(true);
             }
 
-            if (responseBuilder == null) {
+            if (null == responseBuilder) {
                 realChain.eventListener().requestBodyStart(realChain.call());
                 long contentLength = request.body().contentLength();
                 CountingSink requestBodyOut =
@@ -98,7 +98,7 @@ public final class CallServerInterceptor implements Interceptor {
 
         httpCodec.finishRequest();
 
-        if (responseBuilder == null) {
+        if (null == responseBuilder) {
             realChain.eventListener().responseHeadersStart(realChain.call());
             responseBuilder = httpCodec.readResponseHeaders(false);
         }

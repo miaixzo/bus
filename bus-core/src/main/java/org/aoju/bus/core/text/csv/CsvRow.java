@@ -77,12 +77,12 @@ public final class CsvRow implements List<String> {
      * @throws IllegalStateException CSV文件无标题行抛出此异常
      */
     public String getByName(final String name) {
-        if (headerMap == null) {
+        if (null == headerMap) {
             throw new IllegalStateException("No header available");
         }
 
         final Integer col = headerMap.get(name);
-        if (col != null) {
+        if (null != col) {
             return get(col);
         }
         return null;
@@ -104,7 +104,7 @@ public final class CsvRow implements List<String> {
      * @throws IllegalStateException CSV文件无标题行抛出此异常
      */
     public Map<String, String> getFieldMap() {
-        if (headerMap == null) {
+        if (null == headerMap) {
             throw new IllegalStateException("No header available");
         }
 
@@ -265,7 +265,7 @@ public final class CsvRow implements List<String> {
         sb.append(", ");
 
         sb.append("fields=");
-        if (headerMap != null) {
+        if (null != headerMap) {
             sb.append(Symbol.C_BRACE_LEFT);
             for (final Iterator<Map.Entry<String, String>> it = getFieldMap().entrySet().iterator(); it.hasNext(); ) {
 

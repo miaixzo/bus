@@ -50,7 +50,7 @@ public class CompletionAcceptHandler implements CompletionHandler<ServerSocketCh
      */
     public static void registerChannel(Selector selector, SelectableChannel channel, int ops) {
         try {
-            if (channel == null) {
+            if (null == channel) {
                 return;
             }
             channel.configureBlocking(false);

@@ -42,12 +42,12 @@ public class PainterFactory {
     public static Painter newInstance(AbstractElement element) throws Exception {
         // 考虑到性能，这里用单件，先不lock了
         if (element instanceof ImageElement) {
-            if (imagePainter == null) {
+            if (null == imagePainter) {
                 imagePainter = new ImagePainter();
             }
             return imagePainter;
         } else if (element instanceof TextElement) {
-            if (textPainter == null) {
+            if (null == textPainter) {
                 textPainter = new TextPainter();
             }
             return textPainter;

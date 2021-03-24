@@ -47,7 +47,7 @@ public class NumberWord {
      * @return 英文表达式
      */
     public static String format(Object x) {
-        if (x != null) {
+        if (null != x) {
             return format(x.toString());
         } else {
             return Normal.EMPTY;

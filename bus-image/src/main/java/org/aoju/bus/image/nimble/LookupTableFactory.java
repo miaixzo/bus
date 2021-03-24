@@ -77,9 +77,9 @@ public class LookupTableFactory {
 
     public void setPresentationLUT(Attributes attrs) {
         Attributes pLUT = attrs.getNestedDataset(Tag.PresentationLUTSequence);
-        if (pLUT != null) {
+        if (null != pLUT) {
             int[] desc = pLUT.getInts(Tag.LUTDescriptor);
-            if (desc != null && desc.length == 3) {
+            if (null != desc && desc.length == 3) {
                 int len = desc[0] == 0 ? 0x10000 : desc[0];
                 presentationLUT = createLUT(new StoredValue.Unsigned(log2(len)),
                         resetOffset(desc),
@@ -87,7 +87,7 @@ public class LookupTableFactory {
             }
         } else {
             String pShape = attrs.getString(Tag.PresentationLUTShape);
-            inverse = (pShape != null
+            inverse = (null != pShape
                     ? "INVERSE".equals(pShape)
                     : "MONOCHROME1".equals(
                     attrs.getString(Tag.PhotometricInterpretation)));
@@ -113,15 +113,15 @@ public class LookupTableFactory {
 
     public void setVOI(Attributes img, int windowIndex, int voiLUTIndex,
                        boolean preferWindow) {
-        if (img == null)
+        if (null == img)
             return;
 
         Attributes vLUT = img.getNestedDataset(Tag.VOILUTSequence, voiLUTIndex);
-        if (preferWindow || vLUT == null) {
+        if (preferWindow || null == vLUT) {
             float[] wcs = img.getFloats(Tag.WindowCenter);
             float[] wws = img.getFloats(Tag.WindowWidth);
-            if (wcs != null && wcs.length != 0
-                    && wws != null && wws.length != 0) {
+            if (null != wcs && wcs.length != 0
+                    && null != wws && wws.length != 0) {
                 int index = windowIndex < Math.min(wcs.length, wws.length)
                         ? windowIndex
                         : 0;
@@ -130,9 +130,9 @@ public class LookupTableFactory {
                 return;
             }
         }
-        if (vLUT != null) {
+        if (null != vLUT) {
             adjustVOILUTDescriptor(vLUT);
-            voiLUT = createLUT(modalityLUT != null
+            voiLUT = createLUT(null != modalityLUT
                             ? new StoredValue.Unsigned(modalityLUT.outBits)
                             : storedValue,
                     vLUT);
@@ -142,7 +142,7 @@ public class LookupTableFactory {
     private void adjustVOILUTDescriptor(Attributes vLUT) {
         int[] desc = vLUT.getInts(Tag.LUTDescriptor);
         byte[] data;
-        if (desc != null && desc.length == 3 && desc[2] == 16
+        if (null != desc && desc.length == 3 && desc[2] == 16
                 && (data = vLUT.getSafeBytes(Tag.LUTData)) != null) {
             int hiByte = 0;
             for (int i = vLUT.bigEndian() ? 0 : 1; i < data.length; i++, i++)
@@ -155,7 +155,7 @@ public class LookupTableFactory {
     }
 
     private LookupTable createLUT(StoredValue inBits, Attributes attrs) {
-        if (attrs == null)
+        if (null == attrs)
             return null;
 
         return createLUT(inBits, attrs.getInts(Tag.LUTDescriptor),
@@ -165,7 +165,7 @@ public class LookupTableFactory {
     private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data,
                                   boolean bigEndian) {
 
-        if (desc == null)
+        if (null == desc)
             return null;
 
         if (desc.length != 3)
@@ -174,7 +174,7 @@ public class LookupTableFactory {
         int len = desc[0] == 0 ? 0x10000 : desc[0];
         int offset = (short) desc[1];
         int outBits = desc[2];
-        if (data == null)
+        if (null == data)
             return null;
 
         if (data.length == len << 1) {
@@ -205,10 +205,10 @@ public class LookupTableFactory {
     }
 
     public LookupTable createLUT(int outBits) {
-        LookupTable lut = combineModalityVOILUT(presentationLUT != null
+        LookupTable lut = combineModalityVOILUT(null != presentationLUT
                 ? log2(presentationLUT.length())
                 : outBits);
-        if (presentationLUT != null) {
+        if (null != presentationLUT) {
             lut = lut.combine(presentationLUT.adjustOutBits(outBits));
         } else if (inverse)
             lut.inverse();
@@ -220,15 +220,15 @@ public class LookupTableFactory {
         float b = rescaleIntercept;
         LookupTable modalityLUT = this.modalityLUT;
         LookupTable lut = this.voiLUT;
-        if (lut == null) {
+        if (null == lut) {
             float c = windowCenter;
             float w = windowWidth;
 
-            if (w == 0 && modalityLUT != null)
+            if (w == 0 && null != modalityLUT)
                 return modalityLUT.adjustOutBits(outBits);
 
             int size, offset;
-            StoredValue inBits = modalityLUT != null
+            StoredValue inBits = null != modalityLUT
                     ? new StoredValue.Unsigned(modalityLUT.outBits)
                     : storedValue;
             if (w != 0) {
@@ -245,11 +245,11 @@ public class LookupTableFactory {
             //TODO consider m+b
             lut = lut.adjustOutBits(outBits);
         }
-        return modalityLUT != null ? modalityLUT.combine(lut) : lut;
+        return null != modalityLUT ? modalityLUT.combine(lut) : lut;
     }
 
     public boolean autoWindowing(Attributes img, Raster raster) {
-        if (modalityLUT != null || voiLUT != null || windowWidth != 0)
+        if (null != modalityLUT || null != voiLUT || windowWidth != 0)
             return false;
 
         int min = img.getInt(Tag.SmallestImagePixelValue, 0);

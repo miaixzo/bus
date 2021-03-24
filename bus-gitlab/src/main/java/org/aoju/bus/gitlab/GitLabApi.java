@@ -417,7 +417,7 @@ public class GitLabApi implements AutoCloseable {
     public static GitLabApi oauth2Login(ApiVersion apiVersion, String url, String username, CharSequence password,
                                         String secretToken, Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors) throws GitLabApiException {
 
-        if (username == null || username.trim().length() == 0) {
+        if (null == username || username.trim().length() == 0) {
             throw new IllegalArgumentException("both username and email cannot be empty or null");
         }
 
@@ -485,7 +485,7 @@ public class GitLabApi implements AutoCloseable {
     public static final <T> T orElseThrow(Optional<T> optional) throws GitLabApiException {
 
         GitLabApiException glea = getOptionalException(optional);
-        if (glea != null) {
+        if (null != glea) {
             throw (glea);
         }
 
@@ -502,7 +502,7 @@ public class GitLabApi implements AutoCloseable {
         Integer sudoUserId = this.getSudoAsId();
         GitLabApi gitLabApi = new GitLabApi(apiVersion, gitLabServerUrl,
                 getTokenType(), getAuthToken(), getSecretToken(), clientConfigProperties);
-        if (sudoUserId != null) {
+        if (null != sudoUserId) {
             gitLabApi.apiClient.setSudoAsId(sudoUserId);
         }
 
@@ -519,7 +519,7 @@ public class GitLabApi implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (apiClient != null) {
+        if (null != apiClient) {
             apiClient.close();
         }
     }
@@ -700,14 +700,14 @@ public class GitLabApi implements AutoCloseable {
      */
     public void sudo(String sudoAsUsername) throws GitLabApiException {
 
-        if (sudoAsUsername == null || sudoAsUsername.trim().length() == 0) {
+        if (null == sudoAsUsername || sudoAsUsername.trim().length() == 0) {
             apiClient.setSudoAsId(null);
             return;
         }
 
         // Get the User specified by username, if you are not an admin or the username is not found, this will fail
         User user = getUserApi().getUser(sudoAsUsername);
-        if (user == null || user.getId() == null) {
+        if (null == user || user.getId() == null) {
             throw new GitLabApiException("the specified username was not found");
         }
 
@@ -740,14 +740,14 @@ public class GitLabApi implements AutoCloseable {
      */
     public void setSudoAsId(Integer sudoAsId) throws GitLabApiException {
 
-        if (sudoAsId == null) {
+        if (null == sudoAsId) {
             apiClient.setSudoAsId(null);
             return;
         }
 
         // Get the User specified by the sudoAsId, if you are not an admin or the username is not found, this will fail
         User user = getUserApi().getUser(sudoAsId);
-        if (user == null || !user.getId().equals(sudoAsId)) {
+        if (null == user || !user.getId().equals(sudoAsId)) {
             throw new GitLabApiException("the specified user ID was not found");
         }
 
@@ -871,9 +871,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ApplicationsApi getApplicationsApi() {
 
-        if (applicationsApi == null) {
+        if (null == applicationsApi) {
             synchronized (this) {
-                if (applicationsApi == null) {
+                if (null == applicationsApi) {
                     applicationsApi = new ApplicationsApi(this);
                 }
             }
@@ -890,9 +890,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ApplicationSettingsApi getApplicationSettingsApi() {
 
-        if (applicationSettingsApi == null) {
+        if (null == applicationSettingsApi) {
             synchronized (this) {
-                if (applicationSettingsApi == null) {
+                if (null == applicationSettingsApi) {
                     applicationSettingsApi = new ApplicationSettingsApi(this);
                 }
             }
@@ -909,9 +909,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public AuditEventApi getAuditEventApi() {
 
-        if (auditEventApi == null) {
+        if (null == auditEventApi) {
             synchronized (this) {
-                if (auditEventApi == null) {
+                if (null == auditEventApi) {
                     auditEventApi = new AuditEventApi(this);
                 }
             }
@@ -928,9 +928,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public AwardEmojiApi getAwardEmojiApi() {
 
-        if (awardEmojiApi == null) {
+        if (null == awardEmojiApi) {
             synchronized (this) {
-                if (awardEmojiApi == null) {
+                if (null == awardEmojiApi) {
                     awardEmojiApi = new AwardEmojiApi(this);
                 }
             }
@@ -947,9 +947,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public BoardsApi getBoardsApi() {
 
-        if (boardsApi == null) {
+        if (null == boardsApi) {
             synchronized (this) {
-                if (boardsApi == null) {
+                if (null == boardsApi) {
                     boardsApi = new BoardsApi(this);
                 }
             }
@@ -966,9 +966,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public CommitsApi getCommitsApi() {
 
-        if (commitsApi == null) {
+        if (null == commitsApi) {
             synchronized (this) {
-                if (commitsApi == null) {
+                if (null == commitsApi) {
                     commitsApi = new CommitsApi(this);
                 }
             }
@@ -985,9 +985,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ContainerRegistryApi getContainerRegistryApi() {
 
-        if (containerRegistryApi == null) {
+        if (null == containerRegistryApi) {
             synchronized (this) {
-                if (containerRegistryApi == null) {
+                if (null == containerRegistryApi) {
                     containerRegistryApi = new ContainerRegistryApi(this);
                 }
             }
@@ -1004,9 +1004,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public DeployKeysApi getDeployKeysApi() {
 
-        if (deployKeysApi == null) {
+        if (null == deployKeysApi) {
             synchronized (this) {
-                if (deployKeysApi == null) {
+                if (null == deployKeysApi) {
                     deployKeysApi = new DeployKeysApi(this);
                 }
             }
@@ -1023,9 +1023,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public DeployTokensApi getDeployTokensApi() {
 
-        if (deployTokensApi == null) {
+        if (null == deployTokensApi) {
             synchronized (this) {
-                if (deployTokensApi == null) {
+                if (null == deployTokensApi) {
                     deployTokensApi = new DeployTokensApi(this);
                 }
             }
@@ -1042,9 +1042,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public DiscussionsApi getDiscussionsApi() {
 
-        if (discussionsApi == null) {
+        if (null == discussionsApi) {
             synchronized (this) {
-                if (discussionsApi == null) {
+                if (null == discussionsApi) {
                     discussionsApi = new DiscussionsApi(this);
                 }
             }
@@ -1061,9 +1061,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public EnvironmentsApi getEnvironmentsApi() {
 
-        if (environmentsApi == null) {
+        if (null == environmentsApi) {
             synchronized (this) {
-                if (environmentsApi == null) {
+                if (null == environmentsApi) {
                     environmentsApi = new EnvironmentsApi(this);
                 }
             }
@@ -1080,9 +1080,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public EpicsApi getEpicsApi() {
 
-        if (epicsApi == null) {
+        if (null == epicsApi) {
             synchronized (this) {
-                if (epicsApi == null) {
+                if (null == epicsApi) {
                     epicsApi = new EpicsApi(this);
                 }
             }
@@ -1099,9 +1099,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public EventsApi getEventsApi() {
 
-        if (eventsApi == null) {
+        if (null == eventsApi) {
             synchronized (this) {
-                if (eventsApi == null) {
+                if (null == eventsApi) {
                     eventsApi = new EventsApi(this);
                 }
             }
@@ -1118,9 +1118,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public GroupApi getGroupApi() {
 
-        if (groupApi == null) {
+        if (null == groupApi) {
             synchronized (this) {
-                if (groupApi == null) {
+                if (null == groupApi) {
                     groupApi = new GroupApi(this);
                 }
             }
@@ -1137,9 +1137,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public HealthCheckApi getHealthCheckApi() {
 
-        if (healthCheckApi == null) {
+        if (null == healthCheckApi) {
             synchronized (this) {
-                if (healthCheckApi == null) {
+                if (null == healthCheckApi) {
                     healthCheckApi = new HealthCheckApi(this);
                 }
             }
@@ -1156,9 +1156,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ImportExportApi getImportExportApi() {
 
-        if (importExportApi == null) {
+        if (null == importExportApi) {
             synchronized (this) {
-                if (importExportApi == null) {
+                if (null == importExportApi) {
                     importExportApi = new ImportExportApi(this);
                 }
             }
@@ -1175,9 +1175,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public IssuesApi getIssuesApi() {
 
-        if (issuesApi == null) {
+        if (null == issuesApi) {
             synchronized (this) {
-                if (issuesApi == null) {
+                if (null == issuesApi) {
                     issuesApi = new IssuesApi(this);
                 }
             }
@@ -1194,9 +1194,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public JobApi getJobApi() {
 
-        if (jobApi == null) {
+        if (null == jobApi) {
             synchronized (this) {
-                if (jobApi == null) {
+                if (null == jobApi) {
                     jobApi = new JobApi(this);
                 }
             }
@@ -1207,9 +1207,9 @@ public class GitLabApi implements AutoCloseable {
 
     public LabelsApi getLabelsApi() {
 
-        if (labelsApi == null) {
+        if (null == labelsApi) {
             synchronized (this) {
-                if (labelsApi == null) {
+                if (null == labelsApi) {
                     labelsApi = new LabelsApi(this);
                 }
             }
@@ -1226,9 +1226,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public LicenseApi getLicenseApi() {
 
-        if (licenseApi == null) {
+        if (null == licenseApi) {
             synchronized (this) {
-                if (licenseApi == null) {
+                if (null == licenseApi) {
                     licenseApi = new LicenseApi(this);
                 }
             }
@@ -1245,9 +1245,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public LicenseTemplatesApi getLicenseTemplatesApi() {
 
-        if (licenseTemplatesApi == null) {
+        if (null == licenseTemplatesApi) {
             synchronized (this) {
-                if (licenseTemplatesApi == null) {
+                if (null == licenseTemplatesApi) {
                     licenseTemplatesApi = new LicenseTemplatesApi(this);
                 }
             }
@@ -1264,9 +1264,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public MarkdownApi getMarkdownApi() {
 
-        if (markdownApi == null) {
+        if (null == markdownApi) {
             synchronized (this) {
-                if (markdownApi == null) {
+                if (null == markdownApi) {
                     markdownApi = new MarkdownApi(this);
                 }
             }
@@ -1283,9 +1283,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public MergeRequestApi getMergeRequestApi() {
 
-        if (mergeRequestApi == null) {
+        if (null == mergeRequestApi) {
             synchronized (this) {
-                if (mergeRequestApi == null) {
+                if (null == mergeRequestApi) {
                     mergeRequestApi = new MergeRequestApi(this);
                 }
             }
@@ -1301,9 +1301,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public MilestonesApi getMilestonesApi() {
 
-        if (milestonesApi == null) {
+        if (null == milestonesApi) {
             synchronized (this) {
-                if (milestonesApi == null) {
+                if (null == milestonesApi) {
                     milestonesApi = new MilestonesApi(this);
                 }
             }
@@ -1320,9 +1320,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public NamespaceApi getNamespaceApi() {
 
-        if (namespaceApi == null) {
+        if (null == namespaceApi) {
             synchronized (this) {
-                if (namespaceApi == null) {
+                if (null == namespaceApi) {
                     namespaceApi = new NamespaceApi(this);
                 }
             }
@@ -1339,9 +1339,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public NotesApi getNotesApi() {
 
-        if (notesApi == null) {
+        if (null == notesApi) {
             synchronized (this) {
-                if (notesApi == null) {
+                if (null == notesApi) {
                     notesApi = new NotesApi(this);
                 }
             }
@@ -1358,9 +1358,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public NotificationSettingsApi getNotificationSettingsApi() {
 
-        if (notificationSettingsApi == null) {
+        if (null == notificationSettingsApi) {
             synchronized (this) {
-                if (notificationSettingsApi == null) {
+                if (null == notificationSettingsApi) {
                     notificationSettingsApi = new NotificationSettingsApi(this);
                 }
             }
@@ -1377,9 +1377,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public PackagesApi getPackagesApi() {
 
-        if (packagesApi == null) {
+        if (null == packagesApi) {
             synchronized (this) {
-                if (packagesApi == null) {
+                if (null == packagesApi) {
                     packagesApi = new PackagesApi(this);
                 }
             }
@@ -1396,9 +1396,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public PipelineApi getPipelineApi() {
 
-        if (pipelineApi == null) {
+        if (null == pipelineApi) {
             synchronized (this) {
-                if (pipelineApi == null) {
+                if (null == pipelineApi) {
                     pipelineApi = new PipelineApi(this);
                 }
             }
@@ -1415,9 +1415,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ProjectApi getProjectApi() {
 
-        if (projectApi == null) {
+        if (null == projectApi) {
             synchronized (this) {
-                if (projectApi == null) {
+                if (null == projectApi) {
                     projectApi = new ProjectApi(this);
                 }
             }
@@ -1434,9 +1434,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ProtectedBranchesApi getProtectedBranchesApi() {
 
-        if (this.protectedBranchesApi == null) {
+        if (this.null == protectedBranchesApi) {
             synchronized (this) {
-                if (this.protectedBranchesApi == null) {
+                if (this.null == protectedBranchesApi) {
                     this.protectedBranchesApi = new ProtectedBranchesApi(this);
                 }
             }
@@ -1453,9 +1453,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ReleasesApi getReleasesApi() {
 
-        if (releasesApi == null) {
+        if (null == releasesApi) {
             synchronized (this) {
-                if (releasesApi == null) {
+                if (null == releasesApi) {
                     releasesApi = new ReleasesApi(this);
                 }
             }
@@ -1472,9 +1472,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public RepositoryApi getRepositoryApi() {
 
-        if (repositoryApi == null) {
+        if (null == repositoryApi) {
             synchronized (this) {
-                if (repositoryApi == null) {
+                if (null == repositoryApi) {
                     repositoryApi = new RepositoryApi(this);
                 }
             }
@@ -1491,9 +1491,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public RepositoryFileApi getRepositoryFileApi() {
 
-        if (repositoryFileApi == null) {
+        if (null == repositoryFileApi) {
             synchronized (this) {
-                if (repositoryFileApi == null) {
+                if (null == repositoryFileApi) {
                     repositoryFileApi = new RepositoryFileApi(this);
                 }
             }
@@ -1510,9 +1510,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ResourceLabelEventsApi getResourceLabelEventsApi() {
 
-        if (resourceLabelEventsApi == null) {
+        if (null == resourceLabelEventsApi) {
             synchronized (this) {
-                if (resourceLabelEventsApi == null) {
+                if (null == resourceLabelEventsApi) {
                     resourceLabelEventsApi = new ResourceLabelEventsApi(this);
                 }
             }
@@ -1529,9 +1529,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public RunnersApi getRunnersApi() {
 
-        if (runnersApi == null) {
+        if (null == runnersApi) {
             synchronized (this) {
-                if (runnersApi == null) {
+                if (null == runnersApi) {
                     runnersApi = new RunnersApi(this);
                 }
             }
@@ -1548,9 +1548,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public SearchApi getSearchApi() {
 
-        if (searchApi == null) {
+        if (null == searchApi) {
             synchronized (this) {
-                if (searchApi == null) {
+                if (null == searchApi) {
                     searchApi = new SearchApi(this);
                 }
             }
@@ -1567,9 +1567,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public ServicesApi getServicesApi() {
 
-        if (servicesApi == null) {
+        if (null == servicesApi) {
             synchronized (this) {
-                if (servicesApi == null) {
+                if (null == servicesApi) {
                     servicesApi = new ServicesApi(this);
                 }
             }
@@ -1586,9 +1586,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public SystemHooksApi getSystemHooksApi() {
 
-        if (systemHooksApi == null) {
+        if (null == systemHooksApi) {
             synchronized (this) {
-                if (systemHooksApi == null) {
+                if (null == systemHooksApi) {
                     systemHooksApi = new SystemHooksApi(this);
                 }
             }
@@ -1605,9 +1605,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public TagsApi getTagsApi() {
 
-        if (tagsApi == null) {
+        if (null == tagsApi) {
             synchronized (this) {
-                if (tagsApi == null) {
+                if (null == tagsApi) {
                     tagsApi = new TagsApi(this);
                 }
             }
@@ -1623,9 +1623,9 @@ public class GitLabApi implements AutoCloseable {
      * @return the SnippetsApi instance owned by this GitLabApi instance
      */
     public SnippetsApi getSnippetApi() {
-        if (snippetsApi == null) {
+        if (null == snippetsApi) {
             synchronized (this) {
-                if (snippetsApi == null) {
+                if (null == snippetsApi) {
                     snippetsApi = new SnippetsApi(this);
                 }
             }
@@ -1640,9 +1640,9 @@ public class GitLabApi implements AutoCloseable {
      * @return the TodosApi instance owned by this GitLabApi instance
      */
     public TodosApi getTodosApi() {
-        if (todosApi == null) {
+        if (null == todosApi) {
             synchronized (this) {
-                if (todosApi == null) {
+                if (null == todosApi) {
                     todosApi = new TodosApi(this);
                 }
             }
@@ -1659,9 +1659,9 @@ public class GitLabApi implements AutoCloseable {
      */
     public UserApi getUserApi() {
 
-        if (userApi == null) {
+        if (null == userApi) {
             synchronized (this) {
-                if (userApi == null) {
+                if (null == userApi) {
                     userApi = new UserApi(this);
                 }
             }
@@ -1676,9 +1676,9 @@ public class GitLabApi implements AutoCloseable {
      * @return the WikisApi instance owned by this GitLabApi instance
      */
     public WikisApi getWikisApi() {
-        if (wikisApi == null) {
+        if (null == wikisApi) {
             synchronized (this) {
-                if (wikisApi == null) {
+                if (null == wikisApi) {
                     wikisApi = new WikisApi(this);
                 }
             }

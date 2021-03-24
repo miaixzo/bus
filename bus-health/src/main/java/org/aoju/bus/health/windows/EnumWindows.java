@@ -71,7 +71,7 @@ public final class EnumWindows {
         Map<HWND, Integer> zOrderMap = new HashMap<>();
         for (DesktopWindow window : windows) {
             HWND hWnd = window.getHWND();
-            if (hWnd != null) {
+            if (null != hWnd) {
                 boolean visible = User32.INSTANCE.IsWindowVisible(hWnd);
                 if (!visibleOnly || visible) {
                     if (!zOrderMap.containsKey(hWnd)) {
@@ -89,7 +89,7 @@ public final class EnumWindows {
     }
 
     private static void updateWindowZOrderMap(HWND hWnd, Map<HWND, Integer> zOrderMap) {
-        if (hWnd != null) {
+        if (null != hWnd) {
             int zOrder = 1;
             HWND h = new HWND(hWnd.getPointer());
             // First is highest, so decrement

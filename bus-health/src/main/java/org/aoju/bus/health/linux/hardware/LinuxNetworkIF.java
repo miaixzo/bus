@@ -203,10 +203,10 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
     private static String queryIfModel(NetworkInterface netint) {
         String name = netint.getName();
         Udev.UdevContext udev = Udev.INSTANCE.udev_new();
-        if (udev != null) {
+        if (null != udev) {
             try {
                 Udev.UdevDevice device = udev.deviceNewFromSyspath("/sys/class/net/" + name);
-                if (device != null) {
+                if (null != device) {
                     try {
                         String devVendor = device.getPropertyValue("ID_VENDOR_FROM_DATABASE");
                         String devModel = device.getPropertyValue("ID_MODEL_FROM_DATABASE");

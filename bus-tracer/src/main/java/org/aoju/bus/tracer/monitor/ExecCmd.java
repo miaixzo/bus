@@ -64,7 +64,7 @@ public class ExecCmd {
             /* "标准输出流"就在当前方法中读取 */
             BufferedInputStream bis = new BufferedInputStream(p.getInputStream());
 
-            if (encoding != null && encoding.length != 0) {
+            if (null != encoding && encoding.length != 0) {
                 inputStreamReader = new InputStreamReader(bis, encoding[0]);
             } else {
                 inputStreamReader = new InputStreamReader(bis, Charset.DEFAULT_UTF_8);
@@ -299,7 +299,7 @@ public class ExecCmd {
     private static List<Map<String, String>> jstat(String[] strings) throws IOException {
         List<Map<String, String>> list = new ArrayList<>();
         String s = ExecCmd.execute(strings);
-        assert s != null;
+        assert null != s;
         BufferedReader reader = new BufferedReader(new StringReader(s));
         String[] keys = ArrayKit.toStringArray(reader.readLine().split("\\s+|\t"));
         String[] values = ArrayKit.toStringArray(reader.readLine().split("\\s+|\t"));

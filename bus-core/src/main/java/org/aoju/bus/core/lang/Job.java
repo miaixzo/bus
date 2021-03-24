@@ -77,7 +77,7 @@ public class Job implements Runnable {
 
     public Job configOnApplicationStart(boolean async) {
         Job job = this;
-        if (this.type != null) {
+        if (this.null != type) {
             job = new Job(target, method);
         }
         job.type = TYPE.ON_APPLICATION_START;

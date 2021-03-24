@@ -112,7 +112,7 @@ public final class SolarisPowerSource extends AbstractPowerSource {
             // Get kstat for the battery information
             try (KstatChain kc = KstatKit.openChain()) {
                 com.sun.jna.platform.unix.solaris.LibKstat.Kstat ksp = kc.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BIF0");
-                if (ksp != null) {
+                if (null != ksp) {
                     // Predicted battery capacity when fully charged.
                     long energyFull = KstatKit.dataLookupLong(ksp, "bif_last_cap");
                     if (energyFull == 0xffffffff || energyFull <= 0) {
@@ -135,7 +135,7 @@ public final class SolarisPowerSource extends AbstractPowerSource {
 
                 // Get kstat for the battery state
                 ksp = kc.lookup(KSTAT_BATT_MOD[KSTAT_BATT_IDX], 0, "battery BST0");
-                if (ksp != null) {
+                if (null != ksp) {
                     // estimated remaining battery capacity
                     long energyNow = KstatKit.dataLookupLong(ksp, "bst_rem_cap");
                     if (energyNow >= 0) {

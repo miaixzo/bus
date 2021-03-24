@@ -57,7 +57,7 @@ public class Result<T> extends BaseEntity implements Serializable {
     }
 
     public Result(List<T> rows, int pageSize) {
-        if (rows == null || rows.isEmpty()) {
+        if (null == rows || rows.isEmpty()) {
             throw new IllegalArgumentException("data must be not empty!");
         }
         new Result<>(rows, rows.size(), pageSize);

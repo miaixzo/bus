@@ -346,7 +346,7 @@ public class DiscussionsApi extends AbstractApi {
                 .withParam("created_at", createdAt)
                 .withParam("position", positionHash);
 
-        if (position != null) {
+        if (null != position) {
             formData.withParam("position[base_sha]", position.getBaseSha(), true)
                     .withParam("position[start_sha]", position.getStartSha(), true)
                     .withParam("position[head_sha]", position.getHeadSha(), true)
@@ -524,7 +524,7 @@ public class DiscussionsApi extends AbstractApi {
     public Discussion createCommitDiscussion(Object projectIdOrPath, String commitSha,
                                              String body, Date createdAt, String positionHash, Position position) throws GitLabApiException {
 
-        if (position == null) {
+        if (null == position) {
             throw new GitLabApiException("position instance can not be null");
         }
 

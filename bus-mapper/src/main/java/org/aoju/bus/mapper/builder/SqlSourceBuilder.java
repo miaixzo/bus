@@ -55,7 +55,7 @@ public class SqlSourceBuilder {
         if (EntityTableName.class.isAssignableFrom(entityClass)) {
             StringBuilder sql = new StringBuilder();
             sql.append("<choose>");
-            sql.append("<when test=\"@org.aoju.bus.mapper.builder.OGNL@isDynamicParameter(_parameter) and dynamicTableName != null and dynamicTableName != ''\">");
+            sql.append("<when test=\"@org.aoju.bus.mapper.builder.OGNL@isDynamicParameter(_parameter) and null != dynamicTableName and dynamicTableName != ''\">");
             sql.append("${dynamicTableName}\n");
             sql.append("</when>");
             //不支持指定列的时候查询全部列
@@ -82,7 +82,7 @@ public class SqlSourceBuilder {
             if (Assert.isNotEmpty(parameterName)) {
                 StringBuilder sql = new StringBuilder();
                 sql.append("<choose>");
-                sql.append("<when test=\"@org.aoju.bus.mapper.builder.OGNL@isDynamicParameter(" + parameterName + ") and " + parameterName + ".dynamicTableName != null and " + parameterName + ".dynamicTableName != ''\">");
+                sql.append("<when test=\"@org.aoju.bus.mapper.builder.OGNL@isDynamicParameter(" + parameterName + ") and " + parameterName + ".null != dynamicTableName and " + parameterName + ".dynamicTableName != ''\">");
                 sql.append("${" + parameterName + ".dynamicTableName}");
                 sql.append("</when>");
                 //不支持指定列的时候查询全部列
@@ -132,14 +132,14 @@ public class SqlSourceBuilder {
      */
     public static String getIfCacheNotNull(EntityColumn column, String contents) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<if test=\"").append(column.getProperty()).append("_cache != null\">");
+        sql.append("<if test=\"").append(column.getProperty()).append("null != _cache\">");
         sql.append(contents);
         sql.append("</if>");
         return sql.toString();
     }
 
     /**
-     * 如果_cache == null
+     * 如果null == _cache
      *
      * @param column   列信息
      * @param contents 内容
@@ -147,7 +147,7 @@ public class SqlSourceBuilder {
      */
     public static String getIfCacheIsNull(EntityColumn column, String contents) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<if test=\"").append(column.getProperty()).append("_cache == null\">");
+        sql.append("<if test=\"").append(column.getProperty()).append("null == _cache\">");
         sql.append(contents);
         sql.append("</if>");
         return sql.toString();
@@ -454,7 +454,7 @@ public class SqlSourceBuilder {
         //当某个列有主键策略时,不需要考虑他的属性是否为空,因为如果为空,一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnList) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
-                if (versionColumn != null) {
+                if (null != versionColumn) {
                     throw new VersionException(entityClass.getCanonicalName() + " 中包含多个带有 @Version 注解的字段,一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
@@ -639,12 +639,12 @@ public class SqlSourceBuilder {
      */
     public static String orderBy(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<if test=\"orderByClause != null\">");
+        sql.append("<if test=\"null != orderByClause\">");
         sql.append("order by ${orderByClause}");
         sql.append("</if>");
         String orderByClause = EntityBuilder.getOrderByClause(entityClass);
         if (orderByClause.length() > 0) {
-            sql.append("<if test=\"orderByClause == null\">");
+            sql.append("<if test=\"null == orderByClause\">");
             sql.append("ORDER BY " + orderByClause);
             sql.append("</if>");
         }
@@ -684,7 +684,7 @@ public class SqlSourceBuilder {
      * @return the string
      */
     public static String whereClause() {
-        return "<if test=\"_parameter != null\">" +
+        return "<if test=\"null != _parameter\">" +
                 "<where>\n" +
                 "  <foreach collection=\"oredCriteria\" item=\"criteria\">\n" +
                 "    <if test=\"criteria.valid\">\n" +

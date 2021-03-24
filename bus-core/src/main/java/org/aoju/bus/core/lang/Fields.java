@@ -923,7 +923,7 @@ public class Fields {
          */
         public static String getName(LocalTime localTime) {
             Chrono chrono = getChrono(localTime);
-            return chrono != null ? chrono.name : null;
+            return null != chrono ? chrono.name : null;
         }
 
         /**
@@ -1081,7 +1081,7 @@ public class Fields {
          */
         public static String getShortNameEnByCode(int code) {
             Month month = getByCode(code);
-            return month != null ? month.name() : null;
+            return null != month ? month.name() : null;
         }
 
         /**
@@ -1092,7 +1092,7 @@ public class Fields {
          */
         public static String getFullNameEnByCode(int code) {
             Month month = getByCode(code);
-            return month != null ? month.enName : null;
+            return null != month ? month.enName : null;
         }
 
         /**
@@ -1103,7 +1103,7 @@ public class Fields {
          */
         public static String getFullNameCnByCode(int code) {
             Month month = getByCode(code);
-            return month != null ? month.cnName : null;
+            return null != month ? month.cnName : null;
         }
 
         /**
@@ -1114,7 +1114,7 @@ public class Fields {
          */
         public static String getShortNameCnByCode(int code) {
             Month month = getByCode(code);
-            return month != null ? month.shortName : null;
+            return null != month ? month.shortName : null;
         }
 
         /**
@@ -1316,7 +1316,7 @@ public class Fields {
          */
         public static String getShortNameByCode(int code) {
             Week week = getByCode(code);
-            return week != null ? week.name() : null;
+            return null != week ? week.name() : null;
         }
 
         /**
@@ -1327,7 +1327,7 @@ public class Fields {
          */
         public static String getEnNameByCode(int code) {
             Week week = getByCode(code);
-            return week != null ? week.enName : null;
+            return null != week ? week.enName : null;
         }
 
         /**
@@ -1338,7 +1338,7 @@ public class Fields {
          */
         public static String getCnNameByCode(int code) {
             Week week = getByCode(code);
-            return week != null ? week.cnName : null;
+            return null != week ? week.cnName : null;
         }
 
         public int getKey() {
@@ -1447,7 +1447,7 @@ public class Fields {
          */
         public static String getCnNameByMonthDay(String monthDayStr) {
             Zodiac zodiac = getZodiacByMonthDay(monthDayStr);
-            return zodiac != null ? zodiac.name : null;
+            return null != zodiac ? zodiac.name : null;
         }
 
         /**
@@ -1458,7 +1458,7 @@ public class Fields {
          */
         public static String getEnNameByMonthDay(String monthDayStr) {
             Zodiac zodiac = getZodiacByMonthDay(monthDayStr);
-            return zodiac != null ? zodiac.name() : null;
+            return null != zodiac ? zodiac.name() : null;
         }
 
         public int getKey() {

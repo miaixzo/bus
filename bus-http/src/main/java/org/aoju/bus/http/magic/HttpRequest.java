@@ -83,7 +83,7 @@ public abstract class HttpRequest {
         this.body = body;
         this.multipartBody = multipartBody;
         this.id = id;
-        if (url == null) {
+        if (null == url) {
             throw new IllegalArgumentException("url can not be null.");
         }
         builder.url(url).tag(tag);
@@ -91,8 +91,8 @@ public abstract class HttpRequest {
     }
 
     public static RequestBody createRequestBody(final MimeType contentType, final InputStream is) {
-        if (is == null)
-            throw new NullPointerException("is == null");
+        if (null == is)
+            throw new NullPointerException("null == is");
 
         return new RequestBody() {
             @Override
@@ -136,7 +136,7 @@ public abstract class HttpRequest {
 
     protected void appendHeaders() {
         Headers.Builder headerBuilder = new Headers.Builder();
-        if (headers == null || headers.isEmpty())
+        if (null == headers || headers.isEmpty())
             return;
         for (String key : headers.keySet()) {
             headerBuilder.add(key, headers.get(key));

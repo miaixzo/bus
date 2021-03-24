@@ -87,7 +87,7 @@ public class Association {
         this.connectTime = System.currentTimeMillis();
         this.serialNo = prevSerialNo.incrementAndGet();
         this.ae = ae;
-        this.requestor = ae != null;
+        this.requestor = null != ae;
         this.name = Normal.EMPTY + sock.getLocalSocketAddress()
                 + delim() + sock.getRemoteSocketAddress()
                 + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
@@ -177,11 +177,11 @@ public class Association {
     }
 
     public Set<String> getPropertyNames() {
-        return properties != null ? properties.keySet() : Collections.emptySet();
+        return null != properties ? properties.keySet() : Collections.emptySet();
     }
 
     public Object getProperty(String key) {
-        return properties != null ? properties.get(key) : null;
+        return null != properties ? properties.get(key) : null;
     }
 
     public <T> T getProperty(Class<T> clazz) {
@@ -193,17 +193,17 @@ public class Association {
     }
 
     public boolean containsProperty(String key) {
-        return properties != null && properties.containsKey(key);
+        return null != properties && properties.containsKey(key);
     }
 
     public Object setProperty(String key, Object value) {
-        if (properties == null)
+        if (null == properties)
             properties = new HashMap<>();
         return properties.put(key, value);
     }
 
     public Object clearProperty(String key) {
-        return properties != null ? properties.remove(key) : null;
+        return null != properties ? properties.remove(key) : null;
     }
 
     public void addAssociationListener(AssociationListener listener) {
@@ -234,7 +234,7 @@ public class Association {
 
     public boolean isSCPFor(String cuid) {
         RoleSelection rolsel = ac.getRoleSelectionFor(cuid);
-        if (rolsel == null)
+        if (null == rolsel)
             return !requestor;
         return requestor ? rolsel.isSCP() : rolsel.isSCU();
     }
@@ -251,17 +251,17 @@ public class Association {
 
     public boolean isSCUFor(String cuid) {
         RoleSelection rolsel = ac.getRoleSelectionFor(cuid);
-        if (rolsel == null)
+        if (null == rolsel)
             return requestor;
         return requestor ? rolsel.isSCU() : rolsel.isSCP();
     }
 
     public String getCallingAET() {
-        return rq != null ? rq.getCallingAET() : null;
+        return null != rq ? rq.getCallingAET() : null;
     }
 
     public String getCalledAET() {
-        return rq != null ? rq.getCalledAET() : null;
+        return null != rq ? rq.getCalledAET() : null;
     }
 
     public String getRemoteAET() {
@@ -337,7 +337,7 @@ public class Association {
     }
 
     public synchronized void onIOException(IOException e) {
-        if (ex != null)
+        if (null != ex)
             return;
 
         ex = e;
@@ -406,7 +406,7 @@ public class Association {
         if (timeout > 0) {
             synchronized (rspHandlerForMsgId) {
                 DimseRSPHandler rspHandler = rspHandlerForMsgId.get(msgID);
-                if (rspHandler != null) {
+                if (null != rspHandler) {
                     rspHandler.setTimeout(Timeout.start(this,
                             "{}: start " + msgID + ":DIMSE-RSP timeout of {}ms",
                             "{}: " + msgID + ":DIMSE-RSP timeout expired",
@@ -418,7 +418,7 @@ public class Association {
     }
 
     private synchronized void stopTimeout() {
-        if (timeout != null) {
+        if (null != timeout) {
             timeout.stop();
             timeout = null;
         }
@@ -456,7 +456,7 @@ public class Association {
     }
 
     private void checkException() throws IOException {
-        if (ex != null)
+        if (null != ex)
             throw ex;
     }
 
@@ -521,7 +521,7 @@ public class Association {
             rspHandlerForMsgId.clear();
             rspHandlerForMsgId.notifyAll();
         }
-        if (ae != null)
+        if (null != ae)
             ae.getDevice().getAssociationHandler().onClose(this);
         for (AssociationListener listener : listeners)
             listener.onClose(this);
@@ -546,11 +546,11 @@ public class Association {
             maxPDULength = Association.minZeroAsMax(
                     rq.getMaxPDULength(), conn.getSendPDULength());
             write(ac);
-            if (monitor != null)
+            if (null != monitor)
                 monitor.onAssociationAccepted(this);
         } catch (AAssociateRJ e) {
             write(e);
-            if (monitor != null)
+            if (null != monitor)
                 monitor.onAssociationRejected(this, e);
         }
     }
@@ -691,7 +691,7 @@ public class Association {
         int status = cmd.getInt(Tag.Status, 0);
         boolean pending = Status.isPending(status);
         DimseRSPHandler rspHandler = getDimseRSPHandler(msgId);
-        if (rspHandler == null) {
+        if (null == rspHandler) {
             Logger.info("{}: unexpected message ID in DIMSE RSP:", name);
             Logger.info("\n{}", cmd);
             throw new AAbort();
@@ -770,7 +770,7 @@ public class Association {
                               Attributes data) throws IOException {
         DataWriter writer = null;
         int datasetType = Commands.NO_DATASET;
-        if (data != null) {
+        if (null != data) {
             writer = new DataWriterAdapter(data);
             datasetType = Commands.getWithDatasetType();
         }
@@ -786,7 +786,7 @@ public class Association {
         incReceivedCount(Dimse.C_CANCEL_RQ);
         int msgId = cmd.getInt(Tag.MessageIDBeingRespondedTo, -1);
         CancelRQHandler handler = removeCancelRQHandler(msgId);
-        if (handler != null)
+        if (null != handler)
             handler.onCancelRQ(this);
     }
 
@@ -806,7 +806,7 @@ public class Association {
         for (Presentation pc : ac.getPresentationContexts())
             if (pc.isAccepted()) {
                 Presentation rqpc = rq.getPresentationContext(pc.getPCID());
-                if (rqpc != null)
+                if (null != rqpc)
                     initTSMap(rqpc.getAbstractSyntax()).put(pc.getTransferSyntax(), pc);
                 else
                     Logger.info("{}: Ignore unexpected {} in A-ASSOCIATE-AC", name, pc);
@@ -815,7 +815,7 @@ public class Association {
 
     private Map<String, Presentation> initTSMap(String as) {
         Map<String, Presentation> tsMap = pcMap.get(as);
-        if (tsMap == null)
+        if (null == tsMap)
             pcMap.put(as, tsMap = new HashMap<>());
         return tsMap;
     }
@@ -823,19 +823,19 @@ public class Association {
     public Presentation pcFor(String cuid, String tsuid)
             throws InstrumentException {
         Map<String, Presentation> tsMap = pcMap.get(cuid);
-        if (tsMap == null)
+        if (null == tsMap)
             throw new InstrumentException(cuid);
-        if (tsuid == null)
+        if (null == tsuid)
             return tsMap.values().iterator().next();
         Presentation pc = tsMap.get(tsuid);
-        if (pc == null)
+        if (null == pc)
             throw new InstrumentException(cuid, tsuid);
         return pc;
     }
 
     public Set<String> getTransferSyntaxesFor(String cuid) {
         Map<String, Presentation> tsMap = pcMap.get(cuid);
-        if (tsMap == null)
+        if (null == tsMap)
             return Collections.emptySet();
         return Collections.unmodifiableSet(tsMap.keySet());
     }
@@ -1211,7 +1211,7 @@ public class Association {
         fmi.setString(Tag.ImplementationClassUID, VR.UI,
                 getRemoteImplClassUID());
         String versionName = getRemoteImplVersionName();
-        if (versionName != null)
+        if (null != versionName)
             fmi.setString(Tag.ImplementationVersionName, VR.SH, versionName);
         fmi.setString(Tag.SourceApplicationEntityTitle, VR.AE,
                 getRemoteAET());

@@ -94,7 +94,7 @@ public class SpringBuilder {
 
     public static void register(Class clazz) {
         ConfigurableApplicationContext context = getContext();
-        if (context != null) {
+        if (null != context) {
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
             String beanName = StringKit.lowerFirst(clazz.getSimpleName());
             beanFactory.registerBeanDefinition(beanName, BeanDefinitionBuilder.rootBeanDefinition(clazz).getBeanDefinition());
@@ -113,7 +113,7 @@ public class SpringBuilder {
 
     public static void registerSingleton(Class clazz, Object bean) {
         ConfigurableApplicationContext context = getContext();
-        if (context != null) {
+        if (null != context) {
             DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) context.getBeanFactory();
             String beanName = StringKit.lowerFirst(clazz.getSimpleName());
             beanFactory.registerSingleton(beanName, bean);
@@ -122,7 +122,7 @@ public class SpringBuilder {
 
     public static <T> T getBean(Class<T> clazz) {
         ConfigurableApplicationContext context = getContext();
-        if (context != null) {
+        if (null != context) {
             return context.getBean(clazz);
         }
         return null;

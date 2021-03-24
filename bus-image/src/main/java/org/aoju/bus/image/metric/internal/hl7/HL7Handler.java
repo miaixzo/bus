@@ -66,17 +66,17 @@ public enum HL7Handler implements TCPHandler {
                 while ((data = mllp.readMessage()) != null) {
                     HL7ConnectionMonitor monitor = hl7dev.getHL7ConnectionMonitor();
                     UnparsedHL7Message msg = new UnparsedHL7Message(data);
-                    if (monitor != null)
+                    if (null != monitor)
                         monitor.onMessageReceived(conn, s, msg);
                     UnparsedHL7Message rsp;
                     try {
                         rsp = hl7dev.onMessage(conn, s, msg);
-                        if (monitor != null)
+                        if (null != monitor)
                             monitor.onMessageProcessed(conn, s, msg, rsp, null);
                     } catch (HL7Exception e) {
                         rsp = new UnparsedHL7Message(
                                 HL7Message.makeACK(msg.msh(), e).getBytes(null));
-                        if (monitor != null)
+                        if (null != monitor)
                             monitor.onMessageProcessed(conn, s, msg, rsp, e);
                     }
                     mllp.writeMessage(rsp.data());

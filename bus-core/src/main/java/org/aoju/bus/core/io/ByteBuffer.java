@@ -81,17 +81,17 @@ public class ByteBuffer extends ByteString {
                 for (PageBuffer pageBuffer : pageBuffers) {
                     pageBuffer.tryClean();
                 }
-                if (sharedPageBuffer != null) {
+                if (null != sharedPageBuffer) {
                     sharedPageBuffer.tryClean();
                 }
             } else {
-                if (pageBuffers != null) {
+                if (null != pageBuffers) {
                     for (PageBuffer page : pageBuffers) {
                         page.release();
                     }
                     pageBuffers = null;
                 }
-                if (sharedPageBuffer != null) {
+                if (null != sharedPageBuffer) {
                     sharedPageBuffer.release();
                     sharedPageBuffer = null;
                 }
@@ -270,7 +270,7 @@ public class ByteBuffer extends ByteString {
 
     @Override
     public void write(OutputStream out) throws IOException {
-        if (out == null) throw new IllegalArgumentException("out == null");
+        if (null == out) throw new IllegalArgumentException("null == out");
         int segmentOffset = 0;
         for (int s = 0, segmentCount = segments.length; s < segmentCount; s++) {
             int segmentPos = directory[segmentCount + s];
@@ -288,7 +288,7 @@ public class ByteBuffer extends ByteString {
             int nextSegmentOffset = directory[s];
             Segment segment = new Segment(segments[s], segmentPos,
                     segmentPos + nextSegmentOffset - segmentOffset, true, false);
-            if (buffer.head == null) {
+            if (buffer.null == head) {
                 buffer.head = segment.next = segment.prev = segment;
             } else {
                 buffer.head.prev.push(segment);

@@ -100,7 +100,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
         }
 
         // Make sure the per_page parameter is present
-        if (queryParams == null) {
+        if (null == queryParams) {
             queryParams = new GitLabApiForm().withParam(PER_PAGE_PARAM, itemsPerPage).asMap();
         } else {
             queryParams.remove(PER_PAGE_PARAM);
@@ -119,7 +119,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
             throw new GitLabApiException(e);
         }
 
-        if (currentItems == null) {
+        if (null == currentItems) {
             throw new GitLabApiException("Invalid response from from GitLab server");
         }
 
@@ -164,8 +164,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private String getHeaderValue(Response response, String key) {
 
         String value = response.getHeaderString(key);
-        value = (value != null ? value.trim() : null);
-        if (value == null || value.length() == 0) {
+        value = (null != value ? value.trim() : null);
+        if (null == value || value.length() == 0) {
             return (null);
         }
 
@@ -183,7 +183,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     private int getIntHeaderValue(Response response, String key) throws GitLabApiException {
 
         String value = getHeaderValue(response, key);
-        if (value == null) {
+        if (null == value) {
             return -1;
         }
 
@@ -385,9 +385,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      */
     public Stream<T> stream() throws IllegalStateException {
 
-        if (pagerStream == null) {
+        if (null == pagerStream) {
             synchronized (this) {
-                if (pagerStream == null) {
+                if (null == pagerStream) {
 
                     // Make sure that current page is 0, this will ensure the whole list is streamed
                     // regardless of what page the instance is currently on.
@@ -419,9 +419,9 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      */
     public Stream<T> lazyStream() throws IllegalStateException {
 
-        if (pagerStream == null) {
+        if (null == pagerStream) {
             synchronized (this) {
-                if (pagerStream == null) {
+                if (null == pagerStream) {
 
                     // Make sure that current page is 0, this will ensure the whole list is streamed
                     // regardless of what page the instance is currently on.

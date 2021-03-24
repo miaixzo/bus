@@ -81,7 +81,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
         }
 
         if (ObjectKit.isNotEmpty(properties) && !properties.isDebug()) {
-            Sensitive sensitive = params != null ? params.getClass().getAnnotation(Sensitive.class) : null;
+            Sensitive sensitive = null != params ? params.getClass().getAnnotation(Sensitive.class) : null;
             if (ObjectKit.isNotEmpty(sensitive)) {
                 handleParameters(sensitive, mappedStatement.getConfiguration(), boundSql, params, commandType);
             }
@@ -154,7 +154,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
             for (Shield f : keys) {
                 String key = f.key();
                 Object data = map.get(key);
-                if (data != null) {
+                if (null != data) {
                     map.put(key, Builder.on(data));
                 }
             }

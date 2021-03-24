@@ -92,7 +92,7 @@ public abstract class PageMethod {
         Page<E> page = PageFromObject.getPageFromObject(params, true);
         // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
-        if (oldPage != null && oldPage.isOrderByOnly()) {
+        if (null != oldPage && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
         }
         setLocalPage(page);
@@ -156,7 +156,7 @@ public abstract class PageMethod {
         page.setPageSizeZero(pageSizeZero);
         // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
-        if (oldPage != null && oldPage.isOrderByOnly()) {
+        if (null != oldPage && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
         }
         setLocalPage(page);
@@ -188,7 +188,7 @@ public abstract class PageMethod {
         Page<E> page = new Page<>(new int[]{offset, limit}, count);
         // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
-        if (oldPage != null && oldPage.isOrderByOnly()) {
+        if (null != oldPage && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
         }
         setLocalPage(page);
@@ -202,7 +202,7 @@ public abstract class PageMethod {
      */
     public static void orderBy(String orderBy) {
         Page<?> page = getLocalPage();
-        if (page != null) {
+        if (null != page) {
             page.setOrderBy(orderBy);
         } else {
             page = new Page();
@@ -219,7 +219,7 @@ public abstract class PageMethod {
      */
     protected static void setStaticProperties(Properties properties) {
         // defaultCount,这是一个全局生效的参数,多数据源时也是统一的行为
-        if (properties != null) {
+        if (null != properties) {
             DEFAULT_COUNT = Boolean.valueOf(properties.getProperty("defaultCount", "true"));
         }
     }

@@ -63,7 +63,7 @@ public interface Results {
      * @return Results
      */
     static Results of(Response response, TaskExecutor taskExecutor) {
-        if (response != null) {
+        if (null != response) {
             return new RealResult(null, response, taskExecutor);
         }
         throw new IllegalArgumentException("Response cannot be empty!");

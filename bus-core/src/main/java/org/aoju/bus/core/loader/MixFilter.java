@@ -46,7 +46,7 @@ public abstract class MixFilter implements Filter {
     }
 
     protected MixFilter(Collection<? extends Filter> filters) {
-        this.filters = filters != null ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
+        this.filters = null != filters ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
     }
 
     /**

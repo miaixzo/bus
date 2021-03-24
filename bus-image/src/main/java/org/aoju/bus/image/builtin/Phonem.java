@@ -36,7 +36,7 @@ public class Phonem implements FuzzyStr {
 
     @Override
     public String toFuzzy(String s) {
-        if (s == null || s.length() == 0)
+        if (null == s || s.length() == 0)
             return Normal.EMPTY;
 
         char[] in = s.toUpperCase().toCharArray();

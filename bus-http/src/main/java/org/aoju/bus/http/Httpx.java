@@ -202,7 +202,7 @@ public class Httpx {
             }
             if (ObjectKit.isNotEmpty(httpProxy)) {
                 builder.proxy(httpProxy.proxy());
-                if (httpProxy.user != null && httpProxy.password != null) {
+                if (httpProxy.null != user && httpProxy.null != password) {
                     builder.proxyAuthenticator(httpProxy.authenticator());
                 }
             }

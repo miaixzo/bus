@@ -52,7 +52,7 @@ public class HL7Connection implements Closeable {
     public void writeMessage(UnparsedHL7Message msg) throws IOException {
         try {
             mllpConnection.writeMessage(msg.data());
-            if (monitor != null)
+            if (null != monitor)
                 monitor.onMessageSent(hl7Application, mllpConnection.getSocket(), msg, null);
         } catch (IOException e) {
             monitor.onMessageSent(hl7Application, mllpConnection.getSocket(), msg, e);
@@ -63,7 +63,7 @@ public class HL7Connection implements Closeable {
     public UnparsedHL7Message readMessage(UnparsedHL7Message msg) throws IOException {
         try {
             byte[] b = mllpConnection.readMessage();
-            UnparsedHL7Message rsp = b != null ? new UnparsedHL7Message(b) : null;
+            UnparsedHL7Message rsp = null != b ? new UnparsedHL7Message(b) : null;
             monitor.onMessageResponse(hl7Application, mllpConnection.getSocket(), msg, rsp, null);
             return rsp;
         } catch (IOException e) {

@@ -94,27 +94,27 @@ public class ServiceHandler implements DimseRQHandler {
     private DimseRQHandler lookupService(Association as, Dimse dimse, Attributes cmd)
             throws ImageException {
         String cuid = cmd.getString(dimse.tagOfSOPClassUID());
-        if (cuid == null)
+        if (null == cuid)
             throw new ImageException(Status.MistypedArgument);
 
         DimseRQHandler service = services.get(cuid);
-        if (service != null)
+        if (null != service)
             return service;
 
         if (dimse == Dimse.C_STORE_RQ) {
             CommonExtended commonExtNeg = as.getCommonExtendedNegotiationFor(cuid);
-            if (commonExtNeg != null) {
+            if (null != commonExtNeg) {
                 for (String uid : commonExtNeg.getRelatedGeneralSOPClassUIDs()) {
                     service = services.get(uid);
-                    if (service != null)
+                    if (null != service)
                         return service;
                 }
                 service = services.get(commonExtNeg.getServiceClassUID());
-                if (service != null)
+                if (null != service)
                     return service;
             }
             service = services.get(Symbol.STAR);
-            if (service != null)
+            if (null != service)
                 return service;
         }
         throw new ImageException(dimse.isCService()

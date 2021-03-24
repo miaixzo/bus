@@ -69,7 +69,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("email", settings.getEmail());
 
         NotificationSettings.Events events = settings.getEvents();
-        if (events != null) {
+        if (null != events) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
                     .withParam("reopen_issue", events.getReopenIssue())
@@ -119,7 +119,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("email", settings.getEmail());
 
         NotificationSettings.Events events = settings.getEvents();
-        if (events != null) {
+        if (null != events) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
                     .withParam("reopen_issue", events.getReopenIssue())
@@ -169,7 +169,7 @@ public class NotificationSettingsApi extends AbstractApi {
                 .withParam("email", settings.getEmail());
 
         NotificationSettings.Events events = settings.getEvents();
-        if (events != null) {
+        if (null != events) {
             formData.withParam("new_note", events.getNewNote())
                     .withParam("new_issue", events.getNewIssue())
                     .withParam("reopen_issue", events.getReopenIssue())

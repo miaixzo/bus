@@ -269,7 +269,7 @@ public class Money implements Serializable, Comparable<Money> {
      * @param amount 金额数,以元为单位
      */
     public void setAmount(BigDecimal amount) {
-        if (amount != null) {
+        if (null != amount) {
             cent = rounding(amount.movePointRight(2), BigDecimal.ROUND_HALF_EVEN);
         }
     }

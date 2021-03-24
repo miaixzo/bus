@@ -1206,12 +1206,12 @@ public enum Setting {
      */
     public final boolean isValid(Object value) {
 
-        if (value == null) {
+        if (null == value) {
             return (true);
         }
 
         Class<?> valueType = value.getClass();
-        if (type != null) {
+        if (null != type) {
             return (valueType == type);
         }
 

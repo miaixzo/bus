@@ -120,7 +120,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
-                    if (mainClass != null) {
+                    if (null != mainClass) {
                         attributes.putValue("Jar-Main-Class", mainClass);
                         attributes.putValue("Main-Class", "org.aoju.bus.shade.safety.archive.jar.BootJarLauncher");
                     }
@@ -163,8 +163,8 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                 zos.closeArchiveEntry();
             }
 
-            String mainClass = manifest != null && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
-            if (mainClass != null) {
+            String mainClass = null != manifest && manifest.getMainAttributes() != null ? manifest.getMainAttributes().getValue("Main-Class") : null;
+            if (null != mainClass) {
                 Injector.inject(zos);
             }
 

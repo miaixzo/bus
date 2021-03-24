@@ -63,7 +63,7 @@ public abstract class AbstractSqlHandler {
     protected static boolean getSqlParserInfo(MetaObject metaObject) {
         String id = getMappedStatement(metaObject).getId();
         Boolean value = SQL_PARSER_CACHE.get(id);
-        if (value != null) {
+        if (null != value) {
             return value;
         }
         String mapperName = id.substring(0, id.lastIndexOf(Symbol.DOT));

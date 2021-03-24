@@ -98,7 +98,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
     }
 
     public static void closeMat(Mat mat) {
-        if (mat != null) {
+        if (null != mat) {
             mat.release();
         }
     }
@@ -185,12 +185,12 @@ public class NativeImageReader extends ImageReader implements Closeable {
         int nBitDepth = params.getBitsPerSample();
 
         ColorModel colorModel;
-        if (nBands == 1 && redPalette != null && greenPalette != null && bluePalette != null
+        if (nBands == 1 && null != redPalette && null != greenPalette && null != bluePalette
                 && redPalette.length == greenPalette.length && redPalette.length == bluePalette.length) {
 
             // Build IndexColorModel
             int paletteLength = redPalette.length;
-            if (alphaPalette != null) {
+            if (null != alphaPalette) {
                 byte[] alphaTmp = alphaPalette;
                 if (alphaPalette.length != paletteLength) {
                     alphaTmp = new byte[paletteLength];
@@ -215,7 +215,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
         } else {
             ColorSpace cs;
             boolean hasAlpha;
-            if (colorSpace != null
+            if (null != colorSpace
                     && (colorSpace.getNumComponents() == nBands || colorSpace.getNumComponents() == nBands - 1)) {
                 cs = colorSpace;
                 hasAlpha = colorSpace.getNumComponents() + 1 == nBands;
@@ -264,7 +264,7 @@ public class NativeImageReader extends ImageReader implements Closeable {
     @Override
     public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
-        if (input != null && !(input instanceof ImageInputStream)) {
+        if (null != input && !(input instanceof ImageInputStream)) {
             throw new IllegalArgumentException("input is not an ImageInputStream!");
         }
         resetInternalState();
@@ -314,16 +314,16 @@ public class NativeImageReader extends ImageReader implements Closeable {
     public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
         PlanarImage img = getNativeImage(param);
         BufferedImage bufferedImage = ImageConversion.toBufferedImage(img);
-        if (img != null) {
+        if (null != img) {
             img.release();
         }
         return bufferedImage;
     }
 
     public ImageParameters buildImage(ImageInputStream iis) throws IOException {
-        if (iis != null && params.getBytesPerLine() < 1) {
+        if (null != iis && params.getBytesPerLine() < 1) {
             SOFSegment sof = getSOFSegment(iis);
-            if (sof != null) {
+            if (null != sof) {
                 params.setJfif(sof.isJfif());
                 params.setJpegMarker(sof.getMarker());
                 params.setWidth(sof.getSamplesPerLine());

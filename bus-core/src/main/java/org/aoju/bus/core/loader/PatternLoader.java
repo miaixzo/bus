@@ -59,8 +59,8 @@ public abstract class PatternLoader extends DelegateLoader implements Loader {
     public Enumeration<Resource> load(String pattern, boolean recursively, Filter filter) throws IOException {
         Filter matcher = filter(pattern);
         AllFilter allFilter = new AllFilter();
-        if (matcher != null) allFilter.add(matcher);
-        if (filter != null) allFilter.add(filter);
+        if (null != matcher) allFilter.add(matcher);
+        if (null != filter) allFilter.add(filter);
         return delegate.load(
                 path(pattern),
                 recursively(pattern),

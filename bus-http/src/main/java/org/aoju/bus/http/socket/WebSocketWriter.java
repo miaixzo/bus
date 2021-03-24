@@ -54,8 +54,8 @@ final class WebSocketWriter {
     boolean activeWriter;
 
     WebSocketWriter(boolean isClient, BufferSink sink, Random random) {
-        if (sink == null) throw new NullPointerException("sink == null");
-        if (random == null) throw new NullPointerException("random == null");
+        if (null == sink) throw new NullPointerException("null == sink");
+        if (null == random) throw new NullPointerException("null == random");
         this.isClient = isClient;
         this.sink = sink;
         this.sinkBuffer = sink.buffer();
@@ -82,13 +82,13 @@ final class WebSocketWriter {
      */
     void writeClose(int code, ByteString reason) throws IOException {
         ByteString payload = ByteString.EMPTY;
-        if (code != 0 || reason != null) {
+        if (code != 0 || null != reason) {
             if (code != 0) {
                 WebSocketProtocol.validateCloseCode(code);
             }
             Buffer buffer = new Buffer();
             buffer.writeShort(code);
-            if (reason != null) {
+            if (null != reason) {
                 buffer.write(reason);
             }
             payload = buffer.readByteString();

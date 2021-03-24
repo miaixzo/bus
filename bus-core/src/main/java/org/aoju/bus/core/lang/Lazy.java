@@ -63,12 +63,12 @@ public class Lazy<T> implements Supplier<T>, Serializable {
      */
     @Override
     public T get() {
-        return (supplier == null) ? value : computeValue();
+        return (null == supplier) ? value : computeValue();
     }
 
     private synchronized T computeValue() {
         final Supplier<? extends T> s = supplier;
-        if (s != null) {
+        if (null != s) {
             value = s.get();
             supplier = null;
         }

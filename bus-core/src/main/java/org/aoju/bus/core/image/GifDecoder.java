@@ -178,7 +178,7 @@ public class GifDecoder {
                 }
             }
 
-            if (lastImage != null) {
+            if (null != lastImage) {
                 int[] prev =
                         ((DataBufferInt) lastImage.getRaster().getDataBuffer()).getData();
                 System.arraycopy(prev, 0, dest, 0, width * height);
@@ -279,7 +279,7 @@ public class GifDecoder {
      */
     public int read(BufferedInputStream is) {
         init();
-        if (is != null) {
+        if (null != is) {
             in = is;
             readHeader();
             if (false == err()) {
@@ -303,7 +303,7 @@ public class GifDecoder {
      */
     public int read(InputStream is) {
         init();
-        if (is != null) {
+        if (null != is) {
             if (!(is instanceof BufferedInputStream))
                 is = new BufferedInputStream(is);
             in = (BufferedInputStream) is;
@@ -372,12 +372,12 @@ public class GifDecoder {
                 bi,
                 pi;
 
-        if ((pixels == null) || (pixels.length < npix)) {
+        if ((null == pixels) || (pixels.length < npix)) {
             pixels = new byte[npix]; // allocate new pixel array
         }
-        if (prefix == null) prefix = new short[MAX_STACK_SIZE];
-        if (suffix == null) suffix = new byte[MAX_STACK_SIZE];
-        if (pixelStack == null) pixelStack = new byte[MAX_STACK_SIZE + 1];
+        if (null == prefix) prefix = new short[MAX_STACK_SIZE];
+        if (null == suffix) suffix = new byte[MAX_STACK_SIZE];
+        if (null == pixelStack) pixelStack = new byte[MAX_STACK_SIZE + 1];
 
         //  Initialize GIF data stream decoder.
 
@@ -433,7 +433,7 @@ public class GifDecoder {
                     old_code = NullCode;
                     continue;
                 }
-                if (old_code == NullCode) {
+                if (null == old_codeCode) {
                     pixelStack[top++] = suffix[code];
                     old_code = code;
                     first = code;
@@ -693,7 +693,7 @@ public class GifDecoder {
             act[transIndex] = 0; // set transparent color if specified
         }
 
-        if (act == null) {
+        if (null == act) {
             status = STATUS_FORMAT_ERROR; // no color table defined
         }
 

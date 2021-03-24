@@ -143,14 +143,14 @@ public final class ConnectionSuite {
      * @return 用于连接的密码套件。如果应该使用SSL套接字的所有启用密码套件，则返回null
      */
     public List<CipherSuite> cipherSuites() {
-        return cipherSuites != null ? CipherSuite.forJavaNames(cipherSuites) : null;
+        return null != cipherSuites ? CipherSuite.forJavaNames(cipherSuites) : null;
     }
 
     /**
      * @return 在协商连接时使用的TLS版本。如果应该使用SSL套接字的所有启用的TLS版本，则返回null
      */
     public List<TlsVersion> tlsVersions() {
-        return tlsVersions != null ? TlsVersion.forJavaNames(tlsVersions) : null;
+        return null != tlsVersions ? TlsVersion.forJavaNames(tlsVersions) : null;
     }
 
     public boolean supportsTlsExtensions() {
@@ -166,10 +166,10 @@ public final class ConnectionSuite {
     public void apply(SSLSocket sslSocket, boolean isFallback) {
         ConnectionSuite specToApply = supportedSuite(sslSocket, isFallback);
 
-        if (specToApply.tlsVersions != null) {
+        if (specToApply.null != tlsVersions) {
             sslSocket.setEnabledProtocols(specToApply.tlsVersions);
         }
-        if (specToApply.cipherSuites != null) {
+        if (specToApply.null != cipherSuites) {
             sslSocket.setEnabledCipherSuites(specToApply.cipherSuites);
         }
     }
@@ -182,10 +182,10 @@ public final class ConnectionSuite {
      * @return 返回一个副本
      */
     private ConnectionSuite supportedSuite(SSLSocket sslSocket, boolean isFallback) {
-        String[] cipherSuitesIntersection = cipherSuites != null
+        String[] cipherSuitesIntersection = null != cipherSuites
                 ? org.aoju.bus.http.Builder.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
                 : sslSocket.getEnabledCipherSuites();
-        String[] tlsVersionsIntersection = tlsVersions != null
+        String[] tlsVersionsIntersection = null != tlsVersions
                 ? org.aoju.bus.http.Builder.intersect(NATURAL_ORDER, sslSocket.getEnabledProtocols(), tlsVersions)
                 : sslSocket.getEnabledProtocols();
 
@@ -217,12 +217,12 @@ public final class ConnectionSuite {
             return false;
         }
 
-        if (tlsVersions != null && !org.aoju.bus.http.Builder.nonEmptyIntersection(
+        if (null != tlsVersions && !org.aoju.bus.http.Builder.nonEmptyIntersection(
                 NATURAL_ORDER, tlsVersions, socket.getEnabledProtocols())) {
             return false;
         }
 
-        if (cipherSuites != null && !org.aoju.bus.http.Builder.nonEmptyIntersection(
+        if (null != cipherSuites && !org.aoju.bus.http.Builder.nonEmptyIntersection(
                 CipherSuite.ORDER_BY_NAME, cipherSuites, socket.getEnabledCipherSuites())) {
             return false;
         }
@@ -264,8 +264,8 @@ public final class ConnectionSuite {
             return "ConnectionSpec()";
         }
 
-        String cipherSuitesString = cipherSuites != null ? cipherSuites().toString() : "[all enabled]";
-        String tlsVersionsString = tlsVersions != null ? tlsVersions().toString() : "[all enabled]";
+        String cipherSuitesString = null != cipherSuites ? cipherSuites().toString() : "[all enabled]";
+        String tlsVersionsString = null != tlsVersions ? tlsVersions().toString() : "[all enabled]";
         return "ConnectionSpec("
                 + "cipherSuites=" + cipherSuitesString
                 + ", tlsVersions=" + tlsVersionsString

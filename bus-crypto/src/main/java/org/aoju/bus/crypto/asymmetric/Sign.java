@@ -211,7 +211,7 @@ public class Sign extends Keys<Sign> {
             if (CollKit.isNotEmpty(critSet) && critSet.contains("2.5.29.15")) {
                 final boolean[] keyUsageInfo = cert.getKeyUsage();
                 // keyUsageInfo[0] 是数字签名
-                if ((keyUsageInfo != null) && (keyUsageInfo[0] == false)) {
+                if ((null != keyUsageInfo) && (keyUsageInfo[0] == false)) {
                     throw new InstrumentException("Wrong key usage");
                 }
             }

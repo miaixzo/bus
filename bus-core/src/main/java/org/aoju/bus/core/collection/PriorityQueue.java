@@ -59,7 +59,7 @@ public class PriorityQueue<E> extends java.util.PriorityQueue<E> {
     public PriorityQueue(int capacity, final Comparator<? super E> comparator) {
         super(capacity, (o1, o2) -> {
             int cResult;
-            if (comparator != null) {
+            if (null != comparator) {
                 cResult = comparator.compare(o1, o2);
             } else {
                 Comparable<E> o1c = (Comparable<E>) o1;

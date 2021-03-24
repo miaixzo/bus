@@ -53,8 +53,8 @@ public final class InflaterSource implements Source {
     }
 
     InflaterSource(BufferSource source, Inflater inflater) {
-        if (source == null) throw new IllegalArgumentException("source == null");
-        if (inflater == null) throw new IllegalArgumentException("inflater == null");
+        if (null == source) throw new IllegalArgumentException("null == source");
+        if (null == inflater) throw new IllegalArgumentException("null == inflater");
         this.source = source;
         this.inflater = inflater;
     }

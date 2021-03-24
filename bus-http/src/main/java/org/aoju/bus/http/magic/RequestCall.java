@@ -88,7 +88,7 @@ public class RequestCall {
             @Override
             public void onFailure(NewCall newCall, final IOException e) {
                 HttpxStat.onReqFailure(newCall.request().url().toString(), e);
-                if (finalAbsCallback != null) {
+                if (null != finalAbsCallback) {
                     finalAbsCallback.onFailure(newCall, e, id);
                 }
             }
@@ -96,7 +96,7 @@ public class RequestCall {
             @Override
             public void onResponse(final NewCall newCall, final org.aoju.bus.http.Response response) {
                 HttpxStat.onReqSuccess();
-                if (finalAbsCallback != null) {
+                if (null != finalAbsCallback) {
                     finalAbsCallback.onResponse(newCall, new HttpResponse(response), id);
                 }
             }
@@ -117,7 +117,7 @@ public class RequestCall {
     }
 
     public void cancel() {
-        if (newCall != null) {
+        if (null != newCall) {
             newCall.cancel();
         }
     }

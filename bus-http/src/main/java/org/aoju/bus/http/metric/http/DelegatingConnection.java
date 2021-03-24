@@ -74,13 +74,13 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public String getCipherSuite() {
         Handshake handshake = handshake();
-        return handshake != null ? handshake.cipherSuite().javaName() : null;
+        return null != handshake ? handshake.cipherSuite().javaName() : null;
     }
 
     @Override
     public Certificate[] getLocalCertificates() {
         Handshake handshake = handshake();
-        if (handshake == null) return null;
+        if (null == handshake) return null;
         List<Certificate> result = handshake.localCertificates();
         return !result.isEmpty() ? result.toArray(new Certificate[result.size()]) : null;
     }
@@ -88,7 +88,7 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public Certificate[] getServerCertificates() {
         Handshake handshake = handshake();
-        if (handshake == null) return null;
+        if (null == handshake) return null;
         List<Certificate> result = handshake.peerCertificates();
         return !result.isEmpty() ? result.toArray(new Certificate[result.size()]) : null;
     }
@@ -96,13 +96,13 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public Principal getPeerPrincipal() {
         Handshake handshake = handshake();
-        return handshake != null ? handshake.peerPrincipal() : null;
+        return null != handshake ? handshake.peerPrincipal() : null;
     }
 
     @Override
     public Principal getLocalPrincipal() {
         Handshake handshake = handshake();
-        return handshake != null ? handshake.localPrincipal() : null;
+        return null != handshake ? handshake.localPrincipal() : null;
     }
 
     @Override

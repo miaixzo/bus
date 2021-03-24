@@ -61,12 +61,12 @@ public enum AccessLevel {
     public static AccessLevel forValue(Integer value) {
 
         AccessLevel level = valuesMap.get(value);
-        if (level != null) {
+        if (null != level) {
             return (level);
         }
 
         GitLabApi.getLogger().warning(String.format("[%d] is not a valid GitLab access level.", value));
-        return (value == null ? null : INVALID);
+        return (null == value ? null : INVALID);
     }
 
     @JsonValue

@@ -60,7 +60,7 @@ class JavassistKit {
         synchronized (classLoaders) {
             try {
                 final ClassLoader loader = clazz.getClassLoader();
-                if (loader != null && !classLoaders.contains(loader)) {
+                if (null != loader && !classLoaders.contains(loader)) {
                     classLoaders.add(loader);
                     classPool.appendClassPath(new LoaderClassPath(loader));
                 }

@@ -68,7 +68,7 @@ public class CollKit {
      * @return 是否为空
      */
     public static boolean isEmpty(Collection<?> collection) {
-        return collection == null || collection.isEmpty();
+        return null == collection || collection.isEmpty();
     }
 
     /**
@@ -180,7 +180,7 @@ public class CollKit {
      * @return 是否相同
      */
     public static boolean isEqualList(final Collection<?> list1, final Collection<?> list2) {
-        if (list1 == null || list2 == null || list1.size() != list2.size()) {
+        if (null == list1 || null == list2 || list1.size() != list2.size()) {
             return false;
         }
         return IterKit.isEqualList(list1, list2);
@@ -498,7 +498,7 @@ public class CollKit {
      * @return 如果集合为空(null或者空), 返回{@code false},否则找到元素返回{@code true}
      */
     public static <T> boolean contains(T[] array, final T element) {
-        if (array == null) {
+        if (null == array) {
             return false;
         }
         return Arrays.stream(array).anyMatch(x -> ObjectKit.nullSafeEquals(x, element));
@@ -523,7 +523,7 @@ public class CollKit {
      * @return {@code true} 如果找到, {@code false} 否则返回
      */
     public static boolean contains(final Iterator<?> iterator, Object element) {
-        if (iterator != null) {
+        if (null != iterator) {
             while (iterator.hasNext()) {
                 Object candidate = iterator.next();
                 if (ObjectKit.nullSafeEquals(candidate, element)) {
@@ -542,7 +542,7 @@ public class CollKit {
      * @return {@code true} 如果找到, {@code false} 否则返回
      */
     public static boolean contains(Enumeration<?> enumeration, Object element) {
-        if (enumeration != null) {
+        if (null != enumeration) {
             while (enumeration.hasMoreElements()) {
                 Object candidate = enumeration.nextElement();
                 if (ObjectKit.nullSafeEquals(candidate, element)) {
@@ -1304,7 +1304,7 @@ public class CollKit {
      * @return 截取后的数组, 当开始位置超过最大时, 返回空的List
      */
     public static <T> List<T> sub(List<T> list, int start, int end, int step) {
-        if (list == null) {
+        if (null == list) {
             return null;
         }
 
@@ -1369,7 +1369,7 @@ public class CollKit {
      * @return 截取后的数组, 当开始位置超过最大时, 返回空集合
      */
     public static <T> List<T> sub(Collection<T> list, int start, int end, int step) {
-        if (list == null || list.isEmpty()) {
+        if (null == list || list.isEmpty()) {
             return null;
         }
 
@@ -3118,7 +3118,7 @@ public class CollKit {
      * @throws IllegalArgumentException 参数object不是Collection或者iterator
      */
     public static int size(final Object object) {
-        if (object == null) {
+        if (null == object) {
             return 0;
         }
 
@@ -3234,7 +3234,7 @@ public class CollKit {
      * @return 分类后的map
      */
     public static <E, T, U> Map<T, Map<U, E>> group2Map(Collection<E> collection, Function<E, T> key1, Function<E, U> key2) {
-        if (isEmpty(collection) || key1 == null || key2 == null) {
+        if (isEmpty(collection) || null == key1 || null == key2) {
             return Collections.emptyMap();
         }
         return collection
@@ -3274,7 +3274,7 @@ public class CollKit {
      * @return 转化后的Set
      */
     public static <E, T> Set<T> toSet(Collection<E> collection, Function<E, T> function) {
-        if (isEmpty(collection) || function == null) {
+        if (isEmpty(collection) || null == function) {
             return Collections.emptySet();
         }
         return collection
@@ -3313,7 +3313,7 @@ public class CollKit {
             X x = map1.get(t);
             Y y = map2.get(t);
             V z = merge.apply(x, y);
-            if (z != null) {
+            if (null != z) {
                 map.put(t, z);
             }
         }

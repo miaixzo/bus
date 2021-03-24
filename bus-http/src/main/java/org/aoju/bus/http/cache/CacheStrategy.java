@@ -150,7 +150,7 @@ public final class CacheStrategy {
             this.request = request;
             this.cacheResponse = cacheResponse;
 
-            if (cacheResponse != null) {
+            if (null != cacheResponse) {
                 this.sentRequestMillis = cacheResponse.sentRequestAtMillis();
                 this.receivedResponseMillis = cacheResponse.receivedResponseAtMillis();
                 Headers headers = cacheResponse.headers();
@@ -191,7 +191,7 @@ public final class CacheStrategy {
         public CacheStrategy get() {
             CacheStrategy candidate = getCandidate();
 
-            if (candidate.networkRequest != null && request.cacheControl().onlyIfCached()) {
+            if (candidate.null != networkRequest && request.cacheControl().onlyIfCached()) {
                 // 被禁止使用网络和缓存是不够的
                 return new CacheStrategy(null, null);
             }
@@ -204,7 +204,7 @@ public final class CacheStrategy {
          */
         private CacheStrategy getCandidate() {
             //没有缓存的响应.
-            if (cacheResponse == null) {
+            if (null == cacheResponse) {
                 return new CacheStrategy(request, null);
             }
 
@@ -257,13 +257,13 @@ public final class CacheStrategy {
             // 查找要添加到请求的条件。如果条件满足，则不会传输响应体。
             String conditionName;
             String conditionValue;
-            if (etag != null) {
+            if (null != etag) {
                 conditionName = "If-None-Match";
                 conditionValue = etag;
-            } else if (lastModified != null) {
+            } else if (null != lastModified) {
                 conditionName = "If-Modified-Since";
                 conditionValue = lastModifiedString;
-            } else if (servedDate != null) {
+            } else if (null != servedDate) {
                 conditionName = "If-Modified-Since";
                 conditionValue = servedDateString;
             } else {
@@ -286,19 +286,19 @@ public final class CacheStrategy {
             CacheControl responseCaching = cacheResponse.cacheControl();
             if (responseCaching.maxAgeSeconds() != -1) {
                 return TimeUnit.SECONDS.toMillis(responseCaching.maxAgeSeconds());
-            } else if (expires != null) {
-                long servedMillis = servedDate != null
+            } else if (null != expires) {
+                long servedMillis = null != servedDate
                         ? servedDate.getTime()
                         : receivedResponseMillis;
                 long delta = expires.getTime() - servedMillis;
                 return delta > 0 ? delta : 0;
-            } else if (lastModified != null
+            } else if (null != lastModified
                     && cacheResponse.request().url().query() == null) {
 
                 // 根据HTTP RFC的建议并在Firefox中实现，
                 // 文档的最大值应该默认为其被提供时文档值的10%。
                 // 默认过期日期不用于包含查询的uri
-                long servedMillis = servedDate != null
+                long servedMillis = null != servedDate
                         ? servedDate.getTime()
                         : sentRequestMillis;
                 long delta = servedMillis - lastModified.getTime();
@@ -311,7 +311,7 @@ public final class CacheStrategy {
          * @return 返回响应的当前值(以毫秒为单位)。计算按RFC 7234规定，4.2.3计算值
          */
         private long cacheResponseAge() {
-            long apparentReceivedAge = servedDate != null
+            long apparentReceivedAge = null != servedDate
                     ? Math.max(0, receivedResponseMillis - servedDate.getTime())
                     : 0;
             long receivedAge = ageSeconds != -1
@@ -327,7 +327,7 @@ public final class CacheStrategy {
          * 如果我们使用启发式来服务大于24小时的缓存响应，则需要附加一个警告
          */
         private boolean isFreshnessLifetimeHeuristic() {
-            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && expires == null;
+            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && null == expires;
         }
     }
 

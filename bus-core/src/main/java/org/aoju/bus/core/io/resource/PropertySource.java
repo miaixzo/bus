@@ -54,7 +54,7 @@ public interface PropertySource {
      */
     default String getProperty(String key) {
         String value = props().getProperty(key);
-        if (value == null) {
+        if (null == value) {
             return null;
         }
         return getPlaceholderProperty(value);
@@ -69,7 +69,7 @@ public interface PropertySource {
      */
     default String getProperty(String key, String defaultValue) {
         String value = getProperty(key);
-        if (value == null) {
+        if (null == value) {
             return defaultValue;
         }
         return value;

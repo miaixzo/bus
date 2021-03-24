@@ -476,7 +476,7 @@ public class Core {
      *   <li>
      * DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
-     * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
+     * are out of range, position of the first outlier is stored in pos (when null != pos). Then, the
      * function either returns false (when quiet=true) or throws an exception.
      *
      * @param a      input array.
@@ -501,7 +501,7 @@ public class Core {
      *   <li>
      * DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
-     * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
+     * are out of range, position of the first outlier is stored in pos (when null != pos). Then, the
      * function either returns false (when quiet=true) or throws an exception.
      *
      * @param a      input array.
@@ -525,7 +525,7 @@ public class Core {
      *   <li>
      * DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
-     * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
+     * are out of range, position of the first outlier is stored in pos (when null != pos). Then, the
      * function either returns false (when quiet=true) or throws an exception.
      *
      * @param a     input array.
@@ -548,7 +548,7 @@ public class Core {
      *   <li>
      * DBL_MAX and maxVal &lt; DBL_MAX, the function also checks that each value is between minVal and
      * maxVal. In case of multi-channel arrays, each channel is processed independently. If some values
-     * are out of range, position of the first outlier is stored in pos (when pos != NULL). Then, the
+     * are out of range, position of the first outlier is stored in pos (when null != pos). Then, the
      * function either returns false (when quiet=true) or throws an exception.
      *
      * @param a input array.
@@ -5792,7 +5792,7 @@ public class Core {
     public static MinMaxLocResult minMaxLoc(Mat src, Mat mask) {
         MinMaxLocResult res = new MinMaxLocResult();
         long maskNativeObj = 0;
-        if (mask != null) {
+        if (null != mask) {
             maskNativeObj = mask.nativeObj;
         }
         double[] resarr = n_minMaxLocManual(src.nativeObj, maskNativeObj);

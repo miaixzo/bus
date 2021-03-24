@@ -63,7 +63,7 @@ public abstract class AbstractOSThread implements OSThread {
 
     @Override
     public double getThreadCpuLoadBetweenTicks(OSThread priorSnapshot) {
-        if (priorSnapshot != null && owningProcessId == priorSnapshot.getOwningProcessId()
+        if (null != priorSnapshot && owningProcessId == priorSnapshot.getOwningProcessId()
                 && getThreadId() == priorSnapshot.getThreadId() && getUpTime() > priorSnapshot.getUpTime()) {
             return (getUserTime() - priorSnapshot.getUserTime() + getKernelTime() - priorSnapshot.getKernelTime())
                     / (double) (getUpTime() - priorSnapshot.getUpTime());

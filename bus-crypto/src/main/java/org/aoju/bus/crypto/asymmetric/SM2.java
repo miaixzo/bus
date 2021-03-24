@@ -283,7 +283,7 @@ public class SM2 extends Safety<SM2> {
         final SM2Signer signer = getSigner();
         try {
             CipherParameters param = new ParametersWithRandom(getCipherParameters(KeyType.PrivateKey));
-            if (id != null) {
+            if (null != id) {
                 param = new ParametersWithID(param, id);
             }
             signer.init(true, param);
@@ -343,7 +343,7 @@ public class SM2 extends Safety<SM2> {
         final SM2Signer signer = getSigner();
         try {
             CipherParameters param = getCipherParameters(KeyType.PublicKey);
-            if (id != null) {
+            if (null != id) {
                 param = new ParametersWithID(param, id);
             }
             signer.init(false, param);

@@ -107,10 +107,10 @@ public class Checker {
                     validated.getContext().setInside(false);
                     validated = new Validated(value, annotations, validated.getContext(), field.getName());
 
-                    if (value != null && Provider.isCollection(value)
+                    if (null != value && Provider.isCollection(value)
                             && hasInside(annotations)) {
                         collector.collect(doCollectionInside(validated));
-                    } else if (value != null && Provider.isArray(value)
+                    } else if (null != value && Provider.isArray(value)
                             && hasInside(annotations)) {
                         collector.collect(doArrayInside(validated));
                     }

@@ -206,7 +206,7 @@ public final class Builder {
      * @param charFilter 过滤函数
      */
     public static void setCharFilter(Filter<Character> charFilter) {
-        if (charFilter != null) {
+        if (null != charFilter) {
             sensitiveTree.setCharFilter(charFilter);
         }
     }

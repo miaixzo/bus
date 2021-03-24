@@ -43,7 +43,7 @@ public class ProtectedBranch {
     private Boolean codeOwnerApprovalRequired;
 
     public static final boolean isValid(ProtectedBranch branch) {
-        return (branch != null && branch.getName() != null);
+        return (null != branch && branch.getName() != null);
     }
 
     public String getName() {

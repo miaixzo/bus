@@ -88,10 +88,10 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
 
     private void handleHttpMessage(final Message message, final TraceFilterConfig filterConfiguration) {
         final Map<String, List<String>> requestHeaders = CastUtils.cast((Map<?, ?>) message.get(Message.PROTOCOL_HEADERS));
-        if (requestHeaders != null && !requestHeaders.isEmpty()) {
+        if (null != requestHeaders && !requestHeaders.isEmpty()) {
             final List<String> TraceHeader = requestHeaders.get(Builder.TPIC_HEADER);
 
-            if (TraceHeader != null && !TraceHeader.isEmpty()) {
+            if (null != TraceHeader && !TraceHeader.isEmpty()) {
                 final Map<String, String> parsedContext = httpJsonSerializer.parse(TraceHeader);
                 backend.putAll(filterConfiguration.filterDeniedParams(parsedContext, channel));
             }
@@ -100,7 +100,7 @@ abstract class AbstractTraceInInterceptor extends AbstractPhaseInterceptor<Messa
 
     private void handleSoapMessage(final SoapMessage message, final TraceFilterConfig filterConfiguration) {
         final Header soapHeader = message.getHeader(Builder.SOAP_HEADER_QNAME);
-        if (soapHeader != null) {
+        if (null != soapHeader) {
             final Map<String, String> parsedContext = httpSoapSerializer.parseTpicHeader((Element) soapHeader.getObject());
             backend.putAll(filterConfiguration.filterDeniedParams(parsedContext, channel));
         }

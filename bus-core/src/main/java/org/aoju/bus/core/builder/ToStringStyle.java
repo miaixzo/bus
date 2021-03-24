@@ -225,13 +225,13 @@ public abstract class ToStringStyle implements Serializable {
 
     static boolean isRegistered(final Object value) {
         final Map<Object, Object> m = getRegistry();
-        return m != null && m.containsKey(value);
+        return null != m && m.containsKey(value);
     }
 
     static void register(final Object value) {
-        if (value != null) {
+        if (null != value) {
             final Map<Object, Object> m = getRegistry();
-            if (m == null) {
+            if (null == m) {
                 REGISTRY.set(new WeakHashMap<>());
             }
             getRegistry().put(value, null);
@@ -239,9 +239,9 @@ public abstract class ToStringStyle implements Serializable {
     }
 
     static void unregister(final Object value) {
-        if (value != null) {
+        if (null != value) {
             final Map<Object, Object> m = getRegistry();
-            if (m != null) {
+            if (null != m) {
                 m.remove(value);
                 if (m.isEmpty()) {
                     REGISTRY.remove();
@@ -273,7 +273,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param toString the additional <code>toString</code>
      */
     public void appendToString(final StringBuffer buffer, final String toString) {
-        if (toString != null) {
+        if (null != toString) {
             final int pos1 = toString.indexOf(contentStart) + contentStart.length();
             final int pos2 = toString.lastIndexOf(contentEnd);
             if (pos1 != pos2 && pos1 >= 0 && pos2 >= 0) {
@@ -293,7 +293,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param object the <code>Object</code> to build a <code>toString</code> for
      */
     public void appendStart(final StringBuffer buffer, final Object object) {
-        if (object != null) {
+        if (null != object) {
             appendClassName(buffer, object);
             appendIdentityHashCode(buffer, object);
             appendContentStart(buffer);
@@ -355,7 +355,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final Object value, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (value == null) {
+        if (null == value) {
             appendNullText(buffer, fieldName);
 
         } else {
@@ -778,7 +778,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final Object[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -808,7 +808,7 @@ public abstract class ToStringStyle implements Serializable {
             if (i > 0) {
                 buffer.append(arraySeparator);
             }
-            if (item == null) {
+            if (null == item) {
                 appendNullText(buffer, fieldName);
 
             } else {
@@ -834,7 +834,7 @@ public abstract class ToStringStyle implements Serializable {
             if (i > 0) {
                 buffer.append(arraySeparator);
             }
-            if (item == null) {
+            if (null == item) {
                 appendNullText(buffer, fieldName);
 
             } else {
@@ -871,7 +871,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final long[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -931,7 +931,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final int[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -991,7 +991,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final short[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -1051,7 +1051,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final byte[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -1111,7 +1111,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final char[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -1170,7 +1170,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final double[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -1229,7 +1229,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final float[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -1289,7 +1289,7 @@ public abstract class ToStringStyle implements Serializable {
     public void append(final StringBuffer buffer, final String fieldName, final boolean[] array, final Boolean fullDetail) {
         appendFieldStart(buffer, fieldName);
 
-        if (array == null) {
+        if (null == array) {
             appendNullText(buffer, fieldName);
 
         } else if (isFullDetail(fullDetail)) {
@@ -1343,7 +1343,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param object the <code>Object</code> whose name to output
      */
     protected void appendClassName(final StringBuffer buffer, final Object object) {
-        if (useClassName && object != null) {
+        if (useClassName && null != object) {
             register(object);
             if (useShortClassName) {
                 buffer.append(getShortClassName(object.getClass()));
@@ -1360,7 +1360,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param object the <code>Object</code> whose id to output
      */
     protected void appendIdentityHashCode(final StringBuffer buffer, final Object object) {
-        if (this.isUseIdentityHashCode() && object != null) {
+        if (this.isUseIdentityHashCode() && null != object) {
             register(object);
             buffer.append(Symbol.C_AT);
             buffer.append(Integer.toHexString(System.identityHashCode(object)));
@@ -1413,7 +1413,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param fieldName the field name
      */
     protected void appendFieldStart(final StringBuffer buffer, final String fieldName) {
-        if (useFieldNames && fieldName != null) {
+        if (useFieldNames && null != fieldName) {
             buffer.append(fieldName);
             buffer.append(fieldNameValueSeparator);
         }
@@ -1465,7 +1465,7 @@ public abstract class ToStringStyle implements Serializable {
      * @return whether full detail is to be shown
      */
     protected boolean isFullDetail(final Boolean fullDetailRequest) {
-        if (fullDetailRequest == null) {
+        if (null == fullDetailRequest) {
             return defaultFullDetail;
         }
         return fullDetailRequest.booleanValue();
@@ -1618,7 +1618,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param arrayStart the new array start text
      */
     protected void setArrayStart(String arrayStart) {
-        if (arrayStart == null) {
+        if (null == arrayStart) {
             arrayStart = Normal.EMPTY;
         }
         this.arrayStart = arrayStart;
@@ -1643,7 +1643,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param arrayEnd the new array end text
      */
     protected void setArrayEnd(String arrayEnd) {
-        if (arrayEnd == null) {
+        if (null == arrayEnd) {
             arrayEnd = Normal.EMPTY;
         }
         this.arrayEnd = arrayEnd;
@@ -1667,7 +1667,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param arraySeparator the new array separator text
      */
     protected void setArraySeparator(String arraySeparator) {
-        if (arraySeparator == null) {
+        if (null == arraySeparator) {
             arraySeparator = Normal.EMPTY;
         }
         this.arraySeparator = arraySeparator;
@@ -1691,7 +1691,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param contentStart the new content start text
      */
     protected void setContentStart(String contentStart) {
-        if (contentStart == null) {
+        if (null == contentStart) {
             contentStart = Normal.EMPTY;
         }
         this.contentStart = contentStart;
@@ -1715,7 +1715,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param contentEnd the new content end text
      */
     protected void setContentEnd(String contentEnd) {
-        if (contentEnd == null) {
+        if (null == contentEnd) {
             contentEnd = Normal.EMPTY;
         }
         this.contentEnd = contentEnd;
@@ -1739,7 +1739,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param fieldNameValueSeparator the new field name value separator text
      */
     protected void setFieldNameValueSeparator(String fieldNameValueSeparator) {
-        if (fieldNameValueSeparator == null) {
+        if (null == fieldNameValueSeparator) {
             fieldNameValueSeparator = Normal.EMPTY;
         }
         this.fieldNameValueSeparator = fieldNameValueSeparator;
@@ -1763,7 +1763,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param fieldSeparator the new field separator text
      */
     protected void setFieldSeparator(String fieldSeparator) {
-        if (fieldSeparator == null) {
+        if (null == fieldSeparator) {
             fieldSeparator = Normal.EMPTY;
         }
         this.fieldSeparator = fieldSeparator;
@@ -1827,7 +1827,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param nullText the new text to output when null found
      */
     protected void setNullText(String nullText) {
-        if (nullText == null) {
+        if (null == nullText) {
             nullText = Normal.EMPTY;
         }
         this.nullText = nullText;
@@ -1857,7 +1857,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param sizeStartText the new start of size text
      */
     protected void setSizeStartText(String sizeStartText) {
-        if (sizeStartText == null) {
+        if (null == sizeStartText) {
             sizeStartText = Normal.EMPTY;
         }
         this.sizeStartText = sizeStartText;
@@ -1887,7 +1887,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param sizeEndText the new end of size text
      */
     protected void setSizeEndText(String sizeEndText) {
-        if (sizeEndText == null) {
+        if (null == sizeEndText) {
             sizeEndText = Normal.EMPTY;
         }
         this.sizeEndText = sizeEndText;
@@ -1917,7 +1917,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param summaryObjectStartText the new start of summary text
      */
     protected void setSummaryObjectStartText(String summaryObjectStartText) {
-        if (summaryObjectStartText == null) {
+        if (null == summaryObjectStartText) {
             summaryObjectStartText = Normal.EMPTY;
         }
         this.summaryObjectStartText = summaryObjectStartText;
@@ -1947,7 +1947,7 @@ public abstract class ToStringStyle implements Serializable {
      * @param summaryObjectEndText the new end of summary text
      */
     protected void setSummaryObjectEndText(String summaryObjectEndText) {
-        if (summaryObjectEndText == null) {
+        if (null == summaryObjectEndText) {
             summaryObjectEndText = Normal.EMPTY;
         }
         this.summaryObjectEndText = summaryObjectEndText;
@@ -2085,7 +2085,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName,
                            final Object[] array, final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2101,7 +2101,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName, final long[] array,
                            final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2117,7 +2117,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName, final int[] array,
                            final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2133,7 +2133,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName,
                            final short[] array, final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2149,7 +2149,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName, final byte[] array,
                            final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2165,7 +2165,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName, final char[] array,
                            final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2181,7 +2181,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName,
                            final double[] array, final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2197,7 +2197,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName,
                            final float[] array, final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2213,7 +2213,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName,
                            final boolean[] array, final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2229,7 +2229,7 @@ public abstract class ToStringStyle implements Serializable {
         public void append(final StringBuffer buffer, final String fieldName, final Object value,
                            final Boolean fullDetail) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }
@@ -2249,7 +2249,7 @@ public abstract class ToStringStyle implements Serializable {
         @Override
         protected void appendDetail(final StringBuffer buffer, final String fieldName, final Object value) {
 
-            if (value == null) {
+            if (null == value) {
                 appendNullText(buffer, fieldName);
                 return;
             }
@@ -2290,7 +2290,7 @@ public abstract class ToStringStyle implements Serializable {
         @Override
         protected void appendFieldStart(final StringBuffer buffer, final String fieldName) {
 
-            if (fieldName == null) {
+            if (null == fieldName) {
                 throw new UnsupportedOperationException(
                         "Field names are mandatory when using JsonToStringStyle");
             }

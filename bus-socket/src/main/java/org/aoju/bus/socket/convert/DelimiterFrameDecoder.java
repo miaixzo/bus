@@ -127,7 +127,7 @@ public class DelimiterFrameDecoder implements SocketDecoder {
      * @param endFLag 更新结束标志
      */
     public void reset(byte[] endFLag) {
-        if (endFLag != null) {
+        if (null != endFLag) {
             this.endFLag = endFLag;
         }
         finishRead = false;

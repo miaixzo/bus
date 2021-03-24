@@ -77,14 +77,14 @@ public final class Handshake {
 
     public static Handshake get(SSLSession session) throws IOException {
         String cipherSuiteString = session.getCipherSuite();
-        if (cipherSuiteString == null) throw new IllegalStateException("cipherSuite == null");
+        if (null == cipherSuiteString) throw new IllegalStateException("null == cipherSuite");
         if ("SSL_NULL_WITH_NULL_NULL".equals(cipherSuiteString)) {
             throw new IOException("cipherSuite == SSL_NULL_WITH_NULL_NULL");
         }
         CipherSuite cipherSuite = CipherSuite.forJavaName(cipherSuiteString);
 
         String tlsVersionString = session.getProtocol();
-        if (tlsVersionString == null) throw new IllegalStateException("tlsVersion == null");
+        if (null == tlsVersionString) throw new IllegalStateException("null == tlsVersion");
         if ("NONE".equals(tlsVersionString)) throw new IOException("tlsVersion == NONE");
         TlsVersion tlsVersion = TlsVersion.forJavaName(tlsVersionString);
 
@@ -94,12 +94,12 @@ public final class Handshake {
         } catch (SSLPeerUnverifiedException ignored) {
             peerCertificates = null;
         }
-        List<Certificate> peerCertificatesList = peerCertificates != null
+        List<Certificate> peerCertificatesList = null != peerCertificates
                 ? Builder.immutableList(peerCertificates)
                 : Collections.emptyList();
 
         Certificate[] localCertificates = session.getLocalCertificates();
-        List<Certificate> localCertificatesList = localCertificates != null
+        List<Certificate> localCertificatesList = null != localCertificates
                 ? Builder.immutableList(localCertificates)
                 : Collections.emptyList();
 
@@ -108,8 +108,8 @@ public final class Handshake {
 
     public static Handshake get(TlsVersion tlsVersion, CipherSuite cipherSuite,
                                 List<Certificate> peerCertificates, List<Certificate> localCertificates) {
-        if (tlsVersion == null) throw new NullPointerException("tlsVersion == null");
-        if (cipherSuite == null) throw new NullPointerException("cipherSuite == null");
+        if (null == tlsVersion) throw new NullPointerException("null == tlsVersion");
+        if (null == cipherSuite) throw new NullPointerException("null == cipherSuite");
         return new Handshake(tlsVersion, cipherSuite, Builder.immutableList(peerCertificates),
                 Builder.immutableList(localCertificates));
     }

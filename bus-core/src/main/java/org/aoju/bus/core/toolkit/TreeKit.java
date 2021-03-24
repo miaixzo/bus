@@ -133,7 +133,7 @@ public class TreeKit {
             return;
         }
         //maxDeep 可能为空
-        if (maxDeep != null && deep >= maxDeep) {
+        if (null != maxDeep && deep >= maxDeep) {
             return;
         }
 
@@ -142,7 +142,7 @@ public class TreeKit {
         for (TreeMap<T> childNode : treeMapNodes) {
             if (parentNode.getId().equals(childNode.getParentId())) {
                 List<TreeMap<T>> children = parentNode.getChildren();
-                if (children == null) {
+                if (null == children) {
                     children = CollKit.newArrayList();
                     parentNode.setChildren(children);
                 }

@@ -48,12 +48,12 @@ public class PersonName {
     }
 
     public PersonName(String s, boolean lenient) {
-        if (s != null)
+        if (null != s)
             parse(s, lenient);
     }
 
     private static String trim(String s) {
-        return s == null || (s = s.trim()).isEmpty() ? null : s;
+        return null == s || (s = s.trim()).isEmpty() ? null : s;
     }
 
     private void parse(String s, boolean lenient) {
@@ -94,7 +94,7 @@ public class PersonName {
             Component lastCompOfGroup = Component.FamilyName;
             for (Component c : Component.values()) {
                 String s = get(g, c);
-                if (s != null) {
+                if (null != s) {
                     totLen += s.length();
                     lastGroup = g;
                     lastCompOfGroup = c;
@@ -109,7 +109,7 @@ public class PersonName {
             Component lastCompOfGroup = Component.FamilyName;
             for (Component c : Component.values()) {
                 String s = get(g, c);
-                if (s != null) {
+                if (null != s) {
                     int d = c.ordinal() - lastCompOfGroup.ordinal();
                     while (d-- > 0)
                         ch[wpos++] = Symbol.C_CARET;
@@ -131,7 +131,7 @@ public class PersonName {
         Component lastCompOfGroup = Component.FamilyName;
         for (Component c : Component.values()) {
             String s = get(g, c);
-            if (s != null) {
+            if (null != s) {
                 totLen += s.length();
                 lastCompOfGroup = c;
             }
@@ -141,7 +141,7 @@ public class PersonName {
         int wpos = 0;
         for (Component c : Component.values()) {
             String s = get(g, c);
-            if (s != null) {
+            if (null != s) {
                 int d = s.length();
                 s.getChars(0, d, ch, wpos);
                 wpos += d;

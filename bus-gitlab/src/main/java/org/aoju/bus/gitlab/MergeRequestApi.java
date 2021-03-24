@@ -78,10 +78,10 @@ public class MergeRequestApi extends AbstractApi {
      */
     public List<MergeRequest> getMergeRequests(MergeRequestFilter filter, int page, int perPage) throws GitLabApiException {
 
-        MultivaluedMap<String, String> queryParams = (filter != null ?
+        MultivaluedMap<String, String> queryParams = (null != filter ?
                 filter.getQueryParams(page, perPage).asMap() : getPageQueryParams(page, perPage));
         Response response;
-        if (filter != null && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
+        if (null != filter && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
                 (filter.getIids() != null && filter.getIids().size() > 0)) {
 
             if (filter.getProjectId() == null || filter.getProjectId().intValue() == 0) {
@@ -109,8 +109,8 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<MergeRequest> getMergeRequests(MergeRequestFilter filter, int itemsPerPage) throws GitLabApiException {
 
-        MultivaluedMap<String, String> queryParams = (filter != null ? filter.getQueryParams().asMap() : null);
-        if (filter != null && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
+        MultivaluedMap<String, String> queryParams = (null != filter ? filter.getQueryParams().asMap() : null);
+        if (null != filter && (filter.getProjectId() != null && filter.getProjectId().intValue() > 0) ||
                 (filter.getIids() != null && filter.getIids().size() > 0)) {
 
             if (filter.getProjectId() == null || filter.getProjectId().intValue() == 0) {
@@ -659,7 +659,7 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
 
         String[] labelsArray = null;
-        if (labels != null) {
+        if (null != labels) {
             labelsArray = labels.split(Symbol.COMMA, -1);
         }
 
@@ -692,7 +692,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public void deleteMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -800,7 +800,7 @@ public class MergeRequestApi extends AbstractApi {
                                            String mergeCommitMessage, Boolean shouldRemoveSourceBranch, Boolean mergeWhenPipelineSucceeds, String sha)
             throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -833,7 +833,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public MergeRequest cancelMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -871,7 +871,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public MergeRequest getApprovals(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -892,7 +892,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public ApprovalState getApprovalState(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -930,7 +930,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<ApprovalRule> getApprovalRules(Object projectIdOrPath, Integer mergeRequestIid, int itemsPerPage) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -969,7 +969,7 @@ public class MergeRequestApi extends AbstractApi {
     public ApprovalRule createApprovalRule(Object projectIdOrPath, Integer mergeRequestIid,
                                            Integer projectRuleId, ApprovalRuleParams params) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -996,11 +996,11 @@ public class MergeRequestApi extends AbstractApi {
     public ApprovalRule updateApprovalRule(Object projectIdOrPath, Integer mergeRequestIid,
                                            Integer approvalRuleId, ApprovalRuleParams params) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        if (approvalRuleId == null) {
+        if (null == approvalRuleId) {
             throw new RuntimeException("approvalRuleId cannot be null");
         }
 
@@ -1023,11 +1023,11 @@ public class MergeRequestApi extends AbstractApi {
      */
     public void deleteApprovalRule(Object projectIdOrPath, Integer mergeRequestIid, Integer approvalRuleId) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        if (approvalRuleId == null) {
+        if (null == approvalRuleId) {
             throw new RuntimeException("approvalRuleId cannot be null");
         }
 
@@ -1050,7 +1050,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public MergeRequest approveMergeRequest(Object projectIdOrPath, Integer mergeRequestIid, String sha) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
@@ -1073,7 +1073,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public MergeRequest unapproveMergeRequest(Object projectIdOrPath, Integer mergeRequestIid) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 

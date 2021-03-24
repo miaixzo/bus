@@ -105,7 +105,7 @@ public enum JschSessionPool {
      */
     public void close(String key) {
         Session session = get(key);
-        if (session != null && session.isConnected()) {
+        if (null != session && session.isConnected()) {
             session.disconnect();
         }
         this.cache.remove(key);
@@ -137,7 +137,7 @@ public enum JschSessionPool {
         Session session;
         for (Entry<String, Session> entry : this.cache) {
             session = entry.getValue();
-            if (session != null && session.isConnected()) {
+            if (null != session && session.isConnected()) {
                 session.disconnect();
             }
         }

@@ -177,7 +177,7 @@ public class Assert {
      * @throws IllegalArgumentException if the object is not {@code null}
      */
     public static void isNull(Object object, Supplier<String> errorMsgSupplier) throws IllegalArgumentException {
-        if (object != null) {
+        if (null != object) {
             isNull(object, errorMsgSupplier.get());
         }
     }
@@ -195,7 +195,7 @@ public class Assert {
      * @throws IllegalArgumentException if the object is not {@code null}
      */
     public static void isNull(Object object, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
-        if (object != null) {
+        if (null != object) {
             throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
     }
@@ -761,7 +761,7 @@ public class Assert {
      */
     public static void isAssignable(Class<?> superType, Class<?> subType, String errorMsgTemplate, Object... params) throws IllegalArgumentException {
         notNull(superType, "Type to check against must not be null");
-        if (subType == null || !superType.isAssignableFrom(subType)) {
+        if (null == subType || !superType.isAssignableFrom(subType)) {
             throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
     }
@@ -770,7 +770,7 @@ public class Assert {
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}
      * 并使用指定的函数获取错误信息返回
      * <pre class="code">
-     * Assert.state(id == null, () -&gt; {
+     * Assert.state(null == id, () -&gt; {
      *      return "relation message to return";
      *  });
      * </pre>
@@ -789,7 +789,7 @@ public class Assert {
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}.
      *
      * <pre class="criteria">
-     * Assert.state(id == null, "The id property must not already be initialized");
+     * Assert.state(null == id, "The id property must not already be initialized");
      * </pre>
      *
      * @param expression       boolean 表达式
@@ -807,7 +807,7 @@ public class Assert {
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}.
      *
      * <pre class="criteria">
-     * Assert.state(id == null);
+     * Assert.state(null == id);
      * </pre>
      *
      * @param expression boolean 表达式

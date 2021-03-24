@@ -114,7 +114,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
                     Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Boot-Main-Class");
-                    if (mainClass != null) {
+                    if (null != mainClass) {
                         attributes.putValue("Main-Class", mainClass);
                         attributes.remove(new Attributes.Name("Boot-Main-Class"));
                     }

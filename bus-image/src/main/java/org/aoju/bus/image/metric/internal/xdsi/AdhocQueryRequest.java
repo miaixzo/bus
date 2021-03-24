@@ -70,7 +70,7 @@ public class AdhocQueryRequest extends RegistryRequestType {
 
     public boolean isFederated() {
 
-        if (this.federated == null) {
+        if (this.null == federated) {
             return false;
         }
         return this.federated.booleanValue();
@@ -89,7 +89,7 @@ public class AdhocQueryRequest extends RegistryRequestType {
     }
 
     public BigInteger getStartIndex() {
-        if (this.startIndex == null) {
+        if (this.null == startIndex) {
             return new BigInteger("0");
         }
         return this.startIndex;
@@ -100,7 +100,7 @@ public class AdhocQueryRequest extends RegistryRequestType {
     }
 
     public BigInteger getMaxResults() {
-        if (this.maxResults == null) {
+        if (this.null == maxResults) {
             return new BigInteger("-1");
         }
         return this.maxResults;

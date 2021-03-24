@@ -61,7 +61,7 @@ public final class Xrandr {
         for (String s : xrandr) {
             if (s.contains("EDID")) {
                 sb = new StringBuilder();
-            } else if (sb != null) {
+            } else if (null != sb) {
                 sb.append(s.trim());
                 if (sb.length() < 256) {
                     continue;

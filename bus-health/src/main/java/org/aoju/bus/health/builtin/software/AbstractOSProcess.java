@@ -67,7 +67,7 @@ public abstract class AbstractOSProcess implements OSProcess {
 
     @Override
     public double getProcessCpuLoadBetweenTicks(OSProcess priorSnapshot) {
-        if (priorSnapshot != null && this.processID == priorSnapshot.getProcessID()
+        if (null != priorSnapshot && this.processID == priorSnapshot.getProcessID()
                 && getUpTime() > priorSnapshot.getUpTime()) {
             return (getUserTime() - priorSnapshot.getUserTime() + getKernelTime() - priorSnapshot.getKernelTime())
                     / (double) (getUpTime() - priorSnapshot.getUpTime());

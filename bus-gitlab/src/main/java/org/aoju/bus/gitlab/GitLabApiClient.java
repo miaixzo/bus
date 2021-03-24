@@ -229,7 +229,7 @@ public class GitLabApiClient implements AutoCloseable {
         this.tokenType = tokenType;
         this.authToken = authToken;
 
-        if (secretToken != null) {
+        if (null != secretToken) {
             secretToken = secretToken.trim();
             secretToken = (secretToken.length() > 0 ? secretToken : null);
         }
@@ -237,7 +237,7 @@ public class GitLabApiClient implements AutoCloseable {
         this.secretToken = secretToken;
 
         clientConfig = new ClientConfig();
-        if (clientConfigProperties != null) {
+        if (null != clientConfigProperties) {
 
             if (clientConfigProperties.containsKey(ClientProperties.PROXY_URI)) {
                 clientConfig.connectorProvider(new ApacheConnectorProvider());
@@ -262,7 +262,7 @@ public class GitLabApiClient implements AutoCloseable {
      */
     @Override
     public void close() {
-        if (apiClient != null) {
+        if (null != apiClient) {
             apiClient.close();
         }
     }
@@ -283,7 +283,7 @@ public class GitLabApiClient implements AutoCloseable {
         clientConfig.register(loggingFilter);
 
         // Recreate the Client instance if already created.
-        if (apiClient != null) {
+        if (null != apiClient) {
             createApiClient();
         }
     }
@@ -370,7 +370,7 @@ public class GitLabApiClient implements AutoCloseable {
     private String appendPathArgs(String url, Object... pathArgs) {
         StringBuilder urlBuilder = new StringBuilder(url);
         for (Object pathArg : pathArgs) {
-            if (pathArg != null) {
+            if (null != pathArg) {
                 urlBuilder.append("/");
                 urlBuilder.append(pathArg.toString());
             }
@@ -387,11 +387,11 @@ public class GitLabApiClient implements AutoCloseable {
      */
     protected boolean validateSecretToken(Response response) {
 
-        if (this.secretToken == null)
+        if (this.null == secretToken)
             return (true);
 
         String secretToken = response.getHeaderString(X_GITLAB_TOKEN_HEADER);
-        if (secretToken == null)
+        if (null == secretToken)
             return (false);
 
         return (this.secretToken.equals(secretToken));
@@ -516,7 +516,7 @@ public class GitLabApiClient implements AutoCloseable {
     protected Response post(Form formData, URL url) {
         if (formData instanceof GitLabApiForm) {
             return (invocation(url, null).post(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
-        } else if (formData != null) {
+        } else if (null != formData) {
             return (invocation(url, null).post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
         } else {
             return (invocation(url, null).post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
@@ -612,19 +612,19 @@ public class GitLabApiClient implements AutoCloseable {
      */
     protected Response upload(String name, File fileToUpload, String mediaTypeString, Form formData, URL url) throws IOException {
 
-        MediaType mediaType = (mediaTypeString != null ? MediaType.valueOf(mediaTypeString) : null);
+        MediaType mediaType = (null != mediaTypeString ? MediaType.valueOf(mediaTypeString) : null);
         try (FormDataMultiPart multiPart = new FormDataMultiPart()) {
 
-            if (formData != null) {
+            if (null != formData) {
                 MultivaluedMap<String, String> formParams = formData.asMap();
                 formParams.forEach((key, values) -> {
-                    if (values != null) {
+                    if (null != values) {
                         values.forEach(value -> multiPart.field(key, value));
                     }
                 });
             }
 
-            FileDataBodyPart filePart = mediaType != null ?
+            FileDataBodyPart filePart = null != mediaType ?
                     new FileDataBodyPart(name, fileToUpload, mediaType) :
                     new FileDataBodyPart(name, fileToUpload);
             multiPart.bodyPart(filePart);
@@ -690,7 +690,7 @@ public class GitLabApiClient implements AutoCloseable {
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response put(MultivaluedMap<String, String> queryParams, URL url) {
-        if (queryParams == null || queryParams.isEmpty()) {
+        if (null == queryParams || queryParams.isEmpty()) {
             Entity<?> empty = Entity.text(Normal.EMPTY);
             return (invocation(url, null).put(empty));
         } else {
@@ -790,12 +790,12 @@ public class GitLabApiClient implements AutoCloseable {
 
     protected Invocation.Builder invocation(URL url, MultivaluedMap<String, String> queryParams, String accept) {
 
-        if (apiClient == null) {
+        if (null == apiClient) {
             createApiClient();
         }
 
         WebTarget target = apiClient.target(url.toExternalForm()).property(ClientProperties.FOLLOW_REDIRECTS, true);
-        if (queryParams != null) {
+        if (null != queryParams) {
             for (Map.Entry<String, List<String>> param : queryParams.entrySet()) {
                 target = target.queryParam(param.getKey(), param.getValue().toArray());
             }
@@ -804,23 +804,23 @@ public class GitLabApiClient implements AutoCloseable {
         String authHeader = (tokenType == TokenType.OAUTH2_ACCESS ? AUTHORIZATION_HEADER : PRIVATE_TOKEN_HEADER);
         String authValue = (tokenType == TokenType.OAUTH2_ACCESS ? "Bearer " + authToken : authToken);
         Invocation.Builder builder = target.request();
-        if (accept == null || accept.trim().length() == 0) {
+        if (null == accept || accept.trim().length() == 0) {
             builder = builder.header(authHeader, authValue);
         } else {
             builder = builder.header(authHeader, authValue).accept(accept);
         }
 
         // If sudo as ID is set add the Sudo header
-        if (sudoAsId != null && sudoAsId.intValue() > 0)
+        if (null != sudoAsId && sudoAsId.intValue() > 0)
             builder = builder.header(SUDO_HEADER, sudoAsId);
 
         // Set the per request connect timeout
-        if (connectTimeout != null) {
+        if (null != connectTimeout) {
             builder.property(ClientProperties.CONNECT_TIMEOUT, connectTimeout);
         }
 
         // Set the per request read timeout
-        if (readTimeout != null) {
+        if (null != readTimeout) {
             builder.property(ClientProperties.READ_TIMEOUT, readTimeout);
         }
 

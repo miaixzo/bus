@@ -293,7 +293,7 @@ public class ThreadKit {
      * @return 被中断返回false，否则true
      */
     public static boolean sleep(Number millis) {
-        if (millis == null) {
+        if (null == millis) {
             return true;
         }
         return sleep(millis.longValue());
@@ -324,7 +324,7 @@ public class ThreadKit {
      * @see ThreadKit#sleep(Number)
      */
     public static boolean safeSleep(Number millis) {
-        if (millis == null) {
+        if (null == millis) {
             return true;
         }
 

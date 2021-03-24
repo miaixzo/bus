@@ -102,7 +102,7 @@ public class Project {
     private Constants.BuildGitStrategy buildGitStrategy;
 
     public static final boolean isValid(Project project) {
-        return (project != null && project.getId() != null);
+        return (null != project && project.getId() != null);
     }
 
     /**

@@ -125,7 +125,7 @@ public abstract class Builder {
      * @throws IOException I/O 异常
      */
     public static void writeln(OutputStream out, byte[] line) throws IOException {
-        if (line == null) {
+        if (null == line) {
             return;
         }
         out.write(line);
@@ -154,7 +154,7 @@ public abstract class Builder {
      * @throws IOException 当quietly == false, 时捕获到的I/O异常将会往外抛
      */
     public static void close(Closeable closeable, boolean quietly) throws IOException {
-        if (closeable == null) return;
+        if (null == closeable) return;
         try {
             closeable.close();
         } catch (IOException e) {
@@ -262,7 +262,7 @@ public abstract class Builder {
         if (file.isDirectory() && recursively) {
             boolean deleted = true;
             File[] files = file.listFiles();
-            for (int i = 0; files != null && i < files.length; i++) {
+            for (int i = 0; null != files && i < files.length; i++) {
                 deleted &= delete(files[i], true);
             }
             return deleted && file.delete();

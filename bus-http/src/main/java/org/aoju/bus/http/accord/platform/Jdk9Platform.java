@@ -93,7 +93,7 @@ public final class Jdk9Platform extends Platform {
 
             // SSLSocket.getApplicationProtocol 返回 "" 如果应用程序协议值不被使用
             // 没有指定SSLParameters.setApplicationProtocols时观察到的
-            if (protocol == null || Normal.EMPTY.equals(protocol)) {
+            if (null == protocol || Normal.EMPTY.equals(protocol)) {
                 return null;
             }
 

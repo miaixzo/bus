@@ -66,10 +66,10 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     private static String platformExpert() {
         String manufacturer = null;
         IOKit.IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
-        if (platformExpert != null) {
+        if (null != platformExpert) {
             // Get manufacturer from IOPlatformExpertDevice
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
-            if (data != null) {
+            if (null != data) {
                 manufacturer = Native.toString(data, StandardCharsets.UTF_8);
             }
             platformExpert.release();
@@ -84,14 +84,14 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         // All CPUs are an IOPlatformDevice
         // Iterate each CPU and save frequency and "compatible" strings
         IOKit.IOIterator iter = IOKitUtil.getMatchingServices("IOPlatformDevice");
-        if (iter != null) {
+        if (null != iter) {
             Set<String> compatibleStrSet = new HashSet<>();
             IOKit.IORegistryEntry cpu = iter.next();
-            while (cpu != null) {
+            while (null != cpu) {
                 if (cpu.getName().startsWith("cpu")) {
                     // Accurate CPU vendor frequency in kHz as little-endian byte array
                     byte[] data = cpu.getByteArrayProperty("clock-frequency");
-                    if (data != null) {
+                    if (null != data) {
                         long cpuFreq = Builder.byteArrayToLong(data, data.length, false) * 1000L;
                         if (cpuFreq > freq) {
                             freq = cpuFreq;
@@ -99,7 +99,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                     }
                     // Compatible key is null-delimited C string array in byte array
                     data = cpu.getByteArrayProperty("compatible");
-                    if (data != null) {
+                    if (null != data) {
                         for (String s : new String(data, StandardCharsets.UTF_8).split("\0")) {
                             if (!s.isEmpty()) {
                                 compatibleStrSet.add(s);

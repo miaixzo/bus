@@ -77,7 +77,7 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
         if (this.initialized) {
             Class<?> targetClass = AopProxyUtils.ultimateTargetClass(target);
             LimitedResourceSource limitedResourceSource = getLimitedResourceSource();
-            if (limitedResourceSource != null) {
+            if (null != limitedResourceSource) {
                 Collection<LimitedResource> limitedResources = limitedResourceSource.getLimitedResource(targetClass, method);
                 if (!CollKit.isEmpty(limitedResources)) {
                     Collection<LimiterExecutionContext> contexts = getLimiterOperationContexts(limitedResources, method, args, target, targetClass);
@@ -127,7 +127,7 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
     }
 
     protected void releaseContexts(Collection<LimiterExecutionContext> contexts) {
-        if (contexts != null && !contexts.isEmpty()) {
+        if (null != contexts && !contexts.isEmpty()) {
             for (LimiterExecutionContext context : contexts) {
                 context.release();
             }

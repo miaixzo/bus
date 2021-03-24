@@ -2491,12 +2491,12 @@ public class UID {
     }
 
     public static String createUIDIfNull(String uid) {
-        return uid == null ? randomUID(root) : uid;
+        return null == uid ? randomUID(root) : uid;
     }
 
     public static String createUIDIfNull(String uid, String root) {
         checkRoot(root);
-        return uid == null ? randomUID(root) : uid;
+        return null == uid ? randomUID(root) : uid;
     }
 
     public static String remapUID(String uid) {
@@ -2601,7 +2601,7 @@ public class UID {
                 ss = (String[]) val;
                 for (int i = 0, c = 0; i < ss.length; i++) {
                     String uid = uidMap.get(ss[i]);
-                    if (uid != null) {
+                    if (null != uid) {
                         if (c++ == 0)
                             modified(attrs, tag, vr, ss.clone());
                         ss[i] = uid;
@@ -2610,7 +2610,7 @@ public class UID {
                 }
             } else {
                 String uid = uidMap.get(val);
-                if (uid != null) {
+                if (null != uid) {
                     modified(attrs, tag, vr, val);
                     attrs.setString(tag, VR.UI, uid);
                     replaced++;
@@ -2620,7 +2620,7 @@ public class UID {
         }
 
         private void modified(Attributes attrs, int tag, VR vr, Object val) {
-            if (modified == null)
+            if (null == modified)
                 return;
 
             if (rootSeqTag == 0) {

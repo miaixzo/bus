@@ -76,7 +76,7 @@ public class Formatter {
      * @return 格式化成功返回成功后的字符串, 失败返回<b>null</b>
      */
     public static String format(Date date) {
-        if (date != null) {
+        if (null != date) {
             return Fields.NORM_DATETIME_FORMAT.format(date);
         }
         return Normal.EMPTY;
@@ -617,7 +617,7 @@ public class Formatter {
      * @see java.util.Calendar#isLenient()
      */
     public static Calendar parse(String str, Locale locale, boolean lenient, String... parsePatterns) {
-        if (str == null || parsePatterns == null) {
+        if (null == str || null == parsePatterns) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
 
@@ -723,7 +723,7 @@ public class Formatter {
      * @return 日期对象
      */
     public static DateTime parseCST(CharSequence cstString) {
-        if (cstString == null) {
+        if (null == cstString) {
             return null;
         }
 
@@ -743,7 +743,7 @@ public class Formatter {
      * @return 日期对象
      */
     public static DateTime parseUTC(String utcString) {
-        if (utcString == null) {
+        if (null == utcString) {
             return null;
         }
         int length = utcString.length();
@@ -808,7 +808,7 @@ public class Formatter {
      * @see java.util.Calendar#isLenient()
      */
     public static Calendar parseByPatterns(String str, Locale locale, boolean lenient, String... parsePatterns) {
-        if (str == null || parsePatterns == null) {
+        if (null == str || null == parsePatterns) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
 

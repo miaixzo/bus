@@ -88,7 +88,7 @@ public class DateKit extends Almanac {
      * @return 日期
      */
     public static String getLastTime(Date date) {
-        if (date == null) {
+        if (null == date) {
             return null;
         }
         long diff = System.currentTimeMillis() - date.getTime();

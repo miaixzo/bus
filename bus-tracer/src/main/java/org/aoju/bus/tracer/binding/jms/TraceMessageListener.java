@@ -76,7 +76,7 @@ public final class TraceMessageListener {
     public void beforeProcessing(final Message message) throws JMSException {
         if (backend.getConfiguration().shouldProcessContext(TraceFilterConfig.Channel.AsyncProcess)) {
             final String encodedTraceContext = message.getStringProperty(Builder.TPIC_HEADER);
-            if (encodedTraceContext != null) {
+            if (null != encodedTraceContext) {
                 final Map<String, String> contextFromMessage = httpHeaderSerialization.parse(Collections.singletonList(encodedTraceContext));
                 backend.putAll(backend.getConfiguration().filterDeniedParams(contextFromMessage, TraceFilterConfig.Channel.AsyncProcess));
             }

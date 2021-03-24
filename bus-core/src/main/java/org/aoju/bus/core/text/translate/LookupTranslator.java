@@ -51,7 +51,7 @@ public class LookupTranslator extends CharSequenceTranslator {
     private final int longest;
 
     public LookupTranslator(final Map<CharSequence, CharSequence> lookupMap) {
-        if (lookupMap == null) {
+        if (null == lookupMap) {
             throw new InvalidParameterException("lookupMap cannot be null");
         }
         this.lookupMap = new HashMap<>();
@@ -86,7 +86,7 @@ public class LookupTranslator extends CharSequenceTranslator {
                 final CharSequence subSeq = input.subSequence(index, index + i);
                 final String result = lookupMap.get(subSeq.toString());
 
-                if (result != null) {
+                if (null != result) {
                     out.write(result);
                     return i;
                 }

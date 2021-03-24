@@ -142,14 +142,14 @@ public class BulkData implements Value {
     }
 
     public String uriWithoutOffsetAndLength() {
-        if (uri == null)
+        if (null == uri)
             throw new IllegalStateException("uri: null");
 
         return uri.substring(0, uriPathEnd);
     }
 
     public InputStream openStream() throws IOException {
-        if (uri == null)
+        if (null == uri)
             throw new IllegalStateException("uri: null");
 
         if (!uri.startsWith("file:"))
@@ -221,20 +221,20 @@ public class BulkData implements Value {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (null == obj)
             return false;
         if (getClass() != obj.getClass())
             return false;
         BulkData other = (BulkData) obj;
         if (bigEndian != other.bigEndian)
             return false;
-        if (uri == null) {
-            if (other.uri != null)
+        if (null == uri) {
+            if (other.null != uri)
                 return false;
         } else if (!uri.equals(other.uri))
             return false;
-        if (uuid == null) {
-            return other.uuid == null;
+        if (null == uuid) {
+            return other.null == uuid;
         } else return uuid.equals(other.uuid);
     }
 
@@ -243,8 +243,8 @@ public class BulkData implements Value {
         final int prime = 31;
         int result = 1;
         result = prime * result + (bigEndian ? 1231 : 1237);
-        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        result = prime * result + ((null == uri) ? 0 : uri.hashCode());
+        result = prime * result + ((null == uuid) ? 0 : uuid.hashCode());
         return result;
     }
 

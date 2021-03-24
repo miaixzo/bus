@@ -71,7 +71,7 @@ public final class DiskStats {
                     statMap.put(enumArray[i], Builder.parseLongOrDefault(split[i], 0L));
                 }
             }
-            if (name != null) {
+            if (null != name) {
                 diskStatMap.put(name, statMap);
             }
         }

@@ -93,14 +93,14 @@ public class GitLabApiException extends Exception {
 
                 // Determine what is in the content of the response and process it accordingly
                 MediaType mediaType = response.getMediaType();
-                if (mediaType != null && "json".equals(mediaType.getSubtype())) {
+                if (null != mediaType && "json".equals(mediaType.getSubtype())) {
 
                     JsonNode json = JacksonJson.toJsonNode(message);
 
                     // First see if it is a "message", if so it is either a simple message,
                     // or a Map<String, List<String>> of validation errors
                     JsonNode jsonMessage = json.get("message");
-                    if (jsonMessage != null) {
+                    if (null != jsonMessage) {
 
                         // If the node is an object, then it is validation errors
                         if (jsonMessage.isObject()) {
@@ -147,7 +147,7 @@ public class GitLabApiException extends Exception {
                     } else {
 
                         JsonNode jsonError = json.get("error");
-                        if (jsonError != null) {
+                        if (null != jsonError) {
                             this.message = jsonError.asText();
                         }
                     }
@@ -175,7 +175,7 @@ public class GitLabApiException extends Exception {
      */
     @Override
     public final String getMessage() {
-        return (message != null ? message : getReason());
+        return (null != message ? message : getReason());
     }
 
     /**
@@ -185,7 +185,7 @@ public class GitLabApiException extends Exception {
      * @return the HTTP status reason message
      */
     public final String getReason() {
-        return (statusInfo != null ? statusInfo.getReasonPhrase() : null);
+        return (null != statusInfo ? statusInfo.getReasonPhrase() : null);
     }
 
     /**
@@ -206,7 +206,7 @@ public class GitLabApiException extends Exception {
      * otherwise returns false
      */
     public boolean hasValidationErrors() {
-        return (validationErrors != null);
+        return (null != validationErrors);
     }
 
     /**
@@ -225,9 +225,9 @@ public class GitLabApiException extends Exception {
         final int prime = 31;
         int result = 1;
         result = prime * result + httpStatus;
-        result = prime * result + ((message == null) ? 0 : message.hashCode());
-        result = prime * result + ((statusInfo == null) ? 0 : statusInfo.hashCode());
-        result = prime * result + ((validationErrors == null) ? 0 : validationErrors.hashCode());
+        result = prime * result + ((null == message) ? 0 : message.hashCode());
+        result = prime * result + ((null == statusInfo) ? 0 : statusInfo.hashCode());
+        result = prime * result + ((null == validationErrors) ? 0 : validationErrors.hashCode());
         return result;
     }
 
@@ -238,7 +238,7 @@ public class GitLabApiException extends Exception {
             return true;
         }
 
-        if (obj == null) {
+        if (null == obj) {
             return false;
         }
 
@@ -251,22 +251,22 @@ public class GitLabApiException extends Exception {
             return false;
         }
 
-        if (message == null) {
-            if (other.message != null)
+        if (null == message) {
+            if (other.null != message)
                 return false;
         } else if (!message.equals(other.message)) {
             return false;
         }
 
-        if (statusInfo == null) {
-            if (other.statusInfo != null)
+        if (null == statusInfo) {
+            if (other.null != statusInfo)
                 return false;
         } else if (!statusInfo.equals(other.statusInfo)) {
             return false;
         }
 
-        if (validationErrors == null) {
-            if (other.validationErrors != null)
+        if (null == validationErrors) {
+            if (other.null != validationErrors)
                 return false;
         } else if (!validationErrors.equals(other.validationErrors)) {
             return false;

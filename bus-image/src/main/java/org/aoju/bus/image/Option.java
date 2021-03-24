@@ -121,7 +121,7 @@ public class Option {
                   String truststoreURL,
                   String truststoreType,
                   String truststorePass) {
-        if (cipherSuites == null) {
+        if (null == cipherSuites) {
             throw new IllegalArgumentException("cipherSuites cannot be null");
         }
         this.cipherSuites = cipherSuites;
@@ -154,7 +154,7 @@ public class Option {
 
         public static EnumSet<Type> toOptions(ExtendedNegotiate extNeg) {
             EnumSet<Type> opts = EnumSet.noneOf(Type.class);
-            if (extNeg != null) {
+            if (null != extNeg) {
                 toOption(extNeg, Type.RELATIONAL, opts);
                 toOption(extNeg, Type.DATETIME, opts);
                 toOption(extNeg, Type.FUZZY, opts);

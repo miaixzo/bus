@@ -154,11 +154,11 @@ public class SelectKey implements KeyGenerator {
 
     private void processGeneratedKeys(Executor executor, MappedStatement ms, Object parameter) {
         try {
-            if (parameter != null && keyStatement != null && keyStatement.getKeyProperties() != null) {
+            if (null != parameter && null != keyStatement && keyStatement.getKeyProperties() != null) {
                 String[] keyProperties = keyStatement.getKeyProperties();
                 final Configuration configuration = ms.getConfiguration();
                 final MetaObject metaParam = configuration.newMetaObject(parameter);
-                if (keyProperties != null) {
+                if (null != keyProperties) {
                     Executor keyExecutor = configuration.newExecutor(executor.getTransaction(), ExecutorType.SIMPLE);
                     List<Object> values = keyExecutor.query(keyStatement, parameter, RowBounds.DEFAULT, Executor.NO_RESULT_HANDLER);
                     if (values.size() == 0) {
@@ -190,7 +190,7 @@ public class SelectKey implements KeyGenerator {
                                           MetaObject metaParam, MetaObject metaResult) {
         String[] keyColumns = keyStatement.getKeyColumns();
 
-        if (keyColumns == null || keyColumns.length == 0) {
+        if (null == keyColumns || keyColumns.length == 0) {
             // no key columns specified, just use the property names
             for (String keyProperty : keyProperties) {
                 setValue(metaParam, keyProperty, metaResult.getValue(keyProperty));
@@ -209,7 +209,7 @@ public class SelectKey implements KeyGenerator {
         if (metaParam.hasSetter(property)) {
             if (metaParam.hasGetter(property)) {
                 Object defaultValue = metaParam.getValue(property);
-                if (defaultValue != null) {
+                if (null != defaultValue) {
                     return;
                 }
             }

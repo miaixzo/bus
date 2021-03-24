@@ -44,7 +44,7 @@ public class CompletionWriteHandler<T> implements CompletionHandler<Integer, Tcp
     public void completed(final Integer result, final TcpAioSession<T> aioSession) {
         try {
             NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (monitor != null) {
+            if (null != monitor) {
                 monitor.afterWrite(aioSession, result);
             }
             aioSession.writeCompleted();

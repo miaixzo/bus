@@ -41,7 +41,7 @@ public class RAFInputStreamAdapter extends InputStream {
     private IOException markException;
 
     public RAFInputStreamAdapter(RandomAccessFile raf) {
-        if (raf == null)
+        if (null == raf)
             throw new NullPointerException();
         this.raf = raf;
     }
@@ -73,7 +73,7 @@ public class RAFInputStreamAdapter extends InputStream {
 
     @Override
     public synchronized void reset() throws IOException {
-        if (markException != null)
+        if (null != markException)
             throw markException;
         raf.seek(markedPos);
     }

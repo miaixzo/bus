@@ -155,7 +155,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
      * @return GiveCall
      */
     public GiveCall request(String method) {
-        if (method == null || method.isEmpty()) {
+        if (null == method || method.isEmpty()) {
             throw new IllegalArgumentException("Request method method cannot be empty!");
         }
         PreGiveCall call = new PreGiveCall();
@@ -223,14 +223,14 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
         @Override
         public synchronized boolean cancel() {
-            canceled = call == null || call.cancel();
+            canceled = null == call || call.cancel();
             latch.countDown();
             return canceled;
         }
 
         @Override
         public boolean isDone() {
-            if (call != null) {
+            if (null != call) {
                 return call.isDone();
             }
             return canceled;
@@ -252,7 +252,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
                 cancel();
                 return timeoutResult();
             }
-            if (canceled || call == null) {
+            if (canceled || null == call) {
                 return new RealResult(AsyncHttp.this, State.CANCELED);
             }
             return call.getResult();
@@ -272,7 +272,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
         @Override
         public synchronized boolean cancel() {
-            if (result == null) {
+            if (null == result) {
                 call.cancel();
                 return true;
             }
@@ -281,7 +281,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
         @Override
         public boolean isDone() {
-            return result != null;
+            return null != result;
         }
 
         @Override
@@ -291,7 +291,7 @@ public class AsyncHttp extends CoverHttp<AsyncHttp> {
 
         @Override
         public Results getResult() {
-            if (result == null) {
+            if (null == result) {
                 if (!timeoutAwait(latch)) {
                     cancel();
                     return timeoutResult();

@@ -62,9 +62,9 @@ public class HL7ServiceRegistry extends DefaultHL7Listener {
     public UnparsedHL7Message onMessage(HL7Application hl7App, Connection conn, Socket s, UnparsedHL7Message msg)
             throws HL7Exception {
         HL7MessageListener listener = listeners.get(msg.msh().getMessageType());
-        if (listener == null) {
+        if (null == listener) {
             listener = listeners.get(Symbol.STAR);
-            if (listener == null)
+            if (null == listener)
                 return super.onMessage(hl7App, conn, s, msg);
         }
         return listener.onMessage(hl7App, conn, s, msg);

@@ -126,16 +126,16 @@ public class PageMarginsFilter implements Filter {
         final XPropertySet xStyleProps = Lo.qi(XPropertySet.class, xStyle);
 
         // 改变页边 (1 = 0.01 mm)
-        if (leftMargin != null) {
+        if (null != leftMargin) {
             xStyleProps.setPropertyValue("LeftMargin", leftMargin * 100);
         }
-        if (topMargin != null) {
+        if (null != topMargin) {
             xStyleProps.setPropertyValue("TopMargin", topMargin * 100);
         }
-        if (rightMargin != null) {
+        if (null != rightMargin) {
             xStyleProps.setPropertyValue("RightMargin", rightMargin * 100);
         }
-        if (bottomMargin != null) {
+        if (null != bottomMargin) {
             xStyleProps.setPropertyValue("BottomMargin", bottomMargin * 100);
         }
     }

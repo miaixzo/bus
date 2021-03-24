@@ -40,13 +40,13 @@ public class DataWriterAdapter implements DataWriter {
     private final Attributes data;
 
     public DataWriterAdapter(Attributes data) {
-        if (data == null)
+        if (null == data)
             throw new NullPointerException();
         this.data = data;
     }
 
     public static DataWriterAdapter forAttributes(Attributes data) {
-        return data != null ? new DataWriterAdapter(data) : null;
+        return null != data ? new DataWriterAdapter(data) : null;
     }
 
     @Override

@@ -81,7 +81,7 @@ public interface Constants {
 
         @JsonCreator
         public static Encoding forValue(String value) {
-            return enumHelper.forValue((value != null ? value.toLowerCase() : value));
+            return enumHelper.forValue((null != value ? value.toLowerCase() : value));
         }
 
         @JsonValue
@@ -591,12 +591,12 @@ public interface Constants {
 
         public static ArchiveFormat forValue(String value) throws GitLabApiException {
 
-            if (value == null || value.trim().isEmpty()) {
+            if (null == value || value.trim().isEmpty()) {
                 return (null);
             }
 
             ArchiveFormat archiveFormat = valuesMap.get(value);
-            if (archiveFormat != null) {
+            if (null != archiveFormat) {
                 return (archiveFormat);
             }
 

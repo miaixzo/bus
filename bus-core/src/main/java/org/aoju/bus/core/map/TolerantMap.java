@@ -106,7 +106,7 @@ public class TolerantMap<K, V> extends MapWrapper<K, V> {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (null == o || getClass() != o.getClass()) {
             return false;
         }
         if (false == super.equals(o)) {

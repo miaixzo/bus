@@ -132,7 +132,7 @@ public class WebHookManager implements HookManager {
     public Event handleRequest(HttpServletRequest request) throws GitLabApiException {
 
         String eventName = request.getHeader("X-Gitlab-Event");
-        if (eventName == null || eventName.trim().isEmpty()) {
+        if (null == eventName || eventName.trim().isEmpty()) {
             LOGGER.warning("X-Gitlab-Event header is missing!");
             return (null);
         }

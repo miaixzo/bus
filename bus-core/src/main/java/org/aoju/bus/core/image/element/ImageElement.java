@@ -137,7 +137,7 @@ public class ImageElement extends AbstractElement<ImageElement> {
 
 
     public BufferedImage getImage() {
-        if (this.image == null) {
+        if (this.null == image) {
             try {
                 this.image = ImageIO.read(new URL(this.imgUrl));
             } catch (Exception e) {

@@ -75,18 +75,18 @@ public class HL7Segment implements Serializable {
             return Normal.EMPTY;
         if (n == 1) {
             String s = ss[0];
-            return s != null ? s : Normal.EMPTY;
+            return null != s ? s : Normal.EMPTY;
         }
         int len = n - 1;
         for (String s : ss)
-            if (s != null)
+            if (null != s)
                 len += s.length();
         char[] cs = new char[len];
         for (int i = 0, off = 0; i < n; ++i) {
             if (i != 0)
                 cs[off++] = delim;
             String s = ss[i];
-            if (s != null) {
+            if (null != s) {
                 int l = s.length();
                 s.getChars(0, l, cs, off);
                 off += l;
@@ -128,7 +128,7 @@ public class HL7Segment implements Serializable {
     static HL7Segment parse(byte[] b, int size, ParsePosition pos,
                             char fieldSeparator, String encodingCharacters, String charsetName) {
         String s = parse(b, size, pos, charsetName);
-        return s != null
+        return null != s
                 ? new HL7Segment(s, fieldSeparator, encodingCharacters)
                 : null;
     }
@@ -149,7 +149,7 @@ public class HL7Segment implements Serializable {
 
         pos.setIndex(end);
         try {
-            return charsetName != null
+            return null != charsetName
                     ? new String(b, off, len, charsetName)
                     : new String(b, off, len);
         } catch (UnsupportedEncodingException e) {
@@ -213,7 +213,7 @@ public class HL7Segment implements Serializable {
 
     public String getField(int index, String defVal) {
         String val = index < fields.length ? fields[index] : null;
-        return val != null && !val.isEmpty() ? val : defVal;
+        return null != val && !val.isEmpty() ? val : defVal;
     }
 
     public int size() {

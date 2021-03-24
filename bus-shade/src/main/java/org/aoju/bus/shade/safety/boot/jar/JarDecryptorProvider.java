@@ -105,7 +105,7 @@ public class JarDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry
                     Manifest manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Jar-Main-Class");
-                    if (mainClass != null) {
+                    if (null != mainClass) {
                         attributes.putValue("Main-Class", mainClass);
                         attributes.remove(new Attributes.Name("Jar-Main-Class"));
                     }

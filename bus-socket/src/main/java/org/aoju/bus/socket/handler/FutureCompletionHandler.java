@@ -62,7 +62,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
         synchronized (this) {
             this.notify();
         }
-        if (completionHandler != null) {
+        if (null != completionHandler) {
             completionHandler.completed(result, attach);
         }
     }
@@ -71,7 +71,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
     public void failed(Throwable exc, A attachment) {
         exception = exc;
         done = true;
-        if (completionHandler != null) {
+        if (null != completionHandler) {
             completionHandler.failed(exc, attachment);
         }
     }
@@ -102,7 +102,7 @@ public class FutureCompletionHandler<V, A> implements CompletionHandler<V, A>, F
     @Override
     public synchronized V get() throws InterruptedException, ExecutionException {
         if (done) {
-            if (exception != null) {
+            if (null != exception) {
                 throw new ExecutionException(exception);
             }
             return result;

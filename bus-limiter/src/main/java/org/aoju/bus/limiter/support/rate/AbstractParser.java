@@ -45,7 +45,7 @@ public abstract class AbstractParser<T extends Limiter<?>, V extends Annotation>
 
     // 不需要同步
     private synchronized Class<Annotation> computeSupportAnnotation() {
-        if (supportAnnotation != null) {
+        if (null != supportAnnotation) {
             return supportAnnotation;
         }
         supportAnnotation = (Class<Annotation>) ((ParameterizedType) (this.getClass().getGenericSuperclass())).getActualTypeArguments()[1];
@@ -54,7 +54,7 @@ public abstract class AbstractParser<T extends Limiter<?>, V extends Annotation>
 
     @Override
     public Class<Annotation> getSupportAnnotation() {
-        if (supportAnnotation != null) return supportAnnotation;
+        if (null != supportAnnotation) return supportAnnotation;
         return computeSupportAnnotation();
     }
 

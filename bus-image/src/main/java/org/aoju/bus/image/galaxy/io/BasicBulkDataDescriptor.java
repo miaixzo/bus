@@ -98,7 +98,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     }
 
     private static boolean exeeds(int length, Integer lengthThreshold) {
-        return lengthThreshold != null && length > lengthThreshold;
+        return null != lengthThreshold && length > lengthThreshold;
     }
 
     public String getBulkDataDescriptorID() {
@@ -174,7 +174,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
         Map<Integer, EnumSet<VR>> vrsByLength = new HashMap<>();
         for (Map.Entry<VR, Integer> entry : lengthsThresholdByVR.entrySet()) {
             EnumSet<VR> vrs = vrsByLength.get(entry.getValue());
-            if (vrs == null)
+            if (null == vrs)
                 vrsByLength.put(entry.getValue(), vrs = EnumSet.noneOf(VR.class));
             vrs.add(entry.getKey());
         }

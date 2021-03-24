@@ -302,7 +302,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * @param radix 进制数
      */
     private static long toNumber(String str, int radix) {
-        if (str == null) {
+        if (null == str) {
             throw new NumberFormatException("The str cannot be null");
         }
         if (radix < MIN_RADIX) {
@@ -336,7 +336,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
         multmin = limit / radix;
         while (i < len) {
             digit = DIGIT_MAP.get(str.charAt(i++));
-            if (digit == null || digit < 0 || result < multmin) {
+            if (null == digit || digit < 0 || result < multmin) {
                 throw forInputString(str);
             }
             result *= radix;

@@ -62,35 +62,35 @@ final class MacFirmware extends AbstractFirmware {
 
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
         byte[] data;
-        if (platformExpert != null) {
+        if (null != platformExpert) {
             IOIterator iter = platformExpert.getChildIterator("IODeviceTree");
-            if (iter != null) {
+            if (null != iter) {
                 IORegistryEntry entry = iter.next();
-                while (entry != null) {
+                while (null != entry) {
                     switch (entry.getName()) {
                         case "rom":
                             data = entry.getByteArrayProperty("vendor");
-                            if (data != null) {
+                            if (null != data) {
                                 manufacturer = Native.toString(data, Charset.UTF_8);
                             }
                             data = entry.getByteArrayProperty("version");
-                            if (data != null) {
+                            if (null != data) {
                                 version = Native.toString(data, Charset.UTF_8);
                             }
                             data = entry.getByteArrayProperty("release-date");
-                            if (data != null) {
+                            if (null != data) {
                                 releaseDate = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         case "chosen":
                             data = entry.getByteArrayProperty("booter-name");
-                            if (data != null) {
+                            if (null != data) {
                                 name = Native.toString(data, Charset.UTF_8);
                             }
                             break;
                         case "efi":
                             data = entry.getByteArrayProperty("firmware-abi");
-                            if (data != null) {
+                            if (null != data) {
                                 description = Native.toString(data, Charset.UTF_8);
                             }
                             break;
@@ -108,19 +108,19 @@ final class MacFirmware extends AbstractFirmware {
             }
             if (StringKit.isBlank(manufacturer)) {
                 data = platformExpert.getByteArrayProperty("manufacturer");
-                if (data != null) {
+                if (null != data) {
                     manufacturer = Native.toString(data, StandardCharsets.UTF_8);
                 }
             }
             if (StringKit.isBlank(version)) {
                 data = platformExpert.getByteArrayProperty("target-type");
-                if (data != null) {
+                if (null != data) {
                     version = Native.toString(data, StandardCharsets.UTF_8);
                 }
             }
             if (StringKit.isBlank(name)) {
                 data = platformExpert.getByteArrayProperty("device_type");
-                if (data != null) {
+                if (null != data) {
                     name = Native.toString(data, StandardCharsets.UTF_8);
                 }
             }

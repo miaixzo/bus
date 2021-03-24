@@ -221,7 +221,7 @@ public class OfficeProcess {
      * @return {@code true} 是正在运行的office进程;{@code false 否则}
      */
     public boolean isRunning() {
-        return process != null && getExitCode() == null;
+        return null != process && getExitCode() == null;
     }
 
     /**

@@ -114,7 +114,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
         try {
             Map<K, V> map = this.getObj();
             V oldValue = map.putIfAbsent(key, value);
-            if (oldValue == null) {
+            if (null == oldValue) {
                 return value;
             } else {
                 return oldValue;
@@ -133,7 +133,7 @@ public class MapWithLock<K, V> extends ObjWithLock<Map<K, V>> {
      * @param map 对象
      */
     public void putAll(Map<K, V> map) {
-        if (map == null || map.isEmpty()) {
+        if (null == map || map.isEmpty()) {
             return;
         }
 

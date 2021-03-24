@@ -47,7 +47,7 @@ public class IssuesStatistics {
 
     @JsonIgnore
     public Counts getCounts() {
-        return (statistics != null ? statistics.counts : null);
+        return (null != statistics ? statistics.counts : null);
     }
 
     @Override

@@ -231,7 +231,7 @@ public class CommitsApi extends AbstractApi {
                 .withParam("ref_name", ref)
                 .withParam("since", ISO8601.toString(since, false))
                 .withParam("until", ISO8601.toString(until, false))
-                .withParam("path", (path == null ? null : urlEncode(path)))
+                .withParam("path", (null == path ? null : urlEncode(path)))
                 .withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "repository", "commits");
@@ -318,7 +318,7 @@ public class CommitsApi extends AbstractApi {
                 .withParam("ref_name", ref)
                 .withParam("since", ISO8601.toString(since, false))
                 .withParam("until", ISO8601.toString(until, false))
-                .withParam("path", (path == null ? null : urlEncode(path)))
+                .withParam("path", (null == path ? null : urlEncode(path)))
                 .withParam("all", all)
                 .withParam("with_stats", withStats)
                 .withParam("first_parent", firstParent);
@@ -505,15 +505,15 @@ public class CommitsApi extends AbstractApi {
     public List<CommitStatus> getCommitStatuses(Object projectIdOrPath, String sha,
                                                 CommitStatusFilter filter, int page, int perPage) throws GitLabApiException {
 
-        if (projectIdOrPath == null) {
+        if (null == projectIdOrPath) {
             throw new RuntimeException("projectIdOrPath cannot be null");
         }
 
-        if (sha == null || sha.trim().isEmpty()) {
+        if (null == sha || sha.trim().isEmpty()) {
             throw new RuntimeException("sha cannot be null");
         }
 
-        MultivaluedMap<String, String> queryParams = (filter != null ?
+        MultivaluedMap<String, String> queryParams = (null != filter ?
                 filter.getQueryParams(page, perPage).asMap() : getPageQueryParams(page, perPage));
         Response response = get(Response.Status.OK, queryParams,
                 "projects", this.getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "statuses");
@@ -536,15 +536,15 @@ public class CommitsApi extends AbstractApi {
     public Pager<CommitStatus> getCommitStatuses(Object projectIdOrPath, String sha,
                                                  CommitStatusFilter filter, int itemsPerPage) throws GitLabApiException {
 
-        if (projectIdOrPath == null) {
+        if (null == projectIdOrPath) {
             throw new RuntimeException("projectIdOrPath cannot be null");
         }
 
-        if (sha == null || sha.trim().isEmpty()) {
+        if (null == sha || sha.trim().isEmpty()) {
             throw new RuntimeException("sha cannot be null");
         }
 
-        MultivaluedMap<String, String> queryParams = (filter != null ? filter.getQueryParams().asMap() : null);
+        MultivaluedMap<String, String> queryParams = (null != filter ? filter.getQueryParams().asMap() : null);
         return (new Pager<>(this, CommitStatus.class, itemsPerPage, queryParams,
                 "projects", this.getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "statuses"));
     }
@@ -586,16 +586,16 @@ public class CommitsApi extends AbstractApi {
      */
     public CommitStatus addCommitStatus(Object projectIdOrPath, String sha, CommitBuildState state, CommitStatus status) throws GitLabApiException {
 
-        if (projectIdOrPath == null) {
+        if (null == projectIdOrPath) {
             throw new RuntimeException("projectIdOrPath cannot be null");
         }
 
-        if (sha == null || sha.trim().isEmpty()) {
+        if (null == sha || sha.trim().isEmpty()) {
             throw new RuntimeException("sha cannot be null");
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("state", state, true);
-        if (status != null) {
+        if (null != status) {
             formData.withParam("ref", status.getRef())
                     .withParam("name", status.getName())
                     .withParam("target_url", status.getTargetUrl())
@@ -634,11 +634,11 @@ public class CommitsApi extends AbstractApi {
      */
     public Pager<Diff> getDiff(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
 
-        if (projectIdOrPath == null) {
+        if (null == projectIdOrPath) {
             throw new RuntimeException("projectIdOrPath cannot be null");
         }
 
-        if (sha == null || sha.trim().isEmpty()) {
+        if (null == sha || sha.trim().isEmpty()) {
             throw new RuntimeException("sha cannot be null");
         }
 
@@ -762,7 +762,7 @@ public class CommitsApi extends AbstractApi {
                                String authorEmail, String authorName, CommitAction action) throws GitLabApiException {
 
         // Validate the action
-        if (action == null) {
+        if (null == action) {
             throw new GitLabApiException("action cannot be null or empty.");
         }
 
@@ -812,7 +812,7 @@ public class CommitsApi extends AbstractApi {
 
         // Validate the actions
         List<CommitAction> actions = payload.getActions();
-        if (actions == null || actions.isEmpty()) {
+        if (null == actions || actions.isEmpty()) {
             throw new GitLabApiException("actions cannot be null or empty.");
         }
 
@@ -822,7 +822,7 @@ public class CommitsApi extends AbstractApi {
             CommitAction.Action actionType = action.getAction();
             if (actionType == CommitAction.Action.CREATE || actionType == CommitAction.Action.UPDATE) {
                 String content = action.getContent();
-                if (content == null) {
+                if (null == content) {
                     throw new GitLabApiException("Content cannot be null for create or update actions.");
                 }
             }

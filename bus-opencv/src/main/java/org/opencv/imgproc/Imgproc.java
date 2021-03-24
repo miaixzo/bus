@@ -901,7 +901,7 @@ public class Imgproc {
     public static Point phaseCorrelate(Mat src1, Mat src2, Mat window, double[] response) {
         double[] response_out = new double[1];
         Point retVal = new Point(phaseCorrelate_0(src1.nativeObj, src2.nativeObj, window.nativeObj, response_out));
-        if (response != null) response[0] = response_out[0];
+        if (null != response) response[0] = response_out[0];
         return retVal;
     }
 
@@ -1428,11 +1428,11 @@ public class Imgproc {
         double[] pt1_out = new double[2];
         double[] pt2_out = new double[2];
         boolean retVal = clipLine_0(imgRect.x, imgRect.y, imgRect.width, imgRect.height, pt1.x, pt1.y, pt1_out, pt2.x, pt2.y, pt2_out);
-        if (pt1 != null) {
+        if (null != pt1) {
             pt1.x = pt1_out[0];
             pt1.y = pt1_out[1];
         }
-        if (pt2 != null) {
+        if (null != pt2) {
             pt2.x = pt2_out[0];
             pt2.y = pt2_out[1];
         }
@@ -2131,7 +2131,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect, Scalar loDiff, Scalar upDiff, int flags) {
         double[] rect_out = new double[4];
         int retVal = floodFill_0(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out, loDiff.val[0], loDiff.val[1], loDiff.val[2], loDiff.val[3], upDiff.val[0], upDiff.val[1], upDiff.val[2], upDiff.val[3], flags);
-        if (rect != null) {
+        if (null != rect) {
             rect.x = (int) rect_out[0];
             rect.y = (int) rect_out[1];
             rect.width = (int) rect_out[2];
@@ -2237,7 +2237,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect, Scalar loDiff, Scalar upDiff) {
         double[] rect_out = new double[4];
         int retVal = floodFill_1(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out, loDiff.val[0], loDiff.val[1], loDiff.val[2], loDiff.val[3], upDiff.val[0], upDiff.val[1], upDiff.val[2], upDiff.val[3]);
-        if (rect != null) {
+        if (null != rect) {
             rect.x = (int) rect_out[0];
             rect.y = (int) rect_out[1];
             rect.width = (int) rect_out[2];
@@ -2342,7 +2342,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect, Scalar loDiff) {
         double[] rect_out = new double[4];
         int retVal = floodFill_2(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out, loDiff.val[0], loDiff.val[1], loDiff.val[2], loDiff.val[3]);
-        if (rect != null) {
+        if (null != rect) {
             rect.x = (int) rect_out[0];
             rect.y = (int) rect_out[1];
             rect.width = (int) rect_out[2];
@@ -2446,7 +2446,7 @@ public class Imgproc {
     public static int floodFill(Mat image, Mat mask, Point seedPoint, Scalar newVal, Rect rect) {
         double[] rect_out = new double[4];
         int retVal = floodFill_3(image.nativeObj, mask.nativeObj, seedPoint.x, seedPoint.y, newVal.val[0], newVal.val[1], newVal.val[2], newVal.val[3], rect_out);
-        if (rect != null) {
+        if (null != rect) {
             rect.x = (int) rect_out[0];
             rect.y = (int) rect_out[1];
             rect.width = (int) rect_out[2];
@@ -5580,7 +5580,7 @@ public class Imgproc {
      *                   of contours, or iterate over the collection using contourIdx parameter.
      */
     public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color, int thickness, int lineType, Mat hierarchy, int maxLevel, Point offset) {
-        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
+        List<Mat> contours_tmplm = new ArrayList<Mat>((null != contours) ? contours.size() : 0);
         Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
         drawContours_0(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType, hierarchy.nativeObj, maxLevel, offset.x, offset.y);
     }
@@ -5614,7 +5614,7 @@ public class Imgproc {
      *                   of contours, or iterate over the collection using contourIdx parameter.
      */
     public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color, int thickness, int lineType, Mat hierarchy, int maxLevel) {
-        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
+        List<Mat> contours_tmplm = new ArrayList<Mat>((null != contours) ? contours.size() : 0);
         Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
         drawContours_1(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType, hierarchy.nativeObj, maxLevel);
     }
@@ -5647,7 +5647,7 @@ public class Imgproc {
      *                   of contours, or iterate over the collection using contourIdx parameter.
      */
     public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color, int thickness, int lineType, Mat hierarchy) {
-        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
+        List<Mat> contours_tmplm = new ArrayList<Mat>((null != contours) ? contours.size() : 0);
         Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
         drawContours_2(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType, hierarchy.nativeObj);
     }
@@ -5679,7 +5679,7 @@ public class Imgproc {
      *                   of contours, or iterate over the collection using contourIdx parameter.
      */
     public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color, int thickness, int lineType) {
-        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
+        List<Mat> contours_tmplm = new ArrayList<Mat>((null != contours) ? contours.size() : 0);
         Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
         drawContours_3(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType);
     }
@@ -5710,7 +5710,7 @@ public class Imgproc {
      *                   of contours, or iterate over the collection using contourIdx parameter.
      */
     public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color, int thickness) {
-        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
+        List<Mat> contours_tmplm = new ArrayList<Mat>((null != contours) ? contours.size() : 0);
         Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
         drawContours_4(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3], thickness);
     }
@@ -5740,7 +5740,7 @@ public class Imgproc {
      *                   of contours, or iterate over the collection using contourIdx parameter.
      */
     public static void drawContours(Mat image, List<MatOfPoint> contours, int contourIdx, Scalar color) {
-        List<Mat> contours_tmplm = new ArrayList<Mat>((contours != null) ? contours.size() : 0);
+        List<Mat> contours_tmplm = new ArrayList<Mat>((null != contours) ? contours.size() : 0);
         Mat contours_mat = Converters.vector_vector_Point_to_Mat(contours, contours_tmplm);
         drawContours_5(image.nativeObj, contours_mat.nativeObj, contourIdx, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
@@ -6259,7 +6259,7 @@ public class Imgproc {
      * @param offset   Optional offset of all points of the contours.
      */
     public static void fillPoly(Mat img, List<MatOfPoint> pts, Scalar color, int lineType, int shift, Point offset) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         fillPoly_0(img.nativeObj, pts_mat.nativeObj, color.val[0], color.val[1], color.val[2], color.val[3], lineType, shift, offset.x, offset.y);
     }
@@ -6278,7 +6278,7 @@ public class Imgproc {
      * @param shift    Number of fractional bits in the vertex coordinates.
      */
     public static void fillPoly(Mat img, List<MatOfPoint> pts, Scalar color, int lineType, int shift) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         fillPoly_1(img.nativeObj, pts_mat.nativeObj, color.val[0], color.val[1], color.val[2], color.val[3], lineType, shift);
     }
@@ -6296,7 +6296,7 @@ public class Imgproc {
      * @param lineType Type of the polygon boundaries. See #LineTypes
      */
     public static void fillPoly(Mat img, List<MatOfPoint> pts, Scalar color, int lineType) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         fillPoly_2(img.nativeObj, pts_mat.nativeObj, color.val[0], color.val[1], color.val[2], color.val[3], lineType);
     }
@@ -6313,7 +6313,7 @@ public class Imgproc {
      * @param color Polygon color.
      */
     public static void fillPoly(Mat img, List<MatOfPoint> pts, Scalar color) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         fillPoly_3(img.nativeObj, pts_mat.nativeObj, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
@@ -7549,11 +7549,11 @@ public class Imgproc {
         double[] center_out = new double[2];
         double[] radius_out = new double[1];
         minEnclosingCircle_0(points_mat.nativeObj, center_out, radius_out);
-        if (center != null) {
+        if (null != center) {
             center.x = center_out[0];
             center.y = center_out[1];
         }
-        if (radius != null) radius[0] = (float) radius_out[0];
+        if (null != radius) radius[0] = (float) radius_out[0];
     }
 
 
@@ -7716,7 +7716,7 @@ public class Imgproc {
      *                  The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(Mat img, List<MatOfPoint> pts, boolean isClosed, Scalar color, int thickness, int lineType, int shift) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         polylines_0(img.nativeObj, pts_mat.nativeObj, isClosed, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType, shift);
     }
@@ -7735,7 +7735,7 @@ public class Imgproc {
      *                  The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(Mat img, List<MatOfPoint> pts, boolean isClosed, Scalar color, int thickness, int lineType) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         polylines_1(img.nativeObj, pts_mat.nativeObj, isClosed, color.val[0], color.val[1], color.val[2], color.val[3], thickness, lineType);
     }
@@ -7753,7 +7753,7 @@ public class Imgproc {
      *                  The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(Mat img, List<MatOfPoint> pts, boolean isClosed, Scalar color, int thickness) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         polylines_2(img.nativeObj, pts_mat.nativeObj, isClosed, color.val[0], color.val[1], color.val[2], color.val[3], thickness);
     }
@@ -7770,7 +7770,7 @@ public class Imgproc {
      *                 The function cv::polylines draws one or more polygonal curves.
      */
     public static void polylines(Mat img, List<MatOfPoint> pts, boolean isClosed, Scalar color) {
-        List<Mat> pts_tmplm = new ArrayList<Mat>((pts != null) ? pts.size() : 0);
+        List<Mat> pts_tmplm = new ArrayList<Mat>((null != pts) ? pts.size() : 0);
         Mat pts_mat = Converters.vector_vector_Point_to_Mat(pts, pts_tmplm);
         polylines_3(img.nativeObj, pts_mat.nativeObj, isClosed, color.val[0], color.val[1], color.val[2], color.val[3]);
     }
@@ -9227,7 +9227,7 @@ public class Imgproc {
     // C++: Size getTextSize(const String& text, int fontFace, double fontScale, int thickness, int* baseLine);
 //javadoc:getTextSize(text, fontFace, fontScale, thickness, baseLine)
     public static Size getTextSize(String text, int fontFace, double fontScale, int thickness, int[] baseLine) {
-        if (baseLine != null && baseLine.length != 1)
+        if (null != baseLine && baseLine.length != 1)
             throw new java.lang.IllegalArgumentException("'baseLine' must be 'int[1]' or 'null'.");
         Size retVal = new Size(n_getTextSize(text, fontFace, fontScale, thickness, baseLine));
         return retVal;

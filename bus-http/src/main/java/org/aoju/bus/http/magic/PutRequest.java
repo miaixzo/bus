@@ -59,16 +59,16 @@ public class PutRequest extends HttpRequest {
 
     @Override
     protected RequestBody buildRequestBody() {
-        if (multipartBody != null) {
+        if (null != multipartBody) {
             return multipartBody;
-        } else if (fileInfos != null && fileInfos.size() > 0) {
+        } else if (null != fileInfos && fileInfos.size() > 0) {
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MimeType.MULTIPART_FORM_DATA_TYPE);
             addParams(builder);
             fileInfos.forEach(fileInfo -> {
                 RequestBody fileBody;
-                if (fileInfo.file != null) {
+                if (fileInfo.null != file) {
                     fileBody = RequestBody.create(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.file);
-                } else if (fileInfo.fileInputStream != null) {
+                } else if (fileInfo.null != fileInputStream) {
                     fileBody = createRequestBody(MimeType.APPLICATION_OCTET_STREAM_TYPE, fileInfo.fileInputStream);
                 } else {
                     fileBody = RequestBody.create(MimeType.valueOf(FileKit.getMimeType(fileInfo.fileName)),
@@ -76,11 +76,11 @@ public class PutRequest extends HttpRequest {
                 }
                 builder.addFormDataPart(fileInfo.partName, fileInfo.fileName, fileBody);
             });
-            if (body != null && body.length() > 0) {
+            if (null != body && body.length() > 0) {
                 builder.addPart(RequestBody.create(MimeType.MULTIPART_FORM_DATA_TYPE, body));
             }
             return builder.build();
-        } else if (body != null && body.length() > 0) {
+        } else if (null != body && body.length() > 0) {
             MimeType mimeType;
             if (headers.containsKey(Header.CONTENT_TYPE)) {
                 mimeType = MimeType.valueOf(headers.get(Header.CONTENT_TYPE));
@@ -101,16 +101,16 @@ public class PutRequest extends HttpRequest {
     }
 
     private void addParams(FormBody.Builder builder) {
-        if (params != null) {
+        if (null != params) {
             params.forEach((k, v) -> builder.add(k, v));
         }
-        if (encodedParams != null) {
+        if (null != encodedParams) {
             encodedParams.forEach((k, v) -> builder.addEncoded(k, v));
         }
     }
 
     private void addParams(MultipartBody.Builder builder) {
-        if (params != null && !params.isEmpty()) {
+        if (null != params && !params.isEmpty()) {
             params.forEach((k, v) ->
                     builder.addPart(Headers.of(
                             Header.CONTENT_DISPOSITION,

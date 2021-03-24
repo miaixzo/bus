@@ -101,7 +101,7 @@ public class Binder {
         this.placeholderPrefix = placeholderPrefix;
         this.placeholderSuffix = placeholderSuffix;
         String simplePrefixForSuffix = SIMPLE_PREFIXES.get(this.placeholderSuffix);
-        if (simplePrefixForSuffix != null && this.placeholderPrefix.endsWith(simplePrefixForSuffix)) {
+        if (null != simplePrefixForSuffix && this.placeholderPrefix.endsWith(simplePrefixForSuffix)) {
             this.simplePrefix = simplePrefixForSuffix;
         } else {
             this.simplePrefix = this.placeholderPrefix;
@@ -150,7 +150,7 @@ public class Binder {
         }
 
         Class<?> actualClass = ClassKit.getCglibActualClass(clazz);
-        boolean b = (prefix == null || Symbol.DOT.equals(prefix)) && actualClass.isAnnotationPresent(Values.class);
+        boolean b = (null == prefix || Symbol.DOT.equals(prefix)) && actualClass.isAnnotationPresent(Values.class);
         if (b) {
             prefix = actualClass.getAnnotation(Values.class).value();
         }
@@ -185,18 +185,18 @@ public class Binder {
             if (field.isAnnotationPresent(Values.class)) {
                 key = field.getAnnotation(Values.class).value();
                 wrap = true;
-            } else if (prefix != null) {
+            } else if (null != prefix) {
                 key = prefix + Symbol.DOT + key;
             }
             Object value = getProperty(key, field.getType(), wrap);
-            if (value != null) {
+            if (null != value) {
                 ClassKit.writeField(field, obj, value);
                 return;
             }
             if (!(field.getType().getClassLoader() == null) && source
                     .containPrefix(key + Symbol.DOT)) {
                 value = ClassKit.readField(field, obj);
-                if (value == null) {
+                if (null == value) {
                     value = bind(field.getType(), key);
                     ClassKit.writeField(field, obj, value);
                 } else {
@@ -215,7 +215,7 @@ public class Binder {
         } else {
             value = source.getProperty(key);
         }
-        if (value == null || value.getClass() == type) {
+        if (null == value || value.getClass() == type) {
             return value;
         }
         return Convert.convert(type, value);
@@ -254,7 +254,7 @@ public class Binder {
                 // 获取没有占位的属性值
                 String propVal = properties.getProperty(placeholder);
                 propVal = getCommonVal(properties, placeholder, propVal);
-                if (propVal != null) {
+                if (null != propVal) {
                     // 递归 表达式中含有表达式
                     propVal = parseStringValue(propVal, properties, visitedPlaceholders);
                     result.replace(startIndex, endIndex + this.placeholderSuffix.length(), propVal);
@@ -276,13 +276,13 @@ public class Binder {
     }
 
     private String getCommonVal(Properties properties, String placeholder, String propVal) {
-        if (propVal == null && this.valueSeparator != null) {
+        if (null == propVal && this.null != valueSeparator) {
             int separatorIndex = placeholder.indexOf(this.valueSeparator);
             if (separatorIndex != -1) {
                 String actualPlaceholder = placeholder.substring(0, separatorIndex);
                 String defaultValue = placeholder.substring(separatorIndex + this.valueSeparator.length());
                 propVal = properties.getProperty(actualPlaceholder);
-                if (propVal == null) {
+                if (null == propVal) {
                     propVal = defaultValue;
                 }
             }

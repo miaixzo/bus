@@ -22,7 +22,7 @@ public class Scalar {
     }
 
     public Scalar(double[] vals) {
-        if (vals != null && vals.length == 4)
+        if (null != vals && vals.length == 4)
             val = vals.clone();
         else {
             val = new double[4];
@@ -35,7 +35,7 @@ public class Scalar {
     }
 
     public void set(double[] vals) {
-        if (vals != null) {
+        if (null != vals) {
             val[0] = vals.length > 0 ? vals[0] : 0;
             val[1] = vals.length > 1 ? vals[1] : 0;
             val[2] = vals.length > 2 ? vals[2] : 0;

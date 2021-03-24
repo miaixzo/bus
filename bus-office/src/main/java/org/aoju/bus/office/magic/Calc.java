@@ -55,7 +55,7 @@ public final class Calc {
      * @return 如果文档不是电子表格文档，则为null.
      */
     public static XSpreadsheetDocument getCalcDoc(final XComponent document) {
-        if (document == null) {
+        if (null == document) {
             return null;
         }
         return Lo.qi(XSpreadsheetDocument.class, document);

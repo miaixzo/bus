@@ -74,7 +74,7 @@ public class EpicIssue extends Issue {
 
     @JsonIgnore
     public String getLinkByName(String name) {
-        if (links == null || links.isEmpty()) {
+        if (null == links || links.isEmpty()) {
             return (null);
         }
 

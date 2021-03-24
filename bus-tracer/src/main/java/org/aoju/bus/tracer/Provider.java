@@ -76,7 +76,7 @@ public class Provider extends AbstractSet<TraceBackendProvider> {
             return;
         }
         for (TraceBackendProvider provider : providers) {
-            if (provider == null)
+            if (null == provider)
                 valid = false;
         }
     }

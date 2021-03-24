@@ -402,12 +402,12 @@ public final class Http2Connection implements Closeable {
             }
         }
 
-        if (streamsToClose != null) {
+        if (null != streamsToClose) {
             for (Http2Stream stream : streamsToClose) {
                 try {
                     stream.close(streamCode);
                 } catch (IOException e) {
-                    if (thrown != null) thrown = e;
+                    if (null != thrown) thrown = e;
                 }
             }
         }
@@ -415,7 +415,7 @@ public final class Http2Connection implements Closeable {
         try {
             writer.close();
         } catch (IOException e) {
-            if (thrown == null) thrown = e;
+            if (null == thrown) thrown = e;
         }
 
         try {
@@ -427,7 +427,7 @@ public final class Http2Connection implements Closeable {
         writerExecutor.shutdown();
         pushExecutor.shutdown();
 
-        if (thrown != null) throw thrown;
+        if (null != thrown) throw thrown;
     }
 
     private void failConnection() {
@@ -710,7 +710,7 @@ public final class Http2Connection implements Closeable {
                 return;
             }
             Http2Stream dataStream = getStream(streamId);
-            if (dataStream == null) {
+            if (null == dataStream) {
                 writeSynResetLater(streamId, ErrorCode.PROTOCOL_ERROR);
                 updateConnectionFlowControl(length);
                 source.skip(length);
@@ -733,7 +733,7 @@ public final class Http2Connection implements Closeable {
             synchronized (Http2Connection.this) {
                 stream = getStream(streamId);
 
-                if (stream == null) {
+                if (null == stream) {
                     if (shutdown) return;
 
                     if (streamId <= lastGoodStreamId) return;
@@ -774,7 +774,7 @@ public final class Http2Connection implements Closeable {
                 return;
             }
             Http2Stream rstStream = removeStream(streamId);
-            if (rstStream != null) {
+            if (null != rstStream) {
                 rstStream.receiveRstStream(errorCode);
             }
         }
@@ -816,7 +816,7 @@ public final class Http2Connection implements Closeable {
                     failConnection();
                 }
             }
-            if (streamsToNotify != null) {
+            if (null != streamsToNotify) {
                 for (Http2Stream stream : streamsToNotify) {
                     synchronized (stream) {
                         stream.addBytesToWriteWindow(delta);
@@ -879,7 +879,7 @@ public final class Http2Connection implements Closeable {
                 }
             } else {
                 Http2Stream stream = getStream(streamId);
-                if (stream != null) {
+                if (null != stream) {
                     synchronized (stream) {
                         stream.addBytesToWriteWindow(windowSizeIncrement);
                     }

@@ -64,15 +64,15 @@ public class DifferentResult implements Iterable<Different<?>> {
     DifferentResult(final Object lhs, final Object rhs, final List<Different<?>> differents,
                     final ToStringStyle style) {
 
-        Assert.isTrue(lhs != null, "Left hand object cannot be null");
-        Assert.isTrue(rhs != null, "Right hand object cannot be null");
-        Assert.isTrue(differents != null, "List of differences cannot be null");
+        Assert.isTrue(null != lhs, "Left hand object cannot be null");
+        Assert.isTrue(null != rhs, "Right hand object cannot be null");
+        Assert.isTrue(null != differents, "List of differences cannot be null");
 
         this.differents = differents;
         this.lhs = lhs;
         this.rhs = rhs;
 
-        if (style == null) {
+        if (null == style) {
             this.style = ToStringStyle.DEFAULT_STYLE;
         } else {
             this.style = style;

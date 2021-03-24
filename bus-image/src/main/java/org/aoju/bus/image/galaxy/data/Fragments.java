@@ -73,7 +73,7 @@ public class Fragments extends ArrayList<Object> implements Value {
     @Override
     public void add(int index, Object frag) {
         super.add(index,
-                frag == null || (frag instanceof byte[]) && ((byte[]) frag).length == 0
+                null == frag || (frag instanceof byte[]) && ((byte[]) frag).length == 0
                         ? NULL
                         : frag);
     }
@@ -124,7 +124,7 @@ public class Fragments extends ArrayList<Object> implements Value {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (null == obj)
             return false;
         if (getClass() != obj.getClass())
             return false;
@@ -155,14 +155,14 @@ public class Fragments extends ArrayList<Object> implements Value {
             hashCode = prime * hashCode + itemHashCode(e);
 
         hashCode = prime * hashCode + (bigEndian ? 1231 : 1237);
-        hashCode = prime * hashCode + ((vr == null) ? 0 : vr.hashCode());
+        hashCode = prime * hashCode + ((null == vr) ? 0 : vr.hashCode());
         return hashCode;
     }
 
     private boolean itemsEqual(Object o1, Object o2) {
 
-        if (o1 == null) {
-            return o2 == null;
+        if (null == o1) {
+            return null == o2;
         } else {
             if (o1 instanceof byte[]) {
                 if (o2 instanceof byte[] && ((byte[]) o1).length == ((byte[]) o2).length) {
@@ -177,7 +177,7 @@ public class Fragments extends ArrayList<Object> implements Value {
     }
 
     private int itemHashCode(Object e) {
-        if (e == null) {
+        if (null == e) {
             return 0;
         } else {
             if (e instanceof byte[])

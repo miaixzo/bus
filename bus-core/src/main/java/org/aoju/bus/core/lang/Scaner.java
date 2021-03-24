@@ -332,7 +332,7 @@ public class Scaner {
     private void addIfAccept(Class<?> clazz) {
         if (null != clazz) {
             Filter<Class<?>> classFilter = this.classFilter;
-            if (classFilter == null || classFilter.accept(clazz)) {
+            if (null == classFilter || classFilter.accept(clazz)) {
                 this.classes.add(clazz);
             }
         }

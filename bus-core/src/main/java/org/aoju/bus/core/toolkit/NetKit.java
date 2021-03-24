@@ -408,7 +408,7 @@ public class NetKit {
             throw new InstrumentException(e);
         }
 
-        if (networkInterfaces == null) {
+        if (null == networkInterfaces) {
             throw new InstrumentException("Get network interface error!");
         }
 
@@ -419,7 +419,7 @@ public class NetKit {
             final Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
             while (inetAddresses.hasMoreElements()) {
                 final InetAddress inetAddress = inetAddresses.nextElement();
-                if (inetAddress != null && (null == addressFilter || addressFilter.accept(inetAddress))) {
+                if (null != inetAddress && (null == addressFilter || addressFilter.accept(inetAddress))) {
                     ipSet.add(inetAddress);
                 }
             }
@@ -643,7 +643,7 @@ public class NetKit {
      */
     public static String getMultistageReverseProxyIp(String ip) {
         // 多级反向代理检测
-        if (ip != null && ip.indexOf(Symbol.COMMA) > 0) {
+        if (null != ip && ip.indexOf(Symbol.COMMA) > 0) {
             final String[] ips = ip.trim().split(Symbol.COMMA);
             for (String subIp : ips) {
                 if (false == isUnknown(subIp)) {

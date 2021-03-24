@@ -171,7 +171,7 @@ public class ObjectKit {
      * @return 对象是否为false
      */
     public static boolean isFalse(Boolean object) {
-        return object == null || Boolean.FALSE.equals(object);
+        return null == object || Boolean.FALSE.equals(object);
     }
 
     /**
@@ -181,7 +181,7 @@ public class ObjectKit {
      * @return the true/false
      */
     public static boolean isArray(Object object) {
-        return (object != null && object.getClass().isArray());
+        return (null != object && object.getClass().isArray());
     }
 
     /**
@@ -322,7 +322,7 @@ public class ObjectKit {
      */
     public static boolean equal(byte[] byte1, byte[] byte2) {
         if (byte1 == byte2) return true;
-        if (byte1 == null || byte2 == null) {
+        if (null == byte1 || null == byte2) {
             return false;
         }
         if (byte1.length != byte2.length) {
@@ -356,7 +356,7 @@ public class ObjectKit {
      * @return 长度
      */
     public static int length(Object obj) {
-        if (obj == null) {
+        if (null == obj) {
             return 0;
         }
         if (obj instanceof CharSequence) {
@@ -402,11 +402,11 @@ public class ObjectKit {
      * @return 是否包含
      */
     public static boolean contains(Object obj, Object element) {
-        if (obj == null) {
+        if (null == obj) {
             return false;
         }
         if (obj instanceof String) {
-            if (element == null) {
+            if (null == element) {
                 return false;
             }
             return ((String) obj).contains(element.toString());
@@ -545,9 +545,9 @@ public class ObjectKit {
         // v1 null视为最小版本,排在前
         if (v1 == v2) {
             return 0;
-        } else if (v1 == null) {
+        } else if (null == v1) {
             return -1;
-        } else if (v2 == null) {
+        } else if (null == v2) {
             return 1;
         }
         // 去除空格
@@ -589,9 +589,9 @@ public class ObjectKit {
     public static <T extends Comparable<? super T>> int compare(T c1, T c2, boolean isNullGreater) {
         if (c1 == c2) {
             return 0;
-        } else if (c1 == null) {
+        } else if (null == c1) {
             return isNullGreater ? 1 : -1;
-        } else if (c2 == null) {
+        } else if (null == c2) {
             return isNullGreater ? -1 : 1;
         }
         return c1.compareTo(c2);
@@ -695,7 +695,7 @@ public class ObjectKit {
     public static Field[] getAllFields(Object object) {
         List<Field> fieldList = new ArrayList<>();
         Class tempClass = object.getClass();
-        while (tempClass != null && !tempClass.getName().equalsIgnoreCase("java.lang.object")) {
+        while (null != tempClass && !tempClass.getName().equalsIgnoreCase("java.lang.object")) {
             // 当父类为null的时候说明到达了最上层的父类(Object类).
             fieldList.addAll(Arrays.asList(tempClass.getDeclaredFields()));
             // 得到父类,然后赋给自己
@@ -775,7 +775,7 @@ public class ObjectKit {
     public static <T> T initObject(Class<T> clazz, Map<String, Object> attrMap) {
         try {
             T obj = clazz.newInstance();
-            if (attrMap != null) {
+            if (null != attrMap) {
                 // 移除所有的常量赋值
                 for (Class tempClass = clazz; !tempClass.equals(Object.class); tempClass = tempClass.getSuperclass()) {
                     Field[] fs = tempClass.getDeclaredFields();
@@ -927,7 +927,7 @@ public class ObjectKit {
                     f.setAccessible(true);
                     Object value = f.get(bean);
                     f.setAccessible(false);
-                    if (value != null) {
+                    if (null != value) {
                         map.put(f.getName(), value);
                     }
                 }
@@ -987,7 +987,7 @@ public class ObjectKit {
                     f.setAccessible(true);
                     Object value = f.get(bean);
                     f.setAccessible(false);
-                    if (value != null) {
+                    if (null != value) {
                         List<String> list = new ArrayList<>();
                         list.add(String.valueOf(value));
                         map.put(f.getName(), list);
@@ -1021,7 +1021,7 @@ public class ObjectKit {
                     f.setAccessible(true);
                     Object value = f.get(bean);
                     f.setAccessible(false);
-                    if (value != null) {
+                    if (null != value) {
                         if (!isNotStructure(value)) {
                             map.put(f.getName(), getNotNullFieldsForStructure(value));
                         } else {
@@ -1073,10 +1073,10 @@ public class ObjectKit {
             throw new InstrumentException(e);
         } finally {
             try {
-                if (objectInput != null) {
+                if (null != objectInput) {
                     objectInput.close();
                 }
-                if (input != null) {
+                if (null != input) {
                     input.close();
                 }
             } catch (IOException e) {
@@ -1102,10 +1102,10 @@ public class ObjectKit {
             throw new InstrumentException(e);
         } finally {
             try {
-                if (objOut != null) {
+                if (null != objOut) {
                     objOut.close();
                 }
-                if (byteOut != null) {
+                if (null != byteOut) {
                     byteOut.close();
                 }
             } catch (IOException e) {
@@ -1123,8 +1123,8 @@ public class ObjectKit {
      */
     public static <T> T parseToObject(Object value, Class<T> type) {
         Object result = null;
-        if (value == null || type == String.class) {
-            result = value == null ? null : value.toString();
+        if (null == value || type == String.class) {
+            result = null == value ? null : value.toString();
         } else if (type == Character.class || type == char.class) {
             char[] chars = value.toString().toCharArray();
             result = chars.length > 0 ? chars.length > 1 ? chars : chars[0] : Character.MIN_VALUE;
@@ -1174,7 +1174,7 @@ public class ObjectKit {
      * @return 是否是基础类型(true : 已经是基础类型了)
      */
     public static boolean isBaseClass(Object value) {
-        if (value == null) {
+        if (null == value) {
             return true;
         } else if (value instanceof Long) {
             return true;
@@ -1234,13 +1234,13 @@ public class ObjectKit {
      */
     public static void insertObj(Object baseData, Object newData) {
         try {
-            if (baseData == null || newData == null) {
+            if (null == baseData || null == newData) {
                 return;
             }
             // 清空初始值
             Map<String, Object> attrList = getNotNullFields(newData);
             Set<String> keys = attrList.keySet();
-            if (keys != null && keys.size() > 0) {
+            if (null != keys && keys.size() > 0) {
                 for (String key : keys) {
                     if (!key.equals("serialVersionUID")) {
                         setAttribute(baseData, key, attrList.get(key));
@@ -1259,7 +1259,7 @@ public class ObjectKit {
      * @param bean 对象
      */
     public static <T> void cleanInitValue(T bean) {
-        if (bean == null) {
+        if (null == bean) {
             return;
         }
         try {
@@ -1274,7 +1274,7 @@ public class ObjectKit {
                     f.setAccessible(true);
                     Object initValue = f.get(obj);
                     Object oldValue = f.get(bean);
-                    if (initValue != null && initValue.equals(oldValue)) {
+                    if (null != initValue && initValue.equals(oldValue)) {
                         f.set(bean, null);
                     }
                     f.setAccessible(false);
@@ -1299,7 +1299,7 @@ public class ObjectKit {
      * @return 如果传入{@code null}，则默认的toString文本或{@code null}
      */
     public static String identityToString(final Object object) {
-        if (object == null) {
+        if (null == object) {
             return null;
         }
         final String name = object.getClass().getName();
@@ -1418,7 +1418,7 @@ public class ObjectKit {
         if (o1 == o2) {
             return true;
         }
-        if (o1 == null || o2 == null) {
+        if (null == o1 || null == o2) {
             return false;
         }
         if (o1.equals(o2)) {
@@ -1481,7 +1481,7 @@ public class ObjectKit {
         if (source instanceof Object[]) {
             return (Object[]) source;
         }
-        if (source == null) {
+        if (null == source) {
             return Normal.EMPTY_OBJECT_ARRAY;
         }
         if (!source.getClass().isArray()) {

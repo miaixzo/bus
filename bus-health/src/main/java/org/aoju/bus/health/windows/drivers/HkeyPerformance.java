@@ -80,13 +80,13 @@ public final class HkeyPerformance {
         // Load indices
         // e.g., call with "Process" and ProcessPerformanceProperty.class
         Pair<Integer, EnumMap<T, Integer>> indices = getCounterIndices(objectName, counterEnum);
-        if (indices == null) {
+        if (null == indices) {
             return null;
         }
         // The above test checks validity of objectName as an index but it could still
         // fail to read
         Memory pPerfData = readPerfDataBuffer(objectName);
-        if (pPerfData == null) {
+        if (null == pPerfData) {
             return null;
         }
         // Buffer is now successfully populated.

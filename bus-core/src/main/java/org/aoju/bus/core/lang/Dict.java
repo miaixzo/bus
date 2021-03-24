@@ -494,7 +494,7 @@ public class Dict extends LinkedHashMap<String, Object> implements BasicType<Str
      */
     public <T> T get(String attr, T defaultValue) {
         final Object result = get(attr);
-        return (T) (result != null ? result : defaultValue);
+        return (T) (null != result ? result : defaultValue);
     }
 
     /**

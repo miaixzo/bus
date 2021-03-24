@@ -97,7 +97,7 @@ public class CStore {
                                  Node calledNode,
                                  List<String> files,
                                  Progress progress) {
-        if (callingNode == null || calledNode == null) {
+        if (null == callingNode || null == calledNode) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
 
@@ -171,7 +171,7 @@ public class CStore {
         storescu.enableSOPClassRelationshipExtNeg(true);
         Properties p = new Properties();
         try {
-            if (url != null) {
+            if (null != url) {
                 p.load(url.openStream());
             }
         } catch (Exception e) {

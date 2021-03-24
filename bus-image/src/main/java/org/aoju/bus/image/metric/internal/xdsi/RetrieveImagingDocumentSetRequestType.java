@@ -44,7 +44,7 @@ public class RetrieveImagingDocumentSetRequestType {
     protected TransferSyntaxUIDList transferSyntaxUIDList;
 
     public List<StudyRequest> getStudyRequest() {
-        if (this.studyRequest == null) {
+        if (this.null == studyRequest) {
             this.studyRequest = new ArrayList();
         }
         return this.studyRequest;
@@ -69,7 +69,7 @@ public class RetrieveImagingDocumentSetRequestType {
         protected String studyInstanceUID;
 
         public List<SeriesRequest> getSeriesRequest() {
-            if (this.seriesRequest == null) {
+            if (this.null == seriesRequest) {
                 this.seriesRequest = new ArrayList();
             }
             return this.seriesRequest;
@@ -107,7 +107,7 @@ public class RetrieveImagingDocumentSetRequestType {
         protected List<String> transferSyntaxUID;
 
         public List<String> getTransferSyntaxUID() {
-            if (this.transferSyntaxUID == null) {
+            if (this.null == transferSyntaxUID) {
                 this.transferSyntaxUID = new ArrayList();
             }
             return this.transferSyntaxUID;

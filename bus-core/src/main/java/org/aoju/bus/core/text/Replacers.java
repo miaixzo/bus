@@ -253,7 +253,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public static String replace(final Object source, final Properties value) {
-        if (value == null) {
+        if (null == value) {
             return source.toString();
         }
         final Map<String, String> valueMap = new HashMap<>();
@@ -285,7 +285,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final String source) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(source);
@@ -304,7 +304,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final String source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(length).append(source, offset, length);
@@ -323,7 +323,7 @@ public class Replacers {
      * @return 返回替换操作的结果
      */
     public String replace(final char[] source) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(source.length).append(source);
@@ -340,7 +340,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final char[] source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(length).append(source, offset, length);
@@ -356,7 +356,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final StringBuffer source) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(source.length()).append(source);
@@ -373,7 +373,7 @@ public class Replacers {
      * @return 返回替换操作的结果
      */
     public String replace(final StringBuffer source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(length).append(source, offset, length);
@@ -388,7 +388,7 @@ public class Replacers {
      * @return 返回替换操作的结果
      */
     public String replace(final CharSequence source) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         return replace(source, 0, source.length());
@@ -403,7 +403,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final CharSequence source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(length).append(source, offset, length);
@@ -419,7 +419,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final Builders source) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(source.length()).append(source);
@@ -436,7 +436,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final Builders source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders(length).append(source, offset, length);
@@ -451,7 +451,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public String replace(final Object source) {
-        if (source == null) {
+        if (null == source) {
             return null;
         }
         final Builders buf = new Builders().append(source);
@@ -467,7 +467,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public boolean replaceIn(final StringBuffer source) {
-        if (source == null) {
+        if (null == source) {
             return false;
         }
         return replaceIn(source, 0, source.length());
@@ -482,7 +482,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public boolean replaceIn(final StringBuffer source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return false;
         }
         final Builders buf = new Builders(length).append(source, offset, length);
@@ -500,7 +500,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public boolean replaceIn(final StringBuilder source) {
-        if (source == null) {
+        if (null == source) {
             return false;
         }
         return replaceIn(source, 0, source.length());
@@ -515,7 +515,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public boolean replaceIn(final StringBuilder source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return false;
         }
         final Builders buf = new Builders(length).append(source, offset, length);
@@ -533,7 +533,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public boolean replaceIn(final Builders source) {
-        if (source == null) {
+        if (null == source) {
             return false;
         }
         return substitute(source, 0, source.length());
@@ -548,7 +548,7 @@ public class Replacers {
      * @return 替换操作的结果
      */
     public boolean replaceIn(final Builders source, final int offset, final int length) {
-        if (source == null) {
+        if (null == source) {
             return false;
         }
         return substitute(source, offset, length);
@@ -582,7 +582,7 @@ public class Replacers {
         final Matchers valueDelimMatcher = getValueDelimiterMatcher();
         final boolean substitutionInVariablesEnabled = isEnableSubstitutionInVariables();
 
-        final boolean top = priorVariables == null;
+        final boolean top = null == priorVariables;
         boolean altered = false;
         int lengthChange = 0;
         char[] chars = buffer.buffer;
@@ -638,7 +638,7 @@ public class Replacers {
                                 String varName = varNameExpr;
                                 String varDefaultValue = null;
 
-                                if (valueDelimMatcher != null) {
+                                if (null != valueDelimMatcher) {
                                     final char[] varNameExprChars = varNameExpr.toCharArray();
                                     int valueDelimiterMatchLen = 0;
                                     for (int i = 0; i < varNameExprChars.length; i++) {
@@ -654,7 +654,7 @@ public class Replacers {
                                     }
                                 }
 
-                                if (priorVariables == null) {
+                                if (null == priorVariables) {
                                     priorVariables = new ArrayList<>();
                                     priorVariables.add(new String(chars,
                                             offset, length));
@@ -665,10 +665,10 @@ public class Replacers {
 
                                 String varValue = resolveVariable(varName, buffer,
                                         startPos, endPos);
-                                if (varValue == null) {
+                                if (null == varValue) {
                                     varValue = varDefaultValue;
                                 }
-                                if (varValue != null) {
+                                if (null != varValue) {
                                     final int varLen = varValue.length();
                                     buffer.replace(startPos, endPos, varValue);
                                     altered = true;
@@ -729,7 +729,7 @@ public class Replacers {
      */
     protected String resolveVariable(final String variableName, final Builders buf, final int startPos, final int endPos) {
         final Lookups<?> resolver = getVariableResolver();
-        if (resolver == null) {
+        if (null == resolver) {
             return null;
         }
         return resolver.lookup(variableName);
@@ -770,7 +770,7 @@ public class Replacers {
      * @return this, 以启用链接
      */
     public Replacers setVariablePrefixMatcher(final Matchers prefixMatcher) {
-        if (prefixMatcher == null) {
+        if (null == prefixMatcher) {
             throw new IllegalArgumentException("Variable prefix matcher must not be null!");
         }
         this.prefixMatcher = prefixMatcher;
@@ -794,7 +794,7 @@ public class Replacers {
      * @return this, 以启用链接
      */
     public Replacers setVariablePrefix(final String prefix) {
-        if (prefix == null) {
+        if (null == prefix) {
             throw new IllegalArgumentException("Variable prefix must not be null!");
         }
         return setVariablePrefixMatcher(Matchers.stringMatcher(prefix));
@@ -817,7 +817,7 @@ public class Replacers {
      * @return this, 以启用链接
      */
     public Replacers setVariableSuffixMatcher(final Matchers suffixMatcher) {
-        if (suffixMatcher == null) {
+        if (null == suffixMatcher) {
             throw new IllegalArgumentException("Variable suffix matcher must not be null!");
         }
         this.suffixMatcher = suffixMatcher;
@@ -841,7 +841,7 @@ public class Replacers {
      * @return this, 以启用链接
      */
     public Replacers setVariableSuffix(final String suffix) {
-        if (suffix == null) {
+        if (null == suffix) {
             throw new IllegalArgumentException("Variable suffix must not be null!");
         }
         return setVariableSuffixMatcher(Matchers.stringMatcher(suffix));

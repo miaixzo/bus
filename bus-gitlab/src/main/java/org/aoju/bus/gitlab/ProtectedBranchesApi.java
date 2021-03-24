@@ -250,11 +250,11 @@ public class ProtectedBranchesApi extends AbstractApi {
                 .withParam("name", branchName, true)
                 .withParam("code_owner_approval_required", codeOwnerApprovalRequired);
 
-        if (allowedToPush != null)
+        if (null != allowedToPush)
             allowedToPush.getForm(formData, "allowed_to_push");
-        if (allowedToMerge != null)
+        if (null != allowedToMerge)
             allowedToMerge.getForm(formData, "allowed_to_merge");
-        if (allowedToUnprotect != null)
+        if (null != allowedToUnprotect)
             allowedToUnprotect.getForm(formData, "allowed_to_unprotect");
 
         Response response = post(Response.Status.CREATED, formData.asMap(),

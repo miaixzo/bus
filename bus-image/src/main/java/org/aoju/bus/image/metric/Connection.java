@@ -289,7 +289,7 @@ public class Connection implements Serializable {
      * @param device 所属设备对象
      */
     public final void setDevice(Device device) {
-        if (device != null && this.device != null)
+        if (null != device && this.null != device)
             throw new IllegalStateException("already owned by " + device);
         this.device = device;
     }
@@ -313,9 +313,9 @@ public class Connection implements Serializable {
      * @param hostname 包含主机名的字符串
      */
     public final void setHostname(String hostname) {
-        if (hostname != null
+        if (null != hostname
                 ? hostname.equals(this.hostname)
-                : this.hostname == null)
+                : this.null == hostname)
             return;
 
         this.hostname = hostname;
@@ -339,9 +339,9 @@ public class Connection implements Serializable {
      * @param bindAddress 监听套接字的绑定地址或{@code null}
      */
     public final void setBindAddress(String bindAddress) {
-        if (bindAddress != null
+        if (null != bindAddress
                 ? bindAddress.equals(this.bindAddress)
-                : this.bindAddress == null)
+                : this.null == bindAddress)
             return;
 
         this.bindAddress = bindAddress;
@@ -368,9 +368,9 @@ public class Connection implements Serializable {
      * @param bindAddress 传出连接的绑定地址或{@code null}
      */
     public void setClientBindAddress(String bindAddress) {
-        if (bindAddress != null
+        if (null != bindAddress
                 ? bindAddress.equals(this.clientBindAddress)
-                : this.clientBindAddress == null)
+                : this.null == clientBindAddress)
             return;
 
         this.clientBindAddress = bindAddress;
@@ -382,7 +382,7 @@ public class Connection implements Serializable {
     }
 
     public void setProtocol(Protocol protocol) {
-        if (protocol == null)
+        if (null == protocol)
             throw new NullPointerException();
 
         if (this.protocol == protocol)
@@ -453,7 +453,7 @@ public class Connection implements Serializable {
     }
 
     public final boolean useHttpProxy() {
-        return httpProxy != null;
+        return null != httpProxy;
     }
 
     public final boolean isServer() {
@@ -777,8 +777,8 @@ public class Connection implements Serializable {
      * @return boolean如果NetworkConnection安装在网络上，则为True
      */
     public boolean isInstalled() {
-        return device != null && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+        return null != device && device.isInstalled()
+                && (null == installed || installed.booleanValue());
     }
 
     public Boolean getInstalled() {
@@ -858,34 +858,34 @@ public class Connection implements Serializable {
     }
 
     private InetAddress hostAddr() throws UnknownHostException {
-        if (hostAddr == null && hostname != null)
+        if (null == hostAddr && null != hostname)
             hostAddr = InetAddress.getByName(hostname);
 
         return hostAddr;
     }
 
     private InetAddress bindAddr() throws UnknownHostException {
-        if (bindAddress == null)
+        if (null == bindAddress)
             return hostAddr();
 
-        if (bindAddr == null)
+        if (null == bindAddr)
             bindAddr = InetAddress.getByName(bindAddress);
 
         return bindAddr;
     }
 
     private InetAddress clientBindAddr() throws UnknownHostException {
-        if (clientBindAddress == null)
+        if (null == clientBindAddress)
             return hostAddr();
 
-        if (clientBindAddr == null)
+        if (null == clientBindAddr)
             clientBindAddr = InetAddress.getByName(clientBindAddress);
 
         return clientBindAddr;
     }
 
     private List<InetAddress> blacklistAddrs() {
-        if (blacklistAddrs == null) {
+        if (null == blacklistAddrs) {
             blacklistAddrs = new ArrayList<InetAddress>(blacklist.length);
             for (String hostname : blacklist)
                 try {
@@ -932,20 +932,20 @@ public class Connection implements Serializable {
             rebindNeeded = false;
             return false;
         }
-        if (device == null)
+        if (null == device)
             throw new IllegalStateException("Not attached to Device");
         if (isListening())
             throw new IllegalStateException("Already listening - " + listener);
         if (protocol.isTCP()) {
             TCPHandler handler = tcpHandlers.get(protocol);
-            if (handler == null) {
+            if (null == handler) {
                 Logger.info("No TCP Protocol Handler for protocol {}", protocol);
                 return false;
             }
             listener = new TCPListener(this, handler);
         } else {
             UDPHandler handler = udpHandlers.get(protocol);
-            if (handler == null) {
+            if (null == handler) {
                 Logger.info("No UDP Protocol Handler for protocol {}", protocol);
                 return false;
             }
@@ -956,7 +956,7 @@ public class Connection implements Serializable {
     }
 
     public final boolean isListening() {
-        return listener != null;
+        return null != listener;
     }
 
     public boolean isBlackListed(InetAddress ia) {
@@ -965,7 +965,7 @@ public class Connection implements Serializable {
 
     public synchronized void unbind() {
         Closeable tmp = listener;
-        if (tmp == null)
+        if (null == tmp)
             return;
         listener = null;
         try {
@@ -988,7 +988,7 @@ public class Connection implements Serializable {
         Logger.info("Initiate connection from {} to {}:{}",
                 bindPoint, remoteHostname, remotePort);
         Socket s = new Socket();
-        Monitoring monitor = device != null
+        Monitoring monitor = null != device
                 ? device.getMonitoring()
                 : null;
         try {
@@ -996,7 +996,7 @@ public class Connection implements Serializable {
             setReceiveBufferSize(s);
             setSocketSendOptions(s);
             String remoteProxy = remoteConn.getHttpProxy();
-            if (remoteProxy != null) {
+            if (null != remoteProxy) {
                 String userauth = null;
                 String[] ss = Property.split(remoteProxy, Symbol.C_AT);
                 if (ss.length > 1) {
@@ -1018,17 +1018,17 @@ public class Connection implements Serializable {
             }
             if (isTls())
                 s = createTLSSocket(s, remoteConn);
-            if (monitor != null)
+            if (null != monitor)
                 monitor.onConnectionEstablished(this, remoteConn, s);
             Logger.info("Established connection {}", s);
             return s;
         } catch (GeneralSecurityException e) {
-            if (monitor != null)
+            if (null != monitor)
                 monitor.onConnectionFailed(this, remoteConn, s, e);
             IoKit.close(s);
             throw e;
         } catch (IOException e) {
-            if (monitor != null)
+            if (null != monitor)
                 monitor.onConnectionFailed(this, remoteConn, s, e);
             IoKit.close(s);
             throw e;
@@ -1062,7 +1062,7 @@ public class Connection implements Serializable {
                 .append(hostname).append(Symbol.C_COLON).append(port)
                 .append(" HTTP/1.1\r\nHost: ")
                 .append(hostname).append(Symbol.C_COLON).append(port);
-        if (userauth != null) {
+        if (null != userauth) {
             byte[] b = userauth.getBytes(Charset.UTF_8);
             char[] base64 = new char[(b.length + 2) / 3 * 4];
             Base64.encode(b, 0, b.length, base64, 0);
@@ -1124,9 +1124,9 @@ public class Connection implements Serializable {
     }
 
     public boolean equalsRDN(Connection other) {
-        return commonName != null
+        return null != commonName
                 ? commonName.equals(other.commonName)
-                : other.commonName == null
+                : other.null == commonName
                 && hostname.equals(other.hostname)
                 && port == other.port
                 && protocol == other.protocol;

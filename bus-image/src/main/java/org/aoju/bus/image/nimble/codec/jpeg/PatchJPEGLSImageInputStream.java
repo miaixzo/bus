@@ -52,17 +52,17 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
 
     public PatchJPEGLSImageInputStream(ImageInputStream iis,
                                        PatchJPEGLS patchJPEGLS) throws IOException {
-        if (iis == null)
+        if (null == iis)
             throw new NullPointerException("iis");
 
         super.streamPos = iis.getStreamPosition();
         super.flushedPos = iis.getFlushedPosition();
         this.iis = iis;
-        if (patchJPEGLS == null)
+        if (null == patchJPEGLS)
             return;
 
         JPEGLSCodingParam param = patchJPEGLS.createJPEGLSCodingParam(firstBytesOf(iis));
-        if (param != null) {
+        if (null != param) {
             Logger.debug("Patch JPEG-LS with {}", param);
             this.patchPos = streamPos + param.getOffset();
             this.patch = param.getBytes();
@@ -101,7 +101,7 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
     }
 
     private long adjustStreamPosition(long pos) {
-        if (patch == null)
+        if (null == patch)
             return pos;
         long index = pos - patchPos;
         return index < 0 ? pos
@@ -124,7 +124,7 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
     public long length() {
         try {
             long len = iis.length();
-            return patch == null || len < 0 ? len : len + patch.length;
+            return null == patch || len < 0 ? len : len + patch.length;
         } catch (IOException e) {
             return -1;
         }
@@ -133,7 +133,7 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
     public int read() throws IOException {
         int ch;
         long index;
-        if (patch != null
+        if (null != patch
                 && (index = streamPos - patchPos) >= 0
                 && index < patch.length)
             ch = patch[(int) index];
@@ -146,7 +146,7 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
 
     public int read(byte[] b, int off, int len) throws IOException {
         int r = 0;
-        if (patch != null && streamPos < patchPos + patch.length) {
+        if (null != patch && streamPos < patchPos + patch.length) {
             if (streamPos < patchPos) {
                 r = iis.read(b, off, (int) Math.min(patchPos - streamPos, len));
                 if (r < 0)

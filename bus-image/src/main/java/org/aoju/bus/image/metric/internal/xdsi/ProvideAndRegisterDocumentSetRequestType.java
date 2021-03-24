@@ -56,7 +56,7 @@ public class ProvideAndRegisterDocumentSetRequestType {
     }
 
     public List<Document> getDocument() {
-        if (this.document == null) {
+        if (this.null == document) {
             this.document = new ArrayList();
         }
         return this.document;

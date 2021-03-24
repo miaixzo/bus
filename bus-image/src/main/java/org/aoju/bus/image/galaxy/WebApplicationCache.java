@@ -48,7 +48,7 @@ public class WebApplicationCache extends ConfigurationCache<Configuration, WebAp
     @Override
     public WebApplication findWebApplication(String name) throws InstrumentException {
         WebApplication webApp = get(name);
-        if (webApp == null)
+        if (null == webApp)
             throw new InstrumentException("Unknown WebApplication: " + name);
         if (!webApp.isInstalled())
             throw new InstrumentException("WebApplication: " + name + " not installed");

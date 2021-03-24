@@ -52,12 +52,12 @@ public class EntityField {
      * @param propertyDescriptor 字段name对应的property
      */
     public EntityField(Field field, PropertyDescriptor propertyDescriptor) {
-        if (field != null) {
+        if (null != field) {
             this.field = field;
             this.name = field.getName();
             this.javaType = field.getType();
         }
-        if (propertyDescriptor != null) {
+        if (null != propertyDescriptor) {
             this.name = propertyDescriptor.getName();
             this.setter = propertyDescriptor.getWriteMethod();
             this.getter = propertyDescriptor.getReadMethod();
@@ -85,13 +85,13 @@ public class EntityField {
      */
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
         boolean result = false;
-        if (field != null) {
+        if (null != field) {
             result = field.isAnnotationPresent(annotationClass);
         }
-        if (!result && setter != null) {
+        if (!result && null != setter) {
             result = setter.isAnnotationPresent(annotationClass);
         }
-        if (!result && getter != null) {
+        if (!result && null != getter) {
             result = getter.isAnnotationPresent(annotationClass);
         }
         return result;
@@ -99,13 +99,13 @@ public class EntityField {
 
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         T result = null;
-        if (field != null) {
+        if (null != field) {
             result = field.getAnnotation(annotationClass);
         }
-        if (result == null && setter != null) {
+        if (null == result && null != setter) {
             result = setter.getAnnotation(annotationClass);
         }
-        if (result == null && getter != null) {
+        if (null == result && null != getter) {
             result = getter.getAnnotation(annotationClass);
         }
         return result;
@@ -114,17 +114,17 @@ public class EntityField {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         EntityField that = (EntityField) o;
 
-        return !(name != null ? !name.equals(that.name) : that.name != null);
+        return !(null != name ? !name.equals(that.name) : that.null != name);
 
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return null != name ? name.hashCode() : 0;
     }
 
     public Class<?> getJavaType() {

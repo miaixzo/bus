@@ -56,7 +56,7 @@ public class BasicCGetSCP extends AbstractService {
             throw new ImageException(Status.UnrecognizedOperation);
 
         Retrieve retrieve = calculateMatches(as, pc, cmd, keys);
-        if (retrieve != null)
+        if (null != retrieve)
             as.getApplicationEntity().getDevice().execute(retrieve);
         else
             as.tryWriteDimseRSP(pc, Commands.mkCGetRSP(cmd, Status.Success));

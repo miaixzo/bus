@@ -58,7 +58,7 @@ public class MethodExecuteCostHandler {
             //获取costLogger注解
             tacerCostLogger = currentMethod.getAnnotation(TacerCost.class);
             //当有costLogger注解时
-            if (tacerCostLogger != null) {
+            if (null != tacerCostLogger) {
                 //开始时间
                 long startTime = System.currentTimeMillis();
                 try {

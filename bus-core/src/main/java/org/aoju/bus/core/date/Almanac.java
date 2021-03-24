@@ -158,7 +158,7 @@ public class Almanac extends Converter {
      * @return 季度列表 ，元素类似于 20132
      */
     public static LinkedHashSet<String> getQuarter(Date startDate, Date endDate) {
-        if (startDate == null || endDate == null) {
+        if (null == startDate || null == endDate) {
             return new LinkedHashSet<>(0);
         }
         return getQuarter(startDate.getTime(), endDate.getTime());
@@ -3821,7 +3821,7 @@ public class Almanac extends Converter {
      * @return 是否为同一天
      */
     public static boolean isSameDay(Calendar cal1, Calendar cal2) {
-        if (cal1 == null || cal2 == null) {
+        if (null == cal1 || null == cal2) {
             throw new IllegalArgumentException("The date must not be null");
         }
         return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
@@ -3837,7 +3837,7 @@ public class Almanac extends Converter {
      * @return 是否为同一月
      */
     public static boolean isSameMonth(Calendar cal1, Calendar cal2) {
-        if (cal1 == null || cal2 == null) {
+        if (null == cal1 || null == cal2) {
             throw new IllegalArgumentException("The date must not be null");
         }
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
@@ -4369,7 +4369,7 @@ public class Almanac extends Converter {
      * @return 周数
      */
     public static int weekOfMonth(LocalDate localDate, Locale locale) {
-        WeekFields weekFields = locale == null ? WeekFields.of(Locale.getDefault()) : WeekFields.of(locale);
+        WeekFields weekFields = null == locale ? WeekFields.of(Locale.getDefault()) : WeekFields.of(locale);
         return (int) weekFields.weekOfMonth().getFrom(localDate);
     }
 
@@ -4420,7 +4420,7 @@ public class Almanac extends Converter {
      * @return 周数
      */
     public static int weekOfYear(LocalDate localDate, Locale locale) {
-        WeekFields weekFields = locale == null ? WeekFields.of(Locale.getDefault()) : WeekFields.of(locale);
+        WeekFields weekFields = null == locale ? WeekFields.of(Locale.getDefault()) : WeekFields.of(locale);
         return (int) weekFields.weekOfYear().getFrom(localDate);
     }
 
@@ -4511,7 +4511,7 @@ public class Almanac extends Converter {
      * @return true/false
      */
     public static boolean isDate(String dptDate, String pattern) {
-        if (dptDate == null || dptDate.isEmpty())
+        if (null == dptDate || dptDate.isEmpty())
             return false;
         String formatDate = Formatter.format(dptDate, pattern, pattern);
         return formatDate.equals(dptDate);
@@ -4536,12 +4536,12 @@ public class Almanac extends Converter {
      * @return true/false
      */
     public static boolean isBefore(String go, String back, String pattern) {
-        if (go == null || back == null || go.isEmpty() || back.isEmpty())
+        if (null == go || null == back || go.isEmpty() || back.isEmpty())
             return false;
 
         Date goDate = offsetDay(Formatter.parse(go, pattern), -1);
         Date backDate = Formatter.parse(back, pattern);
-        if (goDate != null && backDate != null) {
+        if (null != goDate && null != backDate) {
             return goDate.before(backDate);
         }
         return false;
@@ -4575,7 +4575,7 @@ public class Almanac extends Converter {
      * @return true/false
      */
     public static boolean isShortDate(String date) {
-        if (date == null || Normal.EMPTY.equals(date))
+        if (null == date || Normal.EMPTY.equals(date))
             return false;
         String regex = "^([\\d]{4}(((0[13578]|1[02])((0[1-9])|([12][0-9])|(3[01])))|(((0[469])|11)((0[1-9])|([12][1-9])|30))|(02((0[1-9])|(1[0-9])|(2[1-8])))))|((((([02468][048])|([13579][26]))00)|([0-9]{2}(([02468][048])|([13579][26]))))(((0[13578]|1[02])((0[1-9])|([12][0-9])|(3[01])))|(((0[469])|11)((0[1-9])|([12][1-9])|30))|(02((0[1-9])|(1[0-9])|(2[1-9])))))$";
         Pattern pattern = Pattern.compile(regex);
@@ -4601,7 +4601,7 @@ public class Almanac extends Converter {
      * @return true/false
      */
     public static boolean isNotLessThanToday(String date, String format) {
-        if (date == null || date.isEmpty())
+        if (null == date || date.isEmpty())
             return false;
         Date cmpDate = offsetDay(new Date(), -1);
         Date srcDate = new DateTime(date, format);

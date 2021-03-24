@@ -60,7 +60,7 @@ public interface HookManager {
      */
     default boolean isValidSecretToken(String secretToken) {
         String ourSecretToken = getSecretToken();
-        return (ourSecretToken == null ||
+        return (null == ourSecretToken ||
                 ourSecretToken.trim().isEmpty() ||
                 ourSecretToken.equals(secretToken) ? true : false);
     }

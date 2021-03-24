@@ -408,7 +408,7 @@ public class TextKit implements CharSequence, Appendable, Serializable {
      * @return this
      */
     public TextKit insert(int index, CharSequence csq, int start, int end) {
-        if (csq == null) {
+        if (null == csq) {
             csq = Normal.NULL;
         }
         final int csqLen = csq.length();

@@ -158,7 +158,7 @@ public class MultiCacheReader extends AbstractReader {
         Object proceed = doLogInvoke(() -> baseInvoker.proceed(missArgs));
 
         Object result;
-        if (proceed != null) {
+        if (null != proceed) {
             Class<?> returnType = proceed.getClass();
             methodHolder.setReturnType(returnType);
             if (Map.class.isAssignableFrom(returnType)) {
@@ -216,11 +216,11 @@ public class MultiCacheReader extends AbstractReader {
         Class<?> returnType = methodHolder.getReturnType();
 
         // when method return type not cached. case: full shooting when application restart
-        if (returnType == null) {
+        if (null == returnType) {
             result = doLogInvoke(baseInvoker::proceed);
 
             // catch return type for next time
-            if (result != null) {
+            if (null != result) {
                 methodHolder.setReturnType(result.getClass());
             }
         } else {
@@ -259,7 +259,7 @@ public class MultiCacheReader extends AbstractReader {
         Logger.info("multi cache hit rate: {}/{}, missed keys: {}",
                 hitCount, totalCount, missKeys);
 
-        if (this.baseHitting != null) {
+        if (this.null != baseHitting) {
             // 分组模板
             String pattern = PatternGenerator.generatePattern(annoHolder);
 

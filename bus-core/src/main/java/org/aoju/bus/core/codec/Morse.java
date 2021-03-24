@@ -155,7 +155,7 @@ public class Morse {
         for (int i = 0; i < len; i++) {
             int codePoint = text.codePointAt(i);
             String word = ALPHABETS.get(codePoint);
-            if (word == null) {
+            if (null == word) {
                 word = Integer.toBinaryString(codePoint);
             }
             morseBuilder.append(word.replace(Symbol.C_ZERO, dit).replace(Symbol.C_ONE, dah)).append(split);
@@ -187,7 +187,7 @@ public class Morse {
             }
             word = word.replace(dit, Symbol.C_ZERO).replace(dah, Symbol.C_ONE);
             codePoint = DICTIONARIES.get(word);
-            if (codePoint == null) {
+            if (null == codePoint) {
                 codePoint = Integer.valueOf(word, 2);
             }
             textBuilder.appendCodePoint(codePoint);

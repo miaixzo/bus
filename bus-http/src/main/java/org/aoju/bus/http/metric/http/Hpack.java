@@ -460,7 +460,7 @@ final class Hpack {
                 int headerNameIndex = -1;
 
                 Integer staticIndex = NAME_TO_FIRST_INDEX.get(name);
-                if (staticIndex != null) {
+                if (null != staticIndex) {
                     headerNameIndex = staticIndex + 1;
                     if (headerNameIndex > 1 && headerNameIndex < 8) {
                         if (ObjectKit.equal(STATIC_HEADERS_TABLE[headerNameIndex - 1].value, value)) {

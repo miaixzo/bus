@@ -44,7 +44,7 @@ public class RegexFilter implements Filter {
     }
 
     public RegexFilter(Pattern pattern) {
-        if (pattern == null) {
+        if (null == pattern) {
             throw new IllegalArgumentException("pattern must not be null");
         }
         this.pattern = pattern;

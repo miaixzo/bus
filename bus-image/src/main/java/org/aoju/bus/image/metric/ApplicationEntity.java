@@ -132,8 +132,8 @@ public class ApplicationEntity implements Serializable {
      * @param device 主要设备.
      */
     public void setDevice(Device device) {
-        if (device != null) {
-            if (this.device != null)
+        if (null != device) {
+            if (this.null != device)
                 throw new IllegalStateException("already owned by " +
                         this.device.getDeviceName());
             for (Connection conn : conns)
@@ -162,10 +162,10 @@ public class ApplicationEntity implements Serializable {
         if (aet.isEmpty())
             throw new IllegalArgumentException("AE title cannot be empty");
         Device device = this.device;
-        if (device != null)
+        if (null != device)
             device.removeApplicationEntity(this.aet);
         this.aet = aet;
-        if (device != null)
+        if (null != device)
             device.addApplicationEntity(this);
     }
 
@@ -310,9 +310,9 @@ public class ApplicationEntity implements Serializable {
 
     public String getCallingAETitle(String calledAET) {
         String callingAET = masqueradeCallingAETs.get(calledAET);
-        if (callingAET == null) {
+        if (null == callingAET) {
             callingAET = masqueradeCallingAETs.get(Symbol.STAR);
-            if (callingAET == null)
+            if (null == callingAET)
                 callingAET = aet;
         }
         return callingAET;
@@ -387,8 +387,8 @@ public class ApplicationEntity implements Serializable {
      * @return 布尔值。如果AE安装在网络上，则为True,如果不存在*，则从设备继承有关AE安装状态的信息
      */
     public boolean isInstalled() {
-        return device != null && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+        return null != device && device.isInstalled()
+                && (null == installed || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -405,9 +405,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     public boolean isRoleSelectionNegotiationLenient() {
-        return roleSelectionNegotiationLenient != null
+        return null != roleSelectionNegotiationLenient
                 ? roleSelectionNegotiationLenient.booleanValue()
-                : device != null && device.isRoleSelectionNegotiationLenient();
+                : null != device && device.isRoleSelectionNegotiationLenient();
     }
 
     public final Boolean getRoleSelectionNegotiationLenient() {
@@ -428,11 +428,11 @@ public class ApplicationEntity implements Serializable {
 
     public DimseRQHandler getDimseRQHandler() {
         DimseRQHandler handler = dimseRQHandler;
-        if (handler != null)
+        if (null != handler)
             return handler;
 
         Device device = this.device;
-        return device != null
+        return null != device
                 ? device.getDimseRQHandler()
                 : null;
     }
@@ -447,14 +447,14 @@ public class ApplicationEntity implements Serializable {
     }
 
     private void checkDevice() {
-        if (device == null)
+        if (null == device)
             throw new IllegalStateException("Not attached to Device");
     }
 
     void onDimseRQ(Association as, Presentation pc, Dimse cmd,
                    Attributes cmdAttrs, PDVInputStream data) throws IOException {
         DimseRQHandler tmp = getDimseRQHandler();
-        if (tmp == null) {
+        if (null == tmp) {
             Logger.error("DimseRQHandler not initalized");
             throw new AAbort();
         }
@@ -467,7 +467,7 @@ public class ApplicationEntity implements Serializable {
                     "protocol != DICOM - " + conn.getProtocol());
 
 
-        if (device != null && device != conn.getDevice())
+        if (null != device && device != conn.getDevice())
             throw new IllegalStateException(conn + " not contained by Device: " +
                     device.getDeviceName());
         conns.add(conn);
@@ -485,7 +485,7 @@ public class ApplicationEntity implements Serializable {
         tc.setApplicationEntity(this);
         TransferCapability prev = (tc.getRole() == TransferCapability.Role.SCU
                 ? scuTCs : scpTCs).put(tc.getSopClass(), tc);
-        if (prev != null && prev != tc)
+        if (null != prev && prev != tc)
             prev.setApplicationEntity(null);
         return prev;
     }
@@ -494,7 +494,7 @@ public class ApplicationEntity implements Serializable {
                                                           TransferCapability.Role role) {
         TransferCapability tc = (role == TransferCapability.Role.SCU ? scuTCs : scpTCs)
                 .remove(sopClass);
-        if (tc != null)
+        if (null != tc)
             tc.setApplicationEntity(null);
         return tc;
     }
@@ -522,19 +522,19 @@ public class ApplicationEntity implements Serializable {
         String as = rqpc.getAbstractSyntax();
         TransferCapability tc = roleSelection(rq, ac, as);
         int pcid = rqpc.getPCID();
-        if (tc == null)
+        if (null == tc)
             return new Presentation(pcid,
                     Presentation.ABSTRACT_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
 
         String ts = tc.selectTransferSyntax(rqpc.getTransferSyntaxes());
-        if (ts == null)
+        if (null == ts)
             return new Presentation(pcid,
                     Presentation.TRANSFER_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
 
         byte[] info = negotiate(rq.getExtNegotiationFor(as), tc);
-        if (info != null)
+        if (null != info)
             ac.addExtendedNegotiate(new ExtendedNegotiate(as, info));
         return new Presentation(pcid,
                 Presentation.ACCEPTANCE, ts);
@@ -543,11 +543,11 @@ public class ApplicationEntity implements Serializable {
     private TransferCapability roleSelection(AAssociateRQ rq,
                                              AAssociateAC ac, String asuid) {
         RoleSelection rqrs = rq.getRoleSelectionFor(asuid);
-        if (rqrs == null)
+        if (null == rqrs)
             return getTC(scpTCs, asuid, rq);
 
         RoleSelection acrs = ac.getRoleSelectionFor(asuid);
-        if (acrs != null)
+        if (null != acrs)
             return getTC(acrs.isSCU() ? scpTCs : scuTCs, asuid, rq);
 
         TransferCapability tcscu = null;
@@ -563,19 +563,19 @@ public class ApplicationEntity implements Serializable {
     private TransferCapability getTC(Map<String, TransferCapability> tcs,
                                      String asuid, AAssociateRQ rq) {
         TransferCapability tc = tcs.get(asuid);
-        if (tc != null)
+        if (null != tc)
             return tc;
 
         CommonExtended commonExtNeg =
                 rq.getCommonExtendedNegotiationFor(asuid);
-        if (commonExtNeg != null) {
+        if (null != commonExtNeg) {
             for (String cuid : commonExtNeg.getRelatedGeneralSOPClassUIDs()) {
                 tc = tcs.get(cuid);
-                if (tc != null)
+                if (null != tc)
                     return tc;
             }
             tc = tcs.get(commonExtNeg.getServiceClassUID());
-            if (tc != null)
+            if (null != tc)
                 return tc;
         }
 
@@ -583,15 +583,15 @@ public class ApplicationEntity implements Serializable {
     }
 
     private byte[] negotiate(ExtendedNegotiate exneg, TransferCapability tc) {
-        if (exneg == null)
+        if (null == exneg)
             return null;
 
         StorageOptions storageOptions = tc.getStorageOptions();
-        if (storageOptions != null)
+        if (null != storageOptions)
             return storageOptions.toExtendedNegotiationInformation();
 
         EnumSet<Option.Type> types = tc.getTypes();
-        if (types != null) {
+        if (null != types) {
             EnumSet<Option.Type> commonOpts = Option.Type.toOptions(exneg);
             commonOpts.retainAll(types);
             return Option.Type.toExtendedNegotiationInformation(commonOpts);
@@ -615,12 +615,12 @@ public class ApplicationEntity implements Serializable {
             as = new Association(this, local, sock);
             as.write(rq);
             as.waitForLeaving(Association.State.Sta5);
-            if (monitor != null)
+            if (null != monitor)
                 monitor.onAssociationEstablished(as);
             return as;
         } catch (InterruptedException | IOException e) {
             IoKit.close(sock);
-            if (as != null && monitor != null)
+            if (null != as && null != monitor)
                 monitor.onAssociationFailed(as, e);
             throw e;
         }
@@ -701,7 +701,7 @@ public class ApplicationEntity implements Serializable {
         for (AEExtension src : from.extensions.values()) {
             Class<? extends AEExtension> clazz = src.getClass();
             AEExtension ext = extensions.get(clazz);
-            if (ext == null)
+            if (null == ext)
                 try {
                     addAEExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
@@ -762,7 +762,7 @@ public class ApplicationEntity implements Serializable {
 
     public <T extends AEExtension> T getAEExtensionNotNull(Class<T> clazz) {
         T aeExt = getAEExtension(clazz);
-        if (aeExt == null)
+        if (null == aeExt)
             throw new IllegalStateException("No " + clazz.getName()
                     + " configured for AE: " + aet);
         return aeExt;

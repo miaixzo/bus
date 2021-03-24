@@ -126,7 +126,7 @@ public abstract class AbstractLocalOffice extends AbstractOffice {
      * @param document 文档信息
      */
     protected void closeDocument(final XComponent document) {
-        if (document != null) {
+        if (null != document) {
             // 关闭转换后的文档。使用XCloseable。如果支持该接口，则关闭，否则使用XComponent.dispose
             final XCloseable closeable = Lo.qi(XCloseable.class, document);
             if (ObjectKit.isEmpty(closeable)) {

@@ -45,7 +45,7 @@ public class VersionInfoType {
     protected String comment;
 
     public String getVersionName() {
-        if (this.versionName == null) {
+        if (this.null == versionName) {
             return "1.1";
         }
         return this.versionName;

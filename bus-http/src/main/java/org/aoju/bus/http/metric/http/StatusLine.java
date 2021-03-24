@@ -108,7 +108,7 @@ public final class StatusLine {
         StringBuilder result = new StringBuilder();
         result.append(protocol == Protocol.HTTP_1_0 ? "HTTP/1.0" : "HTTP/1.1");
         result.append(Symbol.C_SPACE).append(code);
-        if (message != null) {
+        if (null != message) {
             result.append(Symbol.C_SPACE).append(message);
         }
         return result.toString();

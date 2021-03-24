@@ -113,7 +113,7 @@ public class KeyGenerator {
      * @return the collection
      */
     private static Collection getMultiArgEntries(Object multiArg) {
-        if (multiArg == null) {
+        if (null == multiArg) {
             return Collections.emptyList();
         }
 

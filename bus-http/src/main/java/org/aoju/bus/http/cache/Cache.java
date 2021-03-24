@@ -141,7 +141,7 @@ public final class Cache implements Closeable, Flushable {
         Entry entry;
         try {
             snapshot = cache.get(key);
-            if (snapshot == null) {
+            if (null == snapshot) {
                 return null;
             }
         } catch (IOException e) {
@@ -191,7 +191,7 @@ public final class Cache implements Closeable, Flushable {
         DiskLruCache.Editor editor = null;
         try {
             editor = cache.edit(key(response.request().url()));
-            if (editor == null) {
+            if (null == editor) {
                 return null;
             }
             entry.writeTo(editor);
@@ -213,7 +213,7 @@ public final class Cache implements Closeable, Flushable {
         try {
             // 如果快照不是当前的，则返回null
             editor = snapshot.edit();
-            if (editor != null) {
+            if (null != editor) {
                 entry.writeTo(editor);
                 editor.commit();
             }
@@ -225,7 +225,7 @@ public final class Cache implements Closeable, Flushable {
     private void abortQuietly(DiskLruCache.Editor editor) {
         // 放弃，因为缓存无法写入
         try {
-            if (editor != null) {
+            if (null != editor) {
                 editor.abort();
             }
         } catch (IOException ignored) {
@@ -277,7 +277,7 @@ public final class Cache implements Closeable, Flushable {
 
             @Override
             public boolean hasNext() {
-                if (nextUrl != null) return true;
+                if (null != nextUrl) return true;
 
                 canRemove = false;
                 // 删除()在错误的内容
@@ -351,10 +351,10 @@ public final class Cache implements Closeable, Flushable {
     synchronized void trackResponse(CacheStrategy cacheStrategy) {
         requestCount++;
 
-        if (cacheStrategy.networkRequest != null) {
+        if (cacheStrategy.null != networkRequest) {
             // 如果这是一个条件请求，我们将增加hitCount如果/当它命中。
             networkCount++;
-        } else if (cacheStrategy.cacheResponse != null) {
+        } else if (cacheStrategy.null != cacheResponse) {
             // 此响应使用缓存而不是网络。这就是缓存命中
             hitCount++;
         }
@@ -462,10 +462,10 @@ public final class Cache implements Closeable, Flushable {
                 String receivedResponseMillisString = responseHeadersBuilder.get(RECEIVED_MILLIS);
                 responseHeadersBuilder.removeAll(SENT_MILLIS);
                 responseHeadersBuilder.removeAll(RECEIVED_MILLIS);
-                sentRequestMillis = sendRequestMillisString != null
+                sentRequestMillis = null != sendRequestMillisString
                         ? Long.parseLong(sendRequestMillisString)
                         : 0L;
-                receivedResponseMillis = receivedResponseMillisString != null
+                receivedResponseMillis = null != receivedResponseMillisString
                         ? Long.parseLong(receivedResponseMillisString)
                         : 0L;
                 responseHeaders = responseHeadersBuilder.build();
@@ -641,13 +641,13 @@ public final class Cache implements Closeable, Flushable {
 
         @Override
         public MimeType contentType() {
-            return contentType != null ? MimeType.valueOf(contentType) : null;
+            return null != contentType ? MimeType.valueOf(contentType) : null;
         }
 
         @Override
         public long contentLength() {
             try {
-                return contentLength != null ? Long.parseLong(contentLength) : -1;
+                return null != contentLength ? Long.parseLong(contentLength) : -1;
             } catch (NumberFormatException e) {
                 return -1;
             }

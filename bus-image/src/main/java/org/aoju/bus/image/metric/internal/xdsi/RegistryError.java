@@ -73,7 +73,7 @@ public class RegistryError {
     }
 
     public String getSeverity() {
-        if (this.severity == null) {
+        if (this.null == severity) {
             return "urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error";
         }
         return this.severity;

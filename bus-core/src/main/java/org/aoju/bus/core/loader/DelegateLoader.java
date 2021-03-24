@@ -37,7 +37,7 @@ public abstract class DelegateLoader extends ResourceLoader implements Loader {
     protected final Loader delegate;
 
     protected DelegateLoader(Loader delegate) {
-        if (delegate == null) {
+        if (null == delegate) {
             throw new IllegalArgumentException("delegate must not be null");
         }
         this.delegate = delegate;

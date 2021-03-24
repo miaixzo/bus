@@ -69,11 +69,11 @@ public class ProxyClientConfig {
         Map<String, Object> clientConfig = new HashMap<>();
         clientConfig.put(ClientProperties.PROXY_URI, proxyUri);
 
-        if (username != null && username.trim().length() > 0) {
+        if (null != username && username.trim().length() > 0) {
             clientConfig.put(ClientProperties.PROXY_USERNAME, username);
         }
 
-        if (password != null && password.trim().length() > 0) {
+        if (null != password && password.trim().length() > 0) {
             clientConfig.put(ClientProperties.PROXY_PASSWORD, password);
         }
 

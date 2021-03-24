@@ -304,7 +304,7 @@ public class TagsApi extends AbstractApi {
     public Tag createTag(Object projectIdOrPath, String tagName, String ref, String message, File releaseNotesFile) throws GitLabApiException {
 
         String releaseNotes;
-        if (releaseNotesFile != null) {
+        if (null != releaseNotesFile) {
             try {
                 releaseNotes = readFileContents(releaseNotesFile);
             } catch (IOException ioe) {

@@ -234,11 +234,11 @@ public class NotesApi extends AbstractApi {
      */
     public void deleteIssueNote(Object projectIdOrPath, Integer issueIid, Integer noteId) throws GitLabApiException {
 
-        if (issueIid == null) {
+        if (null == issueIid) {
             throw new RuntimeException("issueIid cannot be null");
         }
 
-        if (noteId == null) {
+        if (null == noteId) {
             throw new RuntimeException("noteId cannot be null");
         }
 
@@ -450,11 +450,11 @@ public class NotesApi extends AbstractApi {
      */
     public void deleteMergeRequestNote(Object projectIdOrPath, Integer mergeRequestIid, Integer noteId) throws GitLabApiException {
 
-        if (mergeRequestIid == null) {
+        if (null == mergeRequestIid) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        if (noteId == null) {
+        if (null == noteId) {
             throw new RuntimeException("noteId cannot be null");
         }
 

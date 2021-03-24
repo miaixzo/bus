@@ -138,7 +138,7 @@ public class RepositoryFile {
     @JsonIgnore
     public String getDecodedContentAsString() {
 
-        if (content == null) {
+        if (null == content) {
             return (null);
         }
 
@@ -158,7 +158,7 @@ public class RepositoryFile {
     @JsonIgnore
     public byte[] getDecodedContentAsBytes() {
 
-        if (content == null) {
+        if (null == content) {
             return (null);
         }
 
@@ -177,7 +177,7 @@ public class RepositoryFile {
      */
     @JsonIgnore
     public void encodeAndSetContent(String content) {
-        encodeAndSetContent(content != null ? content.getBytes() : null);
+        encodeAndSetContent(null != content ? content.getBytes() : null);
     }
 
     /**
@@ -189,7 +189,7 @@ public class RepositoryFile {
     @JsonIgnore
     public void encodeAndSetContent(byte[] byteContent) {
 
-        if (byteContent == null) {
+        if (null == byteContent) {
             this.content = null;
             return;
         }

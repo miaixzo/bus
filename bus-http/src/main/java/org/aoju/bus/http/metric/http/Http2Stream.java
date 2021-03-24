@@ -88,7 +88,7 @@ public final class Http2Stream {
 
     Http2Stream(int id, Http2Connection connection, boolean outFinished, boolean inFinished,
                 Headers headers) {
-        if (connection == null) throw new NullPointerException("connection == null");
+        if (null == connection) throw new NullPointerException("null == connection");
 
         this.id = id;
         this.connection = connection;
@@ -98,13 +98,13 @@ public final class Http2Stream {
         this.sink = new FramingSink();
         this.source.finished = inFinished;
         this.sink.finished = outFinished;
-        if (headers != null) {
+        if (null != headers) {
             headersQueue.add(headers);
         }
 
-        if (isLocallyInitiated() && headers != null) {
+        if (isLocallyInitiated() && null != headers) {
             throw new IllegalStateException("locally-initiated streams shouldn't have headers yet");
-        } else if (!isLocallyInitiated() && headers == null) {
+        } else if (!isLocallyInitiated() && null == headers) {
             throw new IllegalStateException("remotely-initiated streams should have headers");
         }
     }
@@ -114,7 +114,7 @@ public final class Http2Stream {
     }
 
     public synchronized boolean isOpen() {
-        if (errorCode != null) {
+        if (null != errorCode) {
             return false;
         }
         if ((source.finished || source.closed)
@@ -137,7 +137,7 @@ public final class Http2Stream {
     public synchronized Headers takeHeaders() throws IOException {
         readTimeout.enter();
         try {
-            while (headersQueue.isEmpty() && errorCode == null) {
+            while (headersQueue.isEmpty() && null == errorCode) {
                 waitForIo();
             }
         } finally {
@@ -155,8 +155,8 @@ public final class Http2Stream {
 
     public void writeHeaders(List<HttpHeaders> responseHeaders, boolean out) throws IOException {
         assert (!Thread.holdsLock(Http2Stream.this));
-        if (responseHeaders == null) {
-            throw new NullPointerException("headers == null");
+        if (null == responseHeaders) {
+            throw new NullPointerException("null == headers");
         }
         boolean outFinished = false;
         boolean flushHeaders = false;
@@ -220,7 +220,7 @@ public final class Http2Stream {
     private boolean closeInternal(ErrorCode errorCode) {
         assert (!Thread.holdsLock(this));
         synchronized (this) {
-            if (this.errorCode != null) {
+            if (this.null != errorCode) {
                 return false;
             }
             if (source.finished && sink.finished) {
@@ -266,7 +266,7 @@ public final class Http2Stream {
     }
 
     synchronized void receiveRstStream(ErrorCode errorCode) {
-        if (this.errorCode == null) {
+        if (this.null == errorCode) {
             this.errorCode = errorCode;
             notifyAll();
         }
@@ -274,7 +274,7 @@ public final class Http2Stream {
 
     public synchronized void setHeadersListener(HttpHeaders.Listener headersListener) {
         this.headersListener = headersListener;
-        if (!headersQueue.isEmpty() && headersListener != null) {
+        if (!headersQueue.isEmpty() && null != headersListener) {
             notifyAll(); // We now have somewhere to deliver headers!
         }
     }
@@ -304,7 +304,7 @@ public final class Http2Stream {
             throw new IOException("stream closed");
         } else if (sink.finished) {
             throw new IOException("stream finished");
-        } else if (errorCode != null) {
+        } else if (null != errorCode) {
             throw new StreamException(errorCode);
         }
     }
@@ -365,14 +365,14 @@ public final class Http2Stream {
                 synchronized (Http2Stream.this) {
                     readTimeout.enter();
                     try {
-                        if (errorCode != null) {
+                        if (null != errorCode) {
                             errorCodeToDeliver = errorCode;
                         }
 
                         if (closed) {
                             throw new IOException("stream closed");
 
-                        } else if (!headersQueue.isEmpty() && headersListener != null) {
+                        } else if (!headersQueue.isEmpty() && null != headersListener) {
                             headersToDeliver = headersQueue.removeFirst();
                             headersListenerToNotify = headersListener;
 
@@ -380,13 +380,13 @@ public final class Http2Stream {
                             readBytesDelivered = readBuffer.read(sink, Math.min(byteCount, readBuffer.size()));
                             unacknowledgedBytesRead += readBytesDelivered;
 
-                            if (errorCodeToDeliver == null
+                            if (null == errorCodeToDeliver
                                     && unacknowledgedBytesRead
                                     >= connection.settings.getInitialWindowSize() / 2) {
                                 connection.writeWindowUpdateLater(id, unacknowledgedBytesRead);
                                 unacknowledgedBytesRead = 0;
                             }
-                        } else if (!finished && errorCodeToDeliver == null) {
+                        } else if (!finished && null == errorCodeToDeliver) {
                             waitForIo();
                             continue;
                         }
@@ -395,7 +395,7 @@ public final class Http2Stream {
                     }
                 }
 
-                if (headersToDeliver != null && headersListenerToNotify != null) {
+                if (null != headersToDeliver && null != headersListenerToNotify) {
                     headersListenerToNotify.onHeaders(headersToDeliver);
                     continue;
                 }
@@ -405,7 +405,7 @@ public final class Http2Stream {
                     return readBytesDelivered;
                 }
 
-                if (errorCodeToDeliver != null) {
+                if (null != errorCodeToDeliver) {
                     throw new StreamException(errorCodeToDeliver);
                 }
 
@@ -480,7 +480,7 @@ public final class Http2Stream {
                 closed = true;
                 bytesDiscarded = readBuffer.size();
                 readBuffer.clear();
-                if (!headersQueue.isEmpty() && headersListener != null) {
+                if (!headersQueue.isEmpty() && null != headersListener) {
                     headersToDeliver = new ArrayList<>(headersQueue);
                     headersQueue.clear();
                     headersListenerToNotify = headersListener;
@@ -491,7 +491,7 @@ public final class Http2Stream {
                 updateConnectionFlowControl(bytesDiscarded);
             }
             cancelStreamIfNecessary();
-            if (headersListenerToNotify != null) {
+            if (null != headersListenerToNotify) {
                 for (Headers headers : headersToDeliver) {
                     headersListenerToNotify.onHeaders(headers);
                 }
@@ -531,7 +531,7 @@ public final class Http2Stream {
             synchronized (Http2Stream.this) {
                 writeTimeout.enter();
                 try {
-                    while (bytesLeftInWriteWindow <= 0 && !finished && !closed && errorCode == null) {
+                    while (bytesLeftInWriteWindow <= 0 && !finished && !closed && null == errorCode) {
                         waitForIo();
                     }
                 } finally {
@@ -604,7 +604,7 @@ public final class Http2Stream {
         @Override
         protected IOException newTimeoutException(IOException cause) {
             SocketTimeoutException socketTimeoutException = new SocketTimeoutException("timeout");
-            if (cause != null) {
+            if (null != cause) {
                 socketTimeoutException.initCause(cause);
             }
             return socketTimeoutException;

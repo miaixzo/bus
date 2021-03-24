@@ -173,7 +173,7 @@ public class DeployKeysApi extends AbstractApi {
      */
     public DeployKey getDeployKey(Object projectIdOrPath, Integer keyId) throws GitLabApiException {
 
-        if (keyId == null) {
+        if (null == keyId) {
             throw new RuntimeException("keyId cannot be null");
         }
 
@@ -236,7 +236,7 @@ public class DeployKeysApi extends AbstractApi {
      */
     public DeployKey updateDeployKey(Object projectIdOrPath, Integer deployKeyId, String title, Boolean canPush) throws GitLabApiException {
 
-        if (deployKeyId == null) {
+        if (null == deployKeyId) {
             throw new RuntimeException("deployKeyId cannot be null");
         }
 
@@ -260,7 +260,7 @@ public class DeployKeysApi extends AbstractApi {
      */
     public void deleteDeployKey(Object projectIdOrPath, Integer keyId) throws GitLabApiException {
 
-        if (keyId == null) {
+        if (null == keyId) {
             throw new RuntimeException("keyId cannot be null");
         }
 
@@ -279,7 +279,7 @@ public class DeployKeysApi extends AbstractApi {
      */
     public DeployKey enableDeployKey(Object projectIdOrPath, Integer keyId) throws GitLabApiException {
 
-        if (keyId == null) {
+        if (null == keyId) {
             throw new RuntimeException("keyId cannot be null");
         }
 

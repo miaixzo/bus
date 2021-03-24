@@ -75,7 +75,7 @@ final class LinuxSoundCard extends AbstractSoundCard {
         File cardsDirectory = new File(ProcPath.ASOUND);
         List<File> cardFolders = new ArrayList<>();
         File[] allContents = cardsDirectory.listFiles();
-        if (allContents != null) {
+        if (null != allContents) {
             for (File card : allContents) {
                 if (card.getName().startsWith(CARD_FOLDER) && card.isDirectory()) {
                     cardFolders.add(card);
@@ -113,7 +113,7 @@ final class LinuxSoundCard extends AbstractSoundCard {
     private static String getCardCodec(File cardDir) {
         String cardCodec = Normal.EMPTY;
         File[] cardFiles = cardDir.listFiles();
-        if (cardFiles != null) {
+        if (null != cardFiles) {
             for (File file : cardFiles) {
                 if (file.getName().startsWith("codec")) {
                     if (!file.isDirectory()) {
@@ -124,7 +124,7 @@ final class LinuxSoundCard extends AbstractSoundCard {
                         // codec#0-0
                         // example : ac97#0-0
                         File[] codecs = file.listFiles();
-                        if (codecs != null) {
+                        if (null != codecs) {
                             for (File codec : codecs) {
                                 if (!codec.isDirectory() && codec.getName().contains(Symbol.SHAPE)) {
                                     cardCodec = codec.getName().substring(0, codec.getName().indexOf(Symbol.C_SHAPE));

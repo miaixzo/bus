@@ -177,7 +177,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          * @return 构造器实例.
          */
         public Builder pipeNames(final String... pipeNames) {
-            Assert.isTrue(pipeNames != null && pipeNames.length > 0, "The pipe name list must not be empty");
+            Assert.isTrue(null != pipeNames && pipeNames.length > 0, "The pipe name list must not be empty");
             this.pipeNames = ArrayKit.clone(pipeNames);
             return this;
         }
@@ -189,7 +189,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          * @return 构造器实例.
          */
         public Builder portNumbers(final int... portNumbers) {
-            Assert.isTrue(portNumbers != null && portNumbers.length > 0, "The port number list must not be empty");
+            Assert.isTrue(null != portNumbers && portNumbers.length > 0, "The port number list must not be empty");
             this.portNumbers = ArrayKit.clone(portNumbers);
             return this;
         }
@@ -257,7 +257,7 @@ public final class LocalOfficePoolManager extends AbstractOfficePoolManager {
          * @return 构造器实例.
          */
         public Builder runAsArgs(final String... runAsArgs) {
-            Assert.isTrue(runAsArgs != null && runAsArgs.length > 0, "The runAs argument list must not be empty");
+            Assert.isTrue(null != runAsArgs && runAsArgs.length > 0, "The runAs argument list must not be empty");
             this.runAsArgs = ArrayKit.clone(runAsArgs);
             return this;
         }

@@ -47,9 +47,9 @@ public class StringInputStream extends ByteArrayInputStream {
     }
 
     protected static byte[] toBytes(CharSequence str, java.nio.charset.Charset charset) {
-        if (str == null)
+        if (null == str)
             return new byte[0];
-        if (charset == null)
+        if (null == charset)
             charset = Charset.UTF_8;
         try {
             return str.toString().getBytes(charset.name());

@@ -89,7 +89,7 @@ public final class KstatKit {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
         Pointer p = KS.kstat_data_lookup(ksp, name);
-        if (p == null) {
+        if (null == p) {
             Logger.error("Failed lo lookup kstat value for key {}", name);
             return Normal.EMPTY;
         }
@@ -131,7 +131,7 @@ public final class KstatKit {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
         Pointer p = KS.kstat_data_lookup(ksp, name);
-        if (p == null) {
+        if (null == p) {
             if (Logger.get().isError()) {
                 Logger.error("Failed lo lookup kstat value on {}:{}:{} for key {}",
                         Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
@@ -233,10 +233,10 @@ public final class KstatKit {
          */
         public static List<LibKstat.Kstat> lookupAll(String module, int instance, String name) {
             List<LibKstat.Kstat> kstats = new ArrayList<>();
-            for (LibKstat.Kstat ksp = KS.kstat_lookup(KC, module, instance, name); ksp != null; ksp = ksp.next()) {
-                if ((module == null || module.equals(Native.toString(ksp.ks_module, Charset.US_ASCII)))
+            for (LibKstat.Kstat ksp = KS.kstat_lookup(KC, module, instance, name); null != ksp; ksp = ksp.next()) {
+                if ((null == module || module.equals(Native.toString(ksp.ks_module, Charset.US_ASCII)))
                         && (instance < 0 || instance == ksp.ks_instance)
-                        && (name == null || name.equals(Native.toString(ksp.ks_name, Charset.US_ASCII)))) {
+                        && (null == name || name.equals(Native.toString(ksp.ks_name, Charset.US_ASCII)))) {
                     kstats.add(ksp);
                 }
             }

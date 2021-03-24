@@ -149,15 +149,15 @@ public class ImportExportApi extends AbstractApi {
         Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD,
                 "projects", getProjectIdOrPath(projectIdOrPath), "export", "download");
 
-        if (directory == null) {
+        if (null == directory) {
             directory = new File(System.getProperty("java.io.tmpdir"));
         }
 
-        if (filename == null) {
+        if (null == filename) {
 
             // No filename provided
             String disposition = response.getHeaderString("Content-Disposition");
-            if (disposition == null) {
+            if (null == disposition) {
 
                 // On GitLab.com the Content-Disposition returned is null
                 String name = null;
@@ -242,7 +242,7 @@ public class ImportExportApi extends AbstractApi {
                 .withParam("namespace", namespaceIdOrPath)
                 .withParam("overwrite", overwrite);
 
-        if (overrideParams != null) {
+        if (null != overrideParams) {
             formData.withParam("default_branch", overrideParams.getDefaultBranch())
                     .withParam("description", overrideParams.getDescription())
                     .withParam("issues_enabled", overrideParams.getIssuesEnabled())

@@ -112,7 +112,7 @@ public class Typed implements ParameterizedType, Serializable {
 
         final Type useOwner = this.ownerType;
         final Class<?> raw = (Class<?>) this.rawType;
-        if (useOwner == null) {
+        if (null == useOwner) {
             buf.append(raw.getName());
         } else {
             if (useOwner instanceof Class<?>) {

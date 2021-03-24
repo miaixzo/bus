@@ -65,8 +65,8 @@ public class WebApplication {
     }
 
     public void setDevice(Device device) {
-        if (device != null) {
-            if (this.device != null)
+        if (null != device) {
+            if (this.null != device)
                 throw new IllegalStateException("already owned by " +
                         this.device.getDeviceName());
             for (Connection conn : conns)
@@ -85,10 +85,10 @@ public class WebApplication {
         if (name.isEmpty())
             throw new IllegalArgumentException("name cannot be empty");
         Device device = this.device;
-        if (device != null)
+        if (null != device)
             device.removeWebApplication(this.applicationName);
         this.applicationName = name;
-        if (device != null)
+        if (null != device)
             device.addWebApplication(this);
     }
 
@@ -133,8 +133,8 @@ public class WebApplication {
     }
 
     public boolean isInstalled() {
-        return device != null && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+        return null != device && device.isInstalled()
+                && (null == installed || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -142,21 +142,21 @@ public class WebApplication {
     }
 
     public void setInstalled(Boolean installed) {
-        if (installed != null && installed.booleanValue()
-                && device != null && !device.isInstalled())
+        if (null != installed && installed.booleanValue()
+                && null != device && !device.isInstalled())
             throw new IllegalStateException("owning device not installed");
         this.installed = installed;
     }
 
     public KeycloakClient getKeycloakClient() {
-        return keycloakClientID != null ? device.getKeycloakClient(keycloakClientID) : null;
+        return null != keycloakClientID ? device.getKeycloakClient(keycloakClientID) : null;
     }
 
     public void addConnection(Connection conn) {
         if (conn.getProtocol() != Connection.Protocol.HTTP)
             throw new IllegalArgumentException(
                     "Web Application does not support protocol " + conn.getProtocol());
-        if (device != null && device != conn.getDevice())
+        if (null != device && device != conn.getDevice())
             throw new IllegalStateException(conn + " not contained by " +
                     device.getDeviceName());
         conns.add(conn);

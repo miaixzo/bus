@@ -137,10 +137,10 @@ public class NumericEscaper extends CodePointTranslator {
         private transient String toString;
 
         private Range(T element1, T element2, Comparator<T> comp) {
-            if ((element1 == null) || (element2 == null)) {
+            if ((null == element1) || (null == element2)) {
                 throw new IllegalArgumentException("Elements in a range must not be null: element1=" + element1 + ", element2=" + element2);
             }
-            if (comp == null) {
+            if (null == comp) {
                 this.comparator = Range.ComparableComparator.INSTANCE;
             } else {
                 this.comparator = comp;
@@ -187,35 +187,35 @@ public class NumericEscaper extends CodePointTranslator {
         }
 
         public boolean contains(T element) {
-            if (element == null) {
+            if (null == element) {
                 return false;
             }
             return (this.comparator.compare(element, this.minimum) > -1) && (this.comparator.compare(element, this.maximum) < 1);
         }
 
         public boolean isAfter(T element) {
-            if (element == null) {
+            if (null == element) {
                 return false;
             }
             return this.comparator.compare(element, this.minimum) < 0;
         }
 
         public boolean isStartedBy(T element) {
-            if (element == null) {
+            if (null == element) {
                 return false;
             }
             return this.comparator.compare(element, this.minimum) == 0;
         }
 
         public boolean isEndedBy(T element) {
-            if (element == null) {
+            if (null == element) {
                 return false;
             }
             return this.comparator.compare(element, this.maximum) == 0;
         }
 
         public boolean isBefore(T element) {
-            if (element == null) {
+            if (null == element) {
                 return false;
             }
             return this.comparator.compare(element, this.maximum) > 0;
@@ -232,7 +232,7 @@ public class NumericEscaper extends CodePointTranslator {
         }
 
         public boolean containsRange(Range<T> otherRange) {
-            if (otherRange == null) {
+            if (null == otherRange) {
                 return false;
             }
             return (contains(otherRange.minimum)) &&
@@ -240,14 +240,14 @@ public class NumericEscaper extends CodePointTranslator {
         }
 
         public boolean isAfterRange(Range<T> otherRange) {
-            if (otherRange == null) {
+            if (null == otherRange) {
                 return false;
             }
             return isAfter(otherRange.maximum);
         }
 
         public boolean isOverlappedBy(Range<T> otherRange) {
-            if (otherRange == null) {
+            if (null == otherRange) {
                 return false;
             }
             return (otherRange.contains(this.minimum)) ||
@@ -256,7 +256,7 @@ public class NumericEscaper extends CodePointTranslator {
         }
 
         public boolean isBeforeRange(Range<T> otherRange) {
-            if (otherRange == null) {
+            if (null == otherRange) {
                 return false;
             }
             return isBefore(otherRange.minimum);
@@ -278,7 +278,7 @@ public class NumericEscaper extends CodePointTranslator {
             if (obj == this) {
                 return true;
             }
-            if ((obj == null) || (obj.getClass() != getClass())) {
+            if ((null == obj) || (obj.getClass() != getClass())) {
                 return false;
             }
             Range<T> range = (Range) obj;
@@ -299,7 +299,7 @@ public class NumericEscaper extends CodePointTranslator {
         }
 
         public String toString() {
-            if (this.toString == null) {
+            if (this.null == toString) {
                 this.toString = (Symbol.BRACKET_LEFT + this.minimum + Symbol.DOUBLE_DOT + this.maximum + Symbol.BRACKET_RIGHT);
             }
             return this.toString;

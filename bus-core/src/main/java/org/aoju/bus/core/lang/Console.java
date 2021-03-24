@@ -472,7 +472,7 @@ public class Console {
          * @return 自身对象
          */
         public Table addHeader(String... titles) {
-            if (columnCharNumber == null) {
+            if (null == columnCharNumber) {
                 columnCharNumber = new ArrayList<>(Collections.nCopies(titles.length, 0));
             }
             List<String> l = new ArrayList<>();

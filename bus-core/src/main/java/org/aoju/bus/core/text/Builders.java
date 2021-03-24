@@ -96,7 +96,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public Builders(final String str) {
         super();
-        if (str == null) {
+        if (null == str) {
             this.buffer = new char[CAPACITY];
         } else {
             this.buffer = new char[str.length() + CAPACITY];
@@ -190,7 +190,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     }
 
     public Builders setNullText(String nullText) {
-        if (nullText != null && nullText.isEmpty()) {
+        if (null != nullText && nullText.isEmpty()) {
             nullText = null;
         }
         this.nullText = nullText;
@@ -306,7 +306,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public char[] getChars(char[] destination) {
         final int len = length();
-        if (destination == null || destination.length < len) {
+        if (null == destination || destination.length < len) {
             destination = new char[len];
         }
         System.arraycopy(buffer, 0, destination, 0, len);
@@ -379,7 +379,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders appendNewLine() {
-        if (newLine == null) {
+        if (null == newLine) {
             append(System.getProperty("line.separator"));
             return this;
         }
@@ -392,7 +392,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders appendNull() {
-        if (nullText == null) {
+        if (null == nullText) {
             return this;
         }
         return append(nullText);
@@ -406,7 +406,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final Object obj) {
-        if (obj == null) {
+        if (null == obj) {
             return appendNull();
         }
         if (obj instanceof CharSequence) {
@@ -424,7 +424,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     @Override
     public Builders append(final CharSequence seq) {
-        if (seq == null) {
+        if (null == seq) {
             return appendNull();
         }
         if (seq instanceof Builders) {
@@ -453,7 +453,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     @Override
     public Builders append(final CharSequence seq, final int startIndex, final int length) {
-        if (seq == null) {
+        if (null == seq) {
             return appendNull();
         }
         return append(seq.toString(), startIndex, length);
@@ -467,7 +467,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final String str) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         final int strLen = str.length();
@@ -490,7 +490,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final String str, final int startIndex, final int length) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         if (startIndex < 0 || startIndex > str.length()) {
@@ -528,7 +528,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final CharBuffer buf) {
-        if (buf == null) {
+        if (null == buf) {
             return appendNull();
         }
         if (buf.hasArray()) {
@@ -553,7 +553,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final CharBuffer buf, final int startIndex, final int length) {
-        if (buf == null) {
+        if (null == buf) {
             return appendNull();
         }
         if (buf.hasArray()) {
@@ -582,7 +582,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final StringBuffer str) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         final int strLen = str.length();
@@ -605,7 +605,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final StringBuffer str, final int startIndex, final int length) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         if (startIndex < 0 || startIndex > str.length()) {
@@ -631,7 +631,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final StringBuilder str) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         final int strLen = str.length();
@@ -654,7 +654,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final StringBuilder str, final int startIndex, final int length) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         if (startIndex < 0 || startIndex > str.length()) {
@@ -680,7 +680,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final Builders str) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         final int strLen = str.length();
@@ -703,7 +703,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final Builders str, final int startIndex, final int length) {
-        if (str == null) {
+        if (null == str) {
             return appendNull();
         }
         if (startIndex < 0 || startIndex > str.length()) {
@@ -729,7 +729,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final char[] chars) {
-        if (chars == null) {
+        if (null == chars) {
             return appendNull();
         }
         final int strLen = chars.length;
@@ -752,7 +752,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders append(final char[] chars, final int startIndex, final int length) {
-        if (chars == null) {
+        if (null == chars) {
             return appendNull();
         }
         if (startIndex < 0 || startIndex > chars.length) {
@@ -1061,7 +1061,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public <T> Builders appendAll(final T... array) {
-        if (array != null && array.length > 0) {
+        if (null != array && array.length > 0) {
             for (final Object element : array) {
                 append(element);
             }
@@ -1078,7 +1078,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders appendAll(final Iterable<?> iterable) {
-        if (iterable != null) {
+        if (null != iterable) {
             for (final Object o : iterable) {
                 append(o);
             }
@@ -1095,7 +1095,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders appendAll(final Iterator<?> it) {
-        if (it != null) {
+        if (null != it) {
             while (it.hasNext()) {
                 append(it.next());
             }
@@ -1113,7 +1113,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders appendWithSeparators(final Object[] array, final String separator) {
-        if (array != null && array.length > 0) {
+        if (null != array && array.length > 0) {
             final String sep = Objects.toString(separator, Normal.EMPTY);
             append(array[0]);
             for (int i = 1; i < array.length; i++) {
@@ -1134,7 +1134,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders appendWithSeparators(final Iterable<?> iterable, final String separator) {
-        if (iterable != null) {
+        if (null != iterable) {
             final String sep = Objects.toString(separator, Normal.EMPTY);
             final Iterator<?> it = iterable.iterator();
             while (it.hasNext()) {
@@ -1157,7 +1157,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders appendWithSeparators(final Iterator<?> it, final String separator) {
-        if (it != null) {
+        if (null != it) {
             final String sep = Objects.toString(separator, Normal.EMPTY);
             while (it.hasNext()) {
                 append(it.next());
@@ -1183,8 +1183,8 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     public Builders appendFixedWidthPadLeft(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
-            String str = (obj == null ? getNullText() : obj.toString());
-            if (str == null) {
+            String str = (null == obj ? getNullText() : obj.toString());
+            if (null == str) {
                 str = Normal.EMPTY;
             }
             final int strLen = str.length();
@@ -1230,8 +1230,8 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     public Builders appendFixedWidthPadRight(final Object obj, final int width, final char padChar) {
         if (width > 0) {
             ensureCapacity(size + width);
-            String str = (obj == null ? getNullText() : obj.toString());
-            if (str == null) {
+            String str = (null == obj ? getNullText() : obj.toString());
+            if (null == str) {
                 str = Normal.EMPTY;
             }
             final int strLen = str.length();
@@ -1273,7 +1273,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @throws IndexOutOfBoundsException 如果索引无效
      */
     public Builders insert(final int index, final Object obj) {
-        if (obj == null) {
+        if (null == obj) {
             return insert(index, nullText);
         }
         return insert(index, obj.toString());
@@ -1290,10 +1290,10 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public Builders insert(final int index, String str) {
         validateIndex(index);
-        if (str == null) {
+        if (null == str) {
             str = nullText;
         }
-        if (str != null) {
+        if (null != str) {
             final int strLen = str.length();
             if (strLen > 0) {
                 final int newSize = size + strLen;
@@ -1317,7 +1317,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public Builders insert(final int index, final char[] chars) {
         validateIndex(index);
-        if (chars == null) {
+        if (null == chars) {
             return insert(index, nullText);
         }
         final int len = chars.length;
@@ -1343,7 +1343,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public Builders insert(final int index, final char[] chars, final int offset, final int length) {
         validateIndex(index);
-        if (chars == null) {
+        if (null == chars) {
             return insert(index, nullText);
         }
         if (offset < 0 || offset > chars.length) {
@@ -1533,7 +1533,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders deleteAll(final String str) {
-        final int len = (str == null ? 0 : str.length());
+        final int len = (null == str ? 0 : str.length());
         if (len > 0) {
             int index = indexOf(str, 0);
             while (index >= 0) {
@@ -1551,7 +1551,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders deleteFirst(final String str) {
-        final int len = (str == null ? 0 : str.length());
+        final int len = (null == str ? 0 : str.length());
         if (len > 0) {
             final int index = indexOf(str, 0);
             if (index >= 0) {
@@ -1619,7 +1619,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public Builders replace(final int startIndex, int endIndex, final String replaceStr) {
         endIndex = validateRange(startIndex, endIndex);
-        final int insertLen = (replaceStr == null ? 0 : replaceStr.length());
+        final int insertLen = (null == replaceStr ? 0 : replaceStr.length());
         replaceImpl(startIndex, endIndex, endIndex - startIndex, replaceStr, insertLen);
         return this;
     }
@@ -1669,9 +1669,9 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders replaceAll(final String searchStr, final String replaceStr) {
-        final int searchLen = (searchStr == null ? 0 : searchStr.length());
+        final int searchLen = (null == searchStr ? 0 : searchStr.length());
         if (searchLen > 0) {
-            final int replaceLen = (replaceStr == null ? 0 : replaceStr.length());
+            final int replaceLen = (null == replaceStr ? 0 : replaceStr.length());
             int index = indexOf(searchStr, 0);
             while (index >= 0) {
                 replaceImpl(index, index + searchLen, searchLen, replaceStr, replaceLen);
@@ -1689,11 +1689,11 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return this
      */
     public Builders replaceFirst(final String searchStr, final String replaceStr) {
-        final int searchLen = (searchStr == null ? 0 : searchStr.length());
+        final int searchLen = (null == searchStr ? 0 : searchStr.length());
         if (searchLen > 0) {
             final int index = indexOf(searchStr, 0);
             if (index >= 0) {
-                final int replaceLen = (replaceStr == null ? 0 : replaceStr.length());
+                final int replaceLen = (null == replaceStr ? 0 : replaceStr.length());
                 replaceImpl(index, index + searchLen, searchLen, replaceStr, replaceLen);
             }
         }
@@ -1754,10 +1754,10 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
     private Builders replaceImpl(
             final Matchers matcher, final String replaceStr,
             final int from, int to, int replaceCount) {
-        if (matcher == null || size == 0) {
+        if (null == matcher || size == 0) {
             return this;
         }
-        final int replaceLen = (replaceStr == null ? 0 : replaceStr.length());
+        final int replaceLen = (null == replaceStr ? 0 : replaceStr.length());
         final char[] buf = buffer;
         for (int i = from; i < to && replaceCount != 0; i++) {
             final int removeLen = matcher.isMatch(buf, i, from, to);
@@ -1827,7 +1827,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return 如果生成器从字符串开始，则为真
      */
     public boolean startsWith(final String str) {
-        if (str == null) {
+        if (null == str) {
             return false;
         }
         final int len = str.length();
@@ -1852,7 +1852,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      * @return 如果生成器以字符串结束，则为真
      */
     public boolean endsWith(final String str) {
-        if (str == null) {
+        if (null == str) {
             return false;
         }
         final int len = str.length();
@@ -2047,7 +2047,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public int indexOf(final String str, int startIndex) {
         startIndex = (startIndex < 0 ? 0 : startIndex);
-        if (str == null || startIndex >= size) {
+        if (null == str || startIndex >= size) {
             return -1;
         }
         final int strLen = str.length();
@@ -2093,7 +2093,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public int indexOf(final Matchers matcher, int startIndex) {
         startIndex = (startIndex < 0 ? 0 : startIndex);
-        if (matcher == null || startIndex >= size) {
+        if (null == matcher || startIndex >= size) {
             return -1;
         }
         final int len = size;
@@ -2155,7 +2155,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public int lastIndexOf(final String str, int startIndex) {
         startIndex = (startIndex >= size ? size - 1 : startIndex);
-        if (str == null || startIndex < 0) {
+        if (null == str || startIndex < 0) {
             return -1;
         }
         final int strLen = str.length();
@@ -2199,7 +2199,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
      */
     public int lastIndexOf(final Matchers matcher, int startIndex) {
         startIndex = (startIndex >= size ? size - 1 : startIndex);
-        if (matcher == null || startIndex < 0) {
+        if (null == matcher || startIndex < 0) {
             return -1;
         }
         final char[] buf = buffer;
@@ -2247,7 +2247,7 @@ public class Builders implements CharSequence, Appendable, Serializable, Builder
         if (this == other) {
             return true;
         }
-        if (other == null) {
+        if (null == other) {
             return false;
         }
         if (this.size != other.size) {

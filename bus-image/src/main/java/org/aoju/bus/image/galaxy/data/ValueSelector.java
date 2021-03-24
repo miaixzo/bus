@@ -84,7 +84,7 @@ public class ValueSelector implements Serializable {
 
     @Override
     public String toString() {
-        if (str == null)
+        if (null == str)
             str = attributesSelector.toStringBuilder()
                     .append("/Value[@number=\"")
                     .append(valueIndex + 1)

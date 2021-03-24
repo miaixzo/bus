@@ -82,7 +82,7 @@ public final class TraceClientHttpRequestInterceptor implements ClientHttpReques
 
     private void postResponse(ClientHttpResponse response) {
         final List<String> headers = response.getHeaders().get(Builder.TPIC_HEADER);
-        if (headers != null) {
+        if (null != headers) {
             final TraceFilterConfig filterConfiguration = backend.getConfiguration(profile);
 
             if (filterConfiguration.shouldProcessContext(TraceFilterConfig.Channel.IncomingResponse)) {

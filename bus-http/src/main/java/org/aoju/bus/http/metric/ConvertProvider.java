@@ -41,7 +41,7 @@ public interface ConvertProvider {
     static void inject(Httpv.Builder builder) {
         for (ConvertProvider provider : ServiceLoader.load(ConvertProvider.class)) {
             Convertor convertor = provider.getConvertor();
-            if (convertor != null) {
+            if (null != convertor) {
                 builder.addMsgConvertor(new Convertor.FormConvertor(convertor));
                 builder.addMsgConvertor(convertor);
             }

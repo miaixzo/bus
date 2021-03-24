@@ -100,7 +100,7 @@ public enum VR {
     public static VR valueOf(int code) {
         try {
             VR vr = VALUE_OF[code - AE.code];
-            if (vr != null)
+            if (null != vr)
                 return vr;
         } catch (IndexOutOfBoundsException e) {
         }

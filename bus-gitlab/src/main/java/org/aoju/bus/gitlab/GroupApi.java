@@ -1162,7 +1162,7 @@ public class GroupApi extends AbstractApi {
      */
     public void addLdapGroupLink(Object groupIdOrPath, String cn, AccessLevel groupAccess, String provider) throws GitLabApiException {
 
-        if (groupAccess == null) {
+        if (null == groupAccess) {
             throw new RuntimeException("groupAccess cannot be null or empty");
         }
 
@@ -1199,7 +1199,7 @@ public class GroupApi extends AbstractApi {
      */
     public void deleteLdapGroupLink(Object groupIdOrPath, String cn) throws GitLabApiException {
 
-        if (cn == null || cn.trim().isEmpty()) {
+        if (null == cn || cn.trim().isEmpty()) {
             throw new RuntimeException("cn cannot be null or empty");
         }
 
@@ -1218,11 +1218,11 @@ public class GroupApi extends AbstractApi {
      */
     public void deleteLdapGroupLink(Object groupIdOrPath, String cn, String provider) throws GitLabApiException {
 
-        if (cn == null || cn.trim().isEmpty()) {
+        if (null == cn || cn.trim().isEmpty()) {
             throw new RuntimeException("cn cannot be null or empty");
         }
 
-        if (provider == null || provider.trim().isEmpty()) {
+        if (null == provider || provider.trim().isEmpty()) {
             throw new RuntimeException("LDAP provider cannot be null or empty");
         }
 

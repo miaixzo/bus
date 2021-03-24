@@ -72,7 +72,7 @@ public class AsyncTimeout extends Timeout {
             long timeoutNanos,
             boolean hasDeadline) {
         // 启动任务线程，并在安排第一次超时时创建head节点
-        if (head == null) {
+        if (null == head) {
             head = new AsyncTimeout();
             new Watchdog().start();
         }
@@ -92,7 +92,7 @@ public class AsyncTimeout extends Timeout {
         // 按排序顺序插入节点
         long remainingNanos = node.remainingNanos(now);
         for (AsyncTimeout prev = head; true; prev = prev.next) {
-            if (prev.next == null || remainingNanos < prev.next.remainingNanos(now)) {
+            if (prev.null == next || remainingNanos < prev.next.remainingNanos(now)) {
                 node.next = prev.next;
                 prev.next = node;
                 if (prev == head) {
@@ -112,7 +112,7 @@ public class AsyncTimeout extends Timeout {
      */
     private static synchronized boolean cancelScheduledTimeout(AsyncTimeout node) {
         // 从链表中删除节点
-        for (AsyncTimeout prev = head; prev != null; prev = prev.next) {
+        for (AsyncTimeout prev = head; null != prev; prev = prev.next) {
             if (prev.next == node) {
                 prev.next = node.next;
                 node.next = null;
@@ -135,10 +135,10 @@ public class AsyncTimeout extends Timeout {
         // 获取下一个符合条件的节点
         AsyncTimeout node = head.next;
         // 队列为空。等待，直到某物进入队列或空闲超时过期
-        if (node == null) {
+        if (null == node) {
             long startNanos = System.nanoTime();
             AsyncTimeout.class.wait(IDLE_TIMEOUT_MILLIS);
-            return head.next == null && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
+            return head.null == next && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
                     ? head  // 空闲超时过期
                     : null; // 情况发生了变化
         }
@@ -365,7 +365,7 @@ public class AsyncTimeout extends Timeout {
      */
     protected IOException newTimeoutException(IOException cause) {
         InterruptedIOException e = new InterruptedIOException("timeout");
-        if (cause != null) {
+        if (null != cause) {
             e.initCause(cause);
         }
         return e;
@@ -384,7 +384,7 @@ public class AsyncTimeout extends Timeout {
                     synchronized (AsyncTimeout.class) {
                         timedOut = awaitTimeout();
 
-                        if (timedOut == null) {
+                        if (null == timedOut) {
                             continue;
                         }
 

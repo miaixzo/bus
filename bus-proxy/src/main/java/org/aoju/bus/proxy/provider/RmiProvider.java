@@ -107,7 +107,7 @@ public class RmiProvider implements Provider {
 
     private Registry getRegistry() {
         try {
-            if (clientSocketFactory != null) {
+            if (null != clientSocketFactory) {
                 return LocateRegistry.getRegistry(host, port, clientSocketFactory);
             } else {
                 return LocateRegistry.getRegistry(host, port);

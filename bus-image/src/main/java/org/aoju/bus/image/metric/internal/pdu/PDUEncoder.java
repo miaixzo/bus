@@ -191,7 +191,7 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     private void encodeStringItem(int type, String s) {
-        if (s == null)
+        if (null == s)
             return;
 
         encodeItemHeader(type, s.length());
@@ -261,7 +261,7 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     private void encode(IdentityRQ userIdentity) {
-        if (userIdentity == null)
+        if (null == userIdentity)
             return;
 
         encodeItemHeader(Builder.RQ_USER_IDENTITY, userIdentity.length());
@@ -272,7 +272,7 @@ public class PDUEncoder extends PDVOutputStream {
     }
 
     private void encode(IdentityAC userIdentity) {
-        if (userIdentity == null)
+        if (null == userIdentity)
             return;
 
         encodeItemHeader(Builder.AC_USER_IDENTITY, userIdentity.length());
@@ -392,7 +392,7 @@ public class PDUEncoder extends PDVOutputStream {
                     new ImageOutputStream(this, UID.ImplicitVRLittleEndian);
             cmdout.writeCommand(cmd);
             cmdout.close();
-            if (dataWriter != null) {
+            if (null != dataWriter) {
                 if (!as.isPackPDV()) {
                     as.writePDataTF();
                 } else {

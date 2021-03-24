@@ -114,7 +114,7 @@ public final class VirtualBuffer {
             throw new UnsupportedOperationException("buffer has cleaned");
         }
         clean = true;
-        if (pageBuffer != null) {
+        if (null != pageBuffer) {
             pageBuffer.clean(this);
         }
     }

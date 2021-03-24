@@ -152,7 +152,7 @@ public final class SuffixDatabase {
     }
 
     public String getEffectiveTldPlusOne(String domain) {
-        if (domain == null) throw new NullPointerException("domain == null");
+        if (null == domain) throw new NullPointerException("null == domain");
 
         String unicodeDomain = IDN.toUnicode(domain);
         String[] domainLabels = unicodeDomain.split("\\.");
@@ -190,7 +190,7 @@ public final class SuffixDatabase {
         }
 
         synchronized (this) {
-            if (publicSuffixListBytes == null) {
+            if (null == publicSuffixListBytes) {
                 throw new IllegalStateException("Unable to load " + PUBLIC_SUFFIX_RESOURCE + " resource "
                         + "from the classpath.");
             }
@@ -204,7 +204,7 @@ public final class SuffixDatabase {
         String exactMatch = null;
         for (int i = 0; i < domainLabelsUtf8Bytes.length; i++) {
             String rule = binarySearchBytes(publicSuffixListBytes, domainLabelsUtf8Bytes, i);
-            if (rule != null) {
+            if (null != rule) {
                 exactMatch = rule;
                 break;
             }
@@ -216,7 +216,7 @@ public final class SuffixDatabase {
             for (int labelIndex = 0; labelIndex < labelsWithWildcard.length - 1; labelIndex++) {
                 labelsWithWildcard[labelIndex] = WILDCARD_LABEL;
                 String rule = binarySearchBytes(publicSuffixListBytes, labelsWithWildcard, labelIndex);
-                if (rule != null) {
+                if (null != rule) {
                     wildcardMatch = rule;
                     break;
                 }
@@ -224,29 +224,29 @@ public final class SuffixDatabase {
         }
 
         String exception = null;
-        if (wildcardMatch != null) {
+        if (null != wildcardMatch) {
             for (int labelIndex = 0; labelIndex < domainLabelsUtf8Bytes.length - 1; labelIndex++) {
                 String rule = binarySearchBytes(
                         publicSuffixExceptionListBytes, domainLabelsUtf8Bytes, labelIndex);
-                if (rule != null) {
+                if (null != rule) {
                     exception = rule;
                     break;
                 }
             }
         }
 
-        if (exception != null) {
+        if (null != exception) {
             exception = Symbol.NOT + exception;
             return exception.split("\\.");
-        } else if (exactMatch == null && wildcardMatch == null) {
+        } else if (null == exactMatch && null == wildcardMatch) {
             return PREVAILING_RULE;
         }
 
-        String[] exactRuleLabels = exactMatch != null
+        String[] exactRuleLabels = null != exactMatch
                 ? exactMatch.split("\\.")
                 : EMPTY_RULE;
 
-        String[] wildcardRuleLabels = wildcardMatch != null
+        String[] wildcardRuleLabels = null != wildcardMatch
                 ? wildcardMatch.split("\\.")
                 : EMPTY_RULE;
 
@@ -282,7 +282,7 @@ public final class SuffixDatabase {
         byte[] publicSuffixExceptionListBytes;
 
         InputStream resource = SuffixDatabase.class.getResourceAsStream(PUBLIC_SUFFIX_RESOURCE);
-        if (resource == null) return;
+        if (null == resource) return;
 
         BufferSource bufferedSource = IoKit.buffer(new GzipSource(IoKit.source(resource)));
         try {

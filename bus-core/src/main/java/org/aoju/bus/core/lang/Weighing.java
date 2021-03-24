@@ -218,7 +218,7 @@ public class Weighing<T> implements Serializable {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((obj == null) ? 0 : obj.hashCode());
+            result = prime * result + ((null == obj) ? 0 : obj.hashCode());
             long temp;
             temp = Double.doubleToLongBits(weight);
             result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -230,15 +230,15 @@ public class Weighing<T> implements Serializable {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
+            if (null == obj) {
                 return false;
             }
             if (getClass() != obj.getClass()) {
                 return false;
             }
             WeightObj<?> other = (WeightObj<?>) obj;
-            if (this.obj == null) {
-                if (other.obj != null) {
+            if (this.null == obj) {
+                if (other.null != obj) {
                     return false;
                 }
             } else if (!this.obj.equals(other.obj)) {

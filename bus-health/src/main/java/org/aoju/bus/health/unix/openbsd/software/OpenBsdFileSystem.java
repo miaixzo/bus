@@ -128,7 +128,7 @@ public class OpenBsdFileSystem extends AbstractFileSystem {
                     name = volume.substring(volume.lastIndexOf('/') + 1);
                 }
 
-                if (nameToMatch != null && !nameToMatch.equals(name)) {
+                if (null != nameToMatch && !nameToMatch.equals(name)) {
                     continue;
                 }
                 File f = new File(path);

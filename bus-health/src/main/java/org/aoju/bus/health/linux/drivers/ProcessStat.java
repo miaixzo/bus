@@ -140,7 +140,7 @@ public final class ProcessStat {
     public static File[] getPidFiles() {
         File procdir = new File(ProcPath.PROC);
         File[] pids = procdir.listFiles(f -> RegEx.NUMBERS.matcher(f.getName()).matches());
-        return pids != null ? pids : new File[0];
+        return null != pids ? pids : new File[0];
     }
 
     /**
@@ -154,10 +154,10 @@ public final class ProcessStat {
             int pid = Builder.parseIntOrDefault(f.getName(), -1);
             File fdDir = new File(f.getPath() + "/fd");
             File[] fds = fdDir.listFiles();
-            if (fds != null) {
+            if (null != fds) {
                 for (File fd : fds) {
                     String symLink = Builder.readSymlinkTarget(fd);
-                    if (symLink != null) {
+                    if (null != symLink) {
                         Matcher m = SOCKET.matcher(symLink);
                         if (m.matches()) {
                             pidMap.put(Builder.parseIntOrDefault(m.group(1), -1), pid);
@@ -180,7 +180,7 @@ public final class ProcessStat {
         File threadDir = new File(String.format(ProcPath.TASK_PATH, pid));
         File[] threads = threadDir
                 .listFiles(file -> RegEx.NUMBERS.matcher(file.getName()).matches() && Integer.valueOf(file.getName()) != pid);
-        return (threads != null) ? Arrays.stream(threads)
+        return (null != threads) ? Arrays.stream(threads)
                 .map(thread -> Builder.parseIntOrDefault(thread.getName(), 0)).collect(Collectors.toList())
                 : Collections.emptyList();
     }

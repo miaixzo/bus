@@ -57,7 +57,7 @@ public class DirDecryptorProvider extends EntryDecryptorProvider<File> implement
             decryptor.decrypt(key, src, dest);
         } else if (src.isDirectory()) {
             File[] files = src.listFiles();
-            for (int i = 0; files != null && i < files.length; i++) {
+            for (int i = 0; null != files && i < files.length; i++) {
                 decrypt(key, files[i], new File(dest, files[i].getName()));
             }
         }

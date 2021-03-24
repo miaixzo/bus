@@ -108,11 +108,11 @@ public abstract class Lookups<V> {
          */
         @Override
         public String lookup(final String key) {
-            if (map == null) {
+            if (null == map) {
                 return null;
             }
             final Object obj = map.get(key);
-            if (obj == null) {
+            if (null == obj) {
                 return null;
             }
             return obj.toString();

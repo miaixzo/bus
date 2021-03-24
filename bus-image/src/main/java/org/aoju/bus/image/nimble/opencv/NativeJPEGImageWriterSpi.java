@@ -64,7 +64,7 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
 
         // Ensure all channels have the same bit depth
         int bitDepth;
-        if (colorModel != null) {
+        if (null != colorModel) {
             int[] componentSize = colorModel.getComponentSize();
             bitDepth = componentSize[0];
             for (int i = 1; i < componentSize.length; i++) {

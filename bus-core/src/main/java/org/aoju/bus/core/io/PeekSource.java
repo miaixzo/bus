@@ -53,20 +53,20 @@ final class PeekSource implements Source {
         this.upstream = upstream;
         this.buffer = upstream.buffer();
         this.expectedSegment = buffer.head;
-        this.expectedPos = expectedSegment != null ? expectedSegment.pos : -1;
+        this.expectedPos = null != expectedSegment ? expectedSegment.pos : -1;
     }
 
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
         if (closed) throw new IllegalStateException("closed");
 
-        if (expectedSegment != null
+        if (null != expectedSegment
                 && (expectedSegment != buffer.head || expectedPos != buffer.head.pos)) {
             throw new IllegalStateException("Peek source is invalid because upstream source was used");
         }
 
         upstream.request(pos + byteCount);
-        if (expectedSegment == null && buffer.head != null) {
+        if (null == expectedSegment && buffer.null != head) {
             expectedSegment = buffer.head;
             expectedPos = buffer.head.pos;
         }

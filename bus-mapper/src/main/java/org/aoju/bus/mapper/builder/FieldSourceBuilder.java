@@ -183,10 +183,10 @@ public class FieldSourceBuilder {
          * @return 结果
          */
         private List<EntityField> _getFields(Class<?> entityClass, List<EntityField> fieldList, Integer level) {
-            if (fieldList == null) {
+            if (null == fieldList) {
                 fieldList = new ArrayList<>();
             }
-            if (level == null) {
+            if (null == level) {
                 level = 0;
             }
             if (entityClass.equals(Object.class)) {
@@ -208,7 +208,7 @@ public class FieldSourceBuilder {
                 }
             }
             Class<?> superClass = entityClass.getSuperclass();
-            if (superClass != null
+            if (null != superClass
                     && !superClass.equals(Object.class)
                     && (superClass.isAnnotationPresent(Entity.class)
                     || (!Map.class.isAssignableFrom(superClass)
@@ -273,7 +273,7 @@ public class FieldSourceBuilder {
             }
             PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor desc : descriptors) {
-                if (desc != null && !"class".equals(desc.getName())) {
+                if (null != desc && !"class".equals(desc.getName())) {
                     EntityField entityField = new EntityField(null, desc);
                     if (desc.getReadMethod() != null
                             && desc.getReadMethod().getGenericReturnType() != null
@@ -298,10 +298,10 @@ public class FieldSourceBuilder {
          * @param level       等级
          */
         private void _getFields(Class<?> entityClass, List<EntityField> fieldList, Map<String, Class<?>> genericMap, Integer level) {
-            if (fieldList == null) {
+            if (null == fieldList) {
                 throw new NullPointerException("fieldList参数不能为空!");
             }
-            if (level == null) {
+            if (null == level) {
                 level = 0;
             }
             if (entityClass == Object.class) {
@@ -314,7 +314,7 @@ public class FieldSourceBuilder {
                 if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
                     EntityField entityField = new EntityField(field, null);
                     if (field.getGenericType() != null && field.getGenericType() instanceof TypeVariable) {
-                        if (genericMap == null || !genericMap.containsKey(((TypeVariable) field.getGenericType()).getName())) {
+                        if (null == genericMap || !genericMap.containsKey(((TypeVariable) field.getGenericType()).getName())) {
                             throw new InstrumentException(entityClass + "字段" + field.getName() + "的泛型类型无法获取!");
                         } else {
                             entityField.setJavaType(genericMap.get(((TypeVariable) field.getGenericType()).getName()));
@@ -334,7 +334,7 @@ public class FieldSourceBuilder {
             //获取父类和泛型信息
             Class<?> superClass = entityClass.getSuperclass();
             //判断superClass
-            if (superClass != null
+            if (null != superClass
                     && !superClass.equals(Object.class)
                     && (superClass.isAnnotationPresent(Entity.class)
                     || (!Map.class.isAssignableFrom(superClass)
@@ -358,7 +358,7 @@ public class FieldSourceBuilder {
             //获取父类和泛型信息
             Class<?> superClass = entityClass.getSuperclass();
             //判断superClass
-            if (superClass != null
+            if (null != superClass
                     && !superClass.equals(Object.class)
                     && (superClass.isAnnotationPresent(Entity.class)
                     || (!Map.class.isAssignableFrom(superClass)

@@ -148,7 +148,7 @@ public class RedisCache implements CacheX {
 
     @PreDestroy
     public void tearDown() {
-        if (jedisPool != null && !jedisPool.isClosed()) {
+        if (null != jedisPool && !jedisPool.isClosed()) {
             jedisPool.destroy();
         }
     }

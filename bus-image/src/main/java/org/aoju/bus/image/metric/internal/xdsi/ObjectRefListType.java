@@ -45,7 +45,7 @@ public class ObjectRefListType {
 
     public List<ObjectRefType> getObjectRef() {
 
-        if (this.objectRef == null) {
+        if (this.null == objectRef) {
 
             this.objectRef = new ArrayList();
         }

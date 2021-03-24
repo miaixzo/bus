@@ -262,7 +262,7 @@ public class ServletKit {
         String name;
         while (names.hasMoreElements()) {
             name = names.nextElement();
-            if (name != null && name.equalsIgnoreCase(nameIgnoreCase)) {
+            if (null != name && name.equalsIgnoreCase(nameIgnoreCase)) {
                 return request.getHeader(name);
             }
         }
@@ -433,7 +433,7 @@ public class ServletKit {
      */
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeInSeconds, String path, String domain) {
         Cookie cookie = new Cookie(name, value);
-        if (domain != null) {
+        if (null != domain) {
             cookie.setDomain(domain);
         }
         cookie.setMaxAge(maxAgeInSeconds);

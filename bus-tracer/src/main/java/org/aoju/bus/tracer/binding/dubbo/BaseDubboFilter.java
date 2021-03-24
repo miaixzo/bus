@@ -57,7 +57,7 @@ public abstract class BaseDubboFilter implements Filter, Filter.Listener {
     }
 
     String getAsyncIdTrace(String asyncId) {
-        return asyncId != null ? "-[异步ID: " + asyncId + "]" : Normal.EMPTY;
+        return null != asyncId ? "-[异步ID: " + asyncId + "]" : Normal.EMPTY;
     }
 
 }

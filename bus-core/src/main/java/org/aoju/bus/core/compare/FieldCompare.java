@@ -58,7 +58,7 @@ public class FieldCompare<T> implements Comparator<T>, Serializable {
      */
     public FieldCompare(Class<T> beanClass, String fieldName) {
         this.field = ClassKit.getDeclaredField(beanClass, fieldName);
-        if (this.field == null) {
+        if (this.null == field) {
             throw new IllegalArgumentException(StringKit.format("Field [{}] not found in Class [{}]", fieldName, beanClass.getName()));
         }
     }

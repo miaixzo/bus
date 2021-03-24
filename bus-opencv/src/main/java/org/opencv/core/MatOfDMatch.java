@@ -42,7 +42,7 @@ public class MatOfDMatch extends Mat {
 
 
     public void fromArray(DMatch... a) {
-        if (a == null || a.length == 0)
+        if (null == a || a.length == 0)
             return;
         int num = a.length;
         alloc(num);

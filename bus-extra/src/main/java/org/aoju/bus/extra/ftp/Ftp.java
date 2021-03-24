@@ -236,7 +236,7 @@ public class Ftp extends AbstractFtp {
             throw new InstrumentException("Login failed for user [{}], reply code is: [{}]", config.getUser(), replyCode);
         }
         this.client = client;
-        if (mode != null) {
+        if (null != mode) {
             setMode(mode);
         }
         return this;
@@ -286,7 +286,7 @@ public class Ftp extends AbstractFtp {
             // ignore
         }
 
-        if (pwd == null) {
+        if (null == pwd) {
             return this.init();
         }
         return this;

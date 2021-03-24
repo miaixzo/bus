@@ -150,7 +150,7 @@ public class UncheckedException extends RuntimeException {
     }
 
     protected static Throwable unwrapThrow(Throwable e) {
-        if (e == null)
+        if (null == e)
             return null;
         if (e instanceof InvocationTargetException) {
             InvocationTargetException itE = (InvocationTargetException) e;

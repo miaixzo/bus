@@ -97,7 +97,7 @@ public interface FileSystem {
         @Override
         public void deleteContents(File directory) throws IOException {
             File[] files = directory.listFiles();
-            if (files == null) {
+            if (null == files) {
                 throw new IOException("not a readable directory: " + directory);
             }
             for (File file : files) {

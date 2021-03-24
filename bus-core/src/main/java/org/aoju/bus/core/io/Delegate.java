@@ -40,7 +40,7 @@ public class Delegate extends Timeout {
     private Timeout delegate;
 
     public Delegate(Timeout delegate) {
-        if (delegate == null) throw new IllegalArgumentException("delegate == null");
+        if (null == delegate) throw new IllegalArgumentException("null == delegate");
         this.delegate = delegate;
     }
 
@@ -49,7 +49,7 @@ public class Delegate extends Timeout {
     }
 
     public final Delegate setDelegate(Timeout delegate) {
-        if (delegate == null) throw new IllegalArgumentException("delegate == null");
+        if (null == delegate) throw new IllegalArgumentException("null == delegate");
         this.delegate = delegate;
         return this;
     }

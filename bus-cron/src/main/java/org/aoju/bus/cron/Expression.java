@@ -106,7 +106,7 @@ public final class Expression implements Serializable, Cloneable {
      * @throws ParseException 如果字符串表达式不能解析为有效的<code> CronExpression </code>
      */
     public Expression(String cronExpression) throws ParseException {
-        if (cronExpression == null) {
+        if (null == cronExpression) {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
 
@@ -172,7 +172,7 @@ public final class Expression implements Serializable, Cloneable {
 
         Date timeAfter = getTimeAfter(testDateCal.getTime());
 
-        return ((timeAfter != null) && (timeAfter.equals(originalDate)));
+        return ((null != timeAfter) && (timeAfter.equals(originalDate)));
     }
 
     public Date getNextValidTimeAfter(Date date) {
@@ -189,7 +189,7 @@ public final class Expression implements Serializable, Cloneable {
         Date newDate;
         while (difference == 1000) {
             newDate = getTimeAfter(lastDate);
-            if (newDate == null)
+            if (null == newDate)
                 break;
 
             difference = newDate.getTime() - lastDate.getTime();
@@ -203,7 +203,7 @@ public final class Expression implements Serializable, Cloneable {
     }
 
     public TimeZone getTimeZone() {
-        if (timeZone == null) {
+        if (null == timeZone) {
             timeZone = TimeZone.getDefault();
         }
 
@@ -224,25 +224,25 @@ public final class Expression implements Serializable, Cloneable {
 
         try {
 
-            if (seconds == null) {
+            if (null == seconds) {
                 seconds = new TreeSet<>();
             }
-            if (minutes == null) {
+            if (null == minutes) {
                 minutes = new TreeSet<>();
             }
-            if (hours == null) {
+            if (null == hours) {
                 hours = new TreeSet<>();
             }
-            if (daysOfMonth == null) {
+            if (null == daysOfMonth) {
                 daysOfMonth = new TreeSet<>();
             }
-            if (months == null) {
+            if (null == months) {
                 months = new TreeSet<>();
             }
-            if (daysOfWeek == null) {
+            if (null == daysOfWeek) {
                 daysOfWeek = new TreeSet<>();
             }
-            if (years == null) {
+            if (null == years) {
                 years = new TreeSet<>();
             }
 
@@ -939,7 +939,7 @@ public final class Expression implements Serializable, Cloneable {
     protected int getMonthNumber(String s) {
         Integer integer = monthMap.get(s);
 
-        if (integer == null) {
+        if (null == integer) {
             return -1;
         }
 
@@ -949,7 +949,7 @@ public final class Expression implements Serializable, Cloneable {
     protected int getDayOfWeekNumber(String s) {
         Integer integer = dayMap.get(s);
 
-        if (integer == null) {
+        if (null == integer) {
             return -1;
         }
 
@@ -972,7 +972,7 @@ public final class Expression implements Serializable, Cloneable {
         // loop until we've computed the next time, or we've past the endTime
         while (!gotOne) {
 
-            //if (endTime != null && cl.getTime().after(endTime)) return null;
+            //if (null != endTime && cl.getTime().after(endTime)) return null;
             if (cl.get(Calendar.YEAR) > 2999) { // prevent endless loop...
                 return null;
             }
@@ -985,7 +985,7 @@ public final class Expression implements Serializable, Cloneable {
 
             // get second.................................................
             st = seconds.tailSet(sec);
-            if (st != null && st.size() != 0) {
+            if (null != st && st.size() != 0) {
                 sec = st.first();
             } else {
                 sec = seconds.first();
@@ -1000,7 +1000,7 @@ public final class Expression implements Serializable, Cloneable {
 
             // get minute.................................................
             st = minutes.tailSet(min);
-            if (st != null && st.size() != 0) {
+            if (null != st && st.size() != 0) {
                 t = min;
                 min = st.first();
             } else {
@@ -1021,7 +1021,7 @@ public final class Expression implements Serializable, Cloneable {
 
             // get hour...................................................
             st = hours.tailSet(hr);
-            if (st != null && st.size() != 0) {
+            if (null != st && st.size() != 0) {
                 t = hr;
                 hr = st.first();
             } else {
@@ -1136,7 +1136,7 @@ public final class Expression implements Serializable, Cloneable {
                         day = daysOfMonth.first();
                         mon++;
                     }
-                } else if (st != null && st.size() != 0) {
+                } else if (null != st && st.size() != 0) {
                     t = day;
                     day = st.first();
                     // make sure we don't over-run a short month, such as february
@@ -1253,7 +1253,7 @@ public final class Expression implements Serializable, Cloneable {
                     int dow = daysOfWeek.first(); // desired
                     // d-o-w
                     st = daysOfWeek.tailSet(cDow);
-                    if (st != null && st.size() > 0) {
+                    if (null != st && st.size() > 0) {
                         dow = st.first();
                     }
 
@@ -1307,7 +1307,7 @@ public final class Expression implements Serializable, Cloneable {
 
             // get month...................................................
             st = months.tailSet(mon);
-            if (st != null && st.size() != 0) {
+            if (null != st && st.size() != 0) {
                 t = mon;
                 mon = st.first();
             } else {
@@ -1334,7 +1334,7 @@ public final class Expression implements Serializable, Cloneable {
 
             // get year...................................................
             st = years.tailSet(year);
-            if (st != null && st.size() != 0) {
+            if (null != st && st.size() != 0) {
                 t = year;
                 year = st.first();
             } else {

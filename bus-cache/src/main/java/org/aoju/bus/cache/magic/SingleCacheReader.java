@@ -60,7 +60,7 @@ public class SingleCacheReader extends AbstractReader {
 
         doRecord(readResult, key, annoHolder);
         // 命中
-        if (readResult != null) {
+        if (null != readResult) {
             // 是放击穿对象
             if (PreventObjects.isPrevent(readResult)) {
                 return null;
@@ -70,7 +70,7 @@ public class SingleCacheReader extends AbstractReader {
         }
 
         Object invokeResult = doLogInvoke(baseInvoker::proceed);
-        if (invokeResult != null && methodHolder.getInnerReturnType() == null) {
+        if (null != invokeResult && methodHolder.getInnerReturnType() == null) {
             methodHolder.setInnerReturnType(invokeResult.getClass());
         }
 
@@ -78,7 +78,7 @@ public class SingleCacheReader extends AbstractReader {
             return invokeResult;
         }
 
-        if (invokeResult != null) {
+        if (null != invokeResult) {
             cacheManager.writeSingle(annoHolder.getCache(), key, invokeResult, annoHolder.getExpire());
             return invokeResult;
         }
@@ -91,11 +91,11 @@ public class SingleCacheReader extends AbstractReader {
     }
 
     private void doRecord(Object result, String key, AnnoHolder annoHolder) {
-        Logger.info("single cache hit rate: {}/1, key: {}", result == null ? 0 : 1, key);
-        if (this.baseHitting != null) {
+        Logger.info("single cache hit rate: {}/1, key: {}", null == result ? 0 : 1, key);
+        if (this.null != baseHitting) {
             String pattern = PatternGenerator.generatePattern(annoHolder);
 
-            if (result != null) {
+            if (null != result) {
                 this.baseHitting.hitIncr(pattern, 1);
             }
             this.baseHitting.reqIncr(pattern, 1);

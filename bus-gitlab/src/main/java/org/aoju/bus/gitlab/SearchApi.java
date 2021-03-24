@@ -335,7 +335,7 @@ public class SearchApi extends AbstractApi {
                 .withParam("search", search, true)
                 .withParam("ref", ref, false);
 
-        if (ref != null) {
+        if (null != ref) {
             if (!scope.equals(ProjectSearchScope.BLOBS) && !scope.equals(ProjectSearchScope.WIKI_BLOBS) && !scope.equals(ProjectSearchScope.COMMITS)) {
                 throw new GitLabApiException("Ref parameter is only applicable for scopes: commits, blobs, and wiki_blobs");
             }

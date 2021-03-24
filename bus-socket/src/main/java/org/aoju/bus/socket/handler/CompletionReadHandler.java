@@ -51,7 +51,7 @@ public class CompletionReadHandler<T> implements CompletionHandler<Integer, TcpA
         try {
             // 接收到的消息进行预处理
             NetMonitor monitor = aioSession.getServerConfig().getMonitor();
-            if (monitor != null) {
+            if (null != monitor) {
                 monitor.afterRead(aioSession, result);
             }
             // 触发读回调

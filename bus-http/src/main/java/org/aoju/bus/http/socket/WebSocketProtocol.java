@@ -145,7 +145,7 @@ public final class WebSocketProtocol {
 
     static void validateCloseCode(int code) {
         String message = closeCodeExceptionMessage(code);
-        if (message != null) throw new IllegalArgumentException(message);
+        if (null != message) throw new IllegalArgumentException(message);
     }
 
     public static String acceptHeader(String key) {

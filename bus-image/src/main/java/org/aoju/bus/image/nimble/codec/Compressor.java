@@ -73,7 +73,7 @@ public class Compressor extends Decompressor implements Closeable {
         super(dataset, from);
 
         Object pixeldata = dataset.getValue(Tag.PixelData, pixeldataVR);
-        if (pixeldata == null)
+        if (null == pixeldata)
             return;
 
         if (pixeldata instanceof BulkData) {
@@ -92,7 +92,7 @@ public class Compressor extends Decompressor implements Closeable {
     public boolean compress(String tsuid, Property... params)
             throws IOException {
 
-        if (tsuid == null)
+        if (null == tsuid)
             throw new NullPointerException("desttsuid");
 
         if (frames == 0)
@@ -100,7 +100,7 @@ public class Compressor extends Decompressor implements Closeable {
 
         ImageWriterFactory.ImageWriterParam param =
                 ImageWriterFactory.getImageWriterParam(tsuid);
-        if (param == null)
+        if (null == param)
             throw new UnsupportedOperationException(
                     "Unsupported Transfer Syntax: " + tsuid);
 
@@ -127,7 +127,7 @@ public class Compressor extends Decompressor implements Closeable {
         if (maxPixelValueError >= 0) {
             ImageReaderFactory.ImageReaderParam readerParam =
                     ImageReaderFactory.getImageReaderParam(tsuid);
-            if (readerParam == null)
+            if (null == readerParam)
                 throw new UnsupportedOperationException(
                         "Unsupported Transfer Syntax: " + tsuid);
 
@@ -137,7 +137,7 @@ public class Compressor extends Decompressor implements Closeable {
         }
 
         TransferSyntaxType tstype = TransferSyntaxType.forUID(tsuid);
-        if (decompressor == null || super.tstype == TransferSyntaxType.RLE)
+        if (null == decompressor || super.tstype == TransferSyntaxType.RLE)
             bi = createBufferedImage(
                     Math.min(bitsStored, tstype.getMaxBitsStored()),
                     super.tstype == TransferSyntaxType.RLE || banded,
@@ -176,7 +176,7 @@ public class Compressor extends Decompressor implements Closeable {
     }
 
     public void close() {
-        if (iis != null)
+        if (null != iis)
             try {
                 iis.close();
             } catch (IOException ignore) {
@@ -188,10 +188,10 @@ public class Compressor extends Decompressor implements Closeable {
     public void dispose() {
         super.dispose();
 
-        if (compressor != null)
+        if (null != compressor)
             compressor.dispose();
 
-        if (verifier != null)
+        if (null != verifier)
             verifier.dispose();
 
         compressor = null;
@@ -199,10 +199,10 @@ public class Compressor extends Decompressor implements Closeable {
     }
 
     public BufferedImage readFrame(int frameIndex) throws IOException {
-        if (iis == null)
+        if (null == iis)
             iis = new FileImageInputStream(file);
 
-        if (decompressor != null)
+        if (null != decompressor)
             return decompressFrame(iis, frameIndex);
 
         iis.setByteOrder(pixeldata.bigEndian()
@@ -233,7 +233,7 @@ public class Compressor extends Decompressor implements Closeable {
 
     private void verify(MemoryCacheImageOutputStream cache, int index)
             throws IOException {
-        if (verifier == null)
+        if (null == verifier)
             return;
 
         cache.seek(0);
@@ -375,7 +375,7 @@ public class Compressor extends Decompressor implements Closeable {
             int mask = 1 << ovlyBitPosition;
             int ovlyLength = ovlyRow * ovlyColumns;
             byte[] ovlyData = dataset.getSafeBytes(Tag.OverlayData | gg0000);
-            if (ovlyData == null) {
+            if (null == ovlyData) {
                 ovlyData = new byte[(((ovlyLength * frames + 7) >>> 3) + 1) & (~1)];
                 dataset.setBytes(Tag.OverlayData | gg0000, VR.OB, ovlyData);
             }
@@ -500,10 +500,10 @@ public class Compressor extends Decompressor implements Closeable {
         }
 
         private void compress() throws IOException {
-            if (cache != null)
+            if (null != cache)
                 return;
 
-            if (ex != null)
+            if (null != ex)
                 throw ex;
 
             try {
@@ -512,7 +512,7 @@ public class Compressor extends Decompressor implements Closeable {
                 if (bitsStored < bitsAllocated)
                     Compressor.this.nullifyUnusedBits(bitsStored, bi);
                 cache = new FlushlessMemoryCacheImageOutputStream(cacheout, imageDescriptor);
-                compressor.setOutput(patchJPEGLS != null
+                compressor.setOutput(null != patchJPEGLS
                         ? new PatchJPEGLSImageOutputStream(cache, patchJPEGLS)
                         : cache);
                 long start = System.currentTimeMillis();

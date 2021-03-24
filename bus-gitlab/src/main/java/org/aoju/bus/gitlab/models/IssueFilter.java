@@ -333,7 +333,7 @@ public class IssueFilter {
         return (new GitLabApiForm()
                 .withParam("iids", iids)
                 .withParam("state", state)
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (null != labels ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)
                 .withParam("author_id", authorId)

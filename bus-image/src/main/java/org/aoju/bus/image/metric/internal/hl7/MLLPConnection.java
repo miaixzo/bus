@@ -71,7 +71,7 @@ public class MLLPConnection implements Closeable {
 
     public byte[] readMessage() throws IOException {
         byte[] b = mllpIn.readMessage();
-        if (b != null)
+        if (null != b)
             log("{} >> {}", b, 0, b.length);
         return b;
     }

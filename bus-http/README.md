@@ -289,7 +289,7 @@ Httpd.Builder#addNetworkInterceptor(Interceptor) 传入；
         @Override
         public void onResponse(NewCall call, Response delegate) throws IOException {
             ResponseBody body = delegate.body();
-            if (body != null) {
+            if (null != body) {
                 Logger.info("onResponse: " + delegate.body().string());
                 body.close();
             }
@@ -901,7 +901,7 @@ HttpCall call=http.async("/upload")
 
     @Override
     public List<Cookie> loadForRequest(UnoUrl arg0) {
-        if (cookies != null) {
+        if (null != cookies) {
             return cookies;
         }
         return new ArrayList<>();

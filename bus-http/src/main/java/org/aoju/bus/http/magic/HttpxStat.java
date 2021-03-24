@@ -86,7 +86,7 @@ public class HttpxStat {
         lastAccessTime = new Date();
         reqTotalCount.incrementAndGet();
         reqFailureCount.incrementAndGet();
-        if (e != null) {
+        if (null != e) {
             reqExceptionCount.incrementAndGet();
             if (errorMsgs.size() >= MAX_ERROR_MSG_COUNT) {
                 errorMsgs.removeFirst();

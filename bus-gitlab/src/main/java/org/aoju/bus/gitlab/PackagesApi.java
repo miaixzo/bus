@@ -202,7 +202,7 @@ public class PackagesApi extends AbstractApi {
      */
     public void deletePackage(Object projectIdOrPath, Integer packageId) throws GitLabApiException {
 
-        if (packageId == null) {
+        if (null == packageId) {
             throw new RuntimeException("packageId cannot be null");
         }
 

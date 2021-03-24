@@ -58,12 +58,12 @@ public class BaseInsertProvider extends MapperTemplate {
      * &lt;bind name="countryname_bind" value='@java.util.UUID@randomUUID().toString().replace("-", "")'/&gt;
      * INSERT INTO country_u(id,countryname,countrycode) VALUES
      * &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     * &lt;if test="id != null"&gt;#{id,javaType=java.lang.Integer},&lt;/if&gt;
-     * &lt;if test="id == null"&gt;#{id,javaType=java.lang.Integer},&lt;/if&gt;
-     * &lt;if test="countryname != null"&gt;#{countryname,javaType=java.lang.String},&lt;/if&gt;
-     * &lt;if test="countryname == null"&gt;#{countryname_bind,javaType=java.lang.String},&lt;/if&gt;
-     * &lt;if test="countrycode != null"&gt;#{countrycode,javaType=java.lang.String},&lt;/if&gt;
-     * &lt;if test="countrycode == null"&gt;#{countrycode,javaType=java.lang.String},&lt;/if&gt;
+     * &lt;if test="null != id"&gt;#{id,javaType=java.lang.Integer},&lt;/if&gt;
+     * &lt;if test="null == id"&gt;#{id,javaType=java.lang.Integer},&lt;/if&gt;
+     * &lt;if test="null != countryname"&gt;#{countryname,javaType=java.lang.String},&lt;/if&gt;
+     * &lt;if test="null == countryname"&gt;#{countryname_bind,javaType=java.lang.String},&lt;/if&gt;
+     * &lt;if test="null != countrycode"&gt;#{countrycode,javaType=java.lang.String},&lt;/if&gt;
+     * &lt;if test="null == countrycode"&gt;#{countrycode,javaType=java.lang.String},&lt;/if&gt;
      * &lt;/trim&gt;
      * </pre>
      *
@@ -143,16 +143,16 @@ public class BaseInsertProvider extends MapperTemplate {
      * &lt;bind name="countryname_bind" value='@java.util.UUID@randomUUID().toString().replace("-", "")'/&gt;
      * INSERT INTO country_u
      * &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     * &lt;if test="id != null"&gt;id,&lt;/if&gt;
+     * &lt;if test="null != id"&gt;id,&lt;/if&gt;
      * countryname,
-     * &lt;if test="countrycode != null"&gt;countrycode,&lt;/if&gt;
+     * &lt;if test="null != countrycode"&gt;countrycode,&lt;/if&gt;
      * &lt;/trim&gt;
      * VALUES
      * &lt;trim prefix="(" suffix=")" suffixOverrides=","&gt;
-     * &lt;if test="id != null"&gt;#{id,javaType=java.lang.Integer},&lt;/if&gt;
-     * &lt;if test="countryname != null"&gt;#{countryname,javaType=java.lang.String},&lt;/if&gt;
-     * &lt;if test="countryname == null"&gt;#{countryname_bind,javaType=java.lang.String},&lt;/if&gt;
-     * &lt;if test="countrycode != null"&gt;#{countrycode,javaType=java.lang.String},&lt;/if&gt;
+     * &lt;if test="null != id"&gt;#{id,javaType=java.lang.Integer},&lt;/if&gt;
+     * &lt;if test="null != countryname"&gt;#{countryname,javaType=java.lang.String},&lt;/if&gt;
+     * &lt;if test="null == countryname"&gt;#{countryname_bind,javaType=java.lang.String},&lt;/if&gt;
+     * &lt;if test="null != countrycode"&gt;#{countrycode,javaType=java.lang.String},&lt;/if&gt;
      * &lt;/trim&gt;
      * </pre>
      * 这段代码可以注意对countryname的处理

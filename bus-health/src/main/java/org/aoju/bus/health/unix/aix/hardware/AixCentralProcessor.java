@@ -135,8 +135,8 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         List<LogicalProcessor> logProcs = new ArrayList<>();
         for (int proc = 0; proc < lcpus; proc++) {
             Pair<Integer, Integer> nodePkg = nodePkgMap.get(proc);
-            logProcs.add(new LogicalProcessor(proc, proc / physProcs, nodePkg == null ? 0 : nodePkg.getRight(),
-                    nodePkg == null ? 0 : nodePkg.getLeft()));
+            logProcs.add(new LogicalProcessor(proc, proc / physProcs, null == nodePkg ? 0 : nodePkg.getRight(),
+                    null == nodePkg ? 0 : nodePkg.getLeft()));
         }
         return logProcs;
     }

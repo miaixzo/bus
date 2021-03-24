@@ -79,7 +79,7 @@ public class DimseRSPHandler {
     }
 
     private void stopTimeout(Association as) {
-        if (timeout != null) {
+        if (null != timeout) {
             timeout.stop();
             timeout = null;
         }

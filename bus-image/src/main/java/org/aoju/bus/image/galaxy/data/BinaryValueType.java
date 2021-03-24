@@ -459,12 +459,12 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(byte[] b) {
-        return b != null && b.length > 0 ? b : Value.NULL;
+        return null != b && b.length > 0 ? b : Value.NULL;
     }
 
     @Override
     public Object toValue(String s, boolean bigEndian) {
-        if (s == null || s.isEmpty())
+        if (null == s || s.isEmpty())
             return Value.NULL;
 
         return toBytes(s, new byte[numBytes], 0, bigEndian);
@@ -472,7 +472,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(String[] ss, boolean bigEndian) {
-        if (ss == null || ss.length == 0)
+        if (null == ss || ss.length == 0)
             return Value.NULL;
 
         if (ss.length == 1)
@@ -487,7 +487,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(int[] is, boolean bigEndian) {
-        if (is == null || is.length == 0)
+        if (null == is || is.length == 0)
             return Value.NULL;
 
         byte[] b = new byte[is.length * numBytes];
@@ -499,7 +499,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(float[] fs, boolean bigEndian) {
-        if (fs == null || fs.length == 0)
+        if (null == fs || fs.length == 0)
             return Value.NULL;
 
         byte[] b = new byte[fs.length * numBytes];
@@ -511,7 +511,7 @@ public enum BinaryValueType implements ValueType {
 
     @Override
     public Object toValue(double[] ds, boolean bigEndian) {
-        if (ds == null || ds.length == 0)
+        if (null == ds || ds.length == 0)
             return Value.NULL;
 
         byte[] b = new byte[ds.length * numBytes];

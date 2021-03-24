@@ -125,7 +125,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
             }
             if (bulkOffset == -1 || bulkLength == -1) {
                 bulk = updateBulkData(i);
-                if (bulk == null) {
+                if (null == bulk) {
                     lastSegment = i;
                     curSegment = -1;
                     super.seek(beforePos);
@@ -146,7 +146,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
             if (pos < beforePos) {
                 curSegment = i;
                 curSegmentEnd = beforePos;
-                if (bulk != null) {
+                if (null != bulk) {
                     stream.seek(bulk.offset() + deltaInEnd);
                 }
                 return;
@@ -174,7 +174,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
             } else if (bulkLength == -1) {
                 bulk = readBulkAt(bulkOffset - 8, i);
             }
-            if (bulk == null) {
+            if (null == bulk) {
                 return null;
             }
             last = bulk;
@@ -244,7 +244,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
         bitOffset = 0;
         int bytesToRead = Math.min(len, (int) (curSegmentEnd - streamPos));
         int nbytes;
-        if (byteFrag != null) {
+        if (null != byteFrag) {
             System.arraycopy(byteFrag, (int) (streamPos - curSegmentEnd + byteFrag.length), b, off, bytesToRead);
             nbytes = bytesToRead;
         } else {

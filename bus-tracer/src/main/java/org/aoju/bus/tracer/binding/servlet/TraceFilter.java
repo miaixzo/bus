@@ -97,7 +97,7 @@ public class TraceFilter implements Filter {
     @Override
     public final void init(final FilterConfig filterConfig) {
         final String profileInitParameter = filterConfig.getInitParameter(PROFILE_INIT_PARAM);
-        if (profileInitParameter != null) {
+        if (null != profileInitParameter) {
             profile = profileInitParameter;
         }
     }

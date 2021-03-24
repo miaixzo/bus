@@ -71,7 +71,7 @@ public final class TraceInterceptor implements HandlerInterceptor {
 
         if (configuration.shouldProcessContext(TraceFilterConfig.Channel.IncomingRequest)) {
             final Enumeration<String> headers = request.getHeaders(incomingHeaderName);
-            if (headers != null && headers.hasMoreElements()) {
+            if (null != headers && headers.hasMoreElements()) {
                 final Map<String, String> parsedContext = httpHeaderSerialization.parse(Collections.list(headers));
                 backend.putAll(configuration.filterDeniedParams(parsedContext, TraceFilterConfig.Channel.IncomingResponse));
             }
@@ -80,7 +80,7 @@ public final class TraceInterceptor implements HandlerInterceptor {
         org.aoju.bus.tracer.Builder.generateInvocationIdIfNecessary(backend);
 
         final HttpSession session = request.getSession(false);
-        if (session != null) {
+        if (null != session) {
             org.aoju.bus.tracer.Builder.generateSessionIdIfNecessary(backend, session.getId());
         }
 

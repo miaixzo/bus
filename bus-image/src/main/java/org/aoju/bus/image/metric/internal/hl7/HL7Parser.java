@@ -98,7 +98,7 @@ public class HL7Parser {
             while (tkindex < tks.length) {
                 String tk = tks[tkindex++];
                 Delimiter d = delimiter(tk);
-                if (d != null) {
+                if (null != d) {
                     if (d != Delimiter.escape) {
                         endElement(d);
                         startElement(d);

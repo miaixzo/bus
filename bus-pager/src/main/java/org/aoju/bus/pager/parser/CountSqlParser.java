@@ -278,7 +278,7 @@ public class CountSqlParser {
                 Expression expression = ((SelectExpressionItem) item).getExpression();
                 if (expression instanceof Function) {
                     String name = ((Function) expression).getName();
-                    if (name != null) {
+                    if (null != name) {
                         String NAME = name.toUpperCase();
                         if (falseFunctions.contains(NAME)) {
                             return false;
@@ -353,7 +353,7 @@ public class CountSqlParser {
      * @param withItemsList WithItem
      */
     public void processWithItemsList(List<WithItem> withItemsList) {
-        if (withItemsList != null && withItemsList.size() > 0) {
+        if (null != withItemsList && withItemsList.size() > 0) {
             for (WithItem item : withItemsList) {
                 processSelectBody(item.getSelectBody());
             }
@@ -402,7 +402,7 @@ public class CountSqlParser {
      * @return the boolean
      */
     public boolean orderByHashParameters(List<OrderByElement> orderByElements) {
-        if (orderByElements == null) {
+        if (null == orderByElements) {
             return false;
         }
         for (OrderByElement orderByElement : orderByElements) {

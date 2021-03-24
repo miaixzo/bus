@@ -69,10 +69,10 @@ public class DnsOverHttps implements DnsX {
     private final boolean resolvePublicAddresses;
 
     DnsOverHttps(Builder builder) {
-        if (builder.client == null) {
+        if (builder.null == client) {
             throw new NullPointerException("client not set");
         }
-        if (builder.url == null) {
+        if (builder.null == url) {
             throw new NullPointerException("url not set");
         }
 
@@ -87,7 +87,7 @@ public class DnsOverHttps implements DnsX {
     private static DnsX buildBootstrapClient(Builder builder) {
         List<InetAddress> hosts = builder.bootstrapDnsHosts;
 
-        if (hosts != null) {
+        if (null != hosts) {
             return new BootstrapDns(builder.url.host(), hosts);
         } else {
             return builder.systemDns;
@@ -188,7 +188,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     public static long size(String string, int beginIndex, int endIndex) {
-        if (string == null) throw new IllegalArgumentException("string == null");
+        if (null == string) throw new IllegalArgumentException("null == string");
         if (beginIndex < 0) throw new IllegalArgumentException("beginIndex < 0: " + beginIndex);
         if (endIndex < beginIndex) {
             throw new IllegalArgumentException("endIndex < beginIndex: " + endIndex + " < " + beginIndex);
@@ -300,7 +300,7 @@ public class DnsOverHttps implements DnsX {
         Request request = buildRequest(hostname, type);
         Response response = getCacheOnlyResponse(request);
 
-        if (response != null) {
+        if (null != response) {
             processResponse(response, hostname, results, failures);
         } else {
             networkRequests.add(client.newCall(request));

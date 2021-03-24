@@ -78,11 +78,11 @@ public class VersionCompare implements Comparator<String>, Serializable {
         if (version1 == version2) {
             return 0;
         }
-        if (version1 == null && version2 == null) {
+        if (null == version1 && null == version2) {
             return 0;
-        } else if (version1 == null) {// null视为最小版本,排在前
+        } else if (null == version1) {// null视为最小版本,排在前
             return -1;
-        } else if (version2 == null) {
+        } else if (null == version2) {
             return 1;
         }
 

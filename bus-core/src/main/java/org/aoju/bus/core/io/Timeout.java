@@ -87,7 +87,7 @@ public class Timeout {
      */
     public Timeout timeout(long timeout, TimeUnit unit) {
         if (timeout < 0) throw new IllegalArgumentException("timeout < 0: " + timeout);
-        if (unit == null) throw new IllegalArgumentException("unit == null");
+        if (null == unit) throw new IllegalArgumentException("null == unit");
         this.timeoutNanos = unit.toNanos(timeout);
         return this;
     }
@@ -138,7 +138,7 @@ public class Timeout {
      */
     public final Timeout deadline(long duration, TimeUnit unit) {
         if (duration <= 0) throw new IllegalArgumentException("duration <= 0: " + duration);
-        if (unit == null) throw new IllegalArgumentException("unit == null");
+        if (null == unit) throw new IllegalArgumentException("null == unit");
         return deadlineNanoTime(System.nanoTime() + unit.toNanos(duration));
     }
 

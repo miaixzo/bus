@@ -368,7 +368,7 @@ public class ByteKit {
      */
     public static int xor(byte[] bytes) {
         int temp = 0;
-        if (bytes != null) {
+        if (null != bytes) {
             for (int i = 0; i < bytes.length; i++) {
                 temp ^= bytes[i];
             }

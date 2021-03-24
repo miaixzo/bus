@@ -212,7 +212,7 @@ public class Paginating<T> extends Serialize<T> {
      * 计算前后页,第一页,最后一页
      */
     private void calcPage() {
-        if (navigatePageNo != null && navigatePageNo.length > 0) {
+        if (null != navigatePageNo && navigatePageNo.length > 0) {
             navigateFirstPage = navigatePageNo[0];
             navigateLastPage = navigatePageNo[navigatePageNo.length - 1];
             if (pageNo > 1) {
@@ -383,7 +383,7 @@ public class Paginating<T> extends Serialize<T> {
         sb.append(", navigateFirstPage=").append(navigateFirstPage);
         sb.append(", navigateLastPage=").append(navigateLastPage);
         sb.append(", navigatePageNo=");
-        if (navigatePageNo == null) {
+        if (null == navigatePageNo) {
             sb.append(Normal.NULL);
         } else {
             sb.append(Symbol.C_BRACKET_LEFT);

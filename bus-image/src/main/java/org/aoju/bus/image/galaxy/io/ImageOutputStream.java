@@ -80,7 +80,7 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public final void setEncodingOptions(ImageEncodingOptions encOpts) {
-        if (encOpts == null)
+        if (null == encOpts)
             throw new NullPointerException();
         this.encOpts = encOpts;
     }
@@ -109,7 +109,7 @@ public class ImageOutputStream extends FilterOutputStream {
 
     public void writeDataset(Attributes fmi, Attributes dataset)
             throws IOException {
-        if (fmi != null) {
+        if (null != fmi) {
             writeFileMetaInformation(fmi);
             switchTransferSyntax(fmi.getString(Tag.TransferSyntaxUID, null));
         }

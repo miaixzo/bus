@@ -184,7 +184,7 @@ public class FileReader extends FileWrapper {
             String line;
             while (true) {
                 line = reader.readLine();
-                if (line == null) {
+                if (null == line) {
                     break;
                 }
                 collection.add(line);

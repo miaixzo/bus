@@ -95,7 +95,7 @@ public final class Http2Codec implements HttpCodec {
         result.add(new HttpHeaders(HttpHeaders.TARGET_METHOD, request.method()));
         result.add(new HttpHeaders(HttpHeaders.TARGET_PATH, RequestLine.requestPath(request.url())));
         String host = request.header("Host");
-        if (host != null) {
+        if (null != host) {
             result.add(new HttpHeaders(HttpHeaders.TARGET_AUTHORITY, host));
         }
         result.add(new HttpHeaders(HttpHeaders.TARGET_SCHEME, request.url().scheme()));
@@ -123,7 +123,7 @@ public final class Http2Codec implements HttpCodec {
                 Builder.instance.addLenient(headersBuilder, name, value);
             }
         }
-        if (statusLine == null) throw new ProtocolException("Expected ':status' header not present");
+        if (null == statusLine) throw new ProtocolException("Expected ':status' header not present");
 
         return new Response.Builder()
                 .protocol(protocol)
@@ -139,7 +139,7 @@ public final class Http2Codec implements HttpCodec {
 
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
-        if (stream != null) return;
+        if (null != stream) return;
 
         boolean hasRequestBody = request.body() != null;
         List<HttpHeaders> requestHeaders = http2HeadersList(request);
@@ -179,7 +179,7 @@ public final class Http2Codec implements HttpCodec {
 
     @Override
     public void cancel() {
-        if (stream != null) stream.closeLater(ErrorCode.CANCEL);
+        if (null != stream) stream.closeLater(ErrorCode.CANCEL);
     }
 
     class StreamFinishingSource extends DelegateSource {

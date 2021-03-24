@@ -271,7 +271,7 @@ public class JacksonJson extends JacksonJaxbJsonProvider implements ContextResol
      */
     public <T> String marshal(final T object) {
 
-        if (object == null) {
+        if (null == object) {
             throw new IllegalArgumentException("object parameter is null");
         }
 

@@ -82,7 +82,7 @@ public class Element implements AnnotatedElement {
     @Override
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         Annotation annotation = annotationMap.get(annotationClass);
-        return (annotation == null) ? null : (T) annotation;
+        return (null == annotation) ? null : (T) annotation;
     }
 
     @Override

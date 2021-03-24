@@ -83,7 +83,7 @@ public class Provider<T> {
      * @return 是否已经脱敏了
      */
     public static boolean alreadyBeSentisived(Object object) {
-        return object == null || object.toString().indexOf(Symbol.STAR) > 0;
+        return null == object || object.toString().indexOf(Symbol.STAR) > 0;
     }
 
     /**
@@ -325,7 +325,7 @@ public class Provider<T> {
         try {
             //处理 @Field
             Shield sensitive = field.getAnnotation(Shield.class);
-            if (sensitive != null) {
+            if (null != sensitive) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
                 ConditionProvider condition = conditionClass.newInstance();
                 if (condition.valid(context)) {

@@ -109,7 +109,7 @@ public abstract class MapperTemplate {
      */
     public boolean supportMethod(String msId) {
         Class<?> mapperClass = Reflector.getMapperClass(msId);
-        if (mapperClass != null && this.mapperClass.isAssignableFrom(mapperClass)) {
+        if (null != mapperClass && this.mapperClass.isAssignableFrom(mapperClass)) {
             String methodName = Reflector.getMethodName(msId);
             return methodMap.get(methodName) != null;
         }

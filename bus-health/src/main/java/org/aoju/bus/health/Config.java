@@ -64,7 +64,7 @@ public final class Config {
      */
     public static int get(String key, int def) {
         String value = CONFIG.getProperty(key);
-        return value == null ? def : Builder.parseIntOrDefault(value, def);
+        return null == value ? def : Builder.parseIntOrDefault(value, def);
     }
 
     /**
@@ -76,7 +76,7 @@ public final class Config {
      */
     public static double get(String key, double def) {
         String value = CONFIG.getProperty(key);
-        return value == null ? def : Builder.parseDoubleOrDefault(value, def);
+        return null == value ? def : Builder.parseDoubleOrDefault(value, def);
     }
 
     /**
@@ -88,7 +88,7 @@ public final class Config {
      */
     public static boolean get(String key, boolean def) {
         String value = CONFIG.getProperty(key);
-        return value == null ? def : Boolean.parseBoolean(value);
+        return null == value ? def : Boolean.parseBoolean(value);
     }
 
     /**
@@ -99,7 +99,7 @@ public final class Config {
      * @param val The new value
      */
     public static void set(String key, Object val) {
-        if (val == null) {
+        if (null == val) {
             CONFIG.remove(key);
         } else {
             CONFIG.setProperty(key, val.toString());

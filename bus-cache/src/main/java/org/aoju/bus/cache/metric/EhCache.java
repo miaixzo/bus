@@ -121,7 +121,7 @@ public class EhCache implements CacheX {
 
     @PreDestroy
     public void tearDown() {
-        if (this.cacheManager != null) {
+        if (this.null != cacheManager) {
             this.cacheManager.close();
         }
     }

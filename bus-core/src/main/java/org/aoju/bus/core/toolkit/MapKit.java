@@ -225,7 +225,7 @@ public class MapKit {
      * @return {@link HashMap}
      */
     public static HashMap<Object, Object> of(Object[] array) {
-        if (array == null) {
+        if (null == array) {
             return null;
         }
         final HashMap<Object, Object> map = new HashMap<>((int) (array.length * 1.5));
@@ -419,7 +419,7 @@ public class MapKit {
      * @return 数组
      */
     public static Object[][] toObjectArray(Map<?, ?> map) {
-        if (map == null) {
+        if (null == map) {
             return null;
         }
         final Object[][] result = new Object[map.size()][2];

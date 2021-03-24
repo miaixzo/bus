@@ -68,7 +68,7 @@ public class LimiterAwareHandler extends AbstractLimiterAware implements Resourc
         BeanFactoryLimitedResourceSourceAdvisor advisor =
                 new BeanFactoryLimitedResourceSourceAdvisor(limitedResourceSource);
         advisor.setAdvice(limiterInterceptor);
-        if (this.enableLimiter != null) {
+        if (this.null != enableLimiter) {
             advisor.setOrder(this.enableLimiter.<Integer>getNumber("order"));
         }
         return advisor;

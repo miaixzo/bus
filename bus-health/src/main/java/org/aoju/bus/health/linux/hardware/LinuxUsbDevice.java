@@ -104,7 +104,7 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         Map<String, List<String>> hubMap = new HashMap<>();
 
         // For each item enumerated, store information in the maps
-        for (UdevListEntry dev_list_entry = devices; dev_list_entry != null; dev_list_entry = Udev.INSTANCE
+        for (UdevListEntry dev_list_entry = devices; null != dev_list_entry; dev_list_entry = Udev.INSTANCE
                 .udev_list_entry_get_next(dev_list_entry)) {
 
             // Get the filename of the /sys entry for the device and create a
@@ -118,27 +118,27 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
 
             // Use the path as the key for the maps
             String value = Udev.INSTANCE.udev_device_get_sysattr_value(dev, "product");
-            if (value != null) {
+            if (null != value) {
                 nameMap.put(path, value);
             }
             value = Udev.INSTANCE.udev_device_get_sysattr_value(dev, "manufacturer");
-            if (value != null) {
+            if (null != value) {
                 vendorMap.put(path, value);
             }
             value = Udev.INSTANCE.udev_device_get_sysattr_value(dev, "idVendor");
-            if (value != null) {
+            if (null != value) {
                 vendorIdMap.put(path, value);
             }
             value = Udev.INSTANCE.udev_device_get_sysattr_value(dev, "idProduct");
-            if (value != null) {
+            if (null != value) {
                 productIdMap.put(path, value);
             }
             value = Udev.INSTANCE.udev_device_get_sysattr_value(dev, "serial");
-            if (value != null) {
+            if (null != value) {
                 serialMap.put(path, value);
             }
             UdevDevice parent = Udev.INSTANCE.udev_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device");
-            if (parent == null) {
+            if (null == parent) {
                 // This is a controller with no parent, add to list
                 usbControllers.add(path);
             } else {

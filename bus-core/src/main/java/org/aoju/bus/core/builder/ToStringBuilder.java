@@ -95,10 +95,10 @@ public class ToStringBuilder implements Builder<String> {
     }
 
     public ToStringBuilder(final Object object, ToStringStyle style, StringBuffer buffer) {
-        if (style == null) {
+        if (null == style) {
             style = getDefaultStyle();
         }
-        if (buffer == null) {
+        if (null == buffer) {
             buffer = new StringBuffer(512);
         }
         this.buffer = buffer;
@@ -146,7 +146,7 @@ public class ToStringBuilder implements Builder<String> {
      * @throws IllegalArgumentException if the style is <code>null</code>
      */
     public static void setDefaultStyle(final ToStringStyle style) {
-        Assert.isTrue(style != null, "The style must not be null");
+        Assert.isTrue(null != style, "The style must not be null");
         defaultStyle = style;
     }
 
@@ -895,7 +895,7 @@ public class ToStringBuilder implements Builder<String> {
      * @return this
      */
     public ToStringBuilder appendSuper(final String superToString) {
-        if (superToString != null) {
+        if (null != superToString) {
             style.appendSuper(buffer, superToString);
         }
         return this;
@@ -928,7 +928,7 @@ public class ToStringBuilder implements Builder<String> {
      * @return this
      */
     public ToStringBuilder appendToString(final String toString) {
-        if (toString != null) {
+        if (null != toString) {
             style.appendToString(buffer, toString);
         }
         return this;

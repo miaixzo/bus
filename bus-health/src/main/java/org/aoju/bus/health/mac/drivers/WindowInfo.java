@@ -83,7 +83,7 @@ public final class WindowInfo {
                 CFDictionaryRef windowRef = new CFDictionaryRef(result);
                 // Now get information from the dictionary.
                 result = windowRef.getValue(kCGWindowIsOnscreen); // Optional key, check for null
-                boolean visible = result == null || new CFBooleanRef(result).booleanValue();
+                boolean visible = null == result || new CFBooleanRef(result).booleanValue();
                 if (!visibleOnly || visible) {
                     result = windowRef.getValue(kCGWindowNumber); // kCFNumberSInt64Type
                     long windowNumber = new CFNumberRef(result).longValue();
@@ -141,7 +141,7 @@ public final class WindowInfo {
      * @return a CFString including a possible empty one, without exception.
      */
     private static String cfPointerToString(Pointer result) {
-        if (result != null) {
+        if (null != result) {
             CFStringRef cfs = new CFStringRef(result);
             if (CoreFoundation.INSTANCE.CFStringGetLength(cfs).intValue() > 0) {
                 return cfs.stringValue();

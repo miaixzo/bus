@@ -101,7 +101,7 @@ public class OptionalMethod<T> {
      */
     public Object invokeOptional(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
-        if (m == null) {
+        if (null == m) {
             return null;
         }
         try {
@@ -145,7 +145,7 @@ public class OptionalMethod<T> {
      */
     public Object invoke(T target, Object... args) throws InvocationTargetException {
         Method m = getMethod(target.getClass());
-        if (m == null) {
+        if (null == m) {
             throw new AssertionError("Method " + methodName + " not supported for object " + target);
         }
         try {
@@ -190,10 +190,10 @@ public class OptionalMethod<T> {
      */
     private Method getMethod(Class<?> clazz) {
         Method method = null;
-        if (methodName != null) {
+        if (null != methodName) {
             method = getPublicMethod(clazz, methodName, methodParams);
-            if (method != null
-                    && returnType != null
+            if (null != method
+                    && null != returnType
                     && !returnType.isAssignableFrom(method.getReturnType())) {
 
                 // 如果返回类型是非空的，那么它必须是兼容的.

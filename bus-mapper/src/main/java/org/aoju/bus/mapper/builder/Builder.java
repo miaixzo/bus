@@ -91,8 +91,8 @@ public class Builder {
     }
 
     public Builder select(String... properties) {
-        if (properties != null && properties.length > 0) {
-            if (this.selectColumns == null) {
+        if (null != properties && properties.length > 0) {
+            if (this.null == selectColumns) {
                 this.selectColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {
@@ -107,8 +107,8 @@ public class Builder {
     }
 
     public Builder notSelect(String... properties) {
-        if (properties != null && properties.length > 0) {
-            if (this.excludeColumns == null) {
+        if (null != properties && properties.length > 0) {
+            if (this.null == excludeColumns) {
                 this.excludeColumns = new LinkedHashSet<>();
             }
             for (String property : properties) {

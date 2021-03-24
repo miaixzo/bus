@@ -50,7 +50,7 @@ public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider
 
     @Override
     public boolean on(E entry) {
-        return filter == null || filter.on(entry);
+        return null == filter || filter.on(entry);
     }
 
 }

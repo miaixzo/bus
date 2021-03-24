@@ -125,7 +125,7 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
     }
 
     private Map<String, Privacy> getSensitiveByResultMap(ResultMap resultMap) {
-        if (resultMap == null) {
+        if (null == resultMap) {
             return new HashMap<>(16);
         }
         return getSensitiveByType(resultMap.getType());
@@ -135,7 +135,7 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
         Map<String, Privacy> sensitiveFieldMap = new HashMap<>(16);
         for (Field field : clazz.getDeclaredFields()) {
             Privacy sensitiveField = field.getAnnotation(Privacy.class);
-            if (sensitiveField != null) {
+            if (null != sensitiveField) {
                 sensitiveFieldMap.put(field.getName(), sensitiveField);
             }
         }

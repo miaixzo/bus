@@ -114,7 +114,7 @@ public class Builder {
      */
     public Builder queryParam(String key, Object value) {
         Assert.notBlank(key, "参数名不能为空");
-        String valueAsString = (value != null ? value.toString() : null);
+        String valueAsString = (null != value ? value.toString() : null);
         this.params.put(key, valueAsString);
         return this;
     }

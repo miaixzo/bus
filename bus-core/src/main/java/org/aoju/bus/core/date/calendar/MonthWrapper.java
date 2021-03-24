@@ -91,7 +91,7 @@ public class MonthWrapper implements Serializable {
         this.length = length;
         if (CollKit.isNotEmpty(days)) {
             DayWrapper day = days.get(0);
-            if (day != null) {
+            if (null != day) {
                 this.monthCnShort = DateKit.getMonthCnShort(day.getLocalDateTime());
                 this.monthCnLong = DateKit.getMonthCnLong(day.getLocalDateTime());
                 this.monthEnShort = DateKit.getMonthEnShort(day.getLocalDateTime());

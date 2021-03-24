@@ -216,7 +216,7 @@ public class ZookeeperHitting implements Hitting {
 
     private long getValue(Object value) throws Exception {
         long result = 0L;
-        if (value != null) {
+        if (null != value) {
             if (value instanceof DistributedAtomicLong) {
                 result = getValue(((DistributedAtomicLong) value).get());
             } else if (value instanceof AtomicValue) {

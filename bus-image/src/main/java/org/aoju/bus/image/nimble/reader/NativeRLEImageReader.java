@@ -157,18 +157,18 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
     }
 
     private BufferedImage getDestination(ImageReadParam param) {
-        if (param == null)
+        if (null == param)
             throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
 
         BufferedImage bi = param.getDestination();
-        if (bi != null) {
+        if (null != bi) {
             width = bi.getWidth();
             height = bi.getHeight();
             return bi;
         }
 
         ImageTypeSpecifier imageType = param.getDestinationType();
-        if (imageType != null) {
+        if (null != imageType) {
             SampleModel sm = imageType.getSampleModel();
             width = sm.getWidth();
             height = sm.getHeight();
@@ -178,18 +178,18 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
     }
 
     private WritableRaster getDestinationRaster(ImageReadParam param) {
-        if (param == null)
+        if (null == param)
             throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
 
         BufferedImage bi = param.getDestination();
-        if (bi != null) {
+        if (null != bi) {
             width = bi.getWidth();
             height = bi.getHeight();
             return bi.getRaster();
         }
 
         ImageTypeSpecifier imageType = param.getDestinationType();
-        if (imageType != null) {
+        if (null != imageType) {
             SampleModel sm = imageType.getSampleModel();
             width = sm.getWidth();
             height = sm.getHeight();

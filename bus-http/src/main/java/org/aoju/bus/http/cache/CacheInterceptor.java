@@ -59,7 +59,7 @@ public final class CacheInterceptor implements Interceptor {
     }
 
     private static Response stripBody(Response response) {
-        return response != null && response.body() != null
+        return null != response && response.body() != null
                 ? response.newBuilder().body(null).build()
                 : response;
     }
@@ -127,7 +127,7 @@ public final class CacheInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Response cacheCandidate = cache != null
+        Response cacheCandidate = null != cache
                 ? cache.get(chain.request())
                 : null;
 
@@ -137,17 +137,17 @@ public final class CacheInterceptor implements Interceptor {
         Request networkRequest = strategy.networkRequest;
         Response cacheResponse = strategy.cacheResponse;
 
-        if (cache != null) {
+        if (null != cache) {
             cache.trackResponse(strategy);
         }
 
-        if (cacheCandidate != null && cacheResponse == null) {
+        if (null != cacheCandidate && null == cacheResponse) {
             // 缓存候选不适用。关闭它
             IoKit.close(cacheCandidate.body());
         }
 
         // 如果我们被禁止使用网络且缓存不足，则失败
-        if (networkRequest == null && cacheResponse == null) {
+        if (null == networkRequest && null == cacheResponse) {
             return new Response.Builder()
                     .request(chain.request())
                     .protocol(Protocol.HTTP_1_1)
@@ -160,7 +160,7 @@ public final class CacheInterceptor implements Interceptor {
         }
 
         // 如果没有网络就完大了
-        if (networkRequest == null) {
+        if (null == networkRequest) {
             return cacheResponse.newBuilder()
                     .cacheResponse(stripBody(cacheResponse))
                     .build();
@@ -171,13 +171,13 @@ public final class CacheInterceptor implements Interceptor {
             networkResponse = chain.proceed(networkRequest);
         } finally {
             // 如果我们在I/O或其他方面崩溃，不要泄漏缓存体
-            if (networkResponse == null && cacheCandidate != null) {
+            if (null == networkResponse && null != cacheCandidate) {
                 IoKit.close(cacheCandidate.body());
             }
         }
 
         // 如果我们也有缓存响应，那么在做一个条件get
-        if (cacheResponse != null) {
+        if (null != cacheResponse) {
             if (networkResponse.code() == Http.HTTP_NOT_MODIFIED) {
                 Response response = cacheResponse.newBuilder()
                         .headers(combine(cacheResponse.headers(), networkResponse.headers()))
@@ -202,7 +202,7 @@ public final class CacheInterceptor implements Interceptor {
                 .networkResponse(stripBody(networkResponse))
                 .build();
 
-        if (cache != null) {
+        if (null != cache) {
             if (HttpHeaders.hasBody(response) && CacheStrategy.isCacheable(response, networkRequest)) {
                 // 将此请求提供给缓存
                 CacheRequest cacheRequest = cache.put(response);
@@ -234,9 +234,9 @@ public final class CacheInterceptor implements Interceptor {
     private Response cacheWritingResponse(final CacheRequest cacheRequest, Response response)
             throws IOException {
         // 一些应用程序返回一个空体;为了兼容性，我们将其视为空缓存请求
-        if (cacheRequest == null) return response;
+        if (null == cacheRequest) return response;
         Sink cacheBodyUnbuffered = cacheRequest.body();
-        if (cacheBodyUnbuffered == null) return response;
+        if (null == cacheBodyUnbuffered) return response;
 
         final BufferSource source = response.body().source();
         final BufferSink cacheBody = IoKit.buffer(cacheBodyUnbuffered);

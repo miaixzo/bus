@@ -58,7 +58,7 @@ public final class SystemPages {
         try (KstatChain kc = KstatKit.openChain()) {
             LibKstat.Kstat ksp = KstatChain.lookup(null, -1, "system_pages");
             // Set values
-            if (ksp != null && KstatChain.read(ksp)) {
+            if (null != ksp && KstatChain.read(ksp)) {
                 memAvailable = KstatKit.dataLookupLong(ksp, "availrmem"); // not a typo
                 memTotal = KstatKit.dataLookupLong(ksp, "physmem");
             }

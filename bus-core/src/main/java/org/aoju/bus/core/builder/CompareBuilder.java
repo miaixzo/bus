@@ -169,7 +169,7 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return 0;
         }
-        if (left == null || right == null) {
+        if (null == left || null == right) {
             throw new NullPointerException();
         }
         Class<?> leftClazz = left.getClass();
@@ -274,18 +274,18 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
         if (left.getClass().isArray()) {
             appendArray(left, right, comparator);
         } else {
-            if (comparator == null) {
+            if (null == comparator) {
                 final Comparable<Object> comparable = (Comparable<Object>) left;
                 comparison = comparable.compareTo(right);
             } else {
@@ -485,11 +485,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -524,11 +524,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -563,11 +563,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -602,11 +602,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -641,11 +641,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -680,11 +680,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -719,11 +719,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -758,11 +758,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }
@@ -797,11 +797,11 @@ public class CompareBuilder implements Builder<Integer> {
         if (left == right) {
             return this;
         }
-        if (left == null) {
+        if (null == left) {
             comparison = -1;
             return this;
         }
-        if (right == null) {
+        if (null == right) {
             comparison = 1;
             return this;
         }

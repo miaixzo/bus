@@ -75,7 +75,7 @@ public class TreeNode<T> implements Node<T> {
         this.id = id;
         this.parentId = parentId;
         this.name = name;
-        if (weight != null) {
+        if (null != weight) {
             this.weight = weight;
         }
 

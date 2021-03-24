@@ -46,7 +46,7 @@ public class ClassificationSchemeQueryType extends RegistryObjectQueryType {
     protected ClassificationNodeQueryType nodeTypeQuery;
 
     public List<ClassificationNodeQueryType> getChildrenQuery() {
-        if (this.childrenQuery == null) {
+        if (this.null == childrenQuery) {
             this.childrenQuery = new ArrayList();
         }
         return this.childrenQuery;

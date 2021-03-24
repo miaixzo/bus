@@ -96,7 +96,7 @@ public class CGet {
                                  File outputDir,
                                  URL sopClassURL,
                                  Args... keys) {
-        if (callingNode == null || calledNode == null || outputDir == null) {
+        if (null == callingNode || null == calledNode || null == outputDir) {
             throw new IllegalArgumentException("callingNode, calledNode or outputDir cannot be null!");
         }
 
@@ -157,7 +157,7 @@ public class CGet {
     private static void configureRelatedSOPClass(GetSCU getSCU, URL url) {
         Properties p = new Properties();
         try {
-            if (url != null) {
+            if (null != url) {
                 p.load(url.openStream());
             }
             for (Entry<Object, Object> entry : p.entrySet()) {

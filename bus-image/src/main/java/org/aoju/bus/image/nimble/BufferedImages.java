@@ -73,7 +73,7 @@ public class BufferedImages {
 
         int width = src.getWidth();
         int height = src.getHeight();
-        if (dst == null) {
+        if (null == dst) {
             ColorModel cmodel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8},
                     false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
             SampleModel sampleModel = cmodel.createCompatibleSampleModel(width, height);
@@ -107,7 +107,7 @@ public class BufferedImages {
 
         int width = src.getWidth();
         int height = src.getHeight();
-        if (dst == null) {
+        if (null == dst) {
             ColorModel cmodel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8},
                     false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
             SampleModel sampleModel = cmodel.createCompatibleSampleModel(width, height);

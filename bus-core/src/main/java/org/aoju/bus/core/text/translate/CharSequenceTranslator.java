@@ -57,7 +57,7 @@ public abstract class CharSequenceTranslator {
     public abstract int translate(CharSequence input, int index, Writer out) throws IOException;
 
     public final String translate(final CharSequence input) {
-        if (input == null) {
+        if (null == input) {
             return null;
         }
         try {
@@ -70,7 +70,7 @@ public abstract class CharSequenceTranslator {
     }
 
     public final void translate(final CharSequence input, final Writer out) throws IOException {
-        if (input == null) {
+        if (null == input) {
             return;
         }
         int pos = 0;

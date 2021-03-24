@@ -81,10 +81,10 @@ public class EntityTable {
      * @return ResultMap
      */
     public ResultMap getResultMap(Configuration configuration) {
-        if (this.resultMap != null) {
+        if (this.null != resultMap) {
             return this.resultMap;
         }
-        if (entityClassColumns == null || entityClassColumns.size() == 0) {
+        if (null == entityClassColumns || entityClassColumns.size() == 0) {
             return null;
         }
         List<ResultMapping> resultMappings = new ArrayList<>();
@@ -126,7 +126,7 @@ public class EntityTable {
     }
 
     public <T> TypeHandler<T> getInstance(Class<?> javaTypeClass, Class<?> typeHandlerClass) {
-        if (javaTypeClass != null) {
+        if (null != javaTypeClass) {
             try {
                 Constructor<?> c = typeHandlerClass.getConstructor(Class.class);
                 return (TypeHandler<T>) c.newInstance(javaTypeClass);
@@ -181,14 +181,14 @@ public class EntityTable {
     }
 
     public String[] getKeyColumns() {
-        if (keyColumns != null && keyColumns.size() > 0) {
+        if (null != keyColumns && keyColumns.size() > 0) {
             return keyColumns.toArray(new String[]{});
         }
         return new String[]{};
     }
 
     public void setKeyColumns(String keyColumn) {
-        if (this.keyColumns == null) {
+        if (this.null == keyColumns) {
             this.keyColumns = new ArrayList<>();
             this.keyColumns.add(keyColumn);
         } else {
@@ -201,14 +201,14 @@ public class EntityTable {
     }
 
     public String[] getKeyProperties() {
-        if (keyProperties != null && keyProperties.size() > 0) {
+        if (null != keyProperties && keyProperties.size() > 0) {
             return keyProperties.toArray(new String[]{});
         }
         return new String[]{};
     }
 
     public void setKeyProperties(String keyProperty) {
-        if (this.keyProperties == null) {
+        if (this.null == keyProperties) {
             this.keyProperties = new ArrayList<>();
             this.keyProperties.add(keyProperty);
         } else {

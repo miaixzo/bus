@@ -172,7 +172,7 @@ public class CacheInfoContainer {
     }
 
     private static boolean isMulti(CacheKey cacheKey) {
-        if (cacheKey == null) {
+        if (null == cacheKey) {
             return false;
         }
 
@@ -188,7 +188,7 @@ public class CacheInfoContainer {
         Map<Integer, CacheKey> cacheKeyMap = annoHolder.getCacheKeyMap();
         String prefix = annoHolder.getPrefix();
 
-        return (pTypes == null
+        return (null == pTypes
                 || pTypes.length == 0
                 || cacheKeyMap.isEmpty())
                 && Strings.isNullOrEmpty(prefix);

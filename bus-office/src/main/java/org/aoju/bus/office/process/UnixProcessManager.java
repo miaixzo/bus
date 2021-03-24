@@ -60,7 +60,7 @@ public class UnixProcessManager extends AbstractProcessManager {
     @Override
     protected List<String> execute(final String[] cmdarray) throws IOException {
 
-        if (runAsArgs == null) {
+        if (null == runAsArgs) {
             return super.execute(cmdarray);
         }
 

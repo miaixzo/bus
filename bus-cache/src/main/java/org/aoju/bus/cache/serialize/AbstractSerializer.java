@@ -40,7 +40,7 @@ public abstract class AbstractSerializer implements BaseSerializer {
 
     @Override
     public <T> byte[] serialize(T obj) {
-        if (obj == null) {
+        if (null == obj) {
             return null;
         }
         try {
@@ -53,7 +53,7 @@ public abstract class AbstractSerializer implements BaseSerializer {
 
     @Override
     public <T> T deserialize(byte[] bytes) {
-        if (bytes == null) {
+        if (null == bytes) {
             return null;
         }
 

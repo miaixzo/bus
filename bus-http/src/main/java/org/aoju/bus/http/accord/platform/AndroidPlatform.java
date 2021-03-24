@@ -154,7 +154,7 @@ public class AndroidPlatform extends Platform {
     @Override
     protected X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
         Object context = readFieldOrNull(sslSocketFactory, sslParametersClass, "sslParameters");
-        if (context == null) {
+        if (null == context) {
             // 如果这不起作用，请在放弃之前尝试谷歌Play Services SSL提供者。
             // 这必须由SSLSocketFactory的类装入器装入.
             try {
@@ -169,7 +169,7 @@ public class AndroidPlatform extends Platform {
 
         X509TrustManager x509TrustManager = readFieldOrNull(
                 context, X509TrustManager.class, "x509TrustManager");
-        if (x509TrustManager != null) return x509TrustManager;
+        if (null != x509TrustManager) return x509TrustManager;
 
         return readFieldOrNull(context, X509TrustManager.class, "trustManager");
     }
@@ -178,13 +178,13 @@ public class AndroidPlatform extends Platform {
     public void configureTlsExtensions(
             SSLSocket sslSocket, String hostname, List<Protocol> protocols) {
         // 启用SNI和会话票据.
-        if (hostname != null) {
+        if (null != hostname) {
             setUseSessionTickets.invokeOptionalWithoutCheckedException(sslSocket, true);
             setHostname.invokeOptionalWithoutCheckedException(sslSocket, hostname);
         }
 
         // 启用 ALPN.
-        if (setAlpnProtocols != null && setAlpnProtocols.isSupported(sslSocket)) {
+        if (null != setAlpnProtocols && setAlpnProtocols.isSupported(sslSocket)) {
             Object[] parameters = {concatLengthPrefixed(protocols)};
             setAlpnProtocols.invokeWithoutCheckedException(sslSocket, parameters);
         }
@@ -192,11 +192,11 @@ public class AndroidPlatform extends Platform {
 
     @Override
     public String getSelectedProtocol(SSLSocket socket) {
-        if (getAlpnSelectedProtocol == null) return null;
+        if (null == getAlpnSelectedProtocol) return null;
         if (!getAlpnSelectedProtocol.isSupported(socket)) return null;
 
         byte[] alpnResult = (byte[]) getAlpnSelectedProtocol.invokeWithoutCheckedException(socket);
-        return alpnResult != null ? new String(alpnResult, Charset.UTF_8) : null;
+        return null != alpnResult ? new String(alpnResult, Charset.UTF_8) : null;
     }
 
     @Override
@@ -364,7 +364,7 @@ public class AndroidPlatform extends Platform {
         }
 
         Object createAndOpen(String closer) {
-            if (getMethod != null) {
+            if (null != getMethod) {
                 try {
                     Object closeGuardInstance = getMethod.invoke(null);
                     openMethod.invoke(closeGuardInstance, closer);
@@ -377,7 +377,7 @@ public class AndroidPlatform extends Platform {
 
         boolean warnIfOpen(Object closeGuardInstance) {
             boolean reported = false;
-            if (closeGuardInstance != null) {
+            if (null != closeGuardInstance) {
                 try {
                     warnIfOpenMethod.invoke(closeGuardInstance);
                     reported = true;
@@ -410,7 +410,7 @@ public class AndroidPlatform extends Platform {
             try {
                 TrustAnchor trustAnchor = (TrustAnchor) findByIssuerAndSignatureMethod.invoke(
                         trustManager, cert);
-                return trustAnchor != null
+                return null != trustAnchor
                         ? trustAnchor.getTrustedCert()
                         : null;
             } catch (IllegalAccessException e) {

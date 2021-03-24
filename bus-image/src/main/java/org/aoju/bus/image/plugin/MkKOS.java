@@ -145,10 +145,10 @@ public class MkKOS {
     }
 
     public Attributes toCodeItem(String codeValue) {
-        if (codes == null)
+        if (null == codes)
             throw new IllegalStateException("codec not initialized");
         String codeMeaning = codes.getProperty(codeValue);
-        if (codeMeaning == null)
+        if (null == codeMeaning)
             throw new IllegalArgumentException("undefined internal value: "
                     + codeValue);
         int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
@@ -171,9 +171,9 @@ public class MkKOS {
         String seriesIUID = inst.getString(Tag.SeriesInstanceUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
         String cuid = inst.getString(Tag.SOPClassUID);
-        if (studyIUID == null || seriesIUID == null || iuid == null || cuid == null)
+        if (null == studyIUID || null == seriesIUID || null == iuid || null == cuid)
             return false;
-        if (kos == null)
+        if (null == kos)
             kos = createKOS(inst);
         refSOPSeq(refSeriesSeq(studyIUID), seriesIUID).add(refSOP(cuid, iuid));
         contentSeq.add(contentItem(valueTypeOf(inst), refSOP(cuid, iuid)));
@@ -182,7 +182,7 @@ public class MkKOS {
 
     public void writeKOS() throws IOException {
         ImageOutputStream dos = new ImageOutputStream(
-                new BufferedOutputStream(fname != null
+                new BufferedOutputStream(null != fname
                         ? new FileOutputStream(fname)
                         : new FileOutputStream(FileDescriptor.out)),
                 nofmi ? UID.ImplicitVRLittleEndian
@@ -215,13 +215,13 @@ public class MkKOS {
                 return refSeries.getSequence(Tag.ReferencedSOPSequence);
 
         Attributes refSeries = new Attributes(5);
-        if (retrieveAET != null)
+        if (null != retrieveAET)
             refSeries.setString(Tag.RetrieveAETitle, VR.AE, retrieveAET);
-        if (retrieveURL != null)
+        if (null != retrieveURL)
             refSeries.setString(Tag.RetrieveURL, VR.UR, retrieveURL);
         Sequence refSOPSeq = refSeries.newSequence(Tag.ReferencedSOPSequence, 100);
         refSeries.setString(Tag.SeriesInstanceUID, VR.UI, seriesIUID);
-        if (locationUID != null)
+        if (null != locationUID)
             refSeries.setString(Tag.RetrieveLocationUID, VR.UI, locationUID);
         refSeriesSeq.add(refSeries);
         return refSOPSeq;
@@ -256,9 +256,9 @@ public class MkKOS {
         evidenceSeq = attrs.newSequence(Tag.CurrentRequestedProcedureEvidenceSequence, 1);
         attrs.newSequence(Tag.ContentTemplateSequence, 1).add(templateIdentifier());
         contentSeq = attrs.newSequence(Tag.ContentSequence, 1);
-        if (documentTitleModifier != null)
+        if (null != documentTitleModifier)
             contentSeq.add(documentTitleModifier());
-        if (keyObjectDescription != null)
+        if (null != keyObjectDescription)
             contentSeq.add(keyObjectDescription());
         return attrs;
     }

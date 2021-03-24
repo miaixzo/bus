@@ -101,7 +101,7 @@ public final class Http1Codec implements HttpCodec {
     @Override
     public void cancel() {
         RealConnection connection = streamAllocation.connection();
-        if (connection != null) connection.cancel();
+        if (null != connection) connection.cancel();
     }
 
     @Override
@@ -233,7 +233,7 @@ public final class Http1Codec implements HttpCodec {
 
     public Source newUnknownLengthSource() {
         if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
-        if (streamAllocation == null) throw new IllegalStateException("streamAllocation == null");
+        if (null == streamAllocation) throw new IllegalStateException("null == streamAllocation");
         state = STATE_READING_RESPONSE_BODY;
         streamAllocation.noNewStreams();
         return new UnknownLengthSource();
@@ -361,7 +361,7 @@ public final class Http1Codec implements HttpCodec {
             detachTimeout(timeout);
 
             state = STATE_CLOSED;
-            if (streamAllocation != null) {
+            if (null != streamAllocation) {
                 streamAllocation.streamFinished(!reuseConnection, Http1Codec.this, bytesRead, e);
             }
         }

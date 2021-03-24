@@ -161,7 +161,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
 
         @Override
         public ExternalOfficeManager build() {
-            if (workingDir == null) {
+            if (null == workingDir) {
                 workingDir = new File(System.getProperty("java.io.tmpdir"));
             }
 
@@ -173,7 +173,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
                     new ExternalOfficeManager(
                             connectionProtocol == Protocol.SOCKET
                                     ? new UnoUrl(portNumber)
-                                    : pipeName != null ? new UnoUrl(pipeName) : new UnoUrl(org.aoju.bus.office.Builder.DEFAULT_PORT_NUMBER),
+                                    : null != pipeName ? new UnoUrl(pipeName) : new UnoUrl(org.aoju.bus.office.Builder.DEFAULT_PORT_NUMBER),
                             new ExternalOfficeBuilder(
                                     workingDir, connectOnStart, connectTimeout, retryInterval));
             if (install) {

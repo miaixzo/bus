@@ -133,7 +133,7 @@ public class IssuesStatisticsFilter {
     public GitLabApiForm getQueryParams() throws GitLabApiException {
 
         return (new GitLabApiForm()
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("labels", (null != labels ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("iids", iids)
                 .withParam("milestone", milestone)
                 .withParam("scope", scope)

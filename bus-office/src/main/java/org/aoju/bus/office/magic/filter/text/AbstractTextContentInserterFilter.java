@@ -128,7 +128,7 @@ public abstract class AbstractTextContentInserterFilter implements Filter {
 
         // 某些输出格式(doc、docx、rtf)似乎需要以下代码块，而不是“AnchorPageNo”属性.
         final Object anchorPageNo = shapeProperties.get("AnchorPageNo");
-        if (anchorPageNo != null) {
+        if (null != anchorPageNo) {
             final XController controller = docText.getCurrentController();
             final XTextViewCursor viewCursor =
                     Lo.qi(XTextViewCursorSupplier.class, controller).getViewCursor();

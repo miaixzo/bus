@@ -62,7 +62,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     private boolean inlineBinary;
 
     public ContentHandlerAdapter(Attributes attrs) {
-        if (attrs == null)
+        if (null == attrs)
             throw new NullPointerException();
         items.add(attrs);
         bigEndian = attrs.bigEndian();
@@ -169,14 +169,14 @@ public class ContentHandlerAdapter extends DefaultHandler {
                                      String vr) {
         this.tag = tag;
         this.privateCreator = privateCreator;
-        this.vr = vr != null ? VR.valueOf(vr)
+        this.vr = null != vr ? VR.valueOf(vr)
                 : ElementDictionary.vrOf(tag, privateCreator);
         if (this.vr == VR.SQ)
             seqs.add(items.getLast().newSequence(privateCreator, tag, 10));
     }
 
     private void startDataFragment(int number) {
-        if (dataFragments == null)
+        if (null == dataFragments)
             dataFragments = items.getLast()
                     .newFragments(privateCreator, tag, vr, 10);
         while (dataFragments.size() < number - 1)
@@ -275,13 +275,13 @@ public class ContentHandlerAdapter extends DefaultHandler {
 
     @Override
     public void endDocument() {
-        if (fmi != null)
+        if (null != fmi)
             fmi.trimToSize();
         items.getFirst().trimToSize();
     }
 
     private void endDataFragment() {
-        if (bulkData != null) {
+        if (null != bulkData) {
             dataFragments.add(bulkData);
             bulkData = null;
         } else {
@@ -294,18 +294,18 @@ public class ContentHandlerAdapter extends DefaultHandler {
             seqs.removeLast().trimToSize();
             return;
         }
-        if (dataFragments != null) {
+        if (null != dataFragments) {
             dataFragments.trimToSize();
             dataFragments = null;
             return;
         }
         Attributes attrs = items.getLast();
         if (Tag.isFileMetaInformation(tag)) {
-            if (fmi == null)
+            if (null == fmi)
                 fmi = new Attributes();
             attrs = fmi;
         }
-        if (bulkData != null) {
+        if (null != bulkData) {
             attrs.setValue(privateCreator, tag, vr, bulkData);
             bulkData = null;
         } else if (inlineBinary) {

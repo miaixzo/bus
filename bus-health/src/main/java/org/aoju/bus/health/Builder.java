@@ -293,19 +293,19 @@ public final class Builder {
                         if (inetAddr.isSiteLocalAddress()) {
                             /** 如果是site-local地址,就是它了 */
                             return inetAddr;
-                        } else if (inetAddress == null) {
+                        } else if (null == inetAddress) {
                             /** site-local类型的地址未被发现,先记录候选地址 */
                             inetAddress = inetAddr;
                         }
                     }
                 }
             }
-            if (inetAddress != null) {
+            if (null != inetAddress) {
                 return inetAddress;
             }
             /**  如果没有发现 non-loopback地址.只能用最次选的方案 */
             inetAddress = InetAddress.getLocalHost();
-            if (inetAddress == null) {
+            if (null == inetAddress) {
                 throw new InstrumentException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
             }
             return inetAddress;
@@ -1239,7 +1239,7 @@ public final class Builder {
      * @return The string with all matching substrings removed
      */
     public static String removeMatchingString(final String original, final String toRemove) {
-        if (original == null || original.isEmpty() || toRemove == null || toRemove.isEmpty()) {
+        if (null == original || original.isEmpty() || null == toRemove || toRemove.isEmpty()) {
             return original;
         }
 
@@ -1793,7 +1793,7 @@ public final class Builder {
      * @return The corresponding int value
      */
     public static int hexStringToInt(String hexString, int defaultValue) {
-        if (hexString != null) {
+        if (null != hexString) {
             try {
                 if (hexString.startsWith("0x")) {
                     return new BigInteger(hexString.substring(2), 16).intValue();
@@ -1816,7 +1816,7 @@ public final class Builder {
      * @return The corresponding long value
      */
     public static long hexStringToLong(String hexString, long defaultValue) {
-        if (hexString != null) {
+        if (null != hexString) {
             try {
                 if (hexString.startsWith("0x")) {
                     return new BigInteger(hexString.substring(2), 16).longValue();

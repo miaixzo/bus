@@ -41,7 +41,7 @@ public class MatOfDouble extends Mat {
     }
 
     public void fromArray(double... a) {
-        if (a == null || a.length == 0)
+        if (null == a || a.length == 0)
             return;
         int num = a.length / _channels;
         alloc(num);
@@ -60,7 +60,7 @@ public class MatOfDouble extends Mat {
     }
 
     public void fromList(List<Double> lb) {
-        if (lb == null || lb.size() == 0)
+        if (null == lb || lb.size() == 0)
             return;
         Double ab[] = lb.toArray(new Double[0]);
         double a[] = new double[ab.length];

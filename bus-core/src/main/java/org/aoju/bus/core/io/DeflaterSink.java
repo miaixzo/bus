@@ -51,8 +51,8 @@ public class DeflaterSink implements Sink {
     }
 
     DeflaterSink(BufferSink sink, Deflater deflater) {
-        if (sink == null) throw new IllegalArgumentException("source == null");
-        if (deflater == null) throw new IllegalArgumentException("inflater == null");
+        if (null == sink) throw new IllegalArgumentException("null == source");
+        if (null == deflater) throw new IllegalArgumentException("null == inflater");
         this.sink = sink;
         this.deflater = deflater;
     }
@@ -126,17 +126,17 @@ public class DeflaterSink implements Sink {
         try {
             deflater.end();
         } catch (Throwable e) {
-            if (thrown == null) thrown = e;
+            if (null == thrown) thrown = e;
         }
 
         try {
             sink.close();
         } catch (Throwable e) {
-            if (thrown == null) thrown = e;
+            if (null == thrown) thrown = e;
         }
         closed = true;
 
-        if (thrown != null) IoKit.sneakyRethrow(thrown);
+        if (null != thrown) IoKit.sneakyRethrow(thrown);
     }
 
     @Override

@@ -89,7 +89,7 @@ public class OfficeProcessEntryManager extends AbstractOfficeEntryManager {
 
                         // 在这里,我们没有预料到这种分离,必须重新启动office进程，取消可能正在运行的任何任务.
                         Logger.warn("Connection lost unexpectedly; attempting restart");
-                        if (currentFuture != null) {
+                        if (null != currentFuture) {
                             currentFuture.cancel(true);
                         }
                         officeProcessManager.restartDueToLostConnection();

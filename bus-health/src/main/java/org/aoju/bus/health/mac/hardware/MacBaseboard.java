@@ -58,27 +58,27 @@ final class MacBaseboard extends AbstractBaseboard {
         String serialNumber = null;
 
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
-        if (platformExpert != null) {
+        if (null != platformExpert) {
             byte[] data = platformExpert.getByteArrayProperty("manufacturer");
-            if (data != null) {
+            if (null != data) {
                 manufacturer = Native.toString(data, StandardCharsets.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("board-id");
-            if (data != null) {
+            if (null != data) {
                 model = Native.toString(data, StandardCharsets.UTF_8);
             }
             if (StringKit.isBlank(model)) {
                 data = platformExpert.getByteArrayProperty("model-number");
-                if (data != null) {
+                if (null != data) {
                     model = Native.toString(data, StandardCharsets.UTF_8);
                 }
             }
             data = platformExpert.getByteArrayProperty("version");
-            if (data != null) {
+            if (null != data) {
                 version = Native.toString(data, StandardCharsets.UTF_8);
             }
             data = platformExpert.getByteArrayProperty("mlb-serial-number");
-            if (data != null) {
+            if (null != data) {
                 serialNumber = Native.toString(data, StandardCharsets.UTF_8);
             }
             if (StringKit.isBlank(serialNumber)) {

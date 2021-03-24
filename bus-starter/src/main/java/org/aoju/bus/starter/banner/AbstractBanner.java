@@ -59,7 +59,7 @@ public abstract class AbstractBanner {
         InputStream inputStream = null;
         String bannerText = null;
         try {
-            if (resourceLocation != null) {
+            if (null != resourceLocation) {
                 inputStream = resourceClass.getResourceAsStream(resourceLocation);
                 bannerText = IoKit.toString(inputStream, Charset.DEFAULT_UTF_8);
             }
@@ -68,7 +68,7 @@ public abstract class AbstractBanner {
         } finally {
             banner = generateBanner(bannerText);
 
-            if (inputStream != null) {
+            if (null != inputStream) {
                 IoKit.close(inputStream);
             }
         }
@@ -80,7 +80,7 @@ public abstract class AbstractBanner {
 
     // 显示成非ansi模式
     public String getPlainBanner() {
-        if (banner != null) {
+        if (null != banner) {
             banner = banner.replaceAll("\u001b\\[[;\\d]*m", Normal.EMPTY);
         }
 

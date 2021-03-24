@@ -41,10 +41,10 @@ public class CommonExtended {
 
     public CommonExtended(String sopCUID, String serviceCUID,
                           String... relSopCUIDs) {
-        if (sopCUID == null)
+        if (null == sopCUID)
             throw new NullPointerException("sopCUID");
 
-        if (serviceCUID == null)
+        if (null == serviceCUID)
             throw new NullPointerException("serviceCUID");
 
         this.sopCUID = sopCUID;

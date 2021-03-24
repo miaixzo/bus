@@ -55,7 +55,7 @@ public class SubscriptionType extends RegistryObjectType {
     protected Duration notificationInterval;
 
     public List<JAXBElement<? extends ActionType>> getAction() {
-        if (this.action == null) {
+        if (this.null == action) {
             this.action = new ArrayList();
         }
         return this.action;

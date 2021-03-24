@@ -86,9 +86,9 @@ public class Launcher {
 
         ProtectionDomain domain = this.getClass().getProtectionDomain();
         CodeSource source = domain.getCodeSource();
-        URI location = (source == null ? null : source.getLocation().toURI());
-        String filepath = (location == null ? null : location.getSchemeSpecificPart());
-        if (filepath != null) {
+        URI location = (null == source ? null : source.getLocation().toURI());
+        String filepath = (null == location ? null : location.getSchemeSpecificPart());
+        if (null != filepath) {
             File file = new File(filepath);
             JarFile jar = new JarFile(file, false);
             Manifest manifest = jar.getManifest();
@@ -109,7 +109,7 @@ public class Launcher {
 
         Properties key = null;
         File keyfile = null;
-        if (keypath != null) {
+        if (null != keypath) {
             String path = Builder.absolutize(keypath);
             File file = new File(path);
             if (file.exists() && file.isFile()) {
@@ -134,7 +134,7 @@ public class Launcher {
         }
 
         String hold = null;
-        if (key != null) {
+        if (null != key) {
             Set<String> names = key.stringPropertyNames();
             for (String name : names) {
                 switch (name.toLowerCase()) {
@@ -158,18 +158,18 @@ public class Launcher {
             }
         }
 
-        if (hold == null || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
-            if (keyfile != null && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
+        if (null == hold || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
+            if (null != keyfile && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
                 throw new IOException("could not delete key file : " + keyfile.getCanonicalPath());
             }
         }
 
-        if (password == null && System.console() != null) {
+        if (null == password && System.console() != null) {
             Console console = System.console();
             char[] chars = console.readPassword("password:");
             password = new String(chars);
         }
-        if (password == null) {
+        if (null == password) {
             Scanner scanner = new Scanner(System.in);
             password = scanner.nextLine();
         }

@@ -75,7 +75,7 @@ public class NatureSQLHandler extends AbstractSqlParserHandler implements Interc
         String sql = boundSql.getSql()
                 .replaceAll("[\\s]+", Symbol.SPACE)
                 .replaceAll("\\?", id);
-        if (!CollKit.isEmpty(parameterMappings) && parameterObject != null) {
+        if (!CollKit.isEmpty(parameterMappings) && null != parameterObject) {
             // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
             // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
             TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
@@ -112,7 +112,7 @@ public class NatureSQLHandler extends AbstractSqlParserHandler implements Interc
             DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.CHINA);
             value = Symbol.SINGLE_QUOTE + formatter.format(new Date()) + Symbol.SINGLE_QUOTE;
         } else {
-            if (obj != null) {
+            if (null != obj) {
                 value = obj.toString();
             } else {
                 value = Normal.EMPTY;

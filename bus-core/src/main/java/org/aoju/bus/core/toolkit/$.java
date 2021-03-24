@@ -332,7 +332,7 @@ public class $ {
      * @return Object
      */
     public static Object defaultIfNull(Object object, Object defaultValue) {
-        return object != null ? object : defaultValue;
+        return null != object ? object : defaultValue;
     }
 
     /**

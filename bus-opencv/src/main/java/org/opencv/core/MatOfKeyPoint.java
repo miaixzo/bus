@@ -41,7 +41,7 @@ public class MatOfKeyPoint extends Mat {
     }
 
     public void fromArray(KeyPoint... a) {
-        if (a == null || a.length == 0)
+        if (null == a || a.length == 0)
             return;
         int num = a.length;
         alloc(num);

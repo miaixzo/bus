@@ -53,7 +53,7 @@ public class RetrieveDocumentSetResponseType {
     }
 
     public List<DocumentResponse> getDocumentResponse() {
-        if (this.documentResponse == null) {
+        if (this.null == documentResponse) {
             this.documentResponse = new ArrayList();
         }
         return this.documentResponse;

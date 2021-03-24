@@ -583,13 +583,13 @@ public class XmlKit {
      */
     public static Element getElement(Element element, String tagName) {
         final NodeList nodeList = element.getElementsByTagName(tagName);
-        if (nodeList == null || nodeList.getLength() < 1) {
+        if (null == nodeList || nodeList.getLength() < 1) {
             return null;
         }
         int length = nodeList.getLength();
         for (int i = 0; i < length; i++) {
             Element childEle = (Element) nodeList.item(i);
-            if (childEle == null || childEle.getParentNode() == element) {
+            if (null == childEle || childEle.getParentNode() == element) {
                 return childEle;
             }
         }
@@ -605,7 +605,7 @@ public class XmlKit {
      */
     public static String getText(Element element, String tagName) {
         Element child = getElement(element, tagName);
-        return child == null ? null : child.getTextContent();
+        return null == child ? null : child.getTextContent();
     }
 
     /**
@@ -618,7 +618,7 @@ public class XmlKit {
      */
     public static String getText(Element element, String tagName, String defaultValue) {
         Element child = getElement(element, tagName);
-        return child == null ? defaultValue : child.getTextContent();
+        return null == child ? defaultValue : child.getTextContent();
     }
 
     /**
@@ -648,7 +648,7 @@ public class XmlKit {
             node = nodeList.item(i);
             if (Node.ELEMENT_NODE == node.getNodeType()) {
                 element = (Element) nodeList.item(i);
-                if (parentEle == null || element.getParentNode() == parentEle) {
+                if (null == parentEle || element.getParentNode() == parentEle) {
                     elements.add(element);
                 }
             }
@@ -871,7 +871,7 @@ public class XmlKit {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
             Unmarshaller um = jaxbContext.createUnmarshaller();
-            if (xml != null && xml.contains(rel)) {
+            if (null != xml && xml.contains(rel)) {
                 String start_tag = Symbol.LT + rel + Symbol.GT;
                 if (isSelect) {
                     start_tag = Symbol.LT + rel + " action=\"select\"" + Symbol.GT;
@@ -1074,7 +1074,7 @@ public class XmlKit {
      * @return 当传入为null时返回null
      */
     public static String cleanInvalid(String xmlContent) {
-        if (xmlContent == null) {
+        if (null == xmlContent) {
             return null;
         }
         return xmlContent.replaceAll(RegEx.VALID_XML_PATTERN, Normal.EMPTY);
@@ -1087,7 +1087,7 @@ public class XmlKit {
      * @return 当传入为null时返回null
      */
     public static String cleanComment(String xmlContent) {
-        if (xmlContent == null) {
+        if (null == xmlContent) {
             return null;
         }
         return xmlContent.replaceAll(RegEx.COMMENT_XML_PATTERN, Normal.EMPTY);

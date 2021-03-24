@@ -1139,7 +1139,7 @@ public class Normal {
         private final String desc;
 
         public static Gender of(String code) {
-            if (code == null) {
+            if (null == code) {
                 return UNKNOWN;
             }
             String[] males = {"M", "男", Symbol.ONE, "MALE"};

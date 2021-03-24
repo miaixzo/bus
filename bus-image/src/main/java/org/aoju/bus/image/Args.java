@@ -155,8 +155,8 @@ public class Args {
         this.bindCallingAet = bindCallingAet;
         this.storagePattern = storagePattern;
         this.transferCapabilityFile = transferCapabilityFile;
-        this.acceptedCallingAETitles = acceptedCallingAETitles == null ? new String[0] : acceptedCallingAETitles;
-        if (option == null && this.option != null) {
+        this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0] : acceptedCallingAETitles;
+        if (null == option && this.null != option) {
             this.option.setMaxOpsInvoked(15);
             this.option.setMaxOpsPerformed(15);
         }
@@ -186,7 +186,7 @@ public class Args {
                               Connection remote,
                               Node calledNode) {
         aAssociateRQ.setCalledAET(calledNode.getAet());
-        if (identity != null) {
+        if (null != identity) {
             aAssociateRQ.setIdentityRQ(identity);
         }
         remote.setHostname(calledNode.getHostname());
@@ -218,7 +218,7 @@ public class Args {
      * @param conn 链接信息
      */
     public void configure(Connection conn) {
-        if (option != null) {
+        if (null != option) {
             conn.setBacklog(option.getBacklog());
             conn.setConnectTimeout(option.getConnectTimeout());
             conn.setRequestTimeout(option.getRequestTimeout());
@@ -247,7 +247,7 @@ public class Args {
      * @throws IOException 异常
      */
     public void configureTLS(Connection conn, Connection remote) throws IOException {
-        if (option != null) {
+        if (null != option) {
             conn.setTlsCipherSuites(option.getCipherSuites());
             conn.setTlsProtocols(option.getTlsProtocols());
             conn.setTlsNeedClientAuth(option.isTlsNeedClientAuth());
@@ -258,7 +258,7 @@ public class Args {
                         option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
                 device.setTrustManager(SSLManagerFactory.createTrustManager(option.getTruststoreType(),
                         option.getTruststoreURL(), option.getTruststorePass()));
-                if (remote != null) {
+                if (null != remote) {
                     remote.setTlsProtocols(conn.getTlsProtocols());
                     remote.setTlsCipherSuites(conn.getTlsCipherSuites());
                 }

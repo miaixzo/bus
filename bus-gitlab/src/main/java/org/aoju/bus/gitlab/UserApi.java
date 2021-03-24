@@ -72,7 +72,7 @@ public class UserApi extends AbstractApi {
      * @return true if the provided String is a valid email address, otherwise return false
      */
     public static final boolean isValidEmail(final String email) {
-        return (email == null ? false : Pattern.compile(EMAIL_REGEX).matcher(email).matches());
+        return (null == email ? false : Pattern.compile(EMAIL_REGEX).matcher(email).matches());
     }
 
     /**
@@ -220,7 +220,7 @@ public class UserApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void blockUser(Integer userId) throws GitLabApiException {
-        if (userId == null) {
+        if (null == userId) {
             throw new RuntimeException("userId cannot be null");
         }
 
@@ -241,7 +241,7 @@ public class UserApi extends AbstractApi {
      */
     public void unblockUser(Integer userId) throws GitLabApiException {
 
-        if (userId == null) {
+        if (null == userId) {
             throw new RuntimeException("userId cannot be null");
         }
 
@@ -743,7 +743,7 @@ public class UserApi extends AbstractApi {
      */
     public List<SshKey> getSshKeys(Integer userId) throws GitLabApiException {
 
-        if (userId == null) {
+        if (null == userId) {
             throw new RuntimeException("userId cannot be null");
         }
 
@@ -751,7 +751,7 @@ public class UserApi extends AbstractApi {
         List<SshKey> keys = response.readEntity(new GenericType<List<SshKey>>() {
         });
 
-        if (keys != null) {
+        if (null != keys) {
             keys.forEach(key -> key.setUserId(userId));
         }
 
@@ -817,14 +817,14 @@ public class UserApi extends AbstractApi {
      */
     public SshKey addSshKey(Integer userId, String title, String key) throws GitLabApiException {
 
-        if (userId == null) {
+        if (null == userId) {
             throw new RuntimeException("userId cannot be null");
         }
 
         GitLabApiForm formData = new GitLabApiForm().withParam("title", title).withParam("key", key);
         Response response = post(Response.Status.CREATED, formData, "users", userId, "keys");
         SshKey sshKey = response.readEntity(SshKey.class);
-        if (sshKey != null) {
+        if (null != sshKey) {
             sshKey.setUserId(userId);
         }
 
@@ -842,7 +842,7 @@ public class UserApi extends AbstractApi {
      */
     public void deleteSshKey(Integer keyId) throws GitLabApiException {
 
-        if (keyId == null) {
+        if (null == keyId) {
             throw new RuntimeException("keyId cannot be null");
         }
 
@@ -861,7 +861,7 @@ public class UserApi extends AbstractApi {
      */
     public void deleteSshKey(Object userIdOrUsername, Integer keyId) throws GitLabApiException {
 
-        if (keyId == null) {
+        if (null == keyId) {
             throw new RuntimeException("keyId cannot be null");
         }
 
@@ -913,7 +913,7 @@ public class UserApi extends AbstractApi {
      */
     public ImpersonationToken getImpersonationToken(Object userIdOrUsername, Integer tokenId) throws GitLabApiException {
 
-        if (tokenId == null) {
+        if (null == tokenId) {
             throw new RuntimeException("tokenId cannot be null");
         }
 
@@ -952,7 +952,7 @@ public class UserApi extends AbstractApi {
      */
     public ImpersonationToken createImpersonationToken(Object userIdOrUsername, String name, Date expiresAt, ImpersonationToken.Scope[] scopes) throws GitLabApiException {
 
-        if (scopes == null || scopes.length == 0) {
+        if (null == scopes || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
         }
 
@@ -979,7 +979,7 @@ public class UserApi extends AbstractApi {
      */
     public void revokeImpersonationToken(Object userIdOrUsername, Integer tokenId) throws GitLabApiException {
 
-        if (tokenId == null) {
+        if (null == tokenId) {
             throw new RuntimeException("tokenId cannot be null");
         }
 
@@ -999,12 +999,12 @@ public class UserApi extends AbstractApi {
     Form userToForm(User user, Integer projectsLimit, CharSequence password, Boolean resetPassword, boolean create) {
 
         if (create) {
-            if ((password == null || password.toString().trim().isEmpty()) && !resetPassword) {
+            if ((null == password || password.toString().trim().isEmpty()) && !resetPassword) {
                 throw new IllegalArgumentException("either password or reset_password must be set");
             }
         }
 
-        projectsLimit = (projectsLimit == null) ? user.getProjectsLimit() : projectsLimit;
+        projectsLimit = (null == projectsLimit) ? user.getProjectsLimit() : projectsLimit;
         String skipConfirmationFeildName = create ? "skip_confirmation" : "skip_reconfirmation";
 
         return (new GitLabApiForm()

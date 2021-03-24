@@ -71,7 +71,7 @@ public class StringKit {
      * @return 除去指定字符后的的字符串, 如果原字串为null, 则返回null
      */
     public static String trim(CharSequence str, int mode) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
 
@@ -153,7 +153,7 @@ public class StringKit {
      * @return 如果{@code null}输入，则为空字符串
      */
     public static String trimToEmpty(final String str) {
-        return str == null ? Normal.EMPTY : str.trim();
+        return null == str ? Normal.EMPTY : str.trim();
     }
 
     /**
@@ -188,7 +188,7 @@ public class StringKit {
     public static boolean isBlank(CharSequence str) {
         int length;
 
-        if ((str == null) || ((length = str.length()) == 0)) {
+        if ((null == str) || ((length = str.length()) == 0)) {
             return true;
         }
 
@@ -347,7 +347,7 @@ public class StringKit {
      * @return 是否为空 true/false
      */
     public static boolean isEmpty(CharSequence str) {
-        return str == null || str.length() == 0;
+        return null == str || str.length() == 0;
     }
 
     /**
@@ -464,7 +464,7 @@ public class StringKit {
      * @return 字符串本身或指定的默认字符串
      */
     public static String nullToDefault(CharSequence str, String defaultStr) {
-        return (str == null) ? defaultStr : str.toString();
+        return (null == str) ? defaultStr : str.toString();
     }
 
     /**
@@ -565,7 +565,7 @@ public class StringKit {
 
     public static boolean areNotEmpty(String... values) {
         boolean result = true;
-        if (values != null && values.length != 0) {
+        if (null != values && values.length != 0) {
             String[] var2 = values;
             int var3 = values.length;
 
@@ -649,7 +649,7 @@ public class StringKit {
      * @see String#valueOf(Object)
      */
     public static String toString(final String str, final String defaultStr) {
-        return str == null ? defaultStr : str;
+        return null == str ? defaultStr : str;
     }
 
     /**
@@ -699,7 +699,7 @@ public class StringKit {
      * @return 解码后的字符串
      */
     public static String toString(byte[] data, java.nio.charset.Charset charset) {
-        if (data == null) {
+        if (null == data) {
             return null;
         }
 
@@ -728,7 +728,7 @@ public class StringKit {
      * @return 解码后的字符串
      */
     public static String toString(Byte[] data, java.nio.charset.Charset charset) {
-        if (data == null) {
+        if (null == data) {
             return null;
         }
 
@@ -750,7 +750,7 @@ public class StringKit {
      * @return 字符串
      */
     public static String toString(ByteBuffer data, String charset) {
-        if (data == null) {
+        if (null == data) {
             return null;
         }
 
@@ -850,7 +850,7 @@ public class StringKit {
      * @return 如果{@code String}不是{@code null}，那么它的长度大于0，并且不包含空格
      */
     public static boolean hasText(String str) {
-        if (str == null || str.isEmpty()) {
+        if (null == str || str.isEmpty()) {
             return false;
         }
         int strLen = str.length();
@@ -870,7 +870,7 @@ public class StringKit {
      * @see #hasText(String)
      */
     public static boolean hasLength(String str) {
-        return (str != null && !str.isEmpty());
+        return (null != str && !str.isEmpty());
     }
 
     /**
@@ -881,7 +881,7 @@ public class StringKit {
      */
     public static byte[] base64ToByte(String str) {
         try {
-            if (str == null) {
+            if (null == str) {
                 return null;
             }
             return Base64.getDecoder().decode(str);
@@ -899,7 +899,7 @@ public class StringKit {
      */
     public static String base64ToString(String str) {
         try {
-            if (str == null) {
+            if (null == str) {
                 return null;
             }
             return new String(base64ToByte(str), Charset.UTF_8);
@@ -918,7 +918,7 @@ public class StringKit {
      */
     public static String base64ToString(String str, String charset) {
         try {
-            if (str == null) {
+            if (null == str) {
                 return null;
             }
             return new String(base64ToByte(str), charset);
@@ -1110,7 +1110,7 @@ public class StringKit {
     public static boolean equals(CharSequence stra, CharSequence strb, boolean ignoreCase) {
         if (null == stra) {
             // 只有两个都为null才判断相等
-            return strb == null;
+            return null == strb;
         }
         if (null == strb) {
             // 字符串2空，字符串1非空，直接false
@@ -1477,7 +1477,7 @@ public class StringKit {
      * @return 切割后的字符串
      */
     public static String subBefore(CharSequence string, CharSequence separator, boolean isLastSeparator) {
-        if (isEmpty(string) || separator == null) {
+        if (isEmpty(string) || null == separator) {
             return null == string ? null : Normal.EMPTY;
         }
 
@@ -1556,7 +1556,7 @@ public class StringKit {
         if (isEmpty(string)) {
             return null == string ? null : Normal.EMPTY;
         }
-        if (separator == null) {
+        if (null == separator) {
             return Normal.EMPTY;
         }
         final String str = string.toString();
@@ -1633,7 +1633,7 @@ public class StringKit {
      * @return 截取后的字符串
      */
     public static String subBetween(String str, String before, String after) {
-        if (str == null || before == null || after == null) {
+        if (null == str || null == before || null == after) {
             return null;
         }
         int start = str.indexOf(before);
@@ -2115,7 +2115,7 @@ public class StringKit {
      * @return 字符串
      */
     public static String[] split(CharSequence str, CharSequence separator) {
-        if (str == null) {
+        if (null == str) {
             return new String[]{};
         }
 
@@ -2545,7 +2545,7 @@ public class StringKit {
      * @return 位置
      */
     public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
-        if (str == null || searchStr == null) {
+        if (null == str || null == searchStr) {
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
@@ -2607,7 +2607,7 @@ public class StringKit {
      */
     public static int lastIndexOf(final CharSequence str, final CharSequence searchStr, int fromIndex,
                                   boolean ignoreCase) {
-        if (str == null || searchStr == null) {
+        if (null == str || null == searchStr) {
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
@@ -2656,7 +2656,7 @@ public class StringKit {
      * @return 查找到的位置
      */
     public static int ordinalIndexOf(String str, String searchStr, int ordinal) {
-        if (str == null || searchStr == null || ordinal <= 0) {
+        if (null == str || null == searchStr || ordinal <= 0) {
             return INDEX_NOT_FOUND;
         }
         if (searchStr.length() == 0) {
@@ -2833,7 +2833,7 @@ public class StringKit {
      * @return 编码后的字节码
      */
     public static byte[] bytes(CharSequence str, java.nio.charset.Charset charset) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
 
@@ -2883,7 +2883,7 @@ public class StringKit {
      * @return 处理后的字符串, 不符合规范返回null
      */
     public static String removePreAndLowerFirst(CharSequence str, int preLength) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         if (str.length() > preLength) {
@@ -2976,7 +2976,7 @@ public class StringKit {
      * @return 处理后的字符串
      */
     public static String upperFirstAndAddPre(CharSequence str, String preString) {
-        if (str == null || preString == null) {
+        if (null == str || null == preString) {
             return null;
         }
         return preString + upperFirst(str);
@@ -3032,7 +3032,7 @@ public class StringKit {
      * @return 转换后下划线大写方式命名的字符串
      */
     public static String toUnderlineCase(CharSequence camelCaseStr) {
-        if (camelCaseStr == null) {
+        if (null == camelCaseStr) {
             return null;
         }
 
@@ -3070,7 +3070,7 @@ public class StringKit {
      * @return 转换后符号连接方式命名的字符串
      */
     public static String toSymbolCase(CharSequence str, char symbol) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
 
@@ -3368,7 +3368,7 @@ public class StringKit {
      * @see java.util.regex.Pattern#DOTALL
      */
     public static String replaceAll(final String text, final String regex, final String replacement) {
-        if (text == null || regex == null || replacement == null) {
+        if (null == text || null == regex || null == replacement) {
             return text;
         }
         return text.replaceAll(regex, replacement);
@@ -3401,7 +3401,7 @@ public class StringKit {
      * @see java.util.regex.Pattern#DOTALL
      */
     public static String replaceFirst(final String text, final String regex, final String replacement) {
-        if (text == null || regex == null || replacement == null) {
+        if (null == text || null == regex || null == replacement) {
             return text;
         }
         return text.replaceFirst(regex, replacement);
@@ -3503,7 +3503,7 @@ public class StringKit {
      */
     private static String replace(final String text, String searchString, final String replacement, int max,
                                   final boolean ignoreCase) {
-        if (isEmpty(text) || isEmpty(searchString) || replacement == null || max == 0) {
+        if (isEmpty(text) || isEmpty(searchString) || null == replacement || max == 0) {
             return text;
         }
         String searchText = text;
@@ -3541,7 +3541,7 @@ public class StringKit {
      */
     public static String replaceBlank(String str) {
         String val = Normal.EMPTY;
-        if (str != null) {
+        if (null != str) {
             Pattern p = Pattern.compile("\\s*|\t|\r|\n");
             Matcher m = p.matcher(str);
             val = m.replaceAll(Normal.EMPTY);
@@ -3627,7 +3627,7 @@ public class StringKit {
      */
     public static String replaceEachRepeatedly(final String text, final String[] searchList,
                                                final String[] replacementList) {
-        final int timeToLive = searchList == null ? 0 : searchList.length;
+        final int timeToLive = null == searchList ? 0 : searchList.length;
         return replaceEach(text, searchList, replacementList, true, timeToLive);
     }
 
@@ -3663,8 +3663,8 @@ public class StringKit {
             final String[] replacementList,
             final boolean repeat,
             final int timeToLive) {
-        if (text == null || text.isEmpty() || searchList == null ||
-                searchList.length == 0 || replacementList == null || replacementList.length == 0) {
+        if (null == text || text.isEmpty() || null == searchList ||
+                searchList.length == 0 || null == replacementList || replacementList.length == 0) {
             return text;
         }
 
@@ -3784,7 +3784,7 @@ public class StringKit {
      * @return 修改的字符串，{@code null}如果输入的字符串为空
      */
     public static String replaceChars(final String str, final char searchChar, final char replaceChar) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         return str.replace(searchChar, replaceChar);
@@ -3812,7 +3812,7 @@ public class StringKit {
         if (isEmpty(str) || isEmpty(searchChars)) {
             return str;
         }
-        if (replaceChars == null) {
+        if (null == replaceChars) {
             replaceChars = Normal.EMPTY;
         }
         boolean modified = false;
@@ -4778,7 +4778,7 @@ public class StringKit {
      * @return 右填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
     public static String rightPad(final String str, final int size, String padStr) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         if (isEmpty(padStr)) {
@@ -4826,7 +4826,7 @@ public class StringKit {
      * @return 右填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
     public static String rightPad(final String str, final int size, final char padChar) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         final int pads = size - str.length();
@@ -4856,7 +4856,7 @@ public class StringKit {
      * @return 最左边的字符，{@code null}如果输入为空字符串
      */
     public static String left(final String str, final int len) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         if (len < 0) {
@@ -4885,7 +4885,7 @@ public class StringKit {
      * @return 最右边的字符，{@code null}如果输入为空字符串
      */
     public static String right(final String str, final int len) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         if (len < 0) {
@@ -4917,7 +4917,7 @@ public class StringKit {
      * @return 中间的字符，{@code null}如果输入为空字符串
      */
     public static String mid(final String str, int pos, final int len) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         if (len < 0 || pos > str.length()) {
@@ -4970,7 +4970,7 @@ public class StringKit {
      * @return 左填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
     public static String leftPad(final String str, final int size, final char padChar) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         final int pads = size - str.length();
@@ -5004,7 +5004,7 @@ public class StringKit {
      * @return 左填充字符串或原始字符串如果不需要填充，{@code null}如果输入为空字符串
      */
     public static String leftPad(final String str, final int size, String padStr) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         if (isEmpty(padStr)) {
@@ -5041,7 +5041,7 @@ public class StringKit {
      * @return 字符串的长度, 如果为null返回0
      */
     public static int length(final CharSequence cs) {
-        return cs == null ? 0 : cs.length();
+        return null == cs ? 0 : cs.length();
     }
 
     /**
@@ -5150,7 +5150,7 @@ public class StringKit {
      * @return byte长度
      */
     public static int byteLength(CharSequence cs, java.nio.charset.Charset charset) {
-        return cs == null ? 0 : cs.toString().getBytes(charset).length;
+        return null == cs ? 0 : cs.toString().getBytes(charset).length;
     }
 
     /**
@@ -5490,7 +5490,7 @@ public class StringKit {
      * @return {String}
      */
     public static String cleanText(String txt) {
-        if (txt == null) {
+        if (null == txt) {
             return null;
         }
         return Pattern.compile("[`'\"|/,;()-+*%#·•�　\\s]").matcher(txt).replaceAll(Normal.EMPTY);
@@ -5503,7 +5503,7 @@ public class StringKit {
      * @return 清理后的标识符
      */
     public static String cleanIdentifier(String param) {
-        if (param == null) {
+        if (null == param) {
             return null;
         }
         StringBuilder paramBuilder = new StringBuilder();
@@ -5529,7 +5529,7 @@ public class StringKit {
      * @return 大写字符串{@code null}如果输入为空字符串
      */
     public static String upperCase(final String str) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         return str.toUpperCase();
@@ -5549,7 +5549,7 @@ public class StringKit {
      * @return 大写字符串{@code null}如果输入为空字符串
      */
     public static String upperCase(final String str, final Locale locale) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         return str.toUpperCase(locale);
@@ -5568,7 +5568,7 @@ public class StringKit {
      * @return 小写字符串{@code null}如果输入为空字符串
      */
     public static String lowerCase(final String str) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         return str.toLowerCase();
@@ -5588,7 +5588,7 @@ public class StringKit {
      * @return 小写字符串{@code null}如果输入为空字符串
      */
     public static String lowerCase(final String str, final Locale locale) {
-        if (str == null) {
+        if (null == str) {
             return null;
         }
         return str.toLowerCase(locale);
@@ -5611,7 +5611,7 @@ public class StringKit {
      */
     public static String capitalize(final String str) {
         int strLen;
-        if (str == null || (strLen = str.length()) == 0) {
+        if (null == str || (strLen = str.length()) == 0) {
             return str;
         }
 
@@ -5648,7 +5648,7 @@ public class StringKit {
      */
     public static String uncapitalize(final String str) {
         int strLen;
-        if (str == null || (strLen = str.length()) == 0) {
+        if (null == str || (strLen = str.length()) == 0) {
             return str;
         }
 
@@ -5711,10 +5711,10 @@ public class StringKit {
      */
     private static String appendIfMissing(final String str, final CharSequence suffix, final boolean ignoreCase,
                                           final CharSequence... suffixes) {
-        if (str == null || isEmpty(suffix) || endWith(str, suffix, ignoreCase)) {
+        if (null == str || isEmpty(suffix) || endWith(str, suffix, ignoreCase)) {
             return toString(str);
         }
-        if (suffixes != null && suffixes.length > 0) {
+        if (null != suffixes && suffixes.length > 0) {
             for (final CharSequence s : suffixes) {
                 if (endWith(str, s, ignoreCase)) {
                     return str;
@@ -5805,10 +5805,10 @@ public class StringKit {
      */
     private static String prependIfMissing(final String str, final CharSequence prefix, final boolean ignoreCase,
                                            final CharSequence... prefixes) {
-        if (str == null || isEmpty(prefix) || startWith(str, prefix, ignoreCase)) {
+        if (null == str || isEmpty(prefix) || startWith(str, prefix, ignoreCase)) {
             return toString(str);
         }
-        if (prefixes != null && prefixes.length > 0) {
+        if (null != prefixes && prefixes.length > 0) {
             for (final CharSequence s : prefixes) {
                 if (startWith(str, s, ignoreCase)) {
                     return str;
@@ -5946,7 +5946,7 @@ public class StringKit {
      * @return 补充后的字符串
      */
     public static String center(CharSequence str, final int size, char padChar) {
-        if (str == null || size <= 0) {
+        if (null == str || size <= 0) {
             return toString(str);
         }
         final int strLen = str.length();
@@ -5980,7 +5980,7 @@ public class StringKit {
      * @return 补充后的字符串
      */
     public static String center(CharSequence str, final int size, CharSequence padStr) {
-        if (str == null || size <= 0) {
+        if (null == str || size <= 0) {
             return toString(str);
         }
         if (isEmpty(padStr)) {
@@ -6152,7 +6152,7 @@ public class StringKit {
      * @return 过滤后的字符串
      */
     public static String filter(CharSequence str, Filter<Character> filter) {
-        if (str == null || filter == null) {
+        if (null == str || null == filter) {
             return toString(str);
         }
 

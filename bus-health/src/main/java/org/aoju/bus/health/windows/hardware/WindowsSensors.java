@@ -124,7 +124,7 @@ final class WindowsSensors extends AbstractSensors {
                 }
             }
             // If none found, just get the first one
-            if (cpuIdentifier == null) {
+            if (null == cpuIdentifier) {
                 cpuIdentifier = WmiKit.getString(ohmHardware, OhmHardware.IdentifierProperty.IDENTIFIER, 0);
             }
             // Now fetch sensor

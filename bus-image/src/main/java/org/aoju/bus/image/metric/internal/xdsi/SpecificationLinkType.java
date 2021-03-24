@@ -56,7 +56,7 @@ public class SpecificationLinkType extends RegistryObjectType {
     }
 
     public List<String> getUsageParameter() {
-        if (this.usageParameter == null) {
+        if (this.null == usageParameter) {
             this.usageParameter = new ArrayList();
         }
         return this.usageParameter;

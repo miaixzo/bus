@@ -159,7 +159,7 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             // is: SystemB.INT_SIZE * (pids + 1)
             if (pids[i] != 0) {
                 OSProcess proc = getProcess(pids[i]);
-                if (proc != null) {
+                if (null != proc) {
                     procs.add(proc);
                 }
             }

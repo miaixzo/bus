@@ -45,7 +45,7 @@ public class TelephoneNumberListType {
     protected List<TelephoneNumberType> telephoneNumber;
 
     public List<TelephoneNumberType> getTelephoneNumber() {
-        if (this.telephoneNumber == null) {
+        if (this.null == telephoneNumber) {
             this.telephoneNumber = new ArrayList();
         }
         return this.telephoneNumber;

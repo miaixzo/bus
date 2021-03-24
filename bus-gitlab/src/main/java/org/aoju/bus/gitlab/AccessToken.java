@@ -87,7 +87,7 @@ public final class AccessToken {
     public static final String createPersonalAccessToken(final String baseUrl, final String username,
                                                          final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
-        if (scopes == null || scopes.length == 0) {
+        if (null == scopes || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
         }
 
@@ -170,7 +170,7 @@ public final class AccessToken {
             addFormData(formData, "personal_access_token[name]", tokenName);
             addFormData(formData, "personal_access_token[expires_at]", Normal.EMPTY);
 
-            if (scopes != null && scopes.size() > 0) {
+            if (null != scopes && scopes.size() > 0) {
                 for (Scope scope : scopes) {
                     addFormData(formData, "personal_access_token[scopes][]", scope.toString());
                 }
@@ -217,7 +217,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (cookies != null) {
+            if (null != cookies) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -243,7 +243,7 @@ public final class AccessToken {
     public static final void revokePersonalAccessToken(final String baseUrl, final String username,
                                                        final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
-        if (scopes == null || scopes.length == 0) {
+        if (null == scopes || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
         }
 
@@ -322,7 +322,7 @@ public final class AccessToken {
 
             content = content.substring(0, indexOfLinkEnd);
             String scopesText = Normal.EMPTY;
-            if (scopes != null && scopes.size() > 0) {
+            if (null != scopes && scopes.size() > 0) {
                 final StringJoiner joiner = new StringJoiner(", ");
                 scopes.forEach(s -> joiner.add(s.toString()));
                 scopesText = joiner.toString();
@@ -384,7 +384,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (cookies != null) {
+            if (null != cookies) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -457,7 +457,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (cookies != null) {
+            if (null != cookies) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -530,7 +530,7 @@ public final class AccessToken {
             throw new GitLabApiException(ioe);
         } finally {
 
-            if (cookies != null) {
+            if (null != cookies) {
                 try {
                     logout(baseUrl, cookies);
                 } catch (Exception ignore) {
@@ -713,7 +713,7 @@ public final class AccessToken {
      */
     public static final StringBuilder addFormData(StringBuilder formData, String name, String value) throws GitLabApiException {
 
-        if (formData == null) {
+        if (null == formData) {
             formData = new StringBuilder();
         } else if (formData.length() > 0) {
             formData.append("&");

@@ -73,7 +73,7 @@ public final class GeomDiskList {
             // Marks the DiskStore device
             if (line.startsWith("Geom name:")) {
                 // Save any previous disk in the map
-                if (diskName != null) {
+                if (null != diskName) {
                     diskMap.put(diskName, Triple.of(descr, ident, mediaSize));
                     descr = Normal.UNKNOWN;
                     ident = Normal.UNKNOWN;
@@ -83,7 +83,7 @@ public final class GeomDiskList {
                 diskName = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
             }
             // If we don't have a valid store, don't bother parsing anything
-            if (diskName != null) {
+            if (null != diskName) {
                 line = line.trim();
                 if (line.startsWith("Mediasize:")) {
                     String[] split = RegEx.SPACES.split(line);
@@ -99,7 +99,7 @@ public final class GeomDiskList {
                 }
             }
         }
-        if (diskName != null) {
+        if (null != diskName) {
             diskMap.put(diskName, Triple.of(descr, ident, mediaSize));
         }
         return diskMap;

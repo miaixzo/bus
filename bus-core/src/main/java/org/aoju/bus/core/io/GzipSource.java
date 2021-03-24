@@ -62,7 +62,7 @@ public final class GzipSource implements Source {
     private int section = SECTION_HEADER;
 
     public GzipSource(Source source) {
-        if (source == null) throw new IllegalArgumentException("source == null");
+        if (null == source) throw new IllegalArgumentException("null == source");
         this.inflater = new Inflater(true);
         this.source = IoKit.buffer(source);
         this.inflaterSource = new InflaterSource(this.source, inflater);

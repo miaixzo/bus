@@ -80,7 +80,7 @@ public class SimpleCache<K, V> implements Cache<K, V> {
     @Override
     public V get(K key) {
         Object value = CACHE.getObject(key);
-        if (value != null) {
+        if (null != value) {
             return (V) value;
         }
         return null;

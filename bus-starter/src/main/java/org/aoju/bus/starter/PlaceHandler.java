@@ -61,7 +61,7 @@ public class PlaceHandler implements InvocationHandler {
     }
 
     private boolean isAttributeMethod(Method method) {
-        return (method != null && method.getParameterTypes().length == 0 && method.getReturnType() != void.class);
+        return (null != method && method.getParameterTypes().length == 0 && method.getReturnType() != void.class);
     }
 
     public Object resolvePlaceHolder(Object origin) {

@@ -53,7 +53,7 @@ public @interface Named {
         }
 
         public static <T> T checkNotNull(T reference, Object errorMessage) {
-            if (reference == null) {
+            if (null == reference) {
                 throw new NullPointerException(String.valueOf(errorMessage));
             } else {
                 return reference;

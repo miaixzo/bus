@@ -199,7 +199,7 @@ public class LookupTableCV {
         short[][] sTblData = getShortData();
 
         if (lkbBands < channels) {
-            if (sTblData == null) {
+            if (null == sTblData) {
                 byte[] b = bTblData[0];
                 bTblData = new byte[channels][];
                 Arrays.fill(bTblData, b);
@@ -219,11 +219,11 @@ public class LookupTableCV {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
             byte[] bDstData =
                     scrByte && channels >= lkbBands ? bSrcData : new byte[width * height * lkbBands];
-            if (scrByte && bSrcData != null) {
+            if (scrByte && null != bSrcData) {
                 lookup(bSrcData, bDstData, tblOffsets, bTblData);
-            } else if (srcDataType == DataBuffer.TYPE_USHORT && sSrcData != null && bDstData != null) {
+            } else if (srcDataType == DataBuffer.TYPE_USHORT && null != sSrcData && null != bDstData) {
                 lookupU(sSrcData, bDstData, tblOffsets, bTblData);
-            } else if (srcDataType == DataBuffer.TYPE_SHORT && sSrcData != null && bDstData != null) {
+            } else if (srcDataType == DataBuffer.TYPE_SHORT && null != sSrcData && null != bDstData) {
                 lookup(sSrcData, bDstData, tblOffsets, bTblData);
             } else {
                 throw new IllegalArgumentException(

@@ -63,11 +63,11 @@ public class OfficeProcessBuilder {
      */
     public OfficeProcessBuilder(
             final File officeHome, final File workingDir, final ProcessManager processManager) {
-        this.officeHome = officeHome == null ? Builder.getDefaultOfficeHome() : officeHome;
+        this.officeHome = null == officeHome ? Builder.getDefaultOfficeHome() : officeHome;
         this.workingDir =
-                workingDir == null ? new File(System.getProperty("java.io.tmpdir")) : workingDir;
+                null == workingDir ? new File(System.getProperty("java.io.tmpdir")) : workingDir;
         this.processManager =
-                processManager == null ? Builder.findBestProcessManager() : processManager;
+                null == processManager ? Builder.findBestProcessManager() : processManager;
     }
 
     /**

@@ -135,7 +135,7 @@ public class MemcachedCache implements CacheX {
 
     @PreDestroy
     public void tearDown() {
-        if (client != null && !client.isShutdown()) {
+        if (null != client && !client.isShutdown()) {
             try {
                 client.shutdown();
             } catch (IOException e) {

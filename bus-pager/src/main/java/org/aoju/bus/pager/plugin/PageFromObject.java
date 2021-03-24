@@ -75,7 +75,7 @@ public abstract class PageFromObject {
      * @return 结果
      */
     public static <T> Page<T> getPageFromObject(Object params, boolean required) {
-        if (params == null) {
+        if (null == params) {
             throw new PageException("无法获取分页查询参数!");
         }
         if (params instanceof Paging) {
@@ -85,7 +85,7 @@ public abstract class PageFromObject {
                 page = new Page(pageParams.getPageNo(), pageParams.getPageSize());
             }
             if (isNotEmpty(pageParams.getOrderBy())) {
-                if (page != null) {
+                if (null != page) {
                     page.setOrderBy(pageParams.getOrderBy());
                 } else {
                     page = new Page();
@@ -108,18 +108,18 @@ public abstract class PageFromObject {
         } else {
             paramsObject = MetaObject.forObject(params);
         }
-        if (paramsObject == null) {
+        if (null == paramsObject) {
             throw new PageException("分页查询参数处理失败!");
         }
         Object orderBy = getParamValue(paramsObject, "orderBy", false);
         boolean hasOrderBy = false;
-        if (orderBy != null && orderBy.toString().length() > 0) {
+        if (null != orderBy && orderBy.toString().length() > 0) {
             hasOrderBy = true;
         }
         try {
             Object _pageNo = getParamValue(paramsObject, "pageNo", required);
             Object _pageSize = getParamValue(paramsObject, "pageSize", required);
-            if (_pageNo == null || _pageSize == null) {
+            if (null == _pageNo || null == _pageSize) {
                 if (hasOrderBy) {
                     Page page = new Page();
                     page.setOrderBy(orderBy.toString());
@@ -136,7 +136,7 @@ public abstract class PageFromObject {
         Page page = new Page(pageNo, pageSize);
         // count查询
         Object _count = getParamValue(paramsObject, "count", false);
-        if (_count != null) {
+        if (null != _count) {
             page.setCount(Boolean.valueOf(String.valueOf(_count)));
         }
         // 排序
@@ -145,12 +145,12 @@ public abstract class PageFromObject {
         }
         // 分页合理化
         Object reasonable = getParamValue(paramsObject, "reasonable", false);
-        if (reasonable != null) {
+        if (null != reasonable) {
             page.setReasonable(Boolean.valueOf(String.valueOf(reasonable)));
         }
         // 查询全部
         Object pageSizeZero = getParamValue(paramsObject, "pageSizeZero", false);
-        if (pageSizeZero != null) {
+        if (null != pageSizeZero) {
             page.setPageSizeZero(Boolean.valueOf(String.valueOf(pageSizeZero)));
         }
         return page;
@@ -169,7 +169,7 @@ public abstract class PageFromObject {
         if (paramsObject.hasGetter(PARAMS.get(paramName))) {
             value = paramsObject.getValue(PARAMS.get(paramName));
         }
-        if (value != null && value.getClass().isArray()) {
+        if (null != value && value.getClass().isArray()) {
             Object[] values = (Object[]) value;
             if (values.length == 0) {
                 value = null;
@@ -177,7 +177,7 @@ public abstract class PageFromObject {
                 value = values[0];
             }
         }
-        if (required && value == null) {
+        if (required && null == value) {
             throw new PageException("分页查询缺少必要的参数:" + PARAMS.get(paramName));
         }
         return value;
@@ -196,7 +196,7 @@ public abstract class PageFromObject {
     }
 
     public static boolean isEmpty(Object obj) {
-        return obj == null || obj.toString().equals(Normal.EMPTY);
+        return null == obj || obj.toString().equals(Normal.EMPTY);
     }
 
     public static boolean isNotEmpty(String str) {

@@ -82,9 +82,9 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 String name = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.NAME, index);
                 Pair<String, String> idPair = Builder.parsePnPDeviceIdToVendorProductId(
                         WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.PNPDEVICEID, index));
-                String deviceId = idPair == null ? Normal.UNKNOWN : idPair.getRight();
+                String deviceId = null == idPair ? Normal.UNKNOWN : idPair.getRight();
                 String vendor = WmiKit.getString(cards, Win32VideoController.VideoControllerProperty.ADAPTERCOMPATIBILITY, index);
-                if (idPair != null) {
+                if (null != idPair) {
                     if (StringKit.isBlank(vendor)) {
                         deviceId = idPair.getLeft();
                     } else {

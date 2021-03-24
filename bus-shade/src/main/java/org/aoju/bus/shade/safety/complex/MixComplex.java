@@ -47,7 +47,7 @@ public abstract class MixComplex<E> implements Complex<E> {
     }
 
     protected MixComplex(Collection<? extends Complex<? extends E>> filters) {
-        this.filters = filters != null ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
+        this.filters = null != filters ? new LinkedHashSet<>(filters) : new LinkedHashSet<>();
     }
 
     public boolean add(Complex<? extends E> filter) {

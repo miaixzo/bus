@@ -56,7 +56,7 @@ public class Context {
     }
 
     public boolean isPreventOn() {
-        return prevent != null && prevent == Switch.ON;
+        return null != prevent && prevent == Switch.ON;
     }
 
     public Map<String, CacheX> getCaches() {

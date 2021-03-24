@@ -152,7 +152,7 @@ public final class MultipartBody extends RequestBody {
             sink.write(boundary);
             sink.write(CRLF);
 
-            if (headers != null) {
+            if (null != headers) {
                 for (int h = 0, headerCount = headers.size(); h < headerCount; h++) {
                     sink.writeUtf8(headers.name(h))
                             .write(COLONSPACE)
@@ -162,7 +162,7 @@ public final class MultipartBody extends RequestBody {
             }
 
             MimeType contentType = body.contentType();
-            if (contentType != null) {
+            if (null != contentType) {
                 sink.writeUtf8("Content-Type: ")
                         .writeUtf8(contentType.toString())
                         .write(CRLF);
@@ -217,13 +217,13 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part create(Headers headers, RequestBody body) {
-            if (body == null) {
-                throw new NullPointerException("body == null");
+            if (null == body) {
+                throw new NullPointerException("null == body");
             }
-            if (headers != null && headers.get(Header.CONTENT_TYPE) != null) {
+            if (null != headers && headers.get(Header.CONTENT_TYPE) != null) {
                 throw new IllegalArgumentException("Unexpected header: Content-Type");
             }
-            if (headers != null && headers.get(Header.CONTENT_LENGTH) != null) {
+            if (null != headers && headers.get(Header.CONTENT_LENGTH) != null) {
                 throw new IllegalArgumentException("Unexpected header: Content-Length");
             }
             return new Part(headers, body);
@@ -234,13 +234,13 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part createFormData(String name, String filename, RequestBody body) {
-            if (name == null) {
-                throw new NullPointerException("name == null");
+            if (null == name) {
+                throw new NullPointerException("null == name");
             }
             StringBuilder disposition = new StringBuilder("form-data; name=");
             appendQuotedString(disposition, name);
 
-            if (filename != null) {
+            if (null != filename) {
                 disposition.append("; filename=");
                 appendQuotedString(disposition, filename);
             }
@@ -276,8 +276,8 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder setType(MimeType type) {
-            if (type == null) {
-                throw new NullPointerException("type == null");
+            if (null == type) {
+                throw new NullPointerException("null == type");
             }
             if (!"multipart".equals(type.type())) {
                 throw new IllegalArgumentException("multipart != " + type);
@@ -303,7 +303,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder addPart(Part part) {
-            if (part == null) throw new NullPointerException("part == null");
+            if (null == part) throw new NullPointerException("null == part");
             parts.add(part);
             return this;
         }

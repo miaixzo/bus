@@ -357,8 +357,8 @@ public class MergeRequestFilter {
                 .withParam("order_by", orderBy)
                 .withParam("sort", sort)
                 .withParam("milestone", milestone)
-                .withParam("view", (simpleView != null && simpleView ? "simple" : null))
-                .withParam("labels", (labels != null ? String.join(Symbol.COMMA, labels) : null))
+                .withParam("view", (null != simpleView && simpleView ? "simple" : null))
+                .withParam("labels", (null != labels ? String.join(Symbol.COMMA, labels) : null))
                 .withParam("created_after", createdAfter)
                 .withParam("created_before", createdBefore)
                 .withParam("updated_after", updatedAfter)
@@ -370,9 +370,9 @@ public class MergeRequestFilter {
                 .withParam("target_branch", targetBranch)
                 .withParam("search", search)
                 .withParam("in", in)
-                .withParam("wip", (wip == null ? null : wip ? "yes" : "no"));
+                .withParam("wip", (null == wip ? null : wip ? "yes" : "no"));
 
-        if (authorId != null && (scope == Constants.MergeRequestScope.ALL
+        if (null != authorId && (scope == Constants.MergeRequestScope.ALL
                 || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
             params.withParam("author_id", authorId);
         }

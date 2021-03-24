@@ -75,7 +75,7 @@ public final class Dispatcher {
     }
 
     public synchronized ExecutorService executorService() {
-        if (executorService == null) {
+        if (null == executorService) {
             executorService = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
                     new SynchronousQueue<>(), Builder.threadFactory("Httpd Dispatcher", false));
         }
@@ -226,7 +226,7 @@ public final class Dispatcher {
 
         boolean isRunning = promoteAndExecute();
 
-        if (!isRunning && idleCallback != null) {
+        if (!isRunning && null != idleCallback) {
             idleCallback.run();
         }
     }

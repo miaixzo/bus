@@ -177,7 +177,7 @@ public class Mapping {
         //循环处理值
         for (PropertyDescriptor pd : pds) {
             Method writeMethod = pd.getWriteMethod();
-            if (writeMethod == null) {
+            if (null == writeMethod) {
                 continue;
             }
             //获取字段

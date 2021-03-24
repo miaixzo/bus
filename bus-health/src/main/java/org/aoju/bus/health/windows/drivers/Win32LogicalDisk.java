@@ -59,7 +59,7 @@ public final class Win32LogicalDisk {
             wmiClassName.append(" WHERE DriveType != 4");
             where = true;
         }
-        if (nameToMatch != null) {
+        if (null != nameToMatch) {
             wmiClassName.append(where ? " AND" : " WHERE").append(" Name=\"").append(nameToMatch).append('\"');
         }
         WmiQuery<LogicalDiskProperty> logicalDiskQuery = new WmiQuery<>(wmiClassName.toString(),

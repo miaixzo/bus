@@ -69,9 +69,9 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     private static final Comparator<String> FIELD_NAME_COMPARATOR = (a, b) -> {
         if (a == b) {
             return 0;
-        } else if (a == null) {
+        } else if (null == a) {
             return -1;
-        } else if (b == null) {
+        } else if (null == b) {
             return 1;
         } else {
             return String.CASE_INSENSITIVE_ORDER.compare(a, b);
@@ -154,13 +154,13 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
 
             List<String> allValues = new ArrayList<>();
             List<String> otherValues = result.get(fieldName);
-            if (otherValues != null) {
+            if (null != otherValues) {
                 allValues.addAll(otherValues);
             }
             allValues.add(value);
             result.put(fieldName, Collections.unmodifiableList(allValues));
         }
-        if (valueForNullKey != null) {
+        if (null != valueForNullKey) {
             result.put(null, Collections.unmodifiableList(Collections.singletonList(valueForNullKey)));
         }
         return Collections.unmodifiableMap(result);
@@ -176,11 +176,11 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
 
         synchronized (lock) {
             try {
-                while (connectPending && response == null && callFailure == null) {
+                while (connectPending && null == response && null == callFailure) {
                     // 等待直到网络拦截器到达或调用失败
                     lock.wait();
                 }
-                if (callFailure != null) {
+                if (null != callFailure) {
                     throw propagate(callFailure);
                 }
             } catch (InterruptedException e) {
@@ -194,7 +194,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     @Override
     public void disconnect() {
         // 在连接存在之前调用disconnect()应该没有效果
-        if (call == null) return;
+        if (null == call) return;
         // 取消阻塞任何正在等待的异步线程
         networkInterceptor.proceed();
         call.cancel();
@@ -214,7 +214,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     }
 
     private Headers getHeaders() throws IOException {
-        if (responseHeaders == null) {
+        if (null == responseHeaders) {
             Response response = getResponse(true);
             Headers headers = response.headers();
             responseHeaders = headers.newBuilder()
@@ -239,7 +239,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     @Override
     public String getHeaderField(String fieldName) {
         try {
-            return fieldName == null
+            return null == fieldName
                     ? StatusLine.get(getResponse(true)).toString()
                     : getHeaders().get(fieldName);
         } catch (IOException e) {
@@ -296,7 +296,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     @Override
     public OutputStream getOutputStream() throws IOException {
         OutputStreamBody requestBody = (OutputStreamBody) buildCall().request().body();
-        if (requestBody == null) {
+        if (null == requestBody) {
             throw new ProtocolException("method does not support a request body: " + method);
         }
 
@@ -330,7 +330,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
 
     @Override
     public String getRequestProperty(String field) {
-        if (field == null) return null;
+        if (null == field) return null;
         return requestHeaders.get(field);
     }
 
@@ -371,7 +371,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
     }
 
     private NewCall buildCall() throws IOException {
-        if (call != null) {
+        if (null != call) {
             return call;
         }
 
@@ -393,7 +393,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
         if (HttpMethod.permitsRequestBody(method)) {
             // 如果还没有内容类型，则为请求主体添加内容类型
             String contentType = requestHeaders.get("Content-Type");
-            if (contentType == null) {
+            if (null == contentType) {
                 contentType = "application/x-www-form-urlencoded";
                 requestHeaders.add("Content-Type", contentType);
             }
@@ -404,7 +404,7 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
             String contentLengthString = requestHeaders.get("Content-Length");
             if (fixedContentLength != -1L) {
                 contentLength = fixedContentLength;
-            } else if (contentLengthString != null) {
+            } else if (null != contentLengthString) {
                 contentLength = Long.parseLong(contentLengthString);
             }
 
@@ -453,14 +453,14 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
 
     private String defaultUserAgent() {
         String agent = System.getProperty("http.agent");
-        return agent != null ? toHumanReadableAscii(agent) : Version.all();
+        return null != agent ? toHumanReadableAscii(agent) : Version.all();
     }
 
     private Response getResponse(boolean networkResponseOnError) throws IOException {
         synchronized (lock) {
-            if (response != null) return response;
-            if (callFailure != null) {
-                if (networkResponseOnError && networkResponse != null) return networkResponse;
+            if (null != response) return response;
+            if (null != callFailure) {
+                if (networkResponseOnError && null != networkResponse) return networkResponse;
                 throw propagate(callFailure);
             }
         }
@@ -469,12 +469,12 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
         networkInterceptor.proceed();
 
         OutputStreamBody requestBody = (OutputStreamBody) call.request().body();
-        if (requestBody != null) requestBody.outputStream().close();
+        if (null != requestBody) requestBody.outputStream().close();
 
         if (executed) {
             synchronized (lock) {
                 try {
-                    while (response == null && callFailure == null) {
+                    while (null == response && null == callFailure) {
                         lock.wait(); // Wait until the response is returned or the call fails.
                     }
                 } catch (InterruptedException e) {
@@ -492,8 +492,8 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
         }
 
         synchronized (lock) {
-            if (callFailure != null) throw propagate(callFailure);
-            if (response != null) return response;
+            if (null != callFailure) throw propagate(callFailure);
+            if (null != response) return response;
         }
 
         throw new AssertionError();
@@ -501,9 +501,9 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
 
     @Override
     public boolean usingProxy() {
-        if (proxy != null) return true;
+        if (null != proxy) return true;
         Proxy clientProxy = client.proxy();
-        return clientProxy != null && clientProxy.type() != Proxy.Type.DIRECT;
+        return null != clientProxy && clientProxy.type() != Proxy.Type.DIRECT;
     }
 
     @Override
@@ -521,10 +521,10 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
         if (connected) {
             throw new IllegalStateException("Cannot set request property after connection is made");
         }
-        if (field == null) {
-            throw new NullPointerException("field == null");
+        if (null == field) {
+            throw new NullPointerException("null == field");
         }
-        if (newValue == null) {
+        if (null == newValue) {
             Logger.warn("Ignoring header " + field + " because its value was null.", null);
             return;
         }
@@ -547,10 +547,10 @@ public final class HttpURLConnection extends java.net.HttpURLConnection implemen
         if (connected) {
             throw new IllegalStateException("Cannot add request property after connection is made");
         }
-        if (field == null) {
-            throw new NullPointerException("field == null");
+        if (null == field) {
+            throw new NullPointerException("null == field");
         }
-        if (value == null) {
+        if (null == value) {
             Logger.warn("Ignoring header " + field + " because its value was null.", null);
             return;
         }

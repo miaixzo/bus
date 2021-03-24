@@ -39,7 +39,7 @@ public class ExtendedNegotiate {
     private final byte[] info;
 
     public ExtendedNegotiate(String cuid, byte[] info) {
-        if (cuid == null)
+        if (null == cuid)
             throw new NullPointerException();
 
         this.cuid = cuid;

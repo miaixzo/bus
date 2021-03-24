@@ -95,7 +95,7 @@ public abstract class AbstractEngine implements TemplateEngine {
             try {
                 //获取系统信息
                 String osName = System.getProperty("os.name");
-                if (osName != null) {
+                if (null != osName) {
                     if (osName.contains(Builder.MAC)) {
                         Runtime.getRuntime().exec("open " + getEngineConfig().getFileOutputDir());
                     } else if (osName.contains(Builder.WINDOWS)) {

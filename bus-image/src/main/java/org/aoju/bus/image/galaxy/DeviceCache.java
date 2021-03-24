@@ -48,7 +48,7 @@ public class DeviceCache extends ConfigurationCache<Configuration, Device>
     @Override
     public Device findDevice(String deviceName) throws InstrumentException {
         Device device = get(deviceName);
-        if (device == null)
+        if (null == device)
             throw new InstrumentException("Unknown Device: " + deviceName);
         if (!device.isInstalled())
             throw new InstrumentException("Device: " + deviceName + " not installed");

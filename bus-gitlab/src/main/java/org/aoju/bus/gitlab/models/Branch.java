@@ -42,7 +42,7 @@ public class Branch {
     private Boolean isProtected;
 
     public static final boolean isValid(Branch branch) {
-        return (branch != null && branch.getName() != null);
+        return (null != branch && branch.getName() != null);
     }
 
     public Commit getCommit() {

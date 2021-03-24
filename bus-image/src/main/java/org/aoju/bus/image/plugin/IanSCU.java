@@ -101,7 +101,7 @@ public class IanSCU {
     }
 
     public String getRetrieveAET() {
-        return retrieveAET != null ? retrieveAET : ae.getAETitle();
+        return null != retrieveAET ? retrieveAET : ae.getAETitle();
     }
 
     public void setRetrieveAET(String retrieveAET) {
@@ -126,7 +126,7 @@ public class IanSCU {
     }
 
     public void close() throws IOException {
-        if (as != null) {
+        if (null != as) {
             as.release();
         }
     }
@@ -148,11 +148,11 @@ public class IanSCU {
     public boolean addInstance(Attributes inst) {
         Builder.updateAttributes(inst, attrs, uidSuffix);
         String suid = inst.getString(Tag.StudyInstanceUID);
-        if (suid == null)
+        if (null == suid)
             return false;
 
         Attributes ian = map.get(suid);
-        if (ian == null)
+        if (null == ian)
             map.put(suid, ian = createIAN(inst));
         updateIAN(ian, inst);
         return true;
@@ -167,7 +167,7 @@ public class IanSCU {
         Attributes ian = new Attributes(3);
         Sequence refPpsSeq =
                 ian.newSequence(Tag.ReferencedPerformedProcedureStepSequence, 1);
-        if (refPpsIUID != null) {
+        if (null != refPpsIUID) {
             Attributes refPps = new Attributes(3);
             refPps.setString(Tag.ReferencedSOPClassUID, VR.UI, refPpsCUID);
             refPps.setString(Tag.ReferencedSOPInstanceUID, VR.UI, refPpsIUID);
@@ -191,11 +191,11 @@ public class IanSCU {
                 inst.getString(Tag.SOPClassUID));
         refSOP.setString(Tag.ReferencedSOPInstanceUID, VR.UI,
                 inst.getString(Tag.SOPInstanceUID));
-        if (retrieveURL != null)
+        if (null != retrieveURL)
             refSOP.setString(Tag.RetrieveURL, VR.UR, retrieveURL);
-        if (retrieveURI != null)
+        if (null != retrieveURI)
             refSOP.setString(Tag.RetrieveURI, VR.UR, retrieveURI);
-        if (retrieveUID != null)
+        if (null != retrieveUID)
             refSOP.setString(Tag.RetrieveLocationUID, VR.UI, retrieveUID);
         refSOPSeq.add(refSOP);
     }

@@ -370,7 +370,7 @@ public class ProjectFilter {
                 .withParam("with_programming_language", withProgrammingLanguage)
                 .withParam("wiki_checksum_failed", wikiChecksumFailed)
                 .withParam("repository_checksum_failed", repositoryChecksumFailed)
-                .withParam("min_access_level", (minAccessLevel != null ? minAccessLevel.toValue() : null))
+                .withParam("min_access_level", (null != minAccessLevel ? minAccessLevel.toValue() : null))
                 .withParam("id_after", idAfter)
                 .withParam("id_before", idBefore)
                 .withParam("last_activity_after", lastActivityAfter)

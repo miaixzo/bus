@@ -186,7 +186,7 @@ public class ImageInputStream extends FilterInputStream
     }
 
     public final void setIncludeBulkData(IncludeBulkData includeBulkData) {
-        if (includeBulkData == null)
+        if (null == includeBulkData)
             throw new NullPointerException();
         this.includeBulkData = includeBulkData;
     }
@@ -232,20 +232,20 @@ public class ImageInputStream extends FilterInputStream
     }
 
     public final List<File> getBulkDataFiles() {
-        if (blkFiles != null)
+        if (null != blkFiles)
             return blkFiles;
         else
             return Collections.emptyList();
     }
 
     public final void setImageInputHandler(ImageInputHandler handler) {
-        if (handler == null)
+        if (null == handler)
             throw new NullPointerException("handler");
         this.handler = handler;
     }
 
     public void setBulkDataCreator(BulkDataCreator bulkDataCreator) {
-        if (bulkDataCreator == null)
+        if (null == bulkDataCreator)
             throw new NullPointerException("bulkDataCreator");
         this.bulkDataCreator = bulkDataCreator;
     }
@@ -375,7 +375,7 @@ public class ImageInputStream extends FilterInputStream
                     ("off < 0 || len < 0 || off + len > s.length!");
         }
 
-        if (byteBuf == null)
+        if (null == byteBuf)
             byteBuf = new byte[BYTE_BUF_LENGTH];
 
         while (len > 0) {
@@ -449,7 +449,7 @@ public class ImageInputStream extends FilterInputStream
     public Attributes readFileMetaInformation() throws IOException {
         if (!hasfmi)
             return null;  // No File Meta Information
-        if (fileMetaInformation != null)
+        if (null != fileMetaInformation)
             return fileMetaInformation;  // already read
 
         Attributes attrs = new Attributes(bigEndian, 9);
@@ -461,7 +461,7 @@ public class ImageInputStream extends FilterInputStream
                 reset();
                 break;
             }
-            if (vr != null) {
+            if (null != vr) {
                 if (vr == VR.UN)
                     vr = ElementDictionary.getStandardElementDictionary()
                             .vrOf(tag);
@@ -472,7 +472,7 @@ public class ImageInputStream extends FilterInputStream
         fileMetaInformation = attrs;
 
         String tsuid = attrs.getString(Tag.TransferSyntaxUID, null);
-        if (tsuid == null) {
+        if (null == tsuid) {
             Logger.warn(MISSING_TRANSFER_SYNTAX);
             tsuid = UID.ExplicitVRLittleEndian;
         }
@@ -495,7 +495,7 @@ public class ImageInputStream extends FilterInputStream
             }
             if (hasStopTag && tag == stopTag)
                 break;
-            if (vr != null) {
+            if (null != vr) {
                 if (vr == VR.UN) {
                     vr = ElementDictionary.vrOf(tag,
                             attrs.getPrivateCreator(tag));
@@ -544,14 +544,14 @@ public class ImageInputStream extends FilterInputStream
     @Override
     public BulkData createBulkData(ImageInputStream dis) throws IOException {
         BulkData bulkData;
-        if (uri != null && !(super.in instanceof InflaterInputStream)) {
+        if (null != uri && !(super.in instanceof InflaterInputStream)) {
             bulkData = new BulkData(uri, pos, length, bigEndian);
             skipFully(length);
         } else {
-            if (blkOut == null) {
+            if (null == blkOut) {
                 File blkfile = File.createTempFile(blkFilePrefix,
                         blkFileSuffix, blkDirectory);
-                if (blkFiles == null) {
+                if (null == blkFiles) {
                     blkFiles = new ArrayList<>();
                 }
                 blkFiles.add(blkfile);

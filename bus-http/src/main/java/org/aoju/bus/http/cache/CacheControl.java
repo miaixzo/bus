@@ -153,7 +153,7 @@ public final class CacheControl {
             String value = headers.value(i);
 
             if (name.equalsIgnoreCase(Header.CACHE_CONTROL)) {
-                if (headerValue != null) {
+                if (null != headerValue) {
                     // 多个cache-control头文件意味着不能使用原始值
                     canUseHeaderValue = false;
                 } else {
@@ -280,7 +280,7 @@ public final class CacheControl {
     @Override
     public String toString() {
         String result = headerValue;
-        return result != null ? result : (headerValue = headerValue());
+        return null != result ? result : (headerValue = headerValue());
     }
 
     private String headerValue() {

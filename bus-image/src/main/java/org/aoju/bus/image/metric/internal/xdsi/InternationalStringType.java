@@ -45,7 +45,7 @@ public class InternationalStringType {
     protected List<LocalizedStringType> localizedString;
 
     public List<LocalizedStringType> getLocalizedString() {
-        if (this.localizedString == null) {
+        if (this.null == localizedString) {
             this.localizedString = new ArrayList();
         }
         return this.localizedString;

@@ -78,7 +78,7 @@ public class WmiQueryHandler {
      * @return 类的实例 {@link #setInstanceClass(Class)}
      */
     public static synchronized WmiQueryHandler createInstance() {
-        if (customClass == null) {
+        if (null == customClass) {
             return new WmiQueryHandler();
         }
         try {

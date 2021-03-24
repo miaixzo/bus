@@ -92,7 +92,7 @@ public final class ProcessWtsData {
         final WTS_PROCESS_INFO_EX processInfoRef = new WTS_PROCESS_INFO_EX(pProcessInfo);
         WTS_PROCESS_INFO_EX[] processInfo = (WTS_PROCESS_INFO_EX[]) processInfoRef.toArray(pCount.getValue());
         for (int i = 0; i < processInfo.length; i++) {
-            if (pids == null || pids.contains(processInfo[i].ProcessId)) {
+            if (null == pids || pids.contains(processInfo[i].ProcessId)) {
                 wtsMap.put(processInfo[i].ProcessId,
                         new WtsInfo(processInfo[i].pProcessName, Normal.EMPTY, processInfo[i].NumberOfThreads,
                                 processInfo[i].PagefileUsage & 0xffff_ffffL,

@@ -69,7 +69,7 @@ public final class OfficeOption {
             }
         }
 
-        if (productLine != null) {
+        if (null != productLine) {
             final String[] parts = productLine.split(Symbol.SPACE);
             if (parts.length > 0) {
                 desc.product = parts[0];

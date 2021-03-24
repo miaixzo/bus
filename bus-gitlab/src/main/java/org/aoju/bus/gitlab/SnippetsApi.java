@@ -132,7 +132,7 @@ public class SnippetsApi extends AbstractApi {
      */
     public Snippet getSnippet(Integer snippetId, boolean downloadContent) throws GitLabApiException {
 
-        if (snippetId == null) {
+        if (null == snippetId) {
             throw new RuntimeException("snippetId can't be null");
         }
 
@@ -236,7 +236,7 @@ public class SnippetsApi extends AbstractApi {
      */
     public void deleteSnippet(Integer snippetId) throws GitLabApiException {
 
-        if (snippetId == null) {
+        if (null == snippetId) {
             throw new RuntimeException("snippetId can't be null");
         }
 

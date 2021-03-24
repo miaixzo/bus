@@ -41,7 +41,7 @@ public class MatOfFloat extends Mat {
     }
 
     public void fromArray(float... a) {
-        if (a == null || a.length == 0)
+        if (null == a || a.length == 0)
             return;
         int num = a.length / _channels;
         alloc(num);
@@ -60,7 +60,7 @@ public class MatOfFloat extends Mat {
     }
 
     public void fromList(List<Float> lb) {
-        if (lb == null || lb.size() == 0)
+        if (null == lb || lb.size() == 0)
             return;
         Float ab[] = lb.toArray(new Float[0]);
         float a[] = new float[ab.length];

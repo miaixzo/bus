@@ -138,7 +138,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Pipeline> getPipelines(Object projectIdOrPath, PipelineFilter filter, int itemsPerPage) throws GitLabApiException {
-        GitLabApiForm formData = (filter != null ? filter.getQueryParams() : new GitLabApiForm());
+        GitLabApiForm formData = (null != filter ? filter.getQueryParams() : new GitLabApiForm());
         return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, formData.asMap(),
                 "projects", getProjectIdOrPath(projectIdOrPath), "pipelines"));
     }
@@ -267,7 +267,7 @@ public class PipelineApi extends AbstractApi implements Constants {
         GitLabApiForm formData = new GitLabApiForm()
                 .withParam("scope", scope)
                 .withParam("status", status)
-                .withParam("ref", (ref != null ? urlEncode(ref) : null))
+                .withParam("ref", (null != ref ? urlEncode(ref) : null))
                 .withParam("yaml_errors", yamlErrors)
                 .withParam("name", name)
                 .withParam("username", username)
@@ -335,11 +335,11 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pipeline createPipeline(Object projectIdOrPath, String ref, List<Variable> variables) throws GitLabApiException {
 
-        if (ref == null || ref.trim().isEmpty()) {
+        if (null == ref || ref.trim().isEmpty()) {
             throw new GitLabApiException("ref cannot be null or empty");
         }
 
-        if (variables == null || variables.isEmpty()) {
+        if (null == variables || variables.isEmpty()) {
             GitLabApiForm formData = new GitLabApiForm().withParam("ref", ref, true);
             Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath), "pipeline");
             return (response.readEntity(Pipeline.class));
@@ -798,7 +798,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pipeline triggerPipeline(Object projectIdOrPath, Trigger trigger, String ref, List<Variable> variables) throws GitLabApiException {
 
-        if (trigger == null) {
+        if (null == trigger) {
             throw new GitLabApiException("trigger cannot be null");
         }
 

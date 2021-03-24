@@ -63,7 +63,7 @@ public final class RequestLine {
     public static String requestPath(UnoUrl url) {
         String path = url.encodedPath();
         String query = url.encodedQuery();
-        return query != null ? (path + Symbol.C_QUESTION_MARK + query) : path;
+        return null != query ? (path + Symbol.C_QUESTION_MARK + query) : path;
     }
 
 }

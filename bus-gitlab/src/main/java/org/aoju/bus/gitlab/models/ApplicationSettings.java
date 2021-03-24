@@ -82,7 +82,7 @@ public class ApplicationSettings {
     @JsonIgnore
     public Object getSetting(Setting setting) {
 
-        if (setting == null) {
+        if (null == setting) {
             return (null);
         }
 
@@ -93,7 +93,7 @@ public class ApplicationSettings {
     @JsonIgnore
     public Object getSetting(String setting) {
 
-        if (setting == null) {
+        if (null == setting) {
             return (null);
         }
 
@@ -103,7 +103,7 @@ public class ApplicationSettings {
     public Object addSetting(String setting, Object value) throws GitLabApiException {
 
         Setting appSetting = Setting.forValue(setting);
-        if (appSetting != null) {
+        if (null != appSetting) {
             return (addSetting(appSetting, value));
         }
 

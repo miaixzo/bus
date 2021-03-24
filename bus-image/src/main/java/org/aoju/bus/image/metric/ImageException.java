@@ -82,7 +82,7 @@ public class ImageException extends RelevantException {
     }
 
     public ImageException setErrorComment(String val) {
-        if (val != null)
+        if (null != val)
             rsp.setString(Tag.ErrorComment, VR.LO, Property.truncate(val, 64));
         return this;
     }

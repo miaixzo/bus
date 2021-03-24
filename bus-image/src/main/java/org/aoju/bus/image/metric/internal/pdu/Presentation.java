@@ -110,7 +110,7 @@ public class Presentation {
 
     public int length() {
         int len = 4;
-        if (as != null)
+        if (null != as)
             len += 4 + as.length();
         for (String ts : tss)
             len += 4 + ts.length();
@@ -125,7 +125,7 @@ public class Presentation {
     StringBuilder promptTo(StringBuilder sb) {
         sb.append("  PresentationContext[id: ").append(pcid)
                 .append(Property.LINE_SEPARATOR);
-        if (as != null)
+        if (null != as)
             UID.promptTo(as, sb.append("    as: "));
         else
             sb.append("    result: ").append(resultAsString(result));

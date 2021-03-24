@@ -103,7 +103,7 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
             return parameterObject;
         }
         Map<String, Object> paramMap;
-        if (parameterObject == null) {
+        if (null == parameterObject) {
             paramMap = new HashMap<>();
         } else if (parameterObject instanceof Map) {
             // 解决不可变Map的情况
@@ -190,7 +190,7 @@ public abstract class AbstractSqlDialect extends AbstractDialect {
     @Override
     public Object afterPage(List pageList, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
-        if (page == null) {
+        if (null == page) {
             return pageList;
         }
         page.addAll(pageList);

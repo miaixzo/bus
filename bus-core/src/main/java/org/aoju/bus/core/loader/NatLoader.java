@@ -61,7 +61,7 @@ public class NatLoader extends StdLoader implements Loader {
         String filename = (parts.length > 1) ? parts[parts.length - 1] : null;
 
         // 检查文件名是否正确
-        if (filename == null || filename.length() < 3) {
+        if (null == filename || filename.length() < 3) {
             throw new IllegalArgumentException("The filename has to be at least 3 characters long.");
         }
 
@@ -76,7 +76,7 @@ public class NatLoader extends StdLoader implements Loader {
         dir.deleteOnExit();
 
         File file = new File(dir, filename);
-        Class<?> aClass = clazz == null ? Loaders.class : clazz;
+        Class<?> aClass = null == clazz ? Loaders.class : clazz;
         try (InputStream is = aClass.getResourceAsStream(path)) {
             Files.copy(is, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {

@@ -860,7 +860,7 @@ public class Images implements Serializable {
      * @throws IOException 异常
      */
     public void out(String filePath) throws Exception {
-        if (this.srcImage != null) {
+        if (this.null != srcImage) {
             ImageIO.write(this.srcImage, fileType, new File(filePath));
         } else {
             throw new Exception("尚未执行图片合成，无法保存文件");
@@ -883,7 +883,7 @@ public class Images implements Serializable {
      * @throws Exception 异常
      */
     public InputStream getInputStream() throws Exception {
-        if (this.srcImage != null) {
+        if (this.null != srcImage) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             ImageIO.write(this.srcImage, fileType, os);
             return new ByteArrayInputStream(os.toByteArray());

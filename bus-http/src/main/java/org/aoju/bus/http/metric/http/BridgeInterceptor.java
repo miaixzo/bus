@@ -62,9 +62,9 @@ public final class BridgeInterceptor implements Interceptor {
         Request.Builder requestBuilder = userRequest.newBuilder();
 
         RequestBody body = userRequest.body();
-        if (body != null) {
+        if (null != body) {
             MimeType contentType = body.contentType();
-            if (contentType != null) {
+            if (null != contentType) {
                 requestBuilder.header(Header.CONTENT_TYPE, contentType.toString());
             }
 

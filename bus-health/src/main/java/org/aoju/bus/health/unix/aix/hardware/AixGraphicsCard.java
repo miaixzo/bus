@@ -78,7 +78,7 @@ final class AixGraphicsCard extends AbstractGraphicsCard {
                 display = true;
             } else if (display && s.toLowerCase().contains("graphics")) {
                 name = s;
-            } else if (display && name != null) {
+            } else if (display && null != name) {
                 if (s.startsWith("Manufacture ID")) {
                     vendor = Builder.removeLeadingDots(s.substring(14));
                 } else if (s.contains("Level")) {

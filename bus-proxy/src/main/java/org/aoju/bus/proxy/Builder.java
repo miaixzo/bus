@@ -71,14 +71,14 @@ public class Builder {
 
     public static Class[] getAllInterfaces(Class cls) {
         final List interfaces = getAllInterfacesImpl(cls, new LinkedList());
-        return interfaces == null ? null : (Class[]) interfaces.toArray(new Class[interfaces.size()]);
+        return null == interfaces ? null : (Class[]) interfaces.toArray(new Class[interfaces.size()]);
     }
 
     private static List getAllInterfacesImpl(Class cls, List list) {
-        if (cls == null) {
+        if (null == cls) {
             return null;
         }
-        while (cls != null) {
+        while (null != cls) {
             Class[] interfaces = cls.getInterfaces();
             for (int i = 0; i < interfaces.length; i++) {
                 if (!list.contains(interfaces[i])) {

@@ -157,8 +157,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         // Get data from the registry if possible
         Map<Integer, PerfCounterBlock> processMap = processMapFromRegistry.get();
         // otherwise performance counters with WMI backup
-        if (processMap == null || processMap.isEmpty()) {
-            processMap = (pids == null) ? processMapFromPerfCounters.get()
+        if (null == processMap || processMap.isEmpty()) {
+            processMap = (null == pids) ? processMapFromPerfCounters.get()
                     : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
         }
 
@@ -347,7 +347,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
     private static long querySystemBootTime() {
         String eventLog = systemLog.get();
-        if (eventLog != null) {
+        if (null != eventLog) {
             try {
                 Advapi32Util.EventLogIterator iter = new Advapi32Util.EventLogIterator(null, eventLog, WinNT.EVENTLOG_BACKWARDS_READ);
                 // Get the most recent boot event (ID 12) from the Event log. If Windows "Fast
@@ -428,7 +428,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             return null;
         }
         WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
-        if (h == null) {
+        if (null == h) {
             Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
                     systemLog);
             return null;

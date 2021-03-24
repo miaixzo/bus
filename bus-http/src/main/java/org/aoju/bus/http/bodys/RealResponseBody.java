@@ -53,7 +53,7 @@ public final class RealResponseBody extends ResponseBody {
 
     @Override
     public MimeType contentType() {
-        return contentTypeString != null ? MimeType.valueOf(contentTypeString) : null;
+        return null != contentTypeString ? MimeType.valueOf(contentTypeString) : null;
     }
 
     @Override

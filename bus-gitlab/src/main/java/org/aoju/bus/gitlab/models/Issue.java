@@ -154,7 +154,7 @@ public class Issue {
 
     public void setId(Integer id) {
         this.id = id;
-        if (id != null) {
+        if (null != id) {
             actualId = new IntNode(id);
             externalId = null;
         }
@@ -166,7 +166,7 @@ public class Issue {
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
-        if (externalId != null) {
+        if (null != externalId) {
             actualId = new TextNode(externalId);
             id = null;
         }

@@ -89,7 +89,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
      */
     @Override
     public boolean hasNext() throws InstrumentException {
-        if (cachedLine != null) {
+        if (null != cachedLine) {
             return true;
         } else if (finished) {
             return false;
@@ -97,7 +97,7 @@ public class LineIter implements Iterator<String>, Iterable<String>, Closeable, 
             try {
                 while (true) {
                     String line = bufferedReader.readLine();
-                    if (line == null) {
+                    if (null == line) {
                         finished = true;
                         return false;
                     } else if (isValidLine(line)) {

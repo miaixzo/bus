@@ -111,7 +111,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
             // Get partitions
             List<HWPartition> partitions = new ArrayList<>();
             List<String> partList = maps.driveToPartitionMap.get(ds.getName());
-            if (partList != null && !partList.isEmpty()) {
+            if (null != partList && !partList.isEmpty()) {
                 for (String part : partList) {
                     if (maps.partitionMap.containsKey(part)) {
                         partitions.addAll(maps.partitionMap.get(part));
@@ -147,14 +147,14 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         List<Long> queueLengthList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.CURRENTDISKQUEUELENGTH);
         List<Long> diskTimeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.PERCENTDISKTIME);
 
-        if (instances.isEmpty() || readList == null || readByteList == null || writeList == null
-                || writeByteList == null || queueLengthList == null || diskTimeList == null) {
+        if (instances.isEmpty() || null == readList || null == readByteList || null == writeList
+                || null == writeByteList || null == queueLengthList || null == diskTimeList) {
             return stats;
         }
         for (int i = 0; i < instances.size(); i++) {
             String name = getIndexFromName(instances.get(i));
             // If index arg passed, only update passed arg
-            if (index != null && !index.equals(name)) {
+            if (null != index && !index.equals(name)) {
                 continue;
             }
             stats.readMap.put(name, readList.get(i));
@@ -209,12 +209,12 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         for (int i = 0; i < hwPartitionQueryMap.getResultCount(); i++) {
             String deviceID = WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DEVICEID, i);
             List<Pair<String, Long>> logicalDrives = maps.partitionToLogicalDriveMap.get(deviceID);
-            if (logicalDrives == null) {
+            if (null == logicalDrives) {
                 continue;
             }
             for (int j = 0; j < logicalDrives.size(); j++) {
                 Pair<String, Long> logicalDrive = logicalDrives.get(j);
-                if (logicalDrive != null && !logicalDrive.getLeft().isEmpty()) {
+                if (null != logicalDrive && !logicalDrive.getLeft().isEmpty()) {
                     char[] volumeChr = new char[GUID_BUFSIZE];
                     Kernel32.INSTANCE.GetVolumeNameForVolumeMountPoint(logicalDrive.getLeft(), volumeChr, GUID_BUFSIZE);
                     String uuid = Builder.parseUuidOrDefault(new String(volumeChr).trim(), "");

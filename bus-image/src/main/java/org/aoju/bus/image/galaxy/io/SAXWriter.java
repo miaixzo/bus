@@ -263,15 +263,15 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     private void addAttributes(int tag, VR vr, String privateCreator) {
-        if (privateCreator != null)
+        if (null != privateCreator)
             tag &= 0xffff00ff;
         if (includeKeyword) {
             String keyword = ElementDictionary.keywordOf(tag, privateCreator);
-            if (keyword != null && !keyword.isEmpty())
+            if (null != keyword && !keyword.isEmpty())
                 addAttribute("keyword", keyword);
         }
         addAttribute("tag", Tag.toHexString(tag));
-        if (privateCreator != null)
+        if (null != privateCreator)
             addAttribute("privateCreator", privateCreator);
         addAttribute("vr", vr.name());
     }
@@ -357,7 +357,7 @@ public class SAXWriter implements ImageInputHandler {
     }
 
     private void writeElement(String qname, String s) throws SAXException {
-        if (s != null) {
+        if (null != s) {
             startElement(qname);
             char[] buf = buffer;
             for (int off = 0, totlen = s.length(); off < totlen; ) {

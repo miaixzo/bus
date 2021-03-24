@@ -1470,7 +1470,7 @@ public class ImageKit {
      * @return 是否成功写出
      */
     public static boolean write(java.awt.Image image, ImageWriter writer, ImageOutputStream output, float quality) {
-        if (writer == null) {
+        if (null == writer) {
             return false;
         }
 

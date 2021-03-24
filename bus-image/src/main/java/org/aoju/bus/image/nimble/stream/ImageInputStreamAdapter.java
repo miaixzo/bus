@@ -73,7 +73,7 @@ public class ImageInputStreamAdapter extends InputStream {
 
     @Override
     public synchronized void reset() throws IOException {
-        if (markException != null)
+        if (null != markException)
             throw markException;
         iis.seek(markedPos);
     }

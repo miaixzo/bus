@@ -75,7 +75,7 @@ public class GeoKit {
      * @return 返回从坐标点到直定距离的矩形范围
      */
     public static Bounds rectangle(Point point, long distance) {
-        if (point == null || distance <= 0) {
+        if (null == point || distance <= 0) {
             return new Bounds();
         }
         float _delta = 111000;
@@ -163,7 +163,7 @@ public class GeoKit {
         public Point(double longitude, double latitude, PointType type) {
             this.longitude = longitude;
             this.latitude = latitude;
-            this.type = type == null ? PointType.WGS84 : type;
+            this.type = null == type ? PointType.WGS84 : type;
         }
 
         public Point(double longitude, double latitude) {
@@ -385,7 +385,7 @@ public class GeoKit {
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (null == o || getClass() != o.getClass()) {
                 return false;
             }
             Point point = (Point) o;
@@ -433,7 +433,7 @@ public class GeoKit {
          * @param other 另一个矩形区域
          */
         public Bounds(Bounds first, Bounds other) {
-            if (first == null || first.isEmpty() || other == null || other.isEmpty()) {
+            if (null == first || first.isEmpty() || null == other || other.isEmpty()) {
                 throw new InstrumentException("bounds");
             }
             this.southWest = new Point(Math.min(first.southWest.getLongitude(), other.southWest.getLongitude()), Math.min(first.southWest.getLatitude(), other.southWest.getLatitude()));
@@ -473,7 +473,7 @@ public class GeoKit {
          * @return 矩形区域是否为空
          */
         public boolean isEmpty() {
-            return southWest == null || northEast == null;
+            return null == southWest || null == northEast;
         }
 
         /**
@@ -497,7 +497,7 @@ public class GeoKit {
          * @return 计算与另一矩形的交集区域
          */
         public Bounds intersects(Bounds bounds) {
-            if (bounds != null && !bounds.isEmpty() && !isEmpty()) {
+            if (null != bounds && !bounds.isEmpty() && !isEmpty()) {
                 Bounds _merged = new Bounds(this, bounds);
                 //
                 double _x1 = this.southWest.longitude == _merged.southWest.longitude ? bounds.southWest.longitude : this.southWest.longitude;
@@ -518,7 +518,7 @@ public class GeoKit {
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (null == o || getClass() != o.getClass()) {
                 return false;
             }
             Bounds bounds = (Bounds) o;
@@ -605,7 +605,7 @@ public class GeoKit {
                 return true;
             }
 
-            if (o == null || getClass() != o.getClass()) {
+            if (null == o || getClass() != o.getClass()) {
                 return false;
             }
 
@@ -647,7 +647,7 @@ public class GeoKit {
         }
 
         public Polygon(Collection<Point> points) {
-            if (points != null && !points.isEmpty()) {
+            if (null != points && !points.isEmpty()) {
                 this.points.addAll(points);
             }
         }
@@ -657,7 +657,7 @@ public class GeoKit {
         }
 
         public Polygon add(Point point) {
-            if (point != null) {
+            if (null != point) {
                 this.points.add(point);
             }
             return this;

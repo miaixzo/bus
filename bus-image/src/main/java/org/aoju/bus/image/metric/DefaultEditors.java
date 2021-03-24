@@ -61,7 +61,7 @@ public class DefaultEditors implements Editors {
 
     @Override
     public boolean apply(Attributes data, AttributeContext context) {
-        if (data != null) {
+        if (null != data) {
             boolean update = false;
             if (generateUIDs) {
                 if ("2.25".equals(UID.getRoot())) {
@@ -82,7 +82,7 @@ public class DefaultEditors implements Editors {
                 data.setString(Tag.SOPInstanceUID, VR.UI, iuid);
                 update = true;
             }
-            if (tagToOverride != null && !tagToOverride.isEmpty()) {
+            if (null != tagToOverride && !tagToOverride.isEmpty()) {
                 data.update(Attributes.UpdatePolicy.OVERWRITE, tagToOverride, null);
                 update = true;
             }

@@ -93,7 +93,7 @@ public class ResponseBodyAdvice extends BaseAdvice
     private static <T> Object getValue(T entity, String field) {
         if (ReflectKit.hasField(entity, field)) {
             Object object = ReflectKit.invokeGetter(entity, field);
-            return object != null ? object.toString() : null;
+            return null != object ? object.toString() : null;
         }
         return null;
     }
@@ -198,7 +198,7 @@ public class ResponseBodyAdvice extends BaseAdvice
         Map<String, Privacy> map = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             Privacy privacy = field.getAnnotation(Privacy.class);
-            if (privacy != null) {
+            if (null != privacy) {
                 map.put(field.getName(), privacy);
             }
         }

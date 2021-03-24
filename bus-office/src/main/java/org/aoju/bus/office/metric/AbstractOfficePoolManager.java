@@ -86,7 +86,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
             entry = acquireManager();
             entry.execute(task);
         } finally {
-            if (entry != null) {
+            if (null != entry) {
                 releaseManager(entry);
             }
         }
@@ -142,7 +142,7 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
     private OfficeManager acquireManager() throws InstrumentException {
         try {
             final OfficeManager manager = pool.poll(config.getTaskQueueTimeout(), TimeUnit.MILLISECONDS);
-            if (manager == null) {
+            if (null == manager) {
                 throw new InstrumentException(
                         "No office manager available after " + config.getTaskQueueTimeout() + " millisec.");
             }
@@ -189,13 +189,13 @@ public abstract class AbstractOfficePoolManager extends AbstractOfficeManager {
             try {
                 manager.stop();
             } catch (InstrumentException ex) {
-                if (firstException == null) {
+                if (null == firstException) {
                     firstException = ex;
                 }
             }
         }
 
-        if (firstException != null) {
+        if (null != firstException) {
             throw firstException;
         }
 

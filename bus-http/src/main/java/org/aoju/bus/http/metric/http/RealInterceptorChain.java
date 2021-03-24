@@ -152,12 +152,12 @@ public final class RealInterceptorChain implements Interceptor.Chain {
 
         calls++;
 
-        if (this.httpCodec != null && !this.connection.supportsUrl(request.url())) {
+        if (this.null != httpCodec && !this.connection.supportsUrl(request.url())) {
             throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must retain the same host and port");
         }
 
-        if (this.httpCodec != null && calls > 1) {
+        if (this.null != httpCodec && calls > 1) {
             throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
                     + " must call proceed() exactly once");
         }
@@ -168,12 +168,12 @@ public final class RealInterceptorChain implements Interceptor.Chain {
         Interceptor interceptor = interceptors.get(index);
         Response response = interceptor.intercept(next);
 
-        if (httpCodec != null && index + 1 < interceptors.size() && next.calls != 1) {
+        if (null != httpCodec && index + 1 < interceptors.size() && next.calls != 1) {
             throw new IllegalStateException("network interceptor " + interceptor
                     + " must call proceed() exactly once");
         }
 
-        if (response == null) {
+        if (null == response) {
             throw new NullPointerException("interceptor " + interceptor + " returned null");
         }
 

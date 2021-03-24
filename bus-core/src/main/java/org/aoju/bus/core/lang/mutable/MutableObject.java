@@ -71,7 +71,7 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
+        if (null == obj) {
             return false;
         }
         if (this == obj) {
@@ -86,12 +86,12 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
 
     @Override
     public int hashCode() {
-        return value == null ? 0 : value.hashCode();
+        return null == value ? 0 : value.hashCode();
     }
 
     @Override
     public String toString() {
-        return value == null ? Normal.NULL : value.toString();
+        return null == value ? Normal.NULL : value.toString();
     }
 
 }

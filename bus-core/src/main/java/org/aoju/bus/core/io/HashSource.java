@@ -107,7 +107,7 @@ public final class HashSource extends DelegateSource {
 
             while (offset < sink.size) {
                 int pos = (int) (s.pos + start - offset);
-                if (messageDigest != null) {
+                if (null != messageDigest) {
                     messageDigest.update(s.data, pos, s.limit - pos);
                 } else {
                     mac.update(s.data, pos, s.limit - pos);
@@ -122,7 +122,7 @@ public final class HashSource extends DelegateSource {
     }
 
     public final ByteString hash() {
-        byte[] result = messageDigest != null ? messageDigest.digest() : mac.doFinal();
+        byte[] result = null != messageDigest ? messageDigest.digest() : mac.doFinal();
         return ByteString.of(result);
     }
 
