@@ -91,7 +91,7 @@ public class Checker {
                     Annotation[] annotations = field.getDeclaredAnnotations();
 
                     String[] xFields = validated.getContext().getField();
-                    String[] xSkip = validated.getContext().getSkip() == null ? null : validated.getContext().getSkip();
+                    String[] xSkip = null == validated.getContext().getSkip() ? null : validated.getContext().getSkip();
 
                     // 过滤当前需跳过的属性
                     if (ArrayKit.isNotEmpty(xSkip)
@@ -140,7 +140,7 @@ public class Checker {
         if (ObjectKit.isEmpty(matcher)) {
             throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
                     property.getName(),
-                    property.getClazz() == null ? Normal.NULL : property.getClazz().getName()));
+                    null == property.getClazz() ? Normal.NULL : property.getClazz().getName()));
         }
         Object validatedTarget = validated.getObject();
         if (ObjectKit.isNotEmpty(validatedTarget) && property.isArray() && Provider.isArray(validatedTarget)) {
