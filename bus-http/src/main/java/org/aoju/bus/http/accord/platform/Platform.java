@@ -141,7 +141,7 @@ public class Platform {
                 Field field = c.getDeclaredField(fieldName);
                 field.setAccessible(true);
                 Object value = field.get(instance);
-                if (value == null || !fieldType.isInstance(value)) return null;
+                if (null == value || !fieldType.isInstance(value)) return null;
                 return fieldType.cast(value);
             } catch (NoSuchFieldException ignored) {
             } catch (IllegalAccessException e) {
@@ -181,7 +181,7 @@ public class Platform {
             // 创建SSLContext对象，并使用我们指定的信任证书管理器初始化
             Class<?> sslContextClass = Class.forName("sun.security.ssl.SSLContextImpl");
             Object context = readFieldOrNull(sslSocketFactory, sslContextClass, "context");
-            if (context == null) return null;
+            if (null == context) return null;
             return readFieldOrNull(context, X509TrustManager.class, "trustManager");
         } catch (ClassNotFoundException e) {
             return null;
@@ -242,7 +242,7 @@ public class Platform {
     }
 
     public void logCloseableLeak(String message, Object stackTrace) {
-        if (stackTrace == null) {
+        if (null == stackTrace) {
             message += " To see where this was allocated, set the Httpd logger level to FINE: "
                     + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.DEBUG);";
         }
@@ -255,7 +255,7 @@ public class Platform {
 
     public CertificateChainCleaner buildCertificateChainCleaner(SSLSocketFactory sslSocketFactory) {
         X509TrustManager trustManager = trustManager(sslSocketFactory);
-        if (trustManager == null) {
+        if (null == trustManager) {
             throw new IllegalStateException("Unable to extract the trust manager on "
                     + Platform.get()
                     + ", sslSocketFactory is "

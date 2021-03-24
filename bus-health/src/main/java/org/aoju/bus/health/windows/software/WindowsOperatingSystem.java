@@ -159,7 +159,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             return null;
         }
         WinNT.HANDLE h = Advapi32.INSTANCE.OpenEventLog(null, systemLog);
-        if (h == null) {
+        if (null == h) {
             Logger.warn("Unable to open configured system Event log \"{}\". Calculating boot time from uptime.",
                     systemLog);
             return null;
@@ -419,8 +419,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         // Get data from the registry if possible
         Map<Integer, PerfCounterBlock> processMap = processMapFromRegistry.get();
         // otherwise performance counters with WMI backup
-        if (processMap == null || processMap.isEmpty()) {
-            processMap = (pids == null) ? processMapFromPerfCounters.get()
+        if (null == processMap || processMap.isEmpty()) {
+            processMap = (null == pids) ? processMapFromPerfCounters.get()
                     : ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
         }
 

@@ -90,7 +90,7 @@ public final class OpenBsdHWDiskStore extends AbstractHWDiskStore {
             String model = diskdata.getA();
             long size = diskdata.getC();
             if (size <= 1) {
-                if (dmesg == null) {
+                if (null == dmesg) {
                     dmesg = Executor.runNative("dmesg");
                 }
                 Pattern diskAt = Pattern.compile(diskName + " at .*<(.+)>.*");

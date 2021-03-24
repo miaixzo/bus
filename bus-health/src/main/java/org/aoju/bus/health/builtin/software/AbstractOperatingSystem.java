@@ -95,8 +95,8 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     @Override
     public List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit) {
-        return queryAllProcesses().stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
-                .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
+        return queryAllProcesses().stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
+                .sorted(null == sort ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
                 .collect(Collectors.toList());
     }
 
@@ -169,9 +169,9 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     public List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
                                              int limit) {
         OSProcess parent = getProcess(parentPid);
-        long parentStartTime = parent == null ? 0 : parent.getStartTime();
-        return queryChildProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
-                .filter(p -> p.getStartTime() >= parentStartTime).sorted(sort == null ? ProcessSorting.NO_SORTING : sort)
+        long parentStartTime = null == parent ? 0 : parent.getStartTime();
+        return queryChildProcesses(parentPid).stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
+                .filter(p -> p.getStartTime() >= parentStartTime).sorted(null == sort ? ProcessSorting.NO_SORTING : sort)
                 .limit(limit > 0 ? limit : Long.MAX_VALUE).collect(Collectors.toList());
     }
 
@@ -179,9 +179,9 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     public List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter,
                                                   Comparator<OSProcess> sort, int limit) {
         OSProcess parent = getProcess(parentPid);
-        long parentStartTime = parent == null ? 0 : parent.getStartTime();
-        return queryDescendantProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
-                .filter(p -> p.getStartTime() >= parentStartTime).sorted(sort == null ? ProcessSorting.NO_SORTING : sort)
+        long parentStartTime = null == parent ? 0 : parent.getStartTime();
+        return queryDescendantProcesses(parentPid).stream().filter(null == filter ? ProcessFiltering.ALL_PROCESSES : filter)
+                .filter(p -> p.getStartTime() >= parentStartTime).sorted(null == sort ? ProcessSorting.NO_SORTING : sort)
                 .limit(limit > 0 ? limit : Long.MAX_VALUE).collect(Collectors.toList());
     }
 

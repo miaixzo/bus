@@ -88,7 +88,7 @@ public final class Http2Stream {
 
     Http2Stream(int id, Http2Connection connection, boolean outFinished, boolean inFinished,
                 Headers headers) {
-        if (connection == null) throw new NullPointerException("connection == null");
+        if (null == connection) throw new NullPointerException("connection == null");
 
         this.id = id;
         this.connection = connection;
@@ -104,7 +104,7 @@ public final class Http2Stream {
 
         if (isLocallyInitiated() && null != headers) {
             throw new IllegalStateException("locally-initiated streams shouldn't have headers yet");
-        } else if (!isLocallyInitiated() && headers == null) {
+        } else if (!isLocallyInitiated() && null == headers) {
             throw new IllegalStateException("remotely-initiated streams should have headers");
         }
     }
@@ -137,7 +137,7 @@ public final class Http2Stream {
     public synchronized Headers takeHeaders() throws IOException {
         readTimeout.enter();
         try {
-            while (headersQueue.isEmpty() && errorCode == null) {
+            while (headersQueue.isEmpty() && null == errorCode) {
                 waitForIo();
             }
         } finally {
@@ -155,7 +155,7 @@ public final class Http2Stream {
 
     public void writeHeaders(List<HttpHeaders> responseHeaders, boolean out) throws IOException {
         assert (!Thread.holdsLock(Http2Stream.this));
-        if (responseHeaders == null) {
+        if (null == responseHeaders) {
             throw new NullPointerException("headers == null");
         }
         boolean outFinished = false;
@@ -266,7 +266,7 @@ public final class Http2Stream {
     }
 
     synchronized void receiveRstStream(ErrorCode errorCode) {
-        if (this.errorCode == null) {
+        if (null == this.errorCode) {
             this.errorCode = errorCode;
             notifyAll();
         }
@@ -380,13 +380,13 @@ public final class Http2Stream {
                             readBytesDelivered = readBuffer.read(sink, Math.min(byteCount, readBuffer.size()));
                             unacknowledgedBytesRead += readBytesDelivered;
 
-                            if (errorCodeToDeliver == null
+                            if (null == errorCodeToDeliver
                                     && unacknowledgedBytesRead
                                     >= connection.settings.getInitialWindowSize() / 2) {
                                 connection.writeWindowUpdateLater(id, unacknowledgedBytesRead);
                                 unacknowledgedBytesRead = 0;
                             }
-                        } else if (!finished && errorCodeToDeliver == null) {
+                        } else if (!finished && null == errorCodeToDeliver) {
                             waitForIo();
                             continue;
                         }
@@ -531,7 +531,7 @@ public final class Http2Stream {
             synchronized (Http2Stream.this) {
                 writeTimeout.enter();
                 try {
-                    while (bytesLeftInWriteWindow <= 0 && !finished && !closed && errorCode == null) {
+                    while (bytesLeftInWriteWindow <= 0 && !finished && !closed && null == errorCode) {
                         waitForIo();
                     }
                 } finally {

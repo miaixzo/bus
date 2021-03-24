@@ -286,7 +286,7 @@ public class Ftp extends AbstractFtp {
             // ignore
         }
 
-        if (pwd == null) {
+        if (null == pwd) {
             return this.init();
         }
         return this;

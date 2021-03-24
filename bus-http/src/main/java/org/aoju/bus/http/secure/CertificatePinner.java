@@ -118,10 +118,10 @@ public final class CertificatePinner {
             for (int p = 0, pinsSize = pins.size(); p < pinsSize; p++) {
                 Pin pin = pins.get(p);
                 if (pin.hashAlgorithm.equals("sha256/")) {
-                    if (sha256 == null) sha256 = sha256(x509Certificate);
+                    if (null == sha256) sha256 = sha256(x509Certificate);
                     if (pin.hash.equals(sha256)) return; // Success!
                 } else if (pin.hashAlgorithm.equals("sha1/")) {
-                    if (sha1 == null) sha1 = sha1(x509Certificate);
+                    if (null == sha1) sha1 = sha1(x509Certificate);
                     if (pin.hash.equals(sha1)) return; // Success!
                 } else {
                     throw new AssertionError("unsupported hashAlgorithm: " + pin.hashAlgorithm);
@@ -196,7 +196,7 @@ public final class CertificatePinner {
                 throw new IllegalArgumentException("pins must start with 'sha256/' or 'sha1/': " + pin);
             }
 
-            if (this.hash == null) {
+            if (null == this.hash) {
                 throw new IllegalArgumentException("pins must be base64: " + pin);
             }
         }
@@ -251,7 +251,7 @@ public final class CertificatePinner {
          * @return 构建器
          */
         public Builder add(String pattern, String... pins) {
-            if (pattern == null) throw new NullPointerException("pattern == null");
+            if (null == pattern) throw new NullPointerException("pattern == null");
 
             for (String pin : pins) {
                 this.pins.add(new Pin(pattern, pin));

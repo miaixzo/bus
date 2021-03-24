@@ -57,7 +57,7 @@ public final class HttpsURLConnection extends DelegatingConnection {
 
     @Override
     protected Handshake handshake() {
-        if (delegate.call == null) {
+        if (null == delegate.call) {
             throw new IllegalStateException("Connection has not yet been established");
         }
 
@@ -83,7 +83,7 @@ public final class HttpsURLConnection extends DelegatingConnection {
 
     @Override
     public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
-        if (sslSocketFactory == null) {
+        if (null == sslSocketFactory) {
             throw new IllegalArgumentException("sslSocketFactory == null");
         }
         delegate.client = delegate.client.newBuilder()

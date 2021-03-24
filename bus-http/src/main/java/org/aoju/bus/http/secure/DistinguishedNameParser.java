@@ -318,7 +318,7 @@ public final class DistinguishedNameParser {
         chars = dn.toCharArray();
 
         String attType = nextAT();
-        if (attType == null) {
+        if (null == attType) {
             return null;
         }
         while (true) {
@@ -358,7 +358,7 @@ public final class DistinguishedNameParser {
 
             pos++;
             attType = nextAT();
-            if (attType == null) {
+            if (null == attType) {
                 throw new IllegalStateException("Malformed DN: " + dn);
             }
         }

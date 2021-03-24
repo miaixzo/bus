@@ -78,7 +78,7 @@ public class WmiQueryHandler {
      * @return 类的实例 {@link #setInstanceClass(Class)}
      */
     public static synchronized WmiQueryHandler createInstance() {
-        if (customClass == null) {
+        if (null == customClass) {
             return new WmiQueryHandler();
         }
         try {
@@ -124,7 +124,7 @@ public class WmiQueryHandler {
         } catch (COMException e) {
             // Ignore any exceptions with OpenHardwareMonitor
             if (!WmiKit.OHM_NAMESPACE.equals(query.getNameSpace())) {
-                final int hresult = e.getHresult() == null ? -1 : e.getHresult().intValue();
+                final int hresult = null == e.getHresult() ? -1 : e.getHresult().intValue();
                 switch (hresult) {
                     case Wbemcli.WBEM_E_INVALID_NAMESPACE:
                         Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());

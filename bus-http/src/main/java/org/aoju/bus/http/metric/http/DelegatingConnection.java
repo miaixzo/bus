@@ -80,7 +80,7 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public Certificate[] getLocalCertificates() {
         Handshake handshake = handshake();
-        if (handshake == null) return null;
+        if (null == handshake) return null;
         List<Certificate> result = handshake.localCertificates();
         return !result.isEmpty() ? result.toArray(new Certificate[result.size()]) : null;
     }
@@ -88,7 +88,7 @@ public abstract class DelegatingConnection extends HttpsURLConnection {
     @Override
     public Certificate[] getServerCertificates() {
         Handshake handshake = handshake();
-        if (handshake == null) return null;
+        if (null == handshake) return null;
         List<Certificate> result = handshake.peerCertificates();
         return !result.isEmpty() ? result.toArray(new Certificate[result.size()]) : null;
     }

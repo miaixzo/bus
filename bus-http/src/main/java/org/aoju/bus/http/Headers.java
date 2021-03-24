@@ -63,14 +63,14 @@ public final class Headers {
     }
 
     public static Headers of(String... namesAndValues) {
-        if (namesAndValues == null) throw new NullPointerException("namesAndValues == null");
+        if (null == namesAndValues) throw new NullPointerException("namesAndValues == null");
         if (namesAndValues.length % 2 != 0) {
             throw new IllegalArgumentException("Expected alternating header names and values");
         }
 
         namesAndValues = namesAndValues.clone();
         for (int i = 0; i < namesAndValues.length; i++) {
-            if (namesAndValues[i] == null) throw new IllegalArgumentException("Headers cannot be null");
+            if (null == namesAndValues[i]) throw new IllegalArgumentException("Headers cannot be null");
             namesAndValues[i] = namesAndValues[i].trim();
         }
 
@@ -85,12 +85,12 @@ public final class Headers {
     }
 
     public static Headers of(Map<String, String> headers) {
-        if (headers == null) throw new NullPointerException("headers == null");
+        if (null == headers) throw new NullPointerException("headers == null");
 
         String[] namesAndValues = new String[headers.size() * 2];
         int i = 0;
         for (Map.Entry<String, String> header : headers.entrySet()) {
-            if (header.getKey() == null || header.getValue() == null) {
+            if (null == header.getKey() || null == header.getValue()) {
                 throw new IllegalArgumentException("Headers cannot be null");
             }
             String name = header.getKey().trim();
@@ -106,7 +106,7 @@ public final class Headers {
     }
 
     static void checkName(String name) {
-        if (name == null) throw new NullPointerException("name == null");
+        if (null == name) throw new NullPointerException("name == null");
         if (name.isEmpty()) throw new IllegalArgumentException("name is empty");
         for (int i = 0, length = name.length(); i < length; i++) {
             char c = name.charAt(i);
@@ -118,7 +118,7 @@ public final class Headers {
     }
 
     static void checkValue(String value, String name) {
-        if (value == null) throw new NullPointerException("value for name " + name + " == null");
+        if (null == value) throw new NullPointerException("value for name " + name + " == null");
         for (int i = 0, length = value.length(); i < length; i++) {
             char c = value.charAt(i);
             if ((c <= '\u001f' && c != Symbol.C_HT) || c >= '\u007f') {
@@ -161,7 +161,7 @@ public final class Headers {
         List<String> result = null;
         for (int i = 0, size = size(); i < size; i++) {
             if (name.equalsIgnoreCase(name(i))) {
-                if (result == null) result = new ArrayList<>(2);
+                if (null == result) result = new ArrayList<>(2);
                 result.add(value(i));
             }
         }
@@ -211,7 +211,7 @@ public final class Headers {
         for (int i = 0, size = size(); i < size; i++) {
             String name = name(i).toLowerCase(Locale.US);
             List<String> values = result.get(name);
-            if (values == null) {
+            if (null == values) {
                 values = new ArrayList<>(2);
                 result.put(name, values);
             }
@@ -263,13 +263,13 @@ public final class Headers {
         }
 
         public Builder add(String name, Date value) {
-            if (value == null) throw new NullPointerException("value for name " + name + " == null");
+            if (null == value) throw new NullPointerException("value for name " + name + " == null");
             add(name, org.aoju.bus.http.Builder.format(value));
             return this;
         }
 
         public Builder set(String name, Date value) {
-            if (value == null) throw new NullPointerException("value for name " + name + " == null");
+            if (null == value) throw new NullPointerException("value for name " + name + " == null");
             set(name, org.aoju.bus.http.Builder.format(value));
             return this;
         }

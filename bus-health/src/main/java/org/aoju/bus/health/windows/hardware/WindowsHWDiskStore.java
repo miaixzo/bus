@@ -147,8 +147,8 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         List<Long> queueLengthList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.CURRENTDISKQUEUELENGTH);
         List<Long> diskTimeList = valueMap.get(PhysicalDisk.PhysicalDiskProperty.PERCENTDISKTIME);
 
-        if (instances.isEmpty() || readList == null || readByteList == null || writeList == null
-                || writeByteList == null || queueLengthList == null || diskTimeList == null) {
+        if (instances.isEmpty() || null == readList || null == readByteList || null == writeList
+                || null == writeByteList || null == queueLengthList || null == diskTimeList) {
             return stats;
         }
         for (int i = 0; i < instances.size(); i++) {
@@ -209,7 +209,7 @@ public final class WindowsHWDiskStore extends AbstractHWDiskStore {
         for (int i = 0; i < hwPartitionQueryMap.getResultCount(); i++) {
             String deviceID = WmiKit.getString(hwPartitionQueryMap, Win32DiskPartition.DiskPartitionProperty.DEVICEID, i);
             List<Pair<String, Long>> logicalDrives = maps.partitionToLogicalDriveMap.get(deviceID);
-            if (logicalDrives == null) {
+            if (null == logicalDrives) {
                 continue;
             }
             for (int j = 0; j < logicalDrives.size(); j++) {

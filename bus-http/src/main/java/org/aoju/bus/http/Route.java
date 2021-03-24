@@ -44,13 +44,13 @@ public final class Route {
     final InetSocketAddress inetSocketAddress;
 
     public Route(Address address, Proxy proxy, InetSocketAddress inetSocketAddress) {
-        if (address == null) {
+        if (null == address) {
             throw new NullPointerException("address == null");
         }
-        if (proxy == null) {
+        if (null == proxy) {
             throw new NullPointerException("proxy == null");
         }
-        if (inetSocketAddress == null) {
+        if (null == inetSocketAddress) {
             throw new NullPointerException("inetSocketAddress == null");
         }
         this.address = address;

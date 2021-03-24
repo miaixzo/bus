@@ -245,7 +245,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         if (null != threads) {
             threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(Collections.singleton(this.getProcessID()));
         }
-        if (threads == null) {
+        if (null == threads) {
             return Collections.emptyList();
         }
         return threads.entrySet().stream()
@@ -264,7 +264,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         // Get data from the registry if possible
         Map<Integer, ProcessPerformanceData.PerfCounterBlock> pcb = ProcessPerformanceData.buildProcessMapFromRegistry(null);
         // otherwise performance counters with WMI backup
-        if (pcb == null) {
+        if (null == pcb) {
             pcb = ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
         }
         Map<Integer, ProcessWtsData.WtsInfo> wts = ProcessWtsData.queryProcessWtsMap(pids);
@@ -393,7 +393,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
                 Kernel32.INSTANCE.CloseHandle(pHandle);
             }
         }
-        if (pair == null) {
+        if (null == pair) {
             return Pair.of(Normal.UNKNOWN, Normal.UNKNOWN);
         }
         return pair;
@@ -421,7 +421,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
             }
             Kernel32.INSTANCE.CloseHandle(pHandle);
         }
-        if (pair == null) {
+        if (null == pair) {
             return Pair.of(Normal.UNKNOWN, Normal.UNKNOWN);
         }
         return pair;

@@ -99,7 +99,7 @@ public abstract class RequestBuilder<T extends RequestBuilder> {
     }
 
     public T addParams(Map<String, String> paramMap) {
-        if (paramMap == null) {
+        if (null == paramMap) {
             return (T) this;
         }
         paramMap.forEach((k, v) -> params.put(k, v));

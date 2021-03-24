@@ -446,7 +446,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 if (split.length > 1) {
                     codeName = split[1].trim();
                 }
-            } else if (line.startsWith("NAME=") && family == null) {
+            } else if (line.startsWith("NAME=") && null == family) {
                 Logger.debug(OS_RELEASE_LOG, line);
                 // remove beginning and ending '"' characters, etc from
                 // NAME="Ubuntu"
@@ -458,7 +458,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 versionId = line.replace("VERSION_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             }
         }
-        return family == null ? null : Triple.of(family, versionId, codeName);
+        return null == family ? null : Triple.of(family, versionId, codeName);
     }
 
     /**
@@ -489,7 +489,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                         codeName = Triple.getRight();
                     }
                 }
-            } else if (line.startsWith("Distributor ID:") && family == null) {
+            } else if (line.startsWith("Distributor ID:") && null == family) {
                 Logger.debug(LSB_RELEASE_A_LOG, line);
                 family = line.replace("Distributor ID:", Normal.EMPTY).trim();
             } else if (line.startsWith("Release:") && versionId.equals(Normal.UNKNOWN)) {
@@ -500,7 +500,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 codeName = line.replace("Codename:", Normal.EMPTY).trim();
             }
         }
-        return family == null ? null : Triple.of(family, versionId, codeName);
+        return null == family ? null : Triple.of(family, versionId, codeName);
     }
 
     /**
@@ -530,7 +530,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                         codeName = Triple.getRight();
                     }
                 }
-            } else if (line.startsWith("DISTRIB_ID=") && family == null) {
+            } else if (line.startsWith("DISTRIB_ID=") && null == family) {
                 Logger.debug(LSB_RELEASE_LOG, line);
                 family = line.replace("DISTRIB_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("DISTRIB_RELEASE=") && versionId.equals(Normal.UNKNOWN)) {
@@ -541,7 +541,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 codeName = line.replace("DISTRIB_CODENAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             }
         }
-        return family == null ? null : Triple.of(family, versionId, codeName);
+        return null == family ? null : Triple.of(family, versionId, codeName);
     }
 
     /**

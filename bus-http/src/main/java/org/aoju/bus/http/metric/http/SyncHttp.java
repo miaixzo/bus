@@ -111,7 +111,7 @@ public class SyncHttp extends CoverHttp<SyncHttp> {
      * @return 请求结果
      */
     public Results request(String method) {
-        if (method == null || method.isEmpty()) {
+        if (null == method || method.isEmpty()) {
             throw new IllegalArgumentException("Request method method cannot be empty!");
         }
         RealResult result = new RealResult(this, httpv.executor());
@@ -138,7 +138,7 @@ public class SyncHttp extends CoverHttp<SyncHttp> {
             }
         }, skipPreproc, skipSerialPreproc);
         boolean timeout = false;
-        if (result.getState() == null) {
+        if (null == result.getState()) {
             timeout = !timeoutAwait(latch);
         }
         // 移除标签任务

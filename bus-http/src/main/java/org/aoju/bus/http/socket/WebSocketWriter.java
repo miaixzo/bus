@@ -54,8 +54,8 @@ final class WebSocketWriter {
     boolean activeWriter;
 
     WebSocketWriter(boolean isClient, BufferSink sink, Random random) {
-        if (sink == null) throw new NullPointerException("sink == null");
-        if (random == null) throw new NullPointerException("random == null");
+        if (null == sink) throw new NullPointerException("sink == null");
+        if (null == random) throw new NullPointerException("random == null");
         this.isClient = isClient;
         this.sink = sink;
         this.sinkBuffer = sink.buffer();

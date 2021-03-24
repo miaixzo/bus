@@ -75,7 +75,7 @@ public final class ConnectionSelector {
             }
         }
 
-        if (tlsConfiguration == null) {
+        if (null == tlsConfiguration) {
             // 这可能是第一次尝试连接，而套接字不支持任何必需的协议
             // 或者可能是重试(但此套接字支持的协议比先前的套接字所建议的少)
             throw new UnknownServiceException(

@@ -112,7 +112,7 @@ public class Httpv {
     }
 
     public int cancel(String tag) {
-        if (tag == null) {
+        if (null == tag) {
             return 0;
         }
         int count = 0;
@@ -228,7 +228,7 @@ public class Httpv {
 
     private String urlPath(String urlPath, boolean websocket) {
         String fullUrl;
-        if (urlPath == null) {
+        if (null == urlPath) {
             if (null != baseUrl) {
                 fullUrl = baseUrl;
             } else {
@@ -421,7 +421,7 @@ public class Httpv {
                 Response response = chain.proceed(request);
                 ResponseBody body = response.body();
                 String type = response.header("Content-Type");
-                if (body == null || null != type && (type.contains("octet-stream")
+                if (null == body || null != type && (type.contains("octet-stream")
                         || type.contains("image") || type.contains("video")
                         || type.contains("archive") || type.contains("word")
                         || type.contains("xls") || type.contains("pdf"))) {
@@ -628,7 +628,7 @@ public class Httpv {
          * @return HTTP
          */
         public Httpv build() {
-            if (null != config || httpd == null) {
+            if (null != config || null == httpd) {
                 Httpd.Builder builder = new Httpd.Builder();
                 if (null != config) {
                     config.config(builder);

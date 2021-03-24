@@ -35,9 +35,9 @@ public class Limiter {
      * @return 限流器
      */
     public RateLimiter fetchRateLimiter() {
-        if (rateLimiter == null) {
+        if (null == rateLimiter) {
             synchronized (this) {
-                if (rateLimiter == null) {
+                if (null == rateLimiter) {
                     rateLimiter = RateLimiter.create(tokenCount);
                 }
             }

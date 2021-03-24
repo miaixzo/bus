@@ -173,11 +173,11 @@ public final class RealInterceptorChain implements Interceptor.Chain {
                     + " must call proceed() exactly once");
         }
 
-        if (response == null) {
+        if (null == response) {
             throw new NullPointerException("interceptor " + interceptor + " returned null");
         }
 
-        if (response.body() == null) {
+        if (null == response.body()) {
             throw new IllegalStateException(
                     "interceptor " + interceptor + " returned a response with no body");
         }

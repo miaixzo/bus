@@ -61,7 +61,7 @@ public final class CacheAdapter implements InternalCache {
     @Override
     public Response get(Request request) throws IOException {
         CacheResponse javaResponse = getJavaCachedResponse(request);
-        if (javaResponse == null) {
+        if (null == javaResponse) {
             return null;
         }
         return NetApiConvert.createResponseForCacheGet(request, javaResponse);
@@ -72,7 +72,7 @@ public final class CacheAdapter implements InternalCache {
         URI uri = response.request().url().uri();
         HttpURLConnection connection = NetApiConvert.createJavaUrlConnectionForCachePut(response);
         final java.net.CacheRequest request = delegate.put(uri, connection);
-        if (request == null) {
+        if (null == request) {
             return null;
         }
         return new CacheRequest() {

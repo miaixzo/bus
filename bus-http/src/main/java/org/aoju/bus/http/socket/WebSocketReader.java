@@ -58,8 +58,8 @@ final class WebSocketReader {
     boolean isControlFrame;
 
     WebSocketReader(boolean isClient, BufferSource source, FrameCallback frameCallback) {
-        if (source == null) throw new NullPointerException("source == null");
-        if (frameCallback == null) throw new NullPointerException("frameCallback == null");
+        if (null == source) throw new NullPointerException("source == null");
+        if (null == frameCallback) throw new NullPointerException("frameCallback == null");
         this.isClient = isClient;
         this.source = source;
         this.frameCallback = frameCallback;

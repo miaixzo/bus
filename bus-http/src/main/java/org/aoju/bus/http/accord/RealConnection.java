@@ -134,7 +134,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         List<ConnectionSuite> connectionSuites = route.address().connectionSpecs();
         ConnectionSelector connectionSelector = new ConnectionSelector(connectionSuites);
 
-        if (route.address().sslSocketFactory() == null) {
+        if (null == route.address().sslSocketFactory()) {
             if (!connectionSuites.contains(ConnectionSuite.CLEARTEXT)) {
                 throw new RouteException(new UnknownServiceException(
                         "CLEARTEXT communication not enabled for client"));
@@ -155,7 +155,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             try {
                 if (route.requiresTunnel()) {
                     connectTunnel(connectTimeout, readTimeout, writeTimeout, call, eventListener);
-                    if (rawSocket == null) {
+                    if (null == rawSocket) {
                         // 我们无法连接隧道，但适当地关闭了我们的资源
                         break;
                     }
@@ -178,7 +178,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
 
                 eventListener.connectFailed(call, route.socketAddress(), route.proxy(), null, e);
 
-                if (routeException == null) {
+                if (null == routeException) {
                     routeException = new RouteException(e);
                 } else {
                     routeException.addConnectException(e);
@@ -190,7 +190,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             }
         }
 
-        if (route.requiresTunnel() && rawSocket == null) {
+        if (route.requiresTunnel() && null == rawSocket) {
             ProtocolException exception = new ProtocolException("Too many tunnel connections attempted: "
                     + MAX_TUNNEL_ATTEMPTS);
             throw new RouteException(exception);
@@ -223,7 +223,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
             tunnelRequest = createTunnel(readTimeout, writeTimeout, tunnelRequest, url);
 
             // 通道成功创建
-            if (tunnelRequest == null) {
+            if (null == tunnelRequest) {
                 break;
             }
 
@@ -277,7 +277,7 @@ public final class RealConnection extends Http2Connection.Listener implements Co
 
     private void establishProtocol(ConnectionSelector connectionSelector,
                                    int pingIntervalMillis, NewCall call, EventListener eventListener) throws IOException {
-        if (route.address().sslSocketFactory() == null) {
+        if (null == route.address().sslSocketFactory()) {
             if (route.address().protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)) {
                 socket = rawSocket;
                 protocol = Protocol.H2_PRIOR_KNOWLEDGE;
@@ -419,7 +419,9 @@ public final class RealConnection extends Http2Connection.Listener implements Co
 
                 case Http.HTTP_PROXY_AUTH:
                     tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
-                    if (tunnelRequest == null) throw new IOException("Failed to authenticate with proxy");
+                    if (null == tunnelRequest) {
+                        throw new IOException("Failed to authenticate with proxy");
+                    }
 
                     if ("close".equalsIgnoreCase(response.header("Connection"))) {
                         return tunnelRequest;
@@ -488,11 +490,13 @@ public final class RealConnection extends Http2Connection.Listener implements Co
         }
 
         // 1. 这个连接必须是 HTTP/2
-        if (http2Connection == null) return false;
+        if (null == http2Connection) {
+            return false;
+        }
 
         // 2. 路由必须共享一个IP地址。这要求我们为两个主机都有一个DNS地址，这只在路由规划之后
         // 才会发生。我们无法合并使用代理的连接，因为代理不会告诉我们原始服务器的IP地址
-        if (route == null) return false;
+        if (null == route) return false;
         if (route.proxy().type() != Proxy.Type.DIRECT) return false;
         if (this.route.proxy().type() != Proxy.Type.DIRECT) return false;
         if (!this.route.socketAddress().equals(route.socketAddress())) return false;

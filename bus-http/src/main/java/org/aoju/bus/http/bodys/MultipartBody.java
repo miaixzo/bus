@@ -217,7 +217,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part create(Headers headers, RequestBody body) {
-            if (body == null) {
+            if (null == body) {
                 throw new NullPointerException("body == null");
             }
             if (null != headers && null != headers.get(Header.CONTENT_TYPE)) {
@@ -234,7 +234,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public static Part createFormData(String name, String filename, RequestBody body) {
-            if (name == null) {
+            if (null == name) {
                 throw new NullPointerException("name == null");
             }
             StringBuilder disposition = new StringBuilder("form-data; name=");
@@ -276,7 +276,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder setType(MimeType type) {
-            if (type == null) {
+            if (null == type) {
                 throw new NullPointerException("type == null");
             }
             if (!"multipart".equals(type.type())) {
@@ -303,7 +303,7 @@ public final class MultipartBody extends RequestBody {
         }
 
         public Builder addPart(Part part) {
-            if (part == null) throw new NullPointerException("part == null");
+            if (null == part) throw new NullPointerException("part == null");
             parts.add(part);
             return this;
         }

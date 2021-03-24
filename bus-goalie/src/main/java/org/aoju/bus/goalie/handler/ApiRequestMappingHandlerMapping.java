@@ -54,7 +54,7 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
         RequestMappingInfo mappinginfo = super.getMappingForMethod(method, handlerType);
         if (null != mappinginfo) {
             RequestMappingInfo apiVersionMappingInfo = getApiVersionMappingInfo(method, handlerType);
-            return apiVersionMappingInfo == null ? mappinginfo : apiVersionMappingInfo.combine(mappinginfo);
+            return null == apiVersionMappingInfo ? mappinginfo : apiVersionMappingInfo.combine(mappinginfo);
         }
         return mappinginfo;
     }
@@ -78,7 +78,7 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
     }
 
     private RequestCondition<?> createRequestCondtion(ClientVersion clientVersion) {
-        if (clientVersion == null) {
+        if (null == clientVersion) {
             return null;
         }
         if (null != clientVersion.value() && clientVersion.value().length > 0) {
@@ -98,10 +98,10 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
     private RequestMappingInfo getApiVersionMappingInfo(Method method, Class<?> handlerType) {
         // 优先查找method
         ApiVersion apiVersion = AnnotatedElementUtils.findMergedAnnotation(method, ApiVersion.class);
-        if (apiVersion == null || StringKit.isBlank(apiVersion.value())) {
+        if (null == apiVersion || StringKit.isBlank(apiVersion.value())) {
             apiVersion = AnnotatedElementUtils.findMergedAnnotation(handlerType, ApiVersion.class);
         }
-        return apiVersion == null || StringKit.isBlank(apiVersion.value()) ? null : RequestMappingInfo
+        return null == apiVersion || StringKit.isBlank(apiVersion.value()) ? null : RequestMappingInfo
                 .paths(apiVersion.value())
                 .build();
     }

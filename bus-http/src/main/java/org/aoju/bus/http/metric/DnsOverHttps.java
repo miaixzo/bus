@@ -69,10 +69,10 @@ public class DnsOverHttps implements DnsX {
     private final boolean resolvePublicAddresses;
 
     DnsOverHttps(Builder builder) {
-        if (builder.client == null) {
+        if (null == builder.client) {
             throw new NullPointerException("client not set");
         }
-        if (builder.url == null) {
+        if (null == builder.url) {
             throw new NullPointerException("url not set");
         }
 
@@ -188,7 +188,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     public static long size(String string, int beginIndex, int endIndex) {
-        if (string == null) throw new IllegalArgumentException("string == null");
+        if (null == string) throw new IllegalArgumentException("string == null");
         if (beginIndex < 0) throw new IllegalArgumentException("beginIndex < 0: " + beginIndex);
         if (endIndex < beginIndex) {
             throw new IllegalArgumentException("endIndex < beginIndex: " + endIndex + " < " + beginIndex);
@@ -231,7 +231,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     static boolean isPrivateHost(String host) {
-        return SuffixDatabase.get().getEffectiveTldPlusOne(host) == null;
+        return null == SuffixDatabase.get().getEffectiveTldPlusOne(host);
     }
 
     public UnoUrl url() {
@@ -390,7 +390,7 @@ public class DnsOverHttps implements DnsX {
     }
 
     private List<InetAddress> readResponse(String hostname, Response response) throws Exception {
-        if (response.cacheResponse() == null && response.protocol() != Protocol.HTTP_2) {
+        if (null == response.cacheResponse() && response.protocol() != Protocol.HTTP_2) {
             Logger.debug("Incorrect protocol: " + response.protocol(), null);
         }
 

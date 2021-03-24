@@ -54,7 +54,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     public void msgType(String type) {
-        if (type == null || type.equalsIgnoreCase(Builder.FORM)) {
+        if (null == type || type.equalsIgnoreCase(Builder.FORM)) {
             throw new IllegalArgumentException("msgType 不可为空 或 form");
         }
         this.msgType = type;
@@ -68,7 +68,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     public boolean send(Object msg) {
-        if (msg == null) {
+        if (null == msg) {
             return false;
         }
         synchronized (queues) {
@@ -92,7 +92,7 @@ public class CoverWebSocket implements Cancelable {
     }
 
     boolean send(WebSocket webSocket, Object msg) {
-        if (msg == null) {
+        if (null == msg) {
             return false;
         }
         if (msg instanceof String) {

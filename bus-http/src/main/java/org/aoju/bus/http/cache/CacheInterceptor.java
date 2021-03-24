@@ -81,7 +81,7 @@ public final class CacheInterceptor implements Interceptor {
                 continue; // Drop 100-level freshness warnings.
             }
             if (isContentSpecificHeader(fieldName) || !isEndToEnd(fieldName)
-                    || networkHeaders.get(fieldName) == null) {
+                    || null == networkHeaders.get(fieldName)) {
                 Builder.instance.addLenient(result, fieldName, value);
             }
         }
@@ -141,13 +141,13 @@ public final class CacheInterceptor implements Interceptor {
             cache.trackResponse(strategy);
         }
 
-        if (null != cacheCandidate && cacheResponse == null) {
+        if (null != cacheCandidate && null == cacheResponse) {
             // 缓存候选不适用。关闭它
             IoKit.close(cacheCandidate.body());
         }
 
         // 如果我们被禁止使用网络且缓存不足，则失败
-        if (networkRequest == null && cacheResponse == null) {
+        if (null == networkRequest && null == cacheResponse) {
             return new Response.Builder()
                     .request(chain.request())
                     .protocol(Protocol.HTTP_1_1)
@@ -160,7 +160,7 @@ public final class CacheInterceptor implements Interceptor {
         }
 
         // 如果没有网络就完大了
-        if (networkRequest == null) {
+        if (null == networkRequest) {
             return cacheResponse.newBuilder()
                     .cacheResponse(stripBody(cacheResponse))
                     .build();
@@ -171,7 +171,7 @@ public final class CacheInterceptor implements Interceptor {
             networkResponse = chain.proceed(networkRequest);
         } finally {
             // 如果我们在I/O或其他方面崩溃，不要泄漏缓存体
-            if (networkResponse == null && null != cacheCandidate) {
+            if (null == networkResponse && null != cacheCandidate) {
                 IoKit.close(cacheCandidate.body());
             }
         }
@@ -234,9 +234,13 @@ public final class CacheInterceptor implements Interceptor {
     private Response cacheWritingResponse(final CacheRequest cacheRequest, Response response)
             throws IOException {
         // 一些应用程序返回一个空体;为了兼容性，我们将其视为空缓存请求
-        if (cacheRequest == null) return response;
+        if (null == cacheRequest) {
+            return response;
+        }
         Sink cacheBodyUnbuffered = cacheRequest.body();
-        if (cacheBodyUnbuffered == null) return response;
+        if (null == cacheBodyUnbuffered) {
+            return response;
+        }
 
         final BufferSource source = response.body().source();
         final BufferSink cacheBody = IoKit.buffer(cacheBodyUnbuffered);

@@ -204,12 +204,12 @@ public final class CacheStrategy {
          */
         private CacheStrategy getCandidate() {
             //没有缓存的响应.
-            if (cacheResponse == null) {
+            if (null == cacheResponse) {
                 return new CacheStrategy(request, null);
             }
 
             // 如果缺少必要的握手，则删除缓存的响应。
-            if (request.isHttps() && cacheResponse.handshake() == null) {
+            if (request.isHttps() && null == cacheResponse.handshake()) {
                 return new CacheStrategy(request, null);
             }
             // 如果不应该存储此响应，则不应该将其用作响应源。
@@ -293,7 +293,7 @@ public final class CacheStrategy {
                 long delta = expires.getTime() - servedMillis;
                 return delta > 0 ? delta : 0;
             } else if (null != lastModified
-                    && cacheResponse.request().url().query() == null) {
+                    && null == cacheResponse.request().url().query()) {
 
                 // 根据HTTP RFC的建议并在Firefox中实现，
                 // 文档的最大值应该默认为其被提供时文档值的10%。
@@ -327,7 +327,7 @@ public final class CacheStrategy {
          * 如果我们使用启发式来服务大于24小时的缓存响应，则需要附加一个警告
          */
         private boolean isFreshnessLifetimeHeuristic() {
-            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && expires == null;
+            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && null == expires;
         }
     }
 

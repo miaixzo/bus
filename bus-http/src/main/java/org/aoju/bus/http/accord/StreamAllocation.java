@@ -171,7 +171,7 @@ public final class StreamAllocation {
                 releasedConnection = null;
             }
 
-            if (result == null) {
+            if (null == result) {
                 // 尝试从池中获取连接
                 Builder.instance.get(connectionPool, address, this, null);
                 if (null != connection) {
@@ -197,7 +197,7 @@ public final class StreamAllocation {
 
         // 如果我们需要选择路线，就选一条。这是一个阻塞操作
         boolean newRouteSelection = false;
-        if (selectedRoute == null && (routeSelection == null || !routeSelection.hasNext())) {
+        if (null == selectedRoute && (null == routeSelection || !routeSelection.hasNext())) {
             newRouteSelection = true;
             routeSelection = routeSelector.next();
         }
@@ -221,7 +221,7 @@ public final class StreamAllocation {
             }
 
             if (!foundPooledConnection) {
-                if (selectedRoute == null) {
+                if (null == selectedRoute) {
                     selectedRoute = routeSelection.next();
                 }
 
@@ -285,7 +285,7 @@ public final class StreamAllocation {
         Connection releasedConnection;
         boolean callEnd;
         synchronized (connectionPool) {
-            if (codec == null || codec != this.codec) {
+            if (null == codec || codec != this.codec) {
                 throw new IllegalStateException("expected " + this.codec + " but was " + codec);
             }
             if (!noNewStreams) {
@@ -384,7 +384,7 @@ public final class StreamAllocation {
             if (noNewStreams) {
                 connection.noNewStreams = true;
             }
-            if (this.codec == null && (this.released || connection.noNewStreams)) {
+            if (null == this.codec && (this.released || connection.noNewStreams)) {
                 release(connection);
                 if (connection.allocations.isEmpty()) {
                     connection.idleAtNanos = System.nanoTime();

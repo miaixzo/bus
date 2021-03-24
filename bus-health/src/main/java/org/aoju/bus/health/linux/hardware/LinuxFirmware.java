@@ -111,7 +111,8 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryManufacturer() {
         String result;
-        if ((result = Sysfs.queryBiosVendor()) == null && (result = vcGenCmd.get().manufacturer) == null) {
+        if (null == (result = Sysfs.queryBiosVendor())
+                && null == (result = vcGenCmd.get().manufacturer)) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -119,7 +120,8 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryDescription() {
         String result;
-        if ((result = Sysfs.queryBiosDescription()) == null && (result = vcGenCmd.get().description) == null) {
+        if (null == (result = Sysfs.queryBiosDescription())
+                && null == (result = vcGenCmd.get().description)) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -127,8 +129,8 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryVersion() {
         String result;
-        if ((result = Sysfs.queryBiosVersion(this.biosNameRev.get().getLeft())) == null
-                && (result = vcGenCmd.get().version) == null) {
+        if (null == (result = Sysfs.queryBiosVersion(this.biosNameRev.get().getLeft()))
+                && null == (result = vcGenCmd.get().version)) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -136,7 +138,8 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryReleaseDate() {
         String result;
-        if ((result = Sysfs.queryBiosReleaseDate()) == null && (result = vcGenCmd.get().releaseDate) == null) {
+        if (null == (result = Sysfs.queryBiosReleaseDate())
+                && null == (result = vcGenCmd.get().releaseDate)) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -144,7 +147,8 @@ final class LinuxFirmware extends AbstractFirmware {
 
     private String queryName() {
         String result;
-        if ((result = biosNameRev.get().getLeft()) == null && (result = vcGenCmd.get().name) == null) {
+        if (null == (result = biosNameRev.get().getLeft())
+                && null == (result = vcGenCmd.get().name)) {
             return Normal.UNKNOWN;
         }
         return result;

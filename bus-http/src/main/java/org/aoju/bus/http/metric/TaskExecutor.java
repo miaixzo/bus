@@ -65,7 +65,7 @@ public final class TaskExecutor {
     }
 
     public Executor getExecutor(boolean onIo) {
-        if (onIo || mainExecutor == null) {
+        if (onIo || null == mainExecutor) {
             return ioExecutor;
         }
         return mainExecutor;
@@ -129,10 +129,10 @@ public final class TaskExecutor {
         for (int i = convertors.length - 1; i >= 0; i--) {
             Convertor convertor = convertors[i];
             String mediaType = convertor.mediaType();
-            if (null != type && (mediaType == null || !mediaType.contains(type))) {
+            if (null != type && (null == mediaType || !mediaType.contains(type))) {
                 continue;
             }
-            if (callable == null && null != mediaType) {
+            if (null == callable && null != mediaType) {
                 return new Data<>(null, mediaType);
             }
             try {
@@ -145,7 +145,7 @@ public final class TaskExecutor {
                 cause = e;
             }
         }
-        if (callable == null) {
+        if (null == callable) {
             return new Data<>(null, "application/x-www-form-urlencoded");
         }
         if (null != cause) {

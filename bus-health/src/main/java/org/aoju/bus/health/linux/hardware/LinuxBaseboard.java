@@ -74,8 +74,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String queryManufacturer() {
         String result;
-        if ((result = Sysfs.queryBoardVendor()) == null
-                && (result = manufacturerModelVersionSerial.get().getA()) == null) {
+        if (null == (result = Sysfs.queryBoardVendor())
+                && null == (result = manufacturerModelVersionSerial.get().getA())) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -83,8 +83,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String queryModel() {
         String result;
-        if ((result = Sysfs.queryBoardModel()) == null
-                && (result = manufacturerModelVersionSerial.get().getB()) == null) {
+        if (null == (result = Sysfs.queryBoardModel())
+                && null == (result = manufacturerModelVersionSerial.get().getB())) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -92,8 +92,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String queryVersion() {
         String result;
-        if ((result = Sysfs.queryBoardVersion()) == null
-                && (result = manufacturerModelVersionSerial.get().getC()) == null) {
+        if (null == (result = Sysfs.queryBoardVersion())
+                && null == (result = manufacturerModelVersionSerial.get().getC())) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -101,8 +101,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
 
     private String querySerialNumber() {
         String result;
-        if ((result = Sysfs.queryBoardSerial()) == null
-                && (result = manufacturerModelVersionSerial.get().getD()) == null) {
+        if (null == (result = Sysfs.queryBoardSerial())
+                && null == (result = manufacturerModelVersionSerial.get().getD())) {
             return Normal.UNKNOWN;
         }
         return result;

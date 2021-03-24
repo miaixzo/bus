@@ -143,9 +143,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                     long devSize = Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                             * SECTORSIZE;
                                     store = new LinuxHWDiskStore(devnode,
-                                            devModel == null ? Normal.UNKNOWN : devModel,
-                                            devSerial == null ? Normal.UNKNOWN : devSerial, devSize);
-                                    if (storeToUpdate == null) {
+                                            null == devModel ? Normal.UNKNOWN : devModel,
+                                            null == devSerial ? Normal.UNKNOWN : devSerial, devSize);
+                                    if (null == storeToUpdate) {
                                         // If getting all stores, add to the list with stats
                                         computeDiskStats(store, device.getSysattrValue(STAT));
                                         result.add(store);
@@ -160,7 +160,7 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         result.add(storeToUpdate);
                                         break;
                                     }
-                                } else if (storeToUpdate == null && null != store // only add if getting new list
+                                } else if (null == storeToUpdate && null != store // only add if getting new list
                                         && PARTITION.equals(device.getDevtype())) {
                                     // udev_device_get_parent_*() does not take a reference on the returned device,
                                     // it is automatically unref'd with the parent
@@ -170,9 +170,9 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
                                         // attached to. If not, it's an error, so skip.
                                         String name = device.getDevnode();
                                         store.partitionList.add(new HWPartition(name, device.getSysname(),
-                                                device.getPropertyValue(ID_FS_TYPE) == null ? PARTITION
+                                                null == device.getPropertyValue(ID_FS_TYPE) ? PARTITION
                                                         : device.getPropertyValue(ID_FS_TYPE),
-                                                device.getPropertyValue(ID_FS_UUID) == null ? Normal.EMPTY
+                                                null == device.getPropertyValue(ID_FS_UUID) ? Normal.EMPTY
                                                         : device.getPropertyValue(ID_FS_UUID),
                                                 Builder.parseLongOrDefault(device.getSysattrValue(SIZE), 0L)
                                                         * SECTORSIZE,

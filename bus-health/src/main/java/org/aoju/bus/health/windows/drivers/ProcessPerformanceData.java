@@ -70,7 +70,7 @@ public final class ProcessPerformanceData {
         if (PERFDATA) {
             processData = HkeyPerformance.readPerfDataFromRegistry(PROCESS, ProcessInformation.ProcessPerformanceProperty.class);
         }
-        if (processData == null) {
+        if (null == processData) {
             return null;
         }
         List<Map<ProcessInformation.ProcessPerformanceProperty, Object>> processInstanceMaps = processData.getLeft();
@@ -82,7 +82,7 @@ public final class ProcessPerformanceData {
         for (Map<ProcessInformation.ProcessPerformanceProperty, Object> processInstanceMap : processInstanceMaps) {
             int pid = ((Integer) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.PROCESSID)).intValue();
             String name = (String) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.NAME);
-            if ((pids == null || pids.contains(pid)) && !"_Total".equals(name)) {
+            if ((null == pids || pids.contains(pid)) && !"_Total".equals(name)) {
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
                 long ctime = (Long) processInstanceMap.get(ProcessInformation.ProcessPerformanceProperty.CREATIONDATE);
@@ -132,7 +132,7 @@ public final class ProcessPerformanceData {
 
         for (int inst = 0; inst < instances.size(); inst++) {
             int pid = pidList.get(inst).intValue();
-            if (pids == null || pids.contains(pid)) {
+            if (null == pids || pids.contains(pid)) {
                 // if creation time value is less than current millis, it's in 1970 epoch,
                 // otherwise it's 1601 epoch and we must convert
                 long ctime = creationTimeList.get(inst);

@@ -92,7 +92,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                         }
                     } else if (i == 2) {
                         operator = TerminalVersion.Version.parse(content);
-                        if (operator == null) {
+                        if (null == operator) {
                             throw new IllegalArgumentException("check the versionOperator!!!");
                         }
                     } else if (i == 3) {

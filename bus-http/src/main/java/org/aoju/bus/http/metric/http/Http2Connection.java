@@ -415,7 +415,7 @@ public final class Http2Connection implements Closeable {
         try {
             writer.close();
         } catch (IOException e) {
-            if (thrown == null) thrown = e;
+            if (null == thrown) thrown = e;
         }
 
         try {
@@ -710,7 +710,7 @@ public final class Http2Connection implements Closeable {
                 return;
             }
             Http2Stream dataStream = getStream(streamId);
-            if (dataStream == null) {
+            if (null == dataStream) {
                 writeSynResetLater(streamId, ErrorCode.PROTOCOL_ERROR);
                 updateConnectionFlowControl(length);
                 source.skip(length);
@@ -733,7 +733,7 @@ public final class Http2Connection implements Closeable {
             synchronized (Http2Connection.this) {
                 stream = getStream(streamId);
 
-                if (stream == null) {
+                if (null == stream) {
                     if (shutdown) return;
 
                     if (streamId <= lastGoodStreamId) return;

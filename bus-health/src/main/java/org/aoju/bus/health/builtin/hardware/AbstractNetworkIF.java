@@ -148,7 +148,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     private static List<NetworkInterface> getAllNetworkInterfaces() {
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            return interfaces == null ? Collections.emptyList() : Collections.list(interfaces);
+            return null == interfaces ? Collections.emptyList() : Collections.list(interfaces);
         } catch (SocketException ex) {
             Logger.error("Socket exception when retrieving interfaces: {}", ex.getMessage());
         }
@@ -158,7 +158,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
 
     private static boolean isLocalInterface(NetworkInterface networkInterface) {
         try {
-            return networkInterface.isLoopback() || networkInterface.getHardwareAddress() == null;
+            return networkInterface.isLoopback() || null == networkInterface.getHardwareAddress();
         } catch (SocketException e) {
             Logger.error("Socket exception when retrieving interface information for {}: {}", networkInterface,
                     e.getMessage());

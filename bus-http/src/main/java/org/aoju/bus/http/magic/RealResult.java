@@ -139,7 +139,7 @@ public class RealResult implements Results {
 
     @Override
     public synchronized Body getBody() {
-        if (body == null && null != response) {
+        if (null == body && null != response) {
             body = new ResultBody(coverHttp, response, taskExecutor);
         }
         return body;

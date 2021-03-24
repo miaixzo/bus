@@ -141,7 +141,7 @@ public final class Cache implements Closeable, Flushable {
         Entry entry;
         try {
             snapshot = cache.get(key);
-            if (snapshot == null) {
+            if (null == snapshot) {
                 return null;
             }
         } catch (IOException e) {
@@ -191,7 +191,7 @@ public final class Cache implements Closeable, Flushable {
         DiskLruCache.Editor editor = null;
         try {
             editor = cache.edit(key(response.request().url()));
-            if (editor == null) {
+            if (null == editor) {
                 return null;
             }
             entry.writeTo(editor);

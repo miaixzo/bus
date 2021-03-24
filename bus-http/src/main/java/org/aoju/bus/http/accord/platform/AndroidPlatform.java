@@ -154,7 +154,7 @@ public class AndroidPlatform extends Platform {
     @Override
     protected X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
         Object context = readFieldOrNull(sslSocketFactory, sslParametersClass, "sslParameters");
-        if (context == null) {
+        if (null == context) {
             // 如果这不起作用，请在放弃之前尝试谷歌Play Services SSL提供者。
             // 这必须由SSLSocketFactory的类装入器装入.
             try {
@@ -192,8 +192,12 @@ public class AndroidPlatform extends Platform {
 
     @Override
     public String getSelectedProtocol(SSLSocket socket) {
-        if (getAlpnSelectedProtocol == null) return null;
-        if (!getAlpnSelectedProtocol.isSupported(socket)) return null;
+        if (null == getAlpnSelectedProtocol) {
+            return null;
+        }
+        if (!getAlpnSelectedProtocol.isSupported(socket)) {
+            return null;
+        }
 
         byte[] alpnResult = (byte[]) getAlpnSelectedProtocol.invokeWithoutCheckedException(socket);
         return null != alpnResult ? new String(alpnResult, Charset.UTF_8) : null;

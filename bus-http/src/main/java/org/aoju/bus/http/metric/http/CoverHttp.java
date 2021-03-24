@@ -245,7 +245,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      */
     public C addHeader(String name, String value) {
         if (null != name && null != value) {
-            if (headers == null) {
+            if (null == headers) {
                 headers = new HashMap<>();
             }
             headers.put(name, value);
@@ -261,7 +261,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      */
     public C addHeader(Map<String, String> headers) {
         if (null != headers) {
-            if (this.headers == null) {
+            if (null == this.headers) {
                 this.headers = new HashMap<>();
             }
             this.headers.putAll(headers);
@@ -338,7 +338,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      **/
     public C addPathPara(String name, Object value) {
         if (null != name && null != value) {
-            if (pathParams == null) {
+            if (null == pathParams) {
                 pathParams = new HashMap<>();
             }
             pathParams.put(name, value.toString());
@@ -353,7 +353,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return this 实例
      **/
     public C addPathPara(Map<String, ?> params) {
-        if (pathParams == null) {
+        if (null == pathParams) {
             pathParams = new HashMap<>();
         }
         doAddParams(pathParams, params);
@@ -369,7 +369,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      **/
     public C addUrlPara(String name, Object value) {
         if (null != name && null != value) {
-            if (urlParams == null) {
+            if (null == urlParams) {
                 urlParams = new HashMap<>();
             }
             urlParams.put(name, value.toString());
@@ -384,7 +384,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return this 实例
      **/
     public C addUrlPara(Map<String, ?> params) {
-        if (urlParams == null) {
+        if (null == urlParams) {
             urlParams = new HashMap<>();
         }
         doAddParams(urlParams, params);
@@ -400,7 +400,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      **/
     public C addBodyPara(String name, Object value) {
         if (null != name && null != value) {
-            if (bodyParams == null) {
+            if (null == bodyParams) {
                 bodyParams = new HashMap<>();
             }
             bodyParams.put(name, value.toString());
@@ -415,7 +415,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      * @return this 实例
      **/
     public C addBodyPara(Map<String, ?> params) {
-        if (bodyParams == null) {
+        if (null == bodyParams) {
             bodyParams = new HashMap<>();
         }
         doAddParams(bodyParams, params);
@@ -466,7 +466,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (null != name && null != file && file.exists()) {
             String fileName = file.getName();
             String type = fileName.substring(fileName.lastIndexOf(Symbol.DOT) + 1);
-            if (files == null) {
+            if (null == files) {
                 files = new HashMap<>();
             }
             files.put(name, new FilePara(type, fileName, file));
@@ -497,7 +497,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      */
     public C addFilePara(String name, String type, String fileName, byte[] content) {
         if (null != name && null != content) {
-            if (files == null) {
+            if (null == files) {
                 files = new HashMap<>();
             }
             files.put(name, new FilePara(type, fileName, content));
@@ -514,7 +514,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     protected void registeTagTask(Cancelable canceler) {
-        if (null != tag && tagTask == null) {
+        if (null != tag && null == tagTask) {
             tagTask = httpv.addTagTask(tag, canceler, this);
         }
         this.canceler = canceler;
@@ -628,7 +628,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         if (null != requestBody) {
             return toRequestBody(requestBody);
         }
-        if (bodyParams == null) {
+        if (null == bodyParams) {
             return new FormBody.Builder(charset).build();
         }
         if (Builder.FORM.equalsIgnoreCase(bodyType)) {
@@ -655,7 +655,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private String buildUrlPath() {
         String url = urlPath;
-        if (url == null || url.trim().isEmpty()) {
+        if (null == url || url.trim().isEmpty()) {
             throw new InstrumentException("Url cannot be empty!");
         }
         if (null != pathParams) {

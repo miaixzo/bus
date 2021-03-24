@@ -83,7 +83,7 @@ public final class RouteSelector {
      */
     static String getHostString(InetSocketAddress socketAddress) {
         InetAddress address = socketAddress.getAddress();
-        if (address == null) {
+        if (null == address) {
             // InetSocketAddress是用字符串(数字IP或主机名)指定的。
             // 如果它是一个名称，那么应该尝试该名称的所有ip。
             // 如果它是一个IP地址，那么应该只尝试该IP地址

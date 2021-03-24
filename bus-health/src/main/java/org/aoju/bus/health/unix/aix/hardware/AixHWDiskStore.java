@@ -79,8 +79,8 @@ public final class AixHWDiskStore extends AbstractHWDiskStore {
         for (Perfstat.perfstat_disk_t disk : diskStats.get()) {
             String storeName = Native.toString(disk.name);
             Pair<String, String> ms = Lscfg.queryModelSerial(storeName);
-            String model = ms.getLeft() == null ? Native.toString(disk.description) : ms.getLeft();
-            String serial = ms.getRight() == null ? Normal.UNKNOWN : ms.getRight();
+            String model = null == ms.getLeft() ? Native.toString(disk.description) : ms.getLeft();
+            String serial = null == ms.getRight() ? Normal.UNKNOWN : ms.getRight();
             storeList.add(createStore(storeName, model, serial, disk.size << 20, diskStats, majMinMap));
         }
         return storeList.stream()

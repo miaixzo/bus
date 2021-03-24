@@ -123,7 +123,7 @@ public final class Http2Codec implements HttpCodec {
                 Builder.instance.addLenient(headersBuilder, name, value);
             }
         }
-        if (statusLine == null) throw new ProtocolException("Expected ':status' header not present");
+        if (null == statusLine) throw new ProtocolException("Expected ':status' header not present");
 
         return new Response.Builder()
                 .protocol(protocol)

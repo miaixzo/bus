@@ -60,7 +60,7 @@ public abstract class AbstractFirmware implements Firmware {
         sb.append("name=").append(getName()).append(", ");
         sb.append("description=").append(getDescription()).append(", ");
         sb.append("version=").append(getVersion()).append(", ");
-        sb.append("release date=").append(getReleaseDate() == null ? "unknown" : getReleaseDate());
+        sb.append("release date=").append(null == getReleaseDate() ? "unknown" : getReleaseDate());
         return sb.toString();
     }
 

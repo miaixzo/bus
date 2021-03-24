@@ -78,18 +78,19 @@ public final class BridgeInterceptor implements Interceptor {
             }
         }
 
-        if (userRequest.header(Header.HOST) == null) {
+        if (null == userRequest.header(Header.HOST)) {
             requestBuilder.header(Header.HOST, Builder.hostHeader(userRequest.url(), false));
         }
 
-        if (userRequest.header(Header.CONNECTION) == null) {
+        if (null == userRequest.header(Header.CONNECTION)) {
             requestBuilder.header(Header.CONNECTION, Header.KEEP_ALIVE);
         }
 
         // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
         // the transfer stream.
         boolean transparentGzip = false;
-        if (userRequest.header(Header.ACCEPT_ENCODING) == null && userRequest.header("Range") == null) {
+        if (null == userRequest.header(Header.ACCEPT_ENCODING)
+                && null == userRequest.header("Range")) {
             transparentGzip = true;
             requestBuilder.header(Header.ACCEPT_ENCODING, "gzip");
         }
@@ -99,7 +100,7 @@ public final class BridgeInterceptor implements Interceptor {
             requestBuilder.header(Header.COOKIE, cookieHeader(cookies));
         }
 
-        if (userRequest.header(Header.USER_AGENT) == null) {
+        if (null == userRequest.header(Header.USER_AGENT)) {
             requestBuilder.header(Header.USER_AGENT, "Httpd/" + Version.all());
         }
 

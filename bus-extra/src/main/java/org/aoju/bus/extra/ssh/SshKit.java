@@ -300,7 +300,7 @@ public class SshKit {
      */
     public static int openAndBindPortToLocal(Connector sshConn, String remoteHost, int remotePort) throws InstrumentException {
         final Session session = openSession(sshConn.getHost(), sshConn.getPort(), sshConn.getUser(), sshConn.getPassword());
-        if (session == null) {
+        if (null == session) {
             throw new InstrumentException("Error to create SSH Session！");
         }
         final int localPort = generateLocalPort();

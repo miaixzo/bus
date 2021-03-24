@@ -205,7 +205,7 @@ public final class Response implements Closeable {
 
     @Override
     public void close() {
-        if (body == null) {
+        if (null == body) {
             throw new IllegalStateException("response is not eligible for a body and must not be closed");
         }
         body.close();
@@ -358,10 +358,18 @@ public final class Response implements Closeable {
         }
 
         public Response build() {
-            if (request == null) throw new IllegalStateException("request == null");
-            if (protocol == null) throw new IllegalStateException("protocol == null");
-            if (code < 0) throw new IllegalStateException("code < 0: " + code);
-            if (message == null) throw new IllegalStateException("message == null");
+            if (null == request) {
+                throw new IllegalStateException("request == null");
+            }
+            if (null == protocol) {
+                throw new IllegalStateException("protocol == null");
+            }
+            if (code < 0) {
+                throw new IllegalStateException("code < 0: " + code);
+            }
+            if (null == message) {
+                throw new IllegalStateException("message == null");
+            }
             return new Response(this);
         }
     }

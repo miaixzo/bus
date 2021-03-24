@@ -56,7 +56,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      */
     public boolean addCounterToQuery(PerfCounter counter) {
         // 打开一个新查询或获取一个现有查询的句柄
-        if (this.queryHandle == null) {
+        if (null == this.queryHandle) {
             this.queryHandle = new WinNT.HANDLEByReference();
             if (!PerfDataKit.openQuery(this.queryHandle)) {
                 Logger.warn("Failed to open a query for PDH object: {}", counter.getObject());
@@ -116,7 +116,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      * @return 更新所有计数器的时间戳，以从epoch开始的毫秒为单位，如果更新失败则为0
      */
     public long updateQuery() {
-        if (queryHandle == null) {
+        if (null == queryHandle) {
             Logger.warn("Query does not exist to update.");
             return 0L;
         }

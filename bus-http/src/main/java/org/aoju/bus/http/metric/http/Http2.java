@@ -117,7 +117,7 @@ public final class Http2 {
         }
 
         for (int i = 0; i < FLAGS.length; i++) {
-            if (FLAGS[i] == null) FLAGS[i] = BINARY[i];
+            if (null == FLAGS[i]) FLAGS[i] = BINARY[i];
         }
     }
 
