@@ -62,7 +62,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     private boolean inlineBinary;
 
     public ContentHandlerAdapter(Attributes attrs) {
-        if (attrs == null)
+        if (null == attrs)
             throw new NullPointerException();
         items.add(attrs);
         bigEndian = attrs.bigEndian();
@@ -176,7 +176,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     }
 
     private void startDataFragment(int number) {
-        if (dataFragments == null)
+        if (null == dataFragments)
             dataFragments = items.getLast()
                     .newFragments(privateCreator, tag, vr, 10);
         while (dataFragments.size() < number - 1)

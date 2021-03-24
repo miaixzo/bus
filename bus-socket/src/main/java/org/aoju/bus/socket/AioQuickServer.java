@@ -138,7 +138,7 @@ public class AioQuickServer<T> {
         checkAndResetConfig();
         try {
             aioCompletionWriteHandler = new CompletionWriteHandler<>();
-            if (bufferPool == null) {
+            if (null == bufferPool) {
                 this.bufferPool = config.getBufferFactory().create();
                 this.innerBufferPool = bufferPool;
             }
@@ -233,7 +233,7 @@ public class AioQuickServer<T> {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (session == null) {
+            if (null == session) {
                 IoKit.close(channel);
             } else {
                 session.close();

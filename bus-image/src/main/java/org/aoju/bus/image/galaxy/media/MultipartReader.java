@@ -148,7 +148,7 @@ public class MultipartReader {
             }
         }
 
-        if (headers == null) {
+        if (null == headers) {
             headers = baos.toString();
         }
         return headers;

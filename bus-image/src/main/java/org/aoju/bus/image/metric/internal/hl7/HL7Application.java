@@ -172,7 +172,7 @@ public class HL7Application implements Serializable {
 
     public boolean isInstalled() {
         return null != device && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+                && (null == installed || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -243,7 +243,7 @@ public class HL7Application implements Serializable {
                             .setUserMessage("Message Type not supported"));
 
         HL7MessageListener listener = getHL7MessageListener();
-        if (listener == null)
+        if (null == listener)
             throw new HL7Exception(new ERRSegment(msh)
                     .setHL7ErrorCode(Builder.ApplicationInternalError)
                     .setUserMessage("No HL7 Message Listener configured"));
@@ -320,7 +320,7 @@ public class HL7Application implements Serializable {
     }
 
     private void checkDevice() {
-        if (device == null)
+        if (null == device)
             throw new IllegalStateException("Not attached to Device");
     }
 
@@ -339,7 +339,7 @@ public class HL7Application implements Serializable {
         for (HL7ApplicationExtension src : from.extensions.values()) {
             Class<? extends HL7ApplicationExtension> clazz = src.getClass();
             HL7ApplicationExtension ext = extensions.get(clazz);
-            if (ext == null)
+            if (null == ext)
                 try {
                     addHL7ApplicationExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
@@ -375,7 +375,7 @@ public class HL7Application implements Serializable {
     }
 
     public boolean removeHL7ApplicationExtension(HL7ApplicationExtension ext) {
-        if (extensions.remove(ext.getClass()) == null)
+        if (null == extensions.remove(ext.getClass()))
             return false;
 
         ext.setHL7Application(null);
@@ -393,7 +393,7 @@ public class HL7Application implements Serializable {
 
     public <T extends HL7ApplicationExtension> T getHL7AppExtensionNotNull(Class<T> clazz) {
         T hl7AppExt = getHL7ApplicationExtension(clazz);
-        if (hl7AppExt == null)
+        if (null == hl7AppExt)
             throw new IllegalStateException("No " + clazz.getName()
                     + " configured for HL7 Application: " + name);
         return hl7AppExt;

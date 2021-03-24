@@ -53,7 +53,7 @@ public class ExitCodeRetryable extends AbstractRetryable {
     @Override
     protected void attempt() throws InstrumentException {
         final Integer code = process.getExitCode();
-        if (code == null) {
+        if (null == code) {
             throw new InstrumentException();
         }
         exitCode = code.intValue();

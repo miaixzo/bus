@@ -70,7 +70,7 @@ public class MultipartParser {
             throws IOException {
         String contentType = urlConnection.getContentType();
         byte[] boundary = getBoundary(contentType, MimeType.MULTIPART_RELATED);
-        if (boundary == null) {
+        if (null == boundary) {
             throw new IllegalStateException("Cannot find boundary of multipart");
         }
         MultipartReader multipartReader = new MultipartReader(inputStream, boundary);
@@ -153,7 +153,7 @@ public class MultipartParser {
         HeaderFieldValues parser = new HeaderFieldValues(respContentType);
         String boundaryStr = parser.getValue("boundary");
 
-        if (boundaryStr == null || (null != ckeckMultipartType && !parser.hasKey(ckeckMultipartType))) {
+        if (null == boundaryStr || (null != ckeckMultipartType && !parser.hasKey(ckeckMultipartType))) {
             return null;
         }
         return boundaryStr.getBytes(Charset.ISO_8859_1);

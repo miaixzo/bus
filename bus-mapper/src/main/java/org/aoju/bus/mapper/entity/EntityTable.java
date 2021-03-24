@@ -84,7 +84,7 @@ public class EntityTable {
         if (null != this.resultMap) {
             return this.resultMap;
         }
-        if (entityClassColumns == null || entityClassColumns.size() == 0) {
+        if (null == entityClassColumns || entityClassColumns.size() == 0) {
             return null;
         }
         List<ResultMapping> resultMappings = new ArrayList<>();
@@ -188,7 +188,7 @@ public class EntityTable {
     }
 
     public void setKeyColumns(String keyColumn) {
-        if (this.keyColumns == null) {
+        if (null == this.keyColumns) {
             this.keyColumns = new ArrayList<>();
             this.keyColumns.add(keyColumn);
         } else {
@@ -208,7 +208,7 @@ public class EntityTable {
     }
 
     public void setKeyProperties(String keyProperty) {
-        if (this.keyProperties == null) {
+        if (null == this.keyProperties) {
             this.keyProperties = new ArrayList<>();
             this.keyProperties.add(keyProperty);
         } else {

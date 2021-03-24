@@ -148,7 +148,7 @@ public class EntityColumn {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         EntityColumn that = (EntityColumn) o;
 

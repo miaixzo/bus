@@ -49,7 +49,7 @@ public class AuditableEventQueryType extends RegistryObjectQueryType {
     protected UserQueryType userQuery;
 
     public List<RegistryObjectQueryType> getAffectedObjectQuery() {
-        if (this.affectedObjectQuery == null) {
+        if (null == this.affectedObjectQuery) {
             this.affectedObjectQuery = new ArrayList();
         }
         return this.affectedObjectQuery;

@@ -41,7 +41,7 @@ public class VersionBanner extends AbstractBanner {
 
     @Override
     protected String generateBanner(String bannerText) {
-        if (bannerText == null) {
+        if (null == bannerText) {
             String implementationVersion = resourceClass.getPackage().getImplementationVersion();
             if (null != implementationVersion) {
                 return implementationVersion;

@@ -69,7 +69,7 @@ public class Configurable implements EnvironmentPostProcessor {
      */
     protected Properties getProperties() {
         Properties properties = new Properties();
-        String version = Version.get() == null ? Normal.EMPTY : Version.get();
+        String version = Version.get();
         properties.setProperty(BusXBuilder.BUS_BOOT_VERSION, version);
         properties.setProperty(BusXBuilder.BUS_BOOT_FORMATTED_VERSION,
                 version.isEmpty() ? Normal.EMPTY : String.format(" (v%s)", version));

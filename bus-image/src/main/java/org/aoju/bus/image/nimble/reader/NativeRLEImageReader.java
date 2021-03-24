@@ -157,7 +157,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
     }
 
     private BufferedImage getDestination(ImageReadParam param) {
-        if (param == null)
+        if (null == param)
             throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
 
         BufferedImage bi = param.getDestination();
@@ -178,7 +178,7 @@ public class NativeRLEImageReader extends javax.imageio.ImageReader {
     }
 
     private WritableRaster getDestinationRaster(ImageReadParam param) {
-        if (param == null)
+        if (null == param)
             throw new IllegalArgumentException(UNKNOWN_IMAGE_TYPE);
 
         BufferedImage bi = param.getDestination();

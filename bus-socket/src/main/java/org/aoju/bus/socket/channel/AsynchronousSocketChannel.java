@@ -262,7 +262,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 Object attach = connectAttachment;
                 resetConnect();
                 completionHandler.completed(null, attach);
-            } else if (writeSelectionKey == null) {
+            } else if (null == writeSelectionKey) {
                 writeWorker.addRegister(selector -> {
                     try {
                         writeSelectionKey = channel.register(selector, SelectionKey.OP_CONNECT);
@@ -315,7 +315,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 Object attach = readAttachment;
                 ByteBufferArray scattering = scatteringReadBuffer;
                 resetRead();
-                if (scattering == null) {
+                if (null == scattering) {
                     completionHandler.completed((int) readSize, attach);
                 } else {
                     completionHandler.completed(readSize, attach);
@@ -324,7 +324,7 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 if (!readPending && null != readSelectionKey) {
                     group.removeOps(readSelectionKey, SelectionKey.OP_READ);
                 }
-            } else if (readSelectionKey == null) {
+            } else if (null == readSelectionKey) {
                 readWorker.addRegister(selector -> {
                     try {
                         readSelectionKey = channel.register(selector, SelectionKey.OP_READ);
@@ -377,12 +377,12 @@ public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSoc
                 Object attach = writeAttachment;
                 ByteBufferArray scattering = gatheringWriteBuffer;
                 resetWrite();
-                if (scattering == null) {
+                if (null == scattering) {
                     completionHandler.completed((int) writeSize, attach);
                 } else {
                     completionHandler.completed(writeSize, attach);
                 }
-            } else if (writeSelectionKey == null) {
+            } else if (null == writeSelectionKey) {
                 writeWorker.addRegister(selector -> {
                     try {
                         writeSelectionKey = channel.register(selector, SelectionKey.OP_WRITE);

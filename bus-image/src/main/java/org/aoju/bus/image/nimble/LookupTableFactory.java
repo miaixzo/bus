@@ -113,11 +113,11 @@ public class LookupTableFactory {
 
     public void setVOI(Attributes img, int windowIndex, int voiLUTIndex,
                        boolean preferWindow) {
-        if (img == null)
+        if (null == img)
             return;
 
         Attributes vLUT = img.getNestedDataset(Tag.VOILUTSequence, voiLUTIndex);
-        if (preferWindow || vLUT == null) {
+        if (preferWindow || null == vLUT) {
             float[] wcs = img.getFloats(Tag.WindowCenter);
             float[] wws = img.getFloats(Tag.WindowWidth);
             if (null != wcs && wcs.length != 0
@@ -155,7 +155,7 @@ public class LookupTableFactory {
     }
 
     private LookupTable createLUT(StoredValue inBits, Attributes attrs) {
-        if (attrs == null)
+        if (null == attrs)
             return null;
 
         return createLUT(inBits, attrs.getInts(Tag.LUTDescriptor),
@@ -165,7 +165,7 @@ public class LookupTableFactory {
     private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data,
                                   boolean bigEndian) {
 
-        if (desc == null)
+        if (null == desc)
             return null;
 
         if (desc.length != 3)
@@ -174,7 +174,7 @@ public class LookupTableFactory {
         int len = desc[0] == 0 ? 0x10000 : desc[0];
         int offset = (short) desc[1];
         int outBits = desc[2];
-        if (data == null)
+        if (null == data)
             return null;
 
         if (data.length == len << 1) {
@@ -220,7 +220,7 @@ public class LookupTableFactory {
         float b = rescaleIntercept;
         LookupTable modalityLUT = this.modalityLUT;
         LookupTable lut = this.voiLUT;
-        if (lut == null) {
+        if (null == lut) {
             float c = windowCenter;
             float w = windowWidth;
 

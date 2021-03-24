@@ -186,7 +186,7 @@ public class Format extends java.text.Format {
      * @return 来自UTC的时区偏移量，格式为{@code (+|i)HHMM}
      */
     public static String formatTimezoneOffsetFromUTC(TimeZone tz, Date date) {
-        return appendZZZZZ(tz.getOffset(date == null
+        return appendZZZZZ(tz.getOffset(null == date
                         ? System.currentTimeMillis() : date.getTime()),
                 new StringBuilder(5)).toString();
     }
@@ -316,18 +316,18 @@ public class Format extends java.text.Format {
 
     public static TimeZone timeZone(String s) {
         TimeZone tz;
-        if (s.length() != 5 || (tz = safeTimeZone(s)) == null)
+        if (s.length() != 5 || null == (tz = safeTimeZone(s)))
             throw new IllegalArgumentException("Illegal Timezone Offset: " + s);
         return tz;
     }
 
     private static TimeZone safeTimeZone(String s) {
         String tzid = tzid(s);
-        if (tzid == null)
+        if (null == tzid)
             return null;
 
         TimeZone tz = cachedTimeZone;
-        if (tz == null || !tz.getID().equals(tzid))
+        if (null == tz || !tz.getID().equals(tzid))
             cachedTimeZone = tz = TimeZone.getTimeZone(tzid);
 
         return tz;
@@ -506,7 +506,7 @@ public class Format extends java.text.Format {
         Object[] args = new Object[tagPaths.length];
         for (int i = 0; i < args.length; i++) {
             int[] tagPath = tagPaths[i];
-            if (tagPath == null) { // now
+            if (null == tagPath) { // now
                 args[i] = types[i].toArg(attrs, 0, index[i]);
             } else {
                 int last = tagPath.length - 1;
@@ -638,7 +638,7 @@ public class Format extends java.text.Format {
         String getMD5String(String s) {
             try {
                 MessageDigest digest = MessageDigest.getInstance(Algorithm.MD5);
-                digest.update(s == null ? new byte[0] : s.getBytes(Charset.UTF_8));
+                digest.update(null == s ? new byte[0] : s.getBytes(Charset.UTF_8));
                 return toString32(digest.digest());
             } catch (NoSuchAlgorithmException e) {
                 return s;

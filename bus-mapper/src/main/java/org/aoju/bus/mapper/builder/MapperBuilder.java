@@ -117,13 +117,13 @@ public class MapperBuilder {
                 tempClass = provider.type();
                 methodSet.add(method.getName());
             }
-            if (templateClass == null) {
+            if (null == templateClass) {
                 templateClass = tempClass;
             } else if (templateClass != tempClass) {
                 throw new InstrumentException("一个通用Mapper中只允许存在一个MapperTemplate子类!");
             }
         }
-        if (templateClass == null || !MapperTemplate.class.isAssignableFrom(templateClass)) {
+        if (null == templateClass || !MapperTemplate.class.isAssignableFrom(templateClass)) {
             templateClass = EmptyProvider.class;
         }
         MapperTemplate mapperTemplate;

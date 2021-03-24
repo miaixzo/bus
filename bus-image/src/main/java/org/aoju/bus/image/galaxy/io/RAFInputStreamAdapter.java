@@ -41,7 +41,7 @@ public class RAFInputStreamAdapter extends InputStream {
     private IOException markException;
 
     public RAFInputStreamAdapter(RandomAccessFile raf) {
-        if (raf == null)
+        if (null == raf)
             throw new NullPointerException();
         this.raf = raf;
     }

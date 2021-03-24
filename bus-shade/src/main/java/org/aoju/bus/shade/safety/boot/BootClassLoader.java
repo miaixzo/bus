@@ -62,7 +62,7 @@ public class BootClassLoader extends LaunchedURLClassLoader {
     @Override
     public URL findResource(String name) {
         URL url = super.findResource(name);
-        if (url == null) {
+        if (null == url) {
             return null;
         }
         try {
@@ -75,7 +75,7 @@ public class BootClassLoader extends LaunchedURLClassLoader {
     @Override
     public Enumeration<URL> findResources(String name) throws IOException {
         Enumeration<URL> enumeration = super.findResources(name);
-        if (enumeration == null) {
+        if (null == enumeration) {
             return null;
         }
         return new XBootEnumeration(enumeration);
@@ -87,7 +87,7 @@ public class BootClassLoader extends LaunchedURLClassLoader {
             return super.findClass(name);
         } catch (ClassFormatError e) {
             URL resource = findResource(name.replace(Symbol.C_DOT, Symbol.C_SLASH) + ".class");
-            if (resource == null) {
+            if (null == resource) {
                 throw new ClassNotFoundException(name, e);
             }
             try (InputStream in = resource.openStream()) {
@@ -116,7 +116,7 @@ public class BootClassLoader extends LaunchedURLClassLoader {
         @Override
         public URL nextElement() {
             URL url = enumeration.nextElement();
-            if (url == null) {
+            if (null == url) {
                 return null;
             }
             try {

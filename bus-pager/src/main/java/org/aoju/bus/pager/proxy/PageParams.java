@@ -77,7 +77,7 @@ public class PageParams {
      */
     public Page getPage(Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = PageContext.getLocalPage();
-        if (page == null) {
+        if (null == page) {
             if (rowBounds != org.apache.ibatis.session.RowBounds.DEFAULT) {
                 if (offsetAsPageNo) {
                     page = new Page(rowBounds.getOffset(), rowBounds.getLimit(), rowBoundsWithCount);
@@ -88,7 +88,7 @@ public class PageParams {
                 }
                 if (rowBounds instanceof RowBounds) {
                     RowBounds pageRowBounds = (RowBounds) rowBounds;
-                    page.setCount(pageRowBounds.getCount() == null || pageRowBounds.getCount());
+                    page.setCount(null == pageRowBounds.getCount() || pageRowBounds.getCount());
                 }
             } else if (parameterObject instanceof Paging || supportMethodsArguments) {
                 try {
@@ -97,17 +97,17 @@ public class PageParams {
                     return null;
                 }
             }
-            if (page == null) {
+            if (null == page) {
                 return null;
             }
             PageContext.setLocalPage(page);
         }
         // 分页合理化
-        if (page.getReasonable() == null) {
+        if (null == page.getReasonable()) {
             page.setReasonable(reasonable);
         }
         // 当设置为true的时候,如果pagesize设置为0(或RowBounds的limit=0),就不执行分页,返回全部结果
-        if (page.getPageSizeZero() == null) {
+        if (null == page.getPageSizeZero()) {
             page.setPageSizeZero(pageSizeZero);
         }
         return page;

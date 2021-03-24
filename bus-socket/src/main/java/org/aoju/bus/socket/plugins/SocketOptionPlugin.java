@@ -94,7 +94,7 @@ public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
 
     public final <V> V getOption(SocketOption<V> socketOption) {
         Object value = optionMap.get(socketOption);
-        return value == null ? null : (V) value;
+        return null == value ? null : (V) value;
     }
 
     private void put0(SocketOption socketOption, Object value) {

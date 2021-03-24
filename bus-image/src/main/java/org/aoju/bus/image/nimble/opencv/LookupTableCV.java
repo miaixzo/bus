@@ -199,7 +199,7 @@ public class LookupTableCV {
         short[][] sTblData = getShortData();
 
         if (lkbBands < channels) {
-            if (sTblData == null) {
+            if (null == sTblData) {
                 byte[] b = bTblData[0];
                 bTblData = new byte[channels][];
                 Arrays.fill(bTblData, b);

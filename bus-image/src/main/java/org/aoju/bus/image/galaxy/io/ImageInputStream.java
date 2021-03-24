@@ -186,7 +186,7 @@ public class ImageInputStream extends FilterInputStream
     }
 
     public final void setIncludeBulkData(IncludeBulkData includeBulkData) {
-        if (includeBulkData == null)
+        if (null == includeBulkData)
             throw new NullPointerException();
         this.includeBulkData = includeBulkData;
     }
@@ -239,13 +239,13 @@ public class ImageInputStream extends FilterInputStream
     }
 
     public final void setImageInputHandler(ImageInputHandler handler) {
-        if (handler == null)
+        if (null == handler)
             throw new NullPointerException("handler");
         this.handler = handler;
     }
 
     public void setBulkDataCreator(BulkDataCreator bulkDataCreator) {
-        if (bulkDataCreator == null)
+        if (null == bulkDataCreator)
             throw new NullPointerException("bulkDataCreator");
         this.bulkDataCreator = bulkDataCreator;
     }
@@ -375,7 +375,7 @@ public class ImageInputStream extends FilterInputStream
                     ("off < 0 || len < 0 || off + len > s.length!");
         }
 
-        if (byteBuf == null)
+        if (null == byteBuf)
             byteBuf = new byte[BYTE_BUF_LENGTH];
 
         while (len > 0) {
@@ -472,7 +472,7 @@ public class ImageInputStream extends FilterInputStream
         fileMetaInformation = attrs;
 
         String tsuid = attrs.getString(Tag.TransferSyntaxUID, null);
-        if (tsuid == null) {
+        if (null == tsuid) {
             Logger.warn(MISSING_TRANSFER_SYNTAX);
             tsuid = UID.ExplicitVRLittleEndian;
         }
@@ -548,10 +548,10 @@ public class ImageInputStream extends FilterInputStream
             bulkData = new BulkData(uri, pos, length, bigEndian);
             skipFully(length);
         } else {
-            if (blkOut == null) {
+            if (null == blkOut) {
                 File blkfile = File.createTempFile(blkFilePrefix,
                         blkFileSuffix, blkDirectory);
-                if (blkFiles == null) {
+                if (null == blkFiles) {
                     blkFiles = new ArrayList<>();
                 }
                 blkFiles.add(blkfile);

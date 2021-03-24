@@ -50,21 +50,21 @@ public class OrganizationType extends RegistryObjectType {
     protected String primaryContact;
 
     public List<PostalAddressType> getAddress() {
-        if (this.address == null) {
+        if (null == this.address) {
             this.address = new ArrayList();
         }
         return this.address;
     }
 
     public List<TelephoneNumberType> getTelephoneNumber() {
-        if (this.telephoneNumber == null) {
+        if (null == this.telephoneNumber) {
             this.telephoneNumber = new ArrayList();
         }
         return this.telephoneNumber;
     }
 
     public List<EmailAddressType> getEmailAddress() {
-        if (this.emailAddress == null) {
+        if (null == this.emailAddress) {
             this.emailAddress = new ArrayList();
         }
         return this.emailAddress;

@@ -83,7 +83,7 @@ public class Criteria {
     }
 
     public void addCriterion(String condition) {
-        if (condition == null) {
+        if (null == condition) {
             throw new InstrumentException("Value for condition cannot be null");
         }
         if (condition.startsWith(Normal.NULL)) {
@@ -93,35 +93,35 @@ public class Criteria {
     }
 
     public void addCriterion(String condition, Object value, String property) {
-        if (value == null) {
+        if (null == value) {
             if (notNull) {
                 throw new InstrumentException("Value for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value));
     }
 
     public void addCriterion(String condition, Object value1, Object value2, String property) {
-        if (value1 == null || value2 == null) {
+        if (null == value1 || null == value2) {
             if (notNull) {
                 throw new InstrumentException("Between values for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value1, value2));
     }
 
     public void addOrCriterion(String condition) {
-        if (condition == null) {
+        if (null == condition) {
             throw new InstrumentException("Value for condition cannot be null");
         }
         if (condition.startsWith(Normal.NULL)) {
@@ -131,28 +131,28 @@ public class Criteria {
     }
 
     public void addOrCriterion(String condition, Object value, String property) {
-        if (value == null) {
+        if (null == value) {
             if (notNull) {
                 throw new InstrumentException("Value for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value, true));
     }
 
     public void addOrCriterion(String condition, Object value1, Object value2, String property) {
-        if (value1 == null || value2 == null) {
+        if (null == value1 || null == value2) {
             if (notNull) {
                 throw new InstrumentException("Between values for " + property + " cannot be null");
             } else {
                 return;
             }
         }
-        if (property == null) {
+        if (null == property) {
             return;
         }
         criteria.add(new Criterion(condition, value1, value2, true));

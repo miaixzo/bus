@@ -115,7 +115,7 @@ public class PageAutoDialect {
      * @param ms 执行映射的语句
      */
     public void initDelegateDialect(MappedStatement ms) {
-        if (delegate == null) {
+        if (null == delegate) {
             if (autoDialect) {
                 this.delegate = getDialect(ms);
             } else {
@@ -234,7 +234,7 @@ public class PageAutoDialect {
                 throw new PageException("无法自动获取jdbcUrl,请在分页插件中配置dialect参数!");
             }
             String dialectStr = fromJdbcUrl(url);
-            if (dialectStr == null) {
+            if (null == dialectStr) {
                 throw new PageException("无法自动获取数据库类型,请通过 helperDialect 参数指定!");
             }
             AbstractSqlDialect dialect = initDialect(dialectStr, properties);

@@ -153,7 +153,7 @@ public class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChan
 
     private int getIntSystemProperty(String key, int defaultValue) {
         String value = System.getProperty(key);
-        if (value == null || value.length() == 0) {
+        if (null == value || value.length() == 0) {
             return defaultValue;
         }
         try {

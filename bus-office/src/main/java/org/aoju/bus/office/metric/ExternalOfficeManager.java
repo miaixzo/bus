@@ -161,7 +161,7 @@ public final class ExternalOfficeManager extends AbstractOfficeManager {
 
         @Override
         public ExternalOfficeManager build() {
-            if (workingDir == null) {
+            if (null == workingDir) {
                 workingDir = new File(System.getProperty("java.io.tmpdir"));
             }
 

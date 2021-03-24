@@ -84,7 +84,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkProperty, Context
     }
 
     private String getToken() {
-        if (System.currentTimeMillis() - refreshTokenTime > tokenTimeOut || accessToken.get() == null) {
+        if (System.currentTimeMillis() - refreshTokenTime > tokenTimeOut || null == accessToken.get()) {
             return requestToken();
         }
         return accessToken.get();

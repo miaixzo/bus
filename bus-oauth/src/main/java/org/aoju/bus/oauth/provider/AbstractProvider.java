@@ -485,7 +485,7 @@ public abstract class AbstractProvider implements Provider {
 
         // 处理结尾
         if (pos != i) {
-            if (name == null) {
+            if (null == name) {
                 addParam(params, str.substring(pos, i), Normal.EMPTY, decode);
             } else {
                 addParam(params, name, str.substring(pos, i), decode);

@@ -145,10 +145,10 @@ public class MkKOS {
     }
 
     public Attributes toCodeItem(String codeValue) {
-        if (codes == null)
+        if (null == codes)
             throw new IllegalStateException("codec not initialized");
         String codeMeaning = codes.getProperty(codeValue);
-        if (codeMeaning == null)
+        if (null == codeMeaning)
             throw new IllegalArgumentException("undefined internal value: "
                     + codeValue);
         int endDesignator = codeValue.indexOf(Symbol.C_HYPHEN);
@@ -171,9 +171,9 @@ public class MkKOS {
         String seriesIUID = inst.getString(Tag.SeriesInstanceUID);
         String iuid = inst.getString(Tag.SOPInstanceUID);
         String cuid = inst.getString(Tag.SOPClassUID);
-        if (studyIUID == null || seriesIUID == null || iuid == null || cuid == null)
+        if (null == studyIUID || null == seriesIUID || null == iuid || null == cuid)
             return false;
-        if (kos == null)
+        if (null == kos)
             kos = createKOS(inst);
         refSOPSeq(refSeriesSeq(studyIUID), seriesIUID).add(refSOP(cuid, iuid));
         contentSeq.add(contentItem(valueTypeOf(inst), refSOP(cuid, iuid)));

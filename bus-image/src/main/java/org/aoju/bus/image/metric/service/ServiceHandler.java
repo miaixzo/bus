@@ -94,7 +94,7 @@ public class ServiceHandler implements DimseRQHandler {
     private DimseRQHandler lookupService(Association as, Dimse dimse, Attributes cmd)
             throws ImageException {
         String cuid = cmd.getString(dimse.tagOfSOPClassUID());
-        if (cuid == null)
+        if (null == cuid)
             throw new ImageException(Status.MistypedArgument);
 
         DimseRQHandler service = services.get(cuid);

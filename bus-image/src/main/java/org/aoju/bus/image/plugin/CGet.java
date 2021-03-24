@@ -96,7 +96,7 @@ public class CGet {
                                  File outputDir,
                                  URL sopClassURL,
                                  Args... keys) {
-        if (callingNode == null || calledNode == null || outputDir == null) {
+        if (null == callingNode || null == calledNode || null == outputDir) {
             throw new IllegalArgumentException("callingNode, calledNode or outputDir cannot be null!");
         }
 

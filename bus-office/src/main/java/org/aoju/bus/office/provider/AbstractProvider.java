@@ -57,14 +57,14 @@ public abstract class AbstractProvider implements Provider {
         super();
 
         OfficeManager manager = officeManager;
-        if (manager == null) {
+        if (null == manager) {
             manager = InstalledOfficeHolder.getInstance();
-            if (manager == null) {
+            if (null == manager) {
                 throw new IllegalStateException("An office manager is required in order to build a converter.");
             }
         }
         this.officeManager = manager;
-        this.formatRegistry = formatRegistry == null ? DefaultFormatRegistry.getInstance() : formatRegistry;
+        this.formatRegistry = null == formatRegistry ? DefaultFormatRegistry.getInstance() : formatRegistry;
     }
 
     @Override

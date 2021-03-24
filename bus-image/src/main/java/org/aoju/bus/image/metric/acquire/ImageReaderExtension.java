@@ -37,7 +37,7 @@ public class ImageReaderExtension extends DeviceExtension {
     public volatile ImageReaderFactory factory;
 
     public ImageReaderExtension(ImageReaderFactory factory) {
-        if (factory == null)
+        if (null == factory)
             throw new NullPointerException();
         this.factory = factory;
     }

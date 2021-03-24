@@ -107,7 +107,7 @@ public class HL72Xml {
             throws TransformerConfigurationException, IOException {
         SAXTransformerFactory tf = (SAXTransformerFactory)
                 TransformerFactory.newInstance();
-        if (xslt == null)
+        if (null == xslt)
             return tf.newTransformerHandler();
 
         TransformerHandler th = tf.newTransformerHandler(

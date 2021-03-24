@@ -63,7 +63,7 @@ public class Reflector {
                 }
             }
         }
-        if (mapperClass == null) {
+        if (null == mapperClass) {
             throw new InstrumentException("class loaders failed to locate the class " + mapperClassStr);
         }
         return mapperClass;

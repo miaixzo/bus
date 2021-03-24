@@ -60,7 +60,7 @@ public class ItemPointer implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
         ItemPointer that = (ItemPointer) o;
         return sequenceTag == that.sequenceTag &&
                 itemIndex == that.itemIndex &&

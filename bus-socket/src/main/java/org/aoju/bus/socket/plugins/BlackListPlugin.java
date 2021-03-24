@@ -51,7 +51,7 @@ public class BlackListPlugin<T> extends AbstractPlugin<T> {
         } catch (IOException e) {
             Logger.error("get remote address error.", e);
         }
-        if (inetSocketAddress == null) {
+        if (null == inetSocketAddress) {
             return channel;
         }
         for (BlackListRule rule : ipBlackList) {

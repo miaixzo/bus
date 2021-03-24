@@ -113,7 +113,7 @@ public class MppsSCP {
             if (!result.isValid())
                 throw ImageException.valueOf(result, rqAttrs);
         }
-        if (storageDir == null)
+        if (null == storageDir)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
@@ -145,7 +145,7 @@ public class MppsSCP {
             if (!result.isValid())
                 throw ImageException.valueOf(result, rqAttrs);
         }
-        if (storageDir == null)
+        if (null == storageDir)
             return null;
         String cuid = rq.getString(Tag.RequestedSOPClassUID);
         String iuid = rq.getString(Tag.RequestedSOPInstanceUID);

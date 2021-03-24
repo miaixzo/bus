@@ -133,7 +133,7 @@ public class AioQuickClient<T> {
     public CompletableFuture<AioSession> asyncStart(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
         Objects.requireNonNull(asynchronousChannelGroup);
         AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open(asynchronousChannelGroup);
-        if (bufferPool == null) {
+        if (null == bufferPool) {
             bufferPool = config.getBufferFactory().create();
             this.innerBufferPool = bufferPool;
         }
@@ -155,7 +155,7 @@ public class AioQuickClient<T> {
                 if (null != config.getMonitor()) {
                     connectedChannel = config.getMonitor().shouldAccept(socketChannel);
                 }
-                if (connectedChannel == null) {
+                if (null == connectedChannel) {
                     throw new RuntimeException("NetMonitor refuse channel");
                 }
                 //连接成功则构造AIOSession对象
@@ -260,7 +260,7 @@ public class AioQuickClient<T> {
      * @return 当前客户端实例
      */
     public final AioQuickClient<T> bindLocal(String local, int port) {
-        localAddress = local == null ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
+        localAddress =null == local ? new InetSocketAddress(port) : new InetSocketAddress(local, port);
         return this;
     }
 

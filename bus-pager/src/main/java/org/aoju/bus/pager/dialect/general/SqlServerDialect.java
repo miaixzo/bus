@@ -106,7 +106,7 @@ public class SqlServerDialect extends AbstractSqlDialect {
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
         String cacheSql = CACHE_PAGESQL.get(sql);
-        if (cacheSql == null) {
+        if (null == cacheSql) {
             cacheSql = sql;
             cacheSql = replaceSql.replace(cacheSql);
             cacheSql = pageSql.convertToPageSql(cacheSql, null, null);

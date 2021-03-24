@@ -50,7 +50,7 @@ public class Emf2sf {
     private File outDir;
 
     private static int[] toFrames(String[] ss) throws InstrumentException {
-        if (ss == null)
+        if (null == ss)
             return null;
 
         int[] is = new int[ss.length];
@@ -104,7 +104,7 @@ public class Emf2sf {
             IoKit.close(dis);
         }
         Attributes fmi = dis.getFileMetaInformation();
-        if (frames == null) {
+        if (null == frames) {
             int n = src.getInt(Tag.NumberOfFrames, 1);
             for (int frame = 0; frame < n; ++frame)
                 extract(file, fmi, src, frame);

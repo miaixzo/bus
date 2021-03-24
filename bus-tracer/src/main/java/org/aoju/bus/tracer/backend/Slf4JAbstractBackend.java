@@ -74,8 +74,8 @@ class Slf4JAbstractBackend extends AbstractBackend {
 
     @Override
     public void put(String key, String value) throws IllegalArgumentException {
-        if (key == null) throw new IllegalArgumentException("null keys are not allowed.");
-        if (value == null) throw new IllegalArgumentException("null values are not allowed.");
+        if (null == key) throw new IllegalArgumentException("null keys are not allowed.");
+        if (null == value) throw new IllegalArgumentException("null values are not allowed.");
         final Set<String> registeredKeys = TraceKeys.get();
         if (!registeredKeys.contains(key)) {
             registeredKeys.add(key);
@@ -85,7 +85,7 @@ class Slf4JAbstractBackend extends AbstractBackend {
 
     @Override
     public void remove(String key) throws IllegalArgumentException {
-        if (key == null) throw new IllegalArgumentException("null keys are not allowed.");
+        if (null == key) throw new IllegalArgumentException("null keys are not allowed.");
         if (TraceKeys.get().remove(key)) {
             MDC.remove(key);
         }

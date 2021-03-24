@@ -43,7 +43,7 @@ public class SAXReader {
 
     public static Attributes parse(String uri, Attributes attrs)
             throws ParserConfigurationException, SAXException, IOException {
-        if (attrs == null)
+        if (null == attrs)
             attrs = new Attributes();
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser parser = f.newSAXParser();
@@ -53,7 +53,7 @@ public class SAXReader {
 
     public static Attributes parse(InputStream is, Attributes attrs)
             throws ParserConfigurationException, SAXException, IOException {
-        if (attrs == null)
+        if (null == attrs)
             attrs = new Attributes();
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser parser = f.newSAXParser();

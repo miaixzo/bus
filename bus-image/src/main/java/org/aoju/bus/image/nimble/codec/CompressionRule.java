@@ -126,7 +126,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         }
 
         private static boolean isEmptyOrContains(Object[] a, Object o) {
-            if (o == null || a.length == 0)
+            if (null == o || a.length == 0)
                 return true;
 
             for (int i = 0; i < a.length; i++)

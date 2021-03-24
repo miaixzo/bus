@@ -101,7 +101,7 @@ public class Issuer implements Serializable {
     }
 
     public static Issuer valueOf(Attributes issuerItem) {
-        if (issuerItem == null)
+        if (null == issuerItem)
             return null;
 
         String localNamespaceEntityID = issuerItem.getString(Tag.LocalNamespaceEntityID);
@@ -116,11 +116,11 @@ public class Issuer implements Serializable {
     }
 
     private void validate() {
-        if (localNamespaceEntityID == null && universalEntityID == null)
+        if (null == localNamespaceEntityID && null == universalEntityID)
             throw new IllegalArgumentException(
                     "Missing Local Namespace Entity ID or Universal Entity ID");
         if (null != universalEntityID) {
-            if (universalEntityIDType == null)
+            if (null == universalEntityIDType)
                 throw new IllegalArgumentException("Missing Universal Entity ID Type");
         }
     }
@@ -147,11 +147,11 @@ public class Issuer implements Serializable {
 
         boolean mergeLocalNamespace;
         boolean mergeUniversal;
-        if (mergeLocalNamespace = this.localNamespaceEntityID == null
+        if (mergeLocalNamespace = null == this.localNamespaceEntityID
                 && null != other.localNamespaceEntityID) {
             this.localNamespaceEntityID = other.localNamespaceEntityID;
         }
-        if (mergeUniversal = this.universalEntityID == null
+        if (mergeUniversal = null == this.universalEntityID
                 && null != other.universalEntityID) {
             this.universalEntityID = other.universalEntityID;
             this.universalEntityIDType = other.universalEntityIDType;
@@ -168,7 +168,7 @@ public class Issuer implements Serializable {
     }
 
     private int hashCode(String s) {
-        return s == null ? 0 : s.hashCode();
+        return null == s ? 0 : s.hashCode();
     }
 
     @Override
@@ -188,7 +188,7 @@ public class Issuer implements Serializable {
     }
 
     public boolean matches(Issuer other) {
-        if (this == other || other == null)
+        if (this == other || null == other)
             return true;
 
         boolean matchLocal = null != localNamespaceEntityID
@@ -210,7 +210,7 @@ public class Issuer implements Serializable {
     }
 
     public String toString(char delim) {
-        if (universalEntityID == null)
+        if (null == universalEntityID)
             return localNamespaceEntityID;
         StringBuilder sb = new StringBuilder();
         if (null != localNamespaceEntityID) {
@@ -255,7 +255,7 @@ public class Issuer implements Serializable {
     }
 
     public Attributes toIssuerOfPatientID(Attributes attrs) {
-        if (attrs == null) {
+        if (null == attrs) {
             attrs = new Attributes(2);
         }
 

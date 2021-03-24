@@ -225,7 +225,7 @@ public class Association {
     private void checkIsSCP(String cuid) throws InstrumentException {
         if (!isSCPFor(cuid)) {
             InstrumentException ex = new InstrumentException(cuid, TransferCapability.Role.SCP);
-            if (ae.isRoleSelectionNegotiationLenient() && ac.getRoleSelectionFor(cuid) == null)
+            if (ae.isRoleSelectionNegotiationLenient() && null == ac.getRoleSelectionFor(cuid))
                 Logger.info("{}: {}", this, ex.getMessage());
             else
                 throw ex;
@@ -234,7 +234,7 @@ public class Association {
 
     public boolean isSCPFor(String cuid) {
         RoleSelection rolsel = ac.getRoleSelectionFor(cuid);
-        if (rolsel == null)
+        if (null == rolsel)
             return !requestor;
         return requestor ? rolsel.isSCP() : rolsel.isSCU();
     }
@@ -242,7 +242,7 @@ public class Association {
     private void checkIsSCU(String cuid) throws InstrumentException {
         if (!isSCUFor(cuid)) {
             InstrumentException ex = new InstrumentException(cuid, TransferCapability.Role.SCU);
-            if (ae.isRoleSelectionNegotiationLenient() && ac.getRoleSelectionFor(cuid) == null)
+            if (ae.isRoleSelectionNegotiationLenient() && null == ac.getRoleSelectionFor(cuid))
                 Logger.info("{}: {}", this, ex.getMessage());
             else
                 throw ex;
@@ -251,7 +251,7 @@ public class Association {
 
     public boolean isSCUFor(String cuid) {
         RoleSelection rolsel = ac.getRoleSelectionFor(cuid);
-        if (rolsel == null)
+        if (null == rolsel)
             return requestor;
         return requestor ? rolsel.isSCU() : rolsel.isSCP();
     }
@@ -691,7 +691,7 @@ public class Association {
         int status = cmd.getInt(Tag.Status, 0);
         boolean pending = Status.isPending(status);
         DimseRSPHandler rspHandler = getDimseRSPHandler(msgId);
-        if (rspHandler == null) {
+        if (null == rspHandler) {
             Logger.info("{}: unexpected message ID in DIMSE RSP:", name);
             Logger.info("\n{}", cmd);
             throw new AAbort();
@@ -815,7 +815,7 @@ public class Association {
 
     private Map<String, Presentation> initTSMap(String as) {
         Map<String, Presentation> tsMap = pcMap.get(as);
-        if (tsMap == null)
+        if (null == tsMap)
             pcMap.put(as, tsMap = new HashMap<>());
         return tsMap;
     }
@@ -823,19 +823,19 @@ public class Association {
     public Presentation pcFor(String cuid, String tsuid)
             throws InstrumentException {
         Map<String, Presentation> tsMap = pcMap.get(cuid);
-        if (tsMap == null)
+        if (null == tsMap)
             throw new InstrumentException(cuid);
-        if (tsuid == null)
+        if (null == tsuid)
             return tsMap.values().iterator().next();
         Presentation pc = tsMap.get(tsuid);
-        if (pc == null)
+        if (null == pc)
             throw new InstrumentException(cuid, tsuid);
         return pc;
     }
 
     public Set<String> getTransferSyntaxesFor(String cuid) {
         Map<String, Presentation> tsMap = pcMap.get(cuid);
-        if (tsMap == null)
+        if (null == tsMap)
             return Collections.emptySet();
         return Collections.unmodifiableSet(tsMap.keySet());
     }

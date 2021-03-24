@@ -45,7 +45,7 @@ public class QueryExpressionType {
     protected String queryLanguage;
 
     public List<Object> getContent() {
-        if (this.content == null) {
+        if (null == this.content) {
             this.content = new ArrayList();
         }
         return this.content;

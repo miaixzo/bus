@@ -59,7 +59,7 @@ public class ReconnectPlugin<T> extends AbstractPlugin<T> {
             return;
         }
         try {
-            if (asynchronousChannelGroup == null) {
+            if (null == asynchronousChannelGroup) {
                 client.start();
             } else {
                 client.start(asynchronousChannelGroup);

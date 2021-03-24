@@ -71,7 +71,7 @@ public class SelectKey implements KeyGenerator {
         //defaults
         Configuration configuration = ms.getConfiguration();
         KeyGenerator keyGenerator;
-        String IDENTITY = (column.getGenerator() == null || Normal.EMPTY.equals(column.getGenerator())) ? identity : column.getGenerator();
+        String IDENTITY = (null == column.getGenerator() || Normal.EMPTY.equals(column.getGenerator())) ? identity : column.getGenerator();
         if (IDENTITY.equalsIgnoreCase("JDBC")) {
             keyGenerator = new Jdbc3KeyGenerator();
         } else {
@@ -191,7 +191,7 @@ public class SelectKey implements KeyGenerator {
                                           MetaObject metaParam, MetaObject metaResult) {
         String[] keyColumns = keyStatement.getKeyColumns();
 
-        if (keyColumns == null || keyColumns.length == 0) {
+        if (null == keyColumns || keyColumns.length == 0) {
             // no key columns specified, just use the property names
             for (String keyProperty : keyProperties) {
                 setValue(metaParam, keyProperty, metaResult.getValue(keyProperty));

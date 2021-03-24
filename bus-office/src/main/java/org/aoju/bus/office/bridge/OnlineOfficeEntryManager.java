@@ -84,7 +84,7 @@ public class OnlineOfficeEntryManager extends AbstractOfficeEntryManager {
             final String description = "class path resource [" + path + "]";
             final ClassLoader cl = ClassKit.getDefaultClassLoader();
             final URL url = (null != cl ? cl.getResource(path) : ClassLoader.getSystemResource(path));
-            if (url == null) {
+            if (null == url) {
                 throw new FileNotFoundException(
                         description + " cannot be resolved to absolute file path because it does not exist");
             }

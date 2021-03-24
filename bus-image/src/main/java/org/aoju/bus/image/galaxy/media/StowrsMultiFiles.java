@@ -82,7 +82,7 @@ public class StowrsMultiFiles extends AbstractStowrs {
                 }
             }
             Attributes error = writeEndMarkers(httpPost, out);
-            if (error == null) {
+            if (null == error) {
                 state.setStatus(org.aoju.bus.image.Status.Success);
                 message = "all the files has been tranfered";
             } else {

@@ -160,7 +160,7 @@ public final class PropertiesBasedTraceFilter implements TraceFilterConfig {
     }
 
     private List<Pattern> retrievePatternsForPropertyValue(final String propertyValue) {
-        if (propertyValue == null) {
+        if (null == propertyValue) {
             return Collections.emptyList();
         }
         final List<Pattern> patterns = patternCache.get(propertyValue);
@@ -174,7 +174,7 @@ public final class PropertiesBasedTraceFilter implements TraceFilterConfig {
     }
 
     List<Pattern> extractPatterns(final String propertyValue) {
-        if (propertyValue == null)
+        if (null == propertyValue)
             return Collections.emptyList();
 
         final List<Pattern> trimmedPatterns = new ArrayList<>();

@@ -134,7 +134,7 @@ public class WebApplication {
 
     public boolean isInstalled() {
         return null != device && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+                && (null == installed || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {

@@ -183,7 +183,7 @@ public abstract class AbstractElement implements IniElement {
      */
     @Override
     public String toCompleteString() {
-        return comment == null ? originalValue : originalValue + Symbol.SPACE + comment;
+        return null == comment ? originalValue : originalValue + Symbol.SPACE + comment;
     }
 
     //**************** implements from String ****************//

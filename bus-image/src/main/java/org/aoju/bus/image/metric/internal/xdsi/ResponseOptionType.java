@@ -48,7 +48,7 @@ public class ResponseOptionType {
     protected Boolean returnComposedObjects;
 
     public String getReturnType() {
-        if (this.returnType == null) {
+        if (null == this.returnType) {
             return "RegistryObject";
         }
         return this.returnType;
@@ -59,7 +59,7 @@ public class ResponseOptionType {
     }
 
     public boolean isReturnComposedObjects() {
-        if (this.returnComposedObjects == null) {
+        if (null == this.returnComposedObjects) {
             return false;
         }
         return this.returnComposedObjects.booleanValue();

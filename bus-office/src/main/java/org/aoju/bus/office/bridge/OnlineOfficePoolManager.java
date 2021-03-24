@@ -118,7 +118,7 @@ public final class OnlineOfficePoolManager extends AbstractOfficePoolManager {
 
             Assert.notEmpty(urlConnection, "The URL connection is missing");
 
-            if (workingDir == null) {
+            if (null == workingDir) {
                 workingDir = new File(System.getProperty("java.io.tmpdir"));
             }
 

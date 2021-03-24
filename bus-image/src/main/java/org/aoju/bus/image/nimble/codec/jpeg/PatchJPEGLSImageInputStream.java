@@ -52,13 +52,13 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
 
     public PatchJPEGLSImageInputStream(ImageInputStream iis,
                                        PatchJPEGLS patchJPEGLS) throws IOException {
-        if (iis == null)
+        if (null == iis)
             throw new NullPointerException("iis");
 
         super.streamPos = iis.getStreamPosition();
         super.flushedPos = iis.getFlushedPosition();
         this.iis = iis;
-        if (patchJPEGLS == null)
+        if (null == patchJPEGLS)
             return;
 
         JPEGLSCodingParam param = patchJPEGLS.createJPEGLSCodingParam(firstBytesOf(iis));
@@ -101,7 +101,7 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
     }
 
     private long adjustStreamPosition(long pos) {
-        if (patch == null)
+        if (null == patch)
             return pos;
         long index = pos - patchPos;
         return index < 0 ? pos
@@ -124,7 +124,7 @@ public class PatchJPEGLSImageInputStream extends ImageInputStreamImpl
     public long length() {
         try {
             long len = iis.length();
-            return patch == null || len < 0 ? len : len + patch.length;
+            return null == patch || len < 0 ? len : len + patch.length;
         } catch (IOException e) {
             return -1;
         }

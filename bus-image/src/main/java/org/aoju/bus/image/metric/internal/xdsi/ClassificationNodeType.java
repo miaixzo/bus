@@ -48,7 +48,7 @@ public class ClassificationNodeType extends RegistryObjectType {
     protected String path;
 
     public List<ClassificationNodeType> getClassificationNode() {
-        if (this.classificationNode == null) {
+        if (null == this.classificationNode) {
             this.classificationNode = new ArrayList();
         }
         return this.classificationNode;

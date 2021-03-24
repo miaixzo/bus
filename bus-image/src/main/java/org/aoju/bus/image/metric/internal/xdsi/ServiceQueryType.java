@@ -45,7 +45,7 @@ public class ServiceQueryType extends RegistryObjectQueryType {
     protected List<ServiceBindingQueryType> serviceBindingQuery;
 
     public List<ServiceBindingQueryType> getServiceBindingQuery() {
-        if (this.serviceBindingQuery == null) {
+        if (null == this.serviceBindingQuery) {
 
             this.serviceBindingQuery = new ArrayList();
         }

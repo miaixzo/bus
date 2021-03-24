@@ -83,7 +83,7 @@ public class HL7Snd extends Device {
 
     private void send(byte[] data) throws IOException {
         mllp.writeMessage(data);
-        if (mllp.readMessage() == null)
+        if (null == mllp.readMessage())
             throw new IOException("Connection closed by receiver");
     }
 

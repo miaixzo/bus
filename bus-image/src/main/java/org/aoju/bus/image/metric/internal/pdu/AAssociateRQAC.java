@@ -60,12 +60,12 @@ public abstract class AAssociateRQAC {
     protected IdentityAC identityAC;
 
     public void checkCallingAET() {
-        if (callingAET == null)
+        if (null == callingAET)
             throw new IllegalStateException("Calling AET not initalized");
     }
 
     public void checkCalledAET() {
-        if (calledAET == null)
+        if (null == calledAET)
             throw new IllegalStateException("Called AET not initalized");
     }
 
@@ -113,7 +113,7 @@ public abstract class AAssociateRQAC {
     }
 
     public final void setApplicationContext(String applicationContext) {
-        if (applicationContext == null)
+        if (null == applicationContext)
             throw new NullPointerException();
 
         this.applicationContext = applicationContext;
@@ -152,7 +152,7 @@ public abstract class AAssociateRQAC {
     }
 
     public final void setImplClassUID(String implClassUID) {
-        if (implClassUID == null)
+        if (null == implClassUID)
             throw new NullPointerException();
 
         this.implClassUID = implClassUID;

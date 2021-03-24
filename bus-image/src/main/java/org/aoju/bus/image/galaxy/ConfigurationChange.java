@@ -49,7 +49,7 @@ public class ConfigurationChange {
     }
 
     public static ModifiedObject addModifiedObjectIfVerbose(ConfigurationChange diffs, String dn, ChangeType changeType) {
-        if (diffs == null || !diffs.isVerbose())
+        if (null == diffs || !diffs.isVerbose())
             return null;
 
         ModifiedObject object = new ModifiedObject(dn, changeType);
@@ -58,7 +58,7 @@ public class ConfigurationChange {
     }
 
     public static ModifiedObject addModifiedObject(ConfigurationChange diffs, String dn, ChangeType changeType) {
-        if (diffs == null)
+        if (null == diffs)
             return null;
 
         ModifiedObject object = new ModifiedObject(dn, changeType);

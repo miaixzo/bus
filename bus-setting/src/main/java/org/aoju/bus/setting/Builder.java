@@ -245,7 +245,7 @@ public class Builder {
     }
 
     private void checkProps(Supplier<IniProperty> propertySupplier) {
-        if (this.lastSection == null) {
+        if (null == this.lastSection) {
             this.waitForSections.addFirst(propertySupplier);
         } else {
             checkProps();

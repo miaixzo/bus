@@ -59,7 +59,7 @@ public class PageContext extends PageMethod implements Dialect {
             throw new RuntimeException("Multiple paging plug-ins found, please check the system configuration!");
         }
         Page page = pageParams.getPage(parameterObject, rowBounds);
-        if (page == null) {
+        if (null == page) {
             return true;
         } else {
             // 设置默认的 count 列

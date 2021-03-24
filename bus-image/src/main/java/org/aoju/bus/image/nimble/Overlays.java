@@ -139,12 +139,12 @@ public class Overlays {
                                                           int gg0000) {
         int tagOverlayActivationLayer = Tag.OverlayActivationLayer | gg0000;
         String layerName = psAttrs.getString(tagOverlayActivationLayer);
-        if (layerName == null)
+        if (null == layerName)
             throw new IllegalArgumentException("Missing "
                     + Tag.toString(tagOverlayActivationLayer)
                     + " Overlay Activation Layer");
         Sequence layers = psAttrs.getSequence(Tag.GraphicLayerSequence);
-        if (layers == null)
+        if (null == layers)
             throw new IllegalArgumentException("Missing "
                     + Tag.toString(Tag.GraphicLayerSequence)
                     + " Graphic Layer Sequence");
@@ -173,10 +173,10 @@ public class Overlays {
         int ovlyRows = attrs.getInt(tagOverlayRows, -1);
         int ovlyColumns = attrs.getInt(tagOverlayColumns, -1);
         int[] ovlyOrigin = attrs.getInts(tagOverlayOrigin);
-        if (ovlyData == null)
+        if (null == ovlyData)
             ovlyData = attrs.getSafeBytes(tagOverlayData);
 
-        if (ovlyData == null)
+        if (null == ovlyData)
             throw new IllegalArgumentException("Missing "
                     + Tag.toString(tagOverlayData)
                     + " Overlay Data");
@@ -188,7 +188,7 @@ public class Overlays {
             throw new IllegalArgumentException(
                     Tag.toString(tagOverlayColumns)
                             + " Overlay Columns [" + ovlyColumns + "]");
-        if (ovlyOrigin == null)
+        if (null == ovlyOrigin)
             throw new IllegalArgumentException("Missing "
                     + Tag.toString(tagOverlayOrigin)
                     + " Overlay Origin");

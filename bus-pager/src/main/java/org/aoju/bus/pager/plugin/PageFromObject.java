@@ -75,7 +75,7 @@ public abstract class PageFromObject {
      * @return 结果
      */
     public static <T> Page<T> getPageFromObject(Object params, boolean required) {
-        if (params == null) {
+        if (null == params) {
             throw new PageException("无法获取分页查询参数!");
         }
         if (params instanceof Paging) {
@@ -108,7 +108,7 @@ public abstract class PageFromObject {
         } else {
             paramsObject = MetaObject.forObject(params);
         }
-        if (paramsObject == null) {
+        if (null == paramsObject) {
             throw new PageException("分页查询参数处理失败!");
         }
         Object orderBy = getParamValue(paramsObject, "orderBy", false);
@@ -119,7 +119,7 @@ public abstract class PageFromObject {
         try {
             Object _pageNo = getParamValue(paramsObject, "pageNo", required);
             Object _pageSize = getParamValue(paramsObject, "pageSize", required);
-            if (_pageNo == null || _pageSize == null) {
+            if (null == _pageNo || null == _pageSize) {
                 if (hasOrderBy) {
                     Page page = new Page();
                     page.setOrderBy(orderBy.toString());
@@ -177,7 +177,7 @@ public abstract class PageFromObject {
                 value = values[0];
             }
         }
-        if (required && value == null) {
+        if (required && null == value) {
             throw new PageException("分页查询缺少必要的参数:" + PARAMS.get(paramName));
         }
         return value;
@@ -196,7 +196,7 @@ public abstract class PageFromObject {
     }
 
     public static boolean isEmpty(Object obj) {
-        return obj == null || obj.toString().equals(Normal.EMPTY);
+        return null == obj || obj.toString().equals(Normal.EMPTY);
     }
 
     public static boolean isNotEmpty(String str) {

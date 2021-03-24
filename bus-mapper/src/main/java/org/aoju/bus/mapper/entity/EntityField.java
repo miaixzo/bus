@@ -102,10 +102,10 @@ public class EntityField {
         if (null != field) {
             result = field.getAnnotation(annotationClass);
         }
-        if (result == null && null != setter) {
+        if (null == result && null != setter) {
             result = setter.getAnnotation(annotationClass);
         }
-        if (result == null && null != getter) {
+        if (null == result && null != getter) {
             result = getter.getAnnotation(annotationClass);
         }
         return result;
@@ -114,7 +114,7 @@ public class EntityField {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         EntityField that = (EntityField) o;
 

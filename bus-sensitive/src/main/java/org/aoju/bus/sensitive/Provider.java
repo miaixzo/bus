@@ -83,7 +83,7 @@ public class Provider<T> {
      * @return 是否已经脱敏了
      */
     public static boolean alreadyBeSentisived(Object object) {
-        return object == null || object.toString().indexOf(Symbol.STAR) > 0;
+        return null == object || object.toString().indexOf(Symbol.STAR) > 0;
     }
 
     /**

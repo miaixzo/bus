@@ -59,7 +59,7 @@ public final class TpicMap {
     }
 
     public Map<String, String> unwrapValues() {
-        if (entries == null) {
+        if (null == entries) {
             return Collections.emptyMap();
         }
         final Map<String, String> map = new HashMap<>();
@@ -72,7 +72,7 @@ public final class TpicMap {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         TpicMap tpicMap = (TpicMap) o;
 
@@ -106,7 +106,7 @@ public final class TpicMap {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
 
             Entry entry = (Entry) o;
 

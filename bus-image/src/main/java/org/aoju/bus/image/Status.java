@@ -277,7 +277,7 @@ public class Status {
 
     public static Status build(Status dcmState, String timeMessage, Exception e) {
         Status state = dcmState;
-        if (state == null) {
+        if (null == state) {
             state = new Status(Status.UnableToProcess, null, null);
         }
 

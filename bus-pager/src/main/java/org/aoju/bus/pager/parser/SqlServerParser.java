@@ -353,7 +353,7 @@ public class SqlServerParser {
     protected void processPlainSelect(PlainSelect plainSelect, int level) {
         if (level > 1) {
             if (isNotEmptyList(plainSelect.getOrderByElements())) {
-                if (plainSelect.getTop() == null) {
+                if (null == plainSelect.getTop()) {
                     plainSelect.setTop(TOP100_PERCENT);
                 }
             }
@@ -409,7 +409,7 @@ public class SqlServerParser {
     }
 
     public boolean isNotEmptyList(List<?> list) {
-        if (list == null || list.size() == 0) {
+        if (null == list || list.size() == 0) {
             return false;
         }
         return true;
@@ -512,9 +512,9 @@ public class SqlServerParser {
             } else { // OrderByElement 不在查询列表中,需要自动生成一个查询列
                 if (expression instanceof Column) { // OrderByElement 为普通列
                     Table table = ((Column) expression).getTable();
-                    if (table == null) { // 表名为空
+                    if (null == table) { // 表名为空
                         if (allColumns ||
-                                (allColumnsTables.size() == 1 && plainSelect.getJoins() == null) ||
+                                (allColumnsTables.size() == 1 && null == plainSelect.getJoins()) ||
                                 aliases.contains(((Column) expression).getColumnName())) {
                             // 包含`*`查询列 或者 只有一个 `t.*`列且为单表查询 或者 其实排序列是一个别名
                             // 此时排序列其实已经包含在查询列表中了,不需做任何操作

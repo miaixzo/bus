@@ -86,7 +86,7 @@ public class UdpChannel<Request> {
             return;
         }
         responseTasks.offer(new ResponseUnit(remote, virtualBuffer));
-        if (selectionKey == null) {
+        if (null == selectionKey) {
             worker.addRegister(selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
         } else {
             if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) == 0) {
@@ -102,14 +102,14 @@ public class UdpChannel<Request> {
     void doWrite() throws IOException {
         while (true) {
             ResponseUnit responseUnit;
-            if (failResponseUnit == null) {
+            if (null == failResponseUnit) {
                 responseUnit = responseTasks.poll();
                 Logger.info("poll from writeBuffer");
             } else {
                 responseUnit = failResponseUnit;
                 failResponseUnit = null;
             }
-            if (responseUnit == null) {
+            if (null == responseUnit) {
                 writeSemaphore.release();
                 if (responseTasks.isEmpty()) {
                     selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_WRITE);
@@ -168,7 +168,7 @@ public class UdpChannel<Request> {
         return sessionMap.computeIfAbsent(remote, s -> {
             Consumer<WriteBuffer> consumer = writeBuffer -> {
                 VirtualBuffer virtualBuffer = writeBuffer.poll();
-                if (virtualBuffer == null) {
+                if (null == virtualBuffer) {
                     return;
                 }
                 try {

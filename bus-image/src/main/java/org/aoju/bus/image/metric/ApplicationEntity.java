@@ -310,9 +310,9 @@ public class ApplicationEntity implements Serializable {
 
     public String getCallingAETitle(String calledAET) {
         String callingAET = masqueradeCallingAETs.get(calledAET);
-        if (callingAET == null) {
+        if (null == callingAET) {
             callingAET = masqueradeCallingAETs.get(Symbol.STAR);
-            if (callingAET == null)
+            if (null == callingAET)
                 callingAET = aet;
         }
         return callingAET;
@@ -388,7 +388,7 @@ public class ApplicationEntity implements Serializable {
      */
     public boolean isInstalled() {
         return null != device && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+                && (null == installed || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -447,14 +447,14 @@ public class ApplicationEntity implements Serializable {
     }
 
     private void checkDevice() {
-        if (device == null)
+        if (null == device)
             throw new IllegalStateException("Not attached to Device");
     }
 
     void onDimseRQ(Association as, Presentation pc, Dimse cmd,
                    Attributes cmdAttrs, PDVInputStream data) throws IOException {
         DimseRQHandler tmp = getDimseRQHandler();
-        if (tmp == null) {
+        if (null == tmp) {
             Logger.error("DimseRQHandler not initalized");
             throw new AAbort();
         }
@@ -523,13 +523,13 @@ public class ApplicationEntity implements Serializable {
         String as = rqpc.getAbstractSyntax();
         TransferCapability tc = roleSelection(rq, ac, as);
         int pcid = rqpc.getPCID();
-        if (tc == null)
+        if (null == tc)
             return new Presentation(pcid,
                     Presentation.ABSTRACT_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
 
         String ts = tc.selectTransferSyntax(rqpc.getTransferSyntaxes());
-        if (ts == null)
+        if (null == ts)
             return new Presentation(pcid,
                     Presentation.TRANSFER_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
@@ -545,7 +545,7 @@ public class ApplicationEntity implements Serializable {
     private TransferCapability roleSelection(AAssociateRQ rq,
                                              AAssociateAC ac, String asuid) {
         RoleSelection rqrs = rq.getRoleSelectionFor(asuid);
-        if (rqrs == null)
+        if (null == rqrs)
             return getTC(scpTCs, asuid, rq);
 
         RoleSelection acrs = ac.getRoleSelectionFor(asuid);
@@ -587,7 +587,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     private byte[] negotiate(ExtendedNegotiate exneg, TransferCapability tc) {
-        if (exneg == null)
+        if (null == exneg)
             return null;
 
         StorageOptions storageOptions = tc.getStorageOptions();
@@ -607,7 +607,7 @@ public class ApplicationEntity implements Serializable {
             throws IOException, InterruptedException, InstrumentException, GeneralSecurityException {
         checkDevice();
         checkInstalled();
-        if (rq.getCallingAET() == null)
+        if (null == rq.getCallingAET())
             rq.setCallingAET(getCallingAETitle(rq.getCalledAET()));
         rq.setMaxOpsInvoked(local.getMaxOpsInvoked());
         rq.setMaxOpsPerformed(local.getMaxOpsPerformed());
@@ -658,7 +658,7 @@ public class ApplicationEntity implements Serializable {
     public Association connect(ApplicationEntity remote, AAssociateRQ rq)
             throws IOException, InterruptedException, InstrumentException, GeneralSecurityException {
         Compatible cc = findCompatibleConnection(remote);
-        if (rq.getCalledAET() == null)
+        if (null == rq.getCalledAET())
             rq.setCalledAET(remote.getAETitle());
         return connect(cc.getLocalConnection(), cc.getRemoteConnection(), rq);
     }
@@ -705,7 +705,7 @@ public class ApplicationEntity implements Serializable {
         for (AEExtension src : from.extensions.values()) {
             Class<? extends AEExtension> clazz = src.getClass();
             AEExtension ext = extensions.get(clazz);
-            if (ext == null)
+            if (null == ext)
                 try {
                     addAEExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
@@ -748,7 +748,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     public boolean removeAEExtension(AEExtension ext) {
-        if (extensions.remove(ext.getClass()) == null)
+        if (null == extensions.remove(ext.getClass()))
             return false;
 
         ext.setApplicationEntity(null);
@@ -766,7 +766,7 @@ public class ApplicationEntity implements Serializable {
 
     public <T extends AEExtension> T getAEExtensionNotNull(Class<T> clazz) {
         T aeExt = getAEExtension(clazz);
-        if (aeExt == null)
+        if (null == aeExt)
             throw new IllegalStateException("No " + clazz.getName()
                     + " configured for AE: " + aet);
         return aeExt;

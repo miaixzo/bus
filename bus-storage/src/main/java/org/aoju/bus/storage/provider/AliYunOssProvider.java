@@ -86,7 +86,7 @@ public class AliYunOssProvider extends AbstractProvider {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent()))) {
             while (true) {
                 String line = reader.readLine();
-                if (line == null) {
+                if (null == line) {
                     break;
                 }
             }

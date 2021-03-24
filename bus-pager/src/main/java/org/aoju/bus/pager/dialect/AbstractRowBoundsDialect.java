@@ -51,7 +51,7 @@ public abstract class AbstractRowBoundsDialect extends AbstractDialect {
     public boolean beforeCount(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         if (rowBounds instanceof RowBounds) {
             RowBounds pageRowBounds = (RowBounds) rowBounds;
-            return pageRowBounds.getCount() == null || pageRowBounds.getCount();
+            return null == pageRowBounds.getCount() || pageRowBounds.getCount();
         }
         return false;
     }

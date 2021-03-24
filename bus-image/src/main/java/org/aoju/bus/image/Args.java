@@ -155,8 +155,8 @@ public class Args {
         this.bindCallingAet = bindCallingAet;
         this.storagePattern = storagePattern;
         this.transferCapabilityFile = transferCapabilityFile;
-        this.acceptedCallingAETitles = acceptedCallingAETitles == null ? new String[0] : acceptedCallingAETitles;
-        if (option == null && null != this.option) {
+        this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0] : acceptedCallingAETitles;
+        if (null == option && null != this.option) {
             this.option.setMaxOpsInvoked(15);
             this.option.setMaxOpsPerformed(15);
         }

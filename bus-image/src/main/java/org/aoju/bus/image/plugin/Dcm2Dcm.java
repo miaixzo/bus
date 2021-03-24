@@ -84,7 +84,7 @@ public class Dcm2Dcm {
     public final void setTransferSyntax(String uid) {
         this.tsuid = uid;
         this.tstype = TransferSyntaxType.forUID(uid);
-        if (tstype == null) {
+        if (null == tstype) {
             throw new IllegalArgumentException(
                     "Unsupported Transfer Syntax: " + tsuid);
         }

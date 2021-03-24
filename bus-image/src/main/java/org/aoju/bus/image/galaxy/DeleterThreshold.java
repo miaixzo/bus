@@ -62,7 +62,7 @@ public class DeleterThreshold extends StorageThreshold
     }
 
     public boolean match(Calendar cal) {
-        return schedule == null || schedule.contains(cal);
+        return null == schedule || schedule.contains(cal);
     }
 
     @Override

@@ -125,7 +125,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
             }
             if (bulkOffset == -1 || bulkLength == -1) {
                 bulk = updateBulkData(i);
-                if (bulk == null) {
+                if (null == bulk) {
                     lastSegment = i;
                     curSegment = -1;
                     super.seek(beforePos);
@@ -174,7 +174,7 @@ public class SegmentedImageStream extends ImageInputStreamImpl {
             } else if (bulkLength == -1) {
                 bulk = readBulkAt(bulkOffset - 8, i);
             }
-            if (bulk == null) {
+            if (null == bulk) {
                 return null;
             }
             last = bulk;

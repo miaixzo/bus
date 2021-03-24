@@ -38,7 +38,7 @@ public class InputStreamWriter implements DataWriter {
     private final InputStream in;
 
     public InputStreamWriter(InputStream in) {
-        if (in == null)
+        if (null == in)
             throw new NullPointerException();
         this.in = in;
     }

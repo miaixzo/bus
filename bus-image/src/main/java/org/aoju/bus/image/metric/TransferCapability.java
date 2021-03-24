@@ -96,7 +96,7 @@ public class TransferCapability implements Serializable {
     }
 
     public void setRole(Role role) {
-        if (role == null)
+        if (null == role)
             throw new NullPointerException();
 
         if (this.role == role)

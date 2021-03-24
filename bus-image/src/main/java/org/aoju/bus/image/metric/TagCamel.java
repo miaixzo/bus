@@ -176,7 +176,7 @@ public class TagCamel implements Serializable {
         this.id = id;
         this.keyword = keyword;
         this.displayedName = displayedName;
-        this.type = type == null ? TagType.STRING : type;
+        this.type = null == type ? TagType.STRING : type;
         this.anonymizationType = 0;
         this.defaultValue = defaultValue;
         this.vmMax = vmMax < 1 ? 1 : vmMax;
@@ -212,7 +212,7 @@ public class TagCamel implements Serializable {
     }
 
     public static int getValueMultiplicity(Object value) {
-        if (value == null) {
+        if (null == value) {
             return 0;
         }
 
@@ -223,7 +223,7 @@ public class TagCamel implements Serializable {
     }
 
     public static Object getValueFromIndex(Object value, int index) {
-        if (value == null || !value.getClass().isArray()) {
+        if (null == value || !value.getClass().isArray()) {
             return value;
         }
 
@@ -234,7 +234,7 @@ public class TagCamel implements Serializable {
     }
 
     protected static String getFormattedText(Object value, String format) {
-        if (value == null) {
+        if (null == value) {
             return Normal.EMPTY;
         }
 
@@ -264,7 +264,7 @@ public class TagCamel implements Serializable {
             return formatValue(str, value instanceof Float || value instanceof Double, format);
         }
 
-        return str == null ? Normal.EMPTY : str;
+        return null == str ? Normal.EMPTY : str;
     }
 
     protected static String formatValue(String value, boolean decimal, String format) {
@@ -360,7 +360,7 @@ public class TagCamel implements Serializable {
     }
 
     public String getDisplayedName() {
-        if (displayedName == null) {
+        if (null == displayedName) {
             return splitCamelCaseString(getKeyword());
         }
         return displayedName;
@@ -375,7 +375,7 @@ public class TagCamel implements Serializable {
     }
 
     public boolean isTypeCompliant(Object value) {
-        if (value == null) {
+        if (null == value) {
             return true;
         }
         Object clazz;
@@ -410,7 +410,7 @@ public class TagCamel implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (null == obj) {
             return false;
         }
         if (getClass() != obj.getClass()) {
@@ -420,8 +420,8 @@ public class TagCamel implements Serializable {
         if (id != other.id) {
             return false;
         }
-        if (keyword == null) {
-            return other.keyword == null;
+        if (null == keyword) {
+            return null == other.keyword;
         } else return keyword.equals(other.keyword);
     }
 
@@ -430,7 +430,7 @@ public class TagCamel implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + id;
-        result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
+        result = prime * result + ((null == keyword) ? 0 : keyword.hashCode());
         return result;
     }
 
@@ -501,7 +501,7 @@ public class TagCamel implements Serializable {
         }
 
         public boolean isInstanceOf(Object value) {
-            if (value == null) {
+            if (null == value) {
                 return true;
             }
             return clazz.isAssignableFrom(value.getClass());

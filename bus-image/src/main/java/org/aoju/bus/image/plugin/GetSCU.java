@@ -78,7 +78,7 @@ public class GetSCU implements AutoCloseable {
         @Override
         protected void store(Association as, Presentation pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
-            if (storageDir == null) {
+            if (null == storageDir) {
                 return;
             }
 

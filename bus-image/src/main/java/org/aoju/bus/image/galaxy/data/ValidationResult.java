@@ -80,13 +80,13 @@ public class ValidationResult {
     }
 
     public void addMissingAttribute(IOD.DataElement dataElement) {
-        if (missingAttributes == null)
+        if (null == missingAttributes)
             missingAttributes = new ArrayList<>();
         missingAttributes.add(dataElement);
     }
 
     public void addMissingAttributeValue(IOD.DataElement dataElement) {
-        if (missingAttributeValues == null)
+        if (null == missingAttributeValues)
             missingAttributeValues = new ArrayList<>();
         missingAttributeValues.add(dataElement);
     }
@@ -97,7 +97,7 @@ public class ValidationResult {
 
     public void addInvalidAttributeValue(IOD.DataElement dataElement,
                                          Invalid reason, ValidationResult[] itemValidationResult, IOD[] missingItems) {
-        if (invalidAttributeValues == null)
+        if (null == invalidAttributeValues)
             invalidAttributeValues = new ArrayList<>();
         invalidAttributeValues.add(
                 new InvalidAttributeValue(dataElement, reason,
@@ -105,7 +105,7 @@ public class ValidationResult {
     }
 
     public void addNotAllowedAttribute(DataElement el) {
-        if (notAllowedAttributes == null)
+        if (null == notAllowedAttributes)
             notAllowedAttributes = new ArrayList<>();
         notAllowedAttributes.add(el);
     }
@@ -124,7 +124,7 @@ public class ValidationResult {
 
     public int[] tagsOfInvalidAttributeValues() {
         ArrayList<InvalidAttributeValue> list = invalidAttributeValues;
-        if (list == null)
+        if (null == list)
             return new int[]{};
 
         int[] tags = new int[list.size()];
@@ -154,7 +154,7 @@ public class ValidationResult {
     }
 
     private int[] tagsOf(List<DataElement> list) {
-        if (list == null)
+        if (null == list)
             return new int[]{};
 
         int[] tags = new int[list.size()];

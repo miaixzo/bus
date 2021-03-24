@@ -54,7 +54,7 @@ public class AdhocQueryResponse extends RegistryResponseType {
     }
 
     public BigInteger getStartIndex() {
-        if (this.startIndex == null) {
+        if (null == this.startIndex) {
             return new BigInteger("0");
         }
         return this.startIndex;

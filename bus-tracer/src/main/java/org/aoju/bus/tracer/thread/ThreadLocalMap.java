@@ -42,7 +42,7 @@ class ThreadLocalMap<K, V> extends InheritableThreadLocal<Map<K, V>> {
 
     @Override
     protected final Map<K, V> childValue(Map<K, V> parentValue) {
-        if (parentValue == null) {
+        if (null == parentValue) {
             return null;
         } else {
             return new HashMap<>(parentValue);

@@ -315,7 +315,7 @@ public class Connection implements Serializable {
     public final void setHostname(String hostname) {
         if (null != hostname
                 ? hostname.equals(this.hostname)
-                : this.hostname == null)
+                : null == this.hostname)
             return;
 
         this.hostname = hostname;
@@ -341,7 +341,7 @@ public class Connection implements Serializable {
     public final void setBindAddress(String bindAddress) {
         if (null != bindAddress
                 ? bindAddress.equals(this.bindAddress)
-                : this.bindAddress == null)
+                : null == this.bindAddress)
             return;
 
         this.bindAddress = bindAddress;
@@ -370,7 +370,7 @@ public class Connection implements Serializable {
     public void setClientBindAddress(String bindAddress) {
         if (null != bindAddress
                 ? bindAddress.equals(this.clientBindAddress)
-                : this.clientBindAddress == null)
+                : null == this.clientBindAddress)
             return;
 
         this.clientBindAddress = bindAddress;
@@ -382,7 +382,7 @@ public class Connection implements Serializable {
     }
 
     public void setProtocol(Protocol protocol) {
-        if (protocol == null)
+        if (null == protocol)
             throw new NullPointerException();
 
         if (this.protocol == protocol)
@@ -778,7 +778,7 @@ public class Connection implements Serializable {
      */
     public boolean isInstalled() {
         return null != device && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+                && (null == installed || installed.booleanValue());
     }
 
     public Boolean getInstalled() {
@@ -858,34 +858,34 @@ public class Connection implements Serializable {
     }
 
     private InetAddress hostAddr() throws UnknownHostException {
-        if (hostAddr == null && null != hostname)
+        if (null == hostAddr && null != hostname)
             hostAddr = InetAddress.getByName(hostname);
 
         return hostAddr;
     }
 
     private InetAddress bindAddr() throws UnknownHostException {
-        if (bindAddress == null)
+        if (null == bindAddress)
             return hostAddr();
 
-        if (bindAddr == null)
+        if (null == bindAddr)
             bindAddr = InetAddress.getByName(bindAddress);
 
         return bindAddr;
     }
 
     private InetAddress clientBindAddr() throws UnknownHostException {
-        if (clientBindAddress == null)
+        if (null == clientBindAddress)
             return hostAddr();
 
-        if (clientBindAddr == null)
+        if (null == clientBindAddr)
             clientBindAddr = InetAddress.getByName(clientBindAddress);
 
         return clientBindAddr;
     }
 
     private List<InetAddress> blacklistAddrs() {
-        if (blacklistAddrs == null) {
+        if (null == blacklistAddrs) {
             blacklistAddrs = new ArrayList<InetAddress>(blacklist.length);
             for (String hostname : blacklist)
                 try {
@@ -932,20 +932,20 @@ public class Connection implements Serializable {
             rebindNeeded = false;
             return false;
         }
-        if (device == null)
+        if (null == device)
             throw new IllegalStateException("Not attached to Device");
         if (isListening())
             throw new IllegalStateException("Already listening - " + listener);
         if (protocol.isTCP()) {
             TCPHandler handler = tcpHandlers.get(protocol);
-            if (handler == null) {
+            if (null == handler) {
                 Logger.info("No TCP Protocol Handler for protocol {}", protocol);
                 return false;
             }
             listener = new TCPListener(this, handler);
         } else {
             UDPHandler handler = udpHandlers.get(protocol);
-            if (handler == null) {
+            if (null == handler) {
                 Logger.info("No UDP Protocol Handler for protocol {}", protocol);
                 return false;
             }
@@ -965,7 +965,7 @@ public class Connection implements Serializable {
 
     public synchronized void unbind() {
         Closeable tmp = listener;
-        if (tmp == null)
+        if (null == tmp)
             return;
         listener = null;
         try {
@@ -1126,7 +1126,7 @@ public class Connection implements Serializable {
     public boolean equalsRDN(Connection other) {
         return null != commonName
                 ? commonName.equals(other.commonName)
-                : other.commonName == null
+                : null == other.commonName
                 && hostname.equals(other.hostname)
                 && port == other.port
                 && protocol == other.protocol;

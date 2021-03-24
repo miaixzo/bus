@@ -126,7 +126,7 @@ public class Readers {
      * @return 加载是否成功
      */
     public boolean load(UriResource resource) {
-        if (resource == null) {
+        if (null == resource) {
             throw new NullPointerException("Null setting url define!");
         }
         InputStream settingStream;
@@ -157,7 +157,7 @@ public class Readers {
             String line;
             while (true) {
                 line = reader.readLine();
-                if (line == null) {
+                if (null == line) {
                     break;
                 }
                 line = line.trim();

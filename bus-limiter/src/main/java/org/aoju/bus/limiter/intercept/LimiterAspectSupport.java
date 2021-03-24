@@ -114,7 +114,7 @@ public abstract class LimiterAspectSupport implements BeanFactoryAware, Initiali
     protected LimitContextsValueWrapper limitContexts(Collection<LimiterExecutionContext> contexts) {
         Collection<LimiterExecutionContext> limited = new ArrayList<>();
         for (LimiterExecutionContext context : contexts) {
-            if (context.limit() && context.getThrowable() == null) {
+            if (context.limit() && null == context.getThrowable()) {
                 limited.add(context);
             } else {
                 releaseContexts(limited);

@@ -49,7 +49,7 @@ public class ServiceBindingType extends RegistryObjectType {
     protected String targetBinding;
 
     public List<SpecificationLinkType> getSpecificationLink() {
-        if (this.specificationLink == null) {
+        if (null == this.specificationLink) {
             this.specificationLink = new ArrayList();
         }
         return this.specificationLink;

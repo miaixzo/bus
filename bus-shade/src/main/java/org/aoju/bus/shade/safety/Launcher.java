@@ -86,8 +86,8 @@ public class Launcher {
 
         ProtectionDomain domain = this.getClass().getProtectionDomain();
         CodeSource source = domain.getCodeSource();
-        URI location = (source == null ? null : source.getLocation().toURI());
-        String filepath = (location == null ? null : location.getSchemeSpecificPart());
+        URI location = (null == source ? null : source.getLocation().toURI());
+        String filepath = (null == location ? null : location.getSchemeSpecificPart());
         if (null != filepath) {
             File file = new File(filepath);
             JarFile jar = new JarFile(file, false);
@@ -158,18 +158,18 @@ public class Launcher {
             }
         }
 
-        if (hold == null || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
+        if (null == hold || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
             if (null != keyfile && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
                 throw new IOException("could not delete key file : " + keyfile.getCanonicalPath());
             }
         }
 
-        if (password == null && null != System.console()) {
+        if (null == password && null != System.console()) {
             Console console = System.console();
             char[] chars = console.readPassword("password:");
             password = new String(chars);
         }
-        if (password == null) {
+        if (null == password) {
             Scanner scanner = new Scanner(System.in);
             password = scanner.nextLine();
         }

@@ -169,7 +169,7 @@ public class Config {
     }
 
     public Style getStyle() {
-        return this.style == null ? Style.camelhump : this.style;
+        return null == this.style ? Style.camelhump : this.style;
     }
 
     public void setStyle(Style style) {
@@ -294,7 +294,7 @@ public class Config {
      * @param properties 属性
      */
     public void setProperties(Properties properties) {
-        if (properties == null) {
+        if (null == properties) {
             //默认驼峰
             this.style = Style.camelhump;
             return;

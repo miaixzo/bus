@@ -96,7 +96,7 @@ public class IanSCP extends Device {
 
     private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
             throws ImageException {
-        if (storageDir == null)
+        if (null == storageDir)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);

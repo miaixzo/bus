@@ -402,7 +402,7 @@ public class CountSqlParser {
      * @return the boolean
      */
     public boolean orderByHashParameters(List<OrderByElement> orderByElements) {
-        if (orderByElements == null) {
+        if (null == orderByElements) {
             return false;
         }
         for (OrderByElement orderByElement : orderByElements) {

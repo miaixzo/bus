@@ -53,18 +53,18 @@ public class ImageWriterFactory implements Serializable {
     private PatchJPEGLS patchJPEGLS;
 
     private static String nullify(String s) {
-        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
+        return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageWriterFactory getDefault() {
-        if (defaultFactory == null)
+        if (null == defaultFactory)
             defaultFactory = initDefault();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageWriterFactory factory) {
-        if (factory == null)
+        if (null == factory)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -213,7 +213,7 @@ public class ImageWriterFactory implements Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
 
             ImageWriterParam that = (ImageWriterParam) o;
 

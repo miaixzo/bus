@@ -53,18 +53,18 @@ public class ImageReaderFactory implements Serializable {
     private final TreeMap<String, ImageReaderParam> map = new TreeMap<>();
 
     private static String nullify(String s) {
-        return s == null || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
+        return null == s || s.isEmpty() || s.equals(Symbol.STAR) ? null : s;
     }
 
     public static ImageReaderFactory getDefault() {
-        if (defaultFactory == null)
+        if (null == defaultFactory)
             defaultFactory = initDefault();
 
         return defaultFactory;
     }
 
     public static void setDefault(ImageReaderFactory factory) {
-        if (factory == null)
+        if (null == factory)
             throw new NullPointerException();
 
         defaultFactory = factory;
@@ -215,7 +215,7 @@ public class ImageReaderFactory implements Serializable {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (null == o || getClass() != o.getClass()) return false;
 
             ImageReaderParam that = (ImageReaderParam) o;
 

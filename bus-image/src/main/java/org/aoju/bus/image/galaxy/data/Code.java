@@ -79,11 +79,11 @@ public class Code implements Serializable {
 
     public Code(String codeValue, String codingSchemeDesignator,
                 String codingSchemeVersion, String codeMeaning) {
-        if (codeValue == null)
+        if (null == codeValue)
             throw new NullPointerException("Missing Code Value");
-        if (codingSchemeDesignator == null)
+        if (null == codingSchemeDesignator)
             throw new NullPointerException("Missing Coding Scheme Designator");
-        if (codeMeaning == null)
+        if (null == codeMeaning)
             throw new NullPointerException("Missing Code Meaning");
         this.codeValue = codeValue;
         this.codingSchemeDesignator = codingSchemeDesignator;

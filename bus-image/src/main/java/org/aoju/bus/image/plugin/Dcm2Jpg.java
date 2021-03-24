@@ -78,7 +78,7 @@ public class Dcm2Jpg {
     }
 
     private static Attributes loadDicomObject(File f) throws IOException {
-        if (f == null)
+        if (null == f)
             return null;
         ImageInputStream dis = new ImageInputStream(f);
         try {

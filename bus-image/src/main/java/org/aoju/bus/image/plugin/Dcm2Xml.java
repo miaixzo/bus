@@ -158,7 +158,7 @@ public class Dcm2Xml {
             throws TransformerConfigurationException {
         SAXTransformerFactory tf = (SAXTransformerFactory)
                 TransformerFactory.newInstance();
-        if (xsltURL == null)
+        if (null == xsltURL)
             return tf.newTransformerHandler();
 
         TransformerHandler th = tf.newTransformerHandler(

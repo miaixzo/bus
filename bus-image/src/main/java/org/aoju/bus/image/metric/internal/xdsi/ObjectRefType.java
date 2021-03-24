@@ -43,7 +43,7 @@ public class ObjectRefType extends IdentifiableType {
     protected Boolean createReplica;
 
     public boolean isCreateReplica() {
-        if (this.createReplica == null) {
+        if (null == this.createReplica) {
             return false;
         }
         return this.createReplica.booleanValue();

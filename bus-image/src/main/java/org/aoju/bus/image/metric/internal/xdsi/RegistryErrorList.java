@@ -45,7 +45,7 @@ public class RegistryErrorList {
     protected String highestSeverity;
 
     public List<RegistryError> getRegistryError() {
-        if (this.registryError == null) {
+        if (null == this.registryError) {
             this.registryError = new ArrayList();
         }
         return this.registryError;

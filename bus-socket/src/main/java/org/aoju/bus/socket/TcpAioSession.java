@@ -128,7 +128,7 @@ public class TcpAioSession<T> extends AioSession {
                 return;
             }
             TcpAioSession.this.writeBuffer = var.poll();
-            if (writeBuffer == null) {
+            if (null == writeBuffer) {
                 semaphore.release();
             } else {
                 continueWrite(writeBuffer);
@@ -155,7 +155,7 @@ public class TcpAioSession<T> extends AioSession {
      * 需要调用控制同步
      */
     public void writeCompleted() {
-        if (writeBuffer == null) {
+        if (null == writeBuffer) {
             writeBuffer = byteBuf.poll();
         } else if (!writeBuffer.buffer().hasRemaining()) {
             writeBuffer.clean();
@@ -207,7 +207,7 @@ public class TcpAioSession<T> extends AioSession {
             }
             IoKit.close(channel);
             serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSED, null);
-        } else if ((writeBuffer == null || !writeBuffer.buffer().hasRemaining()) && !byteBuf.isEmpty()) {
+        } else if ((null == writeBuffer || !writeBuffer.buffer().hasRemaining()) && !byteBuf.isEmpty()) {
             close(true);
         } else {
             serverConfig.getProcessor().stateEvent(this, SocketStatus.SESSION_CLOSING, null);
@@ -256,7 +256,7 @@ public class TcpAioSession<T> extends AioSession {
                 messageProcessor.stateEvent(this, SocketStatus.DECODE_EXCEPTION, e);
                 throw e;
             }
-            if (dataEntry == null) {
+            if (null == dataEntry) {
                 break;
             }
 
@@ -355,7 +355,7 @@ public class TcpAioSession<T> extends AioSession {
      * @throws IOException IO异常
      */
     private void assertChannel() throws IOException {
-        if (status == SESSION_STATUS_CLOSED || channel == null) {
+        if (status == SESSION_STATUS_CLOSED ||null == channel) {
             throw new IOException("session is closed");
         }
     }
@@ -375,7 +375,7 @@ public class TcpAioSession<T> extends AioSession {
      * @throws IOException io异常
      */
     public final InputStream getInputStream() throws IOException {
-        return inputStream == null ? getInputStream(-1) : inputStream;
+        returnnull == inputStream ? getInputStream(-1) : inputStream;
     }
 
     /**
@@ -390,7 +390,7 @@ public class TcpAioSession<T> extends AioSession {
             throw new IOException("pre inputStream has not closed");
         }
         synchronized (this) {
-            if (inputStream == null) {
+            if (null == inputStream) {
                 inputStream = new InnerInputStream(length);
             }
         }
@@ -429,7 +429,7 @@ public class TcpAioSession<T> extends AioSession {
 
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
-            if (b == null) {
+            if (null == b) {
                 throw new NullPointerException();
             } else if (off < 0 || len < 0 || len > b.length - off) {
                 throw new IndexOutOfBoundsException();

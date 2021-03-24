@@ -113,7 +113,7 @@ public class DefaultFormatter implements Format {
                     IniProperty property = propertyElementFormatter.format(line, preEffectiveLineNumber);
                     // set section if exists
                     // In general it should be there, unless it's incorrectly formatted. If not, an exception is thrown.
-                    if (lastSection == null) {
+                    if (null == lastSection) {
                         throw new InstrumentException("Cannot found section for property line " + lineNumber + " : " + line);
                     }
                     // set section for property

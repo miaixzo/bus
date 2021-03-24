@@ -69,7 +69,7 @@ public class EntityBuilder {
      */
     public static EntityTable getEntityTable(Class<?> entityClass) {
         EntityTable entityTable = entityTableMap.get(entityClass);
-        if (entityTable == null) {
+        if (null == entityTable) {
             throw new InstrumentException("无法获取实体类" + entityClass.getCanonicalName() + "对应的表名!");
         }
         return entityTable;
@@ -176,7 +176,7 @@ public class EntityBuilder {
                 entityTable.setTable(table);
             }
         }
-        if (entityTable == null) {
+        if (null == entityTable) {
             entityTable = new EntityTable(entityClass);
             //可以通过stye控制
             entityTable.setName(convertByStyle(entityClass.getSimpleName(), style));

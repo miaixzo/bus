@@ -75,7 +75,7 @@ final class FormatNameFilterIterator<T extends ImageReaderWriterSpi> implements 
 
     @Override
     public T next() {
-        if (next == null) {
+        if (null == next) {
             throw new NoSuchElementException();
         }
         T o = next;

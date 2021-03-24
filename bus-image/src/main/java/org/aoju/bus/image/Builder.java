@@ -192,7 +192,7 @@ public class Builder {
     }
 
     public static boolean delete(File fileOrDirectory) {
-        if (fileOrDirectory == null || !fileOrDirectory.exists()) {
+        if (null == fileOrDirectory || !fileOrDirectory.exists()) {
             return false;
         }
 
@@ -254,7 +254,7 @@ public class Builder {
             int f;
             int r;
             int w;
-            if (progress.getAttributes() == null) {
+            if (null == progress.getAttributes()) {
                 c = 0;
                 f = 0;
                 w = 0;
@@ -396,7 +396,7 @@ public class Builder {
 
     public static boolean updateAttributes(Attributes data, Attributes attrs,
                                            String uidSuffix) {
-        if (attrs.isEmpty() && uidSuffix == null)
+        if (attrs.isEmpty() && null == uidSuffix)
             return false;
         if (null != uidSuffix) {
             data.setString(Tag.StudyInstanceUID, VR.UI,

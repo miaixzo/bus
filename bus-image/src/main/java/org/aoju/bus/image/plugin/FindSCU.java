@@ -272,12 +272,12 @@ public class FindSCU extends Device implements AutoCloseable {
     private void onResult(Attributes data) {
         state.setList(data);
         int numMatches = totNumMatches.incrementAndGet();
-        if (outDir == null) {
+        if (null == outDir) {
             return;
         }
 
         try {
-            if (out == null) {
+            if (null == out) {
                 File f = new File(outDir, fname(numMatches));
                 out = new BufferedOutputStream(new FileOutputStream(f));
             }
@@ -318,16 +318,16 @@ public class FindSCU extends Device implements AutoCloseable {
 
     private TransformerHandler getTransformerHandler() throws Exception {
         SAXTransformerFactory tf = saxtf;
-        if (tf == null) {
+        if (null == tf) {
             saxtf = tf = (SAXTransformerFactory) TransformerFactory.newInstance();
             tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         }
-        if (xsltFile == null) {
+        if (null == xsltFile) {
             return tf.newTransformerHandler();
         }
 
         Templates tpls = xsltTpls;
-        if (tpls == null) {
+        if (null == tpls) {
             xsltTpls = tpls = tf.newTemplates(new StreamSource(xsltFile));
         }
 
@@ -360,7 +360,7 @@ public class FindSCU extends Device implements AutoCloseable {
         }
 
         public void adjustQueryOptions(EnumSet<Option.Type> types) {
-            if (level == null) {
+            if (null == level) {
                 types.add(Option.Type.RELATIONAL);
                 types.add(Option.Type.DATETIME);
             }

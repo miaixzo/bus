@@ -45,7 +45,7 @@ public class ServiceType extends RegistryObjectType {
     protected List<ServiceBindingType> serviceBinding;
 
     public List<ServiceBindingType> getServiceBinding() {
-        if (this.serviceBinding == null) {
+        if (null == this.serviceBinding) {
             this.serviceBinding = new ArrayList();
         }
         return this.serviceBinding;

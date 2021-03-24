@@ -124,7 +124,7 @@ public class LocalOfficeProvider extends AbstractProvider {
      */
     LocalOfficeProvider setLoadProperties(final Map<String, Object> loadProperties) {
 
-        if (this.loadProperties == null) {
+        if (null == this.loadProperties) {
             this.loadProperties = new HashMap<>();
         }
 

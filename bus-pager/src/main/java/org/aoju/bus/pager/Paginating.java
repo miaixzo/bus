@@ -383,7 +383,7 @@ public class Paginating<T> extends Serialize<T> {
         sb.append(", navigateFirstPage=").append(navigateFirstPage);
         sb.append(", navigateLastPage=").append(navigateLastPage);
         sb.append(", navigatePageNo=");
-        if (navigatePageNo == null) {
+        if (null == navigatePageNo) {
             sb.append(Normal.NULL);
         } else {
             sb.append(Symbol.C_BRACKET_LEFT);

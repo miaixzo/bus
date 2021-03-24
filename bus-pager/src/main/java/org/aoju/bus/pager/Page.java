@@ -207,7 +207,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     }
 
     public Page<E> setReasonable(Boolean reasonable) {
-        if (reasonable == null) {
+        if (null == reasonable) {
             return this;
         }
         this.reasonable = reasonable;

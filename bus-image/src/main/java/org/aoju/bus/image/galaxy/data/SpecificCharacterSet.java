@@ -108,7 +108,7 @@ public class SpecificCharacterSet {
     }
 
     public static SpecificCharacterSet valueOf(String... codes) {
-        if (codes == null || codes.length == 0)
+        if (null == codes || codes.length == 0)
             return DEFAULT;
 
         if (codes.length > 1)
@@ -186,7 +186,7 @@ public class SpecificCharacterSet {
                                    Codec codec) {
         SoftReference<Encoder> sr;
         Encoder enc;
-        if ((sr = tl.get()) == null || (enc = sr.get()) == null
+        if (null == (sr = tl.get()) || null == (enc = sr.get())
                 || enc.codec != codec)
             tl.set(new SoftReference<>(enc = new Encoder(codec)));
         return enc;
@@ -227,7 +227,7 @@ public class SpecificCharacterSet {
     @Override
     public boolean equals(Object other) {
 
-        if (other == null) {
+        if (null == other) {
             return false;
         }
         if (getClass() != other.getClass()) {
@@ -312,7 +312,7 @@ public class SpecificCharacterSet {
 
         private static Codec forCodeChecked(String code) {
             Codec codec = forCode(code, null);
-            if (codec == null)
+            if (null == codec)
                 throw new IllegalArgumentException("No such Specific Character Set Code: " + code);
             return codec;
         }
@@ -469,7 +469,7 @@ public class SpecificCharacterSet {
 
             int next = encs.length;
             while (--next >= 0) {
-                if (encs[next] == null)
+                if (null == encs[next])
                     encs[next] = new Encoder(codecs[next]);
                 if (codecs[next].getEscSeq1() != 0) {
                     if (encs[next].encode(cb, bb, codecs[next].getEscSeq1(), CodingErrorAction.REPORT)) {

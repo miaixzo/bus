@@ -53,7 +53,7 @@ public class PersonName {
     }
 
     private static String trim(String s) {
-        return s == null || (s = s.trim()).isEmpty() ? null : s;
+        return null == s || (s = s.trim()).isEmpty() ? null : s;
     }
 
     private void parse(String s, boolean lenient) {

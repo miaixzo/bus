@@ -53,9 +53,9 @@ public class Property implements Serializable {
     private final Object value;
 
     public Property(String name, Object value) {
-        if (name == null)
+        if (null == name)
             throw new NullPointerException("name");
-        if (value == null)
+        if (null == value)
             throw new NullPointerException("value");
 
         if (!(value instanceof String
@@ -182,7 +182,7 @@ public class Property implements Serializable {
     }
 
     public static String[] split(String s, char delim) {
-        if (s == null || s.isEmpty())
+        if (null == s || s.isEmpty())
             return Normal.EMPTY_STRING_ARRAY;
 
         int count = 1;
@@ -273,10 +273,10 @@ public class Property implements Serializable {
 
     public static boolean matches(String s, String key,
                                   boolean matchNullOrEmpty, boolean ignoreCase) {
-        if (key == null || key.isEmpty())
+        if (null == key || key.isEmpty())
             return true;
 
-        if (s == null || s.isEmpty())
+        if (null == s || s.isEmpty())
             return matchNullOrEmpty;
 
         return containsWildCard(key)
@@ -311,7 +311,7 @@ public class Property implements Serializable {
     }
 
     public static <T> T maskNull(T o, T mask) {
-        return o == null ? mask : o;
+        return null == o ? mask : o;
     }
 
     public static <T> T nullify(T o, T val) {
@@ -319,7 +319,7 @@ public class Property implements Serializable {
     }
 
     public static String maskEmpty(String s, String mask) {
-        return s == null || s.isEmpty() ? mask : s;
+        return null == s || s.isEmpty() ? mask : s;
     }
 
     public static String truncate(String s, int maxlen) {
@@ -441,7 +441,7 @@ public class Property implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (null == obj)
             return false;
         if (getClass() != obj.getClass())
             return false;
