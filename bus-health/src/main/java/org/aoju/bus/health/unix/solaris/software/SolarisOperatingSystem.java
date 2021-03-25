@@ -41,7 +41,10 @@ import org.aoju.bus.health.unix.solaris.SolarisLibc;
 import org.aoju.bus.health.unix.solaris.drivers.Who;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -130,17 +133,6 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     private static List<OSProcess> queryAllProcessesFromPS() {
         return getProcessListFromPS("ps -eo s,pid,ppid,user,uid,group,gid,nlwp,pri,vsz,rss,etime,time,comm,args", -1);
-    }
-
-    private static Set<String> getChildren(String parentPid) {
-        Set<String> childPids = new HashSet<>();
-        for (String s : Executor.runNative("pgrep -P " + parentPid)) {
-            String pid = s.trim();
-            if (!pid.equals(parentPid)) {
-                childPids.add(pid);
-            }
-        }
-        return childPids;
     }
 
     @Override
@@ -246,22 +238,16 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
 
     @Override
     public List<OSProcess> queryChildProcesses(int parentPid) {
-        Set<String> childPids = getChildren(String.valueOf(parentPid)).stream().map(String::valueOf)
-                .collect(Collectors.toSet());
-        if (childPids.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return getProcessListFromPS(PROCESS_LIST_FOR_PID_COMMAND + String.join(",", childPids), -1);
+        List<OSProcess> allProcs = queryAllProcessesFromPS();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, false);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
     @Override
     public List<OSProcess> queryDescendantProcesses(int parentPid) {
-        Set<String> descendantPids = getChildrenOrDescendants(queryAllProcessesFromPS(), parentPid, true).stream()
-                .map(String::valueOf).collect(Collectors.toSet());
-        if (descendantPids.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return getProcessListFromPS(PROCESS_LIST_FOR_PID_COMMAND + String.join(",", descendantPids), -1);
+        List<OSProcess> allProcs = queryAllProcessesFromPS();
+        Set<Integer> descendantPids = getChildrenOrDescendants(allProcs, parentPid, true);
+        return allProcs.stream().filter(p -> descendantPids.contains(p.getProcessID())).collect(Collectors.toList());
     }
 
     private static long querySystemBootTime() {

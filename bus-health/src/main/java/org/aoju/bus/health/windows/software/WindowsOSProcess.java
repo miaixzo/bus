@@ -336,35 +336,6 @@ public class WindowsOSProcess extends AbstractOSProcess {
         return Normal.UNKNOWN;
     }
 
-    // temp for testing
-    private static Account getTokenAccount(WinNT.HANDLE hToken) {
-        // get token group information size
-        IntByReference tokenInformationLength = new IntByReference();
-        if (Advapi32.INSTANCE.GetTokenInformation(hToken, WinNT.TOKEN_INFORMATION_CLASS.TokenUser, null, 0,
-                tokenInformationLength)) {
-            throw new RuntimeException("Expected GetTokenInformation to fail with ERROR_INSUFFICIENT_BUFFER");
-        }
-        int rc = Kernel32.INSTANCE.GetLastError();
-        if (rc != W32Errors.ERROR_INSUFFICIENT_BUFFER) {
-            throw new Win32Exception(rc);
-        }
-        // get token user information
-        WinNT.TOKEN_USER user = new WinNT.TOKEN_USER(tokenInformationLength.getValue());
-        if (!Advapi32.INSTANCE.GetTokenInformation(hToken, WinNT.TOKEN_INFORMATION_CLASS.TokenUser, user,
-                tokenInformationLength.getValue(), tokenInformationLength)) {
-            throw new Win32Exception(Kernel32.INSTANCE.GetLastError());
-        }
-        try {
-            return Advapi32Util.getAccountBySid(user.User.Sid);
-        } finally {
-            // Ensure, that the memory object is retained until the account
-            // extraction is done.
-            // From Java 9 onwards Reference#reachabilityFence would be
-            // preferred
-            user.getPointer().getByte(0);
-        }
-    }
-
     private Pair<String, String> queryUserInfo() {
         Pair<String, String> pair = null;
         final WinNT.HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
@@ -372,7 +343,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
             final WinNT.HANDLEByReference phToken = new WinNT.HANDLEByReference();
             try {
                 if (Advapi32.INSTANCE.OpenProcessToken(pHandle, WinNT.TOKEN_DUPLICATE | WinNT.TOKEN_QUERY, phToken)) {
-                    Account account = getTokenAccount(phToken.getValue());
+                    Account account = Advapi32Util.getTokenAccount(phToken.getValue());
                     pair = Pair.of(account.name, account.sidString);
                 } else {
                     int error = Kernel32.INSTANCE.GetLastError();
