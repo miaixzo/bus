@@ -355,7 +355,7 @@ public class TcpAioSession<T> extends AioSession {
      * @throws IOException IO异常
      */
     private void assertChannel() throws IOException {
-        if (status == SESSION_STATUS_CLOSED ||null == channel) {
+        if (status == SESSION_STATUS_CLOSED || null == channel) {
             throw new IOException("session is closed");
         }
     }
@@ -375,7 +375,7 @@ public class TcpAioSession<T> extends AioSession {
      * @throws IOException io异常
      */
     public final InputStream getInputStream() throws IOException {
-        returnnull == inputStream ? getInputStream(-1) : inputStream;
+        return null == inputStream ? getInputStream(-1) : inputStream;
     }
 
     /**

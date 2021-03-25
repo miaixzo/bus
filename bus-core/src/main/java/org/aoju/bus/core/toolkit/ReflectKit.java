@@ -772,7 +772,7 @@ public class ReflectKit {
      * @return 是否为equals方法
      */
     public static boolean isEqualsMethod(Method method) {
-        if (null == methodl || false == ObjectKit.equal(method.getName(), Normal.EQUALS)) {
+        if (null == method || false == ObjectKit.equal(method.getName(), Normal.EQUALS)) {
             return false;
         }
         final Class<?>[] paramTypes = method.getParameterTypes();
@@ -798,7 +798,6 @@ public class ReflectKit {
     public static boolean isToStringMethod(Method method) {
         return (null != method && ObjectKit.equal(method.getName(), "toString") && method.getParameterTypes().length == 0);
     }
-
 
     /**
      * 实例化对象
@@ -929,7 +928,6 @@ public class ReflectKit {
                 }
             }
         }
-
         return invoke(obj, method, args);
     }
 

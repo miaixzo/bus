@@ -2545,7 +2545,7 @@ public class StringKit {
      * @return 位置
      */
     public static int indexOf(final CharSequence str, CharSequence searchStr, int fromIndex, boolean ignoreCase) {
-        if (null == str || null searchStr){
+        if (null == str || null == searchStr) {
             return INDEX_NOT_FOUND;
         }
         if (fromIndex < 0) {
