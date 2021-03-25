@@ -29,7 +29,7 @@ package org.aoju.bus.shade.safety;
  * 记录加/解密规则
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface Complex<E> {

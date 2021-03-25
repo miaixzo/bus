@@ -39,7 +39,7 @@ import java.util.Map;
  * This class provides convenience methods to create ClientConfig properties so GitLabApi can use a proxy server.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ProxyClientConfig {

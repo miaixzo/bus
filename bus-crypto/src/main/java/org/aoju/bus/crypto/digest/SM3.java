@@ -31,7 +31,7 @@ import org.aoju.bus.core.lang.Algorithm;
  * SM3算法
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SM3 extends Digester {

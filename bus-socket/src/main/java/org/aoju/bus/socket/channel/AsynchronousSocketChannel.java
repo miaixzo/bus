@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * 模拟JDK7的AIO处理方式
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AsynchronousSocketChannel extends java.nio.channels.AsynchronousSocketChannel {

@@ -27,7 +27,7 @@ package org.aoju.bus.image.galaxy.io;
 
 /**
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ImageEncodingOptions {

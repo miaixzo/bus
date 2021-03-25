@@ -47,7 +47,7 @@ import java.util.List;
  * 仍然在进行中，那么取消可能会中断整个连接
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class StreamAllocation {

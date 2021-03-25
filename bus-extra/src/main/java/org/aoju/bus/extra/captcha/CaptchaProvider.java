@@ -31,7 +31,7 @@ import java.io.OutputStream;
  * 验证码接口，提供验证码对象接口定义
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface CaptchaProvider {

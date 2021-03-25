@@ -37,7 +37,7 @@ import org.aoju.bus.core.toolkit.StringKit;
  * see http://blog.csdn.net/earbao/article/details/44453937
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class Base32 {

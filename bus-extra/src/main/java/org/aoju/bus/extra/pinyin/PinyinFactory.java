@@ -36,7 +36,7 @@ import org.aoju.bus.logger.Logger;
  * 自动创建对应的拼音引擎对象
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class PinyinFactory {

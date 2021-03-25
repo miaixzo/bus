@@ -7,7 +7,7 @@ import lombok.Data;
  * 限流器
  *
  * @author Justubborn
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Data

@@ -30,7 +30,7 @@ import org.aoju.bus.office.magic.family.DocumentFormat;
  * 具有所需目标格式但尚未应用到转换器的转换作业.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface RequiredTarget {

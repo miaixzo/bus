@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  * a separate API class for each concern.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GitLabApi implements AutoCloseable {

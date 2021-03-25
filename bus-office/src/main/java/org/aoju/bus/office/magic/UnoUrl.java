@@ -34,7 +34,7 @@ import java.util.Map;
  * 这意味着设置java.library.path启动Java时路径
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class UnoUrl {

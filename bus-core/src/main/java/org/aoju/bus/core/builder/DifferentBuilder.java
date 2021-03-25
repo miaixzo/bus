@@ -59,7 +59,7 @@ import java.util.List;
  * {@link DifferentResult#toString(ToStringStyle)}覆盖此样式选择。.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see Differentable
  * @see Different
  * @see DifferentResult

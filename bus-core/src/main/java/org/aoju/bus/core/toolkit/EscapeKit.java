@@ -34,7 +34,7 @@ import org.aoju.bus.core.text.translate.CharSequenceTranslator;
  * Java, Java Script, HTML and XML.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class EscapeKit {

@@ -48,7 +48,7 @@ import java.util.Properties;
  * 数据库方言 sqlserver
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class SqlServerDialect extends AbstractSqlDialect {

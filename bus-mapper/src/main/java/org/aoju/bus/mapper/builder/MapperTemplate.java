@@ -55,7 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 通用Mapper模板类,扩展通用Mapper时需要继承该类
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public abstract class MapperTemplate {

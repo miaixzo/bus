@@ -37,7 +37,7 @@ import java.util.Collection;
  * CSV数据写出器
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class CsvWriter implements Closeable, Flushable {

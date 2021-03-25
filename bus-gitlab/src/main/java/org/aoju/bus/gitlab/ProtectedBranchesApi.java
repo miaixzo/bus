@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * This class provides an entry point to all the Protected Branches API calls.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @see <a href="https://docs.gitlab.com/ee/api/protected_branches.html">Protected branches API at GitLab</a>
  * @since JDK 1.8+
  */

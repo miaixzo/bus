@@ -46,7 +46,7 @@ import org.apache.ibatis.session.RowBounds;
  * 防止全表更新与删除
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})

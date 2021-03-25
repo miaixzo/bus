@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * 所有应用程序拦截器、Httpd核心、所有网络拦截器，最后是网络调用者.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class RealInterceptorChain implements Interceptor.Chain {

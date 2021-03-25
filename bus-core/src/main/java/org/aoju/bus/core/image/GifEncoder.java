@@ -48,7 +48,7 @@ import java.io.OutputStream;
  * <p>
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class GifEncoder {

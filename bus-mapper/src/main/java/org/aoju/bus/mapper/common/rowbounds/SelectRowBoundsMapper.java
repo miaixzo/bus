@@ -35,7 +35,7 @@ import java.util.List;
  * 通用Mapper接口,查询
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public interface SelectRowBoundsMapper<T> {

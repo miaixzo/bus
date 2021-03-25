@@ -29,7 +29,7 @@ package org.aoju.bus.core.lang.exception;
  * 自定义异常: 对象已存在异常
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class ExistsException extends UncheckedException {

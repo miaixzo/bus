@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  * 可以继承此类实现自己需要的方法即可
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AspectjSimple implements Aspectj, Serializable {

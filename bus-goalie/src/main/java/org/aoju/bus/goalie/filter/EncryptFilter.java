@@ -55,7 +55,7 @@ import java.nio.charset.StandardCharsets;
  * 数据加密
  *
  * @author Justubborn
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 @Order(Ordered.LOWEST_PRECEDENCE - 1)

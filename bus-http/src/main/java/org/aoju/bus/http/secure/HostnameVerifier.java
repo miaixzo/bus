@@ -39,7 +39,7 @@ import java.util.*;
  * 一个与RFC 2818一致的HostnameVerifier
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public final class HostnameVerifier implements javax.net.ssl.HostnameVerifier {

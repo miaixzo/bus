@@ -32,7 +32,7 @@ import org.aoju.bus.gitlab.GitLabApiForm;
  * allowed_to_push, allowed_to_merge, and allowed_to_unprotect values.
  *
  * @author Kimi Liu
- * @version 6.2.1
+ * @version 6.2.2
  * @since JDK 1.8+
  */
 public class AllowedTo {
