@@ -412,8 +412,7 @@ public class DcmDir {
         }
         Attributes instRec;
         if (null != styuid && null != seruid) {
-            Attributes patRec =
-                    null == in.findPatientRecord(pid ? styuid : pid);
+            Attributes patRec = in.findPatientRecord(null == pid ? styuid : pid);
             if (null == patRec) {
                 return 0;
             }
